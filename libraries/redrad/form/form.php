@@ -98,7 +98,7 @@ class RForm extends JForm
 	 * @param   string  $name   The name of the form field.
 	 * @param   string  $group  The optional dot-separated form group path on which to find the field.
 	 *
-	 * @return  string  The form field label.
+	 * @return  string  The form field error.
 	 */
 	public function getError($name, $group = null)
 	{
