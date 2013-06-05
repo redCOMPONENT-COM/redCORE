@@ -1,4 +1,2 @@
 redRAD
 ======
-
-redRAD
