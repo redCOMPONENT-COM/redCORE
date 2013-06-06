@@ -23,7 +23,7 @@ class RModelAdmin extends JModelAdmin
 	 *
 	 * @var string
 	 */
-	protected $formName = null;
+	protected $formName;
 
 	/**
 	 * Constructor.
@@ -41,12 +41,7 @@ class RModelAdmin extends JModelAdmin
 
 		if (is_null($this->formName))
 		{
-			throw new RuntimeException(
-				sprintf(
-					'The form name is missing in model %s',
-					get_class($this)
-				)
-			);
+			$this->formName = strtolower($this->getName());
 		}
 
 		parent::__construct($config);
