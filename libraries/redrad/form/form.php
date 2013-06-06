@@ -19,6 +19,60 @@ defined('JPATH_REDRAD') or die;
 class RForm extends JForm
 {
 	/**
+	 * Method to get an instance of a form.
+	 *
+	 * @param   string  $name     The name of the form.
+	 * @param   string  $data     The name of an XML file or string to load as the form definition.
+	 * @param   array   $options  An array of form options.
+	 * @param   mixed   $replace  Flag to toggle whether form fields should be replaced if a field
+	 *                            already exists with the same group/name.
+	 * @param   mixed   $xpath    An optional xpath to search for the fields.
+	 *
+	 * @return  object  JForm instance.
+	 *
+	 * @throws  InvalidArgumentException if no data provided.
+	 * @throws  RuntimeException if the form could not be loaded.
+	 */
+	public static function getInstance($name, $data = null, $options = array(), $replace = true, $xpath = false)
+	{
+		// Reference to array with form instances
+		/** @var  RForm[] $forms */
+		$forms = &self::$forms;
+
+		// Only instantiate the form if it does not already exist.
+		if (!isset($forms[$name]))
+		{
+			$data = trim($data);
+
+			if (empty($data))
+			{
+				throw new InvalidArgumentException(sprintf('RForm::getInstance(name, *%s*)', gettype($data)));
+			}
+
+			// Instantiate the form.
+			$forms[$name] = new RForm($name, $options);
+
+			// Load the data.
+			if (substr(trim($data), 0, 1) == '<')
+			{
+				if ($forms[$name]->load($data, $replace, $xpath) == false)
+				{
+					throw new RuntimeException('RForm::getInstance could not load form');
+				}
+			}
+			else
+			{
+				if ($forms[$name]->loadFile($data, $replace, $xpath) == false)
+				{
+					throw new RuntimeException('RForm::getInstance could not load file');
+				}
+			}
+		}
+
+		return $forms[$name];
+	}
+
+	/**
 	 * Override the validate() method to store the error per field.
 	 *
 	 * @param   array   $data   An array of field values to validate.
@@ -113,5 +167,37 @@ class RForm extends JForm
 		}
 
 		return '';
+	}
+
+	/**
+	 * Returns the value of an attribute of the form itself
+	 *
+	 * @param   string  $attribute  The name of the attribute
+	 * @param   mixed   $default    Optional default value to return
+	 *
+	 * @return  mixed  The attribute value.
+	 */
+	public function getAttribute($attribute, $default = null)
+	{
+		$value = $this->xml->attributes()->$attribute;
+
+		if (is_null($value))
+		{
+			return $default;
+		}
+		else
+		{
+			return (string) $value;
+		}
+	}
+
+	/**
+	 * Method to get the XML form object
+	 *
+	 * @return  SimpleXMLElement  The form XML file
+	 */
+	public function getXml()
+	{
+		return $this->xml;
 	}
 }
