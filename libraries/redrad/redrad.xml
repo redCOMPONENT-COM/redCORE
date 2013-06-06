@@ -14,10 +14,9 @@
 	<files>
 		<folder>form</folder>
 		<folder>helper</folder>
+		<folder>html</folder>
 		<folder>inflector</folder>
 		<folder>layout</folder>
-		<folder>layouts</folder>
-		<folder>media</folder>
 		<folder>model</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
