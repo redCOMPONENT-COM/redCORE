@@ -19,13 +19,6 @@ defined('JPATH_REDRAD') or die;
 class RModelAdmin extends JModelAdmin
 {
 	/**
-	 * Component name. (com_redshop)
-	 *
-	 * @var  string
-	 */
-	protected $componentName = null;
-
-	/**
 	 * The form name.
 	 *
 	 * @var string
@@ -41,14 +34,9 @@ class RModelAdmin extends JModelAdmin
 	 */
 	public function __construct($config = array())
 	{
-		if (is_null($this->componentName))
+		if (is_null($this->context))
 		{
-			throw new RuntimeException(
-				sprintf(
-					'The component name is missing in model %s',
-					get_class($this)
-				)
-			);
+			$this->context = strtolower($this->option . '.' . $this->getName());
 		}
 
 		if (is_null($this->formName))
@@ -76,7 +64,7 @@ class RModelAdmin extends JModelAdmin
 	{
 		// Get the form.
 		$form = $this->loadForm(
-			$this->componentName . '.' . $this->formName, $this->formName,
+			$this->context . '.' . $this->formName, $this->formName,
 			array(
 				'control' => 'jform',
 				'load_data' => $loadData
@@ -100,7 +88,7 @@ class RModelAdmin extends JModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState(
-			$this->componentName . '.edit.' . $this->formName . '.data',
+			$this->context . '.edit.' . $this->formName . '.data',
 			array()
 		);
 
