@@ -10,5 +10,7 @@ defined('JPATH_PLATFORM') or die;
 
 define('JPATH_REDRAD', __DIR__ . '/redrad');
 
+require JPATH_REDRAD . '/inflector/inflector.php';
+
 // Register the classes for autoload.
 JLoader::registerPrefix('R', JPATH_REDRAD);
