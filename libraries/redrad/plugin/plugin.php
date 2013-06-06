@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Base
  * @since       1.0
  */
-class RBasePlugin extends JPlugin
+class RPlugin extends JPlugin
 {
 	/**
 	 * The extension/plugin id in the #__extensions table

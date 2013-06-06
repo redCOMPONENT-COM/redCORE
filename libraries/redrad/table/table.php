@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Base
  * @since       1.0
  */
-class RBaseTable extends JTable
+class RTable extends JTable
 {
 	/**
 	 * Prefix to add to log files

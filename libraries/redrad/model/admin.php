@@ -18,7 +18,7 @@ JLoader::import('joomla.application.component.modeladmin');
  * @subpackage  Base
  * @since       1.0
  */
-class RBaseModelAdmin extends JModelAdmin
+class RModelAdmin extends JModelAdmin
 {
 	/**
 	 * Component name
