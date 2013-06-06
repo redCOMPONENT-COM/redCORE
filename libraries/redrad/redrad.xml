@@ -2,21 +2,26 @@
 <extension type="library" method="upgrade" version="2.5">
 	<name>redRAD - Libraries</name>
 	<libraryname>redrad</libraryname>
-    <creationDate>June 2013</creationDate>
-    <author>redCOMPONENT</author>
+	<creationDate>June 2013</creationDate>
+	<author>redCOMPONENT</author>
 	<authorEmail>email@redcomponent.com</authorEmail>
 	<authorUrl>www.redcomponent.com</authorUrl>
 	<copyright>Copyright (C) 2008 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.0.0</version>
+	<version>1.0.0</version>
 	<description>redRAD Libraries</description>
 
 	<!-- Library -->
 	<files>
-		<folder>base</folder>
 		<folder>form</folder>
+		<folder>helper</folder>
+		<folder>inflector</folder>
 		<folder>layout</folder>
 		<folder>layouts</folder>
+		<folder>media</folder>
+		<folder>model</folder>
+		<folder>plugin</folder>
+		<folder>table</folder>
 	</files>
 
 	<!-- Medias -->
