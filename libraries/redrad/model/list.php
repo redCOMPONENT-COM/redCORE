@@ -9,8 +9,6 @@
 
 defined('JPATH_REDRAD') or die;
 
-JLoader::import('joomla.application.component.modellist');
-
 /**
  * redRAD Base Model List
  *
@@ -20,6 +18,20 @@ JLoader::import('joomla.application.component.modellist');
  */
 abstract class RModelList extends JModelList
 {
+	/**
+	 * Name of the filter form to load
+	 *
+	 * @var  string
+	 */
+	protected $filterFormName = null;
+
+	/**
+	 * Array of form objects.
+	 *
+	 * @var  JForm[]
+	 */
+	protected $forms = array();
+
 	/**
 	 * Delete items
 	 *
@@ -42,7 +54,7 @@ abstract class RModelList extends JModelList
 	 * @param   array    $data      data
 	 * @param   boolean  $loadData  load current data
 	 *
-	 * @return JForm/false  the JForm object or false
+	 * @return  JForm/false  the JForm object or false
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
@@ -51,7 +63,11 @@ abstract class RModelList extends JModelList
 		if (!empty($this->filterFormName))
 		{
 			// Get the form.
-			$form = $this->loadForm($this->context . '.filter', $this->filterFormName, array('control' => '', 'load_data' => $loadData));
+			$form = $this->loadForm(
+				$this->context . '.filter',
+				$this->filterFormName,
+				array('control' => '', 'load_data' => $loadData)
+			);
 		}
 
 		return $form;
@@ -64,12 +80,11 @@ abstract class RModelList extends JModelList
 	 * @param   string   $source   The form source. Can be XML string if file flag is set to false.
 	 * @param   array    $options  Optional array of options for the form creation.
 	 * @param   boolean  $clear    Optional argument to force load a new form.
-	 * @param   string   $xpath    An optional xpath to search for the fields.
+	 * @param   mixed    $xpath    An optional xpath to search for the fields.
 	 *
 	 * @return  mixed  JForm object on success, False on error.
 	 *
 	 * @see     JForm
-	 * @since   11.1
 	 */
 	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
 	{
@@ -80,9 +95,9 @@ abstract class RModelList extends JModelList
 		$hash = md5($source . serialize($options));
 
 		// Check if we can use a previously loaded form.
-		if (isset($this->_forms[$hash]) && !$clear)
+		if (isset($this->forms[$hash]) && !$clear)
 		{
-			return $this->_forms[$hash];
+			return $this->forms[$hash];
 		}
 
 		// Get the form.
@@ -91,7 +106,7 @@ abstract class RModelList extends JModelList
 
 		try
 		{
-			$form = RedbookingForm::getInstance($name, $source, $options, false, $xpath);
+			$form = RForm::getInstance($name, $source, $options, false, $xpath);
 
 			if (isset($options['load_data']) && $options['load_data'])
 			{
@@ -119,7 +134,7 @@ abstract class RModelList extends JModelList
 		}
 
 		// Store the form for later.
-		$this->_forms[$hash] = $form;
+		$this->forms[$hash] = $form;
 
 		return $form;
 	}
@@ -128,8 +143,6 @@ abstract class RModelList extends JModelList
 	 * Method to get the data that should be injected in the form.
 	 *
 	 * @return	mixed	The data for the form.
-	 *
-	 * @since	1.6
 	 */
 	protected function loadFormData()
 	{
@@ -149,7 +162,6 @@ abstract class RModelList extends JModelList
 	 * @return  void
 	 *
 	 * @see     JFormField
-	 * @since   11.1
 	 * @throws  Exception if there is an error in the form event.
 	 */
 	protected function preprocessForm(JForm $form, $data, $group = 'content')
