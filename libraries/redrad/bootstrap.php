@@ -10,7 +10,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-define('JPATH_REDRAD', __DIR__ . '/redrad');
+define('JPATH_REDRAD', __DIR__);
 
 require JPATH_REDRAD . '/inflector/inflector.php';
 
