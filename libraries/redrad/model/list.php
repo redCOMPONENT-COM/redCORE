@@ -91,7 +91,7 @@ abstract class RModelList extends JModelList
 
 		try
 		{
-			$form = RedbookingForm::getInstance($name, $source, $options, false, $xpath);
+			$form = RForm::getInstance($name, $source, $options, false, $xpath);
 
 			if (isset($options['load_data']) && $options['load_data'])
 			{

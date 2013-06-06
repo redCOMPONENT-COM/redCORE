@@ -23,7 +23,6 @@
         <copy todir="${www.dir}/libraries" overwrite="true">
             <fileset dir="${src}/libraries">
                 <include name="**" />
-                <exclude name="media" />
             </fileset>
         </copy>
 
@@ -34,7 +33,21 @@
 
         <!-- Media -->
         <copy todir="${www.dir}/media" overwrite="true">
-            <fileset dir="${src}/libraries/${comp.name}/media">
+            <fileset dir="${src}/media/${comp.name}">
+                <include name="**" />
+            </fileset>
+        </copy>
+
+        <!-- Plugins -->
+        <copy todir="${www.dir}/plugins" overwrite="true">
+            <fileset dir="${src}/plugins">
+                <include name="**" />
+            </fileset>
+        </copy>
+
+        <!-- Plugins - Languages -->
+        <copy todir="${www.dir}/administrator/language" overwrite="true">
+            <fileset dir="${src}/plugins/system/redrad/language">
                 <include name="**" />
             </fileset>
         </copy>

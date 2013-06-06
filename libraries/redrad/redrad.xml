@@ -11,18 +11,10 @@
     <version>1.0.0</version>
 	<description>redRAD Libraries</description>
 
-	<!-- Library -->
 	<files>
 		<folder>base</folder>
 		<folder>form</folder>
 		<folder>layout</folder>
 		<folder>layouts</folder>
 	</files>
-
-	<!-- Medias -->
-	<media destination="redrad" folder="media/redrad">
-		<folder>css</folder>
-		<folder>images</folder>
-		<folder>js</folder>
-	</media>
 </extension>
