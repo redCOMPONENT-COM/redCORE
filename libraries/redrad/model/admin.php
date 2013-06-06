@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     RedRad
- * @subpackage  Base
+ * @subpackage  Model
  *
  * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
@@ -9,78 +9,79 @@
 
 defined('JPATH_REDRAD') or die;
 
-JLoader::import('joomla.application.component.modeladmin');
-
 /**
  * redRAD Base Model Admin
  *
  * @package     RedRad
- * @subpackage  Base
+ * @subpackage  Model
  * @since       1.0
  */
 class RModelAdmin extends JModelAdmin
 {
 	/**
-	 * Component name
+	 * Component name. (com_redshop)
 	 *
 	 * @var  string
 	 */
-	protected $_component = null;
+	protected $componentName = null;
 
 	/**
-	 * Table Name
+	 * The form name.
 	 *
-	 * @var  string
+	 * @var string
 	 */
-	protected $_tableType = null;
+	protected $formName = null;
 
 	/**
-	 * Table Prefix
-	 *
-	 * @var  string
-	 */
-	protected $_tablePrefix = null;
-
-	/**
-	 * Context
-	 *
-	 * @var  string
-	 */
-	protected $_context = null;
-
-	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @param   array  $config  Configuration array
+	 *
+	 * @throws  RuntimeException
 	 */
 	public function __construct($config = array())
 	{
-		// Autogenerate context ?
-		if (is_null($this->_context))
+		if (is_null($this->componentName))
 		{
-			$this->_context = $this->_component . '.' . $this->_tableType;
+			throw new RuntimeException(
+				sprintf(
+					'The component name is missing in model %s',
+					get_class($this)
+				)
+			);
 		}
 
-		if (is_null($this->_tablePrefix) || is_null($this->_component) || is_null($this->_tableType))
+		if (is_null($this->formName))
 		{
-			throw new InvalidArgumentException('Missing required prefix, component or table type in ' . __CLASS__ . ' definition');
+			throw new RuntimeException(
+				sprintf(
+					'The form name is missing in model %s',
+					get_class($this)
+				)
+			);
 		}
 
 		parent::__construct($config);
 	}
 
 	/**
-	 * Get the zone form
+	 * Method for getting the form from the model.
 	 *
-	 * @param   array    $data      data
-	 * @param   boolean  $loadData  load current data
+	 * @param   array    $data      Data for the form.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
 	 *
-	 * @return JForm/false  the JForm object or false
+	 * @return  mixed  A JForm object on success, false on failure
 	 */
 	public function getForm($data = array(), $loadData = true)
 	{
 		// Get the form.
-		$form = $this->loadForm($this->_context, $this->_tableType, array('control' => 'jform', 'load_data' => $loadData));
+		$form = $this->loadForm(
+			$this->componentName . '.' . $this->formName, $this->formName,
+			array(
+				'control' => 'jform',
+				'load_data' => $loadData
+			)
+		);
 
 		if (empty($form))
 		{
@@ -91,30 +92,18 @@ class RModelAdmin extends JModelAdmin
 	}
 
 	/**
-	 * Get the associated JTable
+	 * Method to get the data that should be injected in the form.
 	 *
-	 * @param   string  $type    Table name
-	 * @param   string  $prefix  Table prefix
-	 * @param   array   $config  Configuration array
-	 *
-	 * @return JTable
-	 */
-	public function getTable($type = 'none', $prefix = 'RTable', $config = array())
-	{
-		return JTable::getInstance($this->_tableType, $this->_tablePrefix, $config);
-	}
-
-	/**
-	 * Load the form data from session / table
-	 *
-	 * @return object  The data
+	 * @return  array  The default data is an empty array.
 	 */
 	protected function loadFormData()
 	{
 		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState($this->_component . '.edit.' . $this->_tableType . '.data', array());
+		$data = JFactory::getApplication()->getUserState(
+			$this->componentName . '.edit.' . $this->formName . '.data',
+			array()
+		);
 
-		// If no session data try to load item
 		if (empty($data))
 		{
 			$data = $this->getItem();
@@ -124,14 +113,46 @@ class RModelAdmin extends JModelAdmin
 	}
 
 	/**
-	 * Method to get a single record.
+	 * Prepare and sanitise the table data prior to saving.
 	 *
-	 * @param   integer  $pk  The id of the primary key.
+	 * Fields recognized :
 	 *
-	 * @return	mixed	Object on success, false on failure.
+	 * - created_date
+	 * - modified_date
+	 * - created_by
+	 * - modified_by
+	 *
+	 * @param   JTable  $table  A reference to a JTable object.
+	 *
+	 * @return  void
 	 */
-	public function getItem($pk = null)
+	protected function prepareTable($table)
 	{
-		return parent::getItem($pk);
+		$now = JDate::getInstance();
+		$nowFormatted = $now->toSql();
+
+		if (property_exists($table, 'created_date')
+			&& (is_null($table->created_date) || empty($table->created_date)))
+		{
+			$table->created_date = $nowFormatted;
+		}
+
+		if (property_exists($table, 'modified_date'))
+		{
+			$table->modified_date = $nowFormatted;
+		}
+
+		$userId = JFactory::getUser()->id;
+
+		if (property_exists('created_by', $table)
+			&& (is_null($table->created_by) || empty($table->created_by)))
+		{
+			$table->created_by = $userId;
+		}
+
+		if (property_exists($table, 'modified_by'))
+		{
+			$table->modified_by = $userId;
+		}
 	}
 }
