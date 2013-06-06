@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="redRAD" default="site" basedir=".">
+    <!-- Do initialization stuff -->
+    <target name="prepare" >
+        <property file="build.properties"  override="true"/>
+        <if>
+            <equals arg1="${extension}" arg2="" />
+            <then>
+                <fail message="Extension not specified, use -Dextension=EXTENSION" />
+            </then>
+            <else>
+                <!--<property file="${extension}.properties"  override="true"/>-->
+            </else>
+        </if>
+    </target>
+
+    <property name="src" value="./" />
+
+    <target name="site" description="Copies files to a existing joomla site" depends="prepare">
+        <echo message="Copying redRAD files..." />
+
+        <!-- Libraries -->
+        <copy todir="${www.dir}/libraries" overwrite="true">
+            <fileset dir="${src}/libraries">
+                <include name="**" />
+                <exclude name="media" />
+            </fileset>
+        </copy>
+
+        <!-- For discover install we need to place the libraries manifests in the right folder -->
+        <echo message="Copying library manifiest..." />
+        <copy file="${src}/libraries/${comp.name}/${comp.name}.xml"
+            tofile="${www.dir}/administrator/manifests/libraries/${comp.name}.xml" overwrite="true" />
+
+        <!-- Media -->
+        <copy todir="${www.dir}/media" overwrite="true">
+            <fileset dir="${src}/libraries/${comp.name}/media">
+                <include name="**" />
+            </fileset>
+        </copy>
+
+    </target>
+
+</project>

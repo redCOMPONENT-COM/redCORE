@@ -10,10 +10,10 @@
 defined('JPATH_REDRAD') or die;
 
 /**
- * Redrad base plugin
+ * redRAD base plugin
  *
  * @package     RedRad
- * @subpackage  Form
+ * @subpackage  Base
  * @since       1.0
  */
 class RBasePlugin extends JPlugin

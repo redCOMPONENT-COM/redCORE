@@ -25,3 +25,11 @@ Desktop.ini
 *.swp
 *~.nib
 *~
+
+# Build config
+build.properties
+
+# Never ignore
+!.gitignore
+!index.html
+!index.php
