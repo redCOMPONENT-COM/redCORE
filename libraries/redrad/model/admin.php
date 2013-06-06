@@ -19,11 +19,32 @@ defined('JPATH_REDRAD') or die;
 class RModelAdmin extends JModelAdmin
 {
 	/**
+	 * Context for session
+	 *
+	 * @var  string
+	 */
+	protected $context = null;
+
+	/**
 	 * The form name.
 	 *
 	 * @var string
 	 */
 	protected $formName;
+
+	/**
+	 * Table Name
+	 *
+	 * @var  string
+	 */
+	protected $tableType = null;
+
+	/**
+	 * Table Prefix
+	 *
+	 * @var  string
+	 */
+	protected $tablePrefix = 'RTable';
 
 	/**
 	 * Constructor.
@@ -72,6 +93,20 @@ class RModelAdmin extends JModelAdmin
 		}
 
 		return $form;
+	}
+
+	/**
+	 * Get the associated JTable
+	 *
+	 * @param   string  $type    Table name
+	 * @param   string  $prefix  Table prefix
+	 * @param   array   $config  Configuration array
+	 *
+	 * @return JTable
+	 */
+	public function getTable($type = null, $prefix = 'RTable', $config = array())
+	{
+		return JTable::getInstance($this->tableType, $this->tablePrefix, $config);
 	}
 
 	/**
