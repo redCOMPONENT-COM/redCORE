@@ -18,7 +18,7 @@ JLoader::import('joomla.application.component.modellist');
  * @subpackage  Base
  * @since       1.0
  */
-abstract class RBaseModelList extends JModelList
+abstract class RModelList extends JModelList
 {
 	/**
 	 * Delete items
