@@ -26,6 +26,33 @@ class RToolbarButtonGroup
 	protected $buttons;
 
 	/**
+	 * A css class attribute for the group.
+	 *
+	 * @var  string
+	 */
+	protected $class;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param   string  $class  The css class attribute.
+	 */
+	public function __construct($class = '')
+	{
+		$this->class = $class;
+	}
+
+	/**
+	 * Get the group css class attribute.
+	 *
+	 * @return  string  The css class attribute.
+	 */
+	public function getClass()
+	{
+		return $this->class;
+	}
+
+	/**
 	 * Add a button to the group.
 	 *
 	 * @param   RToolbarButton  $button  The button to add.
