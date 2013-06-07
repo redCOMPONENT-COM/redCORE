@@ -261,4 +261,19 @@ final class RToolbarBuilder
 	{
 		return new RToolbarButtonStandard($text, $task, $class, $iconClass, $list);
 	}
+
+	/**
+	 * Create a modal button.
+	 *
+	 * @param   string  $dataTarget  The data-target selector.
+	 * @param   string  $text        The button text.
+	 * @param   string  $class       The button class.
+	 * @param   string  $iconClass   The icon class.
+	 *
+	 * @return  RToolbarButtonStandard  The button.
+	 */
+	public static function createModalButton($dataTarget, $text, $class = '', $iconClass = '')
+	{
+		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass);
+	}
 }
