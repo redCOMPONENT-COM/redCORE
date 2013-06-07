@@ -34,7 +34,7 @@ $groups = $toolbar->getGroups();
 ?>
 <div class="<?php echo $toolBarClass ?>">
 	<?php
-		foreach ($groups as $group) :
+	foreach ($groups as $group) :
 
 		$groupClass = $group->getClass();
 
@@ -47,14 +47,14 @@ $groups = $toolbar->getGroups();
 		{
 			$groupClass = 'btn-group ' . $groupClass;
 		}
+	?>
+	<div class="<?php echo $groupClass ?>">
+		<?php
+		foreach ($group->getButtons() as $button)
+		{
+			echo $button->render();
+		}
 		?>
-		<div class="<?php echo $groupClass ?>">
-			<?php
-			foreach ($group->getButtons() as $button)
-			{
-				echo $button->render();
-			}
-			?>
 		</div>
 	<?php endforeach; ?>
 </div>
