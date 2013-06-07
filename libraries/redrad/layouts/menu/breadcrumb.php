@@ -33,25 +33,38 @@ foreach ($menu->getTrees() as $tree)
 	}
 }
 
-$html = array();
+$links = array();
 
 if ($activeNode)
 {
-	$html[] = '<li class="active">' . $activeNode->getContent() . '</li>';
+	$links[] = $activeNode;
 
-	// Traverse in reverse order until the root.
 	while ($parent = $activeNode->getParent())
 	{
 		$activeNode = $parent;
 
-		$html[] = '<li><a href="' . $parent->getTarget() . '">'
-			. $parent->getContent() . '</a><span class="divider">/</span></li>';
+		$links[] = $parent;
 	}
+
+	$links = array_reverse($links);
 }
 
-if (!empty($html))
-{
-	echo '<ul class="breadcrumb">';
-	echo implode(array_reverse($html));
-	echo '</ul>';
-}
+?>
+<?php if ($links) : ?>
+	<ul class="breadcrumb">
+		<?php foreach ($links as $link) : ?>
+			<?php if ($link->isActive()): ?>
+				<li class="active">
+					<?php echo $link->getContent(); ?>
+				</li>
+			<?php else : ?>
+				<li>
+					<a href="<?php echo $link->getTarget(); ?>">
+						<?php echo $link->getContent(); ?>
+					</a>
+					<span class="divider">/</span>
+				</li>
+			<?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+<?php endif;
