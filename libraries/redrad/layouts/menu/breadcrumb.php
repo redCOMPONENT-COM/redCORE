@@ -37,7 +37,7 @@ $html = array();
 
 if ($activeNode)
 {
-	$html[] = '<li class="active">' . $activeNode->getName() . '</li>';
+	$html[] = '<li class="active">' . $activeNode->getContent() . '</li>';
 
 	// Traverse in reverse order until the root.
 	while ($parent = $activeNode->getParent())
