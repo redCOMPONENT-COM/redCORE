@@ -209,4 +209,40 @@ final class RToolbarBuilder
 	{
 		return new RToolbarButtonStandard('JTOOLBAR_SAVE_AS_COPY', $task, $class, 'icon-copy', false);
 	}
+
+	/**
+	 * Create a link button.
+	 *
+	 * @param   string  $url        The button task.
+	 * @param   string  $text       The button text.
+	 * @param   string  $iconClass  The icon class.
+	 * @param   string  $class      The button class.
+	 *
+	 * @return  RToolbarButtonLink  The button.
+	 */
+	public static function createLinkButton($url, $text, $iconClass = '', $class = '')
+	{
+		return new RToolbarButtonLink($text, $url, $class, $iconClass);
+	}
+
+	/**
+	 * Create an options (preferences) button.
+	 *
+	 * @param   string  $component  The component name.
+	 * @param   string  $path       The path.
+	 * @param   string  $class      A class attribute for the button.
+	 *
+	 * @return  RToolbarButtonLink  The button.
+	 */
+	public static function createOptionsButton($component, $path = '', $class = '')
+	{
+		$component = urlencode($component);
+		$path = urlencode($path);
+		$uri = (string) JUri::getInstance();
+		$return = urlencode(base64_encode($uri));
+		$link = 'index.php?option=com_config&amp;view=component&amp;component=' .
+			$component . '&amp;path=' . $path . '&amp;return=' . $return;
+
+		return new RToolbarButtonLink('JToolbar_Options', $link, $class, 'icon-options');
+	}
 }
