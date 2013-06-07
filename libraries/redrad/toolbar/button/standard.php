@@ -35,16 +35,18 @@ class RToolbarButtonStandard extends RToolbarButton
 	/**
 	 * Constructor.
 	 *
-	 * @param   string   $text  The button text.
-	 * @param   string   $icon  The icon class.
-	 * @param   string   $task  The button task.
-	 * @param   boolean  $list  Is the button applying on a list ?
+	 * @param   string   $text       The button text.
+	 * @param   string   $task       The button task.
+	 * @param   string   $class      The button class.
+	 * @param   string   $iconClass  The icon class.
+	 * @param   boolean  $list       Is the button applying on a list ?
 	 */
-	public function __construct($text = '', $icon = '', $task = '', $list = true)
+	public function __construct($text = '', $task = '', $class = '', $iconClass = '', $list = true)
 	{
-		parent::__construct($text, $icon);
+		parent::__construct($text, $iconClass, $class);
 
 		$this->task = $task;
+		$this->list = $list;
 	}
 
 	/**
