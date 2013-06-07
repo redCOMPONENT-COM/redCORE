@@ -56,6 +56,6 @@ class RToolbar
 	 */
 	public function render()
 	{
-		return RLayoutHelper::render('toolbar', array('toolbar' => $this));
+		return RLayoutHelper::render('toolbar.toolbar', array('toolbar' => $this));
 	}
 }
