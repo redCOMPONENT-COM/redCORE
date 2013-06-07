@@ -17,11 +17,38 @@ if (!isset($data['toolbar']))
 /** @var RToolbar $toolbar */
 $toolbar = $data['toolbar'];
 
+// Get the toolbar class.
+$toolBarClass = $toolbar->getClass();
+
+if (empty($toolBarClass))
+{
+	$toolBarClass = 'btn-toolbar';
+}
+
+else
+{
+	$toolBarClass = 'btn-toolbar ' . $toolBarClass;
+}
+
 $groups = $toolbar->getGroups();
 ?>
-<div class="btn-toolbar">
-	<?php foreach ($groups as $group) : ?>
-		<div class="btn-group">
+<div class="<?php echo $toolBarClass ?>">
+	<?php
+		foreach ($groups as $group) :
+
+		$groupClass = $group->getClass();
+
+		if (empty($groupClass))
+		{
+			$groupClass = 'btn-group';
+		}
+
+		else
+		{
+			$groupClass = 'btn-group ' . $groupClass;
+		}
+		?>
+		<div class="<?php echo $groupClass ?>">
 			<?php
 			foreach ($group->getButtons() as $button)
 			{
