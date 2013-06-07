@@ -245,4 +245,20 @@ final class RToolbarBuilder
 
 		return new RToolbarButtonLink('JToolbar_Options', $link, $class, 'icon-options');
 	}
+
+	/**
+	 * Create a standard button (mapped to a controller task).
+	 *
+	 * @param   string   $task       The button task.
+	 * @param   string   $text       The button text.
+	 * @param   string   $class      The button class.
+	 * @param   string   $iconClass  The icon class.
+	 * @param   boolean  $list       Is the button applying on a list ?
+	 *
+	 * @return  RToolbarButtonStandard  The button.
+	 */
+	public static function createStandardButton($task, $text, $class = '', $iconClass = '', $list = true)
+	{
+		return new RToolbarButtonStandard($text, $task, $class, $iconClass, $list);
+	}
 }
