@@ -23,7 +23,7 @@ class RToolbar
 	 *
 	 * @var  RToolbarButton[]
 	 */
-	protected $groups;
+	protected $groups = array();
 
 	/**
 	 * A css class attribute for the toolbar.
