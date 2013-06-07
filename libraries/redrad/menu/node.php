@@ -47,13 +47,31 @@ class RMenuNode
 	protected $children = array();
 
 	/**
+	 * The link content (html).
+	 *
+	 * @var string
+	 */
+	protected $content;
+
+	/**
+	 * The target link.
+	 *
+	 * @var  string
+	 */
+	protected $target;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param  string  $name  The link name.
+	 * @param  string  $name     The link name.
+	 * @param  string  $content  The link content.
+	 * @param  string  $target   The link target.
 	 */
-	public function __construct($name)
+	public function __construct($name, $content, $target)
 	{
 		$this->name = $name;
+		$this->content = $content;
+		$this->target = $target;
 	}
 
 	/**
@@ -64,6 +82,26 @@ class RMenuNode
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	/**
+	 * Get the node content.
+	 *
+	 * @return  string  The node content.
+	 */
+	public function getContent()
+	{
+		return $this->content;
+	}
+
+	/**
+	 * Get the node target.
+	 *
+	 * @return  string  The node target.
+	 */
+	public function getTarget()
+	{
+		return $this->target;
 	}
 
 	/**
