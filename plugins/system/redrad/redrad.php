@@ -26,5 +26,11 @@ class PlgSystemRedRad extends JPlugin
 	public function onAfterInitialise()
 	{
 		require_once JPATH_REDRAD . 'bootstrap.php';
+
+		// For Joomla! 2.5 compatibility we add some core functions
+		if (version_compare(JVERSION, '3.0', '<'))
+		{
+			JLoader::registerPrefix('J',  JPATH_REDRAD . '/joomla');
+		}
 	}
 }
