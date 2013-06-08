@@ -133,7 +133,7 @@ class RLayout extends JLayoutFile
 	 *
 	 * @param   mixed  $client  Frontend: 'site' or 0 | Backend: 'admin' or 1
 	 *
-	 * @return  void
+	 * @return  integer  The client.
 	 */
 	protected function initClient($client = 'auto')
 	{
@@ -187,6 +187,7 @@ class RLayout extends JLayoutFile
 				}
 			}
 		}
+
 		echo "</pre>";
 	}
 }
