@@ -18,6 +18,7 @@
 		<folder>inflector</folder>
 		<folder>joomla</folder>
 		<folder>layout</folder>
+		<folder>layouts</folder>
 		<folder>model</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
