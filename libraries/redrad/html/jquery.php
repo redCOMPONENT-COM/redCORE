@@ -82,7 +82,7 @@ abstract class RedradJquery
 		// For Joomla! 2.5 compatibility we add some core functions
 		if (version_compare(JVERSION, '3.0', '<'))
 		{
-			RHelperHtml::asset('lib/jquery.js', self::EXTENSION);
+			RHelperAsset::load('lib/jquery.js', self::EXTENSION);
 		}
 		else
 		{
