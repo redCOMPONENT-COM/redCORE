@@ -21,6 +21,7 @@
 		<folder>model</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
+		<folder>toolbar</folder>
 		<filename>bootstrap.php</filename>
 		<filename>redrad.xml</filename>
 	</files>
