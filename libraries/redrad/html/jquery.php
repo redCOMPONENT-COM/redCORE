@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Html
  * @since       1.0
  */
-abstract class RJquery
+abstract class RedradJquery
 {
 	/**
 	 * Extension name to use in the asset calls
