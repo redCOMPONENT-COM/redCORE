@@ -159,6 +159,19 @@ final class RToolbarBuilder
 	}
 
 	/**
+	 * Create a close button.
+	 *
+	 * @param   string  $task   The task name.
+	 * @param   string  $class  A css class to add to the button.
+	 *
+	 * @return  RToolbarButtonStandard  The button.
+	 */
+	public static function createCloseButton($task, $class = '')
+	{
+		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-cancel', false);
+	}
+
+	/**
 	 * Create a save button.
 	 *
 	 * @param   string  $task   The task name.
