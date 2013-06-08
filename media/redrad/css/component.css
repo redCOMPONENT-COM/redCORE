@@ -34,6 +34,10 @@
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c43131', endColorstr='#af2b2b', GradientType=0); /* IE6-8 */
 }
 
+.redrad .navbar-inner {
+    background: none;
+}
+
 .redrad .navbar a.brand {
     color: #FFFFFF;
     font-weight: 200;
