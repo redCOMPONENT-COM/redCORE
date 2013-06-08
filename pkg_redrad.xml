@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="package" version="2.5">
 	<name>redRAD</name>
+	<packagename>redrad</packagename>
     <creationDate>June 2013</creationDate>
     <author>redCOMPONENT</author>
 	<authorEmail>email@redcomponent.com</authorEmail>
@@ -12,7 +13,7 @@
 	<scriptfile>install.php</scriptfile>
 
 	<!-- packages to install -->
-	<files folder="packages">
+	<files>
 		<!-- Libraries -->
 		<file type="library" id="redrad">libraries/redrad</file>
 	</files>
@@ -28,6 +29,5 @@
 	<plugins>
 		<!-- System plugins -->
 		<plugin name="redrad" group="system"/>
-
 	</plugins>
 </extension>

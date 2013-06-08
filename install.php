@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  Install
  * @since       1.0
  */
-class RedradInstallerScript
+class Pkg_RedradInstallerScript
 {
 	/**
 	 * Status of the installation
@@ -40,6 +40,39 @@ class RedradInstallerScript
 		}
 
 		return $this->installer;
+	}
+
+	/**
+	 * Shit happens. Patched function to bypass bug in package uninstaller
+	 *
+	 * @param   JInstaller  $parent  Parent object
+	 *
+	 * @return  SimpleXMLElement
+	 */
+	protected function getManifest($parent)
+	{
+		$element = strtolower(str_replace('InstallerScript', '', __CLASS__));
+		$elementParts = explode('_', $element);
+
+		if (count($elementParts) == 2)
+		{
+			$extType = $elementParts[0];
+			$extName = $elementParts[1];
+
+			if ($extType == 'pkg')
+			{
+				$rootPath = $parent->getParent()->getPath('extension_root');
+				$manifestPath = dirname($rootPath);
+				$manifestFile = $manifestPath . '/' . $element . '.xml';
+
+				if (file_exists($manifestFile))
+				{
+					return JFactory::getXML($manifestFile);
+				}
+			}
+		}
+
+		return $parent->get('manifest');
 	}
 
 	/**
@@ -325,7 +358,7 @@ class RedradInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $this->getManifest($parent);
 		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->libraries->library)
@@ -358,7 +391,7 @@ class RedradInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $this->getManifest($parent);
 		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->modules->module)
@@ -392,7 +425,7 @@ class RedradInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $this->getManifest($parent);
 		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->plugins->plugin)
