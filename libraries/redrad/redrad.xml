@@ -19,10 +19,12 @@
 		<folder>joomla</folder>
 		<folder>layout</folder>
 		<folder>layouts</folder>
+		<folder>menu</folder>
 		<folder>model</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
 		<folder>toolbar</folder>
+		<folder>view</folder>
 		<filename>bootstrap.php</filename>
 		<filename>redrad.xml</filename>
 	</files>
