@@ -9,7 +9,7 @@
 
 defined('JPATH_REDRAD') or die;
 
-RHelperAsset::stylesheet('media/redrad/redrad/css/component.css');
+RHelperAsset::stylesheet('media/redrad/css/component.css');
 
 $data = $displayData;
 
