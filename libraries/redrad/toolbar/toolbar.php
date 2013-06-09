@@ -85,4 +85,14 @@ class RToolbar
 	{
 		return RLayoutHelper::render('toolbar.toolbar', array('toolbar' => $this));
 	}
+
+	/**
+	 * Check if the toolbar is empty.
+	 *
+	 * @return  boolean  True if the toolbar is empty, false otherwise.
+	 */
+	public function isEmpty()
+	{
+		return 0 === count($this->groups);
+	}
 }
