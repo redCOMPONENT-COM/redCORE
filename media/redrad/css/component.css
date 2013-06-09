@@ -1,4 +1,4 @@
-.redrad, div#system-message-container {
+.redrad {
     padding-top: 40px;
 }
 
@@ -175,4 +175,8 @@
     background-color : #FAFAFA;
     padding : 5px 5px 5px 5px;
     border: 1px solid #F2F2F2;
+}
+
+.redrad h1 {
+	margin-top:0;
 }

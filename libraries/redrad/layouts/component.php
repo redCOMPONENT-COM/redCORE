@@ -105,7 +105,11 @@ if ($result instanceof Exception)
 	return $result;
 }
 ?>
-
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('.message').append(jQuery('#system-message-container'));
+	});
+</script>
 <?php if ($view->getLayout() === 'modal') : ?>
 	<div class="container-fluid redrad">
 		<div class="span12 content">
@@ -137,6 +141,7 @@ if ($result instanceof Exception)
 					<div class="row-fuid">
 						<?php echo $toolbar->render() ?>
 					</div>
+					<div class="row-fluid message"></div>
 					<div class="row-fluid">
 						<?php echo $result ?>
 					</div>
