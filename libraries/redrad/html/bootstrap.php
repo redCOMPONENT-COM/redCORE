@@ -41,7 +41,7 @@ abstract class Redradbootstrap
 	{
 		JHtml::_('redrad.jquery.framework');
 		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
-		RHelperAsset::load('lib/bootstrap/js/bootstrap.min.js', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
 	}
 
 	/**
