@@ -34,29 +34,31 @@ else
 
 $groups = $toolbar->getGroups();
 ?>
-<div class="<?php echo $toolBarClass ?>">
-	<?php
-	foreach ($groups as $group) :
-
-		$groupClass = $group->getClass();
-
-		if (empty($groupClass))
-		{
-			$groupClass = 'btn-group';
-		}
-
-		else
-		{
-			$groupClass = 'btn-group ' . $groupClass;
-		}
-	?>
-	<div class="<?php echo $groupClass ?>">
+<?php if (!$toolbar->isEmpty()) : ?>
+	<div class="<?php echo $toolBarClass ?>">
 		<?php
-		foreach ($group->getButtons() as $button)
-		{
-			echo $button->render();
-		}
+		foreach ($groups as $group) :
+
+			$groupClass = $group->getClass();
+
+			if (empty($groupClass))
+			{
+				$groupClass = 'btn-group';
+			}
+
+			else
+			{
+				$groupClass = 'btn-group ' . $groupClass;
+			}
 		?>
-		</div>
-	<?php endforeach; ?>
-</div>
+		<div class="<?php echo $groupClass ?>">
+			<?php
+			foreach ($group->getButtons() as $button)
+			{
+				echo $button->render();
+			}
+			?>
+			</div>
+		<?php endforeach; ?>
+	</div>
+<?php endif; ?>
