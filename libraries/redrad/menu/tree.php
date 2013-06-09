@@ -37,7 +37,7 @@ class RMenuTree
 	/**
 	 * Constructor.
 	 *
-	 * @param  RMenuNode  $root  The root node.
+	 * @param   RMenuNode  $root  The root node.
 	 */
 	public function __construct(RMenuNode $root)
 	{
@@ -58,7 +58,9 @@ class RMenuTree
 	/**
 	 * Set the root node.
 	 *
-	 * @param  RMenuNode  $root  The root node.
+	 * @param   RMenuNode  $root  The root node.
+	 *
+	 * @return  RMenuTree  This method is chainable.
 	 */
 	public function setRootNode(RMenuNode $root)
 	{
@@ -70,7 +72,7 @@ class RMenuTree
 	/**
 	 * Get the active node in this tree, if any.
 	 *
-	 * @return  RMenuNode|false  The active node or false if no active nodes.
+	 * @return  RMenuNode|boolean  The active node or false if no active nodes.
 	 */
 	public function getActiveNode()
 	{

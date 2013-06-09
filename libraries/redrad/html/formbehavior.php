@@ -14,13 +14,14 @@ defined('JPATH_PLATFORM') or die;
  *
  * @package     Joomla.Libraries
  * @subpackage  HTML
- * @since       3.0
+ * @since       1.0
  */
 abstract class RedradFormbehavior extends JHtmlFormbehavior
 {
 	/**
-	 * @var    array  Array containing information for loaded files
-	 * @since  3.0
+	 * Array containing information for loaded files
+	 *
+	 * @var  array
 	 */
 	protected static $loaded = array();
 
@@ -33,8 +34,6 @@ abstract class RedradFormbehavior extends JHtmlFormbehavior
 	 * @param   mixed   $debug     Is debugging mode on? [optional]
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function chosen($selector = '.advancedSelect', $debug = null)
 	{
@@ -84,8 +83,6 @@ abstract class RedradFormbehavior extends JHtmlFormbehavior
 	 * @param   mixed      $debug    Is debugging mode on? [optional]
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function ajaxchosen(JRegistry $options, $debug = null)
 	{
@@ -108,6 +105,7 @@ abstract class RedradFormbehavior extends JHtmlFormbehavior
 			{
 				return;
 			}
+
 			// Include jQuery
 			JHtml::_('redrad.jquery.framework');
 

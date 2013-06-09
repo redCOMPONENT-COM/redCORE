@@ -63,9 +63,9 @@ class RMenuNode
 	/**
 	 * Constructor.
 	 *
-	 * @param  string  $name     The link name.
-	 * @param  string  $content  The link content.
-	 * @param  string  $target   The link target.
+	 * @param   string  $name     The link name.
+	 * @param   string  $content  The link content.
+	 * @param   string  $target   The link target.
 	 */
 	public function __construct($name, $content, $target)
 	{
@@ -176,7 +176,7 @@ class RMenuNode
 	/**
 	 * Get the active child if any.
 	 *
-	 * @return  RMenuNode|false  The active child or false if no active hild.
+	 * @return  RMenuNode|boolean  The active child or false if no active hild.
 	 */
 	public function getActiveChild()
 	{

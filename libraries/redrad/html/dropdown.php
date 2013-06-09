@@ -19,14 +19,16 @@ defined('JPATH_PLATFORM') or die;
 abstract class RedradDropdown
 {
 	/**
-	 * @var    array  Array containing information for loaded files
-	 * @since  3.0
+	 * Array containing information for loaded files
+	 *
+	 * @var  array
 	 */
 	protected static $loaded = array();
 
 	/**
-	 * @var    string  HTML markup for the dropdown list
-	 * @since  3.0
+	 * HTML markup for the dropdown list
+	 *
+	 * @var  string
 	 */
 	protected static $dropDownList = null;
 
@@ -34,8 +36,6 @@ abstract class RedradDropdown
 	 * Method to inject needed script
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function init()
 	{
@@ -81,8 +81,6 @@ abstract class RedradDropdown
 	 * Method to start a new dropdown menu
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function start()
 	{
@@ -107,8 +105,6 @@ abstract class RedradDropdown
 	 * Method to render current dropdown menu
 	 *
 	 * @return  string  HTML markup for the dropdown list
-	 *
-	 * @since   3.0
 	 */
 	public static function render()
 	{
@@ -129,8 +125,6 @@ abstract class RedradDropdown
 	 * @param   string   $customLink  The custom link if dont use default Joomla action format
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function edit($id, $prefix = '', $customLink = '')
 	{
@@ -161,8 +155,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function publish($checkboxId, $prefix = '')
 	{
@@ -179,8 +171,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function unpublish($checkboxId, $prefix = '')
 	{
@@ -197,8 +187,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function featured($checkboxId, $prefix = '')
 	{
@@ -215,8 +203,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function unfeatured($checkboxId, $prefix = '')
 	{
@@ -233,8 +219,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function archive($checkboxId, $prefix = '')
 	{
@@ -251,8 +235,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function unarchive($checkboxId, $prefix = '')
 	{
@@ -269,8 +251,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function trash($checkboxId, $prefix = '')
 	{
@@ -287,8 +267,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function untrash($checkboxId, $prefix = '')
 	{
@@ -305,8 +283,6 @@ abstract class RedradDropdown
 	 * @param   string  $prefix      The task prefix
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function checkin($checkboxId, $prefix = '')
 	{
@@ -320,8 +296,6 @@ abstract class RedradDropdown
 	 * Writes a divider between dropdown items
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function divider()
 	{
@@ -341,8 +315,6 @@ abstract class RedradDropdown
 	 * @param   string   $jsCallBackFunc  Javascript function name, called when ajax load successfully
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function addCustomItem($label, $link = 'javascript:void(0)', $linkAttributes = '', $className = '', $ajaxLoad = false,
 		$jsCallBackFunc = null)
