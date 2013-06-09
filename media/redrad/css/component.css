@@ -38,8 +38,18 @@
     background: none;
 }
 
-.redrad .navbar a.brand {
+.redrad .navbar a {
     color: #FFFFFF;
+}
+
+.redrad .navbar a.back2joomla {
+    float: left;
+    display: block;
+    line-height: 40px;
+    font-size: 85%;
+}
+
+.redrad .navbar a.brand {
     font-weight: 200;
     font-size: 1.5em;
     text-shadow: none;
@@ -97,10 +107,7 @@
 
 .redrad .nav-right, .redrad .nav-right a {
     color: #F5F5F5;
-}
-
-.redrad .nav-right .back-joomla, .welcome {
-    margin-top: 10px;
+    line-height: 40px;
 }
 
 .redrad .sidebar .nav-tabs.nav-stacked > li> a:hover {
