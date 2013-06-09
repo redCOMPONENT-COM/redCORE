@@ -11,6 +11,8 @@ defined('JPATH_REDRAD') or die;
 
 RHelperAsset::stylesheet('media/redrad/css/component.css');
 
+JFactory::getApplication()->input->set('redrad', true);
+
 $data = $displayData;
 
 // Do we have to display the sidebar ?

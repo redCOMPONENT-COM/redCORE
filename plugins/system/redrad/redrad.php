@@ -37,5 +37,53 @@ class PlgSystemRedRad extends JPlugin
 				JLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redrad/joomla');
 			}
 		}
+
+		// Unload any previous bootstrap
+		$doc = JFactory::getDocument();
+	}
+
+	/**
+	 * This event is triggered immediately before pushing the document buffers into the template placeholders,
+	 * retrieving data from the document and pushing it into the into the JResponse buffer.
+	 * http://docs.joomla.org/Plugin/Events/System
+	 *
+	 * @return boolean
+	 */
+	function onBeforeRender()
+	{
+		$doc = JFactory::getDocument();
+		$app = JFactory::getApplication();
+
+		$isRedrad = $app->input->get('redrad', false);
+
+		if ($isRedrad)
+		{
+			if ($doc->_scripts)
+			{
+				foreach ($doc->_scripts as $script => $value)
+				{
+					if (substr_count($script, 'media/jui/js/bootstrap.min.js')
+						|| substr_count($script, 'media/jui/js/bootstrap.js')
+						|| substr_count($script, 'template.js'))
+					{
+						unset($doc->_scripts[$script]);
+					}
+				}
+			}
+
+			if ($doc->_styleSheets)
+			{
+				// Disable any bootstrap CSS
+				foreach ($doc->_styleSheets as $style => $value)
+				{
+					if (substr_count($style, 'media/jui/css/bootstrap.min.css')
+						|| substr_count($style, 'media/jui/css/bootstrap.css')
+						|| substr_count($style, 'template.css'))
+					{
+						unset($doc->_styleSheets[$style]);
+					}
+				}
+			}
+		}
 	}
 }
