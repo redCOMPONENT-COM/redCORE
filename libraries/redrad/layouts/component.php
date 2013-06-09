@@ -11,7 +11,9 @@ defined('JPATH_REDRAD') or die;
 
 RHelperAsset::load('component.css', 'redrad');
 
-JFactory::getApplication()->input->set('redrad', true);
+$input = JFactory::getApplication()->input;
+$input->set('tmpl', 'component');
+$input->set('redrad', true);
 
 $data = $displayData;
 
