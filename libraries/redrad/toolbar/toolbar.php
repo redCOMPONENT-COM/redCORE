@@ -37,7 +37,7 @@ class RToolbar
 	 *
 	 * @param   string  $class  The css class attribute.
 	 */
-	public function __construct($class = '')
+	public function __construct($class = 'toolbar')
 	{
 		$this->class = $class;
 	}
@@ -57,7 +57,7 @@ class RToolbar
 	 *
 	 * @param   RToolbarButtonGroup  $group  The group to add.
 	 *
-	 * @return  RToolbar  Tis method is chainable.
+	 * @return  RToolbar  This method is chainable.
 	 */
 	public function addGroup(RToolbarButtonGroup $group)
 	{

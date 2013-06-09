@@ -167,3 +167,12 @@
     padding: 10px 0 10px 0;
     font-size: 0.8em;
 }
+
+.redrad .toolbar {
+	-webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color : #FAFAFA;
+    padding : 5px 5px 5px 5px;
+    border: 1px solid #F2F2F2;
+}
