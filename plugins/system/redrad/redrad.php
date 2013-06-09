@@ -58,6 +58,9 @@ class PlgSystemRedRad extends JPlugin
 
 		if ($isRedrad)
 		{
+			// Base assets to load always with redRAD
+			JHtml::_('redrad.bootstrap.fontawesome');
+
 			if ($doc->_scripts)
 			{
 				foreach ($doc->_scripts as $script => $value)

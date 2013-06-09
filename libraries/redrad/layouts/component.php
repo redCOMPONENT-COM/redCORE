@@ -9,7 +9,7 @@
 
 defined('JPATH_REDRAD') or die;
 
-RHelperAsset::stylesheet('media/redrad/css/component.css');
+RHelperAsset::load('component.css', 'redrad');
 
 JFactory::getApplication()->input->set('redrad', true);
 

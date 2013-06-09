@@ -839,4 +839,17 @@ abstract class Redradbootstrap
 			JHtml::_('stylesheet', 'jui/bootstrap-rtl.css', $attribs, true);
 		}
 	}
+
+	/**
+	 * Load font-awesome
+	 *
+	 * @return  void
+	 */
+	public static function fontawesome()
+	{
+		// Include Bootstrap framework
+		static::framework();
+
+		RHelperAsset::load('lib/font-awesome/css/font-awesome.min.css', static::EXTENSION);
+	}
 }
