@@ -180,3 +180,8 @@
 .redrad h1 {
 	margin-top:0;
 }
+
+.redrad .toolbar .btn {
+	font-size: 13px;
+	font-weight: bold;
+}
