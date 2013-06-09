@@ -38,8 +38,6 @@ class RLayout extends JLayoutFile
 	 * @param   string  $layoutId   Dot separated path to the layout file, relative to base path
 	 * @param   string  $component  Active component. Use null to skip it
 	 * @param   string  $client     site or 0 for frontend | anything else for backend
-	 *
-	 * @since   3.0
 	 */
 	public function __construct($layoutId, $component = 'auto', $client = 'auto')
 	{
@@ -113,8 +111,6 @@ class RLayout extends JLayoutFile
 	 * Method to finds the full real file path, checking possible overrides
 	 *
 	 * @return  string  The full path to the layout file
-	 *
-	 * @since   3.0
 	 */
 	protected function getPath()
 	{

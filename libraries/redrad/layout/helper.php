@@ -28,8 +28,6 @@ class RLayoutHelper
 	 * @param   mixed   $client       Client to search the layout (0, 'site' , 1, 'admin')
 	 *
 	 * @return  string
-	 *
-	 * @since   3.1
 	 */
 	public static function render($layoutFile, $displayData = null, $basePath = '', $component = 'auto', $client = 'auto')
 	{

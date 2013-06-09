@@ -61,6 +61,7 @@ class RHelperAsset extends JHtml
 					$alt = $attribs['alt'];
 					unset($attribs['alt']);
 				}
+
 				return self::image($toLoad, $alt, $attribs, true);
 				break;
 			default:

@@ -37,6 +37,8 @@ class RPlugin extends JPlugin
 	 *
 	 * @param   string  &$subject  Subject
 	 * @param   array   $config    Configuration
+	 *
+	 * @throws  UnexpectedValueException
 	 */
 	public function __construct(&$subject, $config = array())
 	{
@@ -49,8 +51,6 @@ class RPlugin extends JPlugin
 		if (empty($this->_type) || empty($this->_name))
 		{
 			throw new UnexpectedValueException(sprintf('Missing data to initialize %s plugin | id: %s', $this->_type, $this->_name));
-
-			return false;
 		}
 
 		// Set the extension id required by all the events

@@ -25,8 +25,9 @@ abstract class Redradbootstrap
 	const EXTENSION = 'redrad';
 
 	/**
-	 * @var    array  Array containing information for loaded files
-	 * @since  3.0
+	 * Array containing information for loaded files
+	 *
+	 * @var  array
 	 */
 	protected static $loaded = array();
 
@@ -58,8 +59,6 @@ abstract class Redradbootstrap
 	 *                                                               (useful for some responsive designs).
 	 *
 	 * @return  void
-	 *
-	 * @since   3.1
 	 */
 	public static function affix($selector = 'affix', $params = array())
 	{
@@ -95,8 +94,6 @@ abstract class Redradbootstrap
 	 * @param   string  $selector  Common class for the alerts
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function alert($selector = 'alert')
 	{
@@ -127,8 +124,6 @@ abstract class Redradbootstrap
 	 * @param   string  $selector  Common class for the buttons
 	 *
 	 * @return  void
-	 *
-	 * @since   3.1
 	 */
 	public static function button($selector = 'button')
 	{
@@ -165,8 +160,6 @@ abstract class Redradbootstrap
 	 *                                                 of the carousel on mouseleave.
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function carousel($selector = 'carousel', $params = array())
 	{
@@ -203,8 +196,6 @@ abstract class Redradbootstrap
 	 * @param   string  $selector  Common class for the dropdowns
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function dropdown($selector = 'dropdown-toggle')
 	{
@@ -241,8 +232,6 @@ abstract class Redradbootstrap
 	 *                             - remote    string   An optional remote URL to load
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function modal($selector = 'modal', $params = array())
 	{
@@ -283,8 +272,6 @@ abstract class Redradbootstrap
 	 * @param   string  $footer    Optional markup for the modal footer
 	 *
 	 * @return  string  HTML markup for a modal
-	 *
-	 * @since   3.0
 	 */
 	public static function renderModal($selector = 'modal', $params = array(), $footer = '')
 	{
@@ -332,8 +319,6 @@ abstract class Redradbootstrap
 	 *                      container  string|boolean   Appends the popover to a specific element: { container: 'body' }
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function popover($selector = '.hasPopover', $params = array())
 	{
@@ -380,8 +365,6 @@ abstract class Redradbootstrap
 	 *                             - offset  number  Pixels to offset from top when calculating position of scroll.
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function scrollspy($selector = 'navbar', $params = array())
 	{
@@ -433,8 +416,6 @@ abstract class Redradbootstrap
 	 *                             - container  string|boolean   Appends the popover to a specific element: { container: 'body' }
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function tooltip($selector = '.hasTooltip', $params = array())
 	{
@@ -493,8 +474,6 @@ abstract class Redradbootstrap
 	 *                                                             has the scope of the typeahead instance. Should return html.
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function typeahead($selector = '.typeahead', $params = array())
 	{
@@ -541,8 +520,6 @@ abstract class Redradbootstrap
 	 *                             - active  string    Sets the active slide during load
 	 *
 	 * @return  string  HTML for the accordian
-	 *
-	 * @since   3.0
 	 */
 	public static function startAccordion($selector = 'myAccordian', $params = array())
 	{
@@ -579,8 +556,6 @@ abstract class Redradbootstrap
 	 * Close the current accordion
 	 *
 	 * @return  string  HTML to close the accordian
-	 *
-	 * @since   3.0
 	 */
 	public static function endAccordion()
 	{
@@ -596,8 +571,6 @@ abstract class Redradbootstrap
 	 * @param   string  $class     Class of the accordion group.
 	 *
 	 * @return  string  HTML to add the slide
-	 *
-	 * @since   3.0
 	 */
 	public static function addSlide($selector, $text, $id, $class = '')
 	{
@@ -620,8 +593,6 @@ abstract class Redradbootstrap
 	 * Close the current slide
 	 *
 	 * @return  string  HTML to close the slide
-	 *
-	 * @since   3.0
 	 */
 	public static function endSlide()
 	{
@@ -635,8 +606,6 @@ abstract class Redradbootstrap
 	 * @param   array   $params    The parameters for the pane
 	 *
 	 * @return  string
-	 *
-	 * @since   3.1
 	 */
 	public static function startTabSet($selector = 'myTab', $params = array())
 	{
@@ -670,8 +639,6 @@ abstract class Redradbootstrap
 	 * Close the current tab pane
 	 *
 	 * @return  string  HTML to close the pane
-	 *
-	 * @since   3.1
 	 */
 	public static function endTabSet()
 	{
@@ -688,8 +655,6 @@ abstract class Redradbootstrap
 	 * @param   string  $title     The title text for the new UL tab
 	 *
 	 * @return  string  HTML to start a new panel
-	 *
-	 * @since   3.1
 	 */
 	public static function addTab($selector, $id, $title)
 	{
@@ -714,101 +679,12 @@ abstract class Redradbootstrap
 	 * Close the current tab content panel
 	 *
 	 * @return  string  HTML to close the pane
-	 *
-	 * @since   3.1
 	 */
 	public static function endTab()
 	{
 		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.endtab');
 
 		return $html;
-	}
-
-	/**
-	 * Creates a tab pane
-	 *
-	 * @param   string  $selector  The pane identifier.
-	 * @param   array   $params    The parameters for the pane
-	 *
-	 * @return  string
-	 *
-	 * @since   3.0
-	 * @deprecated  4.0	Use JHtml::_('bootstrap.startTabSet') instead.
-	 */
-	public static function startPane($selector = 'myTab', $params = array())
-	{
-		$sig = md5(serialize(array($selector, $params)));
-
-		if (!isset(static::$loaded['JHtmlBootstrap::startTabSet'][$sig]))
-		{
-			// Include Bootstrap framework
-			static::framework();
-
-			// Setup options object
-			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
-
-			$options = JHtml::getJSObject($opt);
-
-			// Attach tooltips to document
-			JFactory::getDocument()->addScriptDeclaration(
-				"(function($){
-					$('#$selector a').click(function (e) {
-						e.preventDefault();
-						$(this).tab('show');
-					});
-				})(jQuery);"
-			);
-
-			// Set static array
-			static::$loaded['JHtmlBootstrap::startTabSet'][$sig] = true;
-			static::$loaded['JHtmlBootstrap::startTabSet'][$selector]['active'] = $opt['active'];
-		}
-
-		return '<div class="tab-content" id="' . $selector . 'Content">';
-	}
-
-	/**
-	 * Close the current tab pane
-	 *
-	 * @return  string  HTML to close the pane
-	 *
-	 * @since   3.0
-	 * @deprecated  4.0	Use JHtml::_('bootstrap.endTabSet') instead.
-	 */
-	public static function endPane()
-	{
-		return '</div>';
-	}
-
-	/**
-	 * Begins the display of a new tab content panel.
-	 *
-	 * @param   string  $selector  Identifier of the panel.
-	 * @param   string  $id        The ID of the div element
-	 *
-	 * @return  string  HTML to start a new panel
-	 *
-	 * @since   3.0
-	 * @deprecated  4.0 Use JHtml::_('bootstrap.addTab') instead.
-	 */
-	public static function addPanel($selector, $id)
-	{
-		$active = (static::$loaded['JHtmlBootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
-
-		return '<div id="' . $id . '" class="tab-pane' . $active . '">';
-	}
-
-	/**
-	 * Close the current tab content panel
-	 *
-	 * @return  string  HTML to close the pane
-	 *
-	 * @since   3.0
-	 * @deprecated  4.0 Use JHtml::_('bootstrap.endTab') instead.
-	 */
-	public static function endPanel()
-	{
-		return '</div>';
 	}
 
 	/**
@@ -819,8 +695,6 @@ abstract class Redradbootstrap
 	 * @param   array    $attribs         Optional array of attributes to be passed to JHtml::_('stylesheet')
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function loadCss($includeMainCss = true, $direction = 'ltr', $attribs = array())
 	{

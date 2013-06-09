@@ -50,6 +50,8 @@ class RTable extends JTable
 	 * Constructor
 	 *
 	 * @param   JDatabase  &$db  A database connector object
+	 *
+	 * @throws  UnexpectedValueException
 	 */
 	public function __construct(&$db)
 	{
@@ -69,9 +71,6 @@ class RTable extends JTable
 		if (empty($this->_tbl) || empty($this->_tbl_key))
 		{
 			throw new UnexpectedValueException(sprintf('Missing data to initialize %s table | id: %s', $this->_tbl, $this->_tbl_key));
-			JLog::add(JText::sprintf('REDRAD_ERROR_INITIALIZING_TABLE', $this->_tbl, $this->_tbl_key), JLog::ERROR, $this->_logPrefix . 'Tables');
-
-			return false;
 		}
 
 		parent::__construct($this->_tbl, $this->_tbl_key, $db);
@@ -215,7 +214,7 @@ class RTable extends JTable
 	 *
 	 * @param   string/array  $pk  Array of ids or ids comma separated
 	 *
-	 * @return  boolean            Deleted successfuly?
+	 * @return  boolean  Deleted successfuly?
 	 */
 	public function delete($pk = null)
 	{
