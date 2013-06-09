@@ -39,10 +39,9 @@ abstract class Redradbootstrap
 	 */
 	public static function framework($debug = null)
 	{
-		// For Joomla! 2.5 compatibility we add some core functions
 		JHtml::_('redrad.jquery.framework');
-		RHelperAsset::load('lib/bootstrap/css/bootstrap.css', static::EXTENSION);
-		RHelperAsset::load('lib/bootstrap/bootstrap.js', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap/js/bootstrap.min.js', static::EXTENSION);
 	}
 
 	/**
