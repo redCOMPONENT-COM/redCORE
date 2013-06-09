@@ -188,6 +188,16 @@ final class RToolbarBuilder
 	 */
 	public static function createCloseButton($task, $class = '')
 	{
+		if (empty($class))
+		{
+			$class = 'btn-danger';
+		}
+
+		else
+		{
+			$class .= ' btn-danger';
+		}
+
 		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-remove', false);
 	}
 
