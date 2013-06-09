@@ -135,9 +135,7 @@ if ($result instanceof Exception)
 						<h1><?php echo $view->getTitle() ?></h1>
 					</div>
 					<div class="row-fuid">
-						<hr />
 						<?php echo $toolbar->render() ?>
-						<hr />
 					</div>
 					<div class="row-fluid">
 						<?php echo $result ?>
