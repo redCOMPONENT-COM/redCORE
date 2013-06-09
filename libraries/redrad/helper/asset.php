@@ -32,7 +32,8 @@ class RHelperAsset extends JHtml
 	{
 		if (is_null($extension))
 		{
-			$extension = array_pop(explode(DIRECTORY_SEPARATOR, JPATH_COMPONENT));
+			$extensionParts = explode(DIRECTORY_SEPARATOR, JPATH_COMPONENT);
+			$extension = array_pop($extensionParts);
 		}
 
 		$toLoad = "$extension/$filename";
