@@ -51,7 +51,7 @@ final class RToolbarBuilder
 			$class .= ' btn-success';
 		}
 
-		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-new', '', false);
+		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-file', '', false);
 	}
 
 	/**
@@ -64,7 +64,7 @@ final class RToolbarBuilder
 	 */
 	public static function createPublishButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_PUBLISH', $task, $class, 'icon-publish');
+		return new RToolbarButtonStandard('JTOOLBAR_PUBLISH', $task, $class, 'icon-plus-sign');
 	}
 
 	/**
@@ -77,7 +77,7 @@ final class RToolbarBuilder
 	 */
 	public static function createUnpublishButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_UNPUBLISH', $task, $class, 'icon-unpublish');
+		return new RToolbarButtonStandard('JTOOLBAR_UNPUBLISH', $task, $class, 'icon-minus-sign');
 	}
 
 	/**
@@ -129,7 +129,17 @@ final class RToolbarBuilder
 	 */
 	public static function createDeleteButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_EMPTY_TRASH', $task, $class, 'icon-delete');
+		if (empty($class))
+		{
+			$class = 'btn-danger';
+		}
+
+		else
+		{
+			$class .= ' btn-danger';
+		}
+
+		return new RToolbarButtonStandard('JTOOLBAR_DELETE', $task, $class, 'icon-remove-sign');
 	}
 
 	/**
@@ -155,7 +165,17 @@ final class RToolbarBuilder
 	 */
 	public static function createCancelButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_CANCEL', $task, $class, 'icon-cancel', false);
+		if (empty($class))
+		{
+			$class = 'btn-danger';
+		}
+
+		else
+		{
+			$class .= ' btn-danger';
+		}
+
+		return new RToolbarButtonStandard('JTOOLBAR_CANCEL', $task, $class, 'icon-remove', false);
 	}
 
 	/**
@@ -168,7 +188,7 @@ final class RToolbarBuilder
 	 */
 	public static function createCloseButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-cancel', false);
+		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-remove', false);
 	}
 
 	/**
@@ -181,7 +201,17 @@ final class RToolbarBuilder
 	 */
 	public static function createSaveButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_APPLY', $task, $class, 'icon-apply', false);
+		if (empty($class))
+		{
+			$class = 'btn-success';
+		}
+
+		else
+		{
+			$class .= ' btn-success';
+		}
+
+		return new RToolbarButtonStandard('JTOOLBAR_APPLY', $task, $class, 'icon-save', false);
 	}
 
 	/**
@@ -194,7 +224,7 @@ final class RToolbarBuilder
 	 */
 	public static function createSaveAndCloseButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_SAVE', $task, $class, 'icon-apply', false);
+		return new RToolbarButtonStandard('JTOOLBAR_SAVE', $task, $class, 'icon-save', false);
 	}
 
 	/**
@@ -207,7 +237,7 @@ final class RToolbarBuilder
 	 */
 	public static function createSaveAndNewButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_SAVE_AND_NEW', $task, $class, 'icon-save-new', false);
+		return new RToolbarButtonStandard('JTOOLBAR_SAVE_AND_NEW', $task, $class, 'icon-save', false);
 	}
 
 	/**
@@ -256,7 +286,7 @@ final class RToolbarBuilder
 		$link = 'index.php?option=com_config&amp;view=component&amp;component=' .
 			$component . '&amp;path=' . $path . '&amp;return=' . $return;
 
-		return new RToolbarButtonLink('JToolbar_Options', $link, $class, 'icon-options');
+		return new RToolbarButtonLink('JToolbar_Options', $link, $class, 'icon-cogs');
 	}
 
 	/**
