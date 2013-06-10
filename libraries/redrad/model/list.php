@@ -101,8 +101,8 @@ abstract class RModelList extends JModelList
 		}
 
 		// Get the form.
-		JForm::addFormPath(JPATH_COMPONENT . '/models/forms');
-		JForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+		RForm::addFormPath(JPATH_COMPONENT . '/models/forms');
+		RForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
 		try
 		{
