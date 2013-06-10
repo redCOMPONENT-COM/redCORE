@@ -12,6 +12,7 @@
 	<description>redRAD Libraries</description>
 
 	<files>
+		<folder>controller</folder>
 		<folder>form</folder>
 		<folder>helper</folder>
 		<folder>html</folder>
