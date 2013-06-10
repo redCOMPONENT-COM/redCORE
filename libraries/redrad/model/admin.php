@@ -232,8 +232,17 @@ class RModelAdmin extends JModelAdmin
 			{
 				$this->setError($message);
 
-				// Store the field error in session.
-				$session->set($this->context . '.error.' . $key, $message->getMessage());
+				if ($message instanceof Exception)
+				{
+					// Store the field error in session.
+					$session->set($this->context . '.error.' . $key, $message->getMessage());
+				}
+
+				else
+				{
+					// Store the field error in session.
+					$session->set($this->context . '.error.' . $key, $message);
+				}
 			}
 
 			return false;
@@ -264,8 +273,13 @@ class RModelAdmin extends JModelAdmin
 		// If we have an error.
 		if (!is_null($error))
 		{
-			// Flash the session error.
+			// Delete the session error.
 			$session->set($this->context . '.error.' . $name, null);
+
+			if ($error instanceof Exception)
+			{
+				return $error->getMessage();
+			}
 
 			// Return the error.
 			return $error;
