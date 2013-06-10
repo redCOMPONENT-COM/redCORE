@@ -459,7 +459,7 @@ class Pkg_RedradInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $this->getManifest($parent);
 		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->templates->template)
