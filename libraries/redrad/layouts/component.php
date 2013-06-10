@@ -68,9 +68,9 @@ if ($displayTopbar)
 
 $topbarData = array();
 
-if (isset($data['topbar_data']))
+if (isset($displayTopbar))
 {
-	$topbarData = $data['topbar_data'];
+	$topbarData = $data;
 }
 
 // The view to render.
