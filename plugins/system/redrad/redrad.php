@@ -19,10 +19,10 @@ defined('JPATH_BASE') or die;
 class PlgSystemRedRad extends JPlugin
 {
 	/**
-     * Method to register custom library.
-     *
-     * @return  void
-     */
+	 * Method to register custom library.
+	 *
+	 * @return  void
+	 */
 	public function onAfterInitialise()
 	{
 		$redradLoader = JPATH_LIBRARIES . '/redrad/bootstrap.php';
@@ -43,50 +43,130 @@ class PlgSystemRedRad extends JPlugin
 	}
 
 	/**
+	 * This event is triggered after pushing the document buffers into the template placeholders,
+	 * retrieving data from the document and pushing it into the into the JResponse buffer.
+	 * http://docs.joomla.org/Plugin/Events/System
+	 *
+	 * @return boolean
+	 */
+	public function onAfterRender()
+	{
+		if (!$this->isRedrad() || !$this->disableMootools())
+		{
+			return true;
+		}
+
+		// Get the generated content
+		$body = JResponse::getBody();
+
+		// Remove JCaption JS calls
+		$pattern     = "/(new JCaption\()(.*)(\);)/isU";
+		$replacement = '';
+		$body        = preg_replace($pattern, $replacement, $body);
+
+		// Null window.addEvent( calls
+		$pattern = "/(window.addEvent\()(.*)(,)/isU";
+		$body    = preg_replace($pattern, 'do_nothing(', $body);
+		JResponse::setBody($body);
+
+		return true;
+	}
+
+	/**
 	 * This event is triggered immediately before pushing the document buffers into the template placeholders,
 	 * retrieving data from the document and pushing it into the into the JResponse buffer.
 	 * http://docs.joomla.org/Plugin/Events/System
 	 *
 	 * @return boolean
 	 */
-	function onBeforeRender()
+	public function onBeforeRender()
 	{
-		$doc = JFactory::getDocument();
-		$app = JFactory::getApplication();
-
-		$isRedrad = $app->input->get('redrad', false);
-
-		if ($isRedrad)
+		if (!$this->isRedrad())
 		{
-			// Base assets to load always with redRAD
-			JHtml::_('redrad.bootstrap.fontawesome');
+			return true;
+		}
 
-			if ($doc->_scripts)
+		$doc = JFactory::getDocument();
+
+		// Base assets to load always with redRAD
+		JHtml::_('redrad.bootstrap.fontawesome');
+
+		if ($doc->_scripts)
+		{
+			// Remove Mootools
+			if ($this->disableMootools())
 			{
-				foreach ($doc->_scripts as $script => $value)
-				{
-					if (substr_count($script, 'media/jui/js/bootstrap.min.js')
-						|| substr_count($script, 'media/jui/js/bootstrap.js')
-						|| substr_count($script, 'template.js'))
-					{
-						unset($doc->_scripts[$script]);
-					}
-				}
+				$doc->addScriptDeclaration("function do_nothing() { return; }");
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-more.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools.js']);
+				unset($doc->_scripts[JURI::root(true) . '/plugins/system/mtupgrade/mootools.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompresed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompresed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompresed.js']);
 			}
 
-			if ($doc->_styleSheets)
+			// Remove bootstrap
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
+			unset($doc->_scripts[JURI::root(true) . 'media/jui/js/bootstrap.js']);
+
+			// Remove other JS
+			foreach ($doc->_scripts as $script => $value)
 			{
-				// Disable any bootstrap CSS
-				foreach ($doc->_styleSheets as $style => $value)
+				if (substr_count($script, 'template.js'))
 				{
-					if (substr_count($style, 'media/jui/css/bootstrap.min.css')
-						|| substr_count($style, 'media/jui/css/bootstrap.css')
-						|| substr_count($style, 'template.css'))
-					{
-						unset($doc->_styleSheets[$style]);
-					}
+					unset($doc->_scripts[$script]);
 				}
 			}
 		}
+
+		if ($doc->_styleSheets)
+		{
+			// Disable mootools
+			if ($this->disableMootools())
+			{
+				unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
+			}
+
+			// Disable core bootstrap
+			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.min.css']);
+			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.css']);
+
+			// Disable other CSS
+			foreach ($doc->_styleSheets as $style => $value)
+			{
+				if (substr_count($style, 'template.css'))
+				{
+					unset($doc->_styleSheets[$style]);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Check is is a redRAD view
+	 *
+	 * @return  boolean
+	 */
+	private function isRedrad()
+	{
+		$app = JFactory::getApplication();
+
+		return $app->input->get('redrad', false);
+	}
+
+	/**
+	 * Check if the view asked to disable mootools
+	 *
+	 * @return  boolean
+	 */
+	private function disableMootools()
+	{
+		$app = JFactory::getApplication();
+
+		return $app->input->get('disable_mootools', false);
 	}
 }
