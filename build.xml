@@ -31,6 +31,10 @@
         <copy file="${src}/libraries/${comp.name}/${comp.name}.xml"
             tofile="${www.dir}/administrator/manifests/libraries/${comp.name}.xml" overwrite="true" />
 
+        <!-- Copy Package Manifest -->
+        <copy file="${src}/pkg_${comp.name}.xml"
+            tofile="${www.dir}/administrator/manifests/packages/pkg_${comp.name}.xml" overwrite="true" />
+
         <!-- Media -->
         <copy todir="${www.dir}/media" overwrite="true">
             <fileset dir="${src}/media/${comp.name}">
