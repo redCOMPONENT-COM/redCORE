@@ -19,6 +19,14 @@ defined('JPATH_REDRAD') or die;
 abstract class RView extends JViewLegacy
 {
 	/**
+	 * The component title to display in the topbar layout (if using it).
+	 * It can be html.
+	 *
+	 * @var string
+	 */
+	protected $componentTitle = '';
+
+	/**
 	 * Do we have to display a sidebar ?
 	 *
 	 * @var  boolean
@@ -52,7 +60,7 @@ abstract class RView extends JViewLegacy
 	 *
 	 * @var  boolean
 	 */
-	protected $topBarLayout = '';
+	protected $topBarLayout = 'topbar';
 
 	/**
 	 * An array of data to pass to the topbar layout.
@@ -61,6 +69,28 @@ abstract class RView extends JViewLegacy
 	 * @var  array
 	 */
 	protected $topBarData = array();
+
+	/**
+	 * Do we have to display a topbar inner layout ?
+	 *
+	 * @var  boolean
+	 */
+	protected $displayTopBarInnerLayout = false;
+
+	/**
+	 * The topbar inner layout name to display.
+	 *
+	 * @var  boolean
+	 */
+	protected $topBarInnerLayout = '';
+
+	/**
+	 * An array of data to pass to the topbar inner layout.
+	 * For example the active link.
+	 *
+	 * @var  array
+	 */
+	protected $topBarInnerLayoutData = array();
 
 	/**
 	 * Execute and display a template script.
@@ -75,12 +105,16 @@ abstract class RView extends JViewLegacy
 			array(
 				'view' => $this,
 				'tpl' => $tpl,
+				'component_title', $this->componentTitle,
 				'sidebar_display' => $this->displaySidebar,
 				'sidebar_layout' => $this->sidebarLayout,
 				'sidebar_data' => $this->sidebarData,
 				'topbar_display' => $this->displayTopBar,
 				'topbar_layout' => $this->topBarLayout,
 				'topbar_data' => $this->topBarData,
+				'topbar_inner_layout_display' => $this->displayTopBarInnerLayout,
+				'topbar_inner_layout' => $this->topBarInnerLayout,
+				'topbar_inner_layout_data' => $this->topBarInnerLayout
 			)
 		);
 
