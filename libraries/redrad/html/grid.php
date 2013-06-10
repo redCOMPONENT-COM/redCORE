@@ -19,6 +19,26 @@ defined('JPATH_REDRAD') or die;
 abstract class RedradGrid extends JHtmlJGrid
 {
 	/**
+	 * Extension name to use in the asset calls
+	 * Basically the media/com_xxxxx folder to use
+	 */
+	const EXTENSION = 'redrad';
+
+	/**
+	 * Load the entire bootstrap framework
+	 *
+	 * @param   mixed  $debug  Is debugging mode on? [optional]
+	 *
+	 * @return  void
+	 */
+	public static function main($debug = null)
+	{
+		JHtml::_('redrad.jquery.framework');
+
+		RHelperAsset::load('redgrid.js', static::EXTENSION);
+	}
+
+	/**
 	 * Returns an action on a grid
 	 *
 	 * @param   integer       $i               The row index
@@ -253,10 +273,10 @@ abstract class RedradGrid extends JHtmlJGrid
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		$states = array(
@@ -317,11 +337,11 @@ abstract class RedradGrid extends JHtmlJGrid
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$text = array_key_exists('text', $options) ? $options['text'] : $text;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$text     = array_key_exists('text', $options) ? $options['text'] : $text;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		return self::action($i, $task, $prefix, $text, $text, $text, false, 'uparrow', 'uparrow_disabled', $enabled, true, $checkbox);
@@ -343,13 +363,75 @@ abstract class RedradGrid extends JHtmlJGrid
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$text = array_key_exists('text', $options) ? $options['text'] : $text;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$text     = array_key_exists('text', $options) ? $options['text'] : $text;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		return self::action($i, $task, $prefix, $text, $text, $text, false, 'downarrow', 'downarrow_disabled', $enabled, true, $checkbox);
+	}
+
+	/**
+	 * Method to sort a column in a grid
+	 *
+	 * @param   string  $title          The link title
+	 * @param   string  $order          The order field for the column
+	 * @param   string  $direction      The current direction
+	 * @param   string  $selected       The selected ordering
+	 * @param   string  $task           An optional task override
+	 * @param   string  $new_direction  An optional direction for the new column
+	 * @param   string  $tip            An optional text shown as tooltip title instead of $title
+	 *
+	 * @return  string
+	 *
+	 * @since   11.1
+	 */
+	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '')
+	{
+		JHtml::_('behavior.tooltip');
+		static::main();
+
+		$class   = null;
+		$classes = array();
+		$classes[] = 'js-order-col';
+
+		if (!empty($tip))
+		{
+			$classes[] = 'hasTip';
+		}
+
+		$direction = strtolower($direction);
+		$icon = array('arrow-up-3', 'arrow-down-3');
+		$index = (int) ($direction == 'desc');
+
+		if ($order != $selected)
+		{
+			$direction = $new_direction;
+		}
+		else
+		{
+			$classes[] = 'active';
+			$direction = ($direction == 'desc') ? 'asc' : 'desc';
+		}
+
+		if ($classes)
+		{
+			$class = ' class="' . implode(' ', $classes) . '"';
+		}
+
+		$html = '<a href="#" onclick="return false;"' . $class
+			. ' data-order="' . $order . '" data-name="' . JText::_($title) . '" title="' . JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN') . '">';
+		$html .= JText::_($title);
+
+		if ($order == $selected)
+		{
+			$html .= ' <i class="icon-' . $icon[$index] . '"></i>';
+		}
+
+		$html .= '</a>';
+
+		return $html;
 	}
 }

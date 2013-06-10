@@ -28,11 +28,14 @@ abstract class RedradJquery
 	 * Load the chosen library
 	 * We use this to avoid Mootools dependency
 	 *
+	 * @param   string  $selector  CSS Selector to initalise selects
+	 * @param   mixed   $debug     Enable debug mode?
+	 *
 	 * @return  void
 	 *
 	 * @since   1.0
 	 */
-	public static function chosen()
+	public static function chosen($selector = '.chosen', $debug = null)
 	{
 		self::framework();
 
@@ -42,7 +45,10 @@ abstract class RedradJquery
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){
 				$(document).ready(function () {
-					$('select.chosen').chosen();
+					$('" . $selector . "').chosen({
+						disable_search_threshold : 10,
+						allow_single_deselect : true
+					});
 				});
 			})(jQuery);
 		");
@@ -79,15 +85,8 @@ abstract class RedradJquery
 	 */
 	public static function framework()
 	{
-		// For Joomla! 2.5 compatibility we add some core functions
-		if (version_compare(JVERSION, '3.0', '<'))
-		{
-			RHelperAsset::load('lib/jquery.js', self::EXTENSION);
-		}
-		else
-		{
-			JHtml::_('jquery.framework');
-		}
+		RHelperAsset::load('lib/jquery.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
 	}
 
 	/**

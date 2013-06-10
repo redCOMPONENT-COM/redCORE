@@ -26,55 +26,6 @@ abstract class RedradFormbehavior extends JHtmlFormbehavior
 	protected static $loaded = array();
 
 	/**
-	 * Method to load the Chosen JavaScript framework and supporting CSS into the document head
-	 *
-	 * If debugging mode is on an uncompressed version of Chosen is included for easier debugging.
-	 *
-	 * @param   string  $selector  Class for Chosen elements.
-	 * @param   mixed   $debug     Is debugging mode on? [optional]
-	 *
-	 * @return  void
-	 */
-	public static function chosen($selector = '.advancedSelect', $debug = null)
-	{
-		if (isset(self::$loaded[__METHOD__][$selector]))
-		{
-			return;
-		}
-
-		// Include jQuery
-		JHtml::_('redrad.jquery.framework');
-
-		// Add chosen.jquery.js language strings
-		JText::script('JGLOBAL_SELECT_SOME_OPTIONS');
-		JText::script('JGLOBAL_SELECT_AN_OPTION');
-		JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
-
-		// If no debugging value is set, use the configuration setting
-		if ($debug === null)
-		{
-			$config = JFactory::getConfig();
-			$debug  = (boolean) $config->get('debug');
-		}
-
-		JHtml::_('script', 'jui/chosen.jquery.min.js', false, true, false, false, $debug);
-		JHtml::_('stylesheet', 'jui/chosen.css', false, true);
-		JFactory::getDocument()->addScriptDeclaration("
-				jQuery(document).ready(function (){
-					jQuery('" . $selector . "').chosen({
-						disable_search_threshold : 10,
-						allow_single_deselect : true
-					});
-				});
-			"
-		);
-
-		self::$loaded[__METHOD__][$selector] = true;
-
-		return;
-	}
-
-	/**
 	 * Method to load the AJAX Chosen library
 	 *
 	 * If debugging mode is on an uncompressed version of AJAX Chosen is included for easier debugging.
@@ -110,7 +61,7 @@ abstract class RedradFormbehavior extends JHtmlFormbehavior
 			JHtml::_('redrad.jquery.framework');
 
 			// Requires chosen to work
-			self::chosen($selector, $debug);
+			JHtml::_('redrad.jquery.chosen', $selector, $debug);
 
 			JHtml::_('script', 'jui/ajax-chosen.min.js', false, true, false, false, $debug);
 			JFactory::getDocument()->addScriptDeclaration("

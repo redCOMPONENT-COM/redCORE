@@ -109,6 +109,10 @@ class PlgSystemRedRad extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompresed.js']);
 			}
 
+			// Remove jQuery
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
+
 			// Remove bootstrap
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
 			unset($doc->_scripts[JURI::root(true) . 'media/jui/js/bootstrap.js']);
