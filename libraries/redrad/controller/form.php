@@ -20,6 +20,33 @@ defined('JPATH_REDRAD') or die;
 class RControllerForm extends JControllerForm
 {
 	/**
+	 * Method to get a model object, loading it if required.
+	 *
+	 * @param   string  $name    The model name. Optional.
+	 * @param   string  $prefix  The class prefix. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  object  The model.
+	 */
+	public function getModel($name = '', $prefix = '', $config = array('ignore_request' => true))
+	{
+		$class = get_class($this);
+
+		if (empty($name))
+		{
+			$name = strstr($class, 'Controller');
+			$name = str_replace('Controller', '', $name);
+		}
+
+		if (empty($prefix))
+		{
+			$prefix = strstr($class, 'Controller', true) . 'Model';
+		}
+
+		return parent::getModel($name, $prefix, $config);
+	}
+
+	/**
 	 * Validates the form and displays the error per field.
 	 *
 	 * {
