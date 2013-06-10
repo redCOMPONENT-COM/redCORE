@@ -33,20 +33,6 @@ class RModelAdmin extends JModelAdmin
 	protected $formName;
 
 	/**
-	 * Table Name
-	 *
-	 * @var  string
-	 */
-	protected $tableType = null;
-
-	/**
-	 * Table Prefix
-	 *
-	 * @var  string
-	 */
-	protected $tablePrefix = 'RTable';
-
-	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  Configuration array
@@ -102,11 +88,24 @@ class RModelAdmin extends JModelAdmin
 	 * @param   string  $prefix  Table prefix
 	 * @param   array   $config  Configuration array
 	 *
-	 * @return JTable
+	 * @return  JTable
 	 */
-	public function getTable($type = null, $prefix = 'RTable', $config = array())
+	public function getTable($type = null, $prefix = '', $config = array())
 	{
-		return JTable::getInstance($this->tableType, $this->tablePrefix, $config);
+		$class = get_class($this);
+
+		if (empty($name))
+		{
+			$name = strstr($class, 'Model');
+			$name = str_replace('Model', '', $name);
+		}
+
+		if (empty($prefix))
+		{
+			$prefix = strstr($class, 'Model', true) . 'Table';
+		}
+
+		return parent::getTable($name, $prefix, $config);
 	}
 
 	/**
