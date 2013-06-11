@@ -85,6 +85,7 @@ abstract class RedradJquery
 	public static function framework()
 	{
 		RHelperAsset::load('lib/jquery.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-migrate.js', self::EXTENSION);
 		RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
 	}
 
