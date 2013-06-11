@@ -55,8 +55,7 @@ abstract class RedradJquery
 	}
 
 	/**
-	 * Load the chosen library
-	 * We use this to avoid Mootools dependency
+	 * Load the datepicker.
 	 *
 	 * @return  void
 	 *
