@@ -44,7 +44,7 @@ class RTable extends JTable
 	 *
 	 * @var  string
 	 */
-	protected $_tableFieldState = 'state';
+	protected $_tableFieldState = 'published';
 
 	/**
 	 * Constructor
