@@ -16,13 +16,19 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  HTML
  * @since       3.0
  */
-abstract class RedradSortablelist
+abstract class JHtmlRsortablelist
 {
 	/**
-	 * @var    array  Array containing information for loaded files
+	 * @var    array q  Array containing information for loaded files
 	 * @since  3.0
 	 */
 	protected static $loaded = array();
+
+	/**
+	 * Extension name to use in the asset calls
+	 * Basically the media/com_xxxxx folder to use
+	 */
+	const EXTENSION = 'redrad';
 
 	/**
 	 * Method to load the Sortable script and make table sortable
@@ -49,8 +55,8 @@ abstract class RedradSortablelist
 		// Depends on jQuery UI
 		JHtml::_('redrad.jquery.ui', array('core', 'sortable'));
 
-		JHtml::_('script', 'jui/sortablelist.js', false, true);
-		JHtml::_('stylesheet', 'jui/sortablelist.css', false, true, false);
+		RHelperAsset::load('lib/sortablelist.js', self::EXTENSION);
+		RHelperAsset::load('lib/sortablelist.css', self::EXTENSION);
 
 		// Attach sortable to document
 		JFactory::getDocument()->addScriptDeclaration("
@@ -103,6 +109,7 @@ abstract class RedradSortablelist
 				});
 			})(jQuery);"
 		);
+
 		return;
 	}
 }
