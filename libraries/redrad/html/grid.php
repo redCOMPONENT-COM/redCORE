@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Html
  * @since       1.0
  */
-abstract class RedradGrid extends JHtmlJGrid
+abstract class RedradGrid
 {
 	/**
 	 * Extension name to use in the asset calls
@@ -383,10 +383,11 @@ abstract class RedradGrid extends JHtmlJGrid
 	 * @param   string  $task           An optional task override
 	 * @param   string  $new_direction  An optional direction for the new column
 	 * @param   string  $tip            An optional text shown as tooltip title instead of $title
+	 * @param   string  $icon           Icon to show
 	 *
 	 * @return  string
 	 */
-	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '')
+	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '', $icon = null)
 	{
 		JHtml::_('behavior.tooltip');
 		static::main();
@@ -400,9 +401,9 @@ abstract class RedradGrid extends JHtmlJGrid
 			$classes[] = 'hasTip';
 		}
 
-		$direction = strtolower($direction);
-		$icon = array('chevron-up', 'chevron-down');
-		$index = (int) ($direction == 'desc');
+		$direction      = strtolower($direction);
+		$directionIcons = array('icon-chevron-up', 'icon-chevron-down');
+		$index          = (int) ($direction == 'desc');
 
 		if ($order != $selected)
 		{
@@ -419,14 +420,28 @@ abstract class RedradGrid extends JHtmlJGrid
 			$class = ' class="' . implode(' ', $classes) . '"';
 		}
 
+		// Attribute data-name is used to autopopulate select order fields
+		$dataName = (!is_null($title)) ? JText::_($title) : $order;
+
 		$html = '<a href="#" onclick="return false;"' . $class
-			. ' data-order="' . $order . '" data-name="' . JText::_($title) . '" title="'
-			. JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN') . '">';
-		$html .= JText::_($title);
+			. ' data-order="' . $order . '" data-name="' . $dataName . '" title="' 
+			. JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN') 
+			. '">';
+
+		if (!is_null($icon))
+		{
+			$html .= ' <i class="' . $icon . '"></i>';
+		}
+
+		// Null title for icons ?
+		if (!is_null($title))
+		{
+			$html .= JText::_($title);
+		}
 
 		if ($order == $selected)
 		{
-			$html .= ' <i class="icon-' . $icon[$index] . '"></i>';
+			$html .= ' <i class="' . $directionIcons[$index] . '"></i>';
 		}
 
 		$html .= '</a>';
