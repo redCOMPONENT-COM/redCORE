@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Html
  * @since       1.0
  */
-abstract class RedradGrid
+abstract class JHtmlRgrid
 {
 	/**
 	 * Extension name to use in the asset calls
@@ -424,8 +424,8 @@ abstract class RedradGrid
 		$dataName = (!is_null($title)) ? JText::_($title) : $order;
 
 		$html = '<a href="#" onclick="return false;"' . $class
-			. ' data-order="' . $order . '" data-name="' . $dataName . '" title="' 
-			. JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN') 
+			. ' data-order="' . $order . '" data-name="' . $dataName . '" title="'
+			. JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN')
 			. '">';
 
 		if (!is_null($icon))
