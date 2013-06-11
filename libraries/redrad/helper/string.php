@@ -19,6 +19,30 @@ defined('JPATH_REDRAD') or die;
 final class RHelperString
 {
 	/**
+	 * Transforms a string to a boolean.
+	 *
+	 * @param   string  $string  The string to transform.
+	 *
+	 * @return  boolean  The boolean value.
+	 */
+	public static function toBool($string)
+	{
+		$string = trim($string);
+
+		if ($string === 'true')
+		{
+			return true;
+		}
+
+		if ($string === 'false')
+		{
+			return false;
+		}
+
+		return (bool) $string;
+	}
+
+	/**
 	 * Function to convert a string or array into a single string
 	 *
 	 * @param   mixed   $values        Array or string to use as values

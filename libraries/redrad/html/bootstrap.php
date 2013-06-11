@@ -46,6 +46,21 @@ abstract class Redradbootstrap
 	}
 
 	/**
+	 * Load the timepicker.
+	 *
+	 * @return  void
+	 *
+	 * @since   1.0
+	 */
+	public static function timepicker()
+	{
+		self::framework();
+
+		RHelperAsset::load('lib/bootstrap-timepicker/css/bootstrap-timepicker.min.css', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap-timepicker.min.js', static::EXTENSION);
+	}
+
+	/**
 	 * Add javascript support for the Bootstrap affix plugin
 	 *
 	 * @param   string  $selector  Unique selector for the element to be affixed.
