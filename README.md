@@ -12,3 +12,8 @@ redRAD is a quicker and more uniform way of creating extensions while adding som
 redRAD is not a rapid application development tool based on conventions to automatically create output.
 
 It is our hope that redRAD will be interesting for other Joomla developers or even the Joomla Core.
+
+Documentation
+------
+* [Standard Fields](https://github.com/redCOMPONENT-COM/redRAD/blob/master/docs/fields.md)  
+	* [Rpublished](https://github.com/redCOMPONENT-COM/redRAD/blob/master/docs/fields.md#rpublished)
