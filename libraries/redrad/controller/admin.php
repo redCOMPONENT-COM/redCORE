@@ -9,6 +9,8 @@
 
 defined('JPATH_REDRAD') or die;
 
+JLoader::import('joomla.application.component.controlleradmin');
+
 /**
  * Controller Admin class.
  *
