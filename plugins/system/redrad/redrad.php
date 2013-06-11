@@ -38,8 +38,11 @@ class PlgSystemRedRad extends JPlugin
 			}
 		}
 
-		// Unload any previous bootstrap
-		$doc = JFactory::getDocument();
+		// Make available the fields
+		JFormHelper::addFieldPath(JPATH_LIBRARIES . '/redrad/form/fields');
+
+		// Make available the rules
+		JFormHelper::addRulePath(JPATH_LIBRARIES . '/redrad/form/rules');
 	}
 
 	/**
