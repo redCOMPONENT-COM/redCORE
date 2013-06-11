@@ -21,6 +21,26 @@ JLoader::import('joomla.application.component.controlleradmin');
 class RControllerAdmin extends JControllerAdmin
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @see     JControllerLegacy
+	 * @since   12.2
+	 * @throws  Exception
+	 */
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+
+		// J2.5 compatibility
+		if (empty($this->input))
+		{
+			$this->input = JFactory::getApplication()->input;
+		}
+	}
+
+	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.
