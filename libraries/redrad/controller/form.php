@@ -9,6 +9,8 @@
 
 defined('JPATH_REDRAD') or die;
 
+JLoader::import('joomla.application.component.controllerform');
+
 /**
  * Controller Form class.
  * Works with a RModelAdmin or a Model using RForm.
