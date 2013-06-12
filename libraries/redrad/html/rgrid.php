@@ -389,17 +389,12 @@ abstract class JHtmlRgrid
 	 */
 	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '', $icon = null)
 	{
-		JHtml::_('behavior.tooltip');
+		JHtml::_('redrad.bootstrap.tooltip');
 		static::main();
 
 		$class   = null;
 		$classes = array();
-		$classes[] = 'js-order-col';
-
-		if (!empty($tip))
-		{
-			$classes[] = 'hasTip';
-		}
+		$classes[] = 'js-order-col hasTooltip';
 
 		$direction      = strtolower($direction);
 		$directionIcons = array('icon-chevron-up', 'icon-chevron-down');
