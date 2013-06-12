@@ -38,30 +38,6 @@ class JFormRuleFloat extends JFormRule
 	 */
 	public function test(SimpleXMLElement $element, $value, $group = null, JRegistry $input = null, JForm $form = null)
 	{
-		$options = array();
-
-		$value = (float) $value;
-
-		// If decimal specified.
-		if (isset($element['decimal']))
-		{
-			if (RHelperString::toBool($element['decimal']))
-			{
-				$options['options'] = array('decimal' => true);
-			}
-
-			else
-			{
-				$options['options'] = array('decimal' => false);
-			}
-		}
-
-		// If allow thousands.
-		if (isset($element['thousands']) && RHelperString::toBool($element['thousands']))
-		{
-			$options['flags'] = FILTER_FLAG_ALLOW_THOUSAND;
-		}
-
-		return filter_var($value, FILTER_VALIDATE_FLOAT, $options);
+		return filter_var($value, FILTER_VALIDATE_FLOAT, array('flags' => FILTER_FLAG_ALLOW_THOUSAND));
 	}
 }
