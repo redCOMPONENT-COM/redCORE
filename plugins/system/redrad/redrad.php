@@ -92,7 +92,7 @@ class PlgSystemRedRad extends JPlugin
 		$doc = JFactory::getDocument();
 
 		// Base assets to load always with redRAD
-		JHtml::_('redrad.bootstrap.fontawesome');
+		JHtml::_('rbootstrap.fontawesome');
 
 		if ($doc->_scripts)
 		{

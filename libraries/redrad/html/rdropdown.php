@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  HTML
  * @since       3.0
  */
-abstract class RedradDropdown
+abstract class JHtmlRdropdown
 {
 	/**
 	 * Array containing information for loaded files
@@ -46,7 +46,7 @@ abstract class RedradDropdown
 		}
 
 		// Depends on Bootstrap
-		JHtml::_('redrad.bootstrap.framework');
+		JHtml::_('rbootstrap.framework');
 
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){

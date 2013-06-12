@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  HTML
  * @since       1.0
  */
-abstract class RedradFormbehavior extends JHtmlFormbehavior
+abstract class JHtmlRformbehavior extends JHtmlFormbehavior
 {
 	/**
 	 * Array containing information for loaded files
@@ -58,10 +58,10 @@ abstract class RedradFormbehavior extends JHtmlFormbehavior
 			}
 
 			// Include jQuery
-			JHtml::_('redrad.jquery.framework');
+			JHtml::_('rjquery.framework');
 
 			// Requires chosen to work
-			JHtml::_('redrad.jquery.chosen', $selector, $debug);
+			JHtml::_('rjquery.chosen', $selector, $debug);
 
 			JHtml::_('script', 'jui/ajax-chosen.min.js', false, true, false, false, $debug);
 			JFactory::getDocument()->addScriptDeclaration("

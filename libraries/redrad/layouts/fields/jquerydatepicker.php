@@ -12,7 +12,7 @@ defined('JPATH_REDRAD') or die;
 $data = $displayData;
 
 // Add jquery UI js.
-JHtml::_('redrad.jquery.datepicker');
+JHtml::_('rjquery.datepicker');
 
 $script = "(function($){
 	$(document).ready(function () {

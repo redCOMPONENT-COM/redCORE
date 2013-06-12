@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Html
  * @since       1.0
  */
-abstract class Redradbootstrap
+abstract class JHtmlRbootstrap
 {
 	/**
 	 * Extension name to use in the asset calls
@@ -40,7 +40,7 @@ abstract class Redradbootstrap
 	 */
 	public static function framework($debug = null)
 	{
-		JHtml::_('redrad.jquery.framework');
+		JHtml::_('rjquery.framework');
 		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
 		RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
 	}
@@ -432,7 +432,7 @@ abstract class Redradbootstrap
 	 *
 	 * @return  void
 	 */
-	public static function tooltip($selector = '.hasTooltip', $params = array())
+	public static function tooltip($selector = '.hasTip', $params = array())
 	{
 		if (!isset(static::$loaded[__METHOD__][$selector]))
 		{
