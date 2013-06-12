@@ -33,7 +33,7 @@ abstract class JHtmlRgrid
 	 */
 	public static function main($debug = null)
 	{
-		JHtml::_('redrad.jquery.framework');
+		JHtml::_('rjquery.framework');
 
 		RHelperAsset::load('redgrid.js', static::EXTENSION);
 	}
@@ -75,7 +75,7 @@ abstract class JHtmlRgrid
 
 		if ($tip)
 		{
-			JHtml::_('behavior.tooltip');
+			JHtml::_('rbootstrap.tooltip');
 		}
 
 		if ($enabled)
@@ -389,12 +389,12 @@ abstract class JHtmlRgrid
 	 */
 	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '', $icon = null)
 	{
-		JHtml::_('redrad.bootstrap.tooltip');
+		JHtml::_('rbootstrap.tooltip');
 		static::main();
 
 		$class   = null;
 		$classes = array();
-		$classes[] = 'js-order-col hasTooltip';
+		$classes[] = 'js-order-col hasTip';
 
 		$direction      = strtolower($direction);
 		$directionIcons = array('icon-chevron-up', 'icon-chevron-down');

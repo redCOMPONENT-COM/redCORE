@@ -20,7 +20,7 @@ $required = (bool) $data['required'];
 $value = $data['value'];
 $name = $data['name'];
 
-JHtml::_('redrad.bootstrap.timepicker');
+JHtml::_('rbootstrap.timepicker');
 
 $script = "(function($){
 	$(document).ready(function () {
