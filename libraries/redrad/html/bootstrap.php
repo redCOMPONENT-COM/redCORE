@@ -54,7 +54,7 @@ abstract class Redradbootstrap
 	 */
 	public static function timepicker()
 	{
-		self::framework();
+		static::framework();
 
 		RHelperAsset::load('lib/bootstrap-timepicker/css/bootstrap-timepicker.min.css', static::EXTENSION);
 		RHelperAsset::load('lib/bootstrap-timepicker.min.js', static::EXTENSION);
@@ -113,13 +113,13 @@ abstract class Redradbootstrap
 	public static function alert($selector = 'alert')
 	{
 		// Only load once
-		if (isset(self::$loaded[__METHOD__][$selector]))
+		if (isset(static::$loaded[__METHOD__][$selector]))
 		{
 			return;
 		}
 
 		// Include Bootstrap framework
-		self::framework();
+		static::framework();
 
 		// Attach the alerts to the document
 		JFactory::getDocument()->addScriptDeclaration(
@@ -128,7 +128,7 @@ abstract class Redradbootstrap
 				})(jQuery);"
 		);
 
-		self::$loaded[__METHOD__][$selector] = true;
+		static::$loaded[__METHOD__][$selector] = true;
 
 		return;
 	}
@@ -143,7 +143,7 @@ abstract class Redradbootstrap
 	public static function button($selector = 'button')
 	{
 		// Only load once
-		if (isset(self::$loaded[__METHOD__][$selector]))
+		if (isset(static::$loaded[__METHOD__][$selector]))
 		{
 			return;
 		}
@@ -158,7 +158,7 @@ abstract class Redradbootstrap
 				})(jQuery);"
 		);
 
-		self::$loaded[__METHOD__][$selector] = true;
+		static::$loaded[__METHOD__][$selector] = true;
 
 		return;
 	}
@@ -338,7 +338,7 @@ abstract class Redradbootstrap
 	public static function popover($selector = '.hasPopover', $params = array())
 	{
 		// Only load once
-		if (isset(self::$loaded[__METHOD__][$selector]))
+		if (isset(static::$loaded[__METHOD__][$selector]))
 		{
 			return;
 		}
@@ -366,7 +366,7 @@ abstract class Redradbootstrap
 			});"
 		);
 
-		self::$loaded[__METHOD__][$selector] = true;
+		static::$loaded[__METHOD__][$selector] = true;
 
 		return;
 	}
@@ -385,10 +385,10 @@ abstract class Redradbootstrap
 	{
 		$sig = md5(serialize(array($selector, $params)));
 
-		if (!isset(self::$loaded[__METHOD__][$sig]))
+		if (!isset(static::$loaded[__METHOD__][$sig]))
 		{
 			// Include Bootstrap framework
-			self::framework();
+			static::framework();
 
 			// Setup options object
 			$opt['offset'] = (isset($params['offset']) && ($params['offset'])) ? (int) $params['offset'] : 10;
@@ -403,7 +403,7 @@ abstract class Redradbootstrap
 			);
 
 			// Set static array
-			self::$loaded[__METHOD__][$sig] = true;
+			static::$loaded[__METHOD__][$sig] = true;
 		}
 
 		return;
@@ -434,19 +434,19 @@ abstract class Redradbootstrap
 	 */
 	public static function tooltip($selector = '.hasTooltip', $params = array())
 	{
-		if (!isset(self::$loaded[__METHOD__][$selector]))
+		if (!isset(static::$loaded[__METHOD__][$selector]))
 		{
 			// Include Bootstrap framework
 			static::framework();
 
 			// Setup options object
-			$opt['animation'] = (isset($params['animation']) && ($params['animation'])) ? (boolean) $params['animation'] : null;
-			$opt['html']      = (isset($params['html']) && ($params['html'])) ? (boolean) $params['html'] : null;
-			$opt['placement'] = (isset($params['placement']) && ($params['placement'])) ? (string) $params['placement'] : null;
-			$opt['selector']  = (isset($params['selector']) && ($params['selector'])) ? (string) $params['selector'] : null;
-			$opt['title']     = (isset($params['title']) && ($params['title'])) ? (string) $params['title'] : null;
-			$opt['trigger']   = (isset($params['trigger']) && ($params['trigger'])) ? (string) $params['trigger'] : null;
-			$opt['delay']     = (isset($params['delay']) && ($params['delay'])) ? (int) $params['delay'] : null;
+			$opt['animation'] = (isset($params['animation']) && ($params['animation'])) ? (boolean) $params['animation'] : true;
+			$opt['html']      = (isset($params['html']) && ($params['html'])) ? (boolean) $params['html'] : false;
+			$opt['placement'] = (isset($params['placement']) && ($params['placement'])) ? (string) $params['placement'] : 'top';
+			$opt['selector']  = (isset($params['selector']) && ($params['selector'])) ? (string) $params['selector'] : false;
+			$opt['title']     = (isset($params['title']) && ($params['title'])) ? (string) $params['title'] : '';
+			$opt['trigger']   = (isset($params['trigger']) && ($params['trigger'])) ? (string) $params['trigger'] : 'hover focus';
+			$opt['delay']     = (isset($params['delay']) && ($params['delay'])) ? (int) $params['delay'] : 0;
 			$opt['container'] = (isset($params['container']) && ($params['container'])) ? (int) $params['container'] : false;
 
 			$options = json_encode($opt);
@@ -492,10 +492,10 @@ abstract class Redradbootstrap
 	 */
 	public static function typeahead($selector = '.typeahead', $params = array())
 	{
-		if (!isset(self::$loaded[__METHOD__][$selector]))
+		if (!isset(static::$loaded[__METHOD__][$selector]))
 		{
 			// Include Bootstrap framework
-			self::framework();
+			static::framework();
 
 			// Setup options object
 			$opt['source'] = (isset($params['source']) && ($params['source'])) ? $params['source'] : '[]';
@@ -517,7 +517,7 @@ abstract class Redradbootstrap
 			);
 
 			// Set static array
-			self::$loaded[__METHOD__][$selector] = true;
+			static::$loaded[__METHOD__][$selector] = true;
 		}
 
 		return;
@@ -540,10 +540,10 @@ abstract class Redradbootstrap
 	{
 		$sig = md5(serialize(array($selector, $params)));
 
-		if (!isset(self::$loaded[__METHOD__][$sig]))
+		if (!isset(static::$loaded[__METHOD__][$sig]))
 		{
 			// Include Bootstrap framework
-			self::framework();
+			static::framework();
 
 			// Setup options object
 			$opt['parent'] = (isset($params['parent']) && ($params['parent'])) ? (boolean) $params['parent'] : false;
@@ -560,8 +560,8 @@ abstract class Redradbootstrap
 			);
 
 			// Set static array
-			self::$loaded[__METHOD__][$sig] = true;
-			self::$loaded[__METHOD__]['active'] = $opt['active'];
+			static::$loaded[__METHOD__][$sig] = true;
+			static::$loaded[__METHOD__]['active'] = $opt['active'];
 		}
 
 		return '<div id="' . $selector . '" class="accordion">';
@@ -589,7 +589,7 @@ abstract class Redradbootstrap
 	 */
 	public static function addSlide($selector, $text, $id, $class = '')
 	{
-		$in = (self::$loaded['JHtmlBootstrap::startAccordion']['active'] == $id) ? ' in' : '';
+		$in = (static::$loaded['JHtmlBootstrap::startAccordion']['active'] == $id) ? ' in' : '';
 		$class = (!empty($class)) ? ' ' . $class : '';
 
 		$html = '<div class="accordion-group' . $class . '">'
@@ -626,10 +626,10 @@ abstract class Redradbootstrap
 	{
 		$sig = md5(serialize(array($selector, $params)));
 
-		if (!isset(self::$loaded[__METHOD__][$sig]))
+		if (!isset(static::$loaded[__METHOD__][$sig]))
 		{
 			// Include Bootstrap framework
-			self::framework();
+			static::framework();
 
 			// Setup options object
 			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
@@ -641,8 +641,8 @@ abstract class Redradbootstrap
 				->addScriptDeclaration(JLayoutHelper::render('libraries.cms.html.bootstrap.starttabsetscript', array('selector' => $selector)));
 
 			// Set static array
-			self::$loaded[__METHOD__][$sig] = true;
-			self::$loaded[__METHOD__][$selector]['active'] = $opt['active'];
+			static::$loaded[__METHOD__][$sig] = true;
+			static::$loaded[__METHOD__][$selector]['active'] = $opt['active'];
 		}
 
 		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.starttabset', array('selector' => $selector));
@@ -679,7 +679,7 @@ abstract class Redradbootstrap
 		$tabScriptLayout = is_null($tabScriptLayout) ? new JLayoutFile('libraries.cms.html.bootstrap.addtabscript') : $tabScriptLayout;
 		$tabLayout = is_null($tabLayout) ? new JLayoutFile('libraries.cms.html.bootstrap.addtab') : $tabLayout;
 
-		$active = (self::$loaded['JHtmlBootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
+		$active = (static::$loaded['JHtmlBootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
 
 		// Inject tab into UL
 		JFactory::getDocument()
