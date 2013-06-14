@@ -105,7 +105,7 @@ abstract class RView extends JViewLegacy
 				'topbar_layout' => $this->topBarLayout,
 				'topbar_inner_layout_display' => $this->displayTopBarInnerLayout,
 				'topbar_inner_layout' => $this->topBarInnerLayout,
-				'topbar_inner_layout_data' => $this->topBarInnerLayout
+				'topbar_inner_layout_data' => $this->topBarInnerLayoutData
 			)
 		);
 
