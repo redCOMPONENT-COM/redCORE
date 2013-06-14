@@ -1,20 +1,20 @@
 <?php
 /**
- * @package     Joomla.Libraries
- * @subpackage  HTML
+ * @package     RedRad
+ * @subpackage  Html
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_REDRAD') or die;
 
 /**
  * HTML utility class for building a dropdown menu
  *
- * @package     Joomla.Libraries
- * @subpackage  HTML
- * @since       3.0
+ * @package     RedRad
+ * @subpackage  Html
+ * @since       1.0
  */
 abstract class JHtmlRdropdown
 {

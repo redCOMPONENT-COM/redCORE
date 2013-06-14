@@ -3,8 +3,8 @@
  * @package     RedRad
  * @subpackage  Base
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDRAD') or die;
@@ -82,7 +82,7 @@ class RPlugin extends JPlugin
 	 *
 	 * @param   string  $layout  The layout name
 	 *
-	 * @return string  Path where we have to use to call the layout
+	 * @return  string  Path where we have to use to call the layout
 	 */
 	protected function getLayoutPath($layout = 'default')
 	{

@@ -3,8 +3,8 @@
  * @package     RedRad
  * @subpackage  Model
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDRAD') or die;
@@ -30,7 +30,7 @@ class RModelAdmin extends JModelAdmin
 	/**
 	 * The form name.
 	 *
-	 * @var string
+	 * @var  string
 	 */
 	protected $formName;
 
@@ -205,9 +205,6 @@ class RModelAdmin extends JModelAdmin
 	 * @param   string  $group  The name of the field group to validate.
 	 *
 	 * @return  mixed  Array of filtered data if valid, false otherwise.
-	 *
-	 * @see     JFormRule
-	 * @see     JFilterInput
 	 */
 	public function validate($form, $data, $group = null)
 	{

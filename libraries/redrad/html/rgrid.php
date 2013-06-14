@@ -3,8 +3,8 @@
  * @package     RedRad
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDRAD') or die;
@@ -175,8 +175,6 @@ abstract class JHtmlRgrid
 	 * @param   string        $publish_down  An optional finish publishing date.
 	 *
 	 * @return  string  The Html code
-	 *
-	 * @see     JHtmlJGrid::state
 	 */
 	public static function published($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb', $publish_up = null, $publish_down = null)
 	{
@@ -266,8 +264,6 @@ abstract class JHtmlRgrid
 	 * @param   string        $checkbox  An optional prefix for checkboxes.
 	 *
 	 * @return  string  The HTML code
-	 *
-	 * @see     JHtmlJGrid::state
 	 */
 	public static function isdefault($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb')
 	{
