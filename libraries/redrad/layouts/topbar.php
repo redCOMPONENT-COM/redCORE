@@ -50,6 +50,19 @@ if (isset($data['topbar_inner_layout_data']))
 $user = JFactory::getUser();
 $userName = $user->name;
 $userId = $user->id;
+
+// Prepare the logout uri or the sign out button.
+$input = JFactory::getApplication()->input;
+$option = $input->getString('option');
+$view = $input->getString('view', 'null');
+$returnUri = 'index.php?option=' . $option;
+
+if ($view)
+{
+	$returnUri .= '&view=' . $view;
+}
+
+$returnUri = base64_encode($returnUri);
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function () {
@@ -74,6 +87,15 @@ $userId = $user->id;
 			<?php endif; ?>
 			<div class="nav-right pull-right">
 				<div class="datetime pull-right"></div>
+				<span class="divider-vertical pull-right"></span>
+
+				<div class="logout pull-right">
+					<a href="<?php echo
+					JRoute::_('index.php?option=com_login&task=logout&' . JSession::getFormToken() . '=1&return=' . $returnUri)
+					?>">
+						<i class="icon-signout"></i> Sign out
+					</a>
+				</div>
 				<span class="divider-vertical pull-right"></span>
 
 				<div class="welcome pull-right">
