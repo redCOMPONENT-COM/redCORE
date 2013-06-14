@@ -1,26 +1,27 @@
 <?php
 /**
- * @package     Joomla.Libraries
- * @subpackage  HTML
+ * @package     RedRad
+ * @subpackage  Html
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_REDRAD') or die;
 
 /**
  * HTML utility class for creating a sortable table list
  *
- * @package     Joomla.Libraries
- * @subpackage  HTML
- * @since       3.0
+ * @package     RedRad
+ * @subpackage  Html
+ * @since       1.0
  */
 abstract class JHtmlRsortablelist
 {
 	/**
-	 * @var    array q  Array containing information for loaded files
-	 * @since  3.0
+	 * Array containing information for loaded files
+	 *
+	 * @var  array
 	 */
 	protected static $loaded = array();
 
@@ -41,8 +42,6 @@ abstract class JHtmlRsortablelist
 	 * @param   boolean  $nestedList              Set whether the list is a nested list
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function sortable($tableId, $formId, $sortDir = 'asc', $saveOrderingUrl, $proceedSaveOrderButton = true, $nestedList = false)
 	{
@@ -84,8 +83,6 @@ abstract class JHtmlRsortablelist
 	 * when changing value of ordering input boxes
 	 *
 	 * @return  void
-	 *
-	 * @since   3.0
 	 */
 	public static function _proceedSaveOrderButton()
 	{

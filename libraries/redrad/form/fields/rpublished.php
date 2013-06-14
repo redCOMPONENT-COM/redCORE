@@ -23,18 +23,16 @@ class JFormFieldRpublished extends JFormFieldList
 	/**
 	 * The form field type.
 	 *
-	 * @var		string
-	 * @since	1.6
+	 * @var  string
 	 */
 	protected $type = 'Rpublished';
 
 	/**
 	 * The array of values
 	 *
-	 * @var		string
-	 * @since	1.6
+	 * @var  string
 	 */
-	protected $_availableStatuses = array(
+	protected $availableStatuses = array(
 		array('value' => 1, 'text' => 'JPUBLISHED'),
 		array('value' => 0, 'text' => 'JUNPUBLISHED'),
 		array('value' => 2, 'text' => 'JARCHIVED'),
@@ -51,16 +49,16 @@ class JFormFieldRpublished extends JFormFieldList
 	{
 		$options = array();
 
-		if ($this->_availableStatuses)
+		if ($this->availableStatuses)
 		{
-			$activeStatuses = array_keys($this->_availableStatuses);
+			$activeStatuses = array_keys($this->availableStatuses);
 
 			if ($this->element['statuses'])
 			{
 				$activeStatuses = explode(',', $this->element['statuses']);
 			}
 
-			foreach ($this->_availableStatuses as $status)
+			foreach ($this->availableStatuses as $status)
 			{
 				if (in_array($status['value'], $activeStatuses))
 				{
