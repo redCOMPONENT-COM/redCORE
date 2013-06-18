@@ -3,8 +3,8 @@
  * @package     RedRad
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDRAD') or die;
@@ -12,7 +12,7 @@ defined('JPATH_REDRAD') or die;
 $data = $displayData;
 
 // Add jquery UI js.
-JHtml::_('redrad.jquery.datepicker');
+JHtml::_('rjquery.datepicker');
 
 $script = "(function($){
 	$(document).ready(function () {

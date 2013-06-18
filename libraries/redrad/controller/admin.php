@@ -3,11 +3,13 @@
  * @package     RedRad
  * @subpackage  Controller
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDRAD') or die;
+
+JLoader::import('joomla.application.component.controlleradmin');
 
 /**
  * Controller Admin class.
@@ -18,6 +20,24 @@ defined('JPATH_REDRAD') or die;
  */
 class RControllerAdmin extends JControllerAdmin
 {
+	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @throws  Exception
+	 */
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+
+		// J2.5 compatibility
+		if (empty($this->input))
+		{
+			$this->input = JFactory::getApplication()->input;
+		}
+	}
+
 	/**
 	 * Method to get a model object, loading it if required.
 	 *

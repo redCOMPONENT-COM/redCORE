@@ -3,8 +3,8 @@
  * @package     RedRad
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDRAD') or die;
@@ -105,7 +105,7 @@ abstract class RView extends JViewLegacy
 				'topbar_layout' => $this->topBarLayout,
 				'topbar_inner_layout_display' => $this->displayTopBarInnerLayout,
 				'topbar_inner_layout' => $this->topBarInnerLayout,
-				'topbar_inner_layout_data' => $this->topBarInnerLayout
+				'topbar_inner_layout_data' => $this->topBarInnerLayoutData
 			)
 		);
 

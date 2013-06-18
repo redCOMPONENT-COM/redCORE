@@ -1,7 +1,7 @@
 Contributing to redRAD
 ======
 
-All the code must use [Joomla! Coding standards](http://joomla.github.io/joomla-platform/?coding-standards/chapters/php.md "Joomla! Coding standards") and commits must follow the [Commit Messages Structure](#CMM)  
+All the code must use [redCOMPONENT Coding standards](https://github.com/redCOMPONENT-COM/documentation/blob/master/coding_standards/coding_standards.md "redCOMPONENT Coding standards") and commits must follow the [Commit Messages Structure](#CMM)  
 
 <a name="CMM"></a> Commit messages Structure
 ----------------
