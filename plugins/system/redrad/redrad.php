@@ -27,7 +27,7 @@ class PlgSystemRedRad extends JPlugin
 	{
 		$redradLoader = JPATH_LIBRARIES . '/redrad/bootstrap.php';
 
-		if (file_exists($redradLoader))
+		if (file_exists($redradLoader) && !class_exists('Inflector'))
 		{
 			require_once $redradLoader;
 
