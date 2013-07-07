@@ -1,0 +1,28 @@
+CREATE TABLE IF NOT EXISTS `#__oauth_nonce` (
+`nonce_id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+`consumer_key` VARCHAR(255) NOT NULL,
+`timestamp` INTEGER NOT NULL DEFAULT 0,
+`nonce` VARCHAR(255) NOT NULL DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS `#__oauth_clients` (
+`client_id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+`key` VARCHAR(255) NOT NULL DEFAULT '',
+`alias` VARCHAR(255) NOT NULL DEFAULT '',
+`secret` VARCHAR(255) NOT NULL DEFAULT '',
+`title` VARCHAR(255) NOT NULL DEFAULT '',
+CONSTRAINT `idx_oauth_clients_key` UNIQUE (`key`)
+);
+
+CREATE TABLE `#__oauth_credentials` (
+`credentials_id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+`key` VARCHAR(255) NOT NULL DEFAULT '',
+`secret` VARCHAR(255) NOT NULL DEFAULT '',
+`client_key` VARCHAR(255) NOT NULL DEFAULT '',
+`type` VARCHAR(255) NOT NULL DEFAULT '',
+`callback_url` VARCHAR(255) NOT NULL DEFAULT '',
+`verifier_key` VARCHAR(255) NOT NULL DEFAULT '',
+`resource_owner_id` INTEGER NOT NULL DEFAULT 0,
+`expiration_date` INTEGER NOT NULL DEFAULT 0,
+`temporary_expiration_date` INTEGER DEFAULT 0
+);
