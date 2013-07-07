@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.1" type="plugin" group="authentication">
+	<name>plg_authentication_oauth2</name>
+	<author>Matias Aguirre</author>
+	<creationDate>Jun 2013</creationDate>
+	<copyright>Copyright (C) 2005 - 2013 redCOMPONENT. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>matias@redcomponent.com</authorEmail>
+	<authorUrl>www.matware.com.ar</authorUrl>
+	<version>1.0</version>
+	<description>PLG_OAUTH2_XML_DESCRIPTION</description>
+	<files>
+		<filename plugin="oauth2">oauth2.php</filename>
+		<filename>index.html</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">en-GB.plg_authentication_oauth2.ini</language>
+		<language tag="en-GB">en-GB.plg_authentication_oauth2.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+
+			<fieldset name="basic">
+<!--
+				<field name="applysuffix" type="list"
+					default="0"
+					description="PLG_OAUTH2_FIELD_APPLYSUFFIX_DESC"
+					label="PLG_OAUTH2_FIELD_APPLYSUFFIX_LABEL"
+				>
+					<option value="0">PLG_OAUTH2_FIELD_VALUE_NOAPPLYSUFFIX</option>
+					<option value="1">PLG_OAUTH2_FIELD_VALUE_APPLYSUFFIXMISSING</option>
+					<option value="2">PLG_OAUTH2_FIELD_VALUE_APPLYSUFFIXALWAYS</option>
+				</field>
+
+				<field name="suffix" type="text"
+					description="PLG_OAUTH2_FIELD_SUFFIX_DESC"
+					label="PLG_OAUTH2_FIELD_SUFFIX_LABEL"
+					size="20"
+				/>
+
+				<field name="verifypeer" type="radio"
+					default="1"
+					class="btn-group"
+					description="PLG_OAUTH2_FIELD_VERIFYPEER_DESC"
+					label="PLG_OAUTH2_FIELD_VERIFYPEER_LABEL"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+
+				<field name="user_blacklist" type="text"
+					description="PLG_OAUTH2_FIELD_USER_BLACKLIST_DESC"
+					label="PLG_OAUTH2_FIELD_USER_BLACKLIST_LABEL"
+					size="20"
+				/>
+-->
+
+			</fieldset>
+
+		</fields>
+	</config>
+</extension>
