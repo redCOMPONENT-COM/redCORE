@@ -92,7 +92,7 @@ class RModelAdmin extends JModelAdmin
 	 *
 	 * @return  JTable
 	 */
-	public function getTable($type = null, $prefix = '', $config = array())
+	public function getTable($name = null, $prefix = '', $config = array())
 	{
 		$class = get_class($this);
 
