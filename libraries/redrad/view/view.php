@@ -124,12 +124,17 @@ abstract class RView extends JViewLegacy
 	 *
 	 * @return  string  The view title.
 	 */
-	abstract public function getTitle();
+	public function getTitle()
+	{
+		return '';
+	}
 
 	/**
 	 * Get the toolbar to render.
 	 *
 	 * @return  RToolbar
 	 */
-	abstract public function getToolbar();
+	public function getToolbar()
+	{
+	}
 }
