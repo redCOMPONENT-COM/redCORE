@@ -65,7 +65,8 @@ class ROAuth2TableCredentials extends JTable
 		$query = $this->_db->getQuery(true);
 		$query->select('*')
 		->from('#__oauth_credentials')
-		->where($this->_db->quoteName('token') . ' = ' . $this->_db->quote($key));
+		->where($this->_db->quoteName('client_secret') . ' = ' . $this->_db->quote($key))
+		->where($this->_db->quoteName('resource_uri') . ' = ' . $this->_db->quote(JURI::root( true )) );
 
 		// Set and execute the query.
 		$this->_db->setQuery($query);

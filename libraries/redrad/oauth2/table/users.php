@@ -48,6 +48,10 @@ class ROAuth2TableUsers extends JTableUser
 			{
 				$this->$k = $v;
 			}
+
+			return true;
 		}
-	}
-}
+
+		return false;
+	} // end method
+} // end class
