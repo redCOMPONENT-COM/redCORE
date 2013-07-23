@@ -26,7 +26,13 @@ class ROAuth2Client
 	 * @var    ROAuth2TableClient  JTable object for persisting the client object.
 	 * @since  1.0
 	 */
-	public $_table;
+	protected $_table;
+
+	/**
+	 * @var    JUser  JUser object for persisting the Joomla! user.
+	 * @since  1.0
+	 */
+	public $_identity;
 
 	/**
 	 * Object constructor.
@@ -147,7 +153,9 @@ class ROAuth2Client
 	 */
 	public function loadByKey($key)
 	{
-		$this->_table->loadByKey($key);
+		if ($this->_table->loadByKey($key)) {
+			$this->_identity = new JUser($this->_table->id);
+		}
 	}
 
 	/**

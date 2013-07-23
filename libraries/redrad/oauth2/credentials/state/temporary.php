@@ -49,7 +49,9 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 		// Persist the object in the database.
 		$this->update();
 
-		return new ROAuth2CredentialsStateAuthorised($this->table);
+		$authorised = new ROAuth2CredentialsStateAuthorised($this->table);
+
+		return $authorised;
 	}
 
 	/**

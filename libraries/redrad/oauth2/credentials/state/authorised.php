@@ -49,7 +49,7 @@ class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
 		$this->table->callback_url = '';
 		//$this->table->verifier_key = '';
 		//$this->table->key = $this->randomKey();
-		//$this->table->secret = $this->randomKey(true);
+		$this->table->resource_token = $this->randomKey();
 		$this->table->type = ROAuth2Credentials::TOKEN;
 		$this->table->temporary_expiration_date = 0;
 

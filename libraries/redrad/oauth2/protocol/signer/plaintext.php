@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth1
  * @since       1.0
  */
-class ROAuth2MessageSignerPlaintext implements ROAuth2MessageSigner
+class ROAuth2MessageSignerPlaintext extends ROAuth2MessageSigner
 {
 	/**
 	 * Calculate and return the OAuth message signature using PLAINTEXT

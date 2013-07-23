@@ -49,7 +49,7 @@ class ROAuth2Credentials
 	 * @var    ROAuth2CredentialsState  The current credential state.
 	 * @since  1.0
 	 */
-	private $_state;
+	public $_state;
 
 	/**
 	 * Object constructor.
@@ -196,18 +196,6 @@ class ROAuth2Credentials
 	}
 
 	/**
-	 * Get the token secret.
-	 *
-	 * @return  string
-	 *
-	 * @since   1.0
-	 */
-	public function getSecret()
-	{
-		return $this->_state->secret;
-	}
-
-	/**
 	 * Get the credentials type.
 	 *
 	 * @return  integer
@@ -216,19 +204,7 @@ class ROAuth2Credentials
 	 */
 	public function getType()
 	{
-		return $this->_state->type;
-	}
-
-	/**
-	 * Get the credentials verifier key.
-	 *
-	 * @return  integer
-	 *
-	 * @since   1.0
-	 */
-	public function getVerifierKey()
-	{
-		return $this->_state->verifier_key;
+		return (int) $this->_state->type;
 	}
 
 	/**
@@ -298,6 +274,8 @@ class ROAuth2Credentials
 		// Cast the type for validation.
 		$this->_table->type = (int) $this->_table->type;
 
+echo "\n{{$this->_table->type}}\n";
+
 		// If we are loading a temporary set of credentials load that state.
 		if ($this->_table->type === self::TEMPORARY)
 		{
@@ -318,6 +296,8 @@ class ROAuth2Credentials
 		{
 			throw new InvalidArgumentException('OAuth credentials not found.');
 		}
+
+		return true;
 	}
 
 	/**
