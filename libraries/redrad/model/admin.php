@@ -304,29 +304,15 @@ class RModelAdmin extends JModelAdmin
 	{
 		$now = JDate::getInstance();
 		$nowFormatted = $now->toSql();
-
-		if (property_exists($table, 'created_date')
-			&& (is_null($table->created_date) || empty($table->created_date)))
-		{
-			$table->created_date = $nowFormatted;
-		}
-
-		if (property_exists($table, 'modified_date'))
-		{
-			$table->modified_date = $nowFormatted;
-		}
-
 		$userId = JFactory::getUser()->id;
 
-		if (property_exists('created_by', $table)
-			&& (is_null($table->created_by) || empty($table->created_by)))
+		$table->modified_by = $userId;
+		$table->modified_date = $nowFormatted;
+
+		if (is_null($table->created_by) || empty($table->created_by))
 		{
 			$table->created_by = $userId;
-		}
-
-		if (property_exists($table, 'modified_by'))
-		{
-			$table->modified_by = $userId;
+			$table->created_date = $nowFormatted;
 		}
 	}
 }
