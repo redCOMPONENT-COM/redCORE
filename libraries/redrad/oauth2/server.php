@@ -96,7 +96,7 @@ class ROAuth2Server
 		}
 
 		// If we found an REST message somewhere we need to set the URI and request method.
-		if ($found)
+		if ($found && isset($this->request->response_type) )
 		{
 			// Load the correct controller type
 			switch ($this->request->response_type)
@@ -104,32 +104,29 @@ class ROAuth2Server
 				case 'temporary':
 
 					JLoader::register('ROAuth2ControllerInitialise', JPATH_REDRAD.'/oauth2/controller/initialise.php');
-
 					$controller = new ROAuth2ControllerInitialise($this->request);
-					$controller->execute();
 
 					break;
 				case 'authorise':
 
 					JLoader::register('ROAuth2ControllerAuthorise', JPATH_REDRAD.'/oauth2/controller/authorise.php');
-
 					$controller = new ROAuth2ControllerAuthorise($this->request);
-					$controller->execute();
 
 					break;
 				case 'token':
 
 					JLoader::register('ROAuth2ControllerConvert', JPATH_REDRAD.'/oauth2/controller/convert.php');
-
 					$controller = new ROAuth2ControllerConvert($this->request);
-					$controller->execute();
 
 					break;
 				default:
 					throw new InvalidArgumentException('No valid response type was found.');
 					break;
 			}
-		}
+
+			$controller->execute();
+
+		} // end if
 
 		return $found;
 	} // end method
