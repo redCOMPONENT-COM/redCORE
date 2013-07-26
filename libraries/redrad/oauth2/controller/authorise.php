@@ -73,9 +73,17 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 		$this->app->loadIdentity($client->_identity);
 
 		// Ensure the credentials are temporary.
-		if ((int) $credentials->getType() !== (int) ROAuth2Credentials::TEMPORARY)
+		if ( (int) $credentials->getType() !== ROAuth2Credentials::TEMPORARY)
 		{
-			$this->app->sendInvalidAuthMessage('The token is not for a temporary credentials set.');
+			$response = array(
+				'error' => 'invalid_request',
+				'error_description' => 'The token is not for a temporary credentials set.'
+			);
+
+			$this->response->setHeader('status', '302')
+				->setBody(json_encode($response))
+				->respond();
+
 			return;
 		}
 
@@ -100,9 +108,8 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 */
 		// Build the response for the client.
 		$response = array(
-			'access_token' => $credentials->getAccessToken(),
-			'expires_in' => 3600,
-			'refresh_token' => $credentials->getRefreshToken()
+			'oauth_code' => $credentials->getTemporaryToken(),
+			'oauth_state' => true
 		);
 
 		// Set the response code and body.

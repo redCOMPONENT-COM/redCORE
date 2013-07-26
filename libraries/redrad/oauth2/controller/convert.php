@@ -9,34 +9,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-/*
-Step 3
-
-   The callback request informs the client that Jane completed the
-   authorization process.  The client then requests a set of token
-   credentials using its temporary credentials (over a secure Transport
-   Layer Security (TLS) channel):
-
-     POST /token HTTP/1.1
-     Host: photos.example.net
-     Authorization: OAuth realm="Photos",
-        oauth_consumer_key="dpf43f3p2l4k3l03",
-        oauth_token="hh5s93j4hdidpola",
-        oauth_signature_method="HMAC-SHA1",
-        oauth_timestamp="137131201",
-        oauth_nonce="walatlh",
-        oauth_verifier="hfdp7dh39dks9884",
-        oauth_signature="gKgrFCywp7rO0OXSjdot%2FIHF7IU%3D"
-
-   The server validates the request and replies with a set of token
-   credentials in the body of the HTTP response:
-
-     HTTP/1.1 200 OK
-     Content-Type: application/x-www-form-urlencoded
-
-     oauth_token=nnch734d00sl2jdk&oauth_token_secret=pfkkdhi9sl3r4s00
- */
-
 /**
  * OAuth Controller class for converting authorised credentials to token credentials for the Joomla Platform.
  *
@@ -44,18 +16,29 @@ Step 3
  * @subpackage  OAuth1
  * @since       12.3
  */
-class ROAuth2ControllerConvert extends JControllerBase
+class ROAuth2ControllerConvert extends ROAuth2ControllerBase
 {
 	/**
-	 * Create the credentials
+	 * Constructor.
 	 *
-	 * @return  ROAuth2Credentials
+	 * @param   JRegistry        $options      ROAuth2User options object
+	 * @param   JHttp            $http         The HTTP client object
+	 * @param   JInput           $input        The input object
+	 * @param   JApplicationWeb  $application  The application object
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
-	protected function createCredentials()
+	public function __construct(ROAuth2Request $request = null, ROAuth2Response $response = null)
 	{
-		return new ROAuth2Credentials;
+		// Call parent first
+		parent::__construct();
+
+		// Setup the autoloader for the application classes.
+		JLoader::register('ROAuth2Request', JPATH_REDRAD.'/oauth2/protocol/request.php');
+		JLoader::register('ROAuth2Response', JPATH_REDRAD.'/oauth2/protocol/response.php');
+
+		$this->request = isset($request) ? $request : new ROAuth2Request;
+		$this->response = isset($response) ? $response : new ROAuth2Response;
 	}
 
 	/**
@@ -67,17 +50,14 @@ class ROAuth2ControllerConvert extends JControllerBase
 	 */
 	public function execute()
 	{
-		// Verify that we have an OAuth 1.0 application.
-		if ((!$this->app instanceof ROAuth2ApplicationWeb))
+		// Verify that we have an OAuth 2.0 application.
+		if ((!$this->app instanceof ApiApplicationWeb))
 		{
 			throw new LogicException('Cannot perform OAuth 2.0 authorisation without an OAuth 2.0 application.');
 		}
 
-		// Get the OAuth message from the appliation.
-		$message = $this->app->getMessage();
-
 		// We need a valid signature to do initialisation.
-		if (!$message->signature)
+		if (!$this->request->client_id || !$this->request->client_secret || !$this->request->signature_method )
 		{
 			$this->app->sendInvalidAuthMessage('Invalid OAuth request signature.');
 
@@ -86,22 +66,34 @@ class ROAuth2ControllerConvert extends JControllerBase
 
 		// Get the credentials for the request.
 		$credentials = $this->createCredentials();
-		$credentials->load($message->token);
+		$credentials->load($this->request->client_secret);
 
 		// Ensure the credentials are authorised.
 		if ($credentials->getType() === ROAuth2Credentials::TOKEN)
 		{
-			$this->app->setHeader('status', '400');
-			$this->app->setBody('The token is not for a temporary credentials set.');
+			$response = array(
+				'error' => 'invalid_request',
+				'error_description' => 'The token is not for a temporary credentials set.'
+			);
+
+			$this->response->setHeader('status', '302')
+				->setBody(json_encode($response))
+				->respond();
 
 			return;
 		}
 
 		// Ensure the credentials are authorised.
-		if ($credentials->getType() === ROAuth2Credentials::TEMPORARY)
+		if ($credentials->getType() !== ROAuth2Credentials::AUTHORISED)
 		{
-			$this->app->setHeader('status', '400');
-			$this->app->setBody('The token has not been authorised by the resource owner.');
+			$response = array(
+				'error' => 'invalid_request',
+				'error_description' => 'The token has not been authorised by the resource owner.'
+			);
+
+			$this->response->setHeader('status', '302')
+				->setBody(json_encode($response))
+				->respond();
 
 			return;
 		}
@@ -110,10 +102,15 @@ class ROAuth2ControllerConvert extends JControllerBase
 		$credentials->convert();
 
 		// Build the response for the client.
-		$response = array('oauth_token' => $credentials->getKey(), 'oauth_token_secret' => $credentials->getSecret());
+		$response = array(
+			'access_token' => $credentials->getAccessToken(),
+			'expires_in' => 3600,
+			'refresh_token' => $credentials->getRefreshToken()
+		);
 
-		// Set the application response code and body.
-		$this->app->setHeader('status', '200');
-		$this->app->setBody(http_build_query($response));
+		// Set the response code and body.
+		$this->response->setHeader('status', '200')
+			->setBody(json_encode($response))
+			->respond();
 	}
 }

@@ -43,12 +43,14 @@ class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function convert()
+	public function convert($lifetime = 3600)
 	{
 		// Setup the properties for the credentials.
 		$this->table->callback_url = '';
 		$this->table->access_token = $this->randomKey();
+		$this->table->refresh_token = $this->randomKey();
 		$this->table->type = ROAuth2Credentials::TOKEN;
+		$this->table->expiration_date = time() + $lifetime;
 		$this->table->temporary_expiration_date = 0;
 
 		// Persist the object in the database.
