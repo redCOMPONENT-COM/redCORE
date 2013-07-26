@@ -100,6 +100,8 @@ class ROAuth2Response
 			}
 		}
 
+		$this->setHeader('X-Powered-By', 'JoomlaWebAPI/1.0', true);
+
 		$this->sendHeaders();
 
 		echo $this->getBody();
