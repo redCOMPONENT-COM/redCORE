@@ -36,15 +36,15 @@ class ROAuth2RequestPost
 	/**
 	 * Parse the request POST variables for OAuth parameters.
 	 *
-	 * @return  mixed  Array of OAuth 1.0 parameters if found or boolean false otherwise.
+	 * @return  mixed  Array of OAuth 2.0 parameters if found or boolean false otherwise.
 	 *
 	 * @since   1.0
 	 */
-	public function processPostVars()
+	public function processVars()
 	{
 		// If we aren't handling a post request with urlencoded vars then there is nothing to do.
 		if (strtoupper($this->_input->getMethod()) != 'POST'
-			|| strtolower($this->_input->server->get('CONTENT_TYPE', '')) != 'application/x-www-form-urlencoded')
+				|| !strpos($this->_input->server->get('CONTENT_TYPE', ''), 'x-www-form-urlencoded') )
 		{
 			return false;
 		}
@@ -55,9 +55,9 @@ class ROAuth2RequestPost
 		// Iterate over the reserved parameters and look for them in the POST variables.
 		foreach (ROAuth2Request::getReservedParameters() as $k)
 		{
-			if ($this->_input->post->getString($k, false))
+			if ($this->_input->post->getString('oauth_'.$k, false))
 			{
-				$parameters[$k] = trim($this->_input->post->getString($k));
+				$parameters['OAUTH_'.strtoupper($k)] = trim($this->_input->post->getString('oauth_'.$k));
 			}
 		}
 
@@ -66,6 +66,8 @@ class ROAuth2RequestPost
 		{
 			return false;
 		}
+
+//print_r($parameters);
 
 		return $parameters;
 	}

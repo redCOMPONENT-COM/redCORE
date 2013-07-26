@@ -159,4 +159,30 @@ class ROAuth2RequestHeader
 		return $headers;
 	}
 
+	/**
+	 * Authenticate an identity using HTTP Basic authentication for the request.
+	 *
+	 * @return  integer  Identity ID for the authenticated identity.
+	 *
+	 * @since   1.0
+	 */
+	protected function doBasicAuthentication()
+	{
+		// If we have basic auth information attempt to authenticate.
+		$username = $this->_input->server->getString('OAUTH_CLIENT_ID');
+
+		if ($username)
+		{
+			$password = $this->_input->server->getString('PHP_AUTH_PW');
+
+			$identityId = $this->doPasswordAuthentication($username, $password);
+
+			return $identityId;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
 }
