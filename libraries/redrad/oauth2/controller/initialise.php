@@ -84,8 +84,7 @@ class ROAuth2ControllerInitialise extends ROAuth2ControllerBase
 
 		// Build the response for the client.
 		$response = array(
-			'oauth_code' => $credentials->getAccessToken(),
-			//'oauth_client_secret' => $credentials->getClientSecret(),
+			'oauth_code' => $credentials->getTemporaryToken(),
 			'oauth_state' => true
 		);
 

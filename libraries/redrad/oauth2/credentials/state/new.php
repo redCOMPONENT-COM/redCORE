@@ -82,7 +82,7 @@ class ROAuth2CredentialsStateNew extends ROAuth2CredentialsState
 		$this->table->callback_url = $callbackUrl;
 		$this->table->client_id = $clientId;
 		$this->table->client_secret = $clientSecret;
-		$this->table->access_token = $this->randomKey();
+		$this->table->temporary_token = $this->randomKey();
 		$this->table->resource_uri = $callbackUrl;
 		$this->table->type = ROAuth2Credentials::TEMPORARY;
 		$this->table->temporary_expiration_date = time() + $lifetime;

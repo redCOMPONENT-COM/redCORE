@@ -146,6 +146,18 @@ class ROAuth2Credentials
 	}
 
 	/**
+	 * Get the temporary token secret.
+	 *
+	 * @return  string
+	 *
+	 * @since   1.0
+	 */
+	public function getTemporaryToken()
+	{
+		return $this->_state->temporary_token;
+	}
+
+	/**
 	 * Get the token secret.
 	 *
 	 * @return  string
@@ -156,19 +168,6 @@ class ROAuth2Credentials
 	{
 		return $this->_state->access_token;
 	}
-
-	/**
-	 * Get the token secret.
-	 *
-	 * @return  string
-	 *
-	 * @since   1.0
-	 */
-	public function getResourceToken()
-	{
-		return $this->_state->resource_token;
-	}
-
 
 	/**
 	 * Get the token secret.
@@ -273,8 +272,6 @@ class ROAuth2Credentials
 
 		// Cast the type for validation.
 		$this->_table->type = (int) $this->_table->type;
-
-echo "\n{{$this->_table->type}}\n";
 
 		// If we are loading a temporary set of credentials load that state.
 		if ($this->_table->type === self::TEMPORARY)

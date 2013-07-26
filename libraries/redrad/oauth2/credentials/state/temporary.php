@@ -34,7 +34,6 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 	{
 		// Setup the properties for the credentials.
 		$this->table->resource_owner_id = (int) $resourceOwnerId;
-		$this->table->resource_token = $this->randomKey();
 		$this->table->type = ROAuth2Credentials::AUTHORISED;
 
 		if ($lifetime > 0)

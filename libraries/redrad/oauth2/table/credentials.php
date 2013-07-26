@@ -61,9 +61,6 @@ class ROAuth2TableCredentials extends JTable
 	 */
 	public function loadByKey($key)
 	{
-
-echo "\n".JURI::root( true )."\n";
-
 		// Build the query to load the row from the database.
 		$query = $this->_db->getQuery(true);
 		$query->select('*')

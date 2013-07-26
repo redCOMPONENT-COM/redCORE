@@ -9,26 +9,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-/*
-Step 2
-
-   The client redirects Jane's user-agent to the server's Resource Owner
-   Authorization endpoint to obtain Jane's approval for accessing her
-   private photos:
-
-     https://photos.example.net/authorise?oauth_token=hh5s93j4hdidpola
-
-   The server requests Jane to sign in using her username and password
-   and if successful, asks her to approve granting 'printer.example.com'
-   access to her private photos.  Jane approves the request and her
-   user-agent is redirected to the callback URI provided by the client
-   in the previous request (line breaks are for display purposes only):
-
-     http://printer.example.com/ready?
-     oauth_token=hh5s93j4hdidpola&oauth_verifier=hfdp7dh39dks9884
-
- */
-
 /**
  * OAuth Controller class for authorising temporary credentials for the Joomla Platform.
  *
@@ -73,7 +53,7 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 	 */
 	public function execute()
 	{
-		// Verify that we have an OAuth 1.0 application.
+		// Verify that we have an rest api application.
 		if ((!$this->app instanceof ApiApplicationWeb))
 		{
 			throw new LogicException('Cannot perform OAuth 2.0 authorisation without an RestFUL application.');
@@ -93,9 +73,8 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 		$this->app->loadIdentity($client->_identity);
 
 		// Ensure the credentials are temporary.
-		if ($credentials->getType() !== ROAuth2Credentials::TEMPORARY)
+		if ((int) $credentials->getType() !== (int) ROAuth2Credentials::TEMPORARY)
 		{
-echo "ZXZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
 			$this->app->sendInvalidAuthMessage('The token is not for a temporary credentials set.');
 			return;
 		}
@@ -111,16 +90,17 @@ echo "ZXZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ";
 		// Attempt to authorise the credentials for the current user.
 		$credentials->authorise($this->app->getIdentity()->get('id'));
 
+/*
 		if ($credentials->getCallbackUrl() && $credentials->getCallbackUrl() != 'oob')
 		{
 			$this->app->redirect($credentials->getCallbackUrl());
 
 			return;
 		}
-
+*/
 		// Build the response for the client.
 		$response = array(
-			'access_token' => $credentials->getResourceToken(),
+			'access_token' => $credentials->getAccessToken(),
 			'expires_in' => 3600,
 			'refresh_token' => $credentials->getRefreshToken()
 		);
