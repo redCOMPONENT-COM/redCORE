@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Joomla.Platform
+ * @package     RedRAD
  * @subpackage  OAuth2
  *
  * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
@@ -10,9 +10,9 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * OAuth HMAC-SHA1 Signature Method class for the Joomla Platform.
+ * OAuth HMAC-SHA1 Signature Method class for the RedRAD.
  *
- * @package     Joomla.Platform
+ * @package     RedRAD
  * @subpackage  OAuth2
  * @since       1.0
  */

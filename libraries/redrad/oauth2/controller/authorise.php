@@ -1,21 +1,24 @@
 <?php
 /**
- * @package     Joomla.Platform
- * @subpackage  OAuth1
+ * @package     RedRad
+ * @subpackage  OAuth2
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * This work is based on a Louis Landry work about oauth1 server suport for Joomla! Platform.
+ * URL: https://github.com/LouisLandry/joomla-platform/tree/9bc988185ccc3e1c437256cc2c927e49312b3d00/libraries/joomla/oauth1
+ *
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_PLATFORM') or die;
 
 /**
- * OAuth Controller class for authorising temporary credentials for the Joomla Platform.
+ * OAuth Controller class for authorising temporary credentials for the RedRAD.
  *
  * According to RFC 5849, this must be handled using a GET request, so route accordingly. When implementing this in your own
  * app you should provide some means of protection against CSRF attacks.
  *
- * @package     Joomla.Platform
+ * @package     RedRAD
  * @subpackage  OAuth1
  * @since       12.3
  */

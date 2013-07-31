@@ -13,9 +13,9 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * OAuth PLAINTEXT Signature Method class for the Joomla Platform.
+ * OAuth PLAINTEXT Signature Method class for the RedRAD.
  *
- * @package     Joomla.Platform
+ * @package     RedRAD
  * @subpackage  OAuth2
  * @since       1.0
  */

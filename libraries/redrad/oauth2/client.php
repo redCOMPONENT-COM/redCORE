@@ -16,7 +16,7 @@ jimport('joomla.environment.response');
 /**
  * redRAD class for interacting with an OAuth 2.0 server.
  *
- * @package     Joomla.Platform
+ * @package     RedRad
  * @subpackage  OAuth2
  * @since       1.0
  */

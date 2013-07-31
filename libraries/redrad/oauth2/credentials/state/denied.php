@@ -1,18 +1,21 @@
 <?php
 /**
- * @package     Joomla.Platform
+ * @package     RedRad
  * @subpackage  OAuth2
  *
- * @copyright   Copyright (C) 2005 - 2012 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * This work is based on a Louis Landry work about oauth1 server suport for Joomla! Platform.
+ * URL: https://github.com/LouisLandry/joomla-platform/tree/9bc988185ccc3e1c437256cc2c927e49312b3d00/libraries/joomla/oauth1
+ *
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_PLATFORM') or die;
 
 /**
- * OAuth Denied Credentials class for the Joomla Platform
+ * OAuth Denied Credentials class for the RedRAD
  *
- * @package     Joomla.Platform
+ * @package     RedRAD
  * @subpackage  OAuth2
  * @since       1.0
  */

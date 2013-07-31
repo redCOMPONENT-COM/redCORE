@@ -13,9 +13,9 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * OAuth Controller class for initiating temporary credentials for the Joomla Platform.
+ * OAuth Controller class for initiating temporary credentials for the RedRAD.
  *
- * @package     Joomla.Platform
+ * @package     RedRAD
  * @subpackage  OAuth2
  * @since       1.0
  */

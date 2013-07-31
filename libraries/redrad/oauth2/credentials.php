@@ -13,9 +13,9 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * OAuth Credentials base class for the Joomla Platform
+ * OAuth Credentials base class for the RedRad
  *
- * @package     Joomla.Platform
+ * @package     RedRad
  * @subpackage  OAuth2
  * @since       1.0
  */
