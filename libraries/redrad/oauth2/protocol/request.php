@@ -97,7 +97,7 @@ class ROAuth2Request
 	{
 		$parameters = array();
 
-		foreach ($this->_oauth_reserved as $k => $v)
+		foreach (self::$_oauth_reserved as $k => $v)
 		{
 			if (isset($this->$v)) {
 				$parameters[$v] = $this->$v; 
@@ -159,122 +159,6 @@ class ROAuth2Request
 	}
 
 	/**
-	 * Authenticate an identity using OAuth 2.0.  This will validate an OAuth 1.0 message for a valid client,
-	 * credentials if present and signature.  If the message is valid and the credentials are token credentials
-	 * then the resource owner id is returned as the authenticated identity.
-	 *
-	 * @since   1.0
-	 */
-	public function doOAuthAuthentication($password)
-	{
-		// Looking the username header
-		if (isset($this->_headers['PHP_AUTH_USER'])) {
-			$user_decode = base64_decode($this->_headers['PHP_AUTH_USER']);
-		} else if (isset($this->_headers['PHP_HTTP_USER'])) {
-			$user_decode = base64_decode($this->_headers['PHP_HTTP_USER']);
-		} else if (isset($this->_headers['PHP_USER'])) {
-			$user_decode = base64_decode($this->_headers['PHP_USER']);
-		}
-
-		$parts	= explode( ':', $user_decode );
-		$user	= $parts[0];
-
-		// Looking the password header
-		if (isset($this->_headers['PHP_AUTH_PW'])) {
-			$password_decode = base64_decode($this->_headers['PHP_AUTH_PW']);
-		} else if (isset($this->_headers['PHP_HTTP_PW'])) {
-			$password_decode = base64_decode($this->_headers['PHP_HTTP_PW']);
-		} else if (isset($this->_headers['PHP_PW'])) {
-			$password_decode = base64_decode($this->_headers['PHP_PW']);
-		}
-
-		$parts	= explode( ':', $password_decode );
-		$password_clean	= $parts[0];
-
-		// Check the password
-		$parts	= explode( ':', $password );
-		$crypt	= $parts[0];
-
-		$salt	= @$parts[1];
-
-		$testcrypt = JUserHelper::getCryptedPassword($password_clean, $salt);
-
-		if ($crypt != $testcrypt) {
-			$this->_app->sendInvalidAuthMessage('Username or password do not match');
-			exit;
-		}
-
-	} // end method
-
-	/**
-	 * Method to determine whether or not the message signature is valid.
-	 *
-	 * @param   string  $requestUrl        The message's request URL.
-	 * @param   string  $requestMethod     The message's request method.
-	 * @param   string  $clientSecret      The OAuth client's secret.
-	 * @param   string  $credentialSecret  The OAuth credentials' secret.
-	 *
-	 * @return  boolean  True if the message is properly signed.
-	 *
-	 * @since   1.0
-	 */
-	public function isValid($requestUrl, $requestMethod, $clientSecret, $credentialSecret = null)
-	{
-
-//echo "$requestUrl, $requestMethod, $clientSecret, $credentialSecret\n";
-
-		$signature = $this->sign($requestUrl, $requestMethod, $clientSecret, $credentialSecret);
-
-//echo $signature;
-
-/*
-		if ($this->signature_method != 'PLAINTEXT' && !$this->_nonce->validate($this->nonce, $this->consumerKey, $this->timestamp, $this->token))
-		{
-			// The nonce was invalid (either the timestamp was too old or it has already been used).
-			return false;
-		}
-*/
-		//return ($this->signature && ($signature == str_replace(' ', '+', $this->signature)));
-	}
-
-	/**
-	 * Get the message string complete and signed.
-	 *
-	 * @param   string  $requestUrl        The message's request URL.
-	 * @param   string  $requestMethod     The message's request method.
-	 * @param   string  $clientSecret      The OAuth client's secret.
-	 * @param   string  $credentialSecret  The OAuth credentials' secret.
-	 *
-	 * @return  string  The OAuth message signature.
-	 *
-	 * @since   1.0
-	 * @throws  InvalidArgumentException
-	 */
-	public function sign($requestUrl, $requestMethod, $clientSecret, $credentialSecret = null)
-	{
-		// Setup the autoloader for the application classes.
-		JLoader::register('ROAuth2MessageSigner', JPATH_REDRAD.'/oauth2/protocol/signer.php');
-		// Get a message signer object.
-		$signer = ROAuth2MessageSigner::getInstance($this->request->signature_method);
-
-//echo "\n===========\n";
-
-//print_r($signer);
-
-//echo "\n===========\n";
-
-//echo "$requestUrl, $requestMethod, $clientSecret";
-
-		// Get the base string for signing.
-		$baseString = $this->request->_fetchStringForSigning($requestUrl, $requestMethod);
-
-//echo "\n\n$baseString\n\n";
-
-		return $signer->sign($baseString, $this->request->encode($clientSecret), $this->request->encode($credentialSecret));
-	}
-
-
-	/**
 	 * Check if the incoming request is signed using OAuth 2.0.  To determine this, OAuth parameters are searched
 	 * for in the order of precedence as follows:
 	 *
@@ -332,80 +216,7 @@ class ROAuth2Request
 		// TODO: Check errors
 
 		return false;
-
-/*
-		// If we didn't find an Authorization header or didn't find anything in it try the POST variables.
-		$authorization = $requestPost->processVars();
-
-		if ($authorization)
-		{
-			// Bind the found parameters to the OAuth 2.0 message.
-			$this->setParameters($authorization);
-
-			//return true;
-		}
-
-		// If we didn't find an Authorization header or didn't find anything in it try the POST variables.
-		$authorization = $requestGet->processVars();
-
-		if ($authorization)
-		{
-			// Bind the found parameters to the OAuth 2.0 message.
-			$this->setParameters($authorization);
-
-			//return true;
-		}
-
-		return false;
-*/
-
-
-
-	} // end method
-
-
-
-
-	function validateACL()
-	{
-
-/*
-		// Atempt to validate the OAuth message signature.
-		$valid = $this->isValid(
-				$this->_app->get('uri.request'),
-				$this->_input->getMethod(),
-				$client->secret,
-				$credentials ? $credentials->getSecret() : null,
-				$credentials ? $credentials->getVerifierKey() : null
-		);
-
-		// If the OAuth message signature isn't valid set the failure message and return.
-		if (!$valid)
-		{
-			$this->_app->sendInvalidAuthMessage('Invalid OAuth request signature.');
-
-			return 0;
-		}
-
-		// If the credentials are valid token credentials let's get the resource owner identity id.
-		if ($credentials && ($credentials->getType() === ROAuth2Credentials::TOKEN))
-		{
-			return $credentials->getResourceOwnerId();
-		}
-*/
-	}
-
-	/**
-	 * Perform a password authentication challenge.
-	 *
-	 * @param   string  $username  The username.
-	 * @param   string  $password  The password.
-	 *
-	 * @return  integer  The authenticated user ID, or 0.
-	 *
-	 * @since   1.0
-	 */
-	//abstract protected function doPasswordAuthentication($username, $password);
+	} // end method 
 
 	/**
 	 * Encode a string according to the RFC3986

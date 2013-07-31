@@ -54,10 +54,7 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 	public function execute()
 	{
 		// Verify that we have an rest api application.
-		if ((!$this->app instanceof ApiApplicationWeb))
-		{
-			throw new LogicException('Cannot perform OAuth 2.0 authorisation without an RestFUL application.');
-		}
+		$this->initialise();
 
 		// Generate temporary credentials for the client.
 		$credentials = $this->createCredentials();
@@ -67,7 +64,7 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 		$client = $this->fetchClient($this->request->client_id);
 
 		// Doing authentication using Joomla! users
-		$this->request->doOAuthAuthentication($client->_identity->password);
+		$credentials->doJoomlaAuthentication($client, $this->request->_headers);
 
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);
@@ -75,24 +72,19 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 		// Ensure the credentials are temporary.
 		if ( (int) $credentials->getType() !== ROAuth2Credentials::TEMPORARY)
 		{
-			$response = array(
-				'error' => 'invalid_request',
-				'error_description' => 'The token is not for a temporary credentials set.'
-			);
-
-			$this->response->setHeader('status', '302')
-				->setBody(json_encode($response))
-				->respond();
-
-			return;
+			$this->respondError(400, 'invalid_request', 'The token is not for a temporary credentials set.');
 		}
 
 		// Verify that we have a signed in user.
 		if ($this->app->getIdentity()->get('guest'))
 		{
-			$this->app->sendInvalidAuthMessage('You must first sign in.');
+			$this->respondError(400, 'unauthorized_client', 'You must first sign in.');
+		}
 
-			return;
+		// Verify that we have a signed in user.
+		if ($credentials->getTemporaryToken() !==  $this->request->code)
+		{
+			$this->respondError(400, 'invalid_grant', 'Temporary token is not valid');
 		}
 
 		// Attempt to authorise the credentials for the current user.

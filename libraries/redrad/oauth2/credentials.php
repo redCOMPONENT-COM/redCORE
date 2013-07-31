@@ -58,13 +58,17 @@ class ROAuth2Credentials
 	 *
 	 * @since   1.0
 	 */
-	public function __construct(ROAuth2TableCredentials $table = null)
+	public function __construct($signMethod = 'PLAINTEXT', ROAuth2TableCredentials $table = null)
 	{
 		// Setup the database object.
 		$this->_table = $table ? $table : JTable::getInstance('Credentials', 'ROAuth2Table');
 
 		// Assume the base state for any credentials object to be new.
 		$this->_state = new ROAuth2CredentialsStateNew($this->_table);
+
+		// Setup the correct signer
+		JLoader::register('ROAuth2MessageSigner', JPATH_REDRAD.'/oauth2/protocol/signer.php');
+		$this->_signer = ROAuth2MessageSigner::getInstance($signMethod);
 	}
 
 	/**
@@ -244,7 +248,24 @@ class ROAuth2Credentials
 	 */
 	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600)
 	{
+		$clientSecret = $this->_signer->clientDecode($clientSecret);
+
 		$this->_state = $this->_state->initialise($clientId, $clientSecret, $callbackUrl);
+	}
+
+	/**
+	 * Perform a password authentication challenge.
+	 *
+	 * @param   ROAuth2Client  $client   The client.
+	 * @param   string  			 $headers  The password.
+	 *
+	 * @return  boolean  True if authentication is ok, false if not
+	 *
+	 * @since   1.0
+	 */
+	public function doJoomlaAuthentication(ROAuth2Client $client, $headers)
+	{
+		return $this->_signer->doJoomlaAuthentication($client, $headers);
 	}
 
 	/**
@@ -259,8 +280,11 @@ class ROAuth2Credentials
 	 */
 	public function load($key)
 	{
+		// Initialise credentials_id
 		$this->_table->credentials_id = 0;
-
+		// Get the correct client secret key
+		$key = $this->_signer->clientDecode($key);
+		// Load the credential
 		$this->_table->loadByKey($key);
 
 		// If nothing was found we will setup a new credential state object.

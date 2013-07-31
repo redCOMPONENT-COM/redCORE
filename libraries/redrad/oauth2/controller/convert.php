@@ -51,51 +51,31 @@ class ROAuth2ControllerConvert extends ROAuth2ControllerBase
 	public function execute()
 	{
 		// Verify that we have an OAuth 2.0 application.
-		if ((!$this->app instanceof ApiApplicationWeb))
-		{
-			throw new LogicException('Cannot perform OAuth 2.0 authorisation without an OAuth 2.0 application.');
-		}
-
-		// We need a valid signature to do initialisation.
-		if (!$this->request->client_id || !$this->request->client_secret || !$this->request->signature_method )
-		{
-			$this->app->sendInvalidAuthMessage('Invalid OAuth request signature.');
-
-			return 0;
-		}
+		$this->initialise();
 
 		// Get the credentials for the request.
 		$credentials = $this->createCredentials();
 		$credentials->load($this->request->client_secret);
 
+		// Getting the client object
+		$client = $this->fetchClient($this->request->client_id);
+
+		// Doing authentication using Joomla! users
+		$credentials->doJoomlaAuthentication($client, $this->request->_headers);
+
+		// Load the JUser class on application for this client
+		$this->app->loadIdentity($client->_identity);
+
 		// Ensure the credentials are authorised.
 		if ($credentials->getType() === ROAuth2Credentials::TOKEN)
 		{
-			$response = array(
-				'error' => 'invalid_request',
-				'error_description' => 'The token is not for a temporary credentials set.'
-			);
-
-			$this->response->setHeader('status', '302')
-				->setBody(json_encode($response))
-				->respond();
-
-			return;
+			$this->respondError(400, 'invalid_request', 'The token is not for a temporary credentials set.');
 		}
 
 		// Ensure the credentials are authorised.
 		if ($credentials->getType() !== ROAuth2Credentials::AUTHORISED)
 		{
-			$response = array(
-				'error' => 'invalid_request',
-				'error_description' => 'The token has not been authorised by the resource owner.'
-			);
-
-			$this->response->setHeader('status', '302')
-				->setBody(json_encode($response))
-				->respond();
-
-			return;
+			$this->respondError(400, 'invalid_request', 'The token has not been authorised by the resource owner.');
 		}
 
 		// Convert the credentials to valid Token credentials for requesting protected resources.
