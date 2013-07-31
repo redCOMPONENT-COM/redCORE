@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Base
  * @since       1.0
  */
-class RTableNested extends JTable
+class RTableNested extends JTableNested
 {
 	/**
 	 * Prefix to add to log files
@@ -87,6 +87,12 @@ class RTableNested extends JTable
 	 */
 	public function checkIn($pk = null)
 	{
+		// If there is no checked_out or checked_out_time field, just return true.
+		if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time'))
+		{
+			return true;
+		}
+
 		$k = $this->_tbl_key;
 		$pk = (is_null($pk)) ? $this->$k : $pk;
 
