@@ -16,7 +16,7 @@ jimport('joomla.environment.response');
 /**
  * redRAD class for interacting with an OAuth 2.0 server.
  *
- * @package     Joomla.Platform
+ * @package     RedRad
  * @subpackage  OAuth2
  * @since       1.0
  */
@@ -24,25 +24,25 @@ class RClientOAuth2
 {
 	/**
 	 * @var    JRegistry  Options for the RClientOAuth2 object.
-	 * @since  12.3
+	 * @since  1.0
 	 */
 	protected $options;
 
 	/**
 	 * @var    JHttp  The HTTP client object to use in sending HTTP requests.
-	 * @since  12.3
+	 * @since  1.0
 	 */
 	protected $http;
 
 	/**
 	 * @var    JInput  The input object to use in retrieving GET/POST data.
-	 * @since  12.3
+	 * @since  1.0
 	 */
 	protected $input;
 
 	/**
 	 * @var    JApplicationWeb  The application object to send HTTP headers for redirects.
-	 * @since  12.3
+	 * @since  1.0
 	 */
 	protected $application;
 
@@ -54,7 +54,7 @@ class RClientOAuth2
 	 * @param   JInput           $input        The input object
 	 * @param   JApplicationWeb  $application  The application object
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function __construct(JRegistry $options = null, JHttp $http = null, JInput $input = null, JApplicationWeb $application = null)
 	{
@@ -258,7 +258,7 @@ class RClientOAuth2
 	 *
 	 * @return  string
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	protected function headerEncode($string, $key, $base64 = false)
 	{
@@ -278,7 +278,7 @@ class RClientOAuth2
 	 *
 	 * @return  string
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	protected function randomKey($unique = false)
 	{
@@ -292,60 +292,12 @@ class RClientOAuth2
 		return $str;
 	}
 
-
-	/**
-	 * Get the access token or redict to the authentication URL.
-	 *
-	 * @return  string  The access token
-	 *
-	 * @since   12.3
-	 */
-	public function authenticate2()
-	{
-		if ($data['code'] = $this->input->get('code', false, 'raw'))
-		{
-			$data['grant_type'] = 'authorization_code';
-			$data['redirect_uri'] = $this->getOption('redirecturi');
-			$data['client_id'] = $this->getOption('clientid');
-			$data['client_secret'] = $this->getOption('clientsecret');
-			$response = $this->http->post($this->getOption('tokenurl'), $data);
-
-			if ($response->code >= 200 && $response->code < 400)
-			{
-
-				if ($response->headers['Content-Type'] == 'application/json')
-				{
-					$token = array_merge(json_decode($response->body, true), array('created' => time()));
-				}
-				else
-				{
-					parse_str($response->body, $token);
-					$token = array_merge($token, array('created' => time()));
-				}
-
-				$this->setToken($token);
-
-				return $token;
-			}
-			else
-			{
-				throw new RuntimeException('Error code ' . $response->code . ' received requesting access token: ' . $response->body . '.');
-			}
-		}
-
-		if ($this->getOption('sendheaders'))
-		{
-			$this->application->redirect($this->createUrl());
-		}
-		return false;
-	}
-
 	/**
 	 * Verify if the client has been authenticated
 	 *
 	 * @return  boolean  Is authenticated
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function isAuthenticated()
 	{
@@ -370,7 +322,7 @@ class RClientOAuth2
 	 *
 	 * @return  JHttpResponse  The HTTP response
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function createUrl()
 	{
@@ -431,7 +383,7 @@ class RClientOAuth2
 	 *
 	 * @return  string  The URL.
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function query($url, $data = null, $headers = array(), $method = 'get', $timeout = null)
 	{
@@ -495,7 +447,7 @@ class RClientOAuth2
 	 *
 	 * @return  mixed  The option value
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function getOption($key)
 	{
@@ -510,7 +462,7 @@ class RClientOAuth2
 	 *
 	 * @return  RClientOAuth2  This object for method chaining
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function setOption($key, $value)
 	{
@@ -524,7 +476,7 @@ class RClientOAuth2
 	 *
 	 * @return  array  The access token
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function getAccessToken()
 	{
@@ -538,7 +490,7 @@ class RClientOAuth2
 	 *
 	 * @return  RClientOAuth2  This object for method chaining
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function setToken($value)
 	{
@@ -559,7 +511,7 @@ class RClientOAuth2
 	 *
 	 * @return  array  The new access token
 	 *
-	 * @since   12.3
+	 * @since   1.0
 	 */
 	public function refreshToken($token = null)
 	{
