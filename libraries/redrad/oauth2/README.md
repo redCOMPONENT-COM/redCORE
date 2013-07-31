@@ -20,6 +20,7 @@ Also this library is based on RFC 6849 (http://tools.ietf.org/html/rfc6749)
 
 This is the basic graph of how is the process of the authentication using OAuth 2.0:
 
+```
  +-------------------------+                                         +-----------------------------+
  |      Client             |                                         |         Server              |
  |-------------------------|                                         |-----------------------------|
@@ -40,4 +41,5 @@ This is the basic graph of how is the process of the authentication using OAuth 
  | resources.              |                                         |                             |
  |                         |                                         |                             |
  |                         |                                         |                             |
- +---- --------------------+                                         +-----------------------------+
+ +-------------------------+                                         +-----------------------------+
+```
