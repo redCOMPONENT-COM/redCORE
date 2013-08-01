@@ -312,8 +312,8 @@ abstract class JHtmlRgrid
 		$inactive_title = JText::_('JLIB_HTML_CHECKED_OUT') . '::' . $text . '<br />' . $date . '<br />' . $time;
 
 		return self::action(
-			$i, 'checkin', $prefix, JText::_('JLIB_HTML_CHECKED_OUT'), $active_title, $inactive_title, true, 'checkedout',
-			'checkedout', $enabled, false, $checkbox
+			$i, 'checkin', $prefix, JText::_('JLIB_HTML_CHECKED_OUT'), $active_title, $inactive_title, true, 'lock',
+			'lock', $enabled, false, $checkbox
 		);
 	}
 
