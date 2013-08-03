@@ -177,6 +177,8 @@ class ROAuth2Request
 	 */
 	public function fetchMessageFromRequest()
 	{
+		// Init flag
+		$flag = false;
 		// Setup the autoloader for the application classes.
 		JLoader::register('ROAuth2RequestHeader', JPATH_REDRAD.'/oauth2/protocol/request/header.php');
 		// Loading the response class
@@ -193,6 +195,8 @@ class ROAuth2Request
 			{
 				// Bind the found parameters to the OAuth 2.0 message.
 				$this->setParameters($this->_headers);
+
+				$flag = true;
 			}
 		}
 
@@ -213,12 +217,12 @@ class ROAuth2Request
 			// Bind the found parameters to the OAuth 2.0 message.
 			$this->setParameters($params);
 
-			return true;
+			$flag = true;
 		}
 
 		// TODO: Check errors
 
-		return false;
+		return $flag;
 	} // end method 
 
 	/**

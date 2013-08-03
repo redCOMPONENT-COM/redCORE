@@ -153,6 +153,17 @@ class ROAuth2RequestHeader
         $headers['AUTHORIZATION'] = 'Basic '.base64_encode($headers['PHP_USER'].':'.$headers['PHP_PW']);
     }
 
+		// Iterate over the reserved parameters and look for them in the POST variables.
+		foreach (ROAuth2Request::getReservedParameters() as $k)
+		{
+			$name = 'HTTP_OAUTH_'.strtoupper($k);
+
+			if ( isset($server[$name]) )
+			{
+				$headers[$name] = trim($server[$name]);
+			}
+		}
+
 		// If we didn't find anything return false.
 		if (empty($headers))
 		{
