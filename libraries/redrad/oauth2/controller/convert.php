@@ -58,7 +58,7 @@ class ROAuth2ControllerConvert extends ROAuth2ControllerBase
 
 		// Get the credentials for the request.
 		$credentials = $this->createCredentials();
-		$credentials->load($this->request->client_secret);
+		$credentials->load($this->request->client_secret, $this->request->_fetchRequestUrl());
 
 		// Getting the client object
 		$client = $this->fetchClient($this->request->client_id);

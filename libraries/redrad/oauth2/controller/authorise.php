@@ -61,7 +61,7 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 
 		// Generate temporary credentials for the client.
 		$credentials = $this->createCredentials();
-		$credentials->load($this->request->client_secret);
+		$credentials->load($this->request->client_secret, $this->request->_fetchRequestUrl());
 
 		// Getting the client object
 		$client = $this->fetchClient($this->request->client_id);
@@ -71,6 +71,12 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);
+
+		// Verify that we have a signed in user.
+		if ($credentials->getTemporaryToken() !==  $this->request->code)
+		{
+			$this->respondError(400, 'invalid_grant', 'Temporary token is not valid');
+		}
 
 		// Ensure the credentials are temporary.
 		if ( (int) $credentials->getType() !== ROAuth2Credentials::TEMPORARY)
@@ -82,12 +88,6 @@ class ROAuth2ControllerAuthorise extends ROAuth2ControllerBase
 		if ($this->app->getIdentity()->get('guest'))
 		{
 			$this->respondError(400, 'unauthorized_client', 'You must first sign in.');
-		}
-
-		// Verify that we have a signed in user.
-		if ($credentials->getTemporaryToken() !==  $this->request->code)
-		{
-			$this->respondError(400, 'invalid_grant', 'Temporary token is not valid');
 		}
 
 		// Attempt to authorise the credentials for the current user.

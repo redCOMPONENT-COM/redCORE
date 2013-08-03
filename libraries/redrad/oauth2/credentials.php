@@ -278,14 +278,14 @@ class ROAuth2Credentials
 	 * @since   1.0
 	 * @throws  InvalidArgumentException
 	 */
-	public function load($key)
+	public function load($key, $uri)
 	{
 		// Initialise credentials_id
 		$this->_table->credentials_id = 0;
 		// Get the correct client secret key
 		$key = $this->_signer->clientDecode($key);
 		// Load the credential
-		$this->_table->loadByKey($key);
+		$this->_table->loadByKey($key, $uri);
 
 		// If nothing was found we will setup a new credential state object.
 		if (!$this->_table->credentials_id)
