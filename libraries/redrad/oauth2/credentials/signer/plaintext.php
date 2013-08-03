@@ -39,13 +39,11 @@ class ROAuth2MessageSignerPlaintext extends ROAuth2MessageSigner
 	}
 
 	/**
-	 * Calculate and return the OAuth message signature using PLAINTEXT
+	 * Decode the client secret key
 	 *
-	 * @param   string  $baseString        The OAuth message as a normalized base string.
 	 * @param   string  $clientSecret      The OAuth client's secret.
-	 * @param   string  $credentialSecret  The OAuth credentials' secret.
 	 *
-	 * @return  string  The OAuth message signature.
+	 * @return  string  The decoded key
 	 *
 	 * @since   1.0
 	 * @throws  InvalidArgumentException

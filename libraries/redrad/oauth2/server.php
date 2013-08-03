@@ -13,6 +13,11 @@
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
+JLoader::register('ROAuth2ControllerInitialise', JPATH_REDRAD.'/oauth2/controller/initialise.php');
+JLoader::register('ROAuth2ControllerAuthorise', JPATH_REDRAD.'/oauth2/controller/authorise.php');
+JLoader::register('ROAuth2ControllerConvert', JPATH_REDRAD.'/oauth2/controller/convert.php');
+JLoader::register('ROAuth2ControllerResource', JPATH_REDRAD.'/oauth2/controller/resource.php');
+
 /**
  * ROAuth2Request class
  *
@@ -103,19 +108,16 @@ class ROAuth2Server
 			{
 				case 'temporary':
 
-					JLoader::register('ROAuth2ControllerInitialise', JPATH_REDRAD.'/oauth2/controller/initialise.php');
 					$controller = new ROAuth2ControllerInitialise($this->request);
 
 					break;
 				case 'authorise':
 
-					JLoader::register('ROAuth2ControllerAuthorise', JPATH_REDRAD.'/oauth2/controller/authorise.php');
 					$controller = new ROAuth2ControllerAuthorise($this->request);
 
 					break;
 				case 'token':
 
-					JLoader::register('ROAuth2ControllerConvert', JPATH_REDRAD.'/oauth2/controller/convert.php');
 					$controller = new ROAuth2ControllerConvert($this->request);
 
 					break;
@@ -124,9 +126,20 @@ class ROAuth2Server
 					break;
 			}
 
+			// Execute the controller
 			$controller->execute();
 
+			// Exit 
+			exit;
+
 		} // end if
+
+		// If we found an REST message somewhere we need to set the URI and request method.
+		if ($found && isset($this->request->access_token) )
+		{
+			$controller = new ROAuth2ControllerResource($this->request);
+			$controller->execute();
+		}
 
 		return $found;
 	} // end method

@@ -67,7 +67,7 @@ class ROAuth2Credentials
 		$this->_state = new ROAuth2CredentialsStateNew($this->_table);
 
 		// Setup the correct signer
-		JLoader::register('ROAuth2MessageSigner', JPATH_REDRAD.'/oauth2/protocol/signer.php');
+		JLoader::register('ROAuth2MessageSigner', JPATH_REDRAD.'/oauth2/credentials/signer.php');
 		$this->_signer = ROAuth2MessageSigner::getInstance($signMethod);
 	}
 

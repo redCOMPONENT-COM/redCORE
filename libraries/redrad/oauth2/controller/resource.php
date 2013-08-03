@@ -54,43 +54,19 @@ class ROAuth2ControllerResource extends ROAuth2ControllerBase
 	public function execute()
 	{
 		// Verify that we have an OAuth 2.0 application.
-		if ((!$this->app instanceof ApiApplicationWeb))
-		{
-			throw new LogicException('Cannot perform OAuth 2.0 authorisation without an OAuth 2.0 application.');
-		}
-
-		// We need a valid signature to do initialisation.
-		if (!$this->request->client_id || !$this->request->client_secret || !$this->request->signature_method )
-		{
-			$this->app->sendInvalidAuthMessage('Invalid OAuth request signature.');
-
-			return 0;
-		}
+		$this->initialise();
 
 		// Generate temporary credentials for the client.
-		$credentials = $this->createCredentials();
+		$credentials = new ROAuth2Credentials($this->request->signature_method);
 
 		// Getting the client object
 		$client = $this->fetchClient($this->request->client_id);
 
 		// Doing authentication using Joomla! users
-		$this->request->doOAuthAuthentication($client->_identity->password);
+		$credentials->doJoomlaAuthentication($client, $this->request->_headers);
 
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);
-
-/*
-		// Build the response for the client.
-		$response = array(
-			'oauth_code' => $credentials->getTemporaryToken(),
-			'oauth_state' => true
-		);
-
-		// Set the response code and body.
-		$this->response->setHeader('status', '200')
-			->setBody(json_encode($response))
-			->respond();
-*/
 	}
 
 } // end class
