@@ -42,8 +42,6 @@ class ROAuth2TableUsers extends JTableUser
 		$this->_db->setQuery($query);
 		$properties = $this->_db->loadAssoc();
 
-//print_r($properties);
-
 		// Iterate over any the loaded properties and bind them to the object.
 		if ($properties)
 		{

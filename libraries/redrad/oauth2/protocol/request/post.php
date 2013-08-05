@@ -70,9 +70,7 @@ class ROAuth2RequestPost
 			return false;
 		}
 
-//print_r($parameters);
-
 		return $parameters;
 	}
 
-}
+} // end class

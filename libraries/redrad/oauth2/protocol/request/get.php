@@ -146,8 +146,6 @@ class ROAuth2RequestGet
 			$this->encode(implode('&', $base))
 		);
 
-//print_r(implode('&', $base));
-
 		return implode('&', $base);
 	} // end method
 
