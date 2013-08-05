@@ -65,6 +65,29 @@ class RClientOAuth2
 	}
 
 	/**
+	 * Fetch the access token making the OAuth 2.0 method process
+	 *
+	 * @return	string	Returns the JSON response from the server
+	 * @since	1.0
+	 * @throws	Exception
+	 */
+	public function fetchAccessToken()
+	{
+		// @TODO: error handling
+
+		// Temporary token
+		$temporary = (object) $this->getTemporary();
+
+		// Get authorization token
+		$authenticate = (object) $this->getAuthentication($temporary->oauth_code);
+
+		// Get access token
+		$token = (object) $this->getToken($authenticate->oauth_code);
+
+		return $token;
+	}
+
+	/**
 	 * Get the raw data for this part of the upgrade.
 	 *
 	 * @return	array	Returns a reference to the source data array.
@@ -73,11 +96,12 @@ class RClientOAuth2
 	 */
 	public function getTemporary()
 	{
-		// Add GET parameters to URL
-		$url_temp = $this->options->get('url')."?oauth_response_type=temporary";
+		// Get the headers
+		$headers = $this->getRestHeaders();
+		$headers['oauth_response_type'] = 'temporary';
 
 		// Perform the GET request via HTTP
-		$response = $this->http->get($url_temp, $this->getRestHeaders());
+		$response = $this->http->get($this->options->get('url'), $headers);
 
 		if ($response->code >= 200 && $response->code < 400)
 		{
@@ -91,8 +115,6 @@ class RClientOAuth2
 				parse_str($response->body, $token);
 				$token = array_merge($token, array('created' => time()));
 			}
-
-			$this->setToken($token);
 
 			return $token;
 		}
@@ -135,8 +157,6 @@ class RClientOAuth2
 				parse_str($response->body, $token);
 				$token = array_merge($token, array('created' => time()));
 			}
-
-			$this->setToken($token);
 
 			return $token;
 		}
@@ -191,6 +211,60 @@ class RClientOAuth2
 	}
 
 	/**
+	 * Refresh the access token instance.
+	 *
+	 * @param   string  $token  The refresh token
+	 *
+	 * @return  array  The new access token
+	 *
+	 * @since   1.0
+	 */
+	public function refreshToken($token = null)
+	{
+		if (!$this->getOption('userefresh'))
+		{
+			throw new RuntimeException('Refresh token is not supported for this OAuth instance.');
+		}
+
+		if (!$token)
+		{
+			$token = $this->getToken();
+
+			if (!array_key_exists('refresh_token', $token))
+			{
+				throw new RuntimeException('No refresh token is available.');
+			}
+			$token = $token['refresh_token'];
+		}
+		$data['grant_type'] = 'refresh_token';
+		$data['refresh_token'] = $token;
+		$data['client_id'] = $this->getOption('clientid');
+		$data['client_secret'] = $this->getOption('clientsecret');
+		$response = $this->http->post($this->getOption('tokenurl'), $data);
+
+		if ($response->code >= 200 || $response->code < 400)
+		{
+			if ($response->headers['Content-Type'] == 'application/json')
+			{
+				$token = array_merge(json_decode($response->body, true), array('created' => time()));
+			}
+			else
+			{
+				parse_str($response->body, $token);
+				$token = array_merge($token, array('created' => time()));
+			}
+
+			$this->setToken($token);
+
+			return $token;
+		}
+		else
+		{
+			throw new Exception('Error code ' . $response->code . ' received refreshing token: ' . $response->body . '.');
+		}
+	}
+
+	/**
 	 * Get the raw data for this part of the upgrade.
 	 *
 	 * @return	array	Returns a reference to the source data array.
@@ -199,121 +273,18 @@ class RClientOAuth2
 	 */
 	public function getResource($code)
 	{
-		$data = $this->getRestHeaders();
+		// Add GET parameters to URL
+		$url = $this->options->get('url')."?oauth_access_token={$code}";
 
-		$data['oauth_access_token'] = $code;
-		//$data['oauth_response_type'] = 'token';
+		$response = $this->http->get($url, $this->getRestHeaders());
 
-		$resource_response = $this->http->post($this->options->get('url'), $data, $headers);
-		$resource_decode = json_decode($token_response->body);
-
-		if ($resource_response->code != '200' || $resource_response->code != '301')
+		if ($response->code >= 200 && $response->code < 400)
 		{
-			$error = isset($resource_decode->error_description) ? $resource_decode->error_description : 'ERROR';
-			throw new LogicException($resource_decode->error_description);
-		}
-
-		return $resource_decode;
-	}
-
-	/**
-	 * 
-	 *
-	 * @return  array
-	 *
-	 * @since   1.0
-	 */
-	protected function getRestHeaders($form = false)
-	{
-		// Set the user and password to headers
-		$rest_username = $this->options->get('username');
-		$rest_password = $this->options->get('password');
-		//$rest_key = $this->randomKey();
-		$rest_key = '8af5f852528512f16379afb6b71fb8ec';
-
-		// Encode the headers for REST
-		$user_encode = $this->headerEncode($rest_username, $rest_key);
-		$pw_encode = $this->headerEncode($rest_password, $rest_key);
-		$authorization = $this->headerEncode($user_encode, $pw_encode, true);
-		$client_secret = $this->headerEncode($this->randomKey(), $rest_key);
-
-		$headers = array(
-			'Authorization' => 'Basic ' . base64_encode($authorization),
-			'oauth_client_id' => base64_encode($user_encode),
-			'oauth_client_secret' => base64_encode($client_secret),
-			'oauth_signature_method' => $this->options->get('signature_method')
-		);
-
-		if ($form === true) {
-			$headers['Content-Type'] = 'application/x-www-form-urlencoded';
-		}
-//print_r($headers);
-		return $headers;
-	}
-
-	/**
-	 * Generate a random (and optionally unique) key.
-	 *
-	 * @param   boolean  $unique  True to enforce uniqueness for the key.
-	 *
-	 * @return  string
-	 *
-	 * @since   1.0
-	 */
-	protected function headerEncode($string, $key, $base64 = false)
-	{
-		if ($base64 === true) {
-			$return = base64_encode($string).":".base64_encode($key);
-		}else{
-			$return = "{$string}:{$key}";
-		}
-
-		return $return;
-	}
-
-	/**
-	 * Generate a random (and optionally unique) key.
-	 *
-	 * @param   boolean  $unique  True to enforce uniqueness for the key.
-	 *
-	 * @return  string
-	 *
-	 * @since   1.0
-	 */
-	protected function randomKey($unique = false)
-	{
-		$str = md5(uniqid(rand(), true));
-
-		if ($unique)
-		{
-			list ($u, $s) = explode(' ', microtime());
-			$str .= dechex($u) . dechex($s);
-		}
-		return $str;
-	}
-
-	/**
-	 * Verify if the client has been authenticated
-	 *
-	 * @return  boolean  Is authenticated
-	 *
-	 * @since   1.0
-	 */
-	public function isAuthenticated()
-	{
-		$token = $this->getToken();
-
-		if (!$token || !array_key_exists('access_token', $token))
-		{
-			return false;
-		}
-		elseif (array_key_exists('expires_in', $token) && $token['created'] + $token['expires_in'] < time() + 20)
-		{
-			return false;
+			return $response->body;
 		}
 		else
 		{
-			return true;
+			throw new RuntimeException('Error code ' . $response->code . ' received requesting authentication: ' . $response->body . '.');
 		}
 	}
 
@@ -505,56 +476,104 @@ class RClientOAuth2
 	}
 
 	/**
-	 * Refresh the access token instance.
+	 * 
 	 *
-	 * @param   string  $token  The refresh token
-	 *
-	 * @return  array  The new access token
+	 * @return  array
 	 *
 	 * @since   1.0
 	 */
-	public function refreshToken($token = null)
+	protected function getRestHeaders($form = false)
 	{
-		if (!$this->getOption('userefresh'))
-		{
-			throw new RuntimeException('Refresh token is not supported for this OAuth instance.');
+		// Set the user and password to headers
+		$rest_username = $this->options->get('username');
+		$rest_password = $this->options->get('password');
+		$rest_key = $this->options->get('rest_key');
+
+		// Encode the headers for REST
+		$user_encode = $this->headerEncode($rest_username, $rest_key);
+		$pw_encode = $this->headerEncode($rest_password, $rest_key);
+		$authorization = $this->headerEncode($user_encode, $pw_encode, true);
+		$client_secret = $this->headerEncode($this->randomKey(), $rest_key);
+
+		$headers = array(
+			'Authorization' => 'Basic ' . base64_encode($authorization),
+			'oauth_client_id' => base64_encode($user_encode),
+			'oauth_client_secret' => base64_encode($client_secret),
+			'oauth_signature_method' => $this->options->get('signature_method')
+		);
+
+		if ($form === true) {
+			$headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 
-		if (!$token)
-		{
-			$token = $this->getToken();
+		return $headers;
+	}
 
-			if (!array_key_exists('refresh_token', $token))
-			{
-				throw new RuntimeException('No refresh token is available.');
-			}
-			$token = $token['refresh_token'];
+	/**
+	 * Generate a random (and optionally unique) key.
+	 *
+	 * @param   boolean  $unique  True to enforce uniqueness for the key.
+	 *
+	 * @return  string
+	 *
+	 * @since   1.0
+	 */
+	protected function headerEncode($string, $key, $base64 = false)
+	{
+		if ($base64 === true) {
+			$return = base64_encode($string).":".base64_encode($key);
+		}else{
+			$return = "{$string}:{$key}";
 		}
-		$data['grant_type'] = 'refresh_token';
-		$data['refresh_token'] = $token;
-		$data['client_id'] = $this->getOption('clientid');
-		$data['client_secret'] = $this->getOption('clientsecret');
-		$response = $this->http->post($this->getOption('tokenurl'), $data);
 
-		if ($response->code >= 200 || $response->code < 400)
+		return $return;
+	}
+
+	/**
+	 * Generate a random (and optionally unique) key.
+	 *
+	 * @param   boolean  $unique  True to enforce uniqueness for the key.
+	 *
+	 * @return  string
+	 *
+	 * @since   1.0
+	 */
+	protected function randomKey($unique = false)
+	{
+		$str = md5(uniqid(rand(), true));
+
+		if ($unique)
 		{
-			if ($response->headers['Content-Type'] == 'application/json')
-			{
-				$token = array_merge(json_decode($response->body, true), array('created' => time()));
-			}
-			else
-			{
-				parse_str($response->body, $token);
-				$token = array_merge($token, array('created' => time()));
-			}
+			list ($u, $s) = explode(' ', microtime());
+			$str .= dechex($u) . dechex($s);
+		}
+		return $str;
+	}
 
-			$this->setToken($token);
+	/**
+	 * Verify if the client has been authenticated
+	 *
+	 * @return  boolean  Is authenticated
+	 *
+	 * @since   1.0
+	 */
+	public function isAuthenticated()
+	{
+		$token = $this->getToken();
 
-			return $token;
+		if (!$token || !array_key_exists('access_token', $token))
+		{
+			return false;
+		}
+		elseif (array_key_exists('expires_in', $token) && $token['created'] + $token['expires_in'] < time() + 20)
+		{
+			return false;
 		}
 		else
 		{
-			throw new Exception('Error code ' . $response->code . ' received refreshing token: ' . $response->body . '.');
+			return true;
 		}
 	}
-}
+
+
+} // end class
