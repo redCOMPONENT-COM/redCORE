@@ -19,29 +19,26 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2ControllerResource extends ROAuth2ControllerBase
+class ROauth2ControllerResource extends ROauth2ControllerBase
 {
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry        $options      ROAuth2User options object
+	 * @param   JRegistry        $options      ROauth2User options object
 	 * @param   JHttp            $http         The HTTP client object
 	 * @param   JInput           $input        The input object
 	 * @param   JApplicationWeb  $application  The application object
 	 *
 	 * @since   1.0
 	 */
-	public function __construct(ROAuth2Request $request = null, ROAuth2Response $response = null)
+	public function __construct(ROauth2ProtocolRequest $request = null, ROauth2ProtocolResponse $response = null)
 	{
 		// Call parent first
 		parent::__construct();
-
-		// Setup the autoloader for the application classes.
-		JLoader::register('ROAuth2Request', JPATH_REDRAD.'/oauth2/protocol/request.php');
-		JLoader::register('ROAuth2Response', JPATH_REDRAD.'/oauth2/protocol/response.php');
-
-		$this->request = isset($request) ? $request : new ROAuth2Request;
-		$this->response = isset($response) ? $response : new ROAuth2Response;
+		// Setup the request object.
+		$this->request = isset($request) ? $request : new ROauth2ProtocolRequest;
+		// Setup the response object.
+		$this->response = isset($response) ? $response : new ROauth2ProtocolResponse;
 	}
 
 	/**
@@ -57,7 +54,7 @@ class ROAuth2ControllerResource extends ROAuth2ControllerBase
 		$this->initialise();
 
 		// Generate temporary credentials for the client.
-		$credentials = new ROAuth2Credentials($this->request->signature_method);
+		$credentials = new ROauth2Credentials($this->request->signature_method);
 
 		// Getting the client object
 		$client = $this->fetchClient($this->request->client_id);

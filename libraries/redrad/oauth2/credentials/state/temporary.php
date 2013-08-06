@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
+class ROauth2CredentialsStateTemporary extends ROauth2CredentialsState
 {
 	/**
 	 * Method to authorise the credentials.  This will persist a temporary credentials set to be authorised by
@@ -28,7 +28,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 	 * @param   integer  $resourceOwnerId  The id of the resource owner authorizing the temporary credentials.
 	 * @param   integer  $lifetime         How long the permanent credentials should be valid (defaults to forever).
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -37,7 +37,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 	{
 		// Setup the properties for the credentials.
 		$this->table->resource_owner_id = (int) $resourceOwnerId;
-		$this->table->type = ROAuth2Credentials::AUTHORISED;
+		$this->table->type = ROauth2Credentials::AUTHORISED;
 		$this->table->temporary_token = $this->randomKey();
 
 		if ($lifetime > 0)
@@ -52,7 +52,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 		// Persist the object in the database.
 		$this->update();
 
-		$authorised = new ROAuth2CredentialsStateAuthorised($this->table);
+		$authorised = new ROauth2CredentialsStateAuthorised($this->table);
 
 		return $authorised;
 	}
@@ -60,7 +60,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 	/**
 	 * Method to convert a set of authorised credentials to token credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -73,7 +73,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 	/**
 	 * Method to deny a set of temporary credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -83,7 +83,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 		// Remove the credentials from the database.
 		$this->delete();
 
-		return new ROAuth2CredentialsStateDenied($this->table);
+		return new ROauth2CredentialsStateDenied($this->table);
 	}
 
 	/**
@@ -95,7 +95,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 	 * @param   string   $callbackUrl  The callback URL to set for the temporary credentials.
 	 * @param   integer  $lifetime     How long the credentials are good for.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -108,7 +108,7 @@ class ROAuth2CredentialsStateTemporary extends ROAuth2CredentialsState
 	/**
 	 * Method to revoke a set of token credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException

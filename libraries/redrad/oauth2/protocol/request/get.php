@@ -14,12 +14,12 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /**
- * ROAuth2RequestGet class
+ * ROauth2ProtocolRequestGet class
  *
  * @package     RedRad
  * @since       1.0
  */
-class ROAuth2RequestGet
+class ROauth2ProtocolRequestGet
 {
 	/**
 	 * Object constructor.
@@ -57,7 +57,7 @@ class ROAuth2RequestGet
 		$params = array();
 
 		// Iterate over the reserved parameters and look for them in the POST variables.
-		foreach (ROAuth2Request::getReservedParameters() as $k)
+		foreach (ROauth2ProtocolRequest::getReservedParameters() as $k)
 		{
 			if ($this->_input->get->getString('oauth_'.$k, false))
 			{

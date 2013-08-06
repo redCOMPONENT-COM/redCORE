@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2MessageSignerRSA implements ROAuth2MessageSigner
+class ROauth2CredentialsSignerRSA implements ROauth2CredentialsSigner
 {
 	/**
 	 * @var    string  Either a PEM formatted private key or a string having the format file://path/to/file.pem. The named file must contain

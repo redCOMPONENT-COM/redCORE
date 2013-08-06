@@ -19,29 +19,26 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth1
  * @since       12.3
  */
-class ROAuth2ControllerConvert extends ROAuth2ControllerBase
+class ROauth2ControllerConvert extends ROauth2ControllerBase
 {
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry        $options      ROAuth2User options object
+	 * @param   JRegistry        $options      ROauth2User options object
 	 * @param   JHttp            $http         The HTTP client object
 	 * @param   JInput           $input        The input object
 	 * @param   JApplicationWeb  $application  The application object
 	 *
 	 * @since   1.0
 	 */
-	public function __construct(ROAuth2Request $request = null, ROAuth2Response $response = null)
+	public function __construct(ROauth2ProtocolRequest $request = null, ROauth2ProtocolResponse $response = null)
 	{
 		// Call parent first
 		parent::__construct();
-
-		// Setup the autoloader for the application classes.
-		JLoader::register('ROAuth2Request', JPATH_REDRAD.'/oauth2/protocol/request.php');
-		JLoader::register('ROAuth2Response', JPATH_REDRAD.'/oauth2/protocol/response.php');
-
-		$this->request = isset($request) ? $request : new ROAuth2Request;
-		$this->response = isset($response) ? $response : new ROAuth2Response;
+		// Setup the request object.
+		$this->request = isset($request) ? $request : new ROauth2ProtocolRequest;
+		// Setup the response object.
+		$this->response = isset($response) ? $response : new ROauth2ProtocolResponse;
 	}
 
 	/**
@@ -70,13 +67,13 @@ class ROAuth2ControllerConvert extends ROAuth2ControllerBase
 		$this->app->loadIdentity($client->_identity);
 
 		// Ensure the credentials are authorised.
-		if ($credentials->getType() === ROAuth2Credentials::TOKEN)
+		if ($credentials->getType() === ROauth2Credentials::TOKEN)
 		{
 			$this->respondError(400, 'invalid_request', 'The token is not for a temporary credentials set.');
 		}
 
 		// Ensure the credentials are authorised.
-		if ($credentials->getType() !== ROAuth2Credentials::AUTHORISED)
+		if ($credentials->getType() !== ROauth2Credentials::AUTHORISED)
 		{
 			$this->respondError(400, 'invalid_request', 'The token has not been authorised by the resource owner.');
 		}

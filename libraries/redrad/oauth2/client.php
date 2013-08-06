@@ -20,10 +20,10 @@ jimport('joomla.environment.response');
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2Client
+class ROauth2Client
 {
 	/**
-	 * @var    ROAuth2TableClient  JTable object for persisting the client object.
+	 * @var    ROauth2TableClient  JTable object for persisting the client object.
 	 * @since  1.0
 	 */
 	protected $_table;
@@ -37,18 +37,18 @@ class ROAuth2Client
 	/**
 	 * Object constructor.
 	 *
-	 * @param   ROAuth2TableClient  $table       The JTable object to use when persisting the object.
+	 * @param   ROauth2TableClient  $table       The JTable object to use when persisting the object.
 	 * @param   array               $properties  A set of properties with which to prime the object.
 	 *
 	 * @codeCoverageIgnore
 	 * @since   1.0
 	 */
-	public function __construct(ROAuth2TableUsers $table = null, array $properties = null)
+	public function __construct(ROauth2TableUsers $table = null, array $properties = null)
 	{
 		JTable::addIncludePath(JPATH_REDRAD.'/oauth2/table');
 
 		// Setup the table object.
-		$this->_table = $table ? $table : JTable::getInstance('Users', 'ROAuth2Table');
+		$this->_table = $table ? $table : JTable::getInstance('Users', 'ROauth2Table');
 
 		// Iterate over any input properties and bind them to the object.
 		if ($properties)

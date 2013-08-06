@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2ControllerBase extends JControllerBase
+class ROauth2ControllerBase extends JControllerBase
 {
 
 	public function execute() {}
@@ -27,13 +27,13 @@ class ROAuth2ControllerBase extends JControllerBase
 	/**
 	 * Create the credentials
 	 *
-	 * @return  ROAuth2Credentials
+	 * @return  ROauth2Credentials
 	 *
 	 * @since   1.0
 	 */
 	protected function createCredentials()
 	{
-		return new ROAuth2Credentials;
+		return new ROauth2Credentials;
 	}
 
 	/**
@@ -64,7 +64,7 @@ class ROAuth2ControllerBase extends JControllerBase
 	 *
 	 * @param   string  $consumerKey  The OAuth 2.0 consumer_key parameter for which to load the client.
 	 *
-	 * @return  ROAuth2Client
+	 * @return  ROauth2Client
 	 *
 	 * @since   1.0
 	 * @throws  InvalidArgumentException
@@ -82,7 +82,7 @@ class ROAuth2ControllerBase extends JControllerBase
 		}
 
 		// Get an OAuth client object and load it using the incoming client key.
-		$client = new ROAuth2Client;
+		$client = new ROauth2Client;
 		$client->loadByKey($client_id);
 
 		// Verify the client key for the message.

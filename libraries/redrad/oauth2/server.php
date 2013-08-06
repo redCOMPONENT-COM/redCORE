@@ -13,21 +13,19 @@
 // no direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-JLoader::register('ROAuth2ControllerInitialise', JPATH_REDRAD.'/oauth2/controller/initialise.php');
-JLoader::register('ROAuth2ControllerAuthorise', JPATH_REDRAD.'/oauth2/controller/authorise.php');
-JLoader::register('ROAuth2ControllerConvert', JPATH_REDRAD.'/oauth2/controller/convert.php');
-JLoader::register('ROAuth2ControllerResource', JPATH_REDRAD.'/oauth2/controller/resource.php');
+// Register component prefix
+JLoader::registerPrefix('ROauth2', __DIR__);
 
 /**
- * ROAuth2Request class
+ * ROauth2ProtocolRequest class
  *
  * @package     Joomla
  * @since       3.2
  */
-class ROAuth2Server
+class ROauth2Server
 {
 	/**
-	 * @var    JRegistry  Options for the ROAuth2Client object.
+	 * @var    JRegistry  Options for the ROauth2Client object.
 	 * @since  1.0
 	 */
 	protected $options;
@@ -39,13 +37,13 @@ class ROAuth2Server
 	protected $http;
 
 	/**
-	 * @var    ROAuth2Request  The input object to use in retrieving GET/POST data.
+	 * @var    ROauth2ProtocolRequest  The input object to use in retrieving GET/POST data.
 	 * @since  1.0
 	 */
 	protected $request;
 
 	/**
-	 * @var    ROAuth2Request  The input object to use in retrieving GET/POST data.
+	 * @var    ROauth2ProtocolRequest  The input object to use in retrieving GET/POST data.
 	 * @since  1.0
 	 */
 	protected $response;
@@ -53,24 +51,23 @@ class ROAuth2Server
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry        $options      ROAuth2Client options object
+	 * @param   JRegistry        $options      ROauth2Client options object
 	 * @param   JHttp            $http         The HTTP client object
 	 * @param   JInput           $input        The input object
 	 * @param   JApplicationWeb  $application  The application object
 	 *
 	 * @since   1.0
 	 */
-	public function __construct(JRegistry $options = null, JHttp $http = null, ROAuth2Request $request = null)
+	public function __construct(JRegistry $options = null, JHttp $http = null, ROauth2ProtocolRequest $request = null)
 	{
-		// Setup the autoloader for the application classes.
-		JLoader::register('ROAuth2Request', JPATH_REDRAD.'/oauth2/protocol/request.php');
-		JLoader::register('ROAuth2Response', JPATH_REDRAD.'/oauth2/protocol/response.php');
-
+		// Setup the options object.
 		$this->options = isset($options) ? $options : new JRegistry;
+		// Setup the JHttp object.
 		$this->http = isset($http) ? $http : new JHttp($this->options);
-		$this->request = isset($request) ? $request : new ROAuth2Request;
-		$this->response = new ROAuth2Response;
-
+		// Setup the request object.
+		$this->request = isset($request) ? $request : new ROauth2ProtocolRequest;
+		// Setup the response object.
+		$this->response = isset($response) ? $response : new ROauth2ProtocolResponse;
 		// Getting application
 		$this->_app = JFactory::getApplication();
 	}
@@ -108,17 +105,17 @@ class ROAuth2Server
 			{
 				case 'temporary':
 
-					$controller = new ROAuth2ControllerInitialise($this->request);
+					$controller = new ROauth2ControllerInitialise($this->request);
 
 					break;
 				case 'authorise':
 
-					$controller = new ROAuth2ControllerAuthorise($this->request);
+					$controller = new ROauth2ControllerAuthorise($this->request);
 
 					break;
 				case 'token':
 
-					$controller = new ROAuth2ControllerConvert($this->request);
+					$controller = new ROauth2ControllerConvert($this->request);
 
 					break;
 				default:
@@ -137,7 +134,7 @@ class ROAuth2Server
 		// If we found an REST message somewhere we need to set the URI and request method.
 		if ($found && isset($this->request->access_token) )
 		{
-			$controller = new ROAuth2ControllerResource($this->request);
+			$controller = new ROauth2ControllerResource($this->request);
 			$controller->execute();
 		}
 

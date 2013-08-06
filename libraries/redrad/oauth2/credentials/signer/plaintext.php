@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2MessageSignerPlaintext extends ROAuth2MessageSigner
+class ROauth2CredentialsSignerPlaintext extends ROauth2CredentialsSigner
 {
 	/**
 	 * Calculate and return the OAuth message signature using PLAINTEXT

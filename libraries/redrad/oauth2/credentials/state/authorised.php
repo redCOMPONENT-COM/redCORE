@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
+class ROauth2CredentialsStateAuthorised extends ROauth2CredentialsState
 {
 	/**
 	 * Method to authorise the credentials.  This will persist a temporary credentials set to be authorised by
@@ -28,7 +28,7 @@ class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
 	 * @param   integer  $resourceOwnerId  The id of the resource owner authorizing the temporary credentials.
 	 * @param   integer  $lifetime         How long the permanent credentials should be valid (defaults to forever).
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -41,7 +41,7 @@ class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
 	/**
 	 * Method to convert a set of authorised credentials to token credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -52,20 +52,20 @@ class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
 		$this->table->callback_url = '';
 		$this->table->access_token = $this->randomKey();
 		$this->table->refresh_token = $this->randomKey();
-		$this->table->type = ROAuth2Credentials::TOKEN;
+		$this->table->type = ROauth2Credentials::TOKEN;
 		$this->table->expiration_date = time() + $lifetime;
 		$this->table->temporary_expiration_date = 0;
 
 		// Persist the object in the database.
 		$this->update();
 
-		return new ROAuth2CredentialsStateToken($this->table);
+		return new ROauth2CredentialsStateToken($this->table);
 	}
 
 	/**
 	 * Method to deny a set of temporary credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -84,7 +84,7 @@ class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
 	 * @param   string   $callbackUrl  The callback URL to set for the temporary credentials.
 	 * @param   integer  $lifetime     How long the credentials are good for.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -97,7 +97,7 @@ class ROAuth2CredentialsStateAuthorised extends ROAuth2CredentialsState
 	/**
 	 * Method to revoke a set of token credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException

@@ -12,9 +12,6 @@
 
 defined('JPATH_PLATFORM') or die;
 
-// Setup the autoloader for the application classes.
-JLoader::register('ROAuth2MessageSignerPlaintext', JPATH_REDRAD.'/oauth2/credentials/signer/plaintext.php');
-
 /**
  * OAuth message signer interface for the RedRAD.
  *
@@ -22,12 +19,12 @@ JLoader::register('ROAuth2MessageSignerPlaintext', JPATH_REDRAD.'/oauth2/credent
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2MessageSigner
+class ROauth2CredentialsSigner
 {
 	/**
 	 * Method to get a message signer object based on the message's oauth_signature_method parameter.
 	 *
-	 * @return  ROAuth2MessageSigner  The OAuth message signer object for the message.
+	 * @return  ROauth2CredentialsSigner  The OAuth message signer object for the message.
 	 *
 	 * @since   1.0
 	 * @throws  InvalidArgumentException
@@ -37,16 +34,16 @@ class ROAuth2MessageSigner
 		switch ($method)
 		{
 			case 'HMAC-SHA1':
-				$signer = new ROAuth2MessageSignerHMAC;
+				$signer = new ROauth2CredentialsSignerHMAC;
 				break;
 			case 'RSA-SHA1':
 				// @TODO We don't support RSA because we don't yet have a way to inject the private key.
 				throw new InvalidArgumentException('RSA signatures are not supported');
-				//$signer = new ROAuth2MessageSignerRSA;
+				//$signer = new ROauth2CredentialsSignerRSA;
 				break;
 			case 'PLAINTEXT':
 
-				$signer = new ROAuth2MessageSignerPlaintext;
+				$signer = new ROauth2CredentialsSignerPlaintext;
 				break;
 			default:
 				throw new InvalidArgumentException('No valid signature method was found.');
@@ -59,14 +56,14 @@ class ROAuth2MessageSigner
 	/**
 	 * Perform a password authentication challenge.
 	 *
-	 * @param   ROAuth2Client  $client   The client.
+	 * @param   ROauth2Client  $client   The client.
 	 * @param   string  			 $headers  The password.
 	 *
 	 * @return  boolean  True if authentication is ok, false if not
 	 *
 	 * @since   1.0
 	 */
-	public function doJoomlaAuthentication(ROAuth2Client $client, $headers)
+	public function doJoomlaAuthentication(ROauth2Client $client, $headers)
 	{
 		// Build the response for the client.
 		$types = array('PHP_AUTH_', 'PHP_HTTP_', 'PHP_');

@@ -19,10 +19,10 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth1
  * @since       1.0
  */
-abstract class ROAuth2CredentialsState
+abstract class ROauth2CredentialsState
 {
 	/**
-	 * @var    ROAuth2TableCredentials  Table object for credentials.
+	 * @var    ROauth2TableCredentials  Table object for credentials.
 	 * @since  1.0
 	 */
 	protected $table;
@@ -30,16 +30,16 @@ abstract class ROAuth2CredentialsState
 	/**
 	 * Object constructor.
 	 *
-	 * @param   ROAuth2TableCredentials  $table       The database driver to use when persisting the object.
+	 * @param   ROauth2TableCredentials  $table       The database driver to use when persisting the object.
 	 * @param   array                    $properties  A set of properties with which to prime the object.
 	 *
 	 * @codeCoverageIgnore
 	 * @since   1.0
 	 */
-	public function __construct(ROAuth2TableCredentials $table = null, array $properties = null)
+	public function __construct(ROauth2TableCredentials $table = null, array $properties = null)
 	{
 		// Setup the table object.
-		$this->table = $table ? $table : JTable::getInstance('Credentials', 'ROAuth2Table');
+		$this->table = $table ? $table : JTable::getInstance('Credentials', 'ROauth2Table');
 
 		// Iterate over any input properties and bind them to the object.
 		if ($properties)
@@ -90,7 +90,7 @@ abstract class ROAuth2CredentialsState
 	 * @param   integer  $resourceOwnerId  The id of the resource owner authorizing the temporary credentials.
 	 * @param   integer  $lifetime         How long the permanent credentials should be valid (defaults to forever).
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -100,7 +100,7 @@ abstract class ROAuth2CredentialsState
 	/**
 	 * Method to convert a set of authorised credentials to token credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -110,7 +110,7 @@ abstract class ROAuth2CredentialsState
 	/**
 	 * Method to deny a set of temporary credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -126,7 +126,7 @@ abstract class ROAuth2CredentialsState
 	 * @param   string  $callbackUrl  The callback URL to set for the temporary credentials.
 	 * @param   string  $lifetime     How long (in seconds) the temporary credentials should be valid (defaults to 3600 seconds).
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
@@ -136,7 +136,7 @@ abstract class ROAuth2CredentialsState
 	/**
 	 * Method to revoke a set of token credentials.
 	 *
-	 * @return  ROAuth2CredentialsState
+	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException

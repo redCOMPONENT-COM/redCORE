@@ -14,12 +14,12 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /**
- * ROAuth2Request class
+ * ROauth2ProtocolRequest class
  *
  * @package     Joomla
  * @since       1.0
  */
-class ROAuth2Request
+class ROauth2ProtocolRequest
 {
 	/**
 	 * @var    string  The HTTP request method for the message.
@@ -138,27 +138,22 @@ class ROAuth2Request
 	/**
 	 * Object constructor.
 	 *
-	 * @param   ROAuth2TableCredentials  $table  Connector object for table class.
+	 * @param   ROauth2TableCredentials  $table  Connector object for table class.
 	 *
 	 * @since   1.0
 	 */
-	public function __construct(ROAuth2TableCredentials $table = null)
+	public function __construct(ROauth2TableCredentials $table = null)
 	{
+		// Load the Joomla! application
 		$this->_app = JFactory::getApplication();
-
 		// Setup the database object.
 		$this->_input = $this->_app->input;
-
 		// Getting the URI
 		$this->_uri = new JURI($this->_fetchRequestUrl());
 		// Getting the request method (POST||GET)
 		$this->_method = strtoupper($_SERVER['REQUEST_METHOD']);
-
-		// Setup the autoloader for the application classes.
-		JLoader::register('ROAuth2Response', JPATH_REDRAD.'/oauth2/protocol/response.php');
-
 		// Loading the response class
-		$this->_response = new ROAuth2Response;
+		$this->_response = new ROauth2ProtocolResponse;
 	}
 
 	/**
@@ -169,7 +164,7 @@ class ROAuth2Request
 	 *   * POST variables.
 	 *   * GET query string variables.
 	 *
-	 * @param   ROAuth2Request  $message  A ROAuth2Request object to populate with parameters.
+	 * @param   ROauth2ProtocolRequest  $message  A ROauth2ProtocolRequest object to populate with parameters.
 	 *
 	 * @return  boolean  True if parameters found, false otherwise.
 	 *
@@ -179,10 +174,8 @@ class ROAuth2Request
 	{
 		// Init flag
 		$flag = false;
-		// Setup the autoloader for the application classes.
-		JLoader::register('ROAuth2RequestHeader', JPATH_REDRAD.'/oauth2/protocol/request/header.php');
 		// Loading the response class
-		$requestHeader = new ROAuth2RequestHeader;
+		$requestHeader = new ROauth2ProtocolRequestHeader;
 
 		// First we look and see if we have an appropriate Authorization header.
 		$authorization = $requestHeader->fetchAuthorizationHeader();
@@ -203,9 +196,7 @@ class ROAuth2Request
 		// Getting the method
 		$method = strtolower($this->_method);
 		// Building the class name
-		$class = "ROAuth2Request". ucfirst($method);
-		// Loading the class
-		JLoader::register($class, JPATH_REDRAD."/oauth2/protocol/request/{$method}.php");
+		$class = "ROauth2ProtocolRequest". ucfirst($method);
 		// Creating the class
 		$request = new $class;
 

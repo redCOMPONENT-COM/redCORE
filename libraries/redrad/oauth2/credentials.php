@@ -19,7 +19,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2Credentials
+class ROauth2Credentials
 {
 	/**
 	 * @var    integer  Indicates temporary credentials.  These are ready to be authorised.
@@ -40,13 +40,13 @@ class ROAuth2Credentials
 	const TOKEN = 2;
 
 	/**
-	 * @var    ROAuth2TableCredentials  Connector object for table class.
+	 * @var    ROauth2TableCredentials  Connector object for table class.
 	 * @since  1.0
 	 */
 	public $_table;
 
 	/**
-	 * @var    ROAuth2CredentialsState  The current credential state.
+	 * @var    ROauth2CredentialsState  The current credential state.
 	 * @since  1.0
 	 */
 	public $_state;
@@ -54,21 +54,18 @@ class ROAuth2Credentials
 	/**
 	 * Object constructor.
 	 *
-	 * @param   ROAuth2TableCredentials  $table  Connector object for table class.
+	 * @param   ROauth2TableCredentials  $table  Connector object for table class.
 	 *
 	 * @since   1.0
 	 */
-	public function __construct($signMethod = 'PLAINTEXT', ROAuth2TableCredentials $table = null)
+	public function __construct($signMethod = 'PLAINTEXT', ROauth2TableCredentials $table = null)
 	{
 		// Setup the database object.
-		$this->_table = $table ? $table : JTable::getInstance('Credentials', 'ROAuth2Table');
-
+		$this->_table = $table ? $table : JTable::getInstance('Credentials', 'ROauth2Table');
 		// Assume the base state for any credentials object to be new.
-		$this->_state = new ROAuth2CredentialsStateNew($this->_table);
-
+		$this->_state = new ROauth2CredentialsStateNew($this->_table);
 		// Setup the correct signer
-		JLoader::register('ROAuth2MessageSigner', JPATH_REDRAD.'/oauth2/credentials/signer.php');
-		$this->_signer = ROAuth2MessageSigner::getInstance($signMethod);
+		$this->_signer = ROauth2CredentialsSigner::getInstance($signMethod);
 	}
 
 	/**
@@ -256,14 +253,14 @@ class ROAuth2Credentials
 	/**
 	 * Perform a password authentication challenge.
 	 *
-	 * @param   ROAuth2Client  $client   The client.
+	 * @param   ROauth2Client  $client   The client.
 	 * @param   string  			 $headers  The password.
 	 *
 	 * @return  boolean  True if authentication is ok, false if not
 	 *
 	 * @since   1.0
 	 */
-	public function doJoomlaAuthentication(ROAuth2Client $client, $headers)
+	public function doJoomlaAuthentication(ROauth2Client $client, $headers)
 	{
 		return $this->_signer->doJoomlaAuthentication($client, $headers);
 	}
@@ -290,7 +287,7 @@ class ROAuth2Credentials
 		// If nothing was found we will setup a new credential state object.
 		if (!$this->_table->credentials_id)
 		{
-			$this->_state = new ROAuth2CredentialsStateNew($this->_table);
+			$this->_state = new ROauth2CredentialsStateNew($this->_table);
 			return false;
 		}
 
@@ -300,17 +297,17 @@ class ROAuth2Credentials
 		// If we are loading a temporary set of credentials load that state.
 		if ($this->_table->type === self::TEMPORARY)
 		{
-			$this->_state = new ROAuth2CredentialsStateTemporary($this->_table);
+			$this->_state = new ROauth2CredentialsStateTemporary($this->_table);
 		}
 		// If we are loading a authorised set of credentials load that state.
 		elseif ($this->_table->type === self::AUTHORISED)
 		{
-			$this->_state = new ROAuth2CredentialsStateAuthorised($this->_table);
+			$this->_state = new ROauth2CredentialsStateAuthorised($this->_table);
 		}
 		// If we are loading a token set of credentials load that state.
 		elseif ($this->_table->type === self::TOKEN)
 		{
-			$this->_state = new ROAuth2CredentialsStateToken($this->_table);
+			$this->_state = new ROauth2CredentialsStateToken($this->_table);
 		}
 		// Unknown OAuth credential type.
 		else

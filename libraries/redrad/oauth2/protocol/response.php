@@ -18,7 +18,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2Response
+class ROauth2ProtocolResponse
 {
 	/**
 	 * @var    integer  The server response code.
@@ -139,7 +139,7 @@ class ROAuth2Response
 	 * @param   string   $value    The value of the header to set.
 	 * @param   boolean  $replace  True to replace any headers with the same name.
 	 *
-	 * @return  ROAuth2Response  Instance of $this to allow chaining.
+	 * @return  ROauth2ProtocolResponse  Instance of $this to allow chaining.
 	 *
 	 * @since   1.0
 	 */
@@ -186,7 +186,7 @@ class ROAuth2Response
 	/**
 	 * Method to clear any set response headers.
 	 *
-	 * @return  ROAuth2Response  Instance of $this to allow chaining.
+	 * @return  ROauth2ProtocolResponse  Instance of $this to allow chaining.
 	 *
 	 * @since   1.0
 	 */
@@ -200,7 +200,7 @@ class ROAuth2Response
 	/**
 	 * Send the response headers.
 	 *
-	 * @return  ROAuth2Response  Instance of $this to allow chaining.
+	 * @return  ROauth2ProtocolResponse  Instance of $this to allow chaining.
 	 *
 	 * @since   1.0
 	 */
@@ -245,7 +245,7 @@ class ROAuth2Response
 	 *
 	 * @param   string  $content  The content to set as the response body.
 	 *
-	 * @return  ROAuth2Response  Instance of $this to allow chaining.
+	 * @return  ROauth2ProtocolResponse  Instance of $this to allow chaining.
 	 *
 	 * @since   1.0
 	 */
@@ -261,7 +261,7 @@ class ROAuth2Response
 	 *
 	 * @param   string  $content  The content to prepend to the response body.
 	 *
-	 * @return  ROAuth2Response  Instance of $this to allow chaining.
+	 * @return  ROauth2ProtocolResponse  Instance of $this to allow chaining.
 	 *
 	 * @since   1.0
 	 */
@@ -277,7 +277,7 @@ class ROAuth2Response
 	 *
 	 * @param   string  $content  The content to append to the response body.
 	 *
-	 * @return  ROAuth2Response  Instance of $this to allow chaining.
+	 * @return  ROauth2ProtocolResponse  Instance of $this to allow chaining.
 	 *
 	 * @since   1.0
 	 */

@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2MessageSignerHMAC implements ROAuth2MessageSigner
+class ROauth2CredentialsSignerHMAC implements ROauth2CredentialsSigner
 {
 	/**
 	 * Calculate and return the OAuth message signature using HMAC-SHA1

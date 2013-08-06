@@ -14,17 +14,17 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 /**
- * ROAuth2RequestPost class
+ * ROauth2ProtocolRequestPost class
  *
  * @package     Joomla
  * @since       1.0
  */
-class ROAuth2RequestPost
+class ROauth2ProtocolRequestPost
 {
 	/**
 	 * Object constructor.
 	 *
-	 * @param   ROAuth2TableCredentials  $table  Connector object for table class.
+	 * @param   ROauth2TableCredentials  $table  Connector object for table class.
 	 *
 	 * @since   1.0
 	 */
@@ -56,7 +56,7 @@ class ROAuth2RequestPost
 		$parameters = array();
 
 		// Iterate over the reserved parameters and look for them in the POST variables.
-		foreach (ROAuth2Request::getReservedParameters() as $k)
+		foreach (ROauth2ProtocolRequest::getReservedParameters() as $k)
 		{
 			if ($this->_input->post->getString('oauth_'.$k, false))
 			{

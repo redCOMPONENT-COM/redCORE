@@ -18,7 +18,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  OAuth2
  * @since       1.0
  */
-class ROAuth2TableCredentials extends JTable
+class ROauth2TableCredentials extends JTable
 {
 	/**
 	 * Constructor

@@ -19,7 +19,7 @@ defined( '_JEXEC' ) or die( 'Restricted access' );
  * @subpackage  OAuth1
  * @since       1.0
  */
-class ROAuth2TableUsers extends JTableUser
+class ROauth2TableUsers extends JTableUser
 {
 	/**
 	 * Load the credentials by key.
