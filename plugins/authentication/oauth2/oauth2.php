@@ -9,6 +9,9 @@
 
 defined('_JEXEC') or die;
 
+jimport('cms.html.html');
+jimport('joomla.user.helper');
+
 /**
  * OAuth2 Authentication Plugin
  *
@@ -35,26 +38,19 @@ class PlgAuthenticationOAuth2 extends JPlugin
 		//	exit;
 		//}
 
-		jimport('cms.html.html');
-		jimport('joomla.user.helper');
-
 		// Loading redRAD libraries
 		$this->loadRAD();
-
+		// Init the flag
 		$request = false;
-
-
+		// Load the Joomla! application
 		$app = JFactory::getApplication();
-
-		// Get the OAuth2 message from the current request.
+		// Get the OAuth2 server instance
 		$oauth_server = new ROAuth2Server;
 
 		if ($oauth_server->listen())
 		{
 			$request = true;
 		}
-
-		//exit; // Exit test
 	}
 
 	public function onUserAuthenticate() {}
