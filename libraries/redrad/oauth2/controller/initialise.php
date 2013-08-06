@@ -83,4 +83,4 @@ class ROAuth2ControllerInitialise extends ROAuth2ControllerBase
 			->respond();
 	}
 
-} // end class
+}

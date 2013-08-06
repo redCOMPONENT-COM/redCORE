@@ -223,7 +223,7 @@ class ROAuth2Request
 		// TODO: Check errors
 
 		return $flag;
-	} // end method 
+	}
 
 	/**
 	 * Encode a string according to the RFC3986
@@ -305,7 +305,7 @@ class ROAuth2Request
 		}
 
 		return trim($uri);
-	} // end method
+	}
 
 	/**
 	 * Create a token-string
@@ -330,4 +330,4 @@ class ROAuth2Request
 		return md5($token . $name);
 	}
 
-} // end class
+}

@@ -54,5 +54,5 @@ class ROAuth2TableUsers extends JTableUser
 		}
 
 		return false;
-	} // end method
-} // end class
+	}
+}

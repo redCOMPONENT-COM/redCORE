@@ -69,4 +69,4 @@ class ROAuth2ControllerResource extends ROAuth2ControllerBase
 		$this->app->loadIdentity($client->_identity);
 	}
 
-} // end class
+}

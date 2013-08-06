@@ -127,22 +127,22 @@ class RClientOAuth2
 	}
 
 	/**
-	 * Get the raw data for this part of the upgrade.
+	 * Get the authentication token
 	 *
-	 * @return	array	Returns a reference to the source data array.
+	 * @return	string	Returns authentication token
 	 * @since	1.0
 	 * @throws	Exception
 	 */
 	public function getAuthentication($code)
 	{
-		// Making the array to send the request
+		// Create the request array to be sent
 		$data = array(
 			'oauth_grant_type' => 'authorization_code',
 			'oauth_response_type' => 'authorise',
 			'oauth_code' => $code
 		);
 
-		// Sending the request
+		// Send the request
 		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders(true));
 
 		if ($response->code >= 200 && $response->code < 400)
@@ -169,20 +169,21 @@ class RClientOAuth2
 	}
 
 	/**
-	 * Get the raw data for this part of the upgrade.
+	 * Get the access_token code to access resources
 	 *
-	 * @return	array	Returns a reference to the source data array.
+	 * @return	string	The access token
 	 * @since	1.0
 	 * @throws	Exception
 	 */
 	public function getToken($code)
 	{
-		// Making the array to send the request
+		// Create the request array to be sent
 		$data = array(
 			'oauth_response_type' => 'token',
 			'oauth_code' => $code
 		);
 
+		// Send the request
 		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders());
 
 		if ($response->code >= 200 && $response->code < 400)
@@ -213,7 +214,7 @@ class RClientOAuth2
 	/**
 	 * Refresh the access token instance.
 	 *
-	 * @param   string  $token  The refresh token
+	 * @param   string  $token  The old token to be refreshed
 	 *
 	 * @return  array  The new access token
 	 *
@@ -221,7 +222,7 @@ class RClientOAuth2
 	 */
 	public function refreshToken($token = null)
 	{
-		if (!$this->getOption('userefresh'))
+		if (!$this->getOption('user_refresh'))
 		{
 			throw new RuntimeException('Refresh token is not supported for this OAuth instance.');
 		}
@@ -238,9 +239,9 @@ class RClientOAuth2
 		}
 		$data['grant_type'] = 'refresh_token';
 		$data['refresh_token'] = $token;
-		$data['client_id'] = $this->getOption('clientid');
-		$data['client_secret'] = $this->getOption('clientsecret');
-		$response = $this->http->post($this->getOption('tokenurl'), $data);
+		$data['client_id'] = $this->getOption('client_id');
+		$data['client_secret'] = $this->getOption('client_secret');
+		$response = $this->http->post($this->getOption('token_url'), $data);
 
 		if ($response->code >= 200 || $response->code < 400)
 		{
@@ -260,14 +261,16 @@ class RClientOAuth2
 		}
 		else
 		{
-			throw new Exception('Error code ' . $response->code . ' received refreshing token: ' . $response->body . '.');
+			throw new Exception('Error code ' . $response->code . ': ' . $response->body . '.');
 		}
 	}
 
 	/**
-	 * Get the raw data for this part of the upgrade.
+	 * Get the resource using the access token.
 	 *
-	 * @return	array	Returns a reference to the source data array.
+	 * @param   string  $token  The access token
+	 *
+	 * @return	string	Returns the JSON+HAL resource
 	 * @since	1.0
 	 * @throws	Exception
 	 */
@@ -284,7 +287,7 @@ class RClientOAuth2
 		}
 		else
 		{
-			throw new RuntimeException('Error code ' . $response->code . ' received requesting authentication: ' . $response->body . '.');
+			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
 		}
 	}
 

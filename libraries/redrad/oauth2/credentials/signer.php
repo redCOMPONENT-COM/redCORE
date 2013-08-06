@@ -113,7 +113,7 @@ class ROAuth2MessageSigner
 
 		return true;
 
-	} // end method
+	}
 
 	/**
 	 * Calculate and return the decodes client secret key.

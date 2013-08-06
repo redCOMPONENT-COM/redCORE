@@ -22,7 +22,7 @@ defined('JPATH_PLATFORM') or die;
 class ROAuth2ControllerBase extends JControllerBase
 {
 
-	function execute() {}
+	public function execute() {}
 
 	/**
 	 * Create the credentials
@@ -120,4 +120,4 @@ class ROAuth2ControllerBase extends JControllerBase
 		exit;
 	}
 
-} // end class
+}

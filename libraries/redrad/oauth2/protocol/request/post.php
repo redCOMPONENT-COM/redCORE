@@ -73,4 +73,4 @@ class ROAuth2RequestPost
 		return $parameters;
 	}
 
-} // end class
+}

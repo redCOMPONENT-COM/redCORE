@@ -147,6 +147,6 @@ class ROAuth2RequestGet
 		);
 
 		return implode('&', $base);
-	} // end method
+	}
 
 }
