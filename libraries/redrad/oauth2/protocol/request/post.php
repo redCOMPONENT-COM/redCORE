@@ -72,5 +72,4 @@ class ROauth2ProtocolRequestPost
 
 		return $parameters;
 	}
-
 }

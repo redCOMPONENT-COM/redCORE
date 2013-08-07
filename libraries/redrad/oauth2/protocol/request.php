@@ -320,5 +320,4 @@ class ROauth2ProtocolRequest
 
 		return md5($token . $name);
 	}
-
 }

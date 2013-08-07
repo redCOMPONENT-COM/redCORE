@@ -119,5 +119,4 @@ class ROauth2ControllerBase extends JControllerBase
 
 		exit;
 	}
-
 }

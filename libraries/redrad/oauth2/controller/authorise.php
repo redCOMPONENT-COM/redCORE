@@ -90,14 +90,14 @@ class ROauth2ControllerAuthorise extends ROauth2ControllerBase
 		// Attempt to authorise the credentials for the current user.
 		$credentials->authorise($this->app->getIdentity()->get('id'));
 
-/*
+		/*
 		if ($credentials->getCallbackUrl() && $credentials->getCallbackUrl() != 'oob')
 		{
 			$this->app->redirect($credentials->getCallbackUrl());
 
 			return;
 		}
-*/
+		*/
 		// Build the response for the client.
 		$response = array(
 			'oauth_code' => $credentials->getTemporaryToken(),

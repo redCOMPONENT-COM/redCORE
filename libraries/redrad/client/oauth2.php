@@ -68,13 +68,11 @@ class RClientOAuth2
 	 * Fetch the access token making the OAuth 2.0 method process
 	 *
 	 * @return	string	Returns the JSON response from the server
-	 * @since	1.0
+	 * @since 	1.0
 	 * @throws	Exception
 	 */
 	public function fetchAccessToken()
 	{
-		// @TODO: error handling
-
 		// Temporary token
 		$temporary = (object) $this->getTemporary();
 
@@ -91,7 +89,7 @@ class RClientOAuth2
 	 * Get the raw data for this part of the upgrade.
 	 *
 	 * @return	array	Returns a reference to the source data array.
-	 * @since	1.0
+	 * @since 	1.0
 	 * @throws	Exception
 	 */
 	public function getTemporary()
@@ -130,7 +128,7 @@ class RClientOAuth2
 	 * Get the authentication token
 	 *
 	 * @return	string	Returns authentication token
-	 * @since	1.0
+	 * @since 	1.0
 	 * @throws	Exception
 	 */
 	public function getAuthentication($code)
@@ -172,7 +170,7 @@ class RClientOAuth2
 	 * Get the access_token code to access resources
 	 *
 	 * @return	string	The access token
-	 * @since	1.0
+	 * @since 	1.0
 	 * @throws	Exception
 	 */
 	public function getToken($code)
@@ -271,7 +269,7 @@ class RClientOAuth2
 	 * @param   string  $token  The access token
 	 *
 	 * @return	string	Returns the JSON+HAL resource
-	 * @since	1.0
+	 * @since 	1.0
 	 * @throws	Exception
 	 */
 	public function getResource($code)
@@ -479,9 +477,11 @@ class RClientOAuth2
 	}
 
 	/**
-	 * 
+	 * Get the rest headers to send
 	 *
-	 * @return  array
+	 * @param   string  $form  True if we like to use POST
+	 *
+	 * @return  array   The z
 	 *
 	 * @since   1.0
 	 */
@@ -578,5 +578,4 @@ class RClientOAuth2
 		}
 	}
 
-
-} // end class
+}

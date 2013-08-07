@@ -74,7 +74,6 @@ class ROauth2ProtocolRequestGet
 		return $params;
 	}
 
-
 	/**
 	 * Method to get the OAuth message string for signing.
 	 *
@@ -148,5 +147,4 @@ class ROauth2ProtocolRequestGet
 
 		return implode('&', $base);
 	}
-
 }

@@ -198,5 +198,4 @@ class ROauth2ProtocolRequestHeader
 			return 0;
 		}
 	}
-
 }

@@ -109,7 +109,6 @@ class ROauth2CredentialsSigner
 		}
 
 		return true;
-
 	}
 
 	/**

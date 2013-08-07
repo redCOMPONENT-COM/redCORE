@@ -140,5 +140,4 @@ class ROauth2Server
 
 		return $found;
 	}
-
 }
