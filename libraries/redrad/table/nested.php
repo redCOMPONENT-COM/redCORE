@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Base
  * @since       1.0
  */
-class RTable extends JTable
+class RTableNested extends JTableNested
 {
 	/**
 	 * Prefix to add to log files
@@ -164,9 +164,9 @@ class RTable extends JTable
 
 		// Build the main update query
 		$query = $db->getQuery(true)
-				->update($db->quoteName($this->_tbl))
-				->set($db->quoteName($this->_tableFieldState) . ' = ' . (int) $state)
-				->where($k . '=' . implode(' OR ' . $k . '=', $pks));
+			->update($db->quoteName($this->_tbl))
+			->set($db->quoteName($this->_tableFieldState) . ' = ' . (int) $state)
+			->where($k . '=' . implode(' OR ' . $k . '=', $pks));
 
 		// Determine if there is checkin support for the table.
 		if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time'))
@@ -211,52 +211,6 @@ class RTable extends JTable
 		}
 
 		$this->setError('');
-
-		return true;
-	}
-
-	/**
-	 * Delete on or more registers
-	 *
-	 * @param   string/array  $pk  Array of ids or ids comma separated
-	 *
-	 * @return  boolean  Deleted successfuly?
-	 */
-	public function delete($pk = null)
-	{
-		// Initialise variables.
-		$k = $this->_tbl_key;
-
-		// Received an array of ids?
-		if (is_array($pk))
-		{
-			// Sanitize input.
-			JArrayHelper::toInteger($pk);
-			$pk = implode(',', $pk);
-		}
-
-		$pk = (is_null($pk)) ? $this->$k : $pk;
-
-		// If no primary key is given, return false.
-		if ($pk === null)
-		{
-			return false;
-		}
-
-		// Delete the row by primary key.
-		$query = $this->_db->getQuery(true);
-		$query->delete($this->_db->quoteName($this->_tbl));
-		$query->where($this->_db->quoteName($this->_tbl_key) . ' IN (' . $this->_db->quote($pk) . ')');
-		$this->_db->setQuery($query);
-		$this->_db->query();
-
-		// Check for a database error.
-		if ($this->_db->getErrorNum())
-		{
-			$this->setError($this->_db->getErrorMsg());
-
-			return false;
-		}
 
 		return true;
 	}

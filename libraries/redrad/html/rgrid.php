@@ -312,8 +312,8 @@ abstract class JHtmlRgrid
 		$inactive_title = JText::_('JLIB_HTML_CHECKED_OUT') . '::' . $text . '<br />' . $date . '<br />' . $time;
 
 		return self::action(
-			$i, 'checkin', $prefix, JText::_('JLIB_HTML_CHECKED_OUT'), $active_title, $inactive_title, true, 'checkedout',
-			'checkedout', $enabled, false, $checkbox
+			$i, 'checkin', $prefix, JText::_('JLIB_HTML_CHECKED_OUT'), $active_title, $inactive_title, true, 'lock',
+			'lock', $enabled, false, $checkbox
 		);
 	}
 
@@ -388,13 +388,9 @@ abstract class JHtmlRgrid
 		JHtml::_('rbootstrap.tooltip');
 		static::main();
 
-		$class   = null;
-		$classes = array();
-		$classes[] = 'js-order-col hasTip';
-
-		$direction      = strtolower($direction);
-		$directionIcons = array('icon-chevron-up', 'icon-chevron-down');
-		$index          = (int) ($direction == 'desc');
+		$direction = strtolower($direction);
+		$icon = array('chevron-up', 'chevron-down');
+		$index = (int) ($direction == 'desc');
 
 		if ($order != $selected)
 		{
@@ -402,37 +398,16 @@ abstract class JHtmlRgrid
 		}
 		else
 		{
-			$classes[] = 'active';
 			$direction = ($direction == 'desc') ? 'asc' : 'desc';
 		}
 
-		if ($classes)
-		{
-			$class = ' class="' . implode(' ', $classes) . '"';
-		}
-
-		// Attribute data-name is used to autopopulate select order fields
-		$dataName = (!is_null($title)) ? JText::_($title) : $order;
-
-		$html = '<a href="#" onclick="return false;"' . $class
-			. ' data-order="' . $order . '" data-name="' . $dataName . '" title="'
-			. JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN')
-			. '">';
-
-		if (!is_null($icon))
-		{
-			$html .= ' <i class="' . $icon . '"></i>';
-		}
-
-		// Null title for icons ?
-		if (!is_null($title))
-		{
-			$html .= JText::_($title);
-		}
+		$html = '<a href="#" onclick="Joomla.tableOrdering(\'' . $order . '\',\'' . $direction . '\',\'' . $task . '\');return false;"'
+			. ' class="hasTip" title="' . JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN') . '">';
+		$html .= JText::_($title);
 
 		if ($order == $selected)
 		{
-			$html .= ' <i class="' . $directionIcons[$index] . '"></i>';
+			$html .= ' <i class="icon-' . $icon[$index] . '"></i>';
 		}
 
 		$html .= '</a>';

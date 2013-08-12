@@ -138,9 +138,11 @@ if ($result instanceof Exception)
 					<div class="row-fluid">
 						<h1><?php echo $view->getTitle() ?></h1>
 					</div>
+					<?php if ($toolbar instanceof RToolbar) : ?>
 					<div class="row-fuid">
 						<?php echo $toolbar->render() ?>
 					</div>
+					<?php endif; ?>
 					<div class="row-fluid message"></div>
 					<div class="row-fluid">
 						<?php echo $result ?>
