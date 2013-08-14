@@ -153,7 +153,7 @@ class RTableNested extends JTableNested
 	 */
 	public function load($keys = null, $reset = true)
 	{
-		$dispatcher = JEventDispatcher::getInstance();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeLoad || $this->_eventAfterLoad)
@@ -205,7 +205,7 @@ class RTableNested extends JTableNested
 	 */
 	public function delete($pk = null, $children = true)
 	{
-		$dispatcher = JEventDispatcher::getInstance();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeDelete || $this->_eventAfterDelete)
@@ -257,7 +257,7 @@ class RTableNested extends JTableNested
 	 */
 	public function check()
 	{
-		$dispatcher = JEventDispatcher::getInstance();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeCheck || $this->_eventAfterCheck)
@@ -308,7 +308,7 @@ class RTableNested extends JTableNested
 	 */
 	public function store($updateNulls = false)
 	{
-		$dispatcher = JEventDispatcher::getInstance();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeStore || $this->_eventAfterStore)

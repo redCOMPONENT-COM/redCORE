@@ -151,7 +151,7 @@ class RTable extends JTable
 	 */
 	public function load($keys = null, $reset = true)
 	{
-		$dispatcher = $this->getDispatcher();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeLoad || $this->_eventAfterLoad)
@@ -202,7 +202,7 @@ class RTable extends JTable
 	 */
 	public function delete($pk = null)
 	{
-		$dispatcher = $this->getDispatcher();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeDelete || $this->_eventAfterDelete)
@@ -254,7 +254,7 @@ class RTable extends JTable
 	 */
 	public function check()
 	{
-		$dispatcher = $this->getDispatcher();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeCheck || $this->_eventAfterCheck)
@@ -305,7 +305,7 @@ class RTable extends JTable
 	 */
 	public function store($updateNulls = false)
 	{
-		$dispatcher = $this->getDispatcher();
+		$dispatcher = RFactory::getDispatcher();
 
 		// Import plugin types
 		if ($this->_eventBeforeStore || $this->_eventAfterStore)
@@ -530,17 +530,5 @@ class RTable extends JTable
 		}
 
 		return true;
-	}
-
-	/**
-	 * Get the event dispatcher
-	 *
-	 * @return  JEventDispatcher
-	 */
-	private function getDispatcher()
-	{
-		$dispatcher = version_compare(JVERSION, '3.0', 'lt') ? JDispatcher::getInstance() : JEventDispatcher::getInstance();
-
-		return $dispatcher;
 	}
 }
