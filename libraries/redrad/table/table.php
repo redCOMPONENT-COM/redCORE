@@ -9,6 +9,8 @@
 
 defined('JPATH_REDRAD') or die;
 
+jimport('joomla.database.tablenested');
+
 /**
  * redRAD Base Table
  *
