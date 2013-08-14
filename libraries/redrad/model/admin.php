@@ -18,7 +18,7 @@ JLoader::import('joomla.application.component.modeladmin');
  * @subpackage  Model
  * @since       1.0
  */
-class RModelAdmin extends JModelAdmin
+class RModelAdminBase extends JModelAdmin
 {
 	/**
 	 * Context for session
@@ -285,34 +285,48 @@ class RModelAdmin extends JModelAdmin
 
 		return '';
 	}
+}
 
-	/**
-	 * Prepare and sanitise the table data prior to saving.
-	 *
-	 * Fields recognized :
-	 *
-	 * - created_date
-	 * - modified_date
-	 * - created_by
-	 * - modified_by
-	 *
-	 * @param   JTable  $table  A reference to a JTable object.
-	 *
-	 * @return  void
-	 */
-	protected function prepareTable($table)
+if (version_compare(JVERSION, '3.0', 'lt'))
+{
+	class RModelAdmin extends RModelAdminBase
 	{
-		$now = JDate::getInstance();
-		$nowFormatted = $now->toSql();
-		$userId = JFactory::getUser()->id;
-
-		$table->modified_by = $userId;
-		$table->modified_date = $nowFormatted;
-
-		if (is_null($table->created_by) || empty($table->created_by))
+		protected function prepareTable(&$table)
 		{
-			$table->created_by = $userId;
-			$table->created_date = $nowFormatted;
+			$now = JDate::getInstance();
+			$nowFormatted = $now->toSql();
+			$userId = JFactory::getUser()->id;
+
+			$table->modified_by = $userId;
+			$table->modified_date = $nowFormatted;
+
+			if (is_null($table->created_by) || empty($table->created_by))
+			{
+				$table->created_by = $userId;
+				$table->created_date = $nowFormatted;
+			}
+		}
+	}
+}
+
+else
+{
+	class RModelAdmin extends RModelAdminBase
+	{
+		protected function prepareTable($table)
+		{
+			$now = JDate::getInstance();
+			$nowFormatted = $now->toSql();
+			$userId = JFactory::getUser()->id;
+
+			$table->modified_by = $userId;
+			$table->modified_date = $nowFormatted;
+
+			if (is_null($table->created_by) || empty($table->created_by))
+			{
+				$table->created_by = $userId;
+				$table->created_date = $nowFormatted;
+			}
 		}
 	}
 }
