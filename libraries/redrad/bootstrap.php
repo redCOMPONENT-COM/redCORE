@@ -17,6 +17,9 @@ require JPATH_REDRAD . '/inflector/inflector.php';
 // Register the classes for autoload.
 JLoader::registerPrefix('R', JPATH_REDRAD);
 
+// Setup the RLoader.
+RLoader::setup();
+
 // Make available the redRAD fields
 JFormHelper::addFieldPath(JPATH_REDRAD . '/form/fields');
 
