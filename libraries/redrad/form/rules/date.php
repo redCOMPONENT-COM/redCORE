@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Rules
  * @since       1.0
  */
-class JFormRuleDate extends JFormRule
+class JFormRuleDate extends RFormRule
 {
 	/**
 	 * Method to test if two values are not equal. To use this rule, the form
