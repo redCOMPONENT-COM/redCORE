@@ -344,9 +344,6 @@ abstract class RLoader
 
 		if ($enablePrefixes)
 		{
-			// Register the J prefix and base path for Joomla platform libraries.
-			self::registerPrefix('J', JPATH_PLATFORM . '/joomla');
-
 			// Register the prefix autoloader.
 			spl_autoload_register(array('RLoader', '_autoload'));
 		}
