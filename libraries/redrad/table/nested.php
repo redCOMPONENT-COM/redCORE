@@ -165,14 +165,11 @@ class RTableNested extends JTableNested
 		// Trigger before load
 		if ($this->_eventBeforeLoad)
 		{
-			$results = $dispatcher->trigger($this->_eventBeforeLoad, array($this));
+			$results = $dispatcher->trigger($this->_eventBeforeLoad, array($this, $keys, $reset));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -185,14 +182,11 @@ class RTableNested extends JTableNested
 		// Trigger after load
 		if ($this->_eventAfterLoad)
 		{
-			$results = $dispatcher->trigger($this->_eventAfterLoad, array($this));
+			$results = $dispatcher->trigger($this->_eventAfterLoad, array($this, $keys, $reset));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -223,14 +217,11 @@ class RTableNested extends JTableNested
 		// Trigger before delete
 		if ($this->_eventBeforeDelete)
 		{
-			$results = $dispatcher->trigger($this->_eventBeforeDelete, array($this));
+			$results = $dispatcher->trigger($this->_eventBeforeDelete, array($this, $pk, $children));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -243,14 +234,11 @@ class RTableNested extends JTableNested
 		// Trigger after delete
 		if ($this->_eventAfterDelete)
 		{
-			$results = $dispatcher->trigger($this->_eventAfterDelete, array($this));
+			$results = $dispatcher->trigger($this->_eventAfterDelete, array($this, $pk, $children));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -283,12 +271,9 @@ class RTableNested extends JTableNested
 		{
 			$results = $dispatcher->trigger($this->_eventBeforeCheck, array($this));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -303,12 +288,9 @@ class RTableNested extends JTableNested
 		{
 			$results = $dispatcher->trigger($this->_eventAfterCheck, array($this));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -338,14 +320,11 @@ class RTableNested extends JTableNested
 		// Trigger before store
 		if ($this->_eventBeforeStore)
 		{
-			$results = $dispatcher->trigger($this->_eventBeforeStore, array($this));
+			$results = $dispatcher->trigger($this->_eventBeforeStore, array($this, $updateNulls));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -358,14 +337,11 @@ class RTableNested extends JTableNested
 		// Trigger after store
 		if ($this->_eventAfterStore)
 		{
-			$results = $dispatcher->trigger($this->_eventAfterStore, array($this));
+			$results = $dispatcher->trigger($this->_eventAfterStore, array($this, $updateNulls));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 

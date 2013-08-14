@@ -165,14 +165,11 @@ class RTable extends JTable
 		// Trigger before load
 		if ($this->_eventBeforeLoad)
 		{
-			$results = $dispatcher->trigger($this->_eventBeforeLoad, array($this));
+			$results = $dispatcher->trigger($this->_eventBeforeLoad, array($this, $keys, $reset));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -185,14 +182,11 @@ class RTable extends JTable
 		// Trigger after load
 		if ($this->_eventAfterLoad)
 		{
-			$results = $dispatcher->trigger($this->_eventAfterLoad, array($this));
+			$results = $dispatcher->trigger($this->_eventAfterLoad, array($this, $keys, $reset));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -200,14 +194,13 @@ class RTable extends JTable
 	}
 
 	/**
-	 * Method to delete a node and, optionally, its child nodes from the table.
+	 * Deletes this row in database (or if provided, the row of key $pk)
 	 *
-	 * @param   integer  $pk        The primary key of the node to delete.
-	 * @param   boolean  $children  True to delete child nodes, false to move them up a level.
+	 * @param   mixed  $pk  An optional primary key value to delete.  If not set the instance property value is used.
 	 *
 	 * @return  boolean  True on success.
 	 */
-	public function delete($pk = null, $children = true)
+	public function delete($pk = null)
 	{
 		$dispatcher = JEventDispatcher::getInstance();
 
@@ -223,19 +216,16 @@ class RTable extends JTable
 		// Trigger before delete
 		if ($this->_eventBeforeDelete)
 		{
-			$results = $dispatcher->trigger($this->_eventBeforeDelete, array($this));
+			$results = $dispatcher->trigger($this->_eventBeforeDelete, array($this, $pk));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
 		// Delete
-		if (!parent::delete($pk, $children))
+		if (!self::doDelete($pk))
 		{
 			return false;
 		}
@@ -243,14 +233,11 @@ class RTable extends JTable
 		// Trigger after delete
 		if ($this->_eventAfterDelete)
 		{
-			$results = $dispatcher->trigger($this->_eventAfterDelete, array($this));
+			$results = $dispatcher->trigger($this->_eventAfterDelete, array($this, $pk));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -283,12 +270,9 @@ class RTable extends JTable
 		{
 			$results = $dispatcher->trigger($this->_eventBeforeCheck, array($this));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -303,12 +287,9 @@ class RTable extends JTable
 		{
 			$results = $dispatcher->trigger($this->_eventAfterCheck, array($this));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -338,14 +319,11 @@ class RTable extends JTable
 		// Trigger before store
 		if ($this->_eventBeforeStore)
 		{
-			$results = $dispatcher->trigger($this->_eventBeforeStore, array($this));
+			$results = $dispatcher->trigger($this->_eventBeforeStore, array($this, $updateNulls));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -358,14 +336,11 @@ class RTable extends JTable
 		// Trigger after store
 		if ($this->_eventAfterStore)
 		{
-			$results = $dispatcher->trigger($this->_eventAfterStore, array($this));
+			$results = $dispatcher->trigger($this->_eventAfterStore, array($this, $updateNulls));
 
-			foreach ($results as $result)
+			if (count($results) && in_array(false, $results, true))
 			{
-				if (false === $result)
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 
@@ -518,7 +493,7 @@ class RTable extends JTable
 	 *
 	 * @return  boolean  Deleted successfuly?
 	 */
-	public function delete($pk = null)
+	private function doDelete($pk = null)
 	{
 		// Initialise variables.
 		$k = $this->_tbl_key;
