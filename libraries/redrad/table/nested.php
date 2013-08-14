@@ -47,6 +47,69 @@ class RTableNested extends JTableNested
 	protected $_tableFieldState = 'state';
 
 	/**
+	 * An array of plugin types to import.
+	 *
+	 * @var  array
+	 */
+	protected $_pluginTypesToImport = array();
+
+	/**
+	 * Event name to trigger before load().
+	 *
+	 * @var  string
+	 */
+	protected $_eventBeforeLoad;
+
+	/**
+	 * Event name to trigger after load().
+	 *
+	 * @var  string
+	 */
+	protected $_eventAfterLoad;
+
+	/**
+	 * Event name to trigger before delete().
+	 *
+	 * @var  string
+	 */
+	protected $_eventBeforeDelete;
+
+	/**
+	 * Event name to trigger after delete().
+	 *
+	 * @var  string
+	 */
+	protected $_eventAfterDelete;
+
+	/**
+	 * Event name to trigger before check().
+	 *
+	 * @var  string
+	 */
+	protected $_eventBeforeCheck;
+
+	/**
+	 * Event name to trigger after check().
+	 *
+	 * @var  string
+	 */
+	protected $_eventAfterCheck;
+
+	/**
+	 * Event name to trigger before store().
+	 *
+	 * @var  string
+	 */
+	protected $_eventBeforeStore;
+
+	/**
+	 * Event name to trigger after store().
+	 *
+	 * @var  string
+	 */
+	protected $_eventAfterStore;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JDatabase  &$db  A database connector object
@@ -74,6 +137,215 @@ class RTableNested extends JTableNested
 		}
 
 		parent::__construct($this->_tbl, $this->_tbl_key, $db);
+	}
+
+	/**
+	 * Method to load a row from the database by primary key and bind the fields
+	 * to the JTable instance properties.
+	 *
+	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
+	 *                           set the instance property value is used.
+	 * @param   boolean  $reset  True to reset the default values before loading the new row.
+	 *
+	 * @return  boolean  True if successful. False if row not found.
+	 */
+	public function load($keys = null, $reset = true)
+	{
+		$dispatcher = JEventDispatcher::getInstance();
+
+		// Import plugin types
+		if ($this->_eventBeforeLoad || $this->_eventAfterLoad)
+		{
+			foreach ($this->_pluginTypesToImport as $type)
+			{
+				JPluginHelper::importPlugin($type);
+			}
+		}
+
+		// Trigger before load
+		if ($this->_eventBeforeLoad)
+		{
+			$results = $dispatcher->trigger($this->_eventBeforeLoad, array($this, $keys, $reset));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		// Load
+		if (!parent::load($keys, $reset))
+		{
+			return false;
+		}
+
+		// Trigger after load
+		if ($this->_eventAfterLoad)
+		{
+			$results = $dispatcher->trigger($this->_eventAfterLoad, array($this, $keys, $reset));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to delete a node and, optionally, its child nodes from the table.
+	 *
+	 * @param   integer  $pk        The primary key of the node to delete.
+	 * @param   boolean  $children  True to delete child nodes, false to move them up a level.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	public function delete($pk = null, $children = true)
+	{
+		$dispatcher = JEventDispatcher::getInstance();
+
+		// Import plugin types
+		if ($this->_eventBeforeDelete || $this->_eventAfterDelete)
+		{
+			foreach ($this->_pluginTypesToImport as $type)
+			{
+				JPluginHelper::importPlugin($type);
+			}
+		}
+
+		// Trigger before delete
+		if ($this->_eventBeforeDelete)
+		{
+			$results = $dispatcher->trigger($this->_eventBeforeDelete, array($this, $pk, $children));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		// Delete
+		if (!parent::delete($pk, $children))
+		{
+			return false;
+		}
+
+		// Trigger after delete
+		if ($this->_eventAfterDelete)
+		{
+			$results = $dispatcher->trigger($this->_eventAfterDelete, array($this, $pk, $children));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Checks that the object is valid and able to be stored.
+	 *
+	 * This method checks that the parent_id is non-zero and exists in the database.
+	 * Note that the root node (parent_id = 0) cannot be manipulated with this class.
+	 *
+	 * @return  boolean  True if all checks pass.
+	 */
+	public function check()
+	{
+		$dispatcher = JEventDispatcher::getInstance();
+
+		// Import plugin types
+		if ($this->_eventBeforeCheck || $this->_eventAfterCheck)
+		{
+			foreach ($this->_pluginTypesToImport as $type)
+			{
+				JPluginHelper::importPlugin($type);
+			}
+		}
+
+		// Trigger before check
+		if ($this->_eventBeforeCheck)
+		{
+			$results = $dispatcher->trigger($this->_eventBeforeCheck, array($this));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		// Check
+		if (!parent::check())
+		{
+			return false;
+		}
+
+		// Trigger after check
+		if ($this->_eventAfterCheck)
+		{
+			$results = $dispatcher->trigger($this->_eventAfterCheck, array($this));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to store a node in the database table.
+	 *
+	 * @param   boolean  $updateNulls  True to update null values as well.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	public function store($updateNulls = false)
+	{
+		$dispatcher = JEventDispatcher::getInstance();
+
+		// Import plugin types
+		if ($this->_eventBeforeStore || $this->_eventAfterStore)
+		{
+			foreach ($this->_pluginTypesToImport as $type)
+			{
+				JPluginHelper::importPlugin($type);
+			}
+		}
+
+		// Trigger before store
+		if ($this->_eventBeforeStore)
+		{
+			$results = $dispatcher->trigger($this->_eventBeforeStore, array($this, $updateNulls));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		// Store
+		if (!parent::store($updateNulls))
+		{
+			return false;
+		}
+
+		// Trigger after store
+		if ($this->_eventAfterStore)
+		{
+			$results = $dispatcher->trigger($this->_eventAfterStore, array($this, $updateNulls));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
