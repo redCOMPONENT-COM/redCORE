@@ -76,6 +76,34 @@ abstract class RModelList extends JModelList
 	}
 
 	/**
+	 * Method to get a JPagination object for the data set.
+	 *
+	 * @return  JPagination  A JPagination object for the data set.
+	 *
+	 * @since   12.2
+	 */
+	public function getPagination()
+	{
+		// Get a storage key.
+		$store = $this->getStoreId('getPagination');
+
+		// Try to load the data from internal storage.
+		if (isset($this->cache[$store]))
+		{
+			return $this->cache[$store];
+		}
+
+		// Create the pagination object.
+		$limit = (int) $this->getState('list.limit') - (int) $this->getState('list.links');
+		$page = new RPagination($this->getTotal(), $this->getStart(), $limit);
+
+		// Add the object to the internal cache.
+		$this->cache[$store] = $page;
+
+		return $this->cache[$store];
+	}
+
+	/**
 	 * Method to get a form object.
 	 *
 	 * @param   string   $name     The name of the form.

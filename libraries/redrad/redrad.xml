@@ -27,6 +27,7 @@
 		<folder>menu</folder>
 		<folder>model</folder>
 		<folder>oauth2</folder>
+		<folder>pagination</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
 		<folder>toolbar</folder>

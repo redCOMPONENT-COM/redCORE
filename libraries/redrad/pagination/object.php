@@ -16,7 +16,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Pagination
  * @since       1.5
  */
-class JPaginationObject
+class RPaginationObject
 {
 	/**
 	 * @var    string  The link text.

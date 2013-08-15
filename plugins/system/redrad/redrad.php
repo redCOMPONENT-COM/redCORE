@@ -49,13 +49,6 @@ class PlgSystemRedRad extends JPlugin
 					}
 				}
 			}
-
-			// Override the pagination for the backend
-			if ($isAdmin)
-			{
-				require_once JPATH_LIBRARIES . '/redrad/joomla/pagination/object.php';
-				require_once JPATH_LIBRARIES . '/redrad/joomla/pagination/pagination.php';
-			}
 		}
 
 		// Make available the fields
