@@ -12,7 +12,9 @@
 	<description>redRAD Libraries</description>
 
 	<files>
+		<folder>client</folder>
 		<folder>controller</folder>
+		<folder>factory</folder>
 		<folder>form</folder>
 		<folder>helper</folder>
 		<folder>html</folder>
@@ -24,6 +26,7 @@
 		<folder>loader</folder>
 		<folder>menu</folder>
 		<folder>model</folder>
+		<folder>oauth2</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
 		<folder>toolbar</folder>
