@@ -25,6 +25,8 @@ class PlgSystemRedRad extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
 		$redradLoader = JPATH_LIBRARIES . '/redrad/bootstrap.php';
 
 		if (file_exists($redradLoader) && !class_exists('Inflector'))
@@ -36,13 +38,23 @@ class PlgSystemRedRad extends JPlugin
 			{
 				RLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redrad/joomla', false, true);
 
-				// Require the message renderer as it doesn't respect the naming convention.
-				$messageRendererPath = JPATH_LIBRARIES . '/redrad/joomla/document/renderer/message.php';
-
-				if (file_exists($messageRendererPath))
+				if ($isAdmin)
 				{
-					require_once $messageRendererPath;
+					// Require the message renderer as it doesn't respect the naming convention.
+					$messageRendererPath = JPATH_LIBRARIES . '/redrad/joomla/document/renderer/message.php';
+
+					if (file_exists($messageRendererPath))
+					{
+						require_once $messageRendererPath;
+					}
 				}
+			}
+
+			// Override the pagination for the backend
+			if ($isAdmin)
+			{
+				require_once JPATH_LIBRARIES . '/redrad/joomla/pagination/object.php';
+				require_once JPATH_LIBRARIES . '/redrad/joomla/pagination/pagination.php';
 			}
 		}
 
