@@ -245,7 +245,7 @@ class ROauth2Credentials
 	 */
 	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600)
 	{
-		$clientSecret = $this->_signer->clientDecode($clientSecret);
+		$clientSecret = $this->_signer->secretDecode($clientSecret);
 
 		$this->_state = $this->_state->initialise($clientId, $clientSecret, $callbackUrl);
 	}
@@ -280,7 +280,7 @@ class ROauth2Credentials
 		// Initialise credentials_id
 		$this->_table->credentials_id = 0;
 		// Get the correct client secret key
-		$key = $this->_signer->clientDecode($key);
+		$key = $this->_signer->secretDecode($key);
 		// Load the credential
 		$this->_table->loadByKey($key, $uri);
 

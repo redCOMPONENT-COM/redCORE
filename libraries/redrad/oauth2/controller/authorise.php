@@ -64,7 +64,7 @@ class ROauth2ControllerAuthorise extends ROauth2ControllerBase
 		$client = $this->fetchClient($this->request->client_id);
 
 		// Doing authentication using Joomla! users
-		$credentials->doJoomlaAuthentication($client, $this->request->_headers);
+		$credentials->doJoomlaAuthentication($client, $this->request);
 
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);

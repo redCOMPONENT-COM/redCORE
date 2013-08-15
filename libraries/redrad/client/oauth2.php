@@ -86,6 +86,83 @@ class RClientOAuth2
 	}
 
 	/**
+	 * Get the rest headers to send
+	 *
+	 * @param   string  $form  True if we like to use POST
+	 *
+	 * @return  array   The z
+	 *
+	 * @since   1.0
+	 */
+	protected function getRestHeaders($form = false)
+	{
+		// Set the user and password to headers
+		$rest_key = $this->options->get('rest_key');
+
+		// Encode the headers for REST
+		$user_encode = $this->encode($this->options->get('username'), $rest_key);
+		$pw_encode = $this->encode($this->options->get('password'), $rest_key);
+		$authorization = $this->encode($user_encode, $pw_encode, true);
+
+		$headers = array(
+			'Authorization' => 'Bearer ' . base64_encode($authorization)
+		);
+
+		if ($form === true) {
+			$headers['Content-Type'] = 'application/x-www-form-urlencoded';
+		}
+
+		return $headers;
+	}
+
+	/**
+	 * Get the POST data to send
+	 *
+	 * @return  array   The POST data to send
+	 *
+	 * @since   1.0
+	 */
+	protected function getPostData()
+	{
+		// Set the user and password to headers
+		$rest_key = $this->options->get('rest_key');
+
+		// Encode the headers for REST
+		$user_encode = $this->encode($this->options->get('username'), $rest_key);
+		$pw_encode = $this->encode($this->options->get('password'), $rest_key);
+		$authorization = $this->encode($user_encode, $pw_encode, true);
+		$client_secret = $this->encode($this->randomKey(), $pw_encode, true);
+
+		$post = array(
+			'oauth_client_id' => base64_encode($user_encode),
+			'oauth_client_secret' => base64_encode($client_secret),
+			'oauth_signature_method' => $this->options->get('signature_method')
+		);
+
+		return $post;
+	}
+
+	/**
+	 * Generate a random (and optionally unique) key.
+	 *
+	 * @param   boolean  $unique  True to enforce uniqueness for the key.
+	 *
+	 * @return  string
+	 *
+	 * @since   1.0
+	 */
+	protected function encode($string, $key, $base64 = false)
+	{
+		if ($base64 === true) {
+			$return = base64_encode($string).":".base64_encode($key);
+		}else{
+			$return = "{$string}:{$key}";
+		}
+
+		return $return;
+	}
+
+	/**
 	 * Get the raw data for this part of the upgrade.
 	 *
 	 * @return	array	Returns a reference to the source data array.
@@ -94,51 +171,9 @@ class RClientOAuth2
 	 */
 	public function getTemporary()
 	{
-		// Get the headers
-		$headers = $this->getRestHeaders();
-		$headers['oauth_response_type'] = 'temporary';
-
-		// Perform the GET request via HTTP
-		$response = $this->http->get($this->options->get('url'), $headers);
-
-		if ($response->code >= 200 && $response->code < 400)
-		{
-			//if ($response->headers['Content-Type'] == 'application/json')
-			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
-			{
-				$token = array_merge(json_decode($response->body, true), array('created' => time()));
-			}
-			else
-			{
-				parse_str($response->body, $token);
-				$token = array_merge($token, array('created' => time()));
-			}
-
-			return $token;
-		}
-		else
-		{
-			throw new RuntimeException('Error code ' . $response->code . ' received requesting access token: ' . $response->body . '.');
-		}
-
-		return $token;
-	}
-
-	/**
-	 * Get the authentication token
-	 *
-	 * @return	string	Returns authentication token
-	 * @since 	1.0
-	 * @throws	Exception
-	 */
-	public function getAuthentication($code)
-	{
-		// Create the request array to be sent
-		$data = array(
-			'oauth_grant_type' => 'authorization_code',
-			'oauth_response_type' => 'authorise',
-			'oauth_code' => $code
-		);
+		// Get the POST data
+		$data = $this->getPostData();
+		$data['oauth_response_type'] = 'temporary';
 
 		// Send the request
 		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders(true));
@@ -160,7 +195,54 @@ class RClientOAuth2
 		}
 		else
 		{
-			throw new RuntimeException('Error code ' . $response->code . ' received requesting authentication: ' . $response->body . '.');
+			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
+		}
+
+		return $token;
+	}
+
+	/**
+	 * Get the authentication token
+	 *
+	 * @return	string	Returns authentication token
+	 * @since 	1.0
+	 * @throws	Exception
+	 */
+	public function getAuthentication($code)
+	{
+		// Get the headers
+		$data = $this->getPostData();
+
+		// Create the request array to be sent
+		$append = array(
+			'oauth_grant_type' => 'authorization_code',
+			'oauth_response_type' => 'authorise',
+			'oauth_code' => $code
+		);
+		// Append parameters to existing data
+		$data = $data + $append;
+
+		// Send the request
+		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders(true));
+
+		if ($response->code >= 200 && $response->code < 400)
+		{
+			//if ($response->headers['Content-Type'] == 'application/json')
+			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
+			{
+				$token = array_merge(json_decode($response->body, true), array('created' => time()));
+			}
+			else
+			{
+				parse_str($response->body, $token);
+				$token = array_merge($token, array('created' => time()));
+			}
+
+			return $token;
+		}
+		else
+		{
+			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
 		}
 
 		return $token;
@@ -175,14 +257,19 @@ class RClientOAuth2
 	 */
 	public function getToken($code)
 	{
+		// Get the headers
+		$data = $this->getPostData();
+
 		// Create the request array to be sent
-		$data = array(
+		$append = array(
 			'oauth_response_type' => 'token',
 			'oauth_code' => $code
 		);
+		// Append parameters to existing data
+		$data = $data + $append;
 
 		// Send the request
-		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders());
+		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders(true));
 
 		if ($response->code >= 200 && $response->code < 400)
 		{
@@ -203,7 +290,7 @@ class RClientOAuth2
 		}
 		else
 		{
-			throw new RuntimeException('Error code ' . $response->code . ' received requesting authentication: ' . $response->body . '.');
+			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
 		}
 
 		return $token;
@@ -290,61 +377,6 @@ class RClientOAuth2
 	}
 
 	/**
-	 * Create the URL for authentication.
-	 *
-	 * @return  JHttpResponse  The HTTP response
-	 *
-	 * @since   1.0
-	 */
-	public function createUrl()
-	{
-		if (!$this->getOption('authurl') || !$this->getOption('clientid'))
-		{
-			throw new InvalidArgumentException('Authorization URL and client_id are required');
-		}
-
-		$url = $this->getOption('authurl');
-
-		if (strpos($url, '?'))
-		{
-			$url .= '&';
-		}
-		else
-		{
-			$url .= '?';
-		}
-
-		$url .= 'response_type=code';
-		$url .= '&client_id=' . urlencode($this->getOption('clientid'));
-
-		if ($this->getOption('redirecturi'))
-		{
-			$url .= '&redirect_uri=' . urlencode($this->getOption('redirecturi'));
-		}
-
-		if ($this->getOption('scope'))
-		{
-			$scope = is_array($this->getOption('scope')) ? implode(' ', $this->getOption('scope')) : $this->getOption('scope');
-			$url .= '&scope=' . urlencode($scope);
-		}
-
-		if ($this->getOption('state'))
-		{
-			$url .= '&state=' . urlencode($this->getOption('state'));
-		}
-
-		if (is_array($this->getOption('requestparams')))
-		{
-			foreach ($this->getOption('requestparams') as $key => $value)
-			{
-				$url .= '&' . $key . '=' . urlencode($value);
-			}
-		}
-
-		return $url;
-	}
-
-	/**
 	 * Send a signed Oauth request.
 	 *
 	 * @param   string  $url      The URL forf the request.
@@ -413,6 +445,61 @@ class RClientOAuth2
 	}
 
 	/**
+	 * Create the URL for authentication.
+	 *
+	 * @return  JHttpResponse  The HTTP response
+	 *
+	 * @since   1.0
+	 */
+	public function createUrl()
+	{
+		if (!$this->getOption('authurl') || !$this->getOption('clientid'))
+		{
+			throw new InvalidArgumentException('Authorization URL and client_id are required');
+		}
+
+		$url = $this->getOption('authurl');
+
+		if (strpos($url, '?'))
+		{
+			$url .= '&';
+		}
+		else
+		{
+			$url .= '?';
+		}
+
+		$url .= 'response_type=code';
+		$url .= '&client_id=' . urlencode($this->getOption('clientid'));
+
+		if ($this->getOption('redirecturi'))
+		{
+			$url .= '&redirect_uri=' . urlencode($this->getOption('redirecturi'));
+		}
+
+		if ($this->getOption('scope'))
+		{
+			$scope = is_array($this->getOption('scope')) ? implode(' ', $this->getOption('scope')) : $this->getOption('scope');
+			$url .= '&scope=' . urlencode($scope);
+		}
+
+		if ($this->getOption('state'))
+		{
+			$url .= '&state=' . urlencode($this->getOption('state'));
+		}
+
+		if (is_array($this->getOption('requestparams')))
+		{
+			foreach ($this->getOption('requestparams') as $key => $value)
+			{
+				$url .= '&' . $key . '=' . urlencode($value);
+			}
+		}
+
+		return $url;
+	}
+
+	/**
 	 * Get an option from the RClientOAuth2 instance.
 	 *
 	 * @param   string  $key  The name of the option to get
@@ -474,62 +561,6 @@ class RClientOAuth2
 		$this->setOption('access_token', $value);
 
 		return $this;
-	}
-
-	/**
-	 * Get the rest headers to send
-	 *
-	 * @param   string  $form  True if we like to use POST
-	 *
-	 * @return  array   The z
-	 *
-	 * @since   1.0
-	 */
-	protected function getRestHeaders($form = false)
-	{
-		// Set the user and password to headers
-		$rest_username = $this->options->get('username');
-		$rest_password = $this->options->get('password');
-		$rest_key = $this->options->get('rest_key');
-
-		// Encode the headers for REST
-		$user_encode = $this->headerEncode($rest_username, $rest_key);
-		$pw_encode = $this->headerEncode($rest_password, $rest_key);
-		$authorization = $this->headerEncode($user_encode, $pw_encode, true);
-		$client_secret = $this->headerEncode($this->randomKey(), $rest_key);
-
-		$headers = array(
-			'Authorization' => 'Basic ' . base64_encode($authorization),
-			'oauth_client_id' => base64_encode($user_encode),
-			'oauth_client_secret' => base64_encode($client_secret),
-			'oauth_signature_method' => $this->options->get('signature_method')
-		);
-
-		if ($form === true) {
-			$headers['Content-Type'] = 'application/x-www-form-urlencoded';
-		}
-
-		return $headers;
-	}
-
-	/**
-	 * Generate a random (and optionally unique) key.
-	 *
-	 * @param   boolean  $unique  True to enforce uniqueness for the key.
-	 *
-	 * @return  string
-	 *
-	 * @since   1.0
-	 */
-	protected function headerEncode($string, $key, $base64 = false)
-	{
-		if ($base64 === true) {
-			$return = base64_encode($string).":".base64_encode($key);
-		}else{
-			$return = "{$string}:{$key}";
-		}
-
-		return $return;
 	}
 
 	/**

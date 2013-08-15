@@ -54,6 +54,7 @@ class ROauth2ProtocolRequestHeader
 			{
 				return trim($headers['Authorization']);
 			}
+
 		}
 		// Otherwise we need to look in the $_SERVER superglobal.
 		elseif ($this->_input->server->getString('HTTP_AUTHORIZATION', false))

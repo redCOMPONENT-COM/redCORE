@@ -10,7 +10,7 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-// no direct access
+// No direct access
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
 // Register component prefix

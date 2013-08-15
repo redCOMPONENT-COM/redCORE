@@ -56,26 +56,40 @@ class ROauth2CredentialsSigner
 	/**
 	 * Perform a password authentication challenge.
 	 *
-	 * @param   ROauth2Client  $client   The client.
-	 * @param   string  			 $headers  The password.
+	 * @param   ROauth2Client  $client   The client object
+	 * @param   string  			 $request  The request object.
 	 *
 	 * @return  boolean  True if authentication is ok, false if not
 	 *
 	 * @since   1.0
 	 */
-	public function doJoomlaAuthentication(ROauth2Client $client, $headers)
+	public function doJoomlaAuthentication(ROauth2Client $client, $request)
 	{
 		// Build the response for the client.
 		$types = array('PHP_AUTH_', 'PHP_HTTP_', 'PHP_');
 
 		foreach ( $types as $type ) {
-			if (isset($headers[$type.'USER'])) {
-				$user_decode = base64_decode($headers[$type.'USER']);
+			if (isset($request->_headers[$type.'USER'])) {
+				$user_decode = base64_decode($request->_headers[$type.'USER']);
 			}
-			if (isset($headers[$type.'PW'])) {
-				$password_decode = base64_decode($headers[$type.'PW']);
+			if (isset($request->_headers[$type.'PW'])) {
+				$password_decode = base64_decode($request->_headers[$type.'PW']);
 			}
 		}	
+
+		// Check if the username and password are present
+		if ( !isset($user_decode) || !isset($password_decode) ) {
+			if (isset($request->client_id)) {
+				$user_decode = explode(":", base64_decode($request->client_id));
+				$user_decode = $user_decode[0];
+			}
+			if (isset($request->client_secret)) {
+				$password_decode = explode(":", base64_decode($request->client_secret));
+				$password_decode = base64_decode($password_decode[1]);
+				$password_decode = explode(":", $password_decode);
+				$password_decode = $password_decode[0];
+			}
+		}
 
 		// Check if the username and password are present
 		if ( !isset($user_decode) || !isset($password_decode) ) {
@@ -111,30 +125,4 @@ class ROauth2CredentialsSigner
 		return true;
 	}
 
-	/**
-	 * Calculate and return the decodes client secret key.
-	 *
-	 * @param   string  $clientSecret      The OAuth client's secret.
-
-	 *
-	 * @return  string  The OAuth message signature.
-	 *
-	 * @since   1.0
-	 * @throws  InvalidArgumentException
-	 */
-	//abstract protected function clientDecode($clientSecret);
-
-	/**
-	 * Calculate and return the OAuth message signature.
-	 *
-	 * @param   string  $baseString        The OAuth message as a normalized base string.
-	 * @param   string  $clientSecret      The OAuth client's secret.
-	 * @param   string  $credentialSecret  The OAuth credentials' secret.
-	 *
-	 * @return  string  The OAuth message signature.
-	 *
-	 * @since   1.0
-	 * @throws  InvalidArgumentException
-	 */
-	//public function sign($baseString, $clientSecret, $credentialSecret){};
 }

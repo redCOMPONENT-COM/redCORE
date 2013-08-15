@@ -48,8 +48,12 @@ class ROauth2CredentialsSignerPlaintext extends ROauth2CredentialsSigner
 	 * @since   1.0
 	 * @throws  InvalidArgumentException
 	 */
-	public function clientDecode($clientSecret)
+	public function secretDecode($clientSecret)
 	{
-		return explode(":", base64_decode($clientSecret))[1];
+
+		$clientSecret = explode(":", base64_decode($clientSecret));
+		$clientSecret = $clientSecret[1];
+
+		return $clientSecret;
 	}
 }
