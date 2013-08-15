@@ -25,6 +25,8 @@ class PlgSystemRedRad extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
 		$redradLoader = JPATH_LIBRARIES . '/redrad/bootstrap.php';
 
 		if (file_exists($redradLoader) && !class_exists('Inflector'))
@@ -34,7 +36,18 @@ class PlgSystemRedRad extends JPlugin
 			// For Joomla! 2.5 compatibility we add some core functions
 			if (version_compare(JVERSION, '3.0', '<'))
 			{
-				JLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redrad/joomla');
+				RLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redrad/joomla', false, true);
+
+				if ($isAdmin)
+				{
+					// Require the message renderer as it doesn't respect the naming convention.
+					$messageRendererPath = JPATH_LIBRARIES . '/redrad/joomla/document/renderer/message.php';
+
+					if (file_exists($messageRendererPath))
+					{
+						require_once $messageRendererPath;
+					}
+				}
 			}
 		}
 
