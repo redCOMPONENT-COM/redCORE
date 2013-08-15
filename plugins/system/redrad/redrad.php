@@ -89,6 +89,36 @@ class PlgSystemRedRad extends JPlugin
 	}
 
 	/**
+	 * This event is triggered before the framework creates the Head section of the Document.
+	 *
+	 * @return  void
+	 *
+	 * @todo    Find a cleaner way to prioritise assets
+	 */
+	public function onBeforeCompileHead()
+	{
+		if (!$this->isRedrad())
+		{
+			return true;
+		}
+
+		$doc = JFactory::getDocument();
+
+		if (!empty($doc->_styleSheets))
+		{
+			foreach ($doc->_styleSheets as $stylesheet => $data)
+			{
+				// If component.css is included put it at the bottom of the list
+				if (substr_count($stylesheet, 'component.css'))
+				{
+					unset($doc->_styleSheets[$stylesheet]);
+					$doc->_styleSheets[$stylesheet] = $data;
+				}
+			}
+		}
+	}
+
+	/**
 	 * This event is triggered immediately before pushing the document buffers into the template placeholders,
 	 * retrieving data from the document and pushing it into the into the JResponse buffer.
 	 * http://docs.joomla.org/Plugin/Events/System
