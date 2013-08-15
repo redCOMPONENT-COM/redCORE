@@ -1,5 +1,5 @@
 body {
-    padding-top: 40px;
+    padding-top: 55px;
 }
 
 .alert {
@@ -45,7 +45,7 @@ body {
 .redrad .navbar a.back2joomla {
     float: left;
     display: block;
-    line-height: 40px;
+    line-height: 35px;
     font-size: 85%;
 }
 
