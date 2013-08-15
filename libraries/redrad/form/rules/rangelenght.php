@@ -17,7 +17,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Rules
  * @since       1.0
  */
-class JFormRuleRangeLenght extends JFormRule
+class JFormRuleRangeLenght extends RFormRule
 {
 	/**
 	 * Method to test if two values are not equal. To use this rule, the form

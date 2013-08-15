@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     RedRad
- * @subpackage  Rules
+ * @subpackage  Rule
  *
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
@@ -9,20 +9,39 @@
 
 defined('JPATH_REDRAD') or die;
 
+// Detect if we have full UTF-8 and unicode PCRE support.
+if (!defined('JCOMPAT_UNICODE_PROPERTIES'))
+{
+	define('JCOMPAT_UNICODE_PROPERTIES', (bool) @preg_match('/\pL/u', 'a'));
+}
+
 /**
- * Range value rule.
- * Can specify max value, min value or both.
+ * Base form rule class. This is basically the same than in J3.X but allow us to extend it without warnings
  *
  * @package     RedRad
- * @subpackage  Rules
+ * @subpackage  Rule
  * @since       1.0
  */
-class JFormRuleRangeValue extends RFormRule
+class RFormRule
 {
 	/**
-	 * Method to test if two values are not equal. To use this rule, the form
-	 * XML needs a validate attribute of equals and a field attribute
-	 * that is equal to the field to test against.
+	 * The regular expression to use in testing a form field value.
+	 *
+	 * @var    string
+	 * @since  1.0
+	 */
+	protected $regex;
+
+	/**
+	 * The regular expression modifiers to use when testing a form field value.
+	 *
+	 * @var    string
+	 * @since  1.0
+	 */
+	protected $modifiers;
+
+	/**
+	 * Method to test the value.
 	 *
 	 * @param   SimpleXMLElement  $element  The SimpleXMLElement object representing the <field /> tag for the form field object.
 	 * @param   mixed             $value    The form field value to validate.
@@ -34,36 +53,29 @@ class JFormRuleRangeValue extends RFormRule
 	 *
 	 * @return  boolean  True if the value is valid, false otherwise.
 	 *
-	 * @throws  InvalidArgumentException
-	 * @throws  UnexpectedValueException
+	 * @since   1.0
+	 * @throws  UnexpectedValueException if rule is invalid.
 	 */
 	public function test(SimpleXMLElement $element, $value, $group = null, JRegistry $input = null, JForm $form = null)
 	{
-		if (!isset($element['min']) && !isset($element['max']))
+		// Check for a valid regex.
+		if (empty($this->regex))
 		{
-			throw new InvalidArgumentException('No "min" or "max" value specified for the range value rule.');
+			throw new UnexpectedValueException(sprintf('%s has invalid regex.', get_class($this)));
 		}
 
-		$value = (float) $value;
-
-		// If min lenght specified.
-		if (isset($element['min']))
+		// Add unicode property support if available.
+		if (JCOMPAT_UNICODE_PROPERTIES)
 		{
-			if ($value < (float) $element['min'])
-			{
-				return false;
-			}
+			$this->modifiers = (strpos($this->modifiers, 'u') !== false) ? $this->modifiers : $this->modifiers . 'u';
 		}
 
-		// If max lenght specified.
-		if (isset($element['max']))
+		// Test the value against the regular expression.
+		if (preg_match(chr(1) . $this->regex . chr(1) . $this->modifiers, $value))
 		{
-			if ($value > (float) $element['max'])
-			{
-				return false;
-			}
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 }
