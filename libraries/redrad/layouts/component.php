@@ -139,7 +139,7 @@ if ($result instanceof Exception)
 						<h1><?php echo $view->getTitle() ?></h1>
 					</div>
 					<?php if ($toolbar instanceof RToolbar) : ?>
-						<div class="row-fuid">
+						<div class="row-fluid">
 							<?php echo $toolbar->render() ?>
 						</div>
 					<?php endif; ?>
