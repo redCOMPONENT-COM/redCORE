@@ -10,7 +10,7 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die( 'Restricted access' );
 jimport('joomla.environment.response');
 
 /**
@@ -68,6 +68,7 @@ class RClientOAuth2
 	 * Fetch the access token making the OAuth 2.0 method process
 	 *
 	 * @return	string	Returns the JSON response from the server
+	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
@@ -108,7 +109,8 @@ class RClientOAuth2
 			'Authorization' => 'Bearer ' . base64_encode($authorization)
 		);
 
-		if ($form === true) {
+		if ($form === true)
+		{
 			$headers['Content-Type'] = 'application/x-www-form-urlencoded';
 		}
 
@@ -143,9 +145,11 @@ class RClientOAuth2
 	}
 
 	/**
-	 * Generate a random (and optionally unique) key.
+	 * Encode the string with the key
 	 *
-	 * @param   boolean  $unique  True to enforce uniqueness for the key.
+	 * @param   string   $string  The string to encode.
+	 * @param   string   $key     The key to encode the string.
+	 * @param   boolean  $base64  True to encode the strings.
 	 *
 	 * @return  string
 	 *
@@ -153,9 +157,12 @@ class RClientOAuth2
 	 */
 	protected function encode($string, $key, $base64 = false)
 	{
-		if ($base64 === true) {
-			$return = base64_encode($string).":".base64_encode($key);
-		}else{
+		if ($base64 === true)
+		{
+			$return = base64_encode($string) . ":" . base64_encode($key);
+		}
+		else
+		{
 			$return = "{$string}:{$key}";
 		}
 
@@ -166,6 +173,7 @@ class RClientOAuth2
 	 * Get the raw data for this part of the upgrade.
 	 *
 	 * @return	array	Returns a reference to the source data array.
+	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
@@ -180,7 +188,6 @@ class RClientOAuth2
 
 		if ($response->code >= 200 && $response->code < 400)
 		{
-			//if ($response->headers['Content-Type'] == 'application/json')
 			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
 			{
 				$token = array_merge(json_decode($response->body, true), array('created' => time()));
@@ -204,7 +211,10 @@ class RClientOAuth2
 	/**
 	 * Get the authentication token
 	 *
+	 * @param   string  $code  The old token to get the access_token
+	 *
 	 * @return	string	Returns authentication token
+	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
@@ -219,6 +229,7 @@ class RClientOAuth2
 			'oauth_response_type' => 'authorise',
 			'oauth_code' => $code
 		);
+
 		// Append parameters to existing data
 		$data = $data + $append;
 
@@ -227,7 +238,6 @@ class RClientOAuth2
 
 		if ($response->code >= 200 && $response->code < 400)
 		{
-			//if ($response->headers['Content-Type'] == 'application/json')
 			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
 			{
 				$token = array_merge(json_decode($response->body, true), array('created' => time()));
@@ -251,7 +261,10 @@ class RClientOAuth2
 	/**
 	 * Get the access_token code to access resources
 	 *
+	 * @param   string  $code  The old token to get the access_token
+	 *
 	 * @return	string	The access token
+	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
@@ -265,6 +278,7 @@ class RClientOAuth2
 			'oauth_response_type' => 'token',
 			'oauth_code' => $code
 		);
+
 		// Append parameters to existing data
 		$data = $data + $append;
 
@@ -273,7 +287,6 @@ class RClientOAuth2
 
 		if ($response->code >= 200 && $response->code < 400)
 		{
-			//if ($response->headers['Content-Type'] == 'application/json')
 			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
 			{
 				$token = array_merge(json_decode($response->body, true), array('created' => time()));
@@ -320,8 +333,10 @@ class RClientOAuth2
 			{
 				throw new RuntimeException('No refresh token is available.');
 			}
+
 			$token = $token['refresh_token'];
 		}
+
 		$data['grant_type'] = 'refresh_token';
 		$data['refresh_token'] = $token;
 		$data['client_id'] = $this->getOption('client_id');
@@ -353,16 +368,17 @@ class RClientOAuth2
 	/**
 	 * Get the resource using the access token.
 	 *
-	 * @param   string  $token  The access token
+	 * @param   string  $code  The access token
 	 *
 	 * @return	string	Returns the JSON+HAL resource
+	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
 	public function getResource($code)
 	{
 		// Add GET parameters to URL
-		$url = $this->options->get('url')."?oauth_access_token={$code}";
+		$url = $this->options->get('url') . "?oauth_access_token={$code}";
 
 		$response = $this->http->get($url, $this->getRestHeaders());
 
@@ -399,6 +415,7 @@ class RClientOAuth2
 			{
 				return false;
 			}
+
 			$token = $this->refreshToken($token['refresh_token']);
 		}
 
@@ -416,6 +433,7 @@ class RClientOAuth2
 			{
 				$url .= '?';
 			}
+
 			$url .= $this->getOption('getparam') ? $this->getOption('getparam') : 'access_token';
 			$url .= '=' . $token['access_token'];
 		}
@@ -441,6 +459,7 @@ class RClientOAuth2
 		{
 			throw new RuntimeException('Error code ' . $response->code . ' received requesting data: ' . $response->body . '.');
 		}
+
 		return $response;
 	}
 
@@ -558,6 +577,7 @@ class RClientOAuth2
 			$value['expires_in'] = $value['expires'];
 			unset($value['expires']);
 		}
+
 		$this->setOption('access_token', $value);
 
 		return $this;
@@ -581,6 +601,7 @@ class RClientOAuth2
 			list ($u, $s) = explode(' ', microtime());
 			$str .= dechex($u) . dechex($s);
 		}
+
 		return $str;
 	}
 
@@ -608,5 +629,4 @@ class RClientOAuth2
 			return true;
 		}
 	}
-
 }
