@@ -17,7 +17,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Pagination
  * @since       1.5
  */
-class JPagination
+class RPagination
 {
 	/**
 	 * @var    integer  The record number to start displaying from.
@@ -647,13 +647,13 @@ class JPagination
 	/**
 	 * Method to create an active pagination link to the item
 	 *
-	 * @param   JPaginationObject  $item  The object with which to make an active link.
+	 * @param   RPaginationObject  $item  The object with which to make an active link.
 	 *
 	 * @return  string  HTML link
 	 *
 	 * @since   1.5
 	 */
-	protected function _item_active(JPaginationObject $item)
+	protected function _item_active(RPaginationObject $item)
 	{
 		// Check for "Start" item
 		if ($item->text == JText::_('JLIB_HTML_START'))
@@ -710,13 +710,13 @@ class JPagination
 	/**
 	 * Method to create an inactive pagination string
 	 *
-	 * @param   JPaginationObject  $item  The item to be processed
+	 * @param   RPaginationObject  $item  The item to be processed
 	 *
 	 * @return  string
 	 *
 	 * @since   1.5
 	 */
-	protected function _item_inactive(JPaginationObject $item)
+	protected function _item_inactive(RPaginationObject $item)
 	{
 		// Check for "Start" item
 		if ($item->text == JText::_('JLIB_HTML_START'))
@@ -774,7 +774,7 @@ class JPagination
 			}
 		}
 
-		$data->all = new JPaginationObject(JText::_('JLIB_HTML_VIEW_ALL'), $this->prefix);
+		$data->all = new RPaginationObject(JText::_('JLIB_HTML_VIEW_ALL'), $this->prefix);
 
 		if (!$this->viewall)
 		{
@@ -783,8 +783,8 @@ class JPagination
 		}
 
 		// Set the start and previous data objects.
-		$data->start = new JPaginationObject(JText::_('JLIB_HTML_START'), $this->prefix);
-		$data->previous = new JPaginationObject(JText::_('JPREV'), $this->prefix);
+		$data->start = new RPaginationObject(JText::_('JLIB_HTML_START'), $this->prefix);
+		$data->previous = new RPaginationObject(JText::_('JPREV'), $this->prefix);
 
 		if ($this->pagesCurrent > 1)
 		{
@@ -800,8 +800,8 @@ class JPagination
 		}
 
 		// Set the next and end data objects.
-		$data->next = new JPaginationObject(JText::_('JNEXT'), $this->prefix);
-		$data->end = new JPaginationObject(JText::_('JLIB_HTML_END'), $this->prefix);
+		$data->next = new RPaginationObject(JText::_('JNEXT'), $this->prefix);
+		$data->end = new RPaginationObject(JText::_('JLIB_HTML_END'), $this->prefix);
 
 		if ($this->pagesCurrent < $this->pagesTotal)
 		{
@@ -821,7 +821,7 @@ class JPagination
 		{
 			$offset = ($i - 1) * $this->limit;
 
-			$data->pages[$i] = new JPaginationObject($i, $this->prefix);
+			$data->pages[$i] = new RPaginationObject($i, $this->prefix);
 
 			if ($i != $this->pagesCurrent || $this->viewall)
 			{
@@ -850,7 +850,7 @@ class JPagination
 	 */
 	public function set($property, $value = null)
 	{
-		JLog::add('JPagination::set() is deprecated. Access the properties directly.', JLog::WARNING, 'deprecated');
+		JLog::add(__CLASS__ . '::set() is deprecated. Access the properties directly.', JLog::WARNING, 'deprecated');
 
 		if (strpos($property, '.'))
 		{
@@ -875,7 +875,7 @@ class JPagination
 	 */
 	public function get($property, $default = null)
 	{
-		JLog::add('JPagination::get() is deprecated. Access the properties directly.', JLog::WARNING, 'deprecated');
+		JLog::add(__CLASS__ . '::get() is deprecated. Access the properties directly.', JLog::WARNING, 'deprecated');
 
 		if (strpos($property, '.'))
 		{
