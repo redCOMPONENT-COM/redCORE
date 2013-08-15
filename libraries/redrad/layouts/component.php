@@ -106,8 +106,8 @@ if ($result instanceof Exception)
 }
 ?>
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('.message').append(jQuery('#system-message-container'));
+	jQuery(document).ready(function () {
+		jQuery('.message-sys').append(jQuery('#system-message-container'));
 	});
 </script>
 <?php if ($view->getLayout() === 'modal') : ?>
@@ -139,11 +139,11 @@ if ($result instanceof Exception)
 						<h1><?php echo $view->getTitle() ?></h1>
 					</div>
 					<?php if ($toolbar instanceof RToolbar) : ?>
-					<div class="row-fuid">
-						<?php echo $toolbar->render() ?>
-					</div>
+						<div class="row-fuid">
+							<?php echo $toolbar->render() ?>
+						</div>
 					<?php endif; ?>
-					<div class="row-fluid message"></div>
+					<div class="row-fluid message-sys"></div>
 					<div class="row-fluid">
 						<?php echo $result ?>
 					</div>
@@ -151,7 +151,7 @@ if ($result instanceof Exception)
 			</div>
 		</div>
 	</div>
-<footer class="footer pagination-centered">
-	Copyright 2013 redcomponent.com. All rights reserved.
-</footer>
-<?php endif; ?>
+	<footer class="footer pagination-centered">
+		Copyright 2013 redcomponent.com. All rights reserved.
+	</footer>
+	<?php endif; ?>
