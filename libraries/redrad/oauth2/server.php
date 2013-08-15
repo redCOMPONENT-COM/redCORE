@@ -101,7 +101,7 @@ class ROauth2Server
 		}
 
 		// If we found an REST message somewhere we need to set the URI and request method.
-		if ($found && isset($this->request->response_type) )
+		if ($found && isset($this->request->response_type) && !isset($this->request->access_token) )
 		{
 			// Load the correct controller type
 			switch ($this->request->response_type)

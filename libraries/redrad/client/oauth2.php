@@ -377,9 +377,19 @@ class RClientOAuth2
 	 */
 	public function getResource($code)
 	{
+		// Get the headers
+		$data = $this->getPostData();
+
 		// Add GET parameters to URL
 		$url = $this->options->get('url') . "?oauth_access_token={$code}";
 
+		foreach ($data as $k => $d)
+		{
+			$url .= "&" . $k . "=" . $d;
+			next($data);
+		}
+
+		// Send the request
 		$response = $this->http->get($url, $this->getRestHeaders());
 
 		if ($response->code >= 200 && $response->code < 400)
@@ -434,7 +444,6 @@ class RClientOAuth2
 				$url .= '?';
 			}
 
-			$url .= $this->getOption('getparam') ? $this->getOption('getparam') : 'access_token';
 			$url .= '=' . $token['access_token'];
 		}
 
