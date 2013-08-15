@@ -21,8 +21,16 @@ defined('JPATH_PLATFORM') or die;
  */
 class ROauth2ControllerBase extends JControllerBase
 {
-
-	public function execute() {}
+	/**
+	 * Method required by JControllerBase
+	 *
+	 * @return  none
+	 *
+	 * @since   1.0
+	 */
+	public function execute()
+	{
+	}
 
 	/**
 	 * Create the credentials
@@ -55,6 +63,7 @@ class ROauth2ControllerBase extends JControllerBase
 		if (!$this->request->client_id || !$this->request->client_secret || !$this->request->signature_method )
 		{
 			$this->respondError(400, 'invalid_request', 'Invalid OAuth request signature.');
+
 			return false;
 		}
 	}
@@ -62,7 +71,7 @@ class ROauth2ControllerBase extends JControllerBase
 	/**
 	 * Get an OAuth 2.0 client object based on the request message.
 	 *
-	 * @param   string  $consumerKey  The OAuth 2.0 consumer_key parameter for which to load the client.
+	 * @param   string  $client_id  The OAuth 2.0 client_id parameter for which to load the client.
 	 *
 	 * @return  ROauth2Client
 	 *

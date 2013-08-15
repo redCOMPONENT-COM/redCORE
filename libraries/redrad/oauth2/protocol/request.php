@@ -9,15 +9,13 @@
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
-
-// no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die( 'Restricted access' );
 
 /**
  * ROauth2ProtocolRequest class
  *
- * @package     Joomla
- * @since       1.0
+ * @package  RedRad
+ * @since    1.0
  */
 class ROauth2ProtocolRequest
 {
@@ -44,7 +42,6 @@ class ROauth2ProtocolRequest
 	 * @since  1.0
 	 */
 	public $_credentials;
-
 
 	/**
 	 * @var    array  List of possible OAuth 2.0 parameters.
@@ -102,8 +99,9 @@ class ROauth2ProtocolRequest
 
 		foreach (self::$_oauth_reserved as $k => $v)
 		{
-			if (isset($this->$v)) {
-				$parameters[$v] = $this->$v; 
+			if (isset($this->$v))
+			{
+				$parameters[$v] = $this->$v;
 			}
 		}
 
@@ -127,10 +125,11 @@ class ROauth2ProtocolRequest
 		{
 			foreach ($parameters as $k => $v)
 			{
-		    if (0 === strpos($k, 'OAUTH_')) {
+				if (0 === strpos($k, 'OAUTH_'))
+				{
 					$key = strtolower(substr($k, 6));
 					$this->$key = $v;
-		    }
+				}
 			}
 		}
 	}
@@ -146,12 +145,16 @@ class ROauth2ProtocolRequest
 	{
 		// Load the Joomla! application
 		$this->_app = JFactory::getApplication();
+
 		// Setup the database object.
 		$this->_input = $this->_app->input;
+
 		// Getting the URI
 		$this->_uri = new JURI($this->_fetchRequestUrl());
+
 		// Getting the request method (POST||GET)
 		$this->_method = strtoupper($_SERVER['REQUEST_METHOD']);
+
 		// Loading the response class
 		$this->_response = new ROauth2ProtocolResponse;
 	}
@@ -164,8 +167,6 @@ class ROauth2ProtocolRequest
 	 *   * POST variables.
 	 *   * GET query string variables.
 	 *
-	 * @param   ROauth2ProtocolRequest  $message  A ROauth2ProtocolRequest object to populate with parameters.
-	 *
 	 * @return  boolean  True if parameters found, false otherwise.
 	 *
 	 * @since   1.0
@@ -174,6 +175,7 @@ class ROauth2ProtocolRequest
 	{
 		// Init flag
 		$flag = false;
+
 		// Loading the response class
 		$requestHeader = new ROauth2ProtocolRequestHeader;
 
@@ -195,8 +197,10 @@ class ROauth2ProtocolRequest
 
 		// Getting the method
 		$method = strtolower($this->_method);
+
 		// Building the class name
-		$class = "ROauth2ProtocolRequest". ucfirst($method);
+		$class = "ROauth2ProtocolRequest" . ucfirst($method);
+
 		// Creating the class
 		$request = new $class;
 
@@ -282,6 +286,7 @@ class ROauth2ProtocolRequest
 			// The URI is built from the HTTP_HOST and REQUEST_URI environment variables in an Apache environment.
 			$uri = $scheme . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		}
+
 		// If not in "Apache Mode" we will assume that we are in an IIS environment and proceed.
 		else
 		{
@@ -313,6 +318,7 @@ class ROauth2ProtocolRequest
 		$max = strlen($chars) - 1;
 		$token = '';
 		$name = session_name();
+
 		for ($i = 0; $i < $length; ++$i)
 		{
 			$token .= $chars[(rand(0, $max))];

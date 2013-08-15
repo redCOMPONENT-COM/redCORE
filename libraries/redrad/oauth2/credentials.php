@@ -54,7 +54,8 @@ class ROauth2Credentials
 	/**
 	 * Object constructor.
 	 *
-	 * @param   ROauth2TableCredentials  $table  Connector object for table class.
+	 * @param   string                   $signMethod  The sign method
+	 * @param   ROauth2TableCredentials  $table       Connector object for table class.
 	 *
 	 * @since   1.0
 	 */
@@ -62,8 +63,10 @@ class ROauth2Credentials
 	{
 		// Setup the database object.
 		$this->_table = $table ? $table : JTable::getInstance('Credentials', 'ROauth2Table');
+
 		// Assume the base state for any credentials object to be new.
 		$this->_state = new ROauth2CredentialsStateNew($this->_table);
+
 		// Setup the correct signer
 		$this->_signer = ROauth2CredentialsSigner::getInstance($signMethod);
 	}
@@ -235,8 +238,10 @@ class ROauth2Credentials
 	 * Method to initialise the credentials.  This will persist a temporary credentials set to be authorised by
 	 * a resource owner.
 	 *
-	 * @param   string  $clientKey    The key of the client requesting the temporary credentials.
-	 * @param   string  $callbackUrl  The callback URL to set for the temporary credentials.
+	 * @param   string  $clientId      The key of the client requesting the temporary credentials.
+	 * @param   string  $clientSecret  The secret key of the client.
+	 * @param   string  $callbackUrl   The callback URL to set for the temporary credentials.
+	 * @param   int     $lifetime      The lifetime limit of the token.
 	 *
 	 * @return  void
 	 *
@@ -254,7 +259,7 @@ class ROauth2Credentials
 	 * Perform a password authentication challenge.
 	 *
 	 * @param   ROauth2Client  $client   The client.
-	 * @param   string  			 $headers  The password.
+	 * @param   string         $headers  The password.
 	 *
 	 * @return  boolean  True if authentication is ok, false if not
 	 *
@@ -269,6 +274,7 @@ class ROauth2Credentials
 	 * Method to load a set of credentials by key.
 	 *
 	 * @param   string  $key  The key of the credentials set to load.
+	 * @param   string  $uri  The URI of the request.
 	 *
 	 * @return  void
 	 *
@@ -279,8 +285,10 @@ class ROauth2Credentials
 	{
 		// Initialise credentials_id
 		$this->_table->credentials_id = 0;
+
 		// Get the correct client secret key
 		$key = $this->_signer->secretDecode($key);
+
 		// Load the credential
 		$this->_table->loadByKey($key, $uri);
 
@@ -288,6 +296,7 @@ class ROauth2Credentials
 		if (!$this->_table->credentials_id)
 		{
 			$this->_state = new ROauth2CredentialsStateNew($this->_table);
+
 			return false;
 		}
 
@@ -299,16 +308,19 @@ class ROauth2Credentials
 		{
 			$this->_state = new ROauth2CredentialsStateTemporary($this->_table);
 		}
+
 		// If we are loading a authorised set of credentials load that state.
 		elseif ($this->_table->type === self::AUTHORISED)
 		{
 			$this->_state = new ROauth2CredentialsStateAuthorised($this->_table);
 		}
+
 		// If we are loading a token set of credentials load that state.
 		elseif ($this->_table->type === self::TOKEN)
 		{
 			$this->_state = new ROauth2CredentialsStateToken($this->_table);
 		}
+
 		// Unknown OAuth credential type.
 		else
 		{

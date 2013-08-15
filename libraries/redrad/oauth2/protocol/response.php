@@ -9,7 +9,7 @@
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
-defined('JPATH_REDRAD') or die;
+defined('_JEXEC') or die( 'Restricted access' );
 
 /**
  * OAuth2 response data object class.
@@ -65,8 +65,6 @@ class ROauth2ProtocolResponse
 	/**
 	 * Method to send the application response to the client.  All headers will be sent prior to the main
 	 * application output data.
-	 *
-	 * @param   string   $body   The body string.
 	 *
 	 * @return  void
 	 *

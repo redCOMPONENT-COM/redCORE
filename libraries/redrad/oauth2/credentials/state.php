@@ -121,10 +121,10 @@ abstract class ROauth2CredentialsState
 	 * Method to initialise the credentials.  This will persist a temporary credentials set to be authorised by
 	 * a resource owner.
 	 *
-	 * @param   string  $clientId    The key of the client requesting the temporary credentials.
-	 * @param   string  $clientSecret The secret key of the client requesting the temporary credentials.
-	 * @param   string  $callbackUrl  The callback URL to set for the temporary credentials.
-	 * @param   string  $lifetime     How long (in seconds) the temporary credentials should be valid (defaults to 3600 seconds).
+	 * @param   string  $clientId      The key of the client requesting the temporary credentials.
+	 * @param   string  $clientSecret  The secret key of the client requesting the temporary credentials.
+	 * @param   string  $callbackUrl   The callback URL to set for the temporary credentials.
+	 * @param   string  $lifetime      How long (in seconds) the temporary credentials should be valid (defaults to 3600 seconds).
 	 *
 	 * @return  ROauth2CredentialsState
 	 *
@@ -159,7 +159,7 @@ abstract class ROauth2CredentialsState
 		}
 
 		// Ensure we don't have an id to insert... use the auto-incrementor instead.
-		//unset($this->table->credentials_id);
+		// U unset($this->table->credentials_id);
 
 		// Insert the object into the database.
 		return $this->table->store();
@@ -195,6 +195,7 @@ abstract class ROauth2CredentialsState
 			list ($u, $s) = explode(' ', microtime());
 			$str .= dechex($u) . dechex($s);
 		}
+
 		return $str;
 	}
 

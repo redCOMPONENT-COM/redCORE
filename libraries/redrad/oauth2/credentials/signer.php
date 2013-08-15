@@ -24,6 +24,8 @@ class ROauth2CredentialsSigner
 	/**
 	 * Method to get a message signer object based on the message's oauth_signature_method parameter.
 	 *
+	 * @param   string  $method  The method of the signer (HMAC-SHA1 || RSA-SHA1 || PLAINTEXT)
+	 *
 	 * @return  ROauth2CredentialsSigner  The OAuth message signer object for the message.
 	 *
 	 * @since   1.0
@@ -39,10 +41,8 @@ class ROauth2CredentialsSigner
 			case 'RSA-SHA1':
 				// @TODO We don't support RSA because we don't yet have a way to inject the private key.
 				throw new InvalidArgumentException('RSA signatures are not supported');
-				//$signer = new ROauth2CredentialsSignerRSA;
 				break;
 			case 'PLAINTEXT':
-
 				$signer = new ROauth2CredentialsSignerPlaintext;
 				break;
 			default:
@@ -57,7 +57,7 @@ class ROauth2CredentialsSigner
 	 * Perform a password authentication challenge.
 	 *
 	 * @param   ROauth2Client  $client   The client object
-	 * @param   string  			 $request  The request object.
+	 * @param   string         $request  The request object.
 	 *
 	 * @return  boolean  True if authentication is ok, false if not
 	 *
@@ -68,22 +68,30 @@ class ROauth2CredentialsSigner
 		// Build the response for the client.
 		$types = array('PHP_AUTH_', 'PHP_HTTP_', 'PHP_');
 
-		foreach ( $types as $type ) {
-			if (isset($request->_headers[$type.'USER'])) {
-				$user_decode = base64_decode($request->_headers[$type.'USER']);
+		foreach ( $types as $type )
+		{
+			if (isset($request->_headers[$type . 'USER']))
+			{
+				$user_decode = base64_decode($request->_headers[$type . 'USER']);
 			}
-			if (isset($request->_headers[$type.'PW'])) {
-				$password_decode = base64_decode($request->_headers[$type.'PW']);
+
+			if (isset($request->_headers[$type . 'PW']))
+			{
+				$password_decode = base64_decode($request->_headers[$type . 'PW']);
 			}
-		}	
+		}
 
 		// Check if the username and password are present
-		if ( !isset($user_decode) || !isset($password_decode) ) {
-			if (isset($request->client_id)) {
+		if ( !isset($user_decode) || !isset($password_decode) )
+		{
+			if (isset($request->client_id))
+			{
 				$user_decode = explode(":", base64_decode($request->client_id));
 				$user_decode = $user_decode[0];
 			}
-			if (isset($request->client_secret)) {
+
+			if (isset($request->client_secret))
+			{
 				$password_decode = explode(":", base64_decode($request->client_secret));
 				$password_decode = base64_decode($password_decode[1]);
 				$password_decode = explode(":", $password_decode);
@@ -92,21 +100,22 @@ class ROauth2CredentialsSigner
 		}
 
 		// Check if the username and password are present
-		if ( !isset($user_decode) || !isset($password_decode) ) {
+		if (!isset($user_decode) || !isset($password_decode))
+		{
 			throw new Exception('Username or password is not set');
 			exit;
 		}
 
 		// Explode the user
-		$parts	= explode( ':', $user_decode );
+		$parts	= explode(':', $user_decode);
 		$user	= $parts[0];
 
 		// Explode the password
-		$parts	= explode( ':', $password_decode );
+		$parts	= explode(':', $password_decode);
 		$password_clean	= $parts[0];
 
 		// Check the password
-		$parts	= explode( ':', $client->_identity->password );
+		$parts	= explode(':', $client->_identity->password);
 		$crypt	= $parts[0];
 
 		// Get the salt
@@ -116,13 +125,12 @@ class ROauth2CredentialsSigner
 		$testcrypt = JUserHelper::getCryptedPassword($password_clean, $salt);
 
 		// Compare the password's
-		if ($crypt != $testcrypt) {
-			//$this->_app->sendInvalidAuthMessage('Username or password do not match');
+		if ($crypt != $testcrypt)
+		{
 			throw new Exception('Username or password do not match');
 			exit;
 		}
 
 		return true;
 	}
-
 }

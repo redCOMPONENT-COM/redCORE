@@ -41,7 +41,7 @@ class ROauth2CredentialsSignerPlaintext extends ROauth2CredentialsSigner
 	/**
 	 * Decode the client secret key
 	 *
-	 * @param   string  $clientSecret      The OAuth client's secret.
+	 * @param   string  $clientSecret  The OAuth client's secret.
 	 *
 	 * @return  string  The decoded key
 	 *
@@ -50,7 +50,6 @@ class ROauth2CredentialsSignerPlaintext extends ROauth2CredentialsSigner
 	 */
 	public function secretDecode($clientSecret)
 	{
-
 		$clientSecret = explode(":", base64_decode($clientSecret));
 		$clientSecret = $clientSecret[1];
 

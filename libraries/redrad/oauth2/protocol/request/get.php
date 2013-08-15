@@ -9,15 +9,13 @@
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
-
-// no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die( 'Restricted access' );
 
 /**
  * ROauth2ProtocolRequestGet class
  *
- * @package     RedRad
- * @since       1.0
+ * @package  RedRad
+ * @since    1.0
  */
 class ROauth2ProtocolRequestGet
 {
@@ -37,15 +35,8 @@ class ROauth2ProtocolRequestGet
 	/**
 	 * Method to get the OAuth message string for signing.
 	 *
-	 * Note: As of PHP 5.3 the $this->encode() function is RFC 3986 compliant therefore this requires PHP 5.3+
+	 * @return  array  The filtered params
 	 *
-	 * @param   string  $requestUrl     The message's request URL.
-	 * @param   string  $requestMethod  The message's request method.
-	 *
-	 * @return  string  The unsigned OAuth message string.
-	 *
-	 * @link    http://www.faqs.org/rfcs/rfc3986
-	 * @see     $this->encode()
 	 * @since   1.0
 	 */
 	public function processVars()
@@ -59,9 +50,9 @@ class ROauth2ProtocolRequestGet
 		// Iterate over the reserved parameters and look for them in the POST variables.
 		foreach (ROauth2ProtocolRequest::getReservedParameters() as $k)
 		{
-			if ($this->_input->get->getString('oauth_'.$k, false))
+			if ($this->_input->get->getString('oauth_' . $k, false))
 			{
-				$params['OAUTH_'.strtoupper($k)] = trim($this->_input->get->getString('oauth_'.$k));
+				$params['OAUTH_' . strtoupper($k)] = trim($this->_input->get->getString('oauth_' . $k));
 			}
 		}
 
@@ -131,6 +122,7 @@ class ROauth2ProtocolRequestGet
 					$base[] = $key . '=' . $this->encode($v);
 				}
 			}
+
 			// The common case is that there is one entry per property.
 			else
 			{

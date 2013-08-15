@@ -41,6 +41,8 @@ class ROauth2CredentialsStateAuthorised extends ROauth2CredentialsState
 	/**
 	 * Method to convert a set of authorised credentials to token credentials.
 	 *
+	 * @param   integer  $lifetime  How long the credentials are good for.
+	 *
 	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
@@ -79,10 +81,10 @@ class ROauth2CredentialsStateAuthorised extends ROauth2CredentialsState
 	 * Method to initialise the credentials.  This will persist a temporary credentials set to be authorised by
 	 * a resource owner.
 	 *
-	 * @param   string   $clientId     The key of the client requesting the temporary credentials.
-	 * @param   string   $clientSecret The secret key of the client requesting the temporary credentials.
-	 * @param   string   $callbackUrl  The callback URL to set for the temporary credentials.
-	 * @param   integer  $lifetime     How long the credentials are good for.
+	 * @param   string   $clientId      The key of the client requesting the temporary credentials.
+	 * @param   string   $clientSecret  The secret key of the client requesting the temporary credentials.
+	 * @param   string   $callbackUrl   The callback URL to set for the temporary credentials.
+	 * @param   integer  $lifetime      How long the credentials are good for.
 	 *
 	 * @return  ROauth2CredentialsState
 	 *

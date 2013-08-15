@@ -11,7 +11,7 @@
  */
 
 // No direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die( 'Restricted access' );
 
 // Register component prefix
 JLoader::registerPrefix('ROauth2', __DIR__);
@@ -19,8 +19,8 @@ JLoader::registerPrefix('ROauth2', __DIR__);
 /**
  * ROauth2ProtocolRequest class
  *
- * @package     Joomla
- * @since       3.2
+ * @package  RedRad
+ * @since    1.0
  */
 class ROauth2Server
 {
@@ -51,10 +51,9 @@ class ROauth2Server
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry        $options      ROauth2Client options object
-	 * @param   JHttp            $http         The HTTP client object
-	 * @param   JInput           $input        The input object
-	 * @param   JApplicationWeb  $application  The application object
+	 * @param   JRegistry               $options  The options object.
+	 * @param   JHttp                   $http     The HTTP client object.
+	 * @param   ROauth2ProtocolRequest  $request  The request object.
 	 *
 	 * @since   1.0
 	 */
@@ -62,12 +61,16 @@ class ROauth2Server
 	{
 		// Setup the options object.
 		$this->options = isset($options) ? $options : new JRegistry;
+
 		// Setup the JHttp object.
 		$this->http = isset($http) ? $http : new JHttp($this->options);
+
 		// Setup the request object.
 		$this->request = isset($request) ? $request : new ROauth2ProtocolRequest;
+
 		// Setup the response object.
 		$this->response = isset($response) ? $response : new ROauth2ProtocolResponse;
+
 		// Getting application
 		$this->_app = JFactory::getApplication();
 	}
@@ -126,10 +129,9 @@ class ROauth2Server
 			// Execute the controller
 			$controller->execute();
 
-			// Exit 
+			// Exit
 			exit;
-
-		} // end if
+		}
 
 		// If we found an REST message somewhere we need to set the URI and request method.
 		if ($found && isset($this->request->access_token) )

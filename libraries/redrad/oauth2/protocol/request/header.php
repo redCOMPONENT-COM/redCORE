@@ -9,22 +9,18 @@
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
-
-// no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die( 'Restricted access' );
 
 /**
  * ROauth2ProtocolRequestHeader class
  *
- * @package     Joomla
- * @since       1.0
+ * @package  RedRad
+ * @since    1.0
  */
 class ROauth2ProtocolRequestHeader
 {
 	/**
 	 * Object constructor.
-	 *
-	 * @param   ROauth2TableCredentials  $table  Connector object for table class.
 	 *
 	 * @since   1.0
 	 */
@@ -41,7 +37,7 @@ class ROauth2ProtocolRequestHeader
 	 * the leading 'HTTP_' if present, and capitalizing only the first letter
 	 * of each word.
 	 *
-	 * @return  string  The Authorization header if it has been set.
+	 * @return  string  The Authorization header if it has been set or false if is not present
 	 */
 	public function fetchAuthorizationHeader()
 	{
@@ -54,17 +50,19 @@ class ROauth2ProtocolRequestHeader
 			{
 				return trim($headers['Authorization']);
 			}
-
 		}
+
 		// Otherwise we need to look in the $_SERVER superglobal.
 		elseif ($this->_input->server->getString('HTTP_AUTHORIZATION', false))
 		{
 			return trim($this->_input->server->getString('HTTP_AUTHORIZATION'));
 		}
+
 		elseif ($this->_input->server->getString('HTTP_AUTH_USER', false))
 		{
 			return trim($this->_input->server->getString('HTTP_AUTH_USER'));
 		}
+
 		elseif ($this->_input->server->getString('HTTP_USER', false))
 		{
 			return trim($this->_input->server->getString('HTTP_USER'));
@@ -89,22 +87,29 @@ class ROauth2ProtocolRequestHeader
 
 		$server = $_SERVER;
 
-    $headers = array();
-    foreach ($server as $key => $value) {
-      if (0 === strpos($key, 'HTTP_')) {
-        $headers[substr($key, 5)] = $value;
-      }
-      // CONTENT_* are not prefixed with HTTP_
-      elseif (in_array($key, array('CONTENT_LENGTH', 'CONTENT_MD5', 'CONTENT_TYPE'))) {
-        $headers[strtolower($key)] = $value;
-      }
-    }
+		$headers = array();
 
-    if (isset($server['PHP_AUTH_USER'])) {
-      $headers['PHP_AUTH_USER'] = $server['PHP_AUTH_USER'];
-      $headers['PHP_AUTH_PW'] = isset($server['PHP_AUTH_PW']) ? $server['PHP_AUTH_PW'] : '';
-    } else {
-      /*
+		foreach ($server as $key => $value)
+		{
+			if (0 === strpos($key, 'HTTP_'))
+			{
+				$headers[substr($key, 5)] = $value;
+			}
+
+			// CONTENT_* are not prefixed with HTTP_
+			elseif (in_array($key, array('CONTENT_LENGTH', 'CONTENT_MD5', 'CONTENT_TYPE'))) {
+				$headers[strtolower($key)] = $value;
+			}
+		}
+
+		if (isset($server['PHP_AUTH_USER']))
+		{
+			$headers['PHP_AUTH_USER'] = $server['PHP_AUTH_USER'];
+			$headers['PHP_AUTH_PW'] = isset($server['PHP_AUTH_PW']) ? $server['PHP_AUTH_PW'] : '';
+		}
+		else
+		{
+			/*
 			* php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default
 			* For this workaround to work, add this line to your .htaccess file:
 			* RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -115,49 +120,62 @@ class ROauth2ProtocolRequestHeader
 			* RewriteCond %{REQUEST_FILENAME} !-f
 			* RewriteRule ^(.*)$ app.php [QSA,L]
 			*/
+			$authorizationHeader = null;
 
-      $authorizationHeader = null;
-      if (isset($server['HTTP_AUTHORIZATION'])) {
-        $authorizationHeader = $server['HTTP_AUTHORIZATION'];
-      } elseif (isset($server['REDIRECT_HTTP_AUTHORIZATION'])) {
-        $authorizationHeader = $server['REDIRECT_HTTP_AUTHORIZATION'];
-      } elseif (function_exists('apache_request_headers')) {
-        $requestHeaders = apache_request_headers();
+			if (isset($server['HTTP_AUTHORIZATION']))
+			{
+				$authorizationHeader = $server['HTTP_AUTHORIZATION'];
+			}
+			elseif (isset($server['REDIRECT_HTTP_AUTHORIZATION']))
+			{
+				$authorizationHeader = $server['REDIRECT_HTTP_AUTHORIZATION'];
+			}
+			elseif (function_exists('apache_request_headers'))
+			{
+				$requestHeaders = apache_request_headers();
 
-        // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
-        $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+				// Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+				$requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
 
-        if (isset($requestHeaders['Authorization'])) {
-            $authorizationHeader = trim($requestHeaders['Authorization']);
-        }
-      }
+				if (isset($requestHeaders['Authorization']))
+				{
+					$authorizationHeader = trim($requestHeaders['Authorization']);
+				}
+			}
 
-      if (null !== $authorizationHeader) {
-        $headers['AUTHORIZATION'] = $authorizationHeader;
-        // Decode AUTHORIZATION header into PHP_AUTH_USER and PHP_AUTH_PW when authorization header is basic
-        if (0 === stripos($authorizationHeader, 'basic')) {
-          $exploded = explode(':', base64_decode(substr($authorizationHeader, 6)));
-          if (count($exploded) == 2) {
-              list($headers['PHP_AUTH_USER'], $headers['PHP_AUTH_PW']) = $exploded;
-          }
-        }
-      }
-    }
+			if (null !== $authorizationHeader)
+			{
+				$headers['AUTHORIZATION'] = $authorizationHeader;
 
-    // PHP_AUTH_USER/PHP_AUTH_PW
-    if (isset($headers['PHP_AUTH_USER'])) {
-        $headers['AUTHORIZATION'] = 'Basic '.base64_encode($headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW']);
-    }
+				// Decode AUTHORIZATION header into PHP_AUTH_USER and PHP_AUTH_PW when authorization header is basic
+				if (0 === stripos($authorizationHeader, 'basic'))
+				{
+					$exploded = explode(':', base64_decode(substr($authorizationHeader, 6)));
 
-    // PHP_USER/PHP_PW
-    if (isset($headers['PHP_USER']) && empty($headers['AUTHORIZATION']) ) {
-        $headers['AUTHORIZATION'] = 'Basic '.base64_encode($headers['PHP_USER'].':'.$headers['PHP_PW']);
-    }
+					if (count($exploded) == 2)
+					{
+						list($headers['PHP_AUTH_USER'], $headers['PHP_AUTH_PW']) = $exploded;
+					}
+				}
+			}
+		}
+
+		// PHP_AUTH_USER/PHP_AUTH_PW
+		if (isset($headers['PHP_AUTH_USER']))
+		{
+			$headers['AUTHORIZATION'] = 'Basic ' . base64_encode($headers['PHP_AUTH_USER'] . ':' . $headers['PHP_AUTH_PW']);
+		}
+
+		// PHP_USER/PHP_PW
+		if (isset($headers['PHP_USER']) && empty($headers['AUTHORIZATION']) )
+		{
+			$headers['AUTHORIZATION'] = 'Basic ' . base64_encode($headers['PHP_USER'] . ':' . $headers['PHP_PW']);
+		}
 
 		// Iterate over the reserved parameters and look for them in the POST variables.
 		foreach (ROauth2ProtocolRequest::getReservedParameters() as $k)
 		{
-			$name = 'HTTP_OAUTH_'.strtoupper($k);
+			$name = 'HTTP_OAUTH_' . strtoupper($k);
 
 			if ( isset($server[$name]) )
 			{

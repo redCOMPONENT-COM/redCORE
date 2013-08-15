@@ -10,7 +10,7 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die( 'Restricted access' );
 jimport('joomla.environment.response');
 
 /**
@@ -45,7 +45,7 @@ class ROauth2Client
 	 */
 	public function __construct(ROauth2TableUsers $table = null, array $properties = null)
 	{
-		JTable::addIncludePath(JPATH_REDRAD.'/oauth2/table');
+		JTable::addIncludePath(JPATH_REDRAD . '/oauth2/table');
 
 		// Setup the table object.
 		$this->_table = $table ? $table : JTable::getInstance('Users', 'ROauth2Table');
@@ -153,7 +153,8 @@ class ROauth2Client
 	 */
 	public function loadByKey($key)
 	{
-		if ($this->_table->loadByKey($key)) {
+		if ($this->_table->loadByKey($key))
+		{
 			$this->_identity = new JUser($this->_table->id);
 		}
 	}

@@ -24,10 +24,8 @@ class ROauth2ControllerResource extends ROauth2ControllerBase
 	/**
 	 * Constructor.
 	 *
-	 * @param   JRegistry        $options      ROauth2User options object
-	 * @param   JHttp            $http         The HTTP client object
-	 * @param   JInput           $input        The input object
-	 * @param   JApplicationWeb  $application  The application object
+	 * @param   ROauth2ProtocolRequest   $request   The request object
+	 * @param   ROauth2ProtocolResponse  $response  The response object
 	 *
 	 * @since   1.0
 	 */
@@ -35,8 +33,10 @@ class ROauth2ControllerResource extends ROauth2ControllerBase
 	{
 		// Call parent first
 		parent::__construct();
+
 		// Setup the request object.
 		$this->request = isset($request) ? $request : new ROauth2ProtocolRequest;
+
 		// Setup the response object.
 		$this->response = isset($response) ? $response : new ROauth2ProtocolResponse;
 	}
@@ -65,5 +65,4 @@ class ROauth2ControllerResource extends ROauth2ControllerBase
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);
 	}
-
 }

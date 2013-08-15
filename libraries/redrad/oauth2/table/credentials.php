@@ -9,7 +9,7 @@
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
-defined('JPATH_PLATFORM') or die;
+defined('_JEXEC') or die( 'Restricted access' );
 
 /**
  * OAuth2 Client Table
@@ -56,6 +56,7 @@ class ROauth2TableCredentials extends JTable
 	 * Load the credentials by key.
 	 *
 	 * @param   string  $key  The key for which to load the credentials.
+	 * @param   string  $uri  The uri from the request.
 	 *
 	 * @return  void
 	 *
@@ -68,7 +69,7 @@ class ROauth2TableCredentials extends JTable
 		$query->select('*')
 		->from('#__oauth_credentials')
 		->where($this->_db->quoteName('client_secret') . ' = ' . $this->_db->quote($key))
-		->where($this->_db->quoteName('resource_uri') . ' = ' . $this->_db->quote($uri) );
+		->where($this->_db->quoteName('resource_uri') . ' = ' . $this->_db->quote($uri));
 
 		// Set and execute the query.
 		$this->_db->setQuery($query);
