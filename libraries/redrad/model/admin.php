@@ -297,13 +297,23 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 			$nowFormatted = $now->toSql();
 			$userId = JFactory::getUser()->id;
 
-			$table->modified_by = $userId;
-			$table->modified_date = $nowFormatted;
+			$table->bind(
+				array(
+					'modified_by' => $userId,
+					'modified_date' => $nowFormatted,
+					'modified_time' => $nowFormatted
+				)
+			);
 
 			if (is_null($table->created_by) || empty($table->created_by))
 			{
-				$table->created_by = $userId;
-				$table->created_date = $nowFormatted;
+				$table->bind(
+					array(
+						'created_by' => $userId,
+						'created_date' => $nowFormatted,
+						'created_time' => $nowFormatted
+					)
+				);
 			}
 		}
 	}
@@ -319,13 +329,23 @@ else
 			$nowFormatted = $now->toSql();
 			$userId = JFactory::getUser()->id;
 
-			$table->modified_by = $userId;
-			$table->modified_date = $nowFormatted;
+			$table->bind(
+				array(
+					'modified_by' => $userId,
+					'modified_date' => $nowFormatted,
+					'modified_time' => $nowFormatted
+				)
+			);
 
 			if (is_null($table->created_by) || empty($table->created_by))
 			{
-				$table->created_by = $userId;
-				$table->created_date = $nowFormatted;
+				$table->bind(
+					array(
+						'created_by' => $userId,
+						'created_date' => $nowFormatted,
+						'created_time' => $nowFormatted
+					)
+				);
 			}
 		}
 	}
