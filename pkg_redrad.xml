@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="package" version="2.5" method="upgrade">
-	<name>redRAD</name>
-	<packagename>redrad</packagename>
+    <name>redRAD</name>
+    <packagename>redrad</packagename>
     <creationDate>June 2013</creationDate>
     <author>redCOMPONENT</author>
-	<authorEmail>email@redcomponent.com</authorEmail>
-	<authorUrl>www.redcomponent.com</authorUrl>
-	<copyright>Copyright (C) 2008 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
-	<license>GNU General Public License version 2 or later, see LICENSE.</license>
+    <authorEmail>email@redcomponent.com</authorEmail>
+    <authorUrl>www.redcomponent.com</authorUrl>
+    <copyright>Copyright (C) 2008 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later, see LICENSE.</license>
     <version>1.0.0</version>
 
-	<scriptfile>install.php</scriptfile>
+    <scriptfile>install.php</scriptfile>
 
-	<!-- packages to install -->
-	<files>
-		<!-- Libraries -->
-		<file type="library" id="redrad">libraries/redrad</file>
-	</files>
+    <!-- packages to install -->
+    <files>
+        <!-- Libraries -->
+        <file type="library" id="redrad">libraries/redrad</file>
+    </files>
 
-	<!-- Medias -->
-	<media destination="redrad" folder="media/redrad">
-		<folder>css</folder>
-		<folder>images</folder>
-		<folder>js</folder>
-	</media>
+    <!-- Medias -->
+    <media destination="redrad" folder="media/redrad">
+        <folder>css</folder>
+        <folder>images</folder>
+        <folder>js</folder>
+    </media>
 
-	<!-- Plugins to install with the component -->
-	<plugins>
-		<!-- System plugins -->
-		<plugin name="redrad" group="system"/>
-	</plugins>
+    <!-- Plugins to install with the component -->
+    <plugins>
+        <!-- System plugins -->
+        <plugin name="redrad" group="system"/>
+    </plugins>
 </extension>
