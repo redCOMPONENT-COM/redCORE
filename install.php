@@ -143,9 +143,11 @@ class Pkg_RedradInstallerScript
 	{
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
+		$src       = $parent->getParent()->getPath('source');
 
 		if ($manifest && $manifest->attributes()->type == 'package')
 		{
+			$installer->setPath('source', $src);
 			$installer->parseMedia($manifest->media);
 		}
 	}
