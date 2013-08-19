@@ -86,6 +86,7 @@ class Pkg_RedradInstallerScript
 	{
 		// Install extensions
 		$this->installLibraries($parent);
+		$this->installMedia($parent);
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
@@ -120,14 +121,32 @@ class Pkg_RedradInstallerScript
 				{
 					$result = $installer->install($extPath);
 				}
-				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'library', '-1'))
+				// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
 
 				$this->_storeStatus('libraries', array('name' => $extName, 'result' => $result));
 			}
+		}
+	}
+
+	/**
+	 * Install the media folder
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	private function installMedia($parent)
+	{
+		$installer = $this->getInstaller();
+		$manifest  = $this->getManifest($parent);
+
+		if ($manifest && $manifest->attributes()->type == 'package')
+		{
+			$installer->parseMedia($manifest->media);
 		}
 	}
 
@@ -159,8 +178,8 @@ class Pkg_RedradInstallerScript
 				{
 					$result = $installer->install($extPath);
 				}
-				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'module', '-1'))
+				// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -198,8 +217,8 @@ class Pkg_RedradInstallerScript
 				{
 					$result = $installer->install($extPath);
 				}
-				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'plugin', '-1', $extGroup))
+				// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -252,8 +271,8 @@ class Pkg_RedradInstallerScript
 				{
 					$result = $installer->install($extPath);
 				}
-				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'template', '-1'))
+				// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -275,7 +294,6 @@ class Pkg_RedradInstallerScript
 	{
 		if ($type == 'install' || $type == 'discover_install')
 		{
-
 		}
 
 		return true;
@@ -342,6 +360,7 @@ class Pkg_RedradInstallerScript
 	{
 		// Uninstall extensions
 		$this->uninstallLibraries($parent);
+		$this->uninstallMedia($parent);
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
@@ -377,6 +396,25 @@ class Pkg_RedradInstallerScript
 				// Store the result to show install summary later
 				$this->_storeStatus('libraries', array('name' => $extName, 'result' => $result));
 			}
+		}
+	}
+
+	/**
+	 * Uninstall the media folder
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	private function uninstallMedia($parent)
+	{
+		// Required objects
+		$installer = $this->getInstaller();
+		$manifest  = $this->getManifest($parent);
+
+		if ($manifest && $manifest->attributes()->type == 'package')
+		{
+			$installer->removeFiles($manifest->media);
 		}
 	}
 
