@@ -86,7 +86,6 @@ class Pkg_RedradInstallerScript
 	{
 		// Install extensions
 		$this->installLibraries($parent);
-		$this->installMedia($parent);
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
@@ -296,6 +295,8 @@ class Pkg_RedradInstallerScript
 	{
 		if ($type == 'install' || $type == 'discover_install')
 		{
+			// Install the media folder for packages that doesn't support it on core
+			$this->installMedia($parent);
 		}
 
 		return true;
