@@ -43,17 +43,17 @@ class RModelAdminBase extends JModelAdmin
 	 */
 	public function __construct($config = array())
 	{
+		parent::__construct($config);
+
 		if (is_null($this->context))
 		{
-			$this->context = strtolower($this->option . '.' . $this->getName());
+			$this->context = strtolower($this->option . '.edit.' . $this->getName());
 		}
 
 		if (is_null($this->formName))
 		{
 			$this->formName = strtolower($this->getName());
 		}
-
-		parent::__construct($config);
 	}
 
 	/**
@@ -119,7 +119,7 @@ class RModelAdminBase extends JModelAdmin
 	{
 		// Check the session for previously entered form data.
 		$data = JFactory::getApplication()->getUserState(
-			$this->context . '.edit.' . $this->formName . '.data',
+			$this->context . '.data',
 			array()
 		);
 
@@ -180,7 +180,6 @@ class RModelAdminBase extends JModelAdmin
 
 			// Load the data into the form after the plugins have operated.
 			$form->bind($data);
-
 		}
 		catch (Exception $e)
 		{
