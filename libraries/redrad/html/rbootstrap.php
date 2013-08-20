@@ -263,7 +263,7 @@ abstract class JHtmlRbootstrap
 			$opt['show'] = (isset($params['show']) && ($params['show'])) ? (boolean) $params['show'] : true;
 			$opt['remote'] = (isset($params['remote']) && ($params['remote'])) ? $params['remote'] : '';
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach the modal to document
 			JFactory::getDocument()->addScriptDeclaration(

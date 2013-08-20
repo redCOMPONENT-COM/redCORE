@@ -14,6 +14,8 @@
 	<files>
 		<folder>client</folder>
 		<folder>controller</folder>
+		<folder>dom</folder>
+		<folder>entity</folder>
 		<folder>factory</folder>
 		<folder>form</folder>
 		<folder>helper</folder>
@@ -25,11 +27,13 @@
 		<folder>layouts</folder>
 		<folder>loader</folder>
 		<folder>menu</folder>
+		<folder>modal</folder>
 		<folder>model</folder>
 		<folder>oauth2</folder>
 		<folder>pagination</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
+		<folder>text</folder>
 		<folder>toolbar</folder>
 		<folder>view</folder>
 		<filename>bootstrap.php</filename>
