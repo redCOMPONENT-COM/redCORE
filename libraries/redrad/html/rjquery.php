@@ -91,6 +91,75 @@ abstract class JHtmlRjquery
 	}
 
 	/**
+	 * Load the select2 library
+	 * https://github.com/ivaynberg/select2
+	 *
+	 * @param   string   $selector          CSS Selector to initalise selects
+	 * @param   array    $options           Optional array with options
+	 * @param   boolean  $bootstrapSupport  Load Twitter Bootstrap integration CSS
+	 *
+	 * @todo    Add the multilanguage support
+	 *
+	 * @return  void
+	 */
+	public static function select2($selector = '.select2', $options = null, $bootstrapSupport = true)
+	{
+		self::framework();
+
+		RHelperAsset::load('lib/select2/select2.js', self::EXTENSION);
+		RHelperAsset::load('lib/select2/select2.css', self::EXTENSION);
+
+		if ($bootstrapSupport)
+		{
+			RHelperAsset::load('lib/select2/select2-bootstrap.css', self::EXTENSION);
+		}
+
+		RHelperAsset::load('lib/select2/select2-extra.css', self::EXTENSION);
+
+		// Generate options with default values
+		$options = static::formatSelect2Options($options);
+
+		JFactory::getDocument()->addScriptDeclaration("
+			(function($){
+				$(document).ready(function () {
+					$('" . $selector . "').select2(
+						" . $options . "
+					);
+				});
+			})(jQuery);
+		");
+	}
+
+	/**
+	 * Function to receive & pre-process select2 options
+	 *
+	 * @param   mixed  $options  Associative array/JRegistry object with options
+	 *
+	 * @return  json             The options ready for the select2() function
+	 */
+	private static function formatSelect2Options($options)
+	{
+		// Support options array
+		if (is_array($options))
+		{
+			$options = new JRegistry($options);
+		}
+
+		if (!($options instanceof Jregistry))
+		{
+			$options = new JRegistry;
+		}
+
+		// Fix the width to resolve by default
+		if ($options->get('width', null) === null)
+		{
+			$options->set('width', 'resolve');
+		}
+
+		return $options->toString();
+	}
+
+	/**
 	 * Load the jQuery UI library
 	 *
 	 * @return  void
