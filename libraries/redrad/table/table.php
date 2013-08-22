@@ -472,9 +472,9 @@ class RTable extends JTable
 
 		// Build the main update query
 		$query = $db->getQuery(true)
-				->update($db->quoteName($this->_tbl))
-				->set($db->quoteName($this->_tableFieldState) . ' = ' . (int) $state)
-				->where($k . '=' . implode(' OR ' . $k . '=', $pks));
+			->update($db->quoteName($this->_tbl))
+			->set($db->quoteName($this->_tableFieldState) . ' = ' . (int) $state)
+			->where($k . '=' . implode(' OR ' . $k . '=', $pks));
 
 		// Determine if there is checkin support for the table.
 		if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time'))
@@ -567,5 +567,84 @@ class RTable extends JTable
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get a table instance.
+	 *
+	 * @param   string  $name    The table name
+	 * @param   mixed   $client  The client. null = auto, 1 = admin, 0 = frontend
+	 * @param   array   $config  An optional array of configuration
+	 *
+	 * @return  RTable  The table
+	 *
+	 * @throws  InvalidArgumentException
+	 */
+	public static function getAutoInstance($name, $client = null, array $config = array())
+	{
+		$option = JFactory::getApplication()->input->getString('option', '');
+		$componentName = ucfirst(strtolower(substr($option, 4)));
+		$prefix = $componentName . 'Table';
+
+		if (is_null($client))
+		{
+			$client = (int) JFactory::getApplication()->isAdmin();
+		}
+
+		// Admin
+		if ($client === 1)
+		{
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '/tables');
+		}
+
+		// Site
+		elseif ($client === 0)
+		{
+			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/' . $componentName . '/tables');
+		}
+
+		else
+		{
+			throw new InvalidArgumentException(
+				sprintf('Cannot instance the table %s. Invalid client %s.', $name, $client)
+			);
+		}
+
+		$table = self::getInstance($name, $prefix, $config);
+
+		if (!$table instanceof JTable)
+		{
+			throw new InvalidArgumentException(
+				sprintf('Cannot instance the table %s from client %s.', $name, $client)
+			);
+		}
+
+		return $table;
+	}
+
+	/**
+	 * Get a backend table instance
+	 *
+	 * @param   string  $name    The table name
+	 * @param   array   $config  An optional array of configuration
+	 *
+	 * @return  RTable  The table
+	 */
+	public static function getAdminInstance($name, array $config = array())
+	{
+		return self::getAutoInstance($name, 1, $config);
+	}
+
+	/**
+	 * Get a frontend table instance
+	 *
+	 * @param   string  $name    The table name
+	 * @param   array   $config  An optional array of configuration
+	 *
+	 * @return  RTable  The table
+	 */
+	public static function getFrontInstance($name, array $config = array())
+	{
+		return self::getAutoInstance($name, 0, $config);
 	}
 }
