@@ -41,7 +41,8 @@ class ROauth2CredentialsStateAuthorised extends ROauth2CredentialsState
 	/**
 	 * Method to convert a set of authorised credentials to token credentials.
 	 *
-	 * @param   string  $lifetime      How long (DateInterval format) the credentials should be valid (defaults to 60 minutes).
+	 * @param   string  $lifetime  How long (DateInterval format) the credentials should be valid (defaults to 60 minutes).
+	 *
 	 * @url http://php.net/manual/en/class.dateinterval.php
 	 *
 	 * @return  ROauth2CredentialsState

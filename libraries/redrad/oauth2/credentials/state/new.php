@@ -72,6 +72,7 @@ class ROauth2CredentialsStateNew extends ROauth2CredentialsState
 	 * @param   string   $clientSecret  The secret key of the client requesting the temporary credentials.
 	 * @param   string   $callbackUrl   The callback URL to set for the temporary credentials.
 	 * @param   string   $lifetime      How long (DateInterval format) the temporary credentials should be valid (defaults to 60 minutes).
+	 *
 	 * @url http://php.net/manual/en/class.dateinterval.php
 	 *
 	 * @return  ROauth2CredentialsState
