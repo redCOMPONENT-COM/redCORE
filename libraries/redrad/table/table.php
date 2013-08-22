@@ -606,7 +606,7 @@ class RTable extends JTable
 		else
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instance the table %s. Invalid client %s.', $name, $client)
+				sprintf('Cannot instanciate the table %s. Invalid client %s.', $name, $client)
 			);
 		}
 
@@ -615,7 +615,7 @@ class RTable extends JTable
 		if (!$table instanceof JTable)
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instance the table %s from client %s.', $name, $client)
+				sprintf('Cannot instanciate the table %s from client %s.', $name, $client)
 			);
 		}
 
