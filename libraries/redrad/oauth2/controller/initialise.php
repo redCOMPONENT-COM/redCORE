@@ -68,7 +68,7 @@ class ROauth2ControllerInitialise extends ROauth2ControllerBase
 		// Initialize the credentials for this request
 		$credentials->initialise(
 			$client->_identity->id,
-			$this->app->get('oauth.tokenlifetime', 3600)
+			$this->app->get('oauth.tokenlifetime', 'PT1H')
 		);
 
 		// Build the response for the client.

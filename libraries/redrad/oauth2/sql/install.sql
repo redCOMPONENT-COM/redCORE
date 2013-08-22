@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `#__oauth_credentials` (
   `type` varchar(255) NOT NULL DEFAULT '',
   `callback_url` varchar(255) NOT NULL DEFAULT '',
   `resource_owner_id` int(11) NOT NULL DEFAULT '0',
-  `expiration_date` int(11) NOT NULL DEFAULT '0',
-  `temporary_expiration_date` int(11) DEFAULT '0',
+  `expiration_date` datetime DEFAULT NULL,
+  `temporary_expiration_date` datetime DEFAULT NULL,
   PRIMARY KEY (`credentials_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 ;

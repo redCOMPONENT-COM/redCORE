@@ -26,14 +26,15 @@ class ROauth2CredentialsStateTemporary extends ROauth2CredentialsState
 	 * a resource owner.
 	 *
 	 * @param   integer  $resourceOwnerId  The id of the resource owner authorizing the temporary credentials.
-	 * @param   integer  $lifetime         How long the permanent credentials should be valid (defaults to forever).
+	 * @param   string   $lifetime         How long (DateInterval format) the credentials should be valid (defaults to 60 minutes).
+	 * @url http://php.net/manual/en/class.dateinterval.php
 	 *
 	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function authorise($resourceOwnerId, $lifetime = 0)
+	public function authorise($resourceOwnerId, $lifetime = 'PT1H')
 	{
 		// Setup the properties for the credentials.
 		$this->table->resource_owner_id = (int) $resourceOwnerId;
@@ -42,7 +43,10 @@ class ROauth2CredentialsStateTemporary extends ROauth2CredentialsState
 
 		if ($lifetime > 0)
 		{
-			$this->table->expiration_date = time() + $lifetime;
+			// Set the correct date adding the lifetime
+			$date = JFactory::getDate();
+			$date->add(new DateInterval($lifetime));
+			$this->table->expiration_date = $date->toSql();
 		}
 		else
 		{
@@ -100,7 +104,7 @@ class ROauth2CredentialsStateTemporary extends ROauth2CredentialsState
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600)
+	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 0)
 	{
 		throw new LogicException('Only new credentials can be initialised.');
 	}

@@ -84,7 +84,7 @@ class ROauth2ControllerConvert extends ROauth2ControllerBase
 		// Build the response for the client.
 		$response = array(
 			'access_token' => $credentials->getAccessToken(),
-			'expires_in' => 3600,
+			'expires_in' => 'P60M',
 			'refresh_token' => $credentials->getRefreshToken()
 		);
 

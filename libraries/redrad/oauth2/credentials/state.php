@@ -124,14 +124,15 @@ abstract class ROauth2CredentialsState
 	 * @param   string  $clientId      The key of the client requesting the temporary credentials.
 	 * @param   string  $clientSecret  The secret key of the client requesting the temporary credentials.
 	 * @param   string  $callbackUrl   The callback URL to set for the temporary credentials.
-	 * @param   string  $lifetime      How long (in seconds) the temporary credentials should be valid (defaults to 3600 seconds).
+	 * @param   string  $lifetime      How long (DateInterval format) the temporary credentials should be valid (defaults to 60 minutes).
+	 * @url http://php.net/manual/en/class.dateinterval.php
 	 *
 	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	abstract public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600);
+	abstract public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 'PT1H');
 
 	/**
 	 * Method to revoke a set of token credentials.

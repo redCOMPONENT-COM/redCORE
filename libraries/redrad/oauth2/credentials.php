@@ -256,11 +256,11 @@ class ROauth2Credentials
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function initialise($clientId, $lifetime = 3600)
+	public function initialise($clientId, $lifetime = 'PT1H')
 	{
 		$clientSecret = $this->_signer->secretDecode($this->_request->client_secret);
 
-		$this->_state = $this->_state->initialise($clientId, $clientSecret, $this->_request->_fetchRequestUrl());
+		$this->_state = $this->_state->initialise($clientId, $clientSecret, $this->_request->_fetchRequestUrl(), $lifetime);
 	}
 
 	/**

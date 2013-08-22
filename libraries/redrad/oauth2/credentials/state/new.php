@@ -71,14 +71,15 @@ class ROauth2CredentialsStateNew extends ROauth2CredentialsState
 	 * @param   string   $clientId      The key of the client requesting the temporary credentials.
 	 * @param   string   $clientSecret  The secret key of the client requesting the temporary credentials.
 	 * @param   string   $callbackUrl   The callback URL to set for the temporary credentials.
-	 * @param   integer  $lifetime      How long the credentials are good for.
+	 * @param   string   $lifetime      How long (DateInterval format) the temporary credentials should be valid (defaults to 60 minutes).
+	 * @url http://php.net/manual/en/class.dateinterval.php
 	 *
 	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600)
+	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 'PT1H')
 	{
 		// Setup the properties for the credentials.
 		$this->table->credentials_id = null;
@@ -88,7 +89,11 @@ class ROauth2CredentialsStateNew extends ROauth2CredentialsState
 		$this->table->temporary_token = $this->randomKey();
 		$this->table->resource_uri = $callbackUrl;
 		$this->table->type = ROauth2Credentials::TEMPORARY;
-		$this->table->temporary_expiration_date = time() + $lifetime;
+
+		// Set the correct date adding the lifetime
+		$date = JFactory::getDate();
+		$date->add(new DateInterval($lifetime));
+		$this->table->temporary_expiration_date = $date->toSql();
 
 		// Persist the object in the database.
 		$this->create();

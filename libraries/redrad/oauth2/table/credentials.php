@@ -75,14 +75,8 @@ class ROauth2TableCredentials extends JTable
 		$this->_db->setQuery($query);
 		$properties = $this->_db->loadAssoc();
 
-		// Iterate over any the loaded properties and bind them to the object.
-		if ($properties)
-		{
-			foreach ($properties as $k => $v)
-			{
-				$this->$k = $v;
-			}
-		}
+		// Bind the result to the object
+		$this->bind($properties);
 	}
 
 	/**
@@ -108,13 +102,7 @@ class ROauth2TableCredentials extends JTable
 		$this->_db->setQuery($query);
 		$properties = $this->_db->loadAssoc();
 
-		// Iterate over any the loaded properties and bind them to the object.
-		if ($properties)
-		{
-			foreach ($properties as $k => $v)
-			{
-				$this->$k = $v;
-			}
-		}
+		// Bind the result to the object
+		$this->bind($properties);
 	}
 }
