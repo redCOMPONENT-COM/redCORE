@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<extension version="3.0" type="plugin" group="system">
+<extension version="3.0" type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_REDRAD</name>
     <author>redCOMPONENT</author>
     <creationDate>June 2013</creationDate>

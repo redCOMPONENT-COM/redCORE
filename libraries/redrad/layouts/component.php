@@ -9,6 +9,19 @@
 
 defined('JPATH_REDRAD') or die;
 
+
+// For Joomla! 2.5 we will add bootstrap alert messages
+if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
+{
+	// Require the message renderer as it doesn't respect the naming convention.
+	$messageRendererPath = JPATH_LIBRARIES . '/redrad/joomla/document/renderer/message.php';
+
+	if (file_exists($messageRendererPath))
+	{
+		require_once $messageRendererPath;
+	}
+}
+
 RHelperAsset::load('component.css', 'redrad');
 
 $input = JFactory::getApplication()->input;

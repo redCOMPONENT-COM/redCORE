@@ -37,17 +37,6 @@ class PlgSystemRedRad extends JPlugin
 			if (version_compare(JVERSION, '3.0', '<'))
 			{
 				RLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redrad/joomla', false, true);
-
-				if ($isAdmin)
-				{
-					// Require the message renderer as it doesn't respect the naming convention.
-					$messageRendererPath = JPATH_LIBRARIES . '/redrad/joomla/document/renderer/message.php';
-
-					if (file_exists($messageRendererPath))
-					{
-						require_once $messageRendererPath;
-					}
-				}
 			}
 		}
 
