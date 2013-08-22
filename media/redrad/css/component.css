@@ -197,3 +197,10 @@ body {
 .redrad .unpublished {
 	color: #DA4F49;
 }
+/* Force tabs to overflow visible */
+.redrad .tab-content {
+    overflow: visible;
+}
+.redrad .tab-content.overauto {
+    overflow: auto;
+}

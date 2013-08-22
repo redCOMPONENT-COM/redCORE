@@ -41,6 +41,7 @@ abstract class JHtmlRjquery
 
 		RHelperAsset::load('lib/chosen.jquery.js', self::EXTENSION);
 		RHelperAsset::load('lib/chosen.css', self::EXTENSION);
+		RHelperAsset::load('lib/chosen-extra.css', self::EXTENSION);
 
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){
