@@ -62,6 +62,8 @@ class RClientOAuth2
 		$this->http = isset($http) ? $http : new JHttp($this->options);
 		$this->application = isset($application) ? $application : new JApplicationWeb;
 		$this->input = isset($input) ? $input : $this->application->input;
+
+		$this->rest_key = $this->randomKey();
 	}
 
 	/**
@@ -97,12 +99,9 @@ class RClientOAuth2
 	 */
 	protected function getRestHeaders($form = false)
 	{
-		// Set the user and password to headers
-		$rest_key = $this->options->get('rest_key');
-
 		// Encode the headers for REST
-		$user_encode = $this->encode($this->options->get('username'), $rest_key);
-		$pw_encode = $this->encode($this->options->get('password'), $rest_key);
+		$user_encode = $this->encode($this->options->get('username'), $this->rest_key);
+		$pw_encode = $this->encode($this->options->get('password'), $this->rest_key);
 		$authorization = $this->encode($user_encode, $pw_encode, true);
 
 		$headers = array(
@@ -127,12 +126,11 @@ class RClientOAuth2
 	protected function getPostData()
 	{
 		// Set the user and password to headers
-		$rest_key = $this->options->get('rest_key');
+		$rest_key = $this->randomKey();
 
 		// Encode the headers for REST
-		$user_encode = $this->encode($this->options->get('username'), $rest_key);
-		$pw_encode = $this->encode($this->options->get('password'), $rest_key);
-		$authorization = $this->encode($user_encode, $pw_encode, true);
+		$user_encode = $this->encode($this->options->get('username'), $this->rest_key);
+		$pw_encode = $this->encode($this->options->get('password'), $this->rest_key);
 		$client_secret = $this->encode($this->randomKey(), $pw_encode, true);
 
 		$post = array(
@@ -368,26 +366,20 @@ class RClientOAuth2
 	/**
 	 * Get the resource using the access token.
 	 *
-	 * @param   string  $code  The access token
+	 * @param   string  $token  The access token
 	 *
 	 * @return	string	Returns the JSON+HAL resource
 	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
-	public function getResource($code)
+	public function getResource($token)
 	{
 		// Get the headers
 		$data = $this->getPostData();
 
 		// Add GET parameters to URL
-		$url = $this->options->get('url') . "?oauth_access_token={$code}";
-
-		foreach ($data as $k => $d)
-		{
-			$url .= "&" . $k . "=" . $d;
-			next($data);
-		}
+		$url = $this->options->get('url') . "?oauth_access_token={$token}&oauth_client_id={$data['oauth_client_id']}";
 
 		// Send the request
 		$response = $this->http->get($url, $this->getRestHeaders());
@@ -400,76 +392,6 @@ class RClientOAuth2
 		{
 			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
 		}
-	}
-
-	/**
-	 * Send a signed Oauth request.
-	 *
-	 * @param   string  $url      The URL forf the request.
-	 * @param   mixed   $data     The data to include in the request
-	 * @param   array   $headers  The headers to send with the request
-	 * @param   string  $method   The method with which to send the request
-	 * @param   int     $timeout  The timeout for the request
-	 *
-	 * @return  string  The URL.
-	 *
-	 * @since   1.0
-	 */
-	public function query($url, $data = null, $headers = array(), $method = 'get', $timeout = null)
-	{
-		$token = $this->getToken();
-
-		if (array_key_exists('expires_in', $token) && $token['created'] + $token['expires_in'] < time() + 20)
-		{
-			if (!$this->getOption('userefresh'))
-			{
-				return false;
-			}
-
-			$token = $this->refreshToken($token['refresh_token']);
-		}
-
-		if (!$this->getOption('authmethod') || $this->getOption('authmethod') == 'bearer')
-		{
-			$headers['Authorization'] = 'Bearer ' . $token['access_token'];
-		}
-		elseif ($this->getOption('authmethod') == 'get')
-		{
-			if (strpos($url, '?'))
-			{
-				$url .= '&';
-			}
-			else
-			{
-				$url .= '?';
-			}
-
-			$url .= '=' . $token['access_token'];
-		}
-
-		switch ($method)
-		{
-			case 'head':
-			case 'get':
-			case 'delete':
-			case 'trace':
-			$response = $this->http->$method($url, $headers, $timeout);
-			break;
-			case 'post':
-			case 'put':
-			case 'patch':
-			$response = $this->http->$method($url, $data, $headers, $timeout);
-			break;
-			default:
-			throw new InvalidArgumentException('Unknown HTTP request method: ' . $method . '.');
-		}
-
-		if ($response->code < 200 || $response->code >= 400)
-		{
-			throw new RuntimeException('Error code ' . $response->code . ' received requesting data: ' . $response->body . '.');
-		}
-
-		return $response;
 	}
 
 	/**
