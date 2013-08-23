@@ -52,15 +52,24 @@ class ROauth2Credentials
 	public $_state;
 
 	/**
+	 * @var    ROauth2ProtocolRequest   The current HTTP request.
+	 * @since  1.0
+	 */
+	public $_request;
+
+	/**
 	 * Object constructor.
 	 *
-	 * @param   string                   $signMethod  The sign method
-	 * @param   ROauth2TableCredentials  $table       Connector object for table class.
+	 * @param   ROauth2ProtocolRequest   $request  The HTTP request
+	 * @param   ROauth2TableCredentials  $table    Connector object for table class.
 	 *
 	 * @since   1.0
 	 */
-	public function __construct($signMethod = 'PLAINTEXT', ROauth2TableCredentials $table = null)
+	public function __construct(ROauth2ProtocolRequest $request, ROauth2TableCredentials $table = null)
 	{
+		// Load the HTTP request
+		$this->_request = $request ? $request : new ROauth2ProtocolRequest;
+
 		// Setup the database object.
 		$this->_table = $table ? $table : JTable::getInstance('Credentials', 'ROauth2Table');
 
@@ -68,7 +77,8 @@ class ROauth2Credentials
 		$this->_state = new ROauth2CredentialsStateNew($this->_table);
 
 		// Setup the correct signer
-		$this->_signer = ROauth2CredentialsSigner::getInstance($signMethod);
+		$signature = isset($this->_request->signature_method) ? $this->_request->signature_method : 'PLAINTEXT';
+		$this->_signer = ROauth2CredentialsSigner::getInstance($signature);
 	}
 
 	/**
@@ -238,59 +248,60 @@ class ROauth2Credentials
 	 * Method to initialise the credentials.  This will persist a temporary credentials set to be authorised by
 	 * a resource owner.
 	 *
-	 * @param   string  $clientId      The key of the client requesting the temporary credentials.
-	 * @param   string  $clientSecret  The secret key of the client.
-	 * @param   string  $callbackUrl   The callback URL to set for the temporary credentials.
-	 * @param   int     $lifetime      The lifetime limit of the token.
+	 * @param   string  $clientId  The key of the client requesting the temporary credentials.
+	 * @param   int     $lifetime  The lifetime limit of the token.
 	 *
 	 * @return  void
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600)
+	public function initialise($clientId, $lifetime = 'PT1H')
 	{
-		$clientSecret = $this->_signer->secretDecode($clientSecret);
+		$clientSecret = $this->_signer->secretDecode($this->_request->client_secret);
 
-		$this->_state = $this->_state->initialise($clientId, $clientSecret, $callbackUrl);
+		$this->_state = $this->_state->initialise($clientId, $clientSecret, $this->_request->_fetchRequestUrl(), $lifetime);
 	}
 
 	/**
 	 * Perform a password authentication challenge.
 	 *
-	 * @param   ROauth2Client  $client   The client.
-	 * @param   string         $headers  The password.
+	 * @param   ROauth2Client  $client  The client.
 	 *
 	 * @return  boolean  True if authentication is ok, false if not
 	 *
 	 * @since   1.0
 	 */
-	public function doJoomlaAuthentication(ROauth2Client $client, $headers)
+	public function doJoomlaAuthentication(ROauth2Client $client)
 	{
-		return $this->_signer->doJoomlaAuthentication($client, $headers);
+		return $this->_signer->doJoomlaAuthentication($client, $this->_request);
 	}
 
 	/**
 	 * Method to load a set of credentials by key.
 	 *
-	 * @param   string  $key  The key of the credentials set to load.
-	 * @param   string  $uri  The URI of the request.
-	 *
-	 * @return  void
+	 * @return  boolean
 	 *
 	 * @since   1.0
 	 * @throws  InvalidArgumentException
 	 */
-	public function load($key, $uri)
+	public function load()
 	{
 		// Initialise credentials_id
 		$this->_table->credentials_id = 0;
 
-		// Get the correct client secret key
-		$key = $this->_signer->secretDecode($key);
-
 		// Load the credential
-		$this->_table->loadByKey($key, $uri);
+		if ( isset($this->_request->response_type) && !isset($this->_request->access_token) )
+		{
+			// Get the correct client secret key
+			$key = $this->_signer->secretDecode($this->_request->client_secret);
+
+			$this->_table->loadBySecretKey($key, $this->_request->_fetchRequestUrl());
+		}
+		elseif (isset($this->_request->access_token))
+		{
+			$this->_table->loadByAccessToken($this->_request->access_token, $this->_request->_fetchRequestUrl());
+		}
 
 		// If nothing was found we will setup a new credential state object.
 		if (!$this->_table->credentials_id)

@@ -41,21 +41,29 @@ class ROauth2CredentialsStateAuthorised extends ROauth2CredentialsState
 	/**
 	 * Method to convert a set of authorised credentials to token credentials.
 	 *
-	 * @param   integer  $lifetime  How long the credentials are good for.
+	 * @param   string  $lifetime  How long (DateInterval format) the credentials should be valid (defaults to 60 minutes).
+	 *
+	 * @url http://php.net/manual/en/class.dateinterval.php
 	 *
 	 * @return  ROauth2CredentialsState
 	 *
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function convert($lifetime = 3600)
+	public function convert($lifetime = 'PT1H')
 	{
 		// Setup the properties for the credentials.
 		$this->table->callback_url = '';
 		$this->table->access_token = $this->randomKey();
 		$this->table->refresh_token = $this->randomKey();
 		$this->table->type = ROauth2Credentials::TOKEN;
-		$this->table->expiration_date = time() + $lifetime;
+
+		// Set the correct date adding the lifetime
+		$date = JFactory::getDate();
+		$date->add(new DateInterval($lifetime));
+		$this->table->expiration_date = $date->toSql();
+
+		// Clean the temporary expitation date
 		$this->table->temporary_expiration_date = 0;
 
 		// Persist the object in the database.
@@ -91,7 +99,7 @@ class ROauth2CredentialsStateAuthorised extends ROauth2CredentialsState
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600)
+	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 0)
 	{
 		throw new LogicException('Only new credentials can be initialised.');
 	}

@@ -285,6 +285,9 @@ class ROauth2ProtocolRequest
 		{
 			// The URI is built from the HTTP_HOST and REQUEST_URI environment variables in an Apache environment.
 			$uri = $scheme . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+			$uri = explode("?", $uri);
+			$uri = $uri[0];
 		}
 
 		// If not in "Apache Mode" we will assume that we are in an IIS environment and proceed.

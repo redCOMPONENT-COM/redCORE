@@ -54,13 +54,17 @@ class ROauth2ControllerResource extends ROauth2ControllerBase
 		$this->initialise();
 
 		// Generate temporary credentials for the client.
-		$credentials = new ROauth2Credentials($this->request->signature_method);
+		$credentials = new ROauth2Credentials($this->request);
+		$credentials->load();
 
 		// Getting the client object
 		$client = $this->fetchClient($this->request->client_id);
 
-		// Doing authentication using Joomla! users
-		$credentials->doJoomlaAuthentication($client, $this->request);
+		// Ensure the credentials are authorised.
+		if ($credentials->getType() !== ROauth2Credentials::TOKEN)
+		{
+			$this->respondError(400, 'invalid_request', 'The token is not for a valid credentials yet.');
+		}
 
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);

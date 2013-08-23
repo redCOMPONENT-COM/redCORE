@@ -62,6 +62,8 @@ class RClientOAuth2
 		$this->http = isset($http) ? $http : new JHttp($this->options);
 		$this->application = isset($application) ? $application : new JApplicationWeb;
 		$this->input = isset($input) ? $input : $this->application->input;
+
+		$this->rest_key = $this->randomKey();
 	}
 
 	/**
@@ -97,12 +99,9 @@ class RClientOAuth2
 	 */
 	protected function getRestHeaders($form = false)
 	{
-		// Set the user and password to headers
-		$rest_key = $this->options->get('rest_key');
-
 		// Encode the headers for REST
-		$user_encode = $this->encode($this->options->get('username'), $rest_key);
-		$pw_encode = $this->encode($this->options->get('password'), $rest_key);
+		$user_encode = $this->encode($this->options->get('username'), $this->rest_key);
+		$pw_encode = $this->encode($this->options->get('password'), $this->rest_key);
 		$authorization = $this->encode($user_encode, $pw_encode, true);
 
 		$headers = array(
@@ -127,12 +126,11 @@ class RClientOAuth2
 	protected function getPostData()
 	{
 		// Set the user and password to headers
-		$rest_key = $this->options->get('rest_key');
+		$rest_key = $this->randomKey();
 
 		// Encode the headers for REST
-		$user_encode = $this->encode($this->options->get('username'), $rest_key);
-		$pw_encode = $this->encode($this->options->get('password'), $rest_key);
-		$authorization = $this->encode($user_encode, $pw_encode, true);
+		$user_encode = $this->encode($this->options->get('username'), $this->rest_key);
+		$pw_encode = $this->encode($this->options->get('password'), $this->rest_key);
 		$client_secret = $this->encode($this->randomKey(), $pw_encode, true);
 
 		$post = array(
@@ -186,24 +184,8 @@ class RClientOAuth2
 		// Send the request
 		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders(true));
 
-		if ($response->code >= 200 && $response->code < 400)
-		{
-			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
-			{
-				$token = array_merge(json_decode($response->body, true), array('created' => time()));
-			}
-			else
-			{
-				parse_str($response->body, $token);
-				$token = array_merge($token, array('created' => time()));
-			}
-
-			return $token;
-		}
-		else
-		{
-			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
-		}
+		// Process the response
+		$token = $this->processRequest($response);
 
 		return $token;
 	}
@@ -236,24 +218,8 @@ class RClientOAuth2
 		// Send the request
 		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders(true));
 
-		if ($response->code >= 200 && $response->code < 400)
-		{
-			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
-			{
-				$token = array_merge(json_decode($response->body, true), array('created' => time()));
-			}
-			else
-			{
-				parse_str($response->body, $token);
-				$token = array_merge($token, array('created' => time()));
-			}
-
-			return $token;
-		}
-		else
-		{
-			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
-		}
+		// Process the response
+		$token = $this->processRequest($response);
 
 		return $token;
 	}
@@ -285,26 +251,8 @@ class RClientOAuth2
 		// Send the request
 		$response = $this->http->post($this->options->get('url'), $data, $this->getRestHeaders(true));
 
-		if ($response->code >= 200 && $response->code < 400)
-		{
-			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
-			{
-				$token = array_merge(json_decode($response->body, true), array('created' => time()));
-			}
-			else
-			{
-				parse_str($response->body, $token);
-				$token = array_merge($token, array('created' => time()));
-			}
-
-			$this->setToken($token);
-
-			return $token;
-		}
-		else
-		{
-			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
-		}
+		// Process the response
+		$token = $this->processRequest($response);
 
 		return $token;
 	}
@@ -343,51 +291,29 @@ class RClientOAuth2
 		$data['client_secret'] = $this->getOption('client_secret');
 		$response = $this->http->post($this->getOption('token_url'), $data);
 
-		if ($response->code >= 200 || $response->code < 400)
-		{
-			if ($response->headers['Content-Type'] == 'application/json')
-			{
-				$token = array_merge(json_decode($response->body, true), array('created' => time()));
-			}
-			else
-			{
-				parse_str($response->body, $token);
-				$token = array_merge($token, array('created' => time()));
-			}
+		// Process the response
+		$token = $this->processRequest($response);
 
-			$this->setToken($token);
-
-			return $token;
-		}
-		else
-		{
-			throw new Exception('Error code ' . $response->code . ': ' . $response->body . '.');
-		}
+		return $token;
 	}
 
 	/**
 	 * Get the resource using the access token.
 	 *
-	 * @param   string  $code  The access token
+	 * @param   string  $token  The access token
 	 *
 	 * @return	string	Returns the JSON+HAL resource
 	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
-	public function getResource($code)
+	public function getResource($token)
 	{
 		// Get the headers
 		$data = $this->getPostData();
 
 		// Add GET parameters to URL
-		$url = $this->options->get('url') . "?oauth_access_token={$code}";
-
-		foreach ($data as $k => $d)
-		{
-			$url .= "&" . $k . "=" . $d;
-			next($data);
-		}
+		$url = $this->options->get('url') . "?oauth_access_token={$token}&oauth_client_id={$data['oauth_client_id']}";
 
 		// Send the request
 		$response = $this->http->get($url, $this->getRestHeaders());
@@ -403,128 +329,34 @@ class RClientOAuth2
 	}
 
 	/**
-	 * Send a signed Oauth request.
+	 * Process the HTTP request and return and array with the token
 	 *
-	 * @param   string  $url      The URL forf the request.
-	 * @param   mixed   $data     The data to include in the request
-	 * @param   array   $headers  The headers to send with the request
-	 * @param   string  $method   The method with which to send the request
-	 * @param   int     $timeout  The timeout for the request
+	 * @return	array	Returns a reference to the token response.
 	 *
-	 * @return  string  The URL.
-	 *
-	 * @since   1.0
+	 * @since 	1.0
+	 * @throws	Exception
 	 */
-	public function query($url, $data = null, $headers = array(), $method = 'get', $timeout = null)
+	function processRequest($response)
 	{
-		$token = $this->getToken();
-
-		if (array_key_exists('expires_in', $token) && $token['created'] + $token['expires_in'] < time() + 20)
+		// Check if the request is correct
+		if ($response->code >= 200 && $response->code < 400)
 		{
-			if (!$this->getOption('userefresh'))
+			if ($response->headers['X-Powered-By'] == 'JoomlaWebAPI/1.0')
 			{
-				return false;
-			}
-
-			$token = $this->refreshToken($token['refresh_token']);
-		}
-
-		if (!$this->getOption('authmethod') || $this->getOption('authmethod') == 'bearer')
-		{
-			$headers['Authorization'] = 'Bearer ' . $token['access_token'];
-		}
-		elseif ($this->getOption('authmethod') == 'get')
-		{
-			if (strpos($url, '?'))
-			{
-				$url .= '&';
+				$token = array_merge(json_decode($response->body, true), array('created' => time()));
 			}
 			else
 			{
-				$url .= '?';
+				parse_str($response->body, $token);
+				$token = array_merge($token, array('created' => time()));
 			}
 
-			$url .= '=' . $token['access_token'];
-		}
-
-		switch ($method)
-		{
-			case 'head':
-			case 'get':
-			case 'delete':
-			case 'trace':
-			$response = $this->http->$method($url, $headers, $timeout);
-			break;
-			case 'post':
-			case 'put':
-			case 'patch':
-			$response = $this->http->$method($url, $data, $headers, $timeout);
-			break;
-			default:
-			throw new InvalidArgumentException('Unknown HTTP request method: ' . $method . '.');
-		}
-
-		if ($response->code < 200 || $response->code >= 400)
-		{
-			throw new RuntimeException('Error code ' . $response->code . ' received requesting data: ' . $response->body . '.');
-		}
-
-		return $response;
-	}
-
-	/**
-	 * Create the URL for authentication.
-	 *
-	 * @return  JHttpResponse  The HTTP response
-	 *
-	 * @since   1.0
-	 */
-	public function createUrl()
-	{
-		if (!$this->getOption('authurl') || !$this->getOption('clientid'))
-		{
-			throw new InvalidArgumentException('Authorization URL and client_id are required');
-		}
-
-		$url = $this->getOption('authurl');
-
-		if (strpos($url, '?'))
-		{
-			$url .= '&';
+			return $token;
 		}
 		else
 		{
-			$url .= '?';
+			throw new RuntimeException('Error code ' . $response->code . ': ' . $response->body . '.');
 		}
-
-		$url .= 'response_type=code';
-		$url .= '&client_id=' . urlencode($this->getOption('clientid'));
-
-		if ($this->getOption('redirecturi'))
-		{
-			$url .= '&redirect_uri=' . urlencode($this->getOption('redirecturi'));
-		}
-
-		if ($this->getOption('scope'))
-		{
-			$scope = is_array($this->getOption('scope')) ? implode(' ', $this->getOption('scope')) : $this->getOption('scope');
-			$url .= '&scope=' . urlencode($scope);
-		}
-
-		if ($this->getOption('state'))
-		{
-			$url .= '&state=' . urlencode($this->getOption('state'));
-		}
-
-		if (is_array($this->getOption('requestparams')))
-		{
-			foreach ($this->getOption('requestparams') as $key => $value)
-			{
-				$url .= '&' . $key . '=' . urlencode($value);
-			}
-		}
-
-		return $url;
 	}
 
 	/**

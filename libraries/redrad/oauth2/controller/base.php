@@ -33,18 +33,6 @@ class ROauth2ControllerBase extends JControllerBase
 	}
 
 	/**
-	 * Create the credentials
-	 *
-	 * @return  ROauth2Credentials
-	 *
-	 * @since   1.0
-	 */
-	protected function createCredentials()
-	{
-		return new ROauth2Credentials;
-	}
-
-	/**
 	 * Initialise the controller
 	 *
 	 * @return  none
@@ -60,7 +48,7 @@ class ROauth2ControllerBase extends JControllerBase
 		}
 
 		// We need a valid signature to do initialisation.
-		if (!$this->request->client_id || !$this->request->client_secret || !$this->request->signature_method )
+		if (!isset($this->request->access_token) && (!$this->request->client_id || !$this->request->client_secret || !$this->request->signature_method) )
 		{
 			$this->respondError(400, 'invalid_request', 'Invalid OAuth request signature.');
 

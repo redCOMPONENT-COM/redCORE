@@ -78,7 +78,7 @@ class ROauth2CredentialsStateToken extends ROauth2CredentialsState
 	 * @since   1.0
 	 * @throws  LogicException
 	 */
-	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 3600)
+	public function initialise($clientId, $clientSecret, $callbackUrl, $lifetime = 0)
 	{
 		throw new LogicException('Only new credentials can be initialised.');
 	}

@@ -54,14 +54,14 @@ class ROauth2ControllerConvert extends ROauth2ControllerBase
 		$this->initialise();
 
 		// Get the credentials for the request.
-		$credentials = $this->createCredentials();
-		$credentials->load($this->request->client_secret, $this->request->_fetchRequestUrl());
+		$credentials = new ROauth2Credentials($this->request);
+		$credentials->load();
 
 		// Getting the client object
 		$client = $this->fetchClient($this->request->client_id);
 
 		// Doing authentication using Joomla! users
-		$credentials->doJoomlaAuthentication($client, $this->request);
+		$credentials->doJoomlaAuthentication($client);
 
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);
@@ -84,7 +84,7 @@ class ROauth2ControllerConvert extends ROauth2ControllerBase
 		// Build the response for the client.
 		$response = array(
 			'access_token' => $credentials->getAccessToken(),
-			'expires_in' => 3600,
+			'expires_in' => 'P60M',
 			'refresh_token' => $credentials->getRefreshToken()
 		);
 

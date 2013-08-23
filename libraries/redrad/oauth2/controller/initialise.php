@@ -54,13 +54,13 @@ class ROauth2ControllerInitialise extends ROauth2ControllerBase
 		$this->initialise();
 
 		// Generate temporary credentials for the client.
-		$credentials = new ROauth2Credentials($this->request->signature_method);
+		$credentials = new ROauth2Credentials($this->request);
 
 		// Getting the client object
 		$client = $this->fetchClient($this->request->client_id);
 
 		// Doing authentication using Joomla! users
-		$credentials->doJoomlaAuthentication($client, $this->request);
+		$credentials->doJoomlaAuthentication($client);
 
 		// Load the JUser class on application for this client
 		$this->app->loadIdentity($client->_identity);
@@ -68,9 +68,7 @@ class ROauth2ControllerInitialise extends ROauth2ControllerBase
 		// Initialize the credentials for this request
 		$credentials->initialise(
 			$client->_identity->id,
-			$this->request->client_secret,
-			$this->request->_fetchRequestUrl(),
-			$this->app->get('oauth.tokenlifetime', 3600)
+			$this->app->get('oauth.tokenlifetime', 'PT1H')
 		);
 
 		// Build the response for the client.
