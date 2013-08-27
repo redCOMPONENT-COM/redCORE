@@ -5,7 +5,6 @@
         <property file="build.properties"  override="true"/>
         <property name="redrad.src" value="./" />
         <property name="extension" value="${comp.name}" />
-        <property name="redrad.www.dir" value="${www.dir}" />
         <if>
             <equals arg1="${extension}" arg2="" />
             <then>
@@ -20,7 +19,6 @@
     <!-- Build redRAD as git submodule -->
     <target name="redRAD-submodule" >
         <property name="extension" value="redrad" />
-        <property name="redrad.www.dir" value="${www.dir}/redRAD/" />
         <property name="redrad.src" value="${src}/redRAD/" />
         <phingcall target="redRAD" />
     </target>
@@ -29,7 +27,7 @@
         <echo message="---------------- || redRAD || ----------------"/>
 
         <!-- Libraries -->
-        <copy todir="${redrad.www.dir}/libraries" overwrite="true">
+        <copy todir="${www.dir}/libraries" overwrite="true">
             <fileset dir="${redrad.src}/libraries">
                 <include name="**" />
             </fileset>
@@ -38,36 +36,36 @@
         <!-- For discover install we need to place the libraries manifests in the right folder -->
         <echo message="Copying library manifiest..." />
         <copy file="${redrad.src}/libraries/${extension}/${extension}.xml"
-            tofile="${redrad.www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true" />
+            tofile="${www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true" />
 
         <!-- Copy Package Manifest -->
         <echo message="Copying package manifiest..." />
         <copy file="${redrad.src}/pkg_${extension}.xml"
-            tofile="${redrad.www.dir}/administrator/manifests/packages/pkg_${extension}.xml" overwrite="true" />
+            tofile="${www.dir}/administrator/manifests/packages/pkg_${extension}.xml" overwrite="true" />
 
         <!-- Language -->
-        <copy todir="${redrad.www.dir}/language" overwrite="true">
+        <copy todir="${www.dir}/language" overwrite="true">
             <fileset dir="${redrad.src}/libraries/redrad/language">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Media -->
-        <copy todir="${redrad.www.dir}/media" overwrite="true">
+        <copy todir="${www.dir}/media" overwrite="true">
             <fileset dir="${redrad.src}/media/${extension}">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Plugins -->
-        <copy todir="${redrad.www.dir}/plugins" overwrite="true">
+        <copy todir="${www.dir}/plugins" overwrite="true">
             <fileset dir="${redrad.src}/plugins">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Plugins - Languages -->
-        <copy todir="${redrad.www.dir}/administrator/language" overwrite="true">
+        <copy todir="${www.dir}/administrator/language" overwrite="true">
             <fileset dir="${redrad.src}/plugins/system/redrad/language">
                 <include name="**" />
             </fileset>
