@@ -9,6 +9,12 @@
 
 defined('JPATH_REDRAD') or die;
 
+RHelperAsset::load('component.js', 'redrad');
+RHelperAsset::load('component.css', 'redrad');
+
+$input = JFactory::getApplication()->input;
+$input->set('tmpl', 'component');
+$input->set('redrad', true);
 
 // For Joomla! 2.5 we will add bootstrap alert messages
 if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
@@ -21,12 +27,6 @@ if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin
 		require_once $messageRendererPath;
 	}
 }
-
-RHelperAsset::load('component.css', 'redrad');
-
-$input = JFactory::getApplication()->input;
-$input->set('tmpl', 'component');
-$input->set('redrad', true);
 
 $data = $displayData;
 
@@ -167,4 +167,4 @@ if ($result instanceof Exception)
 	<footer class="footer pagination-centered">
 		Copyright 2013 redcomponent.com. All rights reserved.
 	</footer>
-	<?php endif; ?>
+<?php endif; ?>
