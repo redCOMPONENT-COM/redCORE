@@ -19,7 +19,7 @@
     <!-- Build redRAD as git submodule -->
     <target name="redRAD-submodule" >
         <property name="extension" value="redrad" />
-        <property name="redrad.src" value="${src}/redRAD/" />
+        <property name="redrad.src" value="${src}redRAD" />
         <phingcall target="redRAD" />
     </target>
 
@@ -51,8 +51,9 @@
         </copy>
 
         <!-- Media -->
+        <echo message="Copying media folder " />
         <copy todir="${www.dir}/media" overwrite="true">
-            <fileset dir="${redrad.src}/media/${extension}">
+            <fileset dir="${redrad.src}/media">
                 <include name="**" />
             </fileset>
         </copy>

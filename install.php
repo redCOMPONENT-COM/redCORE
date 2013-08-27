@@ -234,6 +234,7 @@ class Pkg_RedradInstallerScript
 					$query = $db->getQuery(true);
 					$query->update($db->quoteName("#__extensions"));
 					$query->set("enabled=1");
+					$query->set('state = 0');
 					$query->where("type='plugin'");
 					$query->where("element=" . $db->quote($extName));
 					$query->where("folder=" . $db->quote($extGroup));
