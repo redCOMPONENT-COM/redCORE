@@ -17,7 +17,7 @@ defined('JPATH_PLATFORM') or die;
  * @subpackage  Form
  * @since       1.6
  */
-class JFormFieldRedmedia extends JFormField
+class JFormFieldRmedia extends JFormField
 {
 	/**
 	 * The form field type.
@@ -25,7 +25,7 @@ class JFormFieldRedmedia extends JFormField
 	 * @var    string
 	 * @since  1.6
 	 */
-	protected $type = 'Redmedia';
+	protected $type = 'Rmedia';
 
 	/**
 	 * The initialised state of the document object.
