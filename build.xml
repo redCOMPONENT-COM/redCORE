@@ -1,64 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="redRAD" default="site" basedir=".">
     <!-- Do initialization stuff -->
-    <target name="prepare" >
+    <target name="site" >
         <property file="build.properties"  override="true"/>
+        <property name="redrad.src" value="./" />
+        <property name="extension" value="${comp.name}" />
+        <property name="redrad.www.dir" value="${www.dir}" />
         <if>
             <equals arg1="${extension}" arg2="" />
             <then>
                 <fail message="Extension not specified, use -Dextension=EXTENSION" />
             </then>
             <else>
-                <!--<property file="${extension}.properties"  override="true"/>-->
+                <phingcall target="redRAD" />
             </else>
         </if>
     </target>
 
-    <property name="src" value="./" />
+    <!-- Build redRAD as git submodule -->
+    <target name="redRAD-submodule" >
+        <property name="extension" value="redrad" />
+        <property name="redrad.www.dir" value="${www.dir}/redRAD/" />
+        <property name="redrad.src" value="${src}/redRAD/" />
+        <phingcall target="redRAD" />
+    </target>
 
-    <target name="site" description="Copies files to a existing joomla site" depends="prepare">
-        <echo message="Copying redRAD files..." />
+    <target name="redRAD" description="Copies files to a existing joomla site">
+        <echo message="---------------- || redRAD || ----------------"/>
 
         <!-- Libraries -->
-        <copy todir="${www.dir}/libraries" overwrite="true">
-            <fileset dir="${src}/libraries">
+        <copy todir="${redrad.www.dir}/libraries" overwrite="true">
+            <fileset dir="${redrad.src}/libraries">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- For discover install we need to place the libraries manifests in the right folder -->
         <echo message="Copying library manifiest..." />
-        <copy file="${src}/libraries/${comp.name}/${comp.name}.xml"
-            tofile="${www.dir}/administrator/manifests/libraries/${comp.name}.xml" overwrite="true" />
+        <copy file="${redrad.src}/libraries/${extension}/${extension}.xml"
+            tofile="${redrad.www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true" />
 
         <!-- Copy Package Manifest -->
-        <copy file="${src}/pkg_${comp.name}.xml"
-            tofile="${www.dir}/administrator/manifests/packages/pkg_${comp.name}.xml" overwrite="true" />
+        <echo message="Copying package manifiest..." />
+        <copy file="${redrad.src}/pkg_${extension}.xml"
+            tofile="${redrad.www.dir}/administrator/manifests/packages/pkg_${extension}.xml" overwrite="true" />
 
         <!-- Language -->
-        <copy todir="${www.dir}/language" overwrite="true">
-            <fileset dir="${src}/libraries/redrad/language">
+        <copy todir="${redrad.www.dir}/language" overwrite="true">
+            <fileset dir="${redrad.src}/libraries/redrad/language">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Media -->
-        <copy todir="${www.dir}/media" overwrite="true">
-            <fileset dir="${src}/media/${comp.name}">
+        <copy todir="${redrad.www.dir}/media" overwrite="true">
+            <fileset dir="${redrad.src}/media/${extension}">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Plugins -->
-        <copy todir="${www.dir}/plugins" overwrite="true">
-            <fileset dir="${src}/plugins">
+        <copy todir="${redrad.www.dir}/plugins" overwrite="true">
+            <fileset dir="${redrad.src}/plugins">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Plugins - Languages -->
-        <copy todir="${www.dir}/administrator/language" overwrite="true">
-            <fileset dir="${src}/plugins/system/redrad/language">
+        <copy todir="${redrad.www.dir}/administrator/language" overwrite="true">
+            <fileset dir="${redrad.src}/plugins/system/redrad/language">
                 <include name="**" />
             </fileset>
         </copy>
