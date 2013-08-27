@@ -144,7 +144,7 @@ class JFormFieldRmedia extends JFormField
 				$options = array(
 					'onShow' => 'jMediaRefreshPreviewTip',
 				);
-				JHtml::_('behavior.tooltip', '.hasTipPreview', $options);
+				JHtml::_('rbootstrap.tooltip', '.hasTipPreview', $options);
 				break;
 		}
 
