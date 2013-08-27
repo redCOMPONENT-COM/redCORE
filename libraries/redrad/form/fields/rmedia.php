@@ -224,7 +224,7 @@ class JFormFieldRmedia extends JFormField
 		$modalTitle = isset($this->element['modal_title']) ? JText::_($this->element['modal_title']) : JText::_('LIB_REDRAD_MEDIA_MANAGER');
 
 		// Create the modal object
-		$modal = REntityModal::getInstance(
+		$modal = RModal::getInstance(
 			array(
 				'attribs' => array(
 					'id'    => 'myModal',
