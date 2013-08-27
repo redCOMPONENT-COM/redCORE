@@ -51,7 +51,7 @@ final class RToolbarBuilder
 			$class .= ' btn-success';
 		}
 
-		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-file', '', false);
+		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-file-text-alt', '', false);
 	}
 
 	/**
