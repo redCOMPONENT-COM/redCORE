@@ -35,6 +35,13 @@
         <copy file="${src}/pkg_${comp.name}.xml"
             tofile="${www.dir}/administrator/manifests/packages/pkg_${comp.name}.xml" overwrite="true" />
 
+        <!-- Language -->
+        <copy todir="${www.dir}/language" overwrite="true">
+            <fileset dir="${src}/libraries/redrad/language">
+                <include name="**" />
+            </fileset>
+        </copy>
+
         <!-- Media -->
         <copy todir="${www.dir}/media" overwrite="true">
             <fileset dir="${src}/media/${comp.name}">

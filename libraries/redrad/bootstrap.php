@@ -28,3 +28,7 @@ JFormHelper::addRulePath(JPATH_REDRAD . '/form/rules');
 
 // HTML helpers
 JHtml::addIncludePath(JPATH_REDRAD . '/html');
+
+// Load language
+$lang = JFactory::getLanguage();
+$lang->load('lib_redrad', JPATH_SITE);
