@@ -16,7 +16,7 @@ defined('JPATH_REDRAD') or die;
  * @subpackage  Fields
  * @since       1.0
  */
-class JFormFieldRedtext extends JFormField
+class JFormFieldRtext extends JFormField
 {
 	/**
 	 * Input field attributes
@@ -40,7 +40,7 @@ class JFormFieldRedtext extends JFormField
 	 *
 	 * @var  string
 	 */
-	protected $type = 'Redtext';
+	protected $type = 'Rtext';
 
 	/**
 	 * Add an attribute to the input field
