@@ -1,25 +1,25 @@
 <?php
 /**
- * @package     Joomla.Libraries
+ * @package     RedRad
  * @subpackage  HTML
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_REDRAD') or die;
 
-jimport('joomla.environment.browser');
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.path');
-jimport('joomla.utilities.arrayhelper');
+JLoader::import('joomla.environment.browser');
+JLoader::import('joomla.filesystem.file');
+JLoader::import('joomla.filesystem.path');
+JLoader::import('joomla.utilities.arrayhelper');
 
 /**
  * Utility class for all HTML drawing classes
  *
- * @package     Joomla.Libraries
+ * @package     Redrad
  * @subpackage  HTML
- * @since       1.5
+ * @since       1.0
  */
 abstract class RHtml
 {
@@ -32,7 +32,7 @@ abstract class RHtml
 	 *     tab.
 	 *
 	 * @var    array
-	 * @since  1.5
+	 * @since  1.0
 	 */
 	public static $formatOptions = array('format.depth' => 0, 'format.eol' => "\n", 'format.indent' => "\t");
 
@@ -40,7 +40,7 @@ abstract class RHtml
 	 * An array to hold included paths
 	 *
 	 * @var    array
-	 * @since  1.5
+	 * @since  1.0
 	 */
 	protected static $includePaths = array();
 
@@ -48,7 +48,7 @@ abstract class RHtml
 	 * An array to hold method references
 	 *
 	 * @var    array
-	 * @since  1.6
+	 * @since  1.0
 	 */
 	protected static $registry = array();
 
@@ -60,7 +60,7 @@ abstract class RHtml
 	 *
 	 * @return  array  Contains lowercase key, prefix, file, function.
 	 *
-	 * @since   1.6
+	 * @since   1.0
 	 */
 	protected static function extract($key)
 	{
@@ -88,7 +88,7 @@ abstract class RHtml
 	 *
 	 * @return  mixed  JHtml::call($function, $args) or False on error
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 * @throws  InvalidArgumentException
 	 */
 	public static function _($key)
@@ -153,7 +153,7 @@ abstract class RHtml
 	 *
 	 * @return  boolean  True if the function is callable
 	 *
-	 * @since   1.6
+	 * @since   1.0
 	 */
 	public static function register($key, $function)
 	{
@@ -176,7 +176,7 @@ abstract class RHtml
 	 *
 	 * @return  boolean  True if a set key is unset
 	 *
-	 * @since   1.6
+	 * @since   1.0
 	 */
 	public static function unregister($key)
 	{
@@ -199,7 +199,7 @@ abstract class RHtml
 	 *
 	 * @return  boolean  True if the key is registered.
 	 *
-	 * @since   1.6
+	 * @since   1.0
 	 */
 	public static function isRegistered($key)
 	{
@@ -217,7 +217,7 @@ abstract class RHtml
 	 * @return  mixed   Function result or false on error.
 	 *
 	 * @see     http://php.net/manual/en/function.call-user-func-array.php
-	 * @since   1.6
+	 * @since   1.0
 	 * @throws  InvalidArgumentException
 	 */
 	protected static function call($function, $args)
@@ -247,7 +247,7 @@ abstract class RHtml
 	 *
 	 * @return  string  <a></a> string
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function link($url, $text, $attribs = null)
 	{
@@ -269,7 +269,7 @@ abstract class RHtml
 	 *
 	 * @return  string  <iframe></iframe> element or message if not supported.
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function iframe($url, $name, $attribs = null, $noFrames = '')
 	{
@@ -293,7 +293,7 @@ abstract class RHtml
 	 * @return  array    files to be included.
 	 *
 	 * @see     JBrowser
-	 * @since   1.6
+	 * @since   1.0
 	 */
 	protected static function includeRelativeFiles($folder, $file, $relative, $detect_browser, $detect_debug)
 	{
@@ -480,8 +480,8 @@ abstract class RHtml
 									}
 								}
 							}
-							// Try to deal with system files in the media folder
 							else
+							// Try to deal with system files in the media folder
 							{
 								$path = JPATH_ROOT . "/media/system/$folder/$file";
 
@@ -498,8 +498,8 @@ abstract class RHtml
 					}
 				}
 			}
-			// If not relative and http is not present in filename
 			else
+			// If not relative and http is not present in filename
 			{
 				foreach ($potential as $strip)
 				{
@@ -562,7 +562,7 @@ abstract class RHtml
 	 *
 	 * @return  string
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function image($file, $alt, $attribs = null, $relative = false, $path_rel = false)
 	{
@@ -622,7 +622,7 @@ abstract class RHtml
 	 * @return  mixed  nothing if $path_only is false, null, path or array of path if specific css browser files were detected
 	 *
 	 * @see     JBrowser
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function stylesheet($file, $attribs = array(), $relative = false, $path_only = false, $detect_browser = true, $detect_debug = true)
 	{
@@ -644,8 +644,8 @@ abstract class RHtml
 				return $includes;
 			}
 		}
-		// If inclusion is required
 		else
+		// If inclusion is required
 		{
 			$document = JFactory::getDocument();
 
@@ -669,7 +669,7 @@ abstract class RHtml
 	 * @return  mixed  nothing if $path_only is false, null, path or array of path if specific js browser files were detected.
 	 *
 	 * @see     JHtml::stylesheet
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function script($file, $framework = false, $relative = false, $path_only = false, $detect_browser = true, $detect_debug = true)
 	{
@@ -697,8 +697,8 @@ abstract class RHtml
 				return $includes;
 			}
 		}
-		// If inclusion is required
 		else
+		// If inclusion is required
 		{
 			$document = JFactory::getDocument();
 
@@ -719,7 +719,7 @@ abstract class RHtml
 	 *
 	 * @return  void
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function setFormatOptions($options)
 	{
@@ -744,7 +744,7 @@ abstract class RHtml
 	 * @return  string    A date translated by the given format and time zone.
 	 *
 	 * @see     strftime
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function date($input = 'now', $format = null, $tz = true, $gregorian = false)
 	{
@@ -761,8 +761,8 @@ abstract class RHtml
 			// Set the correct time zone based on the user configuration.
 			$date->setTimeZone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
 		}
-		// UTC date converted to server time zone.
 		elseif ($tz === false)
+		// UTC date converted to server time zone.
 		{
 			// Get a date object based on UTC.
 			$date = JFactory::getDate($input, 'UTC');
@@ -770,13 +770,13 @@ abstract class RHtml
 			// Set the correct time zone based on the server configuration.
 			$date->setTimeZone(new DateTimeZone($config->get('offset')));
 		}
-		// No date conversion.
 		elseif ($tz === null)
+		// No date conversion.
 		{
 			$date = JFactory::getDate($input);
 		}
-		// UTC date converted to given time zone.
 		else
+		// UTC date converted to given time zone.
 		{
 			// Get a date object based on UTC.
 			$date = JFactory::getDate($input, 'UTC');
@@ -790,8 +790,8 @@ abstract class RHtml
 		{
 			$format = JText::_('DATE_FORMAT_LC1');
 		}
-		// $format is an existing language key
 		elseif (JFactory::getLanguage()->hasKey($format))
+		// $format is an existing language key
 		{
 			$format = JText::_($format);
 		}
@@ -820,7 +820,7 @@ abstract class RHtml
 	 *
 	 * @return  string
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function tooltip($tooltip, $title = '', $image = 'tooltip.png', $text = '', $href = '', $alt = 'Tooltip', $class = 'hasTooltip')
 	{
@@ -888,7 +888,7 @@ abstract class RHtml
 	 *
 	 * @return  string  The tooltip string
 	 *
-	 * @since   3.1.2
+	 * @since   1.0
 	 */
 	public static function tooltipText($title = '', $content = '', $translate = 1, $escape = 1)
 	{
@@ -951,7 +951,7 @@ abstract class RHtml
 	 *
 	 * @return  string  HTML markup for a calendar field
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null)
 	{
@@ -998,6 +998,7 @@ abstract class RHtml
 				);
 				$done[] = $id;
 			}
+
 			return '<div class="input-append"><input type="text" class="hasTooltip" title="' . (0 !== (int) $value ? static::_('date', $value, null, null) : '')
 				. '" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '" ' . $attribs . ' />'
 				. '<button type="button" class="btn" id="' . $id . '_img"><i class="icon-calendar"></i></button></div>';
@@ -1018,7 +1019,7 @@ abstract class RHtml
 	 *
 	 * @return  array  An array with directory elements
 	 *
-	 * @since   1.5
+	 * @since   1.0
 	 */
 	public static function addIncludePath($path = '')
 	{
@@ -1044,7 +1045,7 @@ abstract class RHtml
 	 *
 	 * @return  string  JavaScript object notation representation of the array
 	 *
-	 * @since   3.0
+	 * @since   1.0
 	 */
 	public static function getJSObject(array $array = array())
 	{
