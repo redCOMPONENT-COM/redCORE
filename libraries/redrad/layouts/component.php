@@ -9,6 +9,7 @@
 
 defined('JPATH_REDRAD') or die;
 
+JHtml::_('rbootstrap.framework');
 RHelperAsset::load('component.js', 'redrad');
 RHelperAsset::load('component.css', 'redrad');
 
