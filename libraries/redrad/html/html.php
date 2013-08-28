@@ -970,7 +970,7 @@ abstract class RHtml
 			$attribs = JArrayHelper::toString($attribs);
 		}
 
-		static::_('bootstrap.tooltip');
+		static::_('rbootstrap.tooltip');
 
 		if (!$readonly && !$disabled)
 		{

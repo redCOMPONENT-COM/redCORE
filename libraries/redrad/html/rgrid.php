@@ -62,15 +62,15 @@ abstract class JHtmlRgrid
 		if (is_array($prefix))
 		{
 			$options = $prefix;
-			$active_title = array_key_exists('active_title', $options) ? $options['active_title'] : $active_title;
+			$active_title   = array_key_exists('active_title', $options) ? $options['active_title'] : $active_title;
 			$inactive_title = array_key_exists('inactive_title', $options) ? $options['inactive_title'] : $inactive_title;
-			$tip = array_key_exists('tip', $options) ? $options['tip'] : $tip;
-			$active_class = array_key_exists('active_class', $options) ? $options['active_class'] : $active_class;
+			$tip            = array_key_exists('tip', $options) ? $options['tip'] : $tip;
+			$active_class   = array_key_exists('active_class', $options) ? $options['active_class'] : $active_class;
 			$inactive_class = array_key_exists('inactive_class', $options) ? $options['inactive_class'] : $inactive_class;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
-			$translate = array_key_exists('translate', $options) ? $options['translate'] : $translate;
-			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$enabled        = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$translate      = array_key_exists('translate', $options) ? $options['translate'] : $translate;
+			$checkbox       = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
+			$prefix         = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		if ($tip)
@@ -402,7 +402,7 @@ abstract class JHtmlRgrid
 		}
 
 		$html = '<a href="#" onclick="Joomla.tableOrdering(\'' . $order . '\',\'' . $direction . '\',\'' . $task . '\');return false;"'
-			. ' class="hasTip" title="' . JText::_($tip ? $tip : $title) . '::' . JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN') . '">';
+			. ' class="hasTooltip" title="' . RHtml::tooltipText(JText::_($tip ? $tip : $title), JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN'), 0) . '">';
 		$html .= JText::_($title);
 
 		if ($order == $selected)
