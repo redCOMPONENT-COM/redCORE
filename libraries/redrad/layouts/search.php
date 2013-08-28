@@ -30,10 +30,10 @@ $state = $view->getModel()->getState();
 		       title="<?php echo JText::_('JSEARCH'); ?>"/>
 	</div>
 	<div class="btn-group hidden-phone">
-		<button class="btn tip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">
+		<button class="btn hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">
 			<i class="icon-search"></i>
 		</button>
-		<button class="btn tip" type="button" onclick="document.id('filter_search').value='';this.form.submit();"
+		<button class="btn hasTooltip" type="button" onclick="document.id('filter_search').value='';this.form.submit();"
 		        title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>">
 			<i class="icon-remove"></i>
 		</button>

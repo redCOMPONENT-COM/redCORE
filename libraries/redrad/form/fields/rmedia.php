@@ -47,7 +47,7 @@ class JFormFieldRmedia extends JFormField
 	 */
 	protected function getInput()
 	{
-		$assetField = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
+		$assetField  = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
 		$authorField = $this->element['created_by_field'] ? (string) $this->element['created_by_field'] : 'created_by';
 		$asset = $this->form->getValue($assetField) ? $this->form->getValue($assetField) : (string) $this->element['asset_id'];
 
@@ -184,7 +184,7 @@ class JFormFieldRmedia extends JFormField
 					'text' => '<i class="icon-eye"></i>',
 					'class' => 'hasTipPreview'
 				);
-				$html[] = JHtml::tooltip($tooltip, $options);
+				$html[] = RHtml::tooltip($tooltip, $options);
 				$html[] = '</div>';
 			}
 			else

@@ -27,6 +27,11 @@ class PlgSystemRedRad extends JPlugin
 	{
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
+		if (!$isAdmin)
+		{
+			return true;
+		}
+
 		$redradLoader = JPATH_LIBRARIES . '/redrad/bootstrap.php';
 
 		if (file_exists($redradLoader) && !class_exists('Inflector'))

@@ -432,7 +432,7 @@ abstract class JHtmlRbootstrap
 	 *
 	 * @return  void
 	 */
-	public static function tooltip($selector = '.hasTip', $params = array())
+	public static function tooltip($selector = '.hasTooltip', $params = array())
 	{
 		if (!isset(static::$loaded[__METHOD__][$selector]))
 		{
@@ -441,7 +441,7 @@ abstract class JHtmlRbootstrap
 
 			// Setup options object
 			$opt['animation'] = (isset($params['animation']) && ($params['animation'])) ? (boolean) $params['animation'] : true;
-			$opt['html']      = (isset($params['html']) && ($params['html'])) ? (boolean) $params['html'] : false;
+			$opt['html']      = (isset($params['html']) && ($params['html'])) ? (boolean) $params['html'] : true;
 			$opt['placement'] = (isset($params['placement']) && ($params['placement'])) ? (string) $params['placement'] : 'top';
 			$opt['selector']  = (isset($params['selector']) && ($params['selector'])) ? (string) $params['selector'] : false;
 			$opt['title']     = (isset($params['title']) && ($params['title'])) ? (string) $params['title'] : '';
