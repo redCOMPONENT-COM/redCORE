@@ -85,6 +85,13 @@ abstract class RView extends JViewLegacy
 	protected $topBarInnerLayoutData = array();
 
 	/**
+	 * True to display the joomla menu.
+	 *
+	 * @var  boolean
+	 */
+	protected $displayJoomlaMenu = false;
+
+	/**
 	 * Execute and display a template script.
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -105,7 +112,8 @@ abstract class RView extends JViewLegacy
 				'topbar_layout' => $this->topBarLayout,
 				'topbar_inner_layout_display' => $this->displayTopBarInnerLayout,
 				'topbar_inner_layout' => $this->topBarInnerLayout,
-				'topbar_inner_layout_data' => $this->topBarInnerLayoutData
+				'topbar_inner_layout_data' => $this->topBarInnerLayoutData,
+				'display_joomla_menu' => $this->displayJoomlaMenu,
 			)
 		);
 

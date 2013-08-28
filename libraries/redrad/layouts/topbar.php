@@ -63,6 +63,20 @@ if ($view)
 }
 
 $returnUri = base64_encode($returnUri);
+
+// Joomla menu
+$displayJoomlaMenu = false;
+
+if (isset($data['display_joomla_menu']))
+{
+	$displayJoomlaMenu = (bool) $data['display_joomla_menu'];
+}
+
+if ($displayJoomlaMenu)
+{
+	JLoader::import('joomla.application.module.helper');
+	$modules = JModuleHelper::getModules('menu');
+}
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function () {
@@ -79,9 +93,16 @@ $returnUri = base64_encode($returnUri);
 <header class="navbar navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container-fluid">
-			<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>"><i class="icon-undo"></i> Back to Joomla</a>
-			<span class="divider-vertical pull-left"></span>
+			<?php if (!$displayJoomlaMenu) : ?>
+				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>"><i class="icon-undo"></i> Back to Joomla</a>
+				<span class="divider-vertical pull-left"></span>
+			<?php endif; ?>
 			<a class="brand" href="#"><?php echo $componentTitle ?></a>
+			<?php if ($displayJoomlaMenu) : ?>
+				<?php foreach ($modules as $module): ?>
+					<?php echo JModuleHelper::renderModule($module, array('style' => 'standard')); ?>
+				<?php endforeach; ?>
+			<?php endif; ?>
 			<?php if ($displayTopbarInnerLayout) : ?>
 				<?php echo RLayoutHelper::render($topbarInnerLayout, $topbarInnerLayoutData) ?>
 			<?php endif; ?>
