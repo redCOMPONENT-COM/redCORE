@@ -101,6 +101,10 @@ body {
     border-right: 1px solid #CC3333;
 }
 
+.redrad .navbar ul a {
+    color: #333;
+}
+
 .redrad .nav-right, .redrad .nav-right a {
     color: #F5F5F5;
     line-height: 40px;
