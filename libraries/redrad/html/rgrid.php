@@ -57,7 +57,7 @@ abstract class JHtmlRgrid
 	 * @return  string         The Html code
 	 */
 	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '', $tip = false, $active_class = '',
-	                              $inactive_class = '', $enabled = true, $translate = true, $checkbox = 'cb')
+								  $inactive_class = '', $enabled = true, $translate = true, $checkbox = 'cb')
 	{
 		if (is_array($prefix))
 		{
@@ -404,6 +404,53 @@ abstract class JHtmlRgrid
 		$html = '<a href="#" onclick="Joomla.tableOrdering(\'' . $order . '\',\'' . $direction . '\',\'' . $task . '\');return false;"'
 			. ' class="hasTooltip" title="' . RHtml::tooltipText(JText::_($tip ? $tip : $title), JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN'), 0) . '">';
 		$html .= JText::_($title);
+
+		if ($order == $selected)
+		{
+			$html .= ' <i class="icon-' . $icon[$index] . '"></i>';
+		}
+
+		$html .= '</a>';
+
+		return $html;
+	}
+
+	/**
+	 * Method to sort a column in a grid
+	 *
+	 * @param   string  $title          The link title
+	 * @param   string  $order          The order field for the column
+	 * @param   string  $direction      The current direction
+	 * @param   mixed   $selected       The selected ordering
+	 * @param   string  $task           An optional task override
+	 * @param   string  $new_direction  An optional direction for the new column
+	 * @param   string  $tip            An optional text shown as tooltip title instead of $title
+	 * @param   string  $icon           Icon to show
+	 *
+	 * @return  string
+	 */
+	public static function sorto($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '', $icon = null)
+	{
+		JHtml::_('rbootstrap.tooltip');
+		static::main();
+
+		$direction = strtolower($direction);
+		$icon = array('chevron-up', 'chevron-down');
+		$index = (int) ($direction == 'desc');
+
+		if ($order != $selected)
+		{
+			$direction = $new_direction;
+		}
+		else
+		{
+			$direction = ($direction == 'desc') ? 'asc' : 'desc';
+		}
+
+		$html = '<a href="#" onclick="Joomla.tableOrdering(\'' . $order . '\',\'' . $direction . '\',\'' . $task . '\');return false;"'
+			. ' class="hasTooltip" title="' . RHtml::tooltipText(JText::_($tip ? $tip : $title), JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN'), 0) . '">';
+
+		$html .= '<i class="icon-sort"></i>';
 
 		if ($order == $selected)
 		{
