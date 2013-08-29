@@ -43,6 +43,9 @@
         <copy file="${redrad.src}/pkg_${extension}.xml"
             tofile="${www.dir}/administrator/manifests/packages/pkg_${extension}.xml" overwrite="true" />
 
+        <copy file="${redrad.src}/install.php"
+              tofile="${www.dir}/administrator/manifests/packages/${extension}/install.php" overwrite="true"/>
+
         <!-- Language -->
         <copy todir="${www.dir}/language" overwrite="true">
             <fileset dir="${redrad.src}/libraries/redrad/language">

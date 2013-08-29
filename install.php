@@ -84,8 +84,24 @@ class Pkg_RedradInstallerScript
 	 */
 	public function install($parent)
 	{
+		// Common tasks for install or update
+		$this->installOrUpdate($parent);
+
+		return true;
+	}
+
+	/**
+	 * Method to install the component
+	 *
+	 * @param   object  $parent  Class calling this method
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function installOrUpdate($parent)
+	{
 		// Install extensions
 		$this->installLibraries($parent);
+		$this->installMedia($parent);
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
@@ -158,7 +174,7 @@ class Pkg_RedradInstallerScript
 	 *
 	 * @return  void
 	 */
-	private function installModules($parent)
+	protected function installModules($parent)
 	{
 		// Required objects
 		$installer = $this->getInstaller();
@@ -197,7 +213,7 @@ class Pkg_RedradInstallerScript
 	 *
 	 * @return  void
 	 */
-	private function installPlugins($parent)
+	protected function installPlugins($parent)
 	{
 		// Required objects
 		$installer = $this->getInstaller();
@@ -238,6 +254,67 @@ class Pkg_RedradInstallerScript
 					$query->where("type='plugin'");
 					$query->where("element=" . $db->quote($extName));
 					$query->where("folder=" . $db->quote($extGroup));
+					$db->setQuery($query);
+					$db->query();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Function to install redRAD for components
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	protected function installRedrad($parent)
+	{
+		$installer = $this->getInstaller();
+		$manifest  = $this->getManifest($parent);
+		$src       = $parent->getParent()->getPath('source');
+		$type      = $manifest->attributes()->type;
+
+		if ($type == 'component')
+		{
+			if ($redradNode = $manifest->redrad)
+			{
+				$redradFolder = dirname(__FILE__);
+
+				if (is_dir($redradFolder))
+				{
+					$installer->install($redradFolder);
+				}
+
+				if (!empty($redradFolder))
+				{
+					$version = $redradNode->attributes()->version;
+
+					$class = get_called_class();
+					$option = strtolower(strstr($class, 'Installer', true));
+
+					$db = JFactory::getDBO();
+					$query = $db->getQuery(true)
+						->select('params')
+						->from($db->quoteName("#__extensions"))
+						->where("type=" . $db->quote($type))
+						->where("element=" . $db->quote($option));
+
+					$db->setQuery($query);
+
+					$comParams = new JRegistry($db->loadResult());
+
+					$shit = array('version' => (string) $version);
+					$comParams->set('redrad',
+						array(
+							'version' => (string) $version)
+					);
+
+					$query = $db->getQuery(true);
+					$query->update($db->quoteName("#__extensions"));
+					$query->set('params = ' . $db->quote($comParams->toString()));
+					$query->where("type=" . $db->quote($type));
+					$query->where("element=" . $db->quote($option));
 					$db->setQuery($query);
 					$db->query();
 				}
@@ -296,8 +373,11 @@ class Pkg_RedradInstallerScript
 	{
 		if ($type == 'install' || $type == 'discover_install')
 		{
-			// Install the media folder for packages that doesn't support it on core
-			$this->installMedia($parent);
+			// If it's installing redrad as dependency
+			if (get_called_class() != 'Pkg_RedradInstallerScript')
+			{
+				$this->installRedrad($parent);
+			}
 		}
 
 		return true;
@@ -346,11 +426,8 @@ class Pkg_RedradInstallerScript
 	 */
 	public function update($parent)
 	{
-		// Install extensions
-		$this->installLibraries($parent);
-		$this->installModules($parent);
-		$this->installPlugins($parent);
-		$this->installTemplates($parent);
+		// Common tasks for install or update
+		$this->installOrUpdate($parent);
 	}
 
 	/**
@@ -377,7 +454,7 @@ class Pkg_RedradInstallerScript
 	 *
 	 * @return  void
 	 */
-	private function uninstallLibraries($parent)
+	protected function uninstallLibraries($parent)
 	{
 		// Required objects
 		$installer = $this->getInstaller();
@@ -410,7 +487,7 @@ class Pkg_RedradInstallerScript
 	 *
 	 * @return  void
 	 */
-	private function uninstallMedia($parent)
+	protected function uninstallMedia($parent)
 	{
 		// Required objects
 		$installer = $this->getInstaller();
@@ -429,7 +506,7 @@ class Pkg_RedradInstallerScript
 	 *
 	 * @return  void
 	 */
-	private function uninstallModules($parent)
+	protected function uninstallModules($parent)
 	{
 		// Required objects
 		$installer = $this->getInstaller();
@@ -463,7 +540,7 @@ class Pkg_RedradInstallerScript
 	 *
 	 * @return  void
 	 */
-	private function uninstallPlugins($parent)
+	protected function uninstallPlugins($parent)
 	{
 		// Required objects
 		$installer = $this->getInstaller();
@@ -497,7 +574,7 @@ class Pkg_RedradInstallerScript
 	 *
 	 * @return  void
 	 */
-	private function uninstallTemplates($parent)
+	protected function uninstallTemplates($parent)
 	{
 		// Required objects
 		$installer = $this->getInstaller();
