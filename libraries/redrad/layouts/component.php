@@ -125,7 +125,18 @@ if ($result instanceof Exception)
 		jQuery('.message-sys').append(jQuery('#system-message-container'));
 	});
 </script>
-<?php if ($view->getLayout() === 'modal' || $templateComponent) : ?>
+<?php if ($view->getLayout() === 'modal') : ?>
+	<div class="container-fluid redrad">
+		<div class="span12 content">
+			<section id="component">
+				<div class="row-fluid message-sys"></div>
+				<div class="row-fluid">
+					<?php echo $result ?>
+				</div>
+			</section>
+		</div>
+	</div>
+<?php elseif ($templateComponent) : ?>
 	<div class="container-fluid redrad">
 		<div class="span12 content">
 			<section id="component">
