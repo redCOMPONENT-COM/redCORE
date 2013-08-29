@@ -126,15 +126,13 @@ if ($result instanceof Exception)
 	});
 </script>
 <?php if ($view->getLayout() === 'modal') : ?>
-	<div class="container-fluid redrad">
-		<div class="span12 content">
-			<section id="component">
-				<div class="row-fluid message-sys"></div>
-				<div class="row-fluid">
-					<?php echo $result ?>
-				</div>
-			</section>
-		</div>
+	<div class="row-fluid redrad">
+		<section id="component">
+			<div class="row-fluid message-sys"></div>
+			<div class="row-fluid">
+				<?php echo $result ?>
+			</div>
+		</section>
 	</div>
 <?php elseif ($templateComponent) : ?>
 	<div class="container-fluid redrad">
