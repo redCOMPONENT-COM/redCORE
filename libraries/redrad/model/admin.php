@@ -41,7 +41,8 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 				)
 			);
 
-			if (is_null($table->created_by) || empty($table->created_by))
+			if (property_exists($table, 'created_by')
+				&& (is_null($table->created_by) || empty($table->created_by)))
 			{
 				$table->bind(
 					array(
@@ -69,7 +70,7 @@ else
 		/**
 		 * Prepare and sanitise the table data prior to saving.
 		 *
-		 * @param   JTable  &$table  A reference to a JTable object.
+		 * @param   JTable  $table  A reference to a JTable object.
 		 *
 		 * @return  void
 		 */
@@ -87,7 +88,8 @@ else
 				)
 			);
 
-			if (is_null($table->created_by) || empty($table->created_by))
+			if (property_exists($table, 'created_by')
+				&& (is_null($table->created_by) || empty($table->created_by)))
 			{
 				$table->bind(
 					array(
