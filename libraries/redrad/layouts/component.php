@@ -14,6 +14,7 @@ RHelperAsset::load('component.js', 'redrad');
 RHelperAsset::load('component.css', 'redrad');
 
 $input = JFactory::getApplication()->input;
+$templateComponent = 'component' === $input->get('tmpl');
 $input->set('tmpl', 'component');
 $input->set('redrad', true);
 
@@ -124,10 +125,15 @@ if ($result instanceof Exception)
 		jQuery('.message-sys').append(jQuery('#system-message-container'));
 	});
 </script>
-<?php if ($view->getLayout() === 'modal') : ?>
+<?php if ($view->getLayout() === 'modal' || $templateComponent) : ?>
 	<div class="container-fluid redrad">
 		<div class="span12 content">
 			<section id="component">
+				<div class="row-fluid">
+					<h1><?php echo $view->getTitle() ?></h1>
+				</div>
+				<div class="row-fluid message-sys"></div>
+				<hr />
 				<div class="row-fluid">
 					<?php echo $result ?>
 				</div>
