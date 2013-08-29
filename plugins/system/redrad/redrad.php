@@ -27,7 +27,7 @@ class PlgSystemRedRad extends JPlugin
 	{
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		if (!$isAdmin)
+		if (!$isAdmin || ! $this->isRedradComponent())
 		{
 			return true;
 		}
@@ -61,7 +61,7 @@ class PlgSystemRedRad extends JPlugin
 	 */
 	public function onAfterRender()
 	{
-		if (!$this->isRedrad() || !$this->disableMootools())
+		if (!$this->isRedradComponent() || !$this->disableMootools())
 		{
 			return true;
 		}
@@ -91,7 +91,7 @@ class PlgSystemRedRad extends JPlugin
 	 */
 	public function onBeforeCompileHead()
 	{
-		if (!$this->isRedrad())
+		if (!$this->isRedradComponent())
 		{
 			return true;
 		}
@@ -121,7 +121,7 @@ class PlgSystemRedRad extends JPlugin
 	 */
 	public function onBeforeRender()
 	{
-		if (!$this->isRedrad())
+		if (!$this->isRedradComponent())
 		{
 			return true;
 		}
@@ -200,6 +200,28 @@ class PlgSystemRedRad extends JPlugin
 		$app = JFactory::getApplication();
 
 		return $app->input->get('redrad', false);
+	}
+
+	/**
+	 * Check is is a redRAD view
+	 *
+	 * @return  boolean
+	 */
+	private function isRedradComponent()
+	{
+		$option = isset($_GET['option']) ? $_GET['option'] : null;
+
+		if ($option)
+		{
+			$comParams = JComponentHelper::getParams($option);
+
+			if ($comParams->get('redrad', null))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
