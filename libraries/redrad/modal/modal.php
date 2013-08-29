@@ -58,21 +58,6 @@ final class RModal extends RDomObject
 	}
 
 	/**
-	 * Get a cacheable DB object
-	 *
-	 * @return  JDatabaseDriver  Database connector object
-	 */
-	private function getDbo()
-	{
-		if ($this->db === null)
-		{
-			$this->db = JFactory::getDbo();
-		}
-
-		return $this->db;
-	}
-
-	/**
 	 * Get the header content
 	 *
 	 * @return  string
