@@ -9,14 +9,46 @@
 
 defined('JPATH_REDRAD') or die;
 
-JHtml::_('rbootstrap.framework');
-RHelperAsset::load('component.js', 'redrad');
-RHelperAsset::load('component.css', 'redrad');
+$data = $displayData;
 
 $input = JFactory::getApplication()->input;
+
+/**
+ * Handle raw format
+ */
+$format = $input->getString('format');
+
+if ('raw' === $format)
+{
+	/** @var RView $view */
+	$view = $data['view'];
+
+	if (!$view instanceof RView)
+	{
+		throw new InvalidArgumentException(
+			sprintf(
+				'Invalid view %s specified for the component layout',
+				get_class($view)
+			)
+		);
+	}
+
+	$toolbar = $view->getToolbar();
+
+	// Get the view template.
+	$tpl = $data['tpl'];
+
+	// Get the view render.
+	return $view->loadTemplate($tpl);
+}
+
 $templateComponent = 'component' === $input->get('tmpl');
 $input->set('tmpl', 'component');
 $input->set('redrad', true);
+
+JHtml::_('rbootstrap.framework');
+RHelperAsset::load('component.js', 'redrad');
+RHelperAsset::load('component.css', 'redrad');
 
 // For Joomla! 2.5 we will add bootstrap alert messages
 if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
@@ -29,8 +61,6 @@ if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin
 		require_once $messageRendererPath;
 	}
 }
-
-$data = $displayData;
 
 // Do we have to display the sidebar ?
 $displaySidebar = false;
