@@ -29,7 +29,7 @@ class PlgSystemRedRad extends JPlugin
 
 		if (!$isAdmin || ! $this->isRedradComponent())
 		{
-			return true;
+			return;
 		}
 
 		$redradLoader = JPATH_LIBRARIES . '/redrad/bootstrap.php';
@@ -93,7 +93,7 @@ class PlgSystemRedRad extends JPlugin
 	{
 		if (!$this->isRedradComponent())
 		{
-			return true;
+			return;
 		}
 
 		$doc = JFactory::getDocument();
@@ -117,13 +117,13 @@ class PlgSystemRedRad extends JPlugin
 	 * retrieving data from the document and pushing it into the into the JResponse buffer.
 	 * http://docs.joomla.org/Plugin/Events/System
 	 *
-	 * @return boolean
+	 * @return  void
 	 */
 	public function onBeforeRender()
 	{
 		if (!$this->isRedradComponent())
 		{
-			return true;
+			return;
 		}
 
 		$doc = JFactory::getDocument();
@@ -195,20 +195,14 @@ class PlgSystemRedRad extends JPlugin
 	 *
 	 * @return  boolean
 	 */
-	private function isRedrad()
-	{
-		$app = JFactory::getApplication();
-
-		return $app->input->get('redrad', false);
-	}
-
-	/**
-	 * Check is is a redRAD view
-	 *
-	 * @return  boolean
-	 */
 	private function isRedradComponent()
 	{
+		// If the application is admin and the user logged out (this is not a redrad component)
+		if (JFactory::getApplication()->isAdmin() && JFactory::getUser()->guest)
+		{
+			return false;
+		}
+
 		$option = isset($_GET['option']) ? $_GET['option'] : null;
 
 		if ($option)
