@@ -110,6 +110,12 @@ body {
     line-height: 40px;
 }
 
+.redrad .navbar .brand {
+    margin-left: 0;
+    padding: 10px;
+}
+
+/* Sidebar */
 .redrad .sidebar .nav-tabs.nav-stacked > li> a:hover {
     background: none repeat scroll 0 0 #EEEEEE;
     padding-left: 20px;
