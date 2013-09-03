@@ -402,3 +402,9 @@
   direction: rtl;
 }
 /* @end */
+
+/* redRAD changes */
+.chzn-container-single .chzn-single div b {
+    background: url("chosen-sprite.png") no-repeat scroll 0 3px transparent;
+}
+/* @end */
