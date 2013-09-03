@@ -57,6 +57,9 @@ $option = $input->getString('option');
 $view = $input->getString('view', 'null');
 $returnUri = 'index.php?option=' . $option;
 
+// Prepare the component uri
+$componentUri = JRoute::_('index.php?option=' . $option);
+
 if ($view)
 {
 	$returnUri .= '&view=' . $view;
@@ -97,7 +100,7 @@ if ($displayJoomlaMenu)
 				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>"><i class="icon-undo"></i> Back to Joomla</a>
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
-			<a class="brand" href="#"><?php echo $componentTitle ?></a>
+			<a class="brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>
 			<?php if ($displayJoomlaMenu) : ?>
 				<?php foreach ($modules as $module): ?>
 					<?php echo JModuleHelper::renderModule($module, array('style' => 'standard')); ?>
