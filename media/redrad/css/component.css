@@ -226,3 +226,7 @@ body {
     border-top-left-radius: 4px;
     margin-left: 0;
 }
+
+.redrad .tabs-left .tab-content {
+    overflow: auto;
+}
