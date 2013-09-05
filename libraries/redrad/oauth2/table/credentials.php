@@ -102,6 +102,11 @@ class ROauth2TableCredentials extends JTable
 		$this->_db->setQuery($query);
 		$properties = $this->_db->loadAssoc();
 
+		if (empty($properties))
+		{
+			throw new InvalidArgumentException('OAuth credentials not found.');
+		}
+
 		// Bind the result to the object
 		$this->bind($properties);
 	}
