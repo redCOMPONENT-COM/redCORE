@@ -19,7 +19,17 @@ if (!isset($data['view']))
 /** @var RView $view */
 $view = $data['view'];
 
-$state = $view->getModel()->getState();
+// If a state is given use it
+if (isset($data['state']))
+{
+	$state = $data['state'];
+}
+
+// Use the view state
+else
+{
+	$state = $view->getModel()->getState();
+}
 ?>
 
 <div id="filter-bar" class="btn-toolbar">
