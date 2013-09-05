@@ -57,7 +57,7 @@ abstract class JHtmlRgrid
 	 * @return  string         The Html code
 	 */
 	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '', $tip = false, $active_class = '',
-								  $inactive_class = '', $enabled = true, $translate = true, $checkbox = 'cb')
+	                              $inactive_class = '', $enabled = true, $translate = true, $checkbox = 'cb')
 	{
 		if (is_array($prefix))
 		{
@@ -367,6 +367,18 @@ abstract class JHtmlRgrid
 		}
 
 		return self::action($i, $task, $prefix, $text, $text, $text, false, 'downarrow', 'downarrow_disabled', $enabled, true, $checkbox);
+	}
+
+	/**
+	 * Fake sorting function. Display only the title so it's easy for refactorings.
+	 *
+	 * @param   string  $title  The title.
+	 *
+	 * @return  string  The title.
+	 */
+	public static function fakesort($title)
+	{
+		return JText::_($title);
 	}
 
 	/**
