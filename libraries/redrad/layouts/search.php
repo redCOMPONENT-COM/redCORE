@@ -11,14 +11,6 @@ defined('JPATH_REDRAD') or die;
 
 $data = $displayData;
 
-if (!isset($data['view']))
-{
-	throw new InvalidArgumentException('No View passed to the "search" layout.');
-}
-
-/** @var RView $view */
-$view = $data['view'];
-
 // If a state is given use it
 if (isset($data['state']))
 {
@@ -26,9 +18,15 @@ if (isset($data['state']))
 }
 
 // Use the view state
+elseif (isset($data['view']))
+{
+	$view = $data['view'];
+	$state = $view->getModel()->getState();
+}
+
 else
 {
-	$state = $view->getModel()->getState();
+	throw new InvalidArgumentException('No View passed to the "search" layout.');
 }
 ?>
 
