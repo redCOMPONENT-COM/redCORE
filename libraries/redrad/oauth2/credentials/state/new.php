@@ -85,8 +85,9 @@ class ROauth2CredentialsStateNew extends ROauth2CredentialsState
 		// Setup the properties for the credentials.
 		$this->table->credentials_id = null;
 		$this->table->callback_url = $callbackUrl;
-		$this->table->client_id = $clientId;
+		$this->table->client_id = base64_encode($clientId);
 		$this->table->client_secret = $clientSecret;
+		$this->table->client_ip = trim($_SERVER['REMOTE_ADDR']);
 		$this->table->temporary_token = $this->randomKey();
 		$this->table->resource_uri = $callbackUrl;
 		$this->table->type = ROauth2Credentials::TEMPORARY;

@@ -55,6 +55,7 @@ class ROauth2ControllerResource extends ROauth2ControllerBase
 
 		// Generate temporary credentials for the client.
 		$credentials = new ROauth2Credentials($this->request);
+
 		$credentials->load();
 
 		// Getting the client object
@@ -64,6 +65,12 @@ class ROauth2ControllerResource extends ROauth2ControllerBase
 		if ($credentials->getType() !== ROauth2Credentials::TOKEN)
 		{
 			$this->respondError(400, 'invalid_request', 'The token is not for a valid credentials yet.');
+		}
+
+		// Ensure the credentials are authorised.
+		if (!$credentials->sign())
+		{
+			$this->respondError(400, 'unauthorized_client', 'Invalid sign');
 		}
 
 		// Load the JUser class on application for this client

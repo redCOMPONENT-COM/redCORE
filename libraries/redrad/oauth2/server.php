@@ -95,11 +95,6 @@ class ROauth2Server
 		// Get the OAuth 2.0 message from the request if there is one.
 		$found = $this->request->fetchMessageFromRequest();
 
-		if (!$found)
-		{
-			return false;
-		}
-
 		// If we found an REST message somewhere we need to set the URI and request method.
 		if ($found && isset($this->request->response_type) && !isset($this->request->access_token) )
 		{
@@ -134,10 +129,12 @@ class ROauth2Server
 		}
 
 		// If we found an REST message somewhere we need to set the URI and request method.
-		if ($found && isset($this->request->access_token) )
+		if (isset($this->request->client_id) && isset($this->request->access_token) )
 		{
 			$controller = new ROauth2ControllerResource($this->request);
 			$controller->execute();
+
+			return true;
 		}
 
 		return $found;

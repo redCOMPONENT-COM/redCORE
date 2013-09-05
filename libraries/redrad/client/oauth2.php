@@ -300,20 +300,21 @@ class RClientOAuth2
 	/**
 	 * Get the resource using the access token.
 	 *
-	 * @param   string  $token  The access token
+	 * @param   string  $client_id  The client id
+	 * @param   string  $token      The access token
 	 *
 	 * @return	string	Returns the JSON+HAL resource
 	 *
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
-	public function getResource($token)
+	public function getResource($client_id, $token)
 	{
-		// Get the headers
-		$data = $this->getPostData();
+		// Url encode client id
+		$client_id = urlencode($client_id);
 
 		// Add GET parameters to URL
-		$url = $this->options->get('url') . "?oauth_access_token={$token}&oauth_client_id={$data['oauth_client_id']}";
+		$url = $this->options->get('url') . "?oauth_access_token={$token}&oauth_client_id={$client_id}";
 
 		// Send the request
 		$response = $this->http->get($url, $this->getRestHeaders());
@@ -330,6 +331,8 @@ class RClientOAuth2
 
 	/**
 	 * Process the HTTP request and return and array with the token
+	 *
+	 * @param   string  $response  The response object
 	 *
 	 * @return	array	Returns a reference to the token response.
 	 *
