@@ -342,6 +342,18 @@ class ROauth2Credentials
 	}
 
 	/**
+	 * Sign the request for resource
+	 *
+	 * @return  bool  True if sign is fine, false if not.
+	 *
+	 * @since   1.0
+	 */
+	public function sign()
+	{
+		return $this->_signer->sign($this->_state, $this->_request);
+	}
+
+	/**
 	 * Delete expired credentials.
 	 *
 	 * @return  void

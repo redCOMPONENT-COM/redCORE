@@ -22,20 +22,32 @@ defined('JPATH_PLATFORM') or die;
 class ROauth2CredentialsSignerPlaintext extends ROauth2CredentialsSigner
 {
 	/**
-	 * Calculate and return the OAuth message signature using PLAINTEXT
+	 * Perform a password authentication challenge.
 	 *
-	 * @param   string  $baseString        The OAuth message as a normalized base string.
-	 * @param   string  $clientSecret      The OAuth client's secret.
-	 * @param   string  $credentialSecret  The OAuth credentials' secret.
+	 * @param   ROauth2CredentialsStateToken  $state    The state object
+	 * @param   ROauth2ProtocolRequest        $request  The request object.
 	 *
-	 * @return  string  The OAuth message signature.
+	 * @return  boolean  True if authentication is ok, false if not
 	 *
 	 * @since   1.0
-	 * @throws  InvalidArgumentException
 	 */
-	public function sign($baseString, $clientSecret, $credentialSecret)
+	public function sign(ROauth2CredentialsStateToken $state, ROauth2ProtocolRequest $request)
 	{
-		return $clientSecret . '&' . $credentialSecret;
+		$signed = false;
+
+		$request = $request->getParameters();
+
+		if ($state->__get('client_id') != $request['client_id'])
+		{
+			return false;
+		}
+
+		if ($state->__get('access_token') != $request['access_token'])
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
