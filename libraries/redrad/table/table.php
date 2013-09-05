@@ -540,6 +540,7 @@ class RTable extends JTable
 		{
 			// Sanitize input.
 			JArrayHelper::toInteger($pk);
+			$pk = RHelperArray::quote($pk);
 			$pk = implode(',', $pk);
 		}
 
@@ -554,7 +555,7 @@ class RTable extends JTable
 		// Delete the row by primary key.
 		$query = $this->_db->getQuery(true);
 		$query->delete($this->_db->quoteName($this->_tbl));
-		$query->where($this->_db->quoteName($this->_tbl_key) . ' IN (' . $this->_db->quote($pk) . ')');
+		$query->where($this->_db->quoteName($this->_tbl_key) . ' IN (' . $pk . ')');
 		$this->_db->setQuery($query);
 		$this->_db->query();
 
