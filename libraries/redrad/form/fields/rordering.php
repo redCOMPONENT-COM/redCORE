@@ -69,14 +69,12 @@ class JFormFieldRordering extends JFormField
 	 */
 	protected function getQuery()
 	{
-		$categoryId	= (int) $this->form->getValue('catid');
 		$table = (string) $this->element['table'];
 
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select(array($db->quoteName('ordering', 'value'), $db->quoteName('name', 'text')))
 			->from($db->quoteName($table))
-			->where($db->quoteName('catid') . ' = ' . (int) $categoryId)
 			->order('ordering');
 
 		return $query;
