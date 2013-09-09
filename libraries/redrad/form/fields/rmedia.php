@@ -1,37 +1,34 @@
 <?php
 /**
- * @package     Joomla.Libraries
- * @subpackage  Form
+ * @package     RedRad
+ * @subpackage  Fields
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_REDRAD') or die;
 
 /**
- * Form Field class for the Joomla Platform.
- * Provides a modal media selector including upload mechanism
+ * Media field.
  *
- * @package     Joomla.Libraries
- * @subpackage  Form
- * @since       1.6
+ * @package     RedRad
+ * @subpackage  Fields
+ * @since       1.0
  */
 class JFormFieldRmedia extends JFormField
 {
 	/**
 	 * The form field type.
 	 *
-	 * @var    string
-	 * @since  1.6
+	 * @var  string
 	 */
 	protected $type = 'Rmedia';
 
 	/**
 	 * The initialised state of the document object.
 	 *
-	 * @var    boolean
-	 * @since  1.6
+	 * @var  boolean
 	 */
 	protected static $initialised = false;
 
@@ -40,8 +37,6 @@ class JFormFieldRmedia extends JFormField
 	 * Use attributes to identify specific created_by and asset_id fields
 	 *
 	 * @return  string  The field input markup.
-	 *
-	 * @since   1.0
 	 *
 	 * @todo    Create a layout and put all the output HTML there!
 	 */
