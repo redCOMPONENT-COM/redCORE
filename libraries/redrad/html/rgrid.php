@@ -56,8 +56,7 @@ abstract class JHtmlRgrid
 	 *
 	 * @return  string         The Html code
 	 */
-	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '', $tip = false, $active_class = '',
-	                              $inactive_class = '', $enabled = true, $translate = true, $checkbox = 'cb')
+	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '', $tip = false, $active_class = '',$inactive_class = '', $enabled = true, $translate = true, $checkbox = 'cb')
 	{
 		if (is_array($prefix))
 		{
@@ -401,7 +400,7 @@ abstract class JHtmlRgrid
 		static::main();
 
 		$direction = strtolower($direction);
-		$icon = array('chevron-up', 'chevron-down');
+		$orderIcons = array('icon-chevron-up', 'icon-chevron-down');
 		$index = (int) ($direction == 'desc');
 
 		if ($order != $selected)
@@ -413,18 +412,19 @@ abstract class JHtmlRgrid
 			$direction = ($direction == 'desc') ? 'asc' : 'desc';
 		}
 
-		$html = '<a href="#" onclick="Joomla.tableOrdering(\'' . $order . '\',\'' . $direction . '\',\'' . $task . '\');return false;"'
-			. ' class="hasTooltip" title="' . RHtml::tooltipText(JText::_($tip ? $tip : $title), JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN'), 0) . '">';
-		$html .= JText::_($title);
+		// Create an object to pass it to the layouts
+		$data            = new stdClass;
+		$data->order     = $order;
+		$data->direction = $direction;
+		$data->metatitle = RHtml::tooltipText(JText::_($tip ? $tip : $title), JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN'), 0);
+		$data->selected  = $selected;
+		$data->task      = $task;
+		$data->tip       = $tip;
+		$data->title     = $title;
+		$data->orderIcon = $orderIcons[$index];
+		$data->icon      = $icon;
 
-		if ($order == $selected)
-		{
-			$html .= ' <i class="icon-' . $icon[$index] . '"></i>';
-		}
-
-		$html .= '</a>';
-
-		return $html;
+		return RLayoutHelper::render('grid.sort', $data);
 	}
 
 	/**
@@ -440,6 +440,8 @@ abstract class JHtmlRgrid
 	 * @param   string  $icon           Icon to show
 	 *
 	 * @return  string
+	 *
+	 * @deprecated  1.1  Use the function self::sort() that already supports icons and uses layouts
 	 */
 	public static function sorto($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '', $icon = null)
 	{
