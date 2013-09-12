@@ -31,3 +31,41 @@
         });
     })
 })(jQuery);
+
+/**
+ * listItemTask with form element id as parameter
+ *
+ * @param id   The item id
+ * @param task The task name
+ * @param f    The form element id
+ * @return
+ */
+function listItemTaskForm(id, task, f) {
+
+    f = document.getElementById(f);
+
+    if (typeof(f) === 'undefined') {
+        f = document.getElementById('adminForm');
+    }
+
+    var cb = f[id];
+
+    if (cb) {
+
+        for (var i = 0; true; i++) {
+            var cbx = f['cb' + i];
+
+            if (!cbx) {
+                break;
+            }
+
+            cbx.checked = false;
+        }
+
+        cb.checked = true;
+        f.boxchecked.value = 1;
+        Joomla.submitform(task, f);
+    }
+
+    return false;
+}

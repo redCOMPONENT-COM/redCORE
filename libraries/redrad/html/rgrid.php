@@ -53,10 +53,13 @@ abstract class JHtmlRgrid
 	 * @param   boolean       $enabled         An optional setting for access control on the action.
 	 * @param   boolean       $translate       An optional setting for translation.
 	 * @param   string        $checkbox	       An optional prefix for checkboxes.
+	 * @param   string        $formId          An optional form id
 	 *
 	 * @return  string         The Html code
 	 */
-	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '', $tip = false, $active_class = '',$inactive_class = '', $enabled = true, $translate = true, $checkbox = 'cb')
+	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '',
+	                              $tip = false, $active_class = '',$inactive_class = '',
+	                              $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -93,7 +96,8 @@ abstract class JHtmlRgrid
 			}
 
 			$html[] = '<a class="btn btn-small ' . $class . '" ' . ($tip ? 'rel="tooltip"' : '') . '';
-			$html[] = ' href="javascript:void(0);" onclick="return listItemTask(\'' . $checkbox . $i . '\',\'' . $prefix . $task . '\')"';
+			$html[] = ' href="javascript:void(0);" onclick="return listItemTaskForm(\'' . $checkbox . $i . '\',\''
+				. $prefix . $task . '\',\'' . $formId . '\')"';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($active_title) : $active_title, ENT_COMPAT, 'UTF-8')) . '">';
 			$html[] = '<i class="icon-' . $active_class . '">';
 			$html[] = '</i>';
@@ -291,10 +295,11 @@ abstract class JHtmlRgrid
 	 * @param   string|array  $prefix      An optional task prefix or an array of options
 	 * @param   boolean       $enabled     True to enable the action.
 	 * @param   string        $checkbox    An optional prefix for checkboxes.
+	 * @param   string        $formId      An optional form id
 	 *
 	 * @return  string  The required HTML.
 	 */
-	public static function checkedout($i, $editorName, $time, $prefix = '', $enabled = false, $checkbox = 'cb')
+	public static function checkedout($i, $editorName, $time, $prefix = '', $enabled = false, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -312,7 +317,7 @@ abstract class JHtmlRgrid
 
 		return self::action(
 			$i, 'checkin', $prefix, JText::_('JLIB_HTML_CHECKED_OUT'), $active_title, $inactive_title, true, 'lock',
-			'lock', $enabled, false, $checkbox
+			'lock', $enabled, false, $checkbox, $formId
 		);
 	}
 
