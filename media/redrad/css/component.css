@@ -232,3 +232,6 @@ body {
     border-top-left-radius: 4px;
     margin-left: 0;
 }
+.redrad .sortable-handler.inactive {
+  opacity: 0.3;
+}
