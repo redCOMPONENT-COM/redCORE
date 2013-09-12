@@ -151,11 +151,12 @@ class PlgSystemRedRad extends JPlugin
 
 			// Remove jQuery
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
 
 			// Remove bootstrap
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
-			unset($doc->_scripts[JURI::root(true) . 'media/jui/js/bootstrap.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 
 			// Remove other JS
 			foreach ($doc->_scripts as $script => $value)
