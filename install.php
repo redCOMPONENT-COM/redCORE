@@ -371,13 +371,10 @@ class Pkg_RedradInstallerScript
 	 */
 	public function postflight($type, $parent)
 	{
-		if ($type == 'install' || $type == 'discover_install')
+		// If it's installing redrad as dependency
+		if (get_called_class() != 'Pkg_RedradInstallerScript')
 		{
-			// If it's installing redrad as dependency
-			if (get_called_class() != 'Pkg_RedradInstallerScript')
-			{
-				$this->installRedrad($parent);
-			}
+			$this->installRedrad($parent);
 		}
 
 		return true;
