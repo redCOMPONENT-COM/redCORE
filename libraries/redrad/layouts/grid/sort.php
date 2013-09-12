@@ -12,8 +12,9 @@ defined('JPATH_REDRAD') or die;
 $data = $displayData;
 ?>
 <a href="#"
-	onclick="Joomla.tableOrdering('<?php echo $data->order; ?>','<?php echo $data->direction; ?>','<?php echo $data->task; ?>');return false;"
-	class="hasTooltip" title="<?php echo $data->metatitle; ?>">
+   onclick="Joomla.tableOrdering('<?php echo $data->order; ?>','<?php echo $data->direction; ?>',
+	   '<?php echo $data->task; ?>', document.getElementById('<?php echo $data->form; ?>'));return false;"
+   class="hasTooltip" title="<?php echo $data->metatitle; ?>">
 	<?php if (!empty($data->icon)) : ?>
 		<i class="<?php echo $data->icon; ?>"></i>
 	<?php endif; ?>
