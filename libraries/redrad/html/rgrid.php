@@ -396,10 +396,12 @@ abstract class JHtmlRgrid
 	 * @param   string  $new_direction  An optional direction for the new column
 	 * @param   string  $tip            An optional text shown as tooltip title instead of $title
 	 * @param   string  $icon           Icon to show
+	 * @param   string  $formId         The form id
 	 *
 	 * @return  string
 	 */
-	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '', $icon = null)
+	public static function sort($title, $order, $direction = 'asc', $selected = 0,
+	                            $task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
 	{
 		JHtml::_('rbootstrap.tooltip');
 		static::main();
@@ -428,6 +430,7 @@ abstract class JHtmlRgrid
 		$data->title     = $title;
 		$data->orderIcon = $orderIcons[$index];
 		$data->icon      = $icon;
+		$data->form      = $formId;
 
 		return RLayoutHelper::render('grid.sort', $data);
 	}
