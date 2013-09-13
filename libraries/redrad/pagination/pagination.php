@@ -498,7 +498,7 @@ class RPagination
 				'select.genericlist',
 				$limits,
 				$this->prefix . 'limit',
-				'class="inputbox input-mini" size="1" onchange="Joomla.submitform();"',
+				'class="inputbox input-mini" size="1" onchange="Joomla.submitform(\'\',document.forms[\'' . $this->formName . '\']);"',
 				'value',
 				'text',
 				$selected
@@ -510,7 +510,7 @@ class RPagination
 				'select.genericlist',
 				$limits,
 				$this->prefix . 'limit',
-				'class="inputbox input-mini" size="1" onchange="this.form.submit()"',
+				'class="inputbox input-mini" size="1" onchange="Joomla.submitform(\'\',document.forms[\'' . $this->formName . '\']);"',
 				'value',
 				'text',
 				$selected

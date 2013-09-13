@@ -83,6 +83,16 @@ abstract class RModelList extends JModelList
 	}
 
 	/**
+	 * Method to get the associated form name
+	 *
+	 * @return  string  The name of the form
+	 */
+	public function getHtmlFormName()
+	{
+		return $this->htmlFormName;
+	}
+
+	/**
 	 * Method to get a JPagination object for the data set.
 	 *
 	 * @return  JPagination  A JPagination object for the data set.
