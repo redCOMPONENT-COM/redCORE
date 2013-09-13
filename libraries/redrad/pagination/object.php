@@ -49,22 +49,43 @@ class RPaginationObject
 	public $active;
 
 	/**
+	 * Associated form
+	 *
+	 * @var  string
+	 */
+	public $formName = 'adminForm';
+
+	/**
 	 * Class constructor.
 	 *
-	 * @param   string   $text    The link text.
-	 * @param   integer  $prefix  The prefix used for request variables.
-	 * @param   integer  $base    The number of rows as a base offset.
-	 * @param   string   $link    The link URL.
-	 * @param   boolean  $active  Flag whether the object is the 'active' page
+	 * @param   string   $text      The link text.
+	 * @param   integer  $prefix    The prefix used for request variables.
+	 * @param   integer  $base      The number of rows as a base offset.
+	 * @param   string   $link      The link URL.
+	 * @param   boolean  $active    Flag whether the object is the 'active' page
+	 * @param   string   $formName  DOM form selector
 	 *
 	 * @since   1.5
 	 */
-	public function __construct($text, $prefix = '', $base = null, $link = null, $active = false)
+	public function __construct($text, $prefix = '', $base = null, $link = null, $active = false, $formName = 'adminForm')
 	{
-		$this->text   = $text;
-		$this->prefix = $prefix;
-		$this->base   = $base;
-		$this->link   = $link;
-		$this->active = $active;
+		$this->text     = $text;
+		$this->prefix   = $prefix;
+		$this->base     = $base;
+		$this->link     = $link;
+		$this->active   = $active;
+		$this->formName = $formName;
+	}
+
+	/**
+	 * Set the name of the associated form
+	 *
+	 * @param   string  $formName  Name attribute of the form
+	 *
+	 * @return  void
+	 */
+	public function setFormName($formName)
+	{
+		$this->formName = $formName;
 	}
 }

@@ -28,6 +28,13 @@ abstract class RModelList extends JModelList
 	protected $filterFormName = null;
 
 	/**
+	 * Associated HTML form
+	 *
+	 * @var  string
+	 */
+	protected $htmlFormName = 'adminForm';
+
+	/**
 	 * Array of form objects.
 	 *
 	 * @var  JForm[]
@@ -97,6 +104,9 @@ abstract class RModelList extends JModelList
 		$limit = (int) $this->getState('list.limit') - (int) $this->getState('list.links');
 		$page = new RPagination($this->getTotal(), $this->getStart(), $limit);
 
+		// Set the name of the HTML form associated
+		$page->set('formName', $this->htmlFormName);
+
 		// Add the object to the internal cache.
 		$this->cache[$store] = $page;
 
@@ -154,7 +164,6 @@ abstract class RModelList extends JModelList
 
 			// Load the data into the form after the plugins have operated.
 			$form->bind($data);
-
 		}
 		catch (Exception $e)
 		{
