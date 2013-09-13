@@ -39,6 +39,23 @@ abstract class JHtmlRgrid
 	}
 
 	/**
+	 * Method to create a checkbox for a grid row.
+	 *
+	 * @param   integer  $rowNum      The row index
+	 * @param   integer  $recId       The record id
+	 * @param   boolean  $checkedOut  True if item is checke out
+	 * @param   string   $name        The name of the form element
+	 * @param   string   $formId      The form id
+	 *
+	 * @return  mixed    String of html with a checkbox if item is not checked out, null if checked out.
+	 */
+	public static function id($rowNum, $recId, $checkedOut = false, $name = 'cid', $formId = 'adminForm')
+	{
+		return $checkedOut ? '' : '<input type="checkbox" id="cb' . $rowNum . '" name="' . $name . '[]" value="' . $recId
+			. '" onclick="Joomla.isChecked(this.checked, document.getElementById(\'' . $formId . '\'));" />';
+	}
+
+	/**
 	 * Returns an action on a grid
 	 *
 	 * @param   integer       $i               The row index
