@@ -83,6 +83,13 @@ class RPagination
 	protected $additionalUrlParams = array();
 
 	/**
+	 * Associated form name
+	 *
+	 * @var  string
+	 */
+	protected $formName = 'adminForm';
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   integer  $total       The total number of items.
@@ -311,6 +318,7 @@ class RPagination
 
 		$list = array();
 		$list['prefix'] = $this->prefix;
+		$list['formName'] = $this->formName;
 
 		$itemOverride = false;
 		$listOverride = false;
@@ -438,6 +446,7 @@ class RPagination
 		$list['limitfield'] = $this->getLimitBox();
 		$list['pagescounter'] = $this->getPagesCounter();
 		$list['pageslinks'] = $this->getPagesLinks();
+		$list['formName'] = $this->get('formName');
 
 		// For the backend we force our html.
 		if (JFactory::getApplication()->isSite())
@@ -643,6 +652,7 @@ class RPagination
 		}
 
 		$data->all = new RPaginationObject(JText::_('JLIB_HTML_VIEW_ALL'), $this->prefix);
+		$data->all->setFormName($this->formName);
 
 		if (!$this->viewall)
 		{
@@ -652,7 +662,9 @@ class RPagination
 
 		// Set the start and previous data objects.
 		$data->start = new RPaginationObject(JText::_('JLIB_HTML_START'), $this->prefix);
+		$data->start->setFormName($this->formName);
 		$data->previous = new RPaginationObject(JText::_('JPREV'), $this->prefix);
+		$data->previous->setFormName($this->formName);
 
 		if ($this->pagesCurrent > 1)
 		{
@@ -669,7 +681,9 @@ class RPagination
 
 		// Set the next and end data objects.
 		$data->next = new RPaginationObject(JText::_('JNEXT'), $this->prefix);
+		$data->next->setFormName($this->formName);
 		$data->end = new RPaginationObject(JText::_('JLIB_HTML_END'), $this->prefix);
+		$data->end->setFormName($this->formName);
 
 		if ($this->pagesCurrent < $this->pagesTotal)
 		{
@@ -690,6 +704,7 @@ class RPagination
 			$offset = ($i - 1) * $this->limit;
 
 			$data->pages[$i] = new RPaginationObject($i, $this->prefix);
+			$data->pages[$i]->setFormName($this->formName);
 
 			if ($i != $this->pagesCurrent || $this->viewall)
 			{
