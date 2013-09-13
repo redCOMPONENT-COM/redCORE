@@ -42,6 +42,27 @@ abstract class RModelList extends JModelList
 	protected $forms = array();
 
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 *
+	 * @see     JModelLegacy
+	 */
+	public function __construct($config = array())
+	{
+		if (empty($this->context))
+		{
+			// Different context depending on the view
+			$input = JFactory::getApplication()->input;
+			$view = $input->getString('view', '');
+			$option = $input->getString('option', '');
+			$this->context = strtolower($option . '.' . $view . '.' . $this->getName());
+		}
+
+		parent::__construct($config);
+	}
+
+	/**
 	 * Delete items
 	 *
 	 * @param   mixed  $pks  id or array of ids of items to be deleted
