@@ -154,10 +154,12 @@ abstract class JHtmlRgrid
 	 * @param   boolean       $enabled    An optional setting for access control on the action.
 	 * @param   boolean       $translate  An optional setting for translation.
 	 * @param   string        $checkbox   An optional prefix for checkboxes.
+	 * @param   string        $formId     An optional form id
 	 *
 	 * @return  string       The Html code
 	 */
-	public static function state($states, $value, $i, $prefix = '', $enabled = true, $translate = true, $checkbox = 'cb')
+	public static function state($states, $value, $i, $prefix = '',
+	                             $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -179,7 +181,7 @@ abstract class JHtmlRgrid
 
 		return self::action(
 			$i, $task, $prefix, $text, $active_title, $inactive_title, $tip,
-			$active_class, $inactive_class, $enabled, $translate, $checkbox
+			$active_class, $inactive_class, $enabled, $translate, $checkbox, $formId
 		);
 	}
 
@@ -193,10 +195,12 @@ abstract class JHtmlRgrid
 	 * @param   string        $checkbox      An optional prefix for checkboxes.
 	 * @param   string        $publish_up    An optional start publishing date.
 	 * @param   string        $publish_down  An optional finish publishing date.
+	 * @param   string        $formId        An optional form id
 	 *
 	 * @return  string  The Html code
 	 */
-	public static function published($value, $i, $prefix = '', $enabled = true, $checkbox = 'cb', $publish_up = null, $publish_down = null)
+	public static function published($value, $i, $prefix = '', $enabled = true,
+	                                 $checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -268,10 +272,10 @@ abstract class JHtmlRgrid
 				}
 			}
 
-			return self::state($states, $value, $i, array('prefix' => $prefix, 'translate' => !$tip), $enabled, true, $checkbox);
+			return self::state($states, $value, $i, array('prefix' => $prefix, 'translate' => !$tip), $enabled, true, $checkbox, $formId);
 		}
 
-		return self::state($states, $value, $i, $prefix, $enabled, true, $checkbox);
+		return self::state($states, $value, $i, $prefix, $enabled, true, $checkbox, $formId);
 	}
 
 	/**
