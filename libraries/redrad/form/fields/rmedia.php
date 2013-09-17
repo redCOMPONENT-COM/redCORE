@@ -53,6 +53,10 @@ class JFormFieldRmedia extends JFormField
 
 		$link = (string) $this->element['link'];
 
+		$modalTitle = isset($this->element['modal_title']) ? JText::_($this->element['modal_title']) : JText::_('LIB_REDRAD_MEDIA_MANAGER');
+
+		$modalId = 'modal-' . $this->id;
+
 		if (!self::$initialised)
 		{
 			// Build the script.
@@ -67,7 +71,8 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '				elem.onchange();';
 			$script[] = '			}';
 			$script[] = '			jMediaRefreshPreview(id);';
-			$script[] = '		}';
+			$script[] = '		};';
+			$script[] = '		jQuery("#' . $modalId . '").modal("hide");';
 			$script[] = '	}';
 
 			$script[] = '	function jMediaRefreshPreview(id) {';
@@ -95,6 +100,13 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		jMediaRefreshPreview(id);';
 			$script[] = '		tip.setStyle("display", "block");';
 			$script[] = '	}';
+
+			$script[] = "
+				function closeModal(fieldId)
+				{
+					jQuery('#modal-' + fieldId).modal('hide');
+				}
+			";
 
 			// Add the script to the document head.
 			JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
@@ -212,17 +224,16 @@ class JFormFieldRmedia extends JFormField
 			$folder = '';
 		}
 
-		$link = ($link ? $link : 'index.php?option=com_media&amp;view=images&amp;tmpl=component&amp;asset='
+		$link = ($link ? $link : 'index.php?option=com_media&amp;view=images&amp;layout=modal&amp;tmpl=component&amp;asset='
 				. $asset . '&amp;author=' . $this->form->getValue($authorField)) . '&amp;fieldid='
-				. $this->id . '&amp;folder=' . $folder;
-
-		$modalTitle = isset($this->element['modal_title']) ? JText::_($this->element['modal_title']) : JText::_('LIB_REDRAD_MEDIA_MANAGER');
+				. $this->id . '&amp;folder=' . $folder
+				. '&amp;redrad=true';
 
 		// Create the modal object
 		$modal = RModal::getInstance(
 			array(
 				'attribs' => array(
-					'id'    => 'myModal',
+					'id'    => $modalId,
 					'class' => 'modal hide fade',
 					'style' => 'width: 700px; height: 500px;'
 				),
@@ -234,7 +245,7 @@ class JFormFieldRmedia extends JFormField
 					'link' => $link
 				)
 			),
-			'myModal'
+			$modalId
 		);
 
 		$html[] = RLayoutHelper::render('modal', $modal);
@@ -244,7 +255,7 @@ class JFormFieldRmedia extends JFormField
 		{
 			JHtml::_('rbootstrap.tooltip');
 
-			$html[] = '<a class="btn modalAjax" data-toggle="modal" title="' . JText::_('JLIB_FORM_BUTTON_SELECT') . '" href="#myModal"'
+			$html[] = '<a class="btn modalAjax" data-toggle="modal" title="' . JText::_('JLIB_FORM_BUTTON_SELECT') . '" href="#' . $modalId . '"'
 				. '>';
 			$html[] = JText::_('JLIB_FORM_BUTTON_SELECT') . '</a><a class="btn hasTooltip" title="' . JText::_('JLIB_FORM_BUTTON_CLEAR') . '" href="#" onclick="';
 			$html[] = 'jInsertFieldValue(\'\', \'' . $this->id . '\');';
