@@ -22,6 +22,25 @@ JLoader::import('joomla.application.component.controllerform');
 class RControllerForm extends JControllerForm
 {
 	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  An optional associative array of configuration settings.
+	 * Recognized key values include 'name', 'default_task', 'model_path', and
+	 * 'view_path' (this list is not meant to be comprehensive).
+	 *
+	 * @since   12.2
+	 */
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+
+		if (!property_exists($this, 'input') || empty($this->input))
+		{
+			$this->input = JFactory::getApplication()->input;
+		}
+	}
+
+	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.
