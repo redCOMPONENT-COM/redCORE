@@ -14,13 +14,14 @@ $data = $displayData;
 // Add jquery UI js.
 JHtml::_('rjquery.datepicker');
 
-$script = "(function($){
+$script = "
+(function($){
 	$(document).ready(function () {
-	$('" . $data->cssId . "').datepicker(
-	" . $data->datepickerOptions . "
-	);
+		$('" . $data->cssId . "').datepicker(
+		" . $data->datepickerOptions . "
+		);
 	});
-	})(jQuery);
+})(jQuery);
 ";
 
 $doc = JFactory::getDocument();
