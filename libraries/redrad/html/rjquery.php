@@ -25,6 +25,13 @@ abstract class JHtmlRjquery
 	const EXTENSION = 'redrad';
 
 	/**
+	 * Array containing information for loaded files
+	 *
+	 * @var  array
+	 */
+	protected static $loaded = array();
+
+	/**
 	 * Load the chosen library
 	 * We use this to avoid Mootools dependency
 	 *
@@ -37,6 +44,12 @@ abstract class JHtmlRjquery
 	 */
 	public static function chosen($selector = '.chosen', $debug = null)
 	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__][$selector]))
+		{
+			return;
+		}
+
 		self::framework();
 
 		RHelperAsset::load('lib/chosen.jquery.js', self::EXTENSION);
@@ -53,6 +66,10 @@ abstract class JHtmlRjquery
 				});
 			})(jQuery);
 		");
+
+		static::$loaded[__METHOD__][$selector] = true;
+
+		return;
 	}
 
 	/**
@@ -64,9 +81,13 @@ abstract class JHtmlRjquery
 	 */
 	public static function datepicker()
 	{
-		self::framework();
+		// Only load once
+		if (!empty(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
 
-		RHelperAsset::load('lib/jquery-ui/jquery.ui.datepicker.js', self::EXTENSION);
+		self::ui();
 
 		// Include translations
 		$langTag = JFactory::getLanguage()->getTag();
@@ -76,6 +97,10 @@ abstract class JHtmlRjquery
 		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $mainLang . '.js', self::EXTENSION);
 
 		RHelperAsset::load('lib/jquery-ui/jquery.ui.datepicker.css', self::EXTENSION);
+
+		static::$loaded[__METHOD__] = true;
+
+		return;
 	}
 
 	/**
@@ -85,9 +110,19 @@ abstract class JHtmlRjquery
 	 */
 	public static function framework()
 	{
-		RHelperAsset::load('lib/jquery.js', self::EXTENSION);
-		RHelperAsset::load('lib/jquery-migrate.js', self::EXTENSION);
+		// Only load once
+		if (!empty(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
+
+		RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
 		RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
+
+		static::$loaded[__METHOD__] = true;
+
+		return;
 	}
 
 	/**
@@ -104,6 +139,12 @@ abstract class JHtmlRjquery
 	 */
 	public static function select2($selector = '.select2', $options = null, $bootstrapSupport = true)
 	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__][$selector]))
+		{
+			return;
+		}
+
 		self::framework();
 
 		RHelperAsset::load('lib/select2/select2.js', self::EXTENSION);
@@ -128,6 +169,10 @@ abstract class JHtmlRjquery
 				});
 			})(jQuery);
 		");
+
+		static::$loaded[__METHOD__][$selector] = true;
+
+		return;
 	}
 
 	/**
@@ -168,9 +213,15 @@ abstract class JHtmlRjquery
 	 */
 	public static function ui()
 	{
+		// Only load once
+		if (!empty(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
+
 		self::framework();
 
-		RHelperAsset::load('lib/jquery-ui/jquery-ui.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-ui/jquery-ui.custom.min.js', self::EXTENSION);
 
 		// Include datepicker translations
 		$langTag      = JFactory::getLanguage()->getTag();
@@ -180,6 +231,10 @@ abstract class JHtmlRjquery
 		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $mainLang . '.js', self::EXTENSION);
 
 		// CSS
-		RHelperAsset::load('lib/jquery-ui/jquery-ui.css', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-ui/jquery-ui.custom.min.css', self::EXTENSION);
+
+		static::$loaded[__METHOD__] = true;
+
+		return;
 	}
 }
