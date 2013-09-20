@@ -18,14 +18,14 @@ JFormHelper::loadFieldClass('text');
  * @subpackage  Fields
  * @since       1.0
  */
-class JFormFieldJQueryDatePicker extends JFormFieldText
+class JFormFieldRdatepicker extends JFormFieldText
 {
 	/**
 	 * The form field type.
 	 *
 	 * @var  string
 	 */
-	protected $type = 'JQueryDatePicker';
+	protected $type = 'Rdatepicker';
 
 	/**
 	 * CSS id selector
@@ -46,7 +46,7 @@ class JFormFieldJQueryDatePicker extends JFormFieldText
 	 *
 	 * @var  string
 	 */
-	protected $datepickerOptions = '';
+	public $datepickerOptions = '';
 
 	/**
 	 * Method to get the field input markup.
@@ -70,7 +70,7 @@ class JFormFieldJQueryDatePicker extends JFormFieldText
 
 		$this->datepickerOptions = $this->getDatepickerOptions();
 
-		return RLayoutHelper::render('fields.jquerydatepicker', $this);
+		return RLayoutHelper::render('fields.rdatepicker', $this);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class JFormFieldJQueryDatePicker extends JFormFieldText
 			// 'closeText' => 'string',
 			'constrainInput' => 'boolean',
 			// 'currentText' => 'string',
-			// 'dateFormat' => 'string',
+			'dateFormat' => 'string',
 			// 'dayNames' => 'string',
 			// 'dayNamesMin' => 'string',
 			// 'dayNamesShort' => 'string',
