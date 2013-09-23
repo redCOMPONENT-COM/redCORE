@@ -108,7 +108,6 @@ class RControllerAdmin extends JControllerAdmin
 
 		// Get items to remove from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
-		$returnUrl = $this->input->get('return');
 
 		if (!is_array($cid) || count($cid) < 1)
 		{
@@ -137,16 +136,8 @@ class RControllerAdmin extends JControllerAdmin
 		// Invoke the postDelete method to allow for the child class to access the model.
 		$this->postDeleteHook($model, $cid);
 
-		if ($returnUrl)
-		{
-			$returnUrl = base64_decode($returnUrl);
-			$this->setRedirect(JRoute::_($returnUrl, false));
-		}
-
-		else
-		{
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
-		}
+		// Set redirect
+		$this->setRedirect($this->getRedirectToListRoute());
 	}
 
 	/**
@@ -211,18 +202,8 @@ class RControllerAdmin extends JControllerAdmin
 		$extension = $this->input->get('extension');
 		$extensionURL = ($extension) ? '&extension=' . $extension : '';
 
-		$returnUrl = $this->input->get('return');
-
-		if ($returnUrl)
-		{
-			$returnUrl = base64_decode($returnUrl);
-			$this->setRedirect(JRoute::_($returnUrl . $extensionURL, false));
-		}
-
-		else
-		{
-			$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $extensionURL, false));
-		}
+		// Set redirect
+		$this->setRedirect($this->getRedirectToListRoute($extensionURL));
 	}
 
 	/**
@@ -238,23 +219,14 @@ class RControllerAdmin extends JControllerAdmin
 		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
 		$model = $this->getModel();
 		$return = $model->checkin($ids);
-		$returnUrl = $this->input->get('return');
 
 		if ($return === false)
 		{
 			// Checkin failed.
 			$message = JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError());
 
-			if ($returnUrl)
-			{
-				$returnUrl = base64_decode($returnUrl);
-				$this->setRedirect(JRoute::_($returnUrl, false), $message, 'error');
-			}
-
-			else
-			{
-				$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
-			}
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute(), $message, 'error');
 
 			return false;
 		}
@@ -263,16 +235,8 @@ class RControllerAdmin extends JControllerAdmin
 			// Checkin succeeded.
 			$message = JText::plural($this->text_prefix . '_N_ITEMS_CHECKED_IN', count($ids));
 
-			if ($returnUrl)
-			{
-				$returnUrl = base64_decode($returnUrl);
-				$this->setRedirect(JRoute::_($returnUrl, false), $message);
-			}
-
-			else
-			{
-				$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
-			}
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute(), $message);
 
 			return true;
 		}
@@ -294,22 +258,14 @@ class RControllerAdmin extends JControllerAdmin
 
 		$model = $this->getModel();
 		$return = $model->reorder($ids, $inc);
-		$returnUrl = $this->input->get('return');
 
 		if ($return === false)
 		{
 			// Reorder failed.
 			$message = JText::sprintf('JLIB_APPLICATION_ERROR_REORDER_FAILED', $model->getError());
 
-			if ($returnUrl)
-			{
-				$returnUrl = base64_decode($returnUrl);
-				$this->setRedirect(JRoute::_($returnUrl, false), $message, 'error');
-			}
-			else
-			{
-				$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
-			}
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute(), $message, 'error');
 
 			return false;
 		}
@@ -319,16 +275,8 @@ class RControllerAdmin extends JControllerAdmin
 			// Reorder succeeded.
 			$message = JText::_('JLIB_APPLICATION_SUCCESS_ITEM_REORDERED');
 
-			if ($returnUrl)
-			{
-				$returnUrl = base64_decode($returnUrl);
-				$this->setRedirect(JRoute::_($returnUrl, false), $message);
-			}
-
-			else
-			{
-				$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message);
-			}
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute(), $message);
 
 			return true;
 		}
@@ -347,7 +295,6 @@ class RControllerAdmin extends JControllerAdmin
 		// Get the input
 		$pks = $this->input->post->get('cid', array(), 'array');
 		$order = $this->input->post->get('order', array(), 'array');
-		$returnUrl = $this->input->get('return');
 
 		// Sanitize the input
 		JArrayHelper::toInteger($pks);
@@ -364,15 +311,8 @@ class RControllerAdmin extends JControllerAdmin
 			// Reorder failed
 			$message = JText::sprintf('JLIB_APPLICATION_ERROR_REORDER_FAILED', $model->getError());
 
-			if ($returnUrl)
-			{
-				$returnUrl = base64_decode($returnUrl);
-				$this->setRedirect(JRoute::_($returnUrl, false), $message, 'error');
-			}
-			else
-			{
-				$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false), $message, 'error');
-			}
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute(), $message, 'error');
 
 			return false;
 		}
@@ -382,17 +322,33 @@ class RControllerAdmin extends JControllerAdmin
 			// Reorder succeeded.
 			$this->setMessage(JText::_('JLIB_APPLICATION_SUCCESS_ORDERING_SAVED'));
 
-			if ($returnUrl)
-			{
-				$returnUrl = base64_decode($returnUrl);
-				$this->setRedirect(JRoute::_($returnUrl, false));
-			}
-			else
-			{
-				$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list, false));
-			}
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute());
 
 			return true;
+		}
+	}
+
+	/**
+	 * Get the JRoute object for a redirect to list.
+	 *
+	 * @param   string  $append  An optionnal string to append to the route
+	 *
+	 * @return  JRoute  The JRoute object
+	 */
+	protected function getRedirectToListRoute($append = null)
+	{
+		$returnUrl = $this->input->get('return');
+
+		if ($returnUrl)
+		{
+			$returnUrl = base64_decode($returnUrl);
+
+			return JRoute::_($returnUrl . $append, false);
+		}
+		else
+		{
+			return JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $append, false);
 		}
 	}
 }
