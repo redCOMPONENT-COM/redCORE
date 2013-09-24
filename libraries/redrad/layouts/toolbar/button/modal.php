@@ -32,8 +32,6 @@ if (!empty($class))
 {
 	$btnClass .= ' ' . $class;
 }
-
-$btnClass .= ' modal';
 ?>
 
 <button class="<?php echo $btnClass ?>" data-toggle="modal" data-target="<?php echo $dataTarget ?>">
