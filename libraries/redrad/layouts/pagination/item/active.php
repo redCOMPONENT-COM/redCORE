@@ -69,7 +69,7 @@ if (!is_numeric($item->text))
 $onClick = "document." . $item->formName . "." . $item->prefix . $limit . "; Joomla.submitform('', document.forms['" . $item->formName . "']);return false;";
 ?>
 <li>
-	<a class"<?php echo implode(' ', $cssClasses); ?>" <?php echo $title; ?> href="#" onclick="<?php echo $onClick; ?>">
+	<a class="<?php echo implode(' ', $cssClasses); ?>" <?php echo $title; ?> href="#" onclick="<?php echo $onClick; ?>">
 		<?php echo $display; ?>
 	</a>
 </li>
