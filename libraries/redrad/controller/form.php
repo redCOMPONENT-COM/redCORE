@@ -32,6 +32,9 @@ class RControllerForm extends JControllerForm
 	{
 		parent::__construct($config);
 
+		// Set the view list as Joomla pluralize is buggy
+		$this->view_list = \Doctrine\Common\Inflector\Inflector::pluralize($this->view_item);
+
 		if (!property_exists($this, 'input') || empty($this->input))
 		{
 			$this->input = JFactory::getApplication()->input;
