@@ -39,6 +39,19 @@ class RControllerAdmin extends JControllerAdmin
 	}
 
 	/**
+	 * Function that allows child controller access to model data
+	 * after the item has been deleted.
+	 *
+	 * @param   JModelLegacy  $model  The data model object.
+	 * @param   integer       $id     The validated data.
+	 *
+	 * @return  void
+	 */
+	protected function postDeleteHook(JModelLegacy $model, $id = null)
+	{
+	}
+
+	/**
 	 * Method to get a model object, loading it if required.
 	 *
 	 * @param   string  $name    The model name. Optional.
