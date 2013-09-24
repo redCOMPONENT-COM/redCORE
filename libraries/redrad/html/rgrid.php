@@ -56,6 +56,21 @@ abstract class JHtmlRgrid
 	}
 
 	/**
+	 * Method to create an icon for saving a new ordering in a grid
+	 *
+	 * @param   array   $rows  The array of rows of rows
+	 * @param   string  $task  The task to use, defaults to save order
+	 *
+	 * @return  string
+	 */
+	public static function order($rows, $task = 'saveorder')
+	{
+		return '<a href="javascript:saveorder(' . (count($rows) - 1) . ', \'' . $task . '\')"
+		rel="tooltip" class="btn btn-micro pull-right" title="'
+		. JText::_('JLIB_HTML_SAVE_ORDER') . '"><i class="icon-save"></i></a>';
+	}
+
+	/**
 	 * Returns an action on a grid
 	 *
 	 * @param   integer       $i               The row index
