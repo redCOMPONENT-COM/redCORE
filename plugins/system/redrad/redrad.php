@@ -198,22 +198,35 @@ class PlgSystemRedRad extends JPlugin
 	 */
 	private function isRedradComponent()
 	{
+		$app = JFactory::getApplication();
+
 		// If the application is admin and the user logged out (this is not a redrad component)
-		if (JFactory::getApplication()->isAdmin() && JFactory::getUser()->guest)
+		if ($app->isAdmin() && JFactory::getUser()->guest)
 		{
 			return false;
 		}
 
-		$option = isset($_GET['option']) ? $_GET['option'] : null;
+		// Check the manifest.
+		$option = $app->input->getString('option');
 
-		if ($option)
+		if (empty($option))
 		{
-			$comParams = JComponentHelper::getParams($option);
+			return false;
+		}
 
-			if ($comParams->get('redrad', null))
-			{
-				return true;
-			}
+		$componentName = substr($option, 4);
+		$maniFestFile = JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml';
+
+		if (!file_exists($maniFestFile))
+		{
+			return false;
+		}
+
+		$manifest = new SimpleXMLElement(file_get_contents($maniFestFile));
+
+		if ($manifest->xpath('//extension/redrad'))
+		{
+			return true;
 		}
 
 		return false;
