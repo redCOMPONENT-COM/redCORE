@@ -221,7 +221,7 @@ abstract class JHtmlRjquery
 
 		self::framework();
 
-		RHelperAsset::load('lib/jquery-ui/jquery-ui.custom.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-ui/jquery-ui.min.js', self::EXTENSION);
 
 		// Include datepicker translations
 		$langTag      = JFactory::getLanguage()->getTag();
