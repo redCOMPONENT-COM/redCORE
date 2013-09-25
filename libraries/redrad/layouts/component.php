@@ -45,7 +45,7 @@ if ('raw' === $format)
 $templateComponent = 'component' === $input->get('tmpl');
 $input->set('tmpl', 'component');
 
-JHtml::_('rbootstrap.framework');
+JHtml::_('rbootstrap.responsive');
 RHelperAsset::load('component.js', 'redrad');
 RHelperAsset::load('component.css', 'redrad');
 

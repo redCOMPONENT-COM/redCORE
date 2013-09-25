@@ -46,6 +46,17 @@ abstract class JHtmlRbootstrap
 	}
 
 	/**
+	 * Load the responsive css.
+	 *
+	 * @return  void
+	 */
+	public static function responsive()
+	{
+		self::framework();
+		RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
+	}
+
+	/**
 	 * Load the timepicker.
 	 *
 	 * @return  void
@@ -683,7 +694,7 @@ abstract class JHtmlRbootstrap
 
 		// Inject tab into UL
 		JFactory::getDocument()
-		->addScriptDeclaration($tabScriptLayout->render(array('selector' => $selector,'id' => $id, 'active' => $active, 'title' => $title)));
+			->addScriptDeclaration($tabScriptLayout->render(array('selector' => $selector,'id' => $id, 'active' => $active, 'title' => $title)));
 
 		$html = $tabLayout->render(array('id' => $id, 'active' => $active));
 
