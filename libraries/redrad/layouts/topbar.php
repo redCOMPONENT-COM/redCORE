@@ -97,7 +97,8 @@ if ($displayJoomlaMenu)
 	<div class="navbar-inner">
 		<div class="container-fluid">
 			<?php if (!$displayJoomlaMenu) : ?>
-				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>"><i class="icon-undo"></i> Back to Joomla</a>
+				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>"><i class="icon-undo"></i> Back to
+					Joomla</a>
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
 			<a class="brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>
@@ -109,7 +110,7 @@ if ($displayJoomlaMenu)
 			<?php if ($displayTopbarInnerLayout) : ?>
 				<?php echo RLayoutHelper::render($topbarInnerLayout, $topbarInnerLayoutData) ?>
 			<?php endif; ?>
-			<div class="nav-right pull-right">
+			<div class="nav-right pull-right hidden-tablet hidden-phone">
 				<div class="datetime pull-right"></div>
 				<span class="divider-vertical pull-right"></span>
 
