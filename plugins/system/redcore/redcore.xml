@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<extension version="3.0" type="plugin" group="system" method="upgrade">
+    <name>PLG_SYSTEM_REDCORE</name>
+    <author>redCOMPONENT</author>
+    <creationDate>June 2013</creationDate>
+    <copyright>Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>email@redcomponent.com</authorEmail>
+    <authorUrl>www.redcomponent.com</authorUrl>
+    <version>1.0.0</version>
+    <description>PLG_SYSTEM_REDCORE_XML_DESCRIPTION</description>
+
+    <files>
+        <filename>index.html</filename>
+        <filename plugin="redcore">redcore.php</filename>
+    </files>
+
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.plg_system_redcore.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_system_redcore.sys.ini</language>
+    </languages>
+</extension>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="2.5" method="upgrade">
+    <name>COM_REDCORE</name>
+    <creationDate>June 2013</creationDate>
+    <author>redCOMPONENT</author>
+    <authorEmail>email@redcomponent.com</authorEmail>
+    <authorUrl>www.redcomponent.com</authorUrl>
+    <copyright>Copyright (C) 2008 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later, see LICENSE.</license>
+    <version>1.0.0</version>
+    <description>COM_REDCORE_DESC</description>
+    <scriptfile>install.php</scriptfile>
+    <redcore version="1.0" />
+
+    <!-- Frontend -->
+    <files folder="component/site">
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>layouts</folder>
+            <folder>models</folder>
+            <folder>views</folder>
+            <filename>LICENSE</filename>
+            <filename>controller.php</filename>
+            <filename>redcore.php</filename>
+    </files>
+
+    <administration>
+        <files folder="component/admin">
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>layouts</folder>
+            <folder>models</folder>
+            <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
+            <filename>LICENSE</filename>
+            <filename>access.xml</filename>
+            <filename>controller.php</filename>
+            <filename>redcore.php</filename>
+        </files>
+        <languages folder="component/admin/language">
+            <language tag="en-GB">en-GB/en-GB.com_redcore.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_redcore.sys.ini</language>
+        </languages>
+
+        <menu view="dashboard">COM_REDCORE</menu>
+    </administration>
+
+    <!-- Medias -->
+    <media destination="redcore" folder="media/redcore">
+        <folder>css</folder>
+        <folder>images</folder>
+        <folder>js</folder>
+    </media>
+
+    <!-- Libraries to install with the component -->
+    <libraries>
+        <library name="redcore" />
+    </libraries>
+
+    <!-- Plugins to install with the component -->
+    <plugins>
+        <!-- System plugins -->
+        <plugin name="redcore" group="system"/>
+    </plugins>
+</extension>

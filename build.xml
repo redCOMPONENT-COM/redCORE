@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="redRAD" default="site" basedir=".">
+<project name="redCORE" default="site" basedir=".">
     <!-- Do initialization stuff -->
     <target name="site" >
         <property file="build.properties"  override="true"/>
-        <property name="redrad.src" value="./" />
+        <property name="redcore.src" value="./" />
         <property name="extension" value="${comp.name}" />
         <if>
             <equals arg1="${extension}" arg2="" />
@@ -11,44 +11,53 @@
                 <fail message="Extension not specified, use -Dextension=EXTENSION" />
             </then>
             <else>
-                <phingcall target="redRAD" />
+                <phingcall target="redCORE" />
             </else>
         </if>
     </target>
 
-    <!-- Build redRAD as git submodule -->
-    <target name="redRAD-submodule" >
-        <property name="extension" value="redrad" />
-        <property name="redrad.src" value="${src}redRAD" />
-        <phingcall target="redRAD" />
+    <!-- Build redCORE as git submodule -->
+    <target name="redCORE-submodule" >
+        <property name="extension" value="redcore" />
+        <property name="redcore.src" value="${src}redCORE" />
+        <phingcall target="redCORE" />
     </target>
 
-    <target name="redRAD" description="Copies files to a existing joomla site">
-        <echo message="---------------- || redRAD || ----------------"/>
+    <target name="redCORE" description="Copies files to a existing joomla site">
+        <echo message="---------------- || redCORE || ----------------"/>
 
         <!-- Libraries -->
         <copy todir="${www.dir}/libraries" overwrite="true">
-            <fileset dir="${redrad.src}/libraries">
+            <fileset dir="${redcore.src}/libraries">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- For discover install we need to place the libraries manifests in the right folder -->
         <echo message="Copying library manifiest..." />
-        <copy file="${redrad.src}/libraries/${extension}/${extension}.xml"
+        <copy file="${redcore.src}/libraries/${extension}/${extension}.xml"
             tofile="${www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true" />
 
         <!-- Copy Package Manifest -->
-        <echo message="Copying package manifiest..." />
-        <copy file="${redrad.src}/pkg_${extension}.xml"
-            tofile="${www.dir}/administrator/manifests/packages/pkg_${extension}.xml" overwrite="true" />
-
-        <copy file="${redrad.src}/install.php"
-              tofile="${www.dir}/administrator/manifests/packages/${extension}/install.php" overwrite="true"/>
+        <echo message="Copying manifiest..." />
+        <copy file="${redcore.src}/${extension}.xml"
+              tofile="${www.dir}/administrator/components/com_${extension}/${extension}.xml" overwrite="true">
+            <!-- trick to replace extension folders in the manifest-->
+            <filterchain>
+                <replacetokens begintoken="comp" endtoken="/admin">
+                    <token key="onent" value="administrator/components/${extension}"/>
+                </replacetokens>
+                <replacetokens begintoken="comp" endtoken="/site">
+                    <token key="onent" value="components/${extension}"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <copy file="${redcore.src}/install.php"
+              tofile="${www.dir}/administrator/components/com_${comp.name}/install.php" overwrite="true"/>
 
         <!-- Language -->
         <copy todir="${www.dir}/language" overwrite="true">
-            <fileset dir="${redrad.src}/libraries/redrad/language">
+            <fileset dir="${redcore.src}/libraries/redcore/language">
                 <include name="**" />
             </fileset>
         </copy>
@@ -56,21 +65,21 @@
         <!-- Media -->
         <echo message="Copying media folder " />
         <copy todir="${www.dir}/media" overwrite="true">
-            <fileset dir="${redrad.src}/media">
+            <fileset dir="${redcore.src}/media">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Plugins -->
         <copy todir="${www.dir}/plugins" overwrite="true">
-            <fileset dir="${redrad.src}/plugins">
+            <fileset dir="${redcore.src}/plugins">
                 <include name="**" />
             </fileset>
         </copy>
 
         <!-- Plugins - Languages -->
         <copy todir="${www.dir}/administrator/language" overwrite="true">
-            <fileset dir="${redrad.src}/plugins/system/redrad/language">
+            <fileset dir="${redcore.src}/plugins/system/redcore/language">
                 <include name="**" />
             </fileset>
         </copy>

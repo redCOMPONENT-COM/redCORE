@@ -1,0 +1,245 @@
+body {
+    padding-top: 40px;
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-top: 0;
+    }
+}
+
+.redcore .sidebar {
+    margin-left: 0;
+    margin-top: 10px;
+}
+
+.redcore .content {
+    margin-top: 10px;
+}
+
+.redcore .navbar {
+    background: rgb(196, 49, 49); /* Old browsers */
+    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2M0MzEzMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2JjMmYyZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNhZjJiMmIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+    background: -moz-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(196, 49, 49, 1)), color-stop(50%, rgba(188, 47, 47, 1)), color-stop(100%, rgba(175, 43, 43, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c43131', endColorstr='#af2b2b', GradientType=0); /* IE6-8 */
+}
+
+.redcore .navbar-inner {
+    background: none;
+}
+
+.redcore .navbar a {
+    color: #FFFFFF;
+}
+
+.redcore .navbar a.back2joomla {
+    float: left;
+    display: block;
+    line-height: 40px;
+    font-size: 85%;
+}
+
+.redcore .navbar a.brand {
+    font-weight: 200;
+    font-size: 1.5em;
+    text-shadow: none;
+}
+
+.redcore .navbar .nav > .active > a,
+.redcore .navbar .nav > .active > a:hover,
+.redcore .navbar .nav > .active > a:focus {
+    background-color: #AF2B2B;
+    color: #FFFFFF;
+    text-shadow: 0 1px 0 #9E2727;
+}
+
+.redcore .navbar .nav > li > a {
+    color: #FFFFFF;
+    text-shadow: 0 1px 0 #9E2727;
+}
+
+.redcore .navbar .nav li.dropdown > .dropdown-toggle .caret {
+    border-bottom-color: #FFFFFF;
+    border-top-color: #FFFFFF;
+}
+
+.redcore .navbar .nav li.dropdown.open > .dropdown-toggle,
+.navbar .nav li.dropdown.active > .dropdown-toggle,
+.navbar .nav li.dropdown.open.active > .dropdown-toggle {
+    background-color: #AF2B2B;
+    color: #FFFFFF;
+}
+
+.redcore .dropdown-menu > li > a:hover,
+.redcore .dropdown-menu > li > a:focus,
+.redcore .dropdown-submenu:hover > a,
+.redcore .dropdown-submenu:focus > a {
+    background-color: #AF2B2B;
+    background-image: none;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.redcore .navbar .navbar-search input {
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
+    border: 0 none;
+    color: #0D0D0D;
+    height: 26px;
+    line-height: 26px;
+    margin-top: 2px;
+    padding: 0 10px;
+    transition: all 0.2s ease 0s;
+}
+
+.redcore .navbar .navbar-search input:focus {
+    background: #FFFFFF;
+}
+
+.redcore .navbar .divider-vertical {
+    border-left: 1px solid #9E2727;
+    border-right: 1px solid #CC3333;
+}
+
+.redcore .navbar ul a {
+    color: #333;
+}
+
+.redcore .nav-right,
+.redcore .nav-right a {
+    color: #F5F5F5;
+    line-height: 40px;
+}
+
+.redcore .navbar .brand {
+    margin-left: 0;
+    padding: 10px;
+}
+
+/* Sidebar */
+.redcore .sidebar .nav-tabs.nav-stacked > li> a:hover {
+    background: none repeat scroll 0 0 #EEEEEE;
+    padding-left: 20px;
+    transition: all 0.3s ease 0s;
+}
+
+.redcore .sidebar .nav-tabs.nav-stacked > li > a {
+    color: #000000;
+    font-weight: 600;
+}
+
+.redcore .sidebar .nav-tabs.nav-stacked > li > a:active,
+.redcore .sidebar .nav-tabs.nav-stacked > li > a.active {
+    box-shadow: 5px 0 0 #CC3333 inset, 0 0 0 1px #EEEEEE inset;
+    background: none repeat scroll 0 0 #EEEEEE;
+}
+
+.redcore .sidebar .subnav {
+    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.redcore .sidebar .collapse {
+    transition: height 0.05s ease 0s;
+}
+
+.redcore .sidebar .subnav li {
+    list-style: none outside none;
+    width: auto;
+    line-height: 10px;
+}
+
+.redcore .sidebar .subnav li a {
+    color: #666666;
+    display: block;
+    padding: 10px 10px 10px 50px;
+    width: auto;
+}
+
+.redcore .sidebar .subnav li a:hover,
+.redcore a:active {
+    background: none;
+    text-decoration: none;
+}
+
+.redcore .sidebar .subnav li a:active {
+    color: #CC3333;
+}
+
+.redcore .footer {
+    background: #000000;
+    color: #F5F5F5;
+    padding: 10px 0 10px 0;
+    font-size: 0.8em;
+}
+
+.redcore .toolbar {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #FAFAFA;
+    padding: 5px 5px 5px 5px;
+    border: 1px solid #F2F2F2;
+}
+
+.redcore h1 {
+    margin-top: 0;
+}
+
+.redcore .toolbar .btn {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.redcore #system-message-container .close {
+    margin-right: 5px;
+}
+
+.redcore .published {
+    color: #5BB75B;
+}
+
+.redcore .unpublished {
+    color: #DA4F49;
+}
+
+/* Force tabs to overflow visible */
+.redcore .tab-content {
+    overflow: visible;
+}
+
+.redcore .tab-content.overauto {
+    overflow: auto;
+}
+
+/* Radio buttons */
+.redcore .radio.btn-group input[type=radio] {
+    display: none;
+}
+
+.redcore .radio input[type="radio"],
+.redcore .checkbox input[type="checkbox"] {
+    float: left;
+    margin-left: -20px;
+}
+
+.redcore fieldset.radio.btn-group {
+    padding-left: 0;
+}
+
+.redcore .radio.btn-group > label:first-of-type {
+    border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px;
+    margin-left: 0;
+}
+.redcore .sortable-handler.inactive {
+  opacity: 0.3;
+}

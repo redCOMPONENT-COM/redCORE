@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     RedRad
+ * @package     Redcore
  * @subpackage  Model
  *
  * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
@@ -10,13 +10,13 @@
 defined('_JEXEC') or die;
 
 /**
- * Custom installation of redRAD
+ * Custom installation of redCORE
  *
- * @package     RedRad
+ * @package     Redcore
  * @subpackage  Install
  * @since       1.0
  */
-class Pkg_RedradInstallerScript
+class Com_RedcoreInstallerScript
 {
 	/**
 	 * Status of the installation
@@ -262,13 +262,13 @@ class Pkg_RedradInstallerScript
 	}
 
 	/**
-	 * Function to install redRAD for components
+	 * Function to install redCORE for components
 	 *
 	 * @param   object  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
-	protected function installRedrad($parent)
+	protected function installRedcore($parent)
 	{
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
@@ -277,18 +277,18 @@ class Pkg_RedradInstallerScript
 
 		if ($type == 'component')
 		{
-			if ($redradNode = $manifest->redrad)
+			if ($redcoreNode = $manifest->redcore)
 			{
-				$redradFolder = dirname(__FILE__);
+				$redcoreFolder = dirname(__FILE__);
 
-				if (is_dir($redradFolder))
+				if (is_dir($redcoreFolder))
 				{
-					$installer->install($redradFolder);
+					$installer->install($redcoreFolder);
 				}
 
-				if (!empty($redradFolder))
+				if (!empty($redcoreFolder))
 				{
-					$version = $redradNode->attributes()->version;
+					$version = $redcoreNode->attributes()->version;
 
 					$class = get_called_class();
 					$option = strtolower(strstr($class, 'Installer', true));
@@ -305,7 +305,7 @@ class Pkg_RedradInstallerScript
 					$comParams = new JRegistry($db->loadResult());
 
 					$shit = array('version' => (string) $version);
-					$comParams->set('redrad',
+					$comParams->set('redcore',
 						array(
 							'version' => (string) $version)
 					);
@@ -371,10 +371,10 @@ class Pkg_RedradInstallerScript
 	 */
 	public function postflight($type, $parent)
 	{
-		// If it's installing redrad as dependency
-		if (get_called_class() != 'Pkg_RedradInstallerScript')
+		// If it's installing redcore as dependency
+		if (get_called_class() != 'Com_RedcoreInstallerScript')
 		{
-			$this->installRedrad($parent);
+			$this->installRedcore($parent);
 		}
 
 		return true;

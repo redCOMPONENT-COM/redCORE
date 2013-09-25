@@ -9,8 +9,8 @@
 
 defined('_JEXEC') or die;
 
-jimport('cms.html.html');
-jimport('joomla.user.helper');
+JLoader::import('cms.html.html');
+JLoader::import('joomla.user.helper');
 
 /**
  * OAuth2 Authentication Plugin
@@ -24,26 +24,21 @@ class PlgAuthenticationOAuth2 extends JPlugin
 	/**
 	 * This method should handle any authentication and report back to the subject
 	 *
-	 * @param   array   $credentials  Array holding the user credentials
-	 * @param   array   $options      Array of extra options
-	 * @param   object  $response     Authentication response object
-	 *
 	 * @return  boolean
 	 *
 	 * @since   1.0
 	 */
 	public function onBeforeExecute ()
 	{
-		//if (!$this->isSSLConnection()) {
-		//	exit;
-		//}
+		// Loading redCORE libraries
+		$this->loadRedcore();
 
-		// Loading redRAD libraries
-		$this->loadRAD();
 		// Init the flag
 		$request = false;
+
 		// Load the Joomla! application
 		$app = JFactory::getApplication();
+
 		// Get the OAuth2 server instance
 		$oauth_server = new ROAuth2Server;
 
@@ -52,8 +47,6 @@ class PlgAuthenticationOAuth2 extends JPlugin
 			$request = true;
 		}
 	}
-
-	public function onUserAuthenticate() {}
 
 	/**
 	 * Determine if we are using a secure (SSL) connection.
@@ -72,18 +65,18 @@ class PlgAuthenticationOAuth2 extends JPlugin
 	 *
 	 * @return  void
 	 */
-	public function loadRAD()
+	public function loadRedcore()
 	{
-		$redradLoader = JPATH_PLATFORM . '/redrad/bootstrap.php';
+		$redcoreLoader = JPATH_PLATFORM . '/redcore/bootstrap.php';
 
-		if (file_exists($redradLoader))
+		if (file_exists($redcoreLoader))
 		{
-			require_once $redradLoader;
+			require_once $redcoreLoader;
 
-			JLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redrad/joomla');
+			JLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redcore/joomla');
 		}
 
 		// Setup the autoloader for the application classes.
-		JLoader::registerPrefix('R', JPATH_REDRAD.'/oauth2');		
+		JLoader::registerPrefix('R', JPATH_REDCORE . '/oauth2');
 	}
 }
