@@ -13,6 +13,7 @@
 
 	<files>
 		<folder>client</folder>
+		<folder>component</folder>
 		<folder>controller</folder>
 		<folder>dom</folder>
 		<folder>factory</folder>

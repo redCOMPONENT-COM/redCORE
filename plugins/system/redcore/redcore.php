@@ -209,6 +209,12 @@ class PlgSystemRedcore extends JPlugin
 		// Check the manifest.
 		$option = $app->input->getString('option');
 
+		// Always enabled for redCORE component
+		if ($option == 'com_redcore')
+		{
+			return true;
+		}
+
 		if (empty($option))
 		{
 			return false;

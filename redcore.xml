@@ -11,6 +11,26 @@
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
 
+    <install folder="component/admin">
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install/mysql/install.sql</file>
+            <file driver="mysqli" charset="utf8">sql/install/mysql/install.sql</file>
+            <file driver="mysql" charset="utf8">sql/install/mysql/data.sql</file>
+        </sql>
+    </install>
+    <uninstall folder="component/admin">
+        <sql>
+            <file driver="mysql" charset="utf8">sql/install/mysql/uninstall.sql</file>
+            <file driver="mysqli" charset="utf8">sql/install/mysql/uninstall.sql</file>
+        </sql>
+    </uninstall>
+    <update folder="component/admin">
+        <schemas>
+            <schemapath type="mysql">sql/updates/mysql</schemapath>
+            <schemapath type="mysqli">sql/updates/mysql</schemapath>
+        </schemas>
+    </update>
+
     <!-- Frontend -->
     <files folder="component/site">
         <folder>controllers</folder>
