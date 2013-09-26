@@ -339,19 +339,19 @@ abstract class RLoader
 		if ($enableClasses)
 		{
 			// Register the class map based autoloader.
-			spl_autoload_register(array('RLoader', 'load'));
+			spl_autoload_register(array('RLoader', 'load'), true, true);
 		}
 
 		if ($enablePrefixes)
 		{
 			// Register the prefix autoloader.
-			spl_autoload_register(array('RLoader', '_autoload'));
+			spl_autoload_register(array('RLoader', '_autoload'), true, true);
 		}
 
 		if ($enablePsr)
 		{
 			// Register the PSR-0 based autoloader.
-			spl_autoload_register(array('RLoader', 'loadByPsr0'));
+			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
 		}
 	}
 
