@@ -9,8 +9,6 @@
 
 defined('_JEXEC') or die;
 
-require_once JPATH_LIBRARIES . '/redcore/bootstrap.php';
-
 /**
  * Custom installation of redCORE
  *
@@ -440,6 +438,8 @@ class Com_RedcoreInstallerScript
 	 */
 	private function preventUninstallRedcore($parent)
 	{
+		require_once JPATH_LIBRARIES . '/redcore/bootstrap.php';
+
 		// Avoid uninstalling redcore if there is a component using it
 		$manifest = $this->getManifest($parent);
 		$isRedcore = 'COM_REDCORE' === (string) $manifest->name;
@@ -448,12 +448,16 @@ class Com_RedcoreInstallerScript
 		{
 			if ($components = RComponentHelper::getRedcoreComponents())
 			{
-				throw new RuntimeException(
-					sprintf(
-						'Cannot uninstall redCORE because the following components [%s] are using it.',
-						implode(', ', $components)
-					)
+				$app = JFactory::getApplication();
+
+				$message = sprintf(
+					"Cannot uninstall redCORE because the following components are using it: <br /> [%s]",
+					implode(",<br /> ", $components)
 				);
+
+				$app->enqueueMessage($message, 'error');
+
+				$app->redirect('index.php?option=com_installer&view=manage');
 			}
 		}
 	}
