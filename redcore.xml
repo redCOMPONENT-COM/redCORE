@@ -10,18 +10,17 @@
     <version>1.0.0</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.0" />
 
     <!-- Frontend -->
     <files folder="component/site">
-            <folder>controllers</folder>
-            <folder>helpers</folder>
-            <folder>layouts</folder>
-            <folder>models</folder>
-            <folder>views</folder>
-            <filename>LICENSE</filename>
-            <filename>controller.php</filename>
-            <filename>redcore.php</filename>
+        <folder>controllers</folder>
+        <folder>helpers</folder>
+        <folder>layouts</folder>
+        <folder>models</folder>
+        <folder>views</folder>
+        <filename>LICENSE</filename>
+        <filename>controller.php</filename>
+        <filename>redcore.php</filename>
     </files>
 
     <administration>
@@ -55,7 +54,7 @@
 
     <!-- Libraries to install with the component -->
     <libraries>
-        <library name="redcore" />
+        <library name="redcore"/>
     </libraries>
 
     <!-- Plugins to install with the component -->
