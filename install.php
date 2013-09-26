@@ -372,7 +372,7 @@ class Com_RedcoreInstallerScript
 	public function postflight($type, $parent)
 	{
 		// If it's installing redcore as dependency
-		if (get_called_class() != 'Com_RedcoreInstallerScript')
+		if (get_called_class() != 'Com_RedcoreInstallerScript' && $type != 'discover_install')
 		{
 			$this->installRedcore($parent);
 		}
