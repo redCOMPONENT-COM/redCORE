@@ -36,7 +36,7 @@
         <!-- For discover install we need to place the libraries manifests in the right folder -->
         <echo message="Copying library manifiest..." />
         <copy file="${redcore.src}/libraries/${extension}/${extension}.xml"
-            tofile="${www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true" />
+              tofile="${www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true" />
 
         <!-- Copy Package Manifest -->
         <echo message="Copying manifiest..." />
@@ -84,6 +84,37 @@
             </fileset>
         </copy>
 
-    </target>
+        <!-- Manifest & install script -->
+        <echo message="Copying manifest..."/>
+        <copy file="${redcore.src}/redcore.xml"
+              tofile="${www.dir}/administrator/components/com_redcore/redcore.xml" overwrite="true">
+            <!-- trick to replace extension folders in the manifest-->
+            <filterchain>
+                <replacetokens begintoken="comp" endtoken="/admin">
+                    <token key="onent" value="administrator/components/redcore"/>
+                </replacetokens>
+                <replacetokens begintoken="comp" endtoken="/site">
+                    <token key="onent" value="components/redcore"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <copy file="${redcore.src}/install.php"
+              tofile="${www.dir}/administrator/components/com_redcore/install.php" overwrite="true"/>
 
+        <!-- Backend component -->
+        <copy todir="${www.dir}/administrator/components/com_redcore" overwrite="true">
+            <fileset dir="${redcore.src}/component/admin">
+                <include name="**"/>
+                <!-- Exclude the manifest to avoid overwriting the previously copied -->
+                <exclude name="redcore.xml"/>
+            </fileset>
+        </copy>
+
+        <!-- Backend languages -->
+        <copy todir="${www.dir}/administrator/language" overwrite="true">
+            <fileset dir="${redcore.src}/component/admin/language">
+                <include name="**"/>
+            </fileset>
+        </copy>
+    </target>
 </project>
