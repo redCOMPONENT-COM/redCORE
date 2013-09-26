@@ -45,6 +45,11 @@ final class RComponentHelper
 
 				$element = new SimpleXMLElement($content);
 
+				if ('com_redcore' === trim(strtolower($element->name)))
+				{
+					continue;
+				}
+
 				if ($element->xpath('//redcore'))
 				{
 					$components[] = 'com_' . strstr($fileInfo->getFilename(), '.xml', true);
