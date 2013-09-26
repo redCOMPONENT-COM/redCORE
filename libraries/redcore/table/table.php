@@ -177,6 +177,77 @@ class RTable extends JTable
 	}
 
 	/**
+	 * Import the plugin types.
+	 *
+	 * @return  void
+	 */
+	private function importPluginTypes()
+	{
+		foreach ($this->_pluginTypesToImport as $type)
+		{
+			JPluginHelper::importPlugin($type);
+		}
+	}
+
+	/**
+	 * Called before load().
+	 *
+	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
+	 *                           set the instance property value is used.
+	 * @param   boolean  $reset  True to reset the default values before loading the new row.
+	 *
+	 * @return  boolean  True if successful. False if row not found.
+	 */
+	protected function beforeLoad($keys = null, $reset = true)
+	{
+		if ($this->_eventBeforeLoad)
+		{
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventBeforeLoad, array($this, $keys, $reset));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called after load().
+	 *
+	 * @param   mixed    $keys   An optional primary key value to load the row by, or an array of fields to match.  If not
+	 *                           set the instance property value is used.
+	 * @param   boolean  $reset  True to reset the default values before loading the new row.
+	 *
+	 * @return  boolean  True if successful. False if row not found.
+	 */
+	protected function afterLoad($keys = null, $reset = true)
+	{
+		if ($this->_eventAfterLoad)
+		{
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventAfterLoad, array($this, $keys, $reset));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Method to load a row from the database by primary key and bind the fields
 	 * to the JTable instance properties.
 	 *
@@ -188,26 +259,10 @@ class RTable extends JTable
 	 */
 	public function load($keys = null, $reset = true)
 	{
-		$dispatcher = RFactory::getDispatcher();
-
-		// Import plugin types
-		if ($this->_eventBeforeLoad || $this->_eventAfterLoad)
+		// Before load
+		if (!$this->beforeLoad($keys, $reset))
 		{
-			foreach ($this->_pluginTypesToImport as $type)
-			{
-				JPluginHelper::importPlugin($type);
-			}
-		}
-
-		// Trigger before load
-		if ($this->_eventBeforeLoad)
-		{
-			$results = $dispatcher->trigger($this->_eventBeforeLoad, array($this, $keys, $reset));
-
-			if (count($results) && in_array(false, $results, true))
-			{
-				return false;
-			}
+			return false;
 		}
 
 		// Load
@@ -216,10 +271,60 @@ class RTable extends JTable
 			return false;
 		}
 
-		// Trigger after load
-		if ($this->_eventAfterLoad)
+		// After load
+		if (!$this->afterLoad($keys, $reset))
 		{
-			$results = $dispatcher->trigger($this->_eventAfterLoad, array($this, $keys, $reset));
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called before delete().
+	 *
+	 * @param   mixed  $pk  An optional primary key value to delete.  If not set the instance property value is used.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	protected function beforeDelete($pk = null)
+	{
+		if ($this->_eventBeforeDelete)
+		{
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventBeforeDelete, array($this, $pk));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called after delete().
+	 *
+	 * @param   mixed  $pk  An optional primary key value to delete.  If not set the instance property value is used.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	protected function afterDelete($pk = null)
+	{
+		// Trigger after delete
+		if ($this->_eventAfterDelete)
+		{
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventAfterDelete, array($this, $pk));
 
 			if (count($results) && in_array(false, $results, true))
 			{
@@ -239,21 +344,42 @@ class RTable extends JTable
 	 */
 	public function delete($pk = null)
 	{
-		$dispatcher = RFactory::getDispatcher();
-
-		// Import plugin types
-		if ($this->_eventBeforeDelete || $this->_eventAfterDelete)
+		// Before delete
+		if (!$this->beforeDelete($pk))
 		{
-			foreach ($this->_pluginTypesToImport as $type)
-			{
-				JPluginHelper::importPlugin($type);
-			}
+			return false;
 		}
 
-		// Trigger before delete
-		if ($this->_eventBeforeDelete)
+		// Delete
+		if (!$this->doDelete($pk))
 		{
-			$results = $dispatcher->trigger($this->_eventBeforeDelete, array($this, $pk));
+			return false;
+		}
+
+		// After delete
+		if (!$this->afterDelete($pk))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called before check().
+	 *
+	 * @return  boolean  True if all checks pass.
+	 */
+	protected function beforeCheck()
+	{
+		if ($this->_eventBeforeCheck)
+		{
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventBeforeCheck, array($this));
 
 			if (count($results) && in_array(false, $results, true))
 			{
@@ -261,16 +387,25 @@ class RTable extends JTable
 			}
 		}
 
-		// Delete
-		if (!self::doDelete($pk))
-		{
-			return false;
-		}
+		return true;
+	}
 
-		// Trigger after delete
-		if ($this->_eventAfterDelete)
+	/**
+	 * Called after check().
+	 *
+	 * @return  boolean  True if all checks pass.
+	 */
+	protected function afterCheck()
+	{
+		// Trigger after check
+		if ($this->_eventAfterCheck)
 		{
-			$results = $dispatcher->trigger($this->_eventAfterDelete, array($this, $pk));
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventAfterCheck, array($this));
 
 			if (count($results) && in_array(false, $results, true))
 			{
@@ -291,26 +426,10 @@ class RTable extends JTable
 	 */
 	public function check()
 	{
-		$dispatcher = RFactory::getDispatcher();
-
-		// Import plugin types
-		if ($this->_eventBeforeCheck || $this->_eventAfterCheck)
+		// Before check
+		if (!$this->beforeCheck())
 		{
-			foreach ($this->_pluginTypesToImport as $type)
-			{
-				JPluginHelper::importPlugin($type);
-			}
-		}
-
-		// Trigger before check
-		if ($this->_eventBeforeCheck)
-		{
-			$results = $dispatcher->trigger($this->_eventBeforeCheck, array($this));
-
-			if (count($results) && in_array(false, $results, true))
-			{
-				return false;
-			}
+			return false;
 		}
 
 		// Check
@@ -319,10 +438,59 @@ class RTable extends JTable
 			return false;
 		}
 
-		// Trigger after check
-		if ($this->_eventAfterCheck)
+		// After check
+		if (!$this->afterCheck())
 		{
-			$results = $dispatcher->trigger($this->_eventAfterCheck, array($this));
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called before store().
+	 *
+	 * @param   boolean  $updateNulls  True to update null values as well.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	protected function beforeStore($updateNulls = false)
+	{
+		if ($this->_eventBeforeStore)
+		{
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventBeforeStore, array($this, $updateNulls));
+
+			if (count($results) && in_array(false, $results, true))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Called after store().
+	 *
+	 * @param   boolean  $updateNulls  True to update null values as well.
+	 *
+	 * @return  boolean  True on success.
+	 */
+	protected function afterStore($updateNulls = false)
+	{
+		if ($this->_eventAfterStore)
+		{
+			// Import the plugin types
+			$this->importPluginTypes();
+
+			// Trigger the event
+			$results = RFactory::getDispatcher()
+				->trigger($this->_eventAfterStore, array($this, $updateNulls));
 
 			if (count($results) && in_array(false, $results, true))
 			{
@@ -342,26 +510,10 @@ class RTable extends JTable
 	 */
 	public function store($updateNulls = false)
 	{
-		$dispatcher = RFactory::getDispatcher();
-
-		// Import plugin types
-		if ($this->_eventBeforeStore || $this->_eventAfterStore)
+		// Before store
+		if (!$this->beforeStore($updateNulls))
 		{
-			foreach ($this->_pluginTypesToImport as $type)
-			{
-				JPluginHelper::importPlugin($type);
-			}
-		}
-
-		// Trigger before store
-		if ($this->_eventBeforeStore)
-		{
-			$results = $dispatcher->trigger($this->_eventBeforeStore, array($this, $updateNulls));
-
-			if (count($results) && in_array(false, $results, true))
-			{
-				return false;
-			}
+			return false;
 		}
 
 		// Store
@@ -370,15 +522,10 @@ class RTable extends JTable
 			return false;
 		}
 
-		// Trigger after store
-		if ($this->_eventAfterStore)
+		// After store
+		if (!$this->afterStore($updateNulls))
 		{
-			$results = $dispatcher->trigger($this->_eventAfterStore, array($this, $updateNulls));
-
-			if (count($results) && in_array(false, $results, true))
-			{
-				return false;
-			}
+			return false;
 		}
 
 		return true;
