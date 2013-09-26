@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+require_once JPATH_LIBRARIES . '/redcore/bootstrap.php';
+
 /**
  * Custom installation of redCORE
  *
@@ -137,7 +139,7 @@ class Com_RedcoreInstallerScript
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'library', '-1'))
-				// Discover install
+					// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -196,7 +198,7 @@ class Com_RedcoreInstallerScript
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'module', '-1'))
-				// Discover install
+					// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -235,7 +237,7 @@ class Com_RedcoreInstallerScript
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'plugin', '-1', $extGroup))
-				// Discover install
+					// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -351,7 +353,7 @@ class Com_RedcoreInstallerScript
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'template', '-1'))
-				// Discover install
+					// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -428,14 +430,47 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Prevents uninstalling redcore component if some components using it are still installed.
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 *
+	 * @throws  RuntimeException
+	 */
+	private function preventUninstallRedcore($parent)
+	{
+		// Avoid uninstalling redcore if there is a component using it
+		$manifest = $this->getManifest($parent);
+		$isRedcore = 'COM_REDCORE' === (string) $manifest->name;
+
+		if ($isRedcore)
+		{
+			if ($components = RComponentHelper::getRedcoreComponents())
+			{
+				throw new RuntimeException(
+					sprintf(
+						'Cannot uninstall redCORE because the following components [%s] are using it.',
+						implode(', ', $components)
+					)
+				);
+			}
+		}
+	}
+
+	/**
 	 * method to uninstall the component
 	 *
 	 * @param   object  $parent  class calling this method
 	 *
-	 * @return void
+	 * @return  void
+	 *
+	 * @throws  RuntimeException
 	 */
 	public function uninstall($parent)
 	{
+		$this->preventUninstallRedcore($parent);
+
 		// Uninstall extensions
 		$this->uninstallLibraries($parent);
 		$this->uninstallMedia($parent);
