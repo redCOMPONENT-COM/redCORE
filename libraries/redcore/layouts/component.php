@@ -172,45 +172,48 @@ if ($result instanceof Exception)
 					<h1><?php echo $view->getTitle() ?></h1>
 				</div>
 				<div class="row-fluid message-sys"></div>
-				<hr />
+				<hr/>
 				<div class="row-fluid">
 					<?php echo $result ?>
 				</div>
 			</section>
 		</div>
 	</div>
-<?php else : ?>
-<div class="container-fluid redcore">
-	<?php if ($displayTopbar) : ?>
-		<?php echo RLayoutHelper::render($topbarLayout, $topbarData) ?>
-	<?php endif; ?>
-	<div class="row-fluid">
-		<?php if ($displaySidebar) : ?>
-		<div class="span2 sidebar">
-			<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
-		</div>
-		<div class="span10 content">
-			<?php else : ?>
-			<div class="span12 content">
-				<?php endif; ?>
-				<section id="component">
-					<div class="row-fluid">
-						<h1><?php echo $view->getTitle() ?></h1>
-					</div>
-					<?php if ($toolbar instanceof RToolbar) : ?>
-						<div class="row-fluid">
-							<?php echo $toolbar->render() ?>
-						</div>
+<?php
+else : ?>
+<div class="redcore">
+	<div class="container-fluid">
+		<?php if ($displayTopbar) : ?>
+			<?php echo RLayoutHelper::render($topbarLayout, $topbarData) ?>
+		<?php endif; ?>
+		<div class="row-fluid">
+			<?php if ($displaySidebar) : ?>
+			<div class="span2 sidebar">
+				<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
+			</div>
+			<div class="span10 content">
+				<?php else : ?>
+				<div class="span12 content">
 					<?php endif; ?>
-					<div class="row-fluid message-sys"></div>
-					<div class="row-fluid">
-						<?php echo $result ?>
-					</div>
-				</section>
+					<section id="component">
+						<div class="row-fluid">
+							<h1><?php echo $view->getTitle() ?></h1>
+						</div>
+						<?php if ($toolbar instanceof RToolbar) : ?>
+							<div class="row-fluid">
+								<?php echo $toolbar->render() ?>
+							</div>
+						<?php endif; ?>
+						<div class="row-fluid message-sys"></div>
+						<div class="row-fluid">
+							<?php echo $result ?>
+						</div>
+					</section>
+				</div>
 			</div>
 		</div>
+		<footer class="footer pagination-centered">
+			Copyright 2013 redcomponent.com. All rights reserved.
+		</footer>
 	</div>
-	<footer class="footer pagination-centered">
-		Copyright 2013 redcomponent.com. All rights reserved.
-	</footer>
 <?php endif; ?>
