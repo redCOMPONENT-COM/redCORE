@@ -18,4 +18,21 @@ defined('_JEXEC') or die;
  */
 class RedcoreViewDashboard extends RView
 {
+	/**
+	 * Get the toolbar to render.
+	 *
+	 * @return  RToolbar
+	 */
+	public function getToolbar()
+	{
+		$group = new RToolbarButtonGroup;
+
+		$option = RToolbarBuilder::createRedcoreOptionsButton('com_redcore');
+
+			$group->addButton($option);
+		$toolbar = new RToolbar;
+		$toolbar->addGroup($group);
+
+		return $toolbar;
+	}
 }

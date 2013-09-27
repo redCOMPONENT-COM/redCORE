@@ -300,6 +300,25 @@ final class RToolbarBuilder
 	}
 
 	/**
+	 * Create an options (preferences) button.
+	 *
+	 * @param   string  $component  The component name.
+	 * @param   string  $class      A class attribute for the button.
+	 *
+	 * @return  RToolbarButtonLink  The button.
+	 */
+	public static function createRedcoreOptionsButton($component, $class = '')
+	{
+		$uri = JUri::getInstance();
+		$return = base64_encode('index.php' . $uri->toString(array('query')));
+
+		$link = 'index.php?option=com_redcore&view=config&layout=edit&component=' .
+			$component . '&return=' . $return;
+
+		return new RToolbarButtonLink('JToolbar_Options', $link, $class, 'icon-cogs');
+	}
+
+	/**
 	 * Create a standard button (mapped to a controller task).
 	 *
 	 * @param   string   $task       The button task.
