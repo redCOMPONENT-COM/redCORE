@@ -15,11 +15,13 @@ $data = $displayData;
 $langs = isset(JFactory::getApplication()->languages_enabled);
 
 $filters = $data->filterForm->getGroup('filter');
+
+$searchField  = $data->options->get('searchField', 'filter_search');
 ?>
 <?php if ($filters) : ?>
 	<div class="filter-select hidden-phone">
 		<?php foreach ($filters as $fieldName => $field) : ?>
-			<?php if ($fieldName != 'filter_search') : ?>
+			<?php if ($fieldName != $searchField) : ?>
 				<?php echo $field->input; ?>
 			<?php endif; ?>
 		<?php endforeach; ?>
