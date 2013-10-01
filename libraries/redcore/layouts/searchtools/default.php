@@ -12,6 +12,15 @@ defined('JPATH_BASE') or die;
 JHtml::_('rbootstrap.tooltip');
 
 $data = $displayData;
+
+$options = isset($data->stoolsOptions) ? $data->stoolsOptions : array();
+
+// Generate options object + common required settings
+$data->options = new JRegistry($options);
+$data->options->set('searchField', 'filter_' . $data->options->get('searchField', 'search'));
+$data->options->set('filtersApplied', !empty($data->activeFilters));
+$data->options->set('defaultLimit', JFactory::getApplication()->getCfg('list_limit', 20));
+
 ?>
 <div class="stools js-stools clearfix">
 	<div id="filter-bar" class="hidden-phone row-fluid clearfix">
