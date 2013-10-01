@@ -9,7 +9,7 @@
 
 defined('JPATH_REDCORE') or die;
 
-JFormHelper::loadFieldClass('list');
+JFormHelper::loadFieldClass('rpredefinedlist');
 
 /**
  * jQuery UI datepicker field for redbooking.
@@ -18,7 +18,7 @@ JFormHelper::loadFieldClass('list');
  * @subpackage  Fields
  * @since       1.0
  */
-class JFormFieldRpublished extends JFormFieldList
+class JFormFieldRpublished extends JFormFieldRpredefinedList
 {
 	/**
 	 * The form field type.
@@ -32,48 +32,11 @@ class JFormFieldRpublished extends JFormFieldList
 	 *
 	 * @var  string
 	 */
-	protected $availableStatuses = array(
-		array('value' => 1, 'text' => 'JPUBLISHED'),
-		array('value' => 0, 'text' => 'JUNPUBLISHED'),
-		array('value' => 2, 'text' => 'JARCHIVED'),
-		array('value' => -2, 'text' => 'JTRASHED'),
-		array('value' => '*', 'text' => 'JALL')
+	protected $predefinedOptions = array(
+		1   => 'JPUBLISHED',
+		0   => 'JUNPUBLISHED',
+		2   => 'JARCHIVED',
+		-2  => 'JTRASHED',
+		'*' => 'JALL'
 	);
-
-	/**
-	 * Get options for the select
-	 *
-	 * @return  array  Array of objects
-	 */
-	public function getOptions()
-	{
-		$options = array();
-
-		if ($this->availableStatuses)
-		{
-			$activeStatuses = array_keys($this->availableStatuses);
-
-			if ($this->element['statuses'])
-			{
-				$activeStatuses = explode(',', $this->element['statuses']);
-			}
-
-			foreach ($this->availableStatuses as $status)
-			{
-				if (in_array($status['value'], $activeStatuses))
-				{
-					// Translate the statuses
-					$status['text'] = JText::_($status['text']);
-					$options[] = (object) $status;
-				}
-			}
-		}
-
-		if (!$options)
-		{
-			return parent::getOptions();
-		}
-
-		return array_merge(parent::getOptions(), $options);
-	}
 }
