@@ -32,18 +32,6 @@
         </schemas>
     </update>
 
-    <!-- Frontend -->
-    <files folder="component/site">
-        <folder>controllers</folder>
-        <folder>helpers</folder>
-        <folder>layouts</folder>
-        <folder>models</folder>
-        <folder>views</folder>
-        <filename>LICENSE</filename>
-        <filename>controller.php</filename>
-        <filename>redcore.php</filename>
-    </files>
-
     <administration>
         <files folder="component/admin">
             <folder>controllers</folder>
