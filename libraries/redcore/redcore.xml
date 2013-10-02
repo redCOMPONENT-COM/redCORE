@@ -39,4 +39,8 @@
 		<filename>bootstrap.php</filename>
 		<filename>redcore.xml</filename>
 	</files>
+
+    <languages folder="language">
+        <language tag="en-GB">en-GB/en-GB.lib_redcore.ini</language>
+    </languages>
 </extension>

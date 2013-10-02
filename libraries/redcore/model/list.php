@@ -93,6 +93,33 @@ abstract class RModelList extends JModelList
 	}
 
 	/**
+	 * Function to get the active filters
+	 *
+	 * @return  array  Associative array in the format: array('filter_published' => 0)
+	 *
+	 * @since   3.2
+	 */
+	public function getActiveFilters()
+	{
+		$activeFilters = array();
+
+		if (!empty($this->filter_fields))
+		{
+			foreach ($this->filter_fields as $filter)
+			{
+				$filterName = 'filter.' . $filter;
+
+				if (property_exists($this->state, $filterName) && (!empty($this->state->{$filterName}) || is_numeric($this->state->{$filterName})))
+				{
+					$activeFilters[$filter] = $this->state->get($filterName);
+				}
+			}
+		}
+
+		return $activeFilters;
+	}
+
+	/**
 	 * Get the zone form
 	 *
 	 * @param   array    $data      data
@@ -176,50 +203,95 @@ abstract class RModelList extends JModelList
 		if ($this->context)
 		{
 			$app = JFactory::getApplication();
-			$value = $app->getUserStateFromRequest(
-				'global.list.limit',
-				$this->paginationPrefix . 'limit',
-				$app->getCfg('list_limit'), 'uint'
-			);
 
-			$limit = $value;
+			// Pre-fill the limit
+			$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
 			$this->setState('list.limit', $limit);
 
-			$value = $app->getUserStateFromRequest(
-				$this->context . '.limitstart',
-				$this->paginationPrefix . 'limitstart',
-				0
-			);
-
-			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
-			$this->setState('list.start', $limitstart);
-
-			// Check if the ordering field is in the white list, otherwise use the incoming value.
-			$value = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
-
-			if (!in_array($value, $this->filter_fields))
+			// Receive & set filters
+			if ($filters = $this->getUserStateFromRequest($this->context . '.filter', 'filter'))
 			{
-				$value = $ordering;
-				$app->setUserState($this->context . '.ordercol', $value);
+				foreach ($filters as $name => $value)
+				{
+					$this->setState('filter.' . $name, $value);
+				}
 			}
 
-			$this->setState('list.ordering', $value);
-
-			// Check if the ordering direction is valid, otherwise use the incoming value.
-			$value = $app->getUserStateFromRequest($this->context . '.orderdirn', 'filter_order_Dir', $direction);
-
-			if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
+			// Receive & set list options
+			if ($list = $this->getUserStateFromRequest($this->context . '.list', 'list'))
 			{
-				$value = $direction;
-				$app->setUserState($this->context . '.orderdirn', $value);
-			}
+				foreach ($list as $name => $value)
+				{
+					// Extra validations
+					switch ($name)
+					{
+						case 'fullordering':
+							$orderingParts = explode(' ', $value);
 
-			$this->setState('list.direction', $value);
+							if (count($orderingParts) >= 2)
+							{
+								// Latest part will be considered the direction
+								$fullDirection = end($orderingParts);
+
+								if (in_array(strtoupper($fullDirection), array('ASC', 'DESC', '')))
+								{
+									$this->setState('list.direction', $fullDirection);
+								}
+
+								unset($orderingParts[count($orderingParts) - 1]);
+
+								// The rest will be the ordering
+								$fullOrdering = implode(' ', $orderingParts);
+
+								if (in_array($fullOrdering, $this->filter_fields))
+								{
+									$this->setState('list.ordering', $fullOrdering);
+								}
+							}
+							else
+							{
+								$this->setState('list.ordering', $ordering);
+								$this->setState('list.direction', $direction);
+							}
+							break;
+
+						case 'ordering':
+							if (!in_array($value, $this->filter_fields))
+							{
+								$value = $ordering;
+							}
+							break;
+
+						case 'direction':
+							if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
+							{
+								$value = $direction;
+							}
+							break;
+
+						case 'start':
+							$value = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+							break;
+
+						// Just to keep the default case
+						default:
+							$value = $value;
+							break;
+					}
+
+					$this->setState('list.' . $name, $value);
+				}
+			}
+			else
+			{
+				$this->setState('list.ordering', $ordering);
+				$this->setState('list.direction', $direction);
+			}
 		}
 		else
 		{
 			$this->setState('list.start', 0);
-			$this->state->set('list.limit', 0);
+			$this->setState('list.limit', 0);
 		}
 	}
 
