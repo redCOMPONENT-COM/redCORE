@@ -29,7 +29,7 @@ class RHelperList
 	{
 		// Find the model for this helper
 		$class = str_replace('Helper', 'Model', get_called_class());
-		$class = \Doctrine\Common\Inflector\Inflector::pluralize($class);
+		$class = RInflector::pluralize($class);
 
 		if (!class_exists($class))
 		{
