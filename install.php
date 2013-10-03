@@ -9,6 +9,16 @@
 
 defined('_JEXEC') or die;
 
+$bootstrapPaths = array(
+	JPATH_LIBRARIES . '/redcore',
+	__DIR__ . '/libraries/redcore'
+);
+
+if ($bootstrapFile = JPath::find($bootstrapPaths, 'bootstrap.php'))
+{
+	require_once $bootstrapFile;
+}
+
 /**
  * Custom installation of redCORE
  *
