@@ -10,7 +10,7 @@
 
 defined('JPATH_PLATFORM') or die;
 
-define('JPATH_REDCORE', __DIR__);
+define('JPATH_REDCORE', dirname(__FILE__));
 
 require JPATH_REDCORE . '/inflector/inflector.php';
 require JPATH_REDCORE . '/functions.php';
