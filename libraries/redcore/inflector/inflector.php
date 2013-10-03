@@ -17,8 +17,6 @@
 * <http://www.doctrine-project.org>.
 */
 
-namespace Doctrine\Common\Inflector;
-
 /**
  * Doctrine inflector has static methods for inflecting text.
  *
@@ -33,7 +31,7 @@ namespace Doctrine\Common\Inflector;
  * @author Konsta Vesterinen <kvesteri@cc.hut.fi>
  * @author Jonathan H. Wage <jonwage@gmail.com>
  */
-class Inflector
+class RInflector
 {
 	/**
 	 * Plural inflector rules.

@@ -55,7 +55,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		{
 			$name = strstr($class, 'Controller');
 			$name = str_replace('Controller', '', $name);
-			$name = \Doctrine\Common\Inflector\Inflector::singularize($name);
+			$name = RInflector::singularize($name);
 		}
 
 		if (empty($prefix))
