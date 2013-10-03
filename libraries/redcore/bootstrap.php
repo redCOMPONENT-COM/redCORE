@@ -13,6 +13,7 @@ defined('JPATH_PLATFORM') or die;
 define('JPATH_REDCORE', __DIR__);
 
 require JPATH_REDCORE . '/inflector/inflector.php';
+require JPATH_REDCORE . '/functions.php';
 
 // Use our own base field
 if (!class_exists('JFormField', false))

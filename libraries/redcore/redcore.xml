@@ -37,6 +37,7 @@
 		<folder>toolbar</folder>
 		<folder>view</folder>
 		<filename>bootstrap.php</filename>
+		<filename>functions.php</filename>
 		<filename>redcore.xml</filename>
 	</files>
 
