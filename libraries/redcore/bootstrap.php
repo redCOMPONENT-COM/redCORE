@@ -12,7 +12,6 @@ defined('JPATH_PLATFORM') or die;
 
 define('JPATH_REDCORE', dirname(__FILE__));
 
-require JPATH_REDCORE . '/inflector/inflector.php';
 require JPATH_REDCORE . '/functions.php';
 
 // Use our own base field

@@ -34,7 +34,7 @@ class PlgSystemRedcore extends JPlugin
 
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
-		if (file_exists($redcoreLoader) && !class_exists('Inflector'))
+		if (file_exists($redcoreLoader))
 		{
 			require_once $redcoreLoader;
 
