@@ -72,6 +72,8 @@
 
     <!-- Postflight tasks -->
     <postflight>
-        <task name="deleteMenu" />
+        <task name="deleteMenu">
+            <parameter>1</parameter>
+        </task>
     </postflight>
 </extension>

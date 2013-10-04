@@ -67,7 +67,6 @@ class Com_RedcoreInstallerScript
 		if (count($elementParts) == 2)
 		{
 			$extType = $elementParts[0];
-			$extName = $elementParts[1];
 
 			if ($extType == 'pkg')
 			{
@@ -282,7 +281,6 @@ class Com_RedcoreInstallerScript
 	{
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
-		$src       = $parent->getParent()->getPath('source');
 		$type      = $manifest->attributes()->type;
 
 		if ($type == 'component')
@@ -313,8 +311,6 @@ class Com_RedcoreInstallerScript
 					$db->setQuery($query);
 
 					$comParams = new JRegistry($db->loadResult());
-
-					$shit = array('version' => (string) $version);
 					$comParams->set('redcore',
 						array(
 							'version' => (string) $version)
@@ -360,8 +356,9 @@ class Com_RedcoreInstallerScript
 				{
 					$result = $installer->install($extPath);
 				}
+
+				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'template', '-1'))
-					// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -422,10 +419,23 @@ class Com_RedcoreInstallerScript
 				$taskName = $attributes['name'];
 				$class = get_called_class();
 
+				// Do we have some parameters ?
+				$parameters = array();
+
+				if ($params = $task->parameter)
+				{
+					foreach ($params as $param)
+					{
+						$parameters[] = (string) $param;
+					}
+				}
+
+				$parameters = array_merge(array($type, $parent), $parameters);
+
 				// Call the task with $type and $parent as parameters
 				if (method_exists($class, $taskName))
 				{
-					call_user_func_array(array($class, $taskName), array($type, $parent));
+					call_user_func_array(array($class, $taskName), $parameters);
 				}
 			}
 		}
@@ -434,12 +444,13 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Delete the menu item of the extension.
 	 *
-	 * @param   object  $type    type of change (install, update or discover_install)
-	 * @param   object  $parent  class calling this method
+	 * @param   object  $type    Type of change (install, update or discover_install)
+	 * @param   object  $parent  Class calling this method
+	 * @param   string  $client  The client
 	 *
 	 * @return  void
 	 */
-	protected function deleteMenu($type, $parent)
+	protected function deleteMenu($type, $parent, $client = null)
 	{
 		/** @var JXMLElement $manifest */
 		$manifest = $parent->get('manifest');
@@ -460,17 +471,22 @@ class Com_RedcoreInstallerScript
 		}
 
 		$db = JFactory::getDbo();
-
 		$query = $db->getQuery(true)
 			->delete('#__menu')
-			->where('type = ' . $db->q($type))
-			->where(
-				array(
-					'title = ' . $db->q($componentName),
-					'title = ' . $db->q(strtolower($componentName))
-				),
-				'OR'
-			);
+			->where('type = ' . $db->q($type));
+
+		if ($client)
+		{
+			$query->where('client_id = ' . $db->q($client));
+		}
+
+		$query->where(
+			array(
+				'title = ' . $db->q($componentName),
+				'title = ' . $db->q(strtolower($componentName))
+			),
+			'OR'
+		);
 
 		$db->setQuery($query);
 		$db->execute();
@@ -591,14 +607,12 @@ class Com_RedcoreInstallerScript
 		// Required objects
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
-		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->libraries->library)
 		{
 			foreach ($nodes as $node)
 			{
 				$extName = $node->attributes()->name;
-				$extPath = $src . '/libraries/' . $extName;
 				$result  = 0;
 
 				if ($extId = $this->searchExtension($extName, 'library', 0))
@@ -643,7 +657,6 @@ class Com_RedcoreInstallerScript
 		// Required objects
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
-		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->modules->module)
 		{
@@ -651,7 +664,6 @@ class Com_RedcoreInstallerScript
 			{
 				$extName   = $node->attributes()->name;
 				$extClient = $node->attributes()->client;
-				$extPath   = $src . '/modules/' . $extClient . '/' . $extName;
 				$result    = 0;
 
 				if ($extId = $this->searchExtension($extName, 'module', 0))
@@ -677,7 +689,6 @@ class Com_RedcoreInstallerScript
 		// Required objects
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
-		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->plugins->plugin)
 		{
@@ -685,7 +696,6 @@ class Com_RedcoreInstallerScript
 			{
 				$extName  = $node->attributes()->name;
 				$extGroup = $node->attributes()->group;
-				$extPath  = $src . '/plugins/' . $extGroup . '/' . $extName;
 				$result   = 0;
 
 				if ($extId = $this->searchExtension($extName, 'plugin', 0, $extGroup))
@@ -711,7 +721,6 @@ class Com_RedcoreInstallerScript
 		// Required objects
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
-		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->templates->template)
 		{
@@ -719,7 +728,6 @@ class Com_RedcoreInstallerScript
 			{
 				$extName   = $node->attributes()->name;
 				$extClient = $node->attributes()->client;
-				$extPath   = $src . '/templates/' . $extClient . '/' . $extName;
 				$result    = 0;
 
 				if ($extId = $this->searchExtension($extName, 'template', 0))
