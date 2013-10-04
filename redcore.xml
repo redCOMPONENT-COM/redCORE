@@ -50,8 +50,6 @@
             <language tag="en-GB">en-GB/en-GB.com_redcore.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_redcore.sys.ini</language>
         </languages>
-
-        <menu view="dashboard">COM_REDCORE</menu>
     </administration>
 
     <!-- Medias -->
@@ -71,4 +69,9 @@
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
     </plugins>
+
+    <!-- Postflight tasks -->
+    <postflight>
+        <task name="deleteMenu" />
+    </postflight>
 </extension>

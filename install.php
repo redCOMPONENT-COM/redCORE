@@ -377,7 +377,7 @@ class Com_RedcoreInstallerScript
 	 * @param   object  $type    type of change (install, update or discover_install)
 	 * @param   object  $parent  class calling this method
 	 *
-	 * @return void
+	 * @return  boolean
 	 */
 	public function postflight($type, $parent)
 	{
@@ -387,7 +387,93 @@ class Com_RedcoreInstallerScript
 			$this->installRedcore($parent);
 		}
 
+		// Execute the postflight tasks from the manifest
+		$this->postFlightFromManifest($type, $parent);
+
 		return true;
+	}
+
+	/**
+	 * Execute the postflight tasks from the manifest if there is any.
+	 *
+	 * @param   object  $type    type of change (install, update or discover_install)
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	protected function postFlightFromManifest($type, $parent)
+	{
+		$manifest = $parent->get('manifest');
+
+		if ($tasks = $manifest->postflight->task)
+		{
+			/** @var JXMLElement $task */
+			foreach ($tasks as $task)
+			{
+				$attributes = current($task->attributes());
+				$taskName = null;
+
+				// No task name
+				if (!isset($attributes['name']))
+				{
+					continue;
+				}
+
+				$taskName = $attributes['name'];
+				$class = get_called_class();
+
+				// Call the task with $type and $parent as parameters
+				if (method_exists($class, $taskName))
+				{
+					call_user_func_array(array($class, $taskName), array($type, $parent));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Delete the menu item of the extension.
+	 *
+	 * @param   object  $type    type of change (install, update or discover_install)
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	protected function deleteMenu($type, $parent)
+	{
+		/** @var JXMLElement $manifest */
+		$manifest = $parent->get('manifest');
+		$attributes = current($manifest->attributes());
+
+		// If it's not a component
+		if (!isset($attributes['type']))
+		{
+			return;
+		}
+
+		$type = $attributes['type'];
+		$componentName = (string) $manifest->name;
+
+		if (empty($componentName))
+		{
+			return;
+		}
+
+		$db = JFactory::getDbo();
+
+		$query = $db->getQuery(true)
+			->delete('#__menu')
+			->where('type = ' . $db->q($type))
+			->where(
+				array(
+					'title = ' . $db->q($componentName),
+					'title = ' . $db->q(strtolower($componentName))
+				),
+				'OR'
+			);
+
+		$db->setQuery($query);
+		$db->execute();
 	}
 
 	/**
