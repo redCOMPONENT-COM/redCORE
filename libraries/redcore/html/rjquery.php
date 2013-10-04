@@ -52,6 +52,11 @@ abstract class JHtmlRjquery
 
 		self::framework();
 
+		// Add chosen.jquery.js language strings
+		JText::script('JGLOBAL_SELECT_SOME_OPTIONS');
+		JText::script('JGLOBAL_SELECT_AN_OPTION');
+		JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
+
 		RHelperAsset::load('lib/chosen.jquery.js', self::EXTENSION);
 		RHelperAsset::load('lib/chosen.css', self::EXTENSION);
 		RHelperAsset::load('lib/chosen-extra.css', self::EXTENSION);
