@@ -34,7 +34,7 @@ final class RComponentHelper
 		/** @var SplFileInfo $fileInfo */
 		foreach ($iterator as $fileInfo)
 		{
-			if ($fileInfo->isFile() && 'xml' === $fileInfo->getExtension())
+			if ($fileInfo->isFile() && 'xml' === pathinfo($fileInfo->getFilename(), PATHINFO_EXTENSION))
 			{
 				$content = @file_get_contents($fileInfo->getRealPath());
 
