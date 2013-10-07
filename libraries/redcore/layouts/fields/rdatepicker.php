@@ -14,17 +14,19 @@ $data = $displayData;
 // Add jquery UI js.
 JHtml::_('rjquery.datepicker');
 
+$doc = JFactory::getDocument();
+
 $script = "
 (function($){
 	$(document).ready(function () {
-		$('" . $data->cssId . "').datepicker(
-		" . $data->datepickerOptions . "
-		);
+		$('" . $data->cssId . "').datepicker(" . $data->datepickerOptions . ");
 	});
 })(jQuery);
 ";
 
-$doc = JFactory::getDocument();
 $doc->addScriptDeclaration($script);
+
+// Load the common css
+RHelperAsset::load('rdatepicker.css', 'redcore');
 
 echo $data->fieldHtml;
