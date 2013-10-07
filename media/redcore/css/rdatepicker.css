@@ -5,3 +5,6 @@
 	position: relative;
 	z-index: 5;
 }
+button.ui-datepicker-trigger {
+	color: #990000;
+}
