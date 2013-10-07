@@ -93,7 +93,7 @@ if ($displayJoomlaMenu)
 		jQuery('.datetime').text(date.toLocaleString());
 	}
 </script>
-<header class="navbar navbar-fixed-top">
+<header class="navbar navbar-fixed-top topbar">
 	<div class="navbar-inner">
 		<div class="container-fluid">
 			<?php if (!$displayJoomlaMenu) : ?>

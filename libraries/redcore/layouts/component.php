@@ -153,6 +153,18 @@ if ($result instanceof Exception)
 <script type="text/javascript">
 	jQuery(document).ready(function () {
 		jQuery('.message-sys').append(jQuery('#system-message-container'));
+
+		<?php if ($input->getBool('disable_topbar') || $input->getBool('hidemainmenu')) : ?>
+		jQuery('.topbar').addClass('opacity-70');
+		jQuery('.topbar button').prop('disabled', true);
+		jQuery('.topbar a').attr('disabled', true).attr('href', '#').addClass('disabled');
+		<?php endif; ?>
+
+		<?php if ($input->getBool('disable_sidebar') || $input->getBool('hidemainmenu')) : ?>
+		jQuery('.sidebar').addClass('opacity-70');
+		jQuery('.sidebar button').prop('disabled', true);
+		jQuery('.sidebar a').attr('disabled', true).attr('href', '#').addClass('disabled');
+		<?php endif; ?>
 	});
 </script>
 <?php if ($view->getLayout() === 'modal') : ?>
