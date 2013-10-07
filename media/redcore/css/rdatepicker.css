@@ -1,0 +1,7 @@
+/*
+ This is required to avoid a z-index issue with datepicker fields
+ */
+.rdatepicker {
+	position: relative;
+	z-index: 5;
+}

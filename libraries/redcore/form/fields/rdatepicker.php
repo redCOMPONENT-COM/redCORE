@@ -9,7 +9,7 @@
 
 defined('JPATH_REDCORE') or die;
 
-JFormHelper::loadFieldClass('text');
+JFormHelper::loadFieldClass('rtext');
 
 /**
  * jQuery UI datepicker field for redbooking.
@@ -18,7 +18,7 @@ JFormHelper::loadFieldClass('text');
  * @subpackage  Fields
  * @since       1.0
  */
-class JFormFieldRdatepicker extends JFormFieldText
+class JFormFieldRdatepicker extends JFormFieldRtext
 {
 	/**
 	 * The form field type.
@@ -58,9 +58,12 @@ class JFormFieldRdatepicker extends JFormFieldText
 		$id = isset($this->element['id']) ? $this->element['id'] : null;
 		$this->cssId = '#' . $this->getId($id, $this->element['name']);
 
+		// We will add a rdatepicker class to solve common styling issues
+		$this->element['class'] = $this->element['class'] ? 'rdatepicker ' . $this->element['class'] : 'rdatepicker';
+
 		if (isset($this->element['inline']) && $this->element['inline'] == 'true')
 		{
-			$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+			$class = ' class="' . (string) $this->element['class'] . '"';
 			$this->fieldHtml = '<div id="' . $this->getId($id, $this->element['name']) . '" ' . $class . '></div>';
 		}
 		else
@@ -127,7 +130,7 @@ class JFormFieldRdatepicker extends JFormFieldText
 			'stepMonths' => 'integer',
 			// 'weekHeader' => 'string',
 			'yearRange' => 'string',
-			// 'yearSuffix' => 'string',
+			// 'yearSuffix' => 'string'
 
 		);
 
