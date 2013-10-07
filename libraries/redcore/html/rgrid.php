@@ -127,7 +127,9 @@ abstract class JHtmlRgrid
 				$class = 'unpublished';
 			}
 
-			$html[] = '<a class="btn btn-small ' . $class . '" ' . ($tip ? 'rel="tooltip"' : '') . '';
+			$class .= $tip ? ' hasTooltip' : '';
+
+			$html[] = '<a class="btn btn-small ' . $class . '"';
 			$html[] = ' href="javascript:void(0);" onclick="return listItemTaskForm(\'' . $checkbox . $i . '\',\''
 				. $prefix . $task . '\',\'' . $formId . '\')"';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($active_title) : $active_title, ENT_COMPAT, 'UTF-8')) . '">';
@@ -137,7 +139,7 @@ abstract class JHtmlRgrid
 		}
 		else
 		{
-			$html[] = '<a class="btn btn-micro disabled jgrid" ' . ($tip ? 'rel="tooltip"' : '') . '';
+			$html[] = '<a class="btn btn-micro disabled jgrid ' . ($tip ? 'hasTooltip' : '') . '" ';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($inactive_title) : $inactive_title, ENT_COMPAT, 'UTF-8')) . '">';
 
 			if ($active_class == "protected")

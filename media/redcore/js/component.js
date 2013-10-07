@@ -1,6 +1,9 @@
 (function ($) {
     $(document).ready(function () {
-        $('*[rel=tooltip]').tooltip()
+        $('*[rel=tooltip]').tooltip({
+            "animation":true,
+            "html":true
+        });
 
         // Turn radios into btn-group
         $('.radio.btn-group label').addClass('btn');
