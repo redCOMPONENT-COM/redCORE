@@ -111,14 +111,14 @@ abstract class JHtmlRjquery
 	/**
 	 * Load the dependent fields
 	 *
-	 * @param   string  $selector  DOM selector to apply the dropdowns
-	 * @param   array   $options   Optional array parameters
+	 * @param   string  $childFieldSelector  DOM selector to apply the dropdowns
+	 * @param   array   $options             Optional array parameters
 	 *
 	 * @return  void
 	 *
 	 * @since   1.0
 	 */
-	public static function childlist($selector = '#adminForm', $options = array())
+	public static function childlist($childFieldSelector = '.js-childlist-child', $options = array())
 	{
 		// This does not cache because we can have multiple instances in the same form ,same parent field and same child field
 		self::framework();
@@ -130,7 +130,7 @@ abstract class JHtmlRjquery
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){
 				$(document).ready(function () {
-					$('" . $selector . "').childlist(" . $options->toString() . ");
+					$('" . $childFieldSelector . "').childlist(" . $options->toString() . ");
 				});
 			})(jQuery);
 		");

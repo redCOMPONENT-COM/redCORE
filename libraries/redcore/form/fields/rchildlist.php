@@ -36,7 +36,7 @@ class JFormFieldRchildlist extends JFormFieldRlist
 	public $ajaxchildOptions = array(
 		'formSelector'   => '#adminForm',
 		'parentSelector' => '.js-parent-field',
-		'parentVar'      => null,
+		'parentVarName'  => null,
 		'parentOnChange' => true,
 		'childSelector'  => null,
 		'ajaxUrl'        => null

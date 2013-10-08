@@ -5,7 +5,7 @@
 
 	var defaults = {
 		parentSelector : '.js-childlist-parent',
-		parentVarName      : null,
+		parentVarName  : null,
 		parentOnChange : true,
 		childSelector  : '.js-childlist-child',
 		ajaxUrl        : null
@@ -17,16 +17,13 @@
 		this.options = $.extend({}, defaults, options);
 		this._defaults = defaults;
 
-		// Initialise selectors
-		this.theForm        = this.element;
-
 		// Fields
+		this.childField  = $(this.element);
 		this.parentField = $(this.options.parentSelector);
-		this.childField  = $(this.options.childSelector);
 
 		// Initial values
-		this.parentValue = this.getFieldValue(this.options.parentSelector);
-		this.childValue  = this.getFieldValue(this.options.childSelector);
+		this.parentValue = this.getFieldValue(this.parentField);
+		this.childValue  = this.getFieldValue(this.childField);
 
 		// Selector values
 		this._name = pluginName;
@@ -51,7 +48,7 @@
 					data: self.options.parentVarName + "=" + self.parentValue,
 					success: function(data){
 						var options = "";
-						if (data !== 'false')
+						if (data !== null)
 						{
 							data.each(function(item) {
 								options += '<option value="' + item['value'] + '"';

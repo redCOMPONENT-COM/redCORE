@@ -16,9 +16,9 @@ $options = !empty($data->field->ajaxchildOptions) ? $data->field->ajaxchildOptio
 // We won't load anything if it's not going to work
 if (!empty($options['ajaxUrl']))
 {
-	$options['formSelector'] = isset($options['formSelector']) ? $options['formSelector'] : '#adminForm';
+	$options['childSelector'] = isset($options['childSelector']) ? $options['childSelector'] : '.js-childlist-child';
 
-	JHtml::_('rjquery.childlist', $options['formSelector'], $options);
+	JHtml::_('rjquery.childlist', $options['childSelector'], $options);
 }
 
 // Render the standard select
