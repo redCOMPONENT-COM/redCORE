@@ -109,6 +109,34 @@ abstract class JHtmlRjquery
 	}
 
 	/**
+	 * Load the dependent fields
+	 *
+	 * @param   string  $childFieldSelector  DOM selector to apply the dropdowns
+	 * @param   array   $options             Optional array parameters
+	 *
+	 * @return  void
+	 *
+	 * @since   1.0
+	 */
+	public static function childlist($childFieldSelector = '.js-childlist-child', $options = array())
+	{
+		// This does not cache because we can have multiple instances in the same form ,same parent field and same child field
+		self::framework();
+
+		RHelperAsset::load('jquery.childlist.js', self::EXTENSION);
+
+		$options = static::options2Jregistry($options);
+
+		JFactory::getDocument()->addScriptDeclaration("
+			(function($){
+				$(document).ready(function () {
+					$('" . $childFieldSelector . "').childlist(" . $options->toString() . ");
+				});
+			})(jQuery);
+		");
+	}
+
+	/**
 	 * Load the jQuery framework
 	 *
 	 * @return  void
@@ -128,6 +156,29 @@ abstract class JHtmlRjquery
 		static::$loaded[__METHOD__] = true;
 
 		return;
+	}
+
+	/**
+	 * Function to receive & pre-process javascript options
+	 *
+	 * @param   mixed  $options  Associative array/JRegistry object with options
+	 *
+	 * @return  JRegistry        Options converted to JRegistry object
+	 */
+	private static function options2Jregistry($options)
+	{
+		// Support options array
+		if (is_array($options))
+		{
+			$options = new JRegistry($options);
+		}
+
+		if (!($options instanceof Jregistry))
+		{
+			$options = new JRegistry;
+		}
+
+		return $options;
 	}
 
 	/**
