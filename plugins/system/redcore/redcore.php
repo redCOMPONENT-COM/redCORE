@@ -34,7 +34,7 @@ class PlgSystemRedcore extends JPlugin
 
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
-		if (file_exists($redcoreLoader) && !class_exists('Inflector'))
+		if (file_exists($redcoreLoader))
 		{
 			require_once $redcoreLoader;
 
@@ -199,6 +199,12 @@ class PlgSystemRedcore extends JPlugin
 	private function isRedcoreComponent()
 	{
 		$app = JFactory::getApplication();
+
+		// If this is a frontend component, it's not redcore yet
+		if ($app->isSite())
+		{
+			return false;
+		}
 
 		// If the application is admin and the user logged out (this is not a redCORE component)
 		if ($app->isAdmin() && JFactory::getUser()->guest)

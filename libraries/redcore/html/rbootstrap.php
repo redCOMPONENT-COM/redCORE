@@ -367,7 +367,7 @@ abstract class JHtmlRbootstrap
 		$opt['delay'] = isset($params['delay']) ? $params['delay'] : null;
 		$opt['container'] = isset($params['container']) ? $params['container'] : false;
 
-		$options = JHtml::getJSObject($opt);
+		$options = RHtml::getJSObject($opt);
 
 		// Attach the popover to the document
 		JFactory::getDocument()->addScriptDeclaration(
@@ -404,7 +404,7 @@ abstract class JHtmlRbootstrap
 			// Setup options object
 			$opt['offset'] = (isset($params['offset']) && ($params['offset'])) ? (int) $params['offset'] : 10;
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach ScrollSpy to document
 			JFactory::getDocument()->addScriptDeclaration(
@@ -517,7 +517,7 @@ abstract class JHtmlRbootstrap
 			$opt['updater'] = (isset($params['updater']) && ($params['updater'])) ? (string) $params['updater'] : null;
 			$opt['highlighter'] = (isset($params['highlighter']) && ($params['highlighter'])) ? (int) $params['highlighter'] : null;
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach tooltips to document
 			JFactory::getDocument()->addScriptDeclaration(
@@ -561,7 +561,7 @@ abstract class JHtmlRbootstrap
 			$opt['toggle'] = (isset($params['toggle']) && ($params['toggle'])) ? (boolean) $params['toggle'] : true;
 			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach accordion to document
 			JFactory::getDocument()->addScriptDeclaration(
@@ -600,7 +600,7 @@ abstract class JHtmlRbootstrap
 	 */
 	public static function addSlide($selector, $text, $id, $class = '')
 	{
-		$in = (static::$loaded['JHtmlBootstrap::startAccordion']['active'] == $id) ? ' in' : '';
+		$in = (static::$loaded['JHtmlRbootstrap::startAccordion']['active'] == $id) ? ' in' : '';
 		$class = (!empty($class)) ? ' ' . $class : '';
 
 		$html = '<div class="accordion-group' . $class . '">'
@@ -645,7 +645,7 @@ abstract class JHtmlRbootstrap
 			// Setup options object
 			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach tabs to document
 			JFactory::getDocument()

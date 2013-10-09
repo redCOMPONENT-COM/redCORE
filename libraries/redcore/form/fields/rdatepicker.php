@@ -9,7 +9,7 @@
 
 defined('JPATH_REDCORE') or die;
 
-JFormHelper::loadFieldClass('text');
+JFormHelper::loadFieldClass('rtext');
 
 /**
  * jQuery UI datepicker field for redbooking.
@@ -18,7 +18,7 @@ JFormHelper::loadFieldClass('text');
  * @subpackage  Fields
  * @since       1.0
  */
-class JFormFieldRdatepicker extends JFormFieldText
+class JFormFieldRdatepicker extends JFormFieldRtext
 {
 	/**
 	 * The form field type.
@@ -58,9 +58,12 @@ class JFormFieldRdatepicker extends JFormFieldText
 		$id = isset($this->element['id']) ? $this->element['id'] : null;
 		$this->cssId = '#' . $this->getId($id, $this->element['name']);
 
+		// We will add a rdatepicker class to solve common styling issues
+		$this->element['class'] = $this->element['class'] ? 'rdatepicker ' . $this->element['class'] : 'rdatepicker';
+
 		if (isset($this->element['inline']) && $this->element['inline'] == 'true')
 		{
-			$class = $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
+			$class = ' class="' . (string) $this->element['class'] . '"';
 			$this->fieldHtml = '<div id="' . $this->getId($id, $this->element['name']) . '" ' . $class . '></div>';
 		}
 		else
@@ -82,82 +85,83 @@ class JFormFieldRdatepicker extends JFormFieldText
 	{
 		$options = new JRegistry;
 
-		$elementsToCheck = array(
-			'altField' => 'string',
-			'altFormat' => 'string',
-			'appendText' => 'string',
-			'autoSize' => 'boolean',
-			'buttonImage' => 'string',
-			'buttonImageOnly' => 'boolean',
-			'buttonText' => 'string',
-			'calculateWeek' => 'string',
-			'changeMonth' => 'boolean',
-			'changeYear' => 'boolean',
-			// 'closeText' => 'string',
-			'constrainInput' => 'boolean',
-			// 'currentText' => 'string',
-			'dateFormat' => 'string',
-			// 'dayNames' => 'string',
-			// 'dayNamesMin' => 'string',
-			// 'dayNamesShort' => 'string',
-			'defaultDate' => 'string',
-			'duration' => 'string',
-			// 'firstDay' => 'string',
-			'gotoCurrent' => 'boolean',
-			'hideIfNoPrevNext' => 'boolean',
-			// 'isRTL' => 'boolean',
-			'maxDate' => 'string',
-			'minDate' => 'string',
-			// 'monthNames' => 'string',
-			// 'monthNamesShort' => 'string',
-			'navigationAsDateFormat' => 'boolean',
-			// 'nextText' => 'string',
-			'numberOfMonths' => 'array',
-			// 'prevText' => 'string',
-			'selectOtherMonths' => 'boolean',
-			'shortYearCutoff' => 'integer',
-			'showAnim' => 'string',
-			'showButtonPanel' => 'boolean',
-			'showCurrentAtPos' => 'integer',
-			// 'showMonthAfterYear' => 'boolean',
-			'showOn' => 'string',
-			'showOptions' => 'string',
-			'showOtherMonths' => 'boolean',
-			'showWeek' => 'boolean',
-			'stepMonths' => 'integer',
-			// 'weekHeader' => 'string',
-			'yearRange' => 'string',
-			// 'yearSuffix' => 'string',
-
+		$optionsToCheck = array(
+			'altField'               => array('type' => 'string'),
+			'altFormat'              => array('type' => 'string'),
+			'appendText'             => array('type' => 'string'),
+			'autoSize'               => array('type' => 'boolean'),
+			'buttonImage'            => array('type' => 'string', 'default' => 'rdatepicker-calendar.gif'),
+			'buttonImageOnly'        => array('type' => 'boolean'),
+			'buttonText'             => array('type' => 'string'),
+			'calculateWeek'          => array('type' => 'string'),
+			'changeMonth'            => array('type' => 'boolean'),
+			'changeYear'             => array('type' => 'boolean'),
+			// 'closeText'           => array('type' => 'string'),
+			'constrainInput'         => array('type' => 'boolean'),
+			// 'currentText'         => array('type' => 'string'),
+			'dateFormat'             => array('type' => 'string', 'default' => 'dd-mm-yy'),
+			// 'dayNames'            => array('type' => 'string'),
+			// 'dayNamesMin'         => array('type' => 'string'),
+			// 'dayNamesShort'       => array('type' => 'string'),
+			'defaultDate'            => array('type' => 'string'),
+			'duration'               => array('type' => 'string'),
+			// 'firstDay'            => array('type' => 'string'),
+			'gotoCurrent'            => array('type' => 'boolean'),
+			'hideIfNoPrevNext'       => array('type' => 'boolean'),
+			// 'isRTL'               => array('type' => 'boolean'),
+			'maxDate'                => array('type' => 'string'),
+			'minDate'                => array('type' => 'string'),
+			// 'monthNames'          => array('type' => 'string'),
+			// 'monthNamesShort'     => array('type' => 'string'),
+			'navigationAsDateFormat' => array('type' => 'boolean'),
+			// 'nextText'            => array('type' => 'string'),
+			'numberOfMonths'         => array('type' => 'array'),
+			// 'prevText'            => array('type' => 'string'),
+			'selectOtherMonths'      => array('type' => 'boolean'),
+			'shortYearCutoff'        => array('type' => 'integer'),
+			'showAnim'               => array('type' => 'string'),
+			'showButtonPanel'        => array('type' => 'boolean'),
+			'showCurrentAtPos'       => array('type' => 'integer'),
+			// 'showMonthAfterYear'  => array('type' => 'boolean'),
+			'showOn'                 => array('type' => 'string', 'default' => 'both'),
+			'showOptions'            => array('type' => 'string'),
+			'showOtherMonths'        => array('type' => 'boolean'),
+			'showWeek'               => array('type' => 'boolean'),
+			'stepMonths'             => array('type' => 'integer'),
+			// 'weekHeader'          => array('type' => 'string'),
+			'yearRange'              => array('type' => 'string'),
+			// 'yearSuffix'          => array('type' => 'string'),
 		);
 
-		if ($elementsToCheck)
+		if ($optionsToCheck)
 		{
-			foreach ($elementsToCheck as $attribute => $type)
+			foreach ($optionsToCheck as $attribute => $option)
 			{
-				if (!empty($this->element[$attribute]))
+				if (!empty($this->element[$attribute]) || isset($option['default']))
 				{
-					switch ((string) $type)
+					$value = isset($this->element[$attribute]) ? $this->element[$attribute] : $option['default'];
+
+					switch ((string) $option['type'])
 					{
 						case 'bool':
 						case 'boolean':
-							$value = (boolean) $this->element[$attribute];
+							$value = (boolean) $value;
 							break;
 						case 'int':
 						case 'integer':
-							$value = (integer) $this->element[$attribute];
+							$value = (integer) $value;
 							break;
 						case 'double':
 						case 'float':
 						case 'real':
-							$value = (double) $this->element[$attribute];
+							$value = (double) $value;
 							break;
 						case 'array':
-							$value = str_replace(array('[', ']'), '', $this->element[$attribute]);
+							$value = str_replace(array('[', ']'), '', $value);
 							$value = explode(',', $value);
 							break;
 						default:
-							$value = (string) $this->element[$attribute];
+							$value = (string) $value;
 							break;
 					}
 
