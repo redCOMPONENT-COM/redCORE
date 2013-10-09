@@ -200,6 +200,12 @@ class PlgSystemRedcore extends JPlugin
 	{
 		$app = JFactory::getApplication();
 
+		// If this is a frontend component, it's not redcore yet
+		if ($app->isSite())
+		{
+			return false;
+		}
+
 		// If the application is admin and the user logged out (this is not a redCORE component)
 		if ($app->isAdmin() && JFactory::getUser()->guest)
 		{
