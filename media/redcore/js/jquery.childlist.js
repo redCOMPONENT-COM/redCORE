@@ -23,7 +23,7 @@
 
 		// Initial values
 		this.parentValue = this.getFieldValue(this.parentField);
-		this.childValue  = this.getFieldValue(this.childField);
+		this.childValue  = this.getFieldValue(this.element);
 
 		// Selector values
 		this._name = pluginName;
@@ -36,36 +36,11 @@
 			var self = this;
 
 			self.parentField.change(function(e) {
-
-				self.parentValue  = self.getFieldValue(self.parentField);
-
-				// Execute AJAX query
-				$.ajax({
-					url: self.options.ajaxUrl,
-					type: "POST",
-					dataType: "json",
-					cache: false,
-					data: self.options.parentVarName + "=" + self.parentValue,
-					success: function(data){
-						var options = "";
-						if (data !== null)
-						{
-							data.each(function(item) {
-								options += '<option value="' + item['value'] + '"';
-								if (item['value'] === self.childValue)
-								{
-									options += ' selected="selected"';
-								}
-								options += ' >' + item['text'] + '</option>';
-							});
-						}
-
-						// Fill the child select
-						self.childField.empty().append(options);
-						self.childField.trigger('liszt:updated');
-					}
-				});
+				self.updateChild();
 			});
+
+			// Refresh on load
+			self.updateChild();
 		},
 		getFieldValue: function (element) {
 			var value = null;
@@ -85,6 +60,38 @@
 			var value = self.getFieldValue(element);
 
 			return option.val() != '';
+		},
+		updateChild: function() {
+			var self = this;
+
+			self.parentValue  = self.getFieldValue(self.parentField);
+
+			// Execute AJAX query
+			$.ajax({
+				url: self.options.ajaxUrl,
+				type: "POST",
+				dataType: "json",
+				cache: false,
+				data: self.options.parentVarName + "=" + self.parentValue,
+				success: function(data){
+					var options = "";
+					if (data !== null)
+					{
+						data.each(function(item) {
+							options += '<option value="' + item['value'] + '"';
+							if (item['value'] === self.childValue)
+							{
+								options += ' selected="selected"';
+							}
+							options += ' >' + item['text'] + '</option>';
+						});
+					}
+
+					// Fill the child select
+					self.childField.empty().append(options);
+					self.childField.trigger('liszt:updated');
+				}
+			});
 		},
 		resetField: function (element) {
 			$(element).val('');

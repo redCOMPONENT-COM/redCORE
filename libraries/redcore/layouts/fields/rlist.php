@@ -13,6 +13,7 @@ $data = (object) $displayData;
 
 $attributes = array();
 
+$attributes['id']            = $data->id;
 $attributes['class']         = $data->element['class'] ? (string) $data->element['class'] : null;
 $attributes['size']          = $data->element['size'] ? (int) $data->element['size'] : null;
 $attributes['multiple']      = $data->multiple ? 'multiple' : null;
