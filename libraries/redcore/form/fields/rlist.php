@@ -57,6 +57,7 @@ class JFormFieldRlist extends JFormFieldList
 		return RLayoutHelper::render(
 			$layout,
 			array(
+				'id'       => $this->id,
 				'element'  => $this->element,
 				'field'    => $this,
 				'multiple' => $this->multiple,
