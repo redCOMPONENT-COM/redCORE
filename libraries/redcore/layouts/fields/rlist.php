@@ -13,6 +13,7 @@ $data = (object) $displayData;
 
 $attributes = array();
 
+$attributes['id']            = $data->id;
 $attributes['class']         = $data->element['class'] ? (string) $data->element['class'] : null;
 $attributes['size']          = $data->element['size'] ? (int) $data->element['size'] : null;
 $attributes['multiple']      = $data->multiple ? 'multiple' : null;
@@ -47,7 +48,9 @@ $selectName = $readOnly ? '' : $data->name;
 <select name="<?php echo $selectName; ?>" <?php echo $renderedAttributes; ?>>
 	<?php if ($data->options) : ?>
 		<?php foreach ($data->options as $option) :?>
-				<option value="<?php echo $option->value; ?>"><?php echo $option->text; ?></option>
+				<option value="<?php echo $option->value; ?>" <?php if ($option->value == $data->value): ?>selected="selected"<?php endif; ?>>
+					<?php echo $option->text; ?>
+				</option>
 		<?php endforeach; ?>
 	<?php endif; ?>
 
