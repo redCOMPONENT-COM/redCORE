@@ -48,7 +48,9 @@ $selectName = $readOnly ? '' : $data->name;
 <select name="<?php echo $selectName; ?>" <?php echo $renderedAttributes; ?>>
 	<?php if ($data->options) : ?>
 		<?php foreach ($data->options as $option) :?>
-				<option value="<?php echo $option->value; ?>"><?php echo $option->text; ?></option>
+				<option value="<?php echo $option->value; ?>" <?php if ($option->value == $data->value): ?>selected="selected"<?php endif; ?>>
+					<?php echo $option->text; ?>
+				</option>
 		<?php endforeach; ?>
 	<?php endif; ?>
 
