@@ -8,13 +8,15 @@
                   value="./build,./media,./vendor,./component/admin/views,./libraries/redcore/joomla,./libraries/redcore/layouts,./libraries/redcore/table,./libraries/inflector"
                 />
 
-        <exec executable="phpcs">
-            <arg value="--report=full"/>
+        <exec executable="phpcs" outputProperty="phpcs-output">
             <arg value="--extensions=php"/>
             <arg value="--standard=./build/phpcs/Joomla/ruleset.xml"/>
             <arg value="--ignore=${phpcs-ignore}"/>
             <arg path="."/>
         </exec>
+
+        <!-- Display the output -->
+        <echo msg="${phpcs-output}"/>
 
     </target>
 
