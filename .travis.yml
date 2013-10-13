@@ -10,5 +10,4 @@ before_script:
   - phpenv rehash
 
 script:
-  - phpcs --config-set show_progress 1
   - phing travis-phpcs
