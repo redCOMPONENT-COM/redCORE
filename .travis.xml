@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="redCORE" default="travis" basedir=".">
+    <target name="travis" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
+
+        <property name="phpcs-ignore"
+                  value="${basedir}/.travis,${basedir}/media,${basedir}/vendor,${basedir}/component/admin/views,${basedir}/libraries/redcore/joomla,${basedir}/libraries/redcore/layouts,${basedir}/libraries/redcore/table,${basedir}/libraries/inflector"
+                />
+
+        <exec executable="phpcs" passthru="true">
+            <arg value="--report=full"/>
+            <arg value="--extensions=php"/>
+            <arg value="--standard=${basedir}/.travis/phpcs/Joomla/ruleset.xml"/>
+            <arg value="--ignore=${phpcs-ignore}"/>
+            <arg path="${basedir}"/>
+        </exec>
+    </target>
+</project>
