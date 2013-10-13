@@ -1,6 +1,8 @@
 redCORE
 ======
 
+![Build status](https://api.travis-ci.com/redCOMPONENT-COM/redCORE.png?token=vpkyAMSd8vTHK9zwpML6)
+
 Rapid Application Development library for redCOMPONENT extensions
 
 The main aim of redCORE is to provide a mature and abstracted layer for development that will act as a base model for any future redCOMPONENT extension beeing developed.
