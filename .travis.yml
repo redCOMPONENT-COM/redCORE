@@ -2,12 +2,13 @@ language: php
 
 php:
   - 5.3
-  - 5.4
 
 before_script:
-  - pyrus install -f pear/PHP_CodeSniffer
+  - pear install PHP_CodeSniffer
+  - pear channel-discover pear.phing.info
+  - pear install phing/phing
   - phpenv rehash
-  - git clone http://github.com/joomla/coding-standards.git
 
 script:
-  - phpcs --standard=joomla/coding-standards libraries
+  - find . -name '*.php' -exec php -l {} \;
+  - phing -verbose -f .travis.xml
