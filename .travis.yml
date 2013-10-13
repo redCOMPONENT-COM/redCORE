@@ -5,8 +5,8 @@ php:
 
 before_script:
   - pyrus install -f pear/PHP_CodeSniffer
-  - git clone http://github.com/joomla/coding-standards.git
+  - git clone http://github.com/joomla/coding-standards.git `pear config-get php_dir`/PHP/CodeSniffer/Standards/Joomla
   - phpenv rehash
 
 script:
-  - phpcs --standard=coding-standards/ruleset.xml libraries/
+  - phpcs --standard=Joomla libraries/
