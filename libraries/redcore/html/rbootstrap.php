@@ -649,14 +649,14 @@ abstract class JHtmlRbootstrap
 
 			// Attach tabs to document
 			JFactory::getDocument()
-				->addScriptDeclaration(JLayoutHelper::render('libraries.cms.html.bootstrap.starttabsetscript', array('selector' => $selector)));
+				->addScriptDeclaration(RLayoutHelper::render('libraries.cms.html.bootstrap.starttabsetscript', array('selector' => $selector)));
 
 			// Set static array
 			static::$loaded[__METHOD__][$sig] = true;
 			static::$loaded[__METHOD__][$selector]['active'] = $opt['active'];
 		}
 
-		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.starttabset', array('selector' => $selector));
+		$html = RLayoutHelper::render('libraries.cms.html.bootstrap.starttabset', array('selector' => $selector));
 
 		return $html;
 	}
@@ -668,7 +668,7 @@ abstract class JHtmlRbootstrap
 	 */
 	public static function endTabSet()
 	{
-		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.endtabset');
+		$html = RLayoutHelper::render('libraries.cms.html.bootstrap.endtabset');
 
 		return $html;
 	}
@@ -687,10 +687,10 @@ abstract class JHtmlRbootstrap
 		static $tabScriptLayout = null;
 		static $tabLayout = null;
 
-		$tabScriptLayout = is_null($tabScriptLayout) ? new JLayoutFile('libraries.cms.html.bootstrap.addtabscript') : $tabScriptLayout;
-		$tabLayout = is_null($tabLayout) ? new JLayoutFile('libraries.cms.html.bootstrap.addtab') : $tabLayout;
+		$tabScriptLayout = is_null($tabScriptLayout) ? new RLayoutFile('libraries.cms.html.bootstrap.addtabscript') : $tabScriptLayout;
+		$tabLayout = is_null($tabLayout) ? new RLayoutFile('libraries.cms.html.bootstrap.addtab') : $tabLayout;
 
-		$active = (static::$loaded['JHtmlBootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
+		$active = (static::$loaded['JHtmlRbootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
 
 		// Inject tab into UL
 		JFactory::getDocument()->addScriptDeclaration(
@@ -716,7 +716,7 @@ abstract class JHtmlRbootstrap
 	 */
 	public static function endTab()
 	{
-		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.endtab');
+		$html = RLayoutHelper::render('libraries.cms.html.bootstrap.endtab');
 
 		return $html;
 	}
