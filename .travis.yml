@@ -1,12 +1,11 @@
 language: php
 
 php:
-  - 5.3.3
+  - 5.3
 
 before_script:
   - pyrus install -f pear/PHP_CodeSniffer
-  - git clone http://github.com/joomla/coding-standards.git `pear config-get php_dir`/PHP/CodeSniffer/Standards/Joomla
   - phpenv rehash
 
 script:
-  - phpcs --standard=Joomla libraries/
+  - ant travis-phpcs
