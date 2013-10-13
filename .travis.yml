@@ -11,4 +11,4 @@ before_script:
 
 script:
   - find . -name '*.php' -exec php -l {} \;
-  - phing -verbose -f .travis.xml
+  - phing -f .travis.xml
