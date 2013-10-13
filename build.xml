@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="redCORE" default="site" basedir=".">
+
+    <!-- Travis phpcs -->
+    <target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
+
+        <property name="phpcs-include" value="component libraries plugins" />
+        <property name="phpcs-exclude" value="component/admin/layouts libraries/joomla libraries/layouts" />
+
+        <exec executable="phpcs">
+            <arg value="--report=full" />
+            <arg value="--extensions=php" />
+            <arg value="--standard=${basedir}/build/phpcs/Joomla/ruleset.xml" />
+            <arg value="--ignore=${phpcs-exclude}" />
+            <arg path="${phpcs-include}" />
+        </exec>
+
+    </target>
+
     <!-- Do initialization stuff -->
-    <target name="site" >
-        <property file="build.properties"  override="true"/>
-        <property name="redcore.src" value="./" />
-        <property name="extension" value="${comp.name}" />
+    <target name="site">
+
+        <property file="build.properties" override="true"/>
+        <property name="redcore.src" value="./"/>
+        <property name="extension" value="${comp.name}"/>
+
         <if>
-            <equals arg1="${extension}" arg2="" />
+            <equals arg1="${extension}" arg2=""/>
             <then>
-                <fail message="Extension not specified, use -Dextension=EXTENSION" />
+                <fail message="Extension not specified, use -Dextension=EXTENSION"/>
             </then>
             <else>
-                <phingcall target="redCORE" />
+                <phingcall target="redCORE"/>
             </else>
         </if>
+
     </target>
 
     <!-- Build redCORE as git submodule -->
-    <target name="redCORE-submodule" >
-        <property name="extension" value="redcore" />
-        <property name="redcore.src" value="${src}redCORE" />
-        <phingcall target="redCORE" />
+    <target name="redCORE-submodule">
+
+        <property name="extension" value="redcore"/>
+        <property name="redcore.src" value="${src}redCORE"/>
+
+        <phingcall target="redCORE"/>
+
     </target>
 
     <target name="redCORE" description="Copies files to a existing joomla site">
@@ -29,17 +52,17 @@
         <!-- Libraries -->
         <copy todir="${www.dir}/libraries" overwrite="true">
             <fileset dir="${redcore.src}/libraries">
-                <include name="**" />
+                <include name="**"/>
             </fileset>
         </copy>
 
         <!-- For discover install we need to place the libraries manifests in the right folder -->
-        <echo message="Copying library manifiest..." />
+        <echo message="Copying library manifiest..."/>
         <copy file="${redcore.src}/libraries/${extension}/${extension}.xml"
-              tofile="${www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true" />
+              tofile="${www.dir}/administrator/manifests/libraries/${extension}.xml" overwrite="true"/>
 
         <!-- Copy Package Manifest -->
-        <echo message="Copying manifiest..." />
+        <echo message="Copying manifiest..."/>
         <copy file="${redcore.src}/${extension}.xml"
               tofile="${www.dir}/administrator/components/com_${extension}/${extension}.xml" overwrite="true">
             <!-- trick to replace extension folders in the manifest-->
@@ -58,29 +81,29 @@
         <!-- Language -->
         <copy todir="${www.dir}/language" overwrite="true">
             <fileset dir="${redcore.src}/libraries/redcore/language">
-                <include name="**" />
+                <include name="**"/>
             </fileset>
         </copy>
 
         <!-- Media -->
-        <echo message="Copying media folder " />
+        <echo message="Copying media folder "/>
         <copy todir="${www.dir}/media" overwrite="true">
             <fileset dir="${redcore.src}/media">
-                <include name="**" />
+                <include name="**"/>
             </fileset>
         </copy>
 
         <!-- Plugins -->
         <copy todir="${www.dir}/plugins" overwrite="true">
             <fileset dir="${redcore.src}/plugins">
-                <include name="**" />
+                <include name="**"/>
             </fileset>
         </copy>
 
         <!-- Plugins - Languages -->
         <copy todir="${www.dir}/administrator/language" overwrite="true">
             <fileset dir="${redcore.src}/plugins/system/redcore/language">
-                <include name="**" />
+                <include name="**"/>
             </fileset>
         </copy>
 
@@ -117,4 +140,5 @@
             </fileset>
         </copy>
     </target>
+
 </project>
