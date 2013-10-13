@@ -8,7 +8,10 @@
                   value="./build,./media,./vendor,./component/admin/views,./libraries/redcore/joomla,./libraries/redcore/layouts,./libraries/redcore/table,./libraries/inflector"
                 />
 
-        <exec executable="phpcs" outputProperty="phpcs-output">
+        <exec executable="phpcs" outputProperty="phpcs-output"
+              description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
+            <arg value="-v"/>
+            <arg value="--report=full"/>
             <arg value="--extensions=php"/>
             <arg value="--standard=./build/phpcs/Joomla/ruleset.xml"/>
             <arg value="--ignore=${phpcs-ignore}"/>
