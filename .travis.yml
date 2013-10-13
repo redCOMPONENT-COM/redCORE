@@ -8,4 +8,4 @@ before_script:
   - phpenv rehash
 
 script:
-  - ant travis-phpcs
+  - phing travis-phpcs
