@@ -8,9 +8,8 @@
                   value="./build,./media,./vendor,./component/admin/views,./libraries/redcore/joomla,./libraries/redcore/layouts,./libraries/redcore/table,./libraries/inflector"
                 />
 
-        <exec executable="phpcs" outputProperty="phpcs-output"
-              description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
-            <arg value="-v"/>
+        <exec executable="phpcs" outputProperty="phpcs-output">
+            <arg value="-s"/>
             <arg value="--report=full"/>
             <arg value="--extensions=php"/>
             <arg value="--standard=./build/phpcs/Joomla/ruleset.xml"/>
