@@ -4,13 +4,13 @@
     <!-- Travis phpcs -->
     <target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
 
-        <property name="phpcs-include" value="component libraries plugins" />
+        <property name="phpcs-include" value="./component ./libraries ./plugins" />
         <property name="phpcs-exclude" value="component/admin/layouts libraries/joomla libraries/layouts" />
 
         <exec executable="phpcs">
             <arg value="--report=full" />
             <arg value="--extensions=php" />
-            <arg value="--standard=${basedir}/build/phpcs/Joomla/ruleset.xml" />
+            <arg value="--standard=./build/phpcs/Joomla/ruleset.xml" />
             <arg value="--ignore=${phpcs-exclude}" />
             <arg path="${phpcs-include}" />
         </exec>
