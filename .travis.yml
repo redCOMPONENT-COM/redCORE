@@ -10,4 +10,5 @@ before_script:
   - phpenv rehash
 
 script:
-  - phing travis-phpcs
+  - find . -name '*.php' -exec php -l {} \;
+  - phing -verbose travis
