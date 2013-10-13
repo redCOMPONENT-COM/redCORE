@@ -33,3 +33,5 @@ build.properties
 !.gitignore
 !index.html
 !index.php
+
+/vendor/
