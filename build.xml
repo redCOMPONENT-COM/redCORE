@@ -4,21 +4,15 @@
     <!-- Travis phpcs -->
     <target name="travis-phpcs" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
 
-        <property name="phpcs-exclude"
-                  value="
-                  ./build/,
-                  ./media/,
-                  ./vendor/,
-                  ./component/admin/views,
-                  ./libraries/joomla,
-                  ./libraries/layouts"
+        <property name="phpcs-ignore"
+                  value="./build,./media,./vendor,./component/admin/views,./libraries/redcore/joomla,./libraries/redcore/layouts,./libraries/redcore/table,./libraries/inflector"
                 />
 
         <exec executable="phpcs">
             <arg value="--report=full"/>
             <arg value="--extensions=php"/>
             <arg value="--standard=./build/phpcs/Joomla/ruleset.xml"/>
-            <arg value="--ignore=${phpcs-exclude}"/>
+            <arg value="--ignore=${phpcs-ignore}"/>
             <arg path="."/>
         </exec>
 
