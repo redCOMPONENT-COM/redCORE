@@ -4,7 +4,7 @@ php:
   - 5.3
 
 before_script:
-  - pyrus install -f pear/PHP_CodeSniffer
+  - pear install PHP_CodeSniffer
   - pear channel-discover pear.phing.info
   - pear install phing/phing
   - phpenv rehash
