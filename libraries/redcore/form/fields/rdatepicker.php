@@ -100,9 +100,11 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 			'constrainInput'         => array('type' => 'boolean'),
 			// 'currentText'         => array('type' => 'string'),
 			'dateFormat'             => array('type' => 'string', 'default' => 'dd-mm-yy'),
-			// 'dayNames'            => array('type' => 'string'),
-			// 'dayNamesMin'         => array('type' => 'string'),
-			// 'dayNamesShort'       => array('type' => 'string'),
+			/**
+			 * 'dayNames'            => array('type' => 'string'),
+			 * 'dayNamesMin'         => array('type' => 'string'),
+			 * 'dayNamesShort'       => array('type' => 'string'),
+			 */
 			'defaultDate'            => array('type' => 'string'),
 			'duration'               => array('type' => 'string'),
 			// 'firstDay'            => array('type' => 'string'),

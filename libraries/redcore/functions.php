@@ -23,12 +23,13 @@ if (!function_exists('get_called_class'))
 	function get_called_class()
 	{
 		$backtrace = debug_backtrace();
-		$backtrace = $backtrace[sizeof($backtrace) - 1];
+		$backtrace = $backtrace[count($backtrace) - 1];
 
 		if ($backtrace["function"] = "eval" || $backtrace["type"] == "::")
 		{
 			// Static method call, get the line from the file
 			$file = file_get_contents($backtrace["file"]);
+
 			$file = split("\n", $file);
 
 			for ($line = $backtrace["line"] - 1; $line > 0; $line--)

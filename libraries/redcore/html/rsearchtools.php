@@ -74,7 +74,6 @@ abstract class JHtmlRsearchtools
 	 */
 	public static function grid($options = array())
 	{
-		die('enne');
 		// Default form name
 		if (!isset($options['formName']))
 		{
@@ -127,7 +126,8 @@ abstract class JHtmlRsearchtools
 	 *
 	 * @return  string
 	 */
-	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc', $tip = '', $icon = null, $formName = 'adminForm')
+	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc',
+	                            $tip = '', $icon = null, $formName = 'adminForm')
 	{
 		// Include main searchtools framework
 		static::main();
