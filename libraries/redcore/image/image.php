@@ -72,6 +72,7 @@ class RImage extends JImage
 				{
 					throw new InvalidArgumentException('Invalid thumb size received: ' . $thumbSize);
 				}
+
 				$thumbWidth 	= $size[0];
 				$thumbHeight	= $size[1];
 
@@ -165,6 +166,7 @@ class RImage extends JImage
 				}
 			}
 		}
+
 		return $thumbsCreated;
 	}
 
@@ -202,6 +204,7 @@ class RImage extends JImage
 		{
 			$left = round(($this->getWidth() - $width) / 2);
 		}
+
 		if (is_null($top))
 		{
 			$top = round(($this->getHeight() - $height) / 2);
@@ -247,6 +250,7 @@ class RImage extends JImage
 
 			// @codeCoverageIgnoreEnd
 		}
+
 		// Swap out the current handle for the new image handle.
 		else
 		{
@@ -343,6 +347,7 @@ class RImage extends JImage
 
 			// @codeCoverageIgnoreEnd
 		}
+
 		// Swap out the current handle for the new image handle.
 		else
 		{
@@ -431,6 +436,7 @@ class RImage extends JImage
 
 			// @codeCoverageIgnoreEnd
 		}
+
 		// Swap out the current handle for the new image handle.
 		else
 		{
@@ -550,6 +556,7 @@ class RImage extends JImage
 		{
 			$height = (int) round($this->getHeight() * (float) str_replace('%', '', $height) / 100);
 		}
+
 		// Else do some rounding so we come out with a sane integer value.
 		else
 		{
@@ -593,6 +600,7 @@ class RImage extends JImage
 		{
 			$width = (int) round($this->getWidth() * (float) str_replace('%', '', $width) / 100);
 		}
+
 		// Else do some rounding so we come out with a sane integer value.
 		else
 		{

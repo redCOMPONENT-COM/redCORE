@@ -110,11 +110,13 @@ class RedcoreModelConfig extends RModelAdmin
 				$asset->title = $data['option'];
 				$asset->setLocation($root->id, 'last-child');
 			}
+
 			$asset->rules = (string) $rules;
 
 			if (!$asset->check() || !$asset->store())
 			{
 				$this->setError($asset->getError());
+
 				return false;
 			}
 
@@ -127,6 +129,7 @@ class RedcoreModelConfig extends RModelAdmin
 		if (!$table->load($data['id']))
 		{
 			$this->setError($table->getError());
+
 			return false;
 		}
 
@@ -136,6 +139,7 @@ class RedcoreModelConfig extends RModelAdmin
 		if (!$table->bind($data))
 		{
 			$this->setError($table->getError());
+
 			return false;
 		}
 
@@ -143,6 +147,7 @@ class RedcoreModelConfig extends RModelAdmin
 		if (!$table->check())
 		{
 			$this->setError($table->getError());
+
 			return false;
 		}
 
@@ -152,6 +157,7 @@ class RedcoreModelConfig extends RModelAdmin
 		if (in_array(false, $result, true))
 		{
 			$this->setError($table->getError());
+
 			return false;
 		}
 
@@ -159,6 +165,7 @@ class RedcoreModelConfig extends RModelAdmin
 		if (!$table->store())
 		{
 			$this->setError($table->getError());
+
 			return false;
 		}
 

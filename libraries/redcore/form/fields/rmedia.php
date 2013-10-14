@@ -257,7 +257,8 @@ class JFormFieldRmedia extends JFormField
 
 			$html[] = '<a class="btn modalAjax" data-toggle="modal" title="' . JText::_('JLIB_FORM_BUTTON_SELECT') . '" href="#' . $modalId . '"'
 				. '>';
-			$html[] = JText::_('JLIB_FORM_BUTTON_SELECT') . '</a><a class="btn hasTooltip" title="' . JText::_('JLIB_FORM_BUTTON_CLEAR') . '" href="#" onclick="';
+			$html[] = JText::_('JLIB_FORM_BUTTON_SELECT') . '</a><a class="btn hasTooltip" title="'
+				. JText::_('JLIB_FORM_BUTTON_CLEAR') . '" href="#" onclick="';
 			$html[] = 'jInsertFieldValue(\'\', \'' . $this->id . '\');';
 			$html[] = 'return false;';
 			$html[] = '">';
