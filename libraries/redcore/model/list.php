@@ -285,6 +285,14 @@ abstract class RModelList extends JModelList
 			else
 			// Keep B/C
 			{
+				$value = $app->getUserStateFromRequest($this->context . '.limit', $this->paginationPrefix . 'limit', $app->getCfg('list_limit'), 'uint');
+				$limit = $value;
+				$this->setState('list.limit', $limit);
+
+				$value = $app->getUserStateFromRequest($this->context . '.limitstart', $this->paginationPrefix . 'limitstart', 0);
+				$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+				$this->setState('list.start', $limitstart);
+
 				// Check if the ordering field is in the white list, otherwise use the incoming value.
 				$value = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
 
