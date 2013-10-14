@@ -339,7 +339,7 @@ class RClientOAuth2
 	 * @since 	1.0
 	 * @throws	Exception
 	 */
-	function processRequest($response)
+	public function processRequest($response)
 	{
 		// Check if the request is correct
 		if ($response->code >= 200 && $response->code < 400)
