@@ -74,7 +74,8 @@ class JFormFieldRuser extends JFormFieldRtext
 		$script[] = '		if (old_id != id) {';
 		$script[] = '			document.getElementById("' . $this->id . '_id").value = id;';
 		$script[] = '			document.getElementById("' . $this->id . '").value = title;';
-		$script[] = '			document.getElementById("' . $this->id . '").className = document.getElementById("' . $this->id . '").className.replace(" invalid" , "");';
+		$script[] = '			document.getElementById("' . $this->id . '").className = document.getElementById("'
+			. $this->id . '").className.replace(" invalid" , "");';
 		$script[] = '			' . (string) $this->element['onchange'];
 		$script[] = '		}';
 		$script[] = '		jQuery("#' . $modalId . '").modal("hide")';

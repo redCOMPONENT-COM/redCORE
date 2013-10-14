@@ -196,7 +196,6 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			{
 				$this->setMessage(JText::_('JLIB_DATABASE_ERROR_ANCESTOR_NODES_LOWER_STATE'), 'error');
 			}
-
 		}
 
 		$extension = $this->input->get('extension');
