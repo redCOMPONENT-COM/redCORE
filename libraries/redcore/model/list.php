@@ -283,9 +283,29 @@ abstract class RModelList extends JModelList
 				}
 			}
 			else
+			// Keep B/C
 			{
-				$this->setState('list.ordering', $ordering);
-				$this->setState('list.direction', $direction);
+				// Check if the ordering field is in the white list, otherwise use the incoming value.
+				$value = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
+
+				if (!in_array($value, $this->filter_fields))
+				{
+					$value = $ordering;
+					$app->setUserState($this->context . '.ordercol', $value);
+				}
+
+				$this->setState('list.ordering', $value);
+
+				// Check if the ordering direction is valid, otherwise use the incoming value.
+				$value = $app->getUserStateFromRequest($this->context . '.orderdirn', 'filter_order_Dir', $direction);
+
+				if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
+				{
+					$value = $direction;
+					$app->setUserState($this->context . '.orderdirn', $value);
+				}
+
+				$this->setState('list.direction', $value);
 			}
 		}
 		else
