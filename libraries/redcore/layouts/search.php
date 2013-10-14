@@ -39,7 +39,7 @@ if (isset($data['filter_name']))
 
 <div id="filter-bar" class="btn-toolbar">
 	<div class="filter-search btn-group pull-left">
-		<input type="text" name="filter_<?php echo $filterName ?>" id="filter_<?php echo $filterName ?>"
+		<input type="text" name="filter_<?php echo $filterName ?>" id="filter_<?php echo $filterName ?>" class="js-enter-submits"
 		       placeholder="<?php echo JText::_('JSEARCH'); ?>"
 		       value="<?php echo $state->get('filter.' . $filterName); ?>"
 		       title="<?php echo JText::_('JSEARCH'); ?>"/>
