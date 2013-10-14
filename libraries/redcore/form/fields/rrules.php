@@ -266,7 +266,6 @@ class JFormFieldRrules extends JFormField
 
 			$html[] = '</tbody>';
 			$html[] = '</table></div>';
-
 		}
 
 		$html[] = '</div></div>';
