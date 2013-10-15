@@ -176,4 +176,14 @@ class RBrowserHistory
 
 		return $old;
 	}
+
+	/**
+	 * Get the session variable.
+	 *
+	 * @return  string  The session variable.
+	 */
+	public function getSessionVariable()
+	{
+		return $this->sessionVariable;
+	}
 }
