@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  Browser
  * @since       1.0
  */
-final class RBrowser
+class RBrowser
 {
 	/**
 	 * The history.
