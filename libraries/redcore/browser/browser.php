@@ -37,7 +37,7 @@ class RBrowser
 	 *
 	 * @param   string  $history  The history name (also used for sessions).
 	 */
-	private function __construct($history)
+	protected function __construct($history)
 	{
 		$this->history = new RBrowserHistory($history);
 	}
