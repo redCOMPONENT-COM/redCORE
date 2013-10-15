@@ -161,4 +161,14 @@ class RBrowser
 	{
 		$this->history->clear();
 	}
+
+	/**
+	 * Get the history name.
+	 *
+	 * @return  string  The history name
+	 */
+	public function getHistoryName()
+	{
+		return $this->history->getSessionVariable();
+	}
 }
