@@ -62,18 +62,19 @@ class RBrowser
 	/**
 	 * Browse the given uri.
 	 *
-	 * @param   string  $uri  The uri
+	 * @param   string   $uri            The uri
+	 * @param   boolean  $duplicateLast  True to duplicate the last element if it's the same.
 	 *
 	 * @return  void
 	 */
-	public function browse($uri = null)
+	public function browse($uri = null, $duplicateLast = false)
 	{
 		if (null === $uri)
 		{
 			$uri = str_replace(Juri::base(), '', Juri::getInstance()->toString());
 		}
 
-		$this->history->enqueue($uri);
+		$this->history->enqueue($uri, $duplicateLast);
 	}
 
 	/**
