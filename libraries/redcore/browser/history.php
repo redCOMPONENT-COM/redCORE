@@ -37,7 +37,7 @@ class RBrowserHistory
 	 *
 	 * @param   string  $sessionVariable  The session variable name.
 	 */
-	public function __construct($sessionVariable = 'history')
+	public function __construct($sessionVariable)
 	{
 		$this->sessionVariable = $sessionVariable;
 		$this->session = JFactory::getSession();
@@ -51,7 +51,7 @@ class RBrowserHistory
 	 *
 	 * @return  RBrowserHistory
 	 */
-	public function enqueue($data, $duplicateLast = false)
+	public function enqueue($data, $duplicateLast)
 	{
 		$queue = $this->getQueue();
 		$last = end($queue);
