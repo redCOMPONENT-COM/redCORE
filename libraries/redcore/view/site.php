@@ -42,16 +42,6 @@ abstract class RViewSite extends RView
 	 */
 	public function display($tpl = null)
 	{
-		/*
-		$result = $this->loadTemplate($tpl);
-
-		if ($result instanceof Exception)
-		{
-			return $result;
-		}
-		echo $result;
-		return;
-		*/
 		$render = RLayoutHelper::render(
 			$this->componentLayout,
 			array(
@@ -68,7 +58,7 @@ abstract class RViewSite extends RView
 
 		echo $render;
 
-		return;
+		return true;
 	}
 
 	/**
