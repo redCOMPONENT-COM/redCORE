@@ -11,7 +11,8 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-$input = JFactory::getApplication()->input;
+$app   = JFactory::getApplication();
+$input = $app->input;
 
 /**
  * Handle raw format
@@ -23,7 +24,7 @@ if ('raw' === $format)
 	/** @var RView $view */
 	$view = $data['view'];
 
-	if (!$view instanceof RView)
+	if (!$view instanceof RViewBase)
 	{
 		throw new InvalidArgumentException(
 			sprintf(
@@ -46,9 +47,17 @@ $templateComponent = 'component' === $input->get('tmpl');
 $input->set('tmpl', 'component');
 $input->set('redcore', true);
 
-JHtml::_('rbootstrap.responsive');
+// Load bootstrap + fontawesome
+JHtml::_('rbootstrap.fontawesome');
+
 RHelperAsset::load('component.js', 'redcore');
 RHelperAsset::load('component.css', 'redcore');
+
+// Load a custom CSS option for this component if exists
+if ($comOption = $input->get('option', null))
+{
+	RHelperAsset::load($comOption . '.css', $comOption);
+}
 
 // For Joomla! 2.5 we will add bootstrap alert messages
 if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
@@ -127,7 +136,7 @@ if (!isset($data['view']))
 /** @var RView $view */
 $view = $data['view'];
 
-if (!$view instanceof RView)
+if (!$view instanceof RViewBase)
 {
 	throw new InvalidArgumentException(
 		sprintf(
@@ -228,4 +237,5 @@ else : ?>
 			Copyright 2013 redcomponent.com. All rights reserved.
 		</footer>
 	</div>
+</div>
 <?php endif; ?>

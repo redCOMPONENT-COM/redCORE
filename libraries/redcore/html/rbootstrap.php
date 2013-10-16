@@ -34,14 +34,20 @@ abstract class JHtmlRbootstrap
 	/**
 	 * Load the entire bootstrap framework
 	 *
-	 * @param   mixed  $debug  Is debugging mode on? [optional]
+	 * @param   mixed    $debug    Is debugging mode on? [optional]
+	 * @param   boolean  $loadCss  Load bootstrap CSS ?
 	 *
 	 * @return  void
 	 */
-	public static function framework($debug = null)
+	public static function framework($debug = null, $loadCss = false)
 	{
 		JHtml::_('rjquery.framework');
-		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+
+		if ($loadCss)
+		{
+			RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+		}
+
 		RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
 	}
 
@@ -53,6 +59,8 @@ abstract class JHtmlRbootstrap
 	public static function responsive()
 	{
 		self::framework();
+
+		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
 		RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
 	}
 
