@@ -10,9 +10,21 @@
  */
 
 .redcore {
+
 	// Core variables and mixins
 	@import "./bootstrap/variables.less"; // Modify this for custom colors, font-sizes, etc
 	@import "./bootstrap/mixins.less";
+
+	// redCORE - customisation & mixins
+	@import "variables.less";
+	@import "mixins.less";
+
+	margin: 0;
+	font-family: @baseFontFamily;
+	font-size: @baseFontSize;
+	line-height: @baseLineHeight;
+	color: @textColor;
+	background-color: @bodyBackground;
 
 	// CSS Reset
 	@import "./bootstrap/reset.less";
