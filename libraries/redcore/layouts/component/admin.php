@@ -48,7 +48,7 @@ $input->set('tmpl', 'component');
 $input->set('redcore', true);
 
 // Load bootstrap + fontawesome
-JHtml::_('rbootstrap.fontawesome');
+JHtml::_('rbootstrap.framework');
 
 RHelperAsset::load('component.js', 'redcore');
 RHelperAsset::load('component.css', 'redcore');
