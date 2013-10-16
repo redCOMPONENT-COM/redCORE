@@ -55,15 +55,7 @@ abstract class RViewBase extends JViewLegacy
 				'view' => $this,
 				'tpl' => $tpl,
 				'component_title' => $this->componentTitle,
-				'sidebar_display' => $this->displaySidebar,
-				'sidebar_layout' => $this->sidebarLayout,
-				'sidebar_data' => $this->sidebarData,
-				'topbar_display' => $this->displayTopBar,
 				'topbar_layout' => $this->topBarLayout,
-				'topbar_inner_layout_display' => $this->displayTopBarInnerLayout,
-				'topbar_inner_layout' => $this->topBarInnerLayout,
-				'topbar_inner_layout_data' => $this->topBarInnerLayoutData,
-				'display_joomla_menu' => $this->displayJoomlaMenu,
 			)
 		);
 
