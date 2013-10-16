@@ -9,6 +9,12 @@
  * http://getbootstrap.com/2.3.2/
  */
 .redcore {
+  margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
+  background-color: #ffffff;
   /* Allow for input prepend/append in search forms */
 
   /* White icons with optional class, or on hover/focus/active states of certain elements */
@@ -6770,6 +6776,7 @@
 .redcore .navbar .navbar-inner {
   background: none;
 }
+.redcore .navbar a.brand,
 .redcore .navbar a {
   color: #FFFFFF;
 }
@@ -6779,7 +6786,8 @@
   line-height: 40px;
   font-size: 85%;
 }
-.redcore .navbar a.brand {
+.redcore .navbar a.brand,
+.redcore .navbar .brand {
   margin-left: 0;
   padding: 10px;
   font-weight: 200;
