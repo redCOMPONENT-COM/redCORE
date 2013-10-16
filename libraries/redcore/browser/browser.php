@@ -153,6 +153,16 @@ class RBrowser
 	}
 
 	/**
+	 * Get the history.
+	 *
+	 * @return  array  The history
+	 */
+	public function getHistory()
+	{
+		return $this->history->getQueue();
+	}
+
+	/**
 	 * Clear the browser history.
 	 *
 	 * @return  void
