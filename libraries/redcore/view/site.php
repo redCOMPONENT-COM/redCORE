@@ -16,7 +16,7 @@ defined('JPATH_REDCORE') or die;
  * @subpackage  View
  * @since       1.0
  */
-abstract class RViewSite extends RView
+abstract class RViewSite extends RViewBase
 {
 	/**
 	 * The component title to display in the topbar layout (if using it).
