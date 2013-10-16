@@ -32,6 +32,7 @@
 		<folder>pagination</folder>
 		<folder>plugin</folder>
 		<folder>table</folder>
+        <folder>tcpdf</folder>
 		<folder>text</folder>
 		<folder>toolbar</folder>
 		<folder>view</folder>
