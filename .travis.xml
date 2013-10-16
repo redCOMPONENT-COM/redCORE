@@ -6,7 +6,7 @@
     <target name="travis" description="Generate codestyle report using PHP_CodeSniffer for output on Travis-CI">
 
         <property name="phpcs-ignore"
-                  value="${basedir}/.travis,${basedir}/media,${basedir}/vendor,${basedir}/component/admin/views,${basedir}/libraries/redcore/joomla,${basedir}/libraries/redcore/layouts,${basedir}/libraries/redcore/table,${basedir}/libraries/redcore/inflector/inflector.php,${basedir}/libraries/redcore/controller/admin.php,${basedir}/libraries/redcore/form/form.php,${basedir}/libraries/redcore/functions.php,${basedir}/libraries/redcore/model/admin.php"
+                  value="${basedir}/.travis,${basedir}/media,${basedir}/vendor,${basedir}/component/admin/views,${basedir}/libraries/redcore/joomla,${basedir}/libraries/redcore/layouts,${basedir}/libraries/redcore/table,${basedir}/libraries/redcore/inflector/inflector.php,${basedir}/libraries/redcore/controller/admin.php,${basedir}/libraries/redcore/form/form.php,${basedir}/libraries/redcore/functions.php,${basedir}/libraries/redcore/model/admin.php,${basedir}/libraries/redcore/tcpdf/*"
                 />
 
         <exec executable="phpcs" passthru="true">
