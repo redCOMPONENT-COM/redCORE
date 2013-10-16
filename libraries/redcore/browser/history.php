@@ -143,6 +143,8 @@ class RBrowserHistory
 
 		if (is_array($queue))
 		{
+			end($queue);
+
 			return $queue;
 		}
 
