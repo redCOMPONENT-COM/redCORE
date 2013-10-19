@@ -39,6 +39,7 @@ JFormHelper::addRulePath(JPATH_REDCORE . '/form/rules');
 
 // HTML helpers
 JHtml::addIncludePath(JPATH_REDCORE . '/html');
+RHtml::addIncludePath(JPATH_REDCORE . '/html');
 
 // Load library language
 $lang = JFactory::getLanguage();

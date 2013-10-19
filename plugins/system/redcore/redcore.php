@@ -25,9 +25,7 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
-		$isAdmin = JFactory::getApplication()->isAdmin();
-
-		if (!$isAdmin || ! $this->isRedcoreComponent())
+		if (! $this->isRedcoreComponent())
 		{
 			return;
 		}
@@ -95,21 +93,6 @@ class PlgSystemRedcore extends JPlugin
 		{
 			return;
 		}
-
-		$doc = JFactory::getDocument();
-
-		if (!empty($doc->_styleSheets))
-		{
-			foreach ($doc->_styleSheets as $stylesheet => $data)
-			{
-				// If component.css is included put it at the bottom of the list
-				if (substr_count($stylesheet, 'component.css'))
-				{
-					unset($doc->_styleSheets[$stylesheet]);
-					$doc->_styleSheets[$stylesheet] = $data;
-				}
-			}
-		}
 	}
 
 	/**
@@ -128,9 +111,6 @@ class PlgSystemRedcore extends JPlugin
 
 		$doc = JFactory::getDocument();
 
-		// Base assets to load always with redCORE
-		JHtml::_('rbootstrap.fontawesome');
-
 		if ($doc->_scripts)
 		{
 			// Remove Mootools
@@ -144,9 +124,9 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools.js']);
 				unset($doc->_scripts[JURI::root(true) . '/plugins/system/mtupgrade/mootools.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompresed.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompresed.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompresed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
 			}
 
 			// Remove jQuery
@@ -200,12 +180,6 @@ class PlgSystemRedcore extends JPlugin
 	{
 		$app = JFactory::getApplication();
 
-		// If this is a frontend component, it's not redcore yet
-		if ($app->isSite())
-		{
-			return false;
-		}
-
 		// If the application is admin and the user logged out (this is not a redCORE component)
 		if ($app->isAdmin() && JFactory::getUser()->guest)
 		{
@@ -227,18 +201,16 @@ class PlgSystemRedcore extends JPlugin
 		}
 
 		$componentName = substr($option, 4);
-		$maniFestFile = JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml';
+		$manifestFile = JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml';
 
-		if (!file_exists($maniFestFile))
+		if (file_exists($manifestFile))
 		{
-			return false;
-		}
+			$manifest = new SimpleXMLElement(file_get_contents($manifestFile));
 
-		$manifest = new SimpleXMLElement(file_get_contents($maniFestFile));
-
-		if ($manifest->xpath('//extension/redcore'))
-		{
-			return true;
+			if ($manifest->xpath('//extension/redcore'))
+			{
+				return true;
+			}
 		}
 
 		return false;

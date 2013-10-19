@@ -348,4 +348,24 @@ final class RToolbarBuilder
 	{
 		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass);
 	}
+
+	/**
+	 * Create a csv button to redirecto to a view.
+	 *
+	 * @param   mixed  $link  The link to the view.
+	 *                        If null, it will append &format=csv to the current view.
+	 *
+	 * @return  RToolbarButtonLink  The button
+	 */
+	public static function createCsvButton($link = null)
+	{
+		if (null === $link)
+		{
+			$uri = JUri::getInstance();
+			$uri->setVar('format', 'csv');
+			$link = $uri->toString();
+		}
+
+		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table', 'btn-info');
+	}
 }

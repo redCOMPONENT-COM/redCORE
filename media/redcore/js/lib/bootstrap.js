@@ -17,6 +17,11 @@
  * limitations under the License.
  * ========================================================== */
 
+ /**
+  * Custom version for Joomla!
+  * Search Joomla tweaks: JUI
+  * Search redCORE tweaks: redCORE
+  */
 
 !function ($) {
 
@@ -542,7 +547,13 @@
       if (this.transitioning || !this.$element.hasClass('in')) return
       dimension = this.dimension()
       this.reset(this.$element[dimension]())
+	  /* >>> JUI >>> */
+	  /* ORIGINAL:
       this.transition('removeClass', $.Event('hide'), 'hidden')
+      */
+      this.transition('removeClass', $.Event('hideme'), 'hidden')
+      /* <<< JUI <<< */
+
       this.$element[dimension](0)
     }
 
@@ -631,7 +642,8 @@
     $(target).collapse(option)
   })
 
-}(window.jQuery);/* ============================================================
+}(window.jQuery);
+/* ============================================================
  * bootstrap-dropdown.js v2.3.2
  * http://twitter.github.com/bootstrap/javascript.html#dropdowns
  * ============================================================
@@ -662,7 +674,13 @@
   var toggle = '[data-toggle=dropdown]'
     , Dropdown = function (element) {
         var $el = $(element).on('click.dropdown.data-api', this.toggle)
+        /* >>> JUI >>> */
+          .on('mouseover.dropdown.data-api', this.toggle)
+        /* <<< JUI <<< */
         $('html').on('click.dropdown.data-api', function () {
+          /* >>> JUI >>> */
+          $el.parent().parent().removeClass('nav-hover')
+          /* <<< JUI <<< */
           $el.parent().removeClass('open')
         })
       }
@@ -672,25 +690,50 @@
     constructor: Dropdown
 
   , toggle: function (e) {
+      /* >>> JUI >>> */
+      /* ORIGINAL
       var $this = $(this)
         , $parent
         , isActive
+      */
+      var $this = $(this)
+        , $parent
+        , isActive
+        , url
+        , isHover
+      /* <<< JUI <<< */
 
       if ($this.is('.disabled, :disabled')) return
 
       $parent = getParent($this)
 
       isActive = $parent.hasClass('open')
+      /* >>> JUI >>> */
+      isHover = $parent.parent().hasClass('nav-hover')
+      if(!isHover && e.type == 'mouseover') return
+      /* <<< JUI <<< */
+
+      url = $this.attr('href')
+      if (e.type == 'click' && (url) && (url !== '#')) {
+         window.location = url
+         return
+      }
 
       clearMenus()
 
-      if (!isActive) {
+      /* >>> JUI >>> */
+      if ((!isActive && e.type != 'mouseover') || (isHover && e.type == 'mouseover')) {
         if ('ontouchstart' in document.documentElement) {
           // if mobile we we use a backdrop because click events don't delegate
           $('<div class="dropdown-backdrop"/>').insertBefore($(this)).on('click', clearMenus)
+          $this.on('hover', function () {
+            $('.dropdown-backdrop').remove()
+          });
         }
+        $parent.parent().toggleClass('nav-hover');
         $parent.toggleClass('open')
       }
+      /* <<< JUI <<< */
 
       $this.focus()
 
@@ -741,6 +784,9 @@
   }
 
   function clearMenus() {
+    /* >>> JUI >>> */
+    $(toggle).parent().parent().removeClass('nav-hover')
+    /* <<< JUI <<< */
     $('.dropdown-backdrop').remove()
     $(toggle).each(function () {
       getParent($(this)).removeClass('open')
@@ -798,7 +844,9 @@
     .on('click.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
     .on('click.dropdown.data-api'  , toggle, Dropdown.prototype.toggle)
     .on('keydown.dropdown.data-api', toggle + ', [role=menu]' , Dropdown.prototype.keydown)
-
+    /* >>> JUI >>> */
+    .on('mouseover.dropdown.data-api', toggle, Dropdown.prototype.toggle)
+    /* <<< JUI <<< */
 }(window.jQuery);
 /* =========================================================
  * bootstrap-modal.js v2.3.2
@@ -886,7 +934,14 @@
 
         var that = this
 
-        e = $.Event('hide')
+        /*
+         * <redCORE> - Avoid conflicts with mootools hide event
+         *
+         * Original:
+         * e = $.Event('hide')
+         */
+        e = $.Event('hideme')
+        // </redCORE>
 
         this.$element.trigger(e)
 
@@ -1270,9 +1325,16 @@
     }
 
   , hide: function () {
+	  /* >>> JUI >>> */
+	  /* ORIGINAL:
       var that = this
         , $tip = this.tip()
         , e = $.Event('hide')
+      */
+      var that = this
+        , $tip = this.tip()
+        , e = $.Event('hideme')
+      /* <<< JUI <<< */
 
       this.$element.trigger(e)
       if (e.isDefaultPrevented()) return
@@ -1394,7 +1456,12 @@
   , trigger: 'hover focus'
   , title: ''
   , delay: 0
+  /* >>> JUI >>> */
+  /* ORIGINAL:
   , html: false
+  */
+  , html: true
+  /* <<< JUI <<< */
   , container: false
   }
 
