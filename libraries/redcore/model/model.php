@@ -43,13 +43,13 @@ abstract class RModel extends JModelLegacy
 		// Admin
 		if ($client === 1)
 		{
-			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '/models');
+			self::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/models');
 		}
 
 		// Site
 		elseif ($client === 0)
 		{
-			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/' . $componentName . '/models');
+			self::addIncludePath(JPATH_SITE . '/components/' . $option . '/models');
 		}
 
 		else
