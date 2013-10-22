@@ -159,6 +159,7 @@ class PlgSystemRedcore extends JPlugin
 			// Disable core bootstrap
 			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.min.css']);
 			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.css']);
+			unset($doc->_styleSheets['templates/system/css/system.css']);
 
 			// Disable other CSS
 			foreach ($doc->_styleSheets as $style => $value)
