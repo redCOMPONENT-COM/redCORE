@@ -46,7 +46,7 @@ $input->set('redcore', true);
 JHtml::_('rbootstrap.framework');
 
 RHelperAsset::load('component.js', 'redcore');
-RHelperAsset::load('component.css', 'redcore');
+RHelperAsset::load('component.min.css', 'redcore');
 
 // Load a custom CSS option for this component if exists
 if ($comOption = $input->get('option', null))
