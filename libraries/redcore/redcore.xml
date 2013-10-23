@@ -12,10 +12,12 @@
     <description>redCORE Libraries</description>
 
     <files>
+        <folder>browser</folder>
         <folder>client</folder>
         <folder>component</folder>
         <folder>controller</folder>
         <folder>dom</folder>
+        <folder>entity</folder>
         <folder>factory</folder>
         <folder>form</folder>
         <folder>helper</folder>
