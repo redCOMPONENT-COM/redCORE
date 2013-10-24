@@ -44,10 +44,9 @@ abstract class JHtmlRholder
 	{
 		self::holder();
 
-		$path = JPATH_ROOT . '/media/redcore/js/lib/holder.js';
-		$src = $path . 'holder.js/' . $src;
+		$path = JPATH_ROOT . '/media/redcore/js/lib/holder.js/' . $src;
 
-		return '<img src="' . $src . '" alt="' . $alt . '" '
+		return '<img data-src="' . $path . '" alt="' . $alt . '" '
 		. trim((is_array($attribs) ? JArrayHelper::toString($attribs) : $attribs) . ' /')
 		. '>';
 	}
