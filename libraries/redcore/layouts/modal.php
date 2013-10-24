@@ -34,7 +34,6 @@ if ($link = $modal->params->get('link', null))
 		(function($) {
 			$(document).ready(function() {
 				$('#" . $cssId . "').on('show', function () {
-					console.log($('#" . $cssId . " .modal-body'));
 					$('#" . $cssId . " .modal-body').html('<iframe class=\"iframe\" src=\""
 					. $link . "\" height=\"" . $modal->params->get('height', '500px') . "\" width=\"" . $modal->params->get('width', '100%') . "\" scrolling=\"no\"></iframe>');
 				});
