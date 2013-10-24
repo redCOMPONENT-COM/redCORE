@@ -234,7 +234,7 @@ class JFormFieldRmedia extends JFormField
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide fade',
+					'class' => 'modal hide',
 					'style' => 'width: 700px; height: 500px;'
 				),
 				'params' => array(
@@ -248,22 +248,13 @@ class JFormFieldRmedia extends JFormField
 			$modalId
 		);
 
-		$html[] = RLayoutHelper::render('modal', $modal);
-
-		// The button.
-		if ($this->element['disabled'] != true)
-		{
-			JHtml::_('rbootstrap.tooltip');
-
-			$html[] = '<a class="btn modalAjax" data-toggle="modal" title="' . JText::_('JLIB_FORM_BUTTON_SELECT') . '" href="#' . $modalId . '"'
-				. '>';
-			$html[] = JText::_('JLIB_FORM_BUTTON_SELECT') . '</a><a class="btn hasTooltip" title="'
-				. JText::_('JLIB_FORM_BUTTON_CLEAR') . '" href="#" onclick="';
-			$html[] = 'jInsertFieldValue(\'\', \'' . $this->id . '\');';
-			$html[] = 'return false;';
-			$html[] = '">';
-			$html[] = '<i class="icon-remove"></i></a>';
-		}
+		$html[] = RLayoutHelper::render(
+			'fields.rmedia',
+			array(
+				'modal' => $modal,
+				'field' => $this
+			)
+		);
 
 		$html[] = '</div>';
 
