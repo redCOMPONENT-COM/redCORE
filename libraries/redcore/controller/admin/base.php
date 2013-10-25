@@ -21,6 +21,19 @@ JLoader::import('joomla.application.component.controlleradmin');
 abstract class RControllerAdminBase extends JControllerAdmin
 {
 	/**
+	 * The method => state map.
+	 *
+	 * @var  array
+	 */
+	protected $states = array(
+		'publish' => 1,
+		'unpublish' => 0,
+		'archive' => 2,
+		'trash' => -2,
+		'report' => -3
+	);
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
@@ -152,9 +165,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 
 		// Get items to publish from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
-		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
-		$task = $this->getTask();
-		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		$value = JArrayHelper::getValue($this->states, $this->getTask(), 0, 'int');
 
 		if (empty($cid))
 		{
