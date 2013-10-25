@@ -58,7 +58,7 @@ $groups = $toolbar->getGroups();
 				echo $button->render();
 			}
 			?>
-			<?php endforeach; ?>
 		</div>
+		<?php endforeach; ?>
 	</div>
 <?php endif; ?>
