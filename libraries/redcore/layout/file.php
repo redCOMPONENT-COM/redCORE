@@ -66,6 +66,7 @@ class RLayoutFile extends RLayoutBase
 		// Init Enviroment
 		$this->setComponent($this->options->get('component', 'auto'));
 		$this->setClient($this->options->get('client', 'auto'));
+		$this->setSuffixes($this->options->get('suffixes', 'none'));
 	}
 
 	/**
@@ -302,6 +303,62 @@ class RLayoutFile extends RLayoutBase
 	{
 		$this->layoutId = $layoutId;
 		$this->fullPath = null;
+	}
+
+	/**
+	 * [setSuffixes description]
+	 *
+	 * @param   mixed  $suffixes  String with a single suffix or 'auto' | 'none' or array of suffixes
+	 *
+	 * @return  void
+	 */
+	public function setSuffixes($suffixes)
+	{
+		if (!empty($suffixes))
+		{
+			if (is_array($suffixes))
+			{
+				$this->options->set('suffixes', $suffixes);
+			}
+			else
+			{
+				switch ($suffixes)
+				{
+					case 'auto':
+						$cmsVersion = new JVersion;
+
+						// Example j311
+						$fullVersion = 'j' . str_replace('.', '', $cmsVersion->getShortVersion());
+
+						// Create suffixes like array('j311', 'j31', 'j3')
+						$suffixes = array(
+							$fullVersion,
+							substr($fullVersion, 0, 3),
+							substr($fullVersion, 0, 2),
+						);
+
+						$this->options->set('suffixes', array_unique($suffixes));
+
+						break;
+					case 'autolanguage':
+						$lang = JFactory::getLanguage();
+						$langTag = $lang->getTag();
+						$langParts = explode('-', $langTag);
+						$suffixes = array($langTag, $langParts[0]);
+						$suffixes[] = $lang->isRTL() ? 'rtl' : 'ltr';
+
+						// Example: array('es-ES', 'es', 'ltr')
+						$this->options->set('suffixes', $suffixes);
+						break;
+					case 'none':
+						$this->options->set('suffixes', array());
+						break;
+					default:
+						$this->options->set('suffixes', array($suffixes));
+						break;
+				}
+			}
+		}
 	}
 
 	/**
