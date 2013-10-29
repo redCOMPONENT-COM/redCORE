@@ -1,29 +1,35 @@
 <?php
 /**
  * @package     Redcore
- * @subpackage  Layout
+ * @subpackage  Layouts
  *
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_BASE') or die;
+defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-// Is multilanguage enabled?
-$langs = isset(JFactory::getApplication()->languages_enabled);
+// Receive overridable options
+$data['options'] = !empty($data['options']) ? $data['options'] : array();
 
-$filters = $data->filterForm->getGroup('filter');
+if (is_array($data['options']))
+{
+	$data['options'] = new JRegistry($data['options']);
+}
 
-$searchField  = $data->options->get('searchField', 'filter_search');
+$searchField  = 'filter_' . $data['options']->get('searchField', 'search');
+
+// Load the form filters
+$filters = $data['view']->filterForm->getGroup('filter');
 ?>
 <?php if ($filters) : ?>
-	<div class="filter-select hidden-phone">
-		<?php foreach ($filters as $fieldName => $field) : ?>
-			<?php if ($fieldName != $searchField) : ?>
+	<?php foreach ($filters as $fieldName => $field) : ?>
+		<?php if ($fieldName != $searchField) : ?>
+			<div class="js-stools-field-filter">
 				<?php echo $field->input; ?>
-			<?php endif; ?>
-		<?php endforeach; ?>
-	</div>
+			</div>
+		<?php endif; ?>
+	<?php endforeach; ?>
 <?php endif; ?>

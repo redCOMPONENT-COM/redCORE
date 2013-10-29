@@ -204,12 +204,8 @@ abstract class RModelList extends JModelList
 		{
 			$app = JFactory::getApplication();
 
-			// Pre-fill the limit
-			$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
-			$this->setState('list.limit', $limit);
-
 			// Receive & set filters
-			if ($filters = $this->getUserStateFromRequest($this->context . '.filter', 'filter'))
+			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
 			{
 				foreach ($filters as $name => $value)
 				{
@@ -217,8 +213,10 @@ abstract class RModelList extends JModelList
 				}
 			}
 
+			$limit = 0;
+
 			// Receive & set list options
-			if ($list = $this->getUserStateFromRequest($this->context . '.list', 'list'))
+			if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
 			{
 				foreach ($list as $name => $value)
 				{
@@ -269,8 +267,8 @@ abstract class RModelList extends JModelList
 							}
 							break;
 
-						case 'start':
-							$value = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+						case 'limit':
+							$limit = $value;
 							break;
 
 						// Just to keep the default case
@@ -283,15 +281,11 @@ abstract class RModelList extends JModelList
 				}
 			}
 			else
-			// Keep B/C
+			// Keep B/C for components previous to jform forms for filters
 			{
-				$value = $app->getUserStateFromRequest($this->context . '.limit', $this->paginationPrefix . 'limit', $app->getCfg('list_limit'), 'uint');
-				$limit = $value;
+				// Pre-fill the limits
+				$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
 				$this->setState('list.limit', $limit);
-
-				$value = $app->getUserStateFromRequest($this->context . '.limitstart', $this->paginationPrefix . 'limitstart', 0);
-				$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
-				$this->setState('list.start', $limitstart);
 
 				// Check if the ordering field is in the white list, otherwise use the incoming value.
 				$value = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
@@ -315,6 +309,10 @@ abstract class RModelList extends JModelList
 
 				$this->setState('list.direction', $value);
 			}
+
+			$value = $app->getUserStateFromRequest($this->context . '.limitstart', 'limitstart', 0);
+			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+			$this->setState('list.start', $limitstart);
 		}
 		else
 		{

@@ -42,23 +42,64 @@ abstract class JHtmlRsearchtools
 	public static function main($debug = null)
 	{
 		// Only load once
-		if (!empty(static::$loaded[__METHOD__]))
+		if (empty(static::$loaded[__METHOD__]))
 		{
-			return;
+			// Requires jQuery but allows to skip its loading
+			if ($loadJquery = (!isset($options['loadJquery']) || $options['loadJquery'] != 0))
+			{
+				RHtml::_('rjquery.framework');
+			}
+
+			// Load the jQuery plugin && CSS
+			RHelperAsset::load('jquery.searchtools.css', static::EXTENSION);
+			RHelperAsset::load('jquery.searchtools.min.js', static::EXTENSION);
+
+			static::$loaded[__METHOD__] = true;
 		}
 
-		// If no debugging value is set, use the configuration setting
-		if ($debug === null)
+		return;
+	}
+
+	/**
+	 * Load searchtools for a specific form
+	 *
+	 * @param   mixed  $selector  Is debugging mode on? [optional]
+	 * @param   array  $options   Optional array of parameters for search tools
+	 *
+	 * @return  void
+	 *
+	 * @since   3.2
+	 */
+	public static function form($selector = '.js-stools-form', $options = array())
+	{
+		$sig = md5(serialize(array($selector, $options)));
+
+		// Only load once
+		if (!isset(static::$loaded[__METHOD__][$sig]))
 		{
-			$config = JFactory::getConfig();
-			$debug = (boolean) $config->get('debug');
+			// Include Bootstrap framework
+			static::main();
+
+			// Add the form selector to the search tools options
+			$options['formSelector'] = $selector;
+
+			// Generate options with default values
+			$options = static::options2Jregistry($options);
+
+			$doc = JFactory::getDocument();
+			$script = "
+				(function($){
+					$(document).ready(function() {
+						$('" . $selector . "').searchtools(
+							" . $options->toString() . "
+						);
+					});
+				})(jQuery);
+			";
+			$doc->addScriptDeclaration($script);
+
+			static::$loaded[__METHOD__][$sig] = true;
 		}
-
-		// Load the jQuery plugin && CSS
-		RHelperAsset::load('jquery.searchtools.css', static::EXTENSION);
-		RHelperAsset::load('jquery.searchtools.js', static::EXTENSION);
-
-		static::$loaded[__METHOD__] = true;
 
 		return;
 	}
@@ -112,6 +153,29 @@ abstract class JHtmlRsearchtools
 	}
 
 	/**
+	 * Function to receive & pre-process javascript options
+	 *
+	 * @param   mixed  $options  Associative array/JRegistry object with options
+	 *
+	 * @return  JRegistry        Options converted to JRegistry object
+	 */
+	private static function options2Jregistry($options)
+	{
+		// Support options array
+		if (is_array($options))
+		{
+			$options = new JRegistry($options);
+		}
+
+		if (!($options instanceof Jregistry))
+		{
+			$options = new JRegistry;
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Method to sort a column in a grid
 	 *
 	 * @param   string  $title          The link title
@@ -127,7 +191,7 @@ abstract class JHtmlRsearchtools
 	 * @return  string
 	 */
 	public static function sort($title, $order, $direction = 'asc', $selected = 0, $task = null, $new_direction = 'asc',
-	                            $tip = '', $icon = null, $formName = 'adminForm')
+		$tip = '', $icon = null, $formName = 'adminForm')
 	{
 		// Include main searchtools framework
 		static::main();
