@@ -25,11 +25,6 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
-		if (! $this->isRedcoreComponent())
-		{
-			return;
-		}
-
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
 		if (file_exists($redcoreLoader))
@@ -110,6 +105,7 @@ class PlgSystemRedcore extends JPlugin
 		}
 
 		$doc = JFactory::getDocument();
+		$app = JFactory::getApplication();
 
 		if ($doc->_scripts)
 		{
@@ -128,24 +124,6 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
 			}
-
-			// Remove jQuery
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
-
-			// Remove bootstrap
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
-
-			// Remove other JS
-			foreach ($doc->_scripts as $script => $value)
-			{
-				if (substr_count($script, 'template.js'))
-				{
-					unset($doc->_scripts[$script]);
-				}
-			}
 		}
 
 		if ($doc->_styleSheets)
@@ -154,20 +132,6 @@ class PlgSystemRedcore extends JPlugin
 			if ($this->disableMootools())
 			{
 				unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
-			}
-
-			// Disable core bootstrap
-			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.min.css']);
-			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.css']);
-			unset($doc->_styleSheets['templates/system/css/system.css']);
-
-			// Disable other CSS
-			foreach ($doc->_styleSheets as $style => $value)
-			{
-				if (substr_count($style, 'template.css'))
-				{
-					unset($doc->_styleSheets[$style]);
-				}
 			}
 		}
 	}
