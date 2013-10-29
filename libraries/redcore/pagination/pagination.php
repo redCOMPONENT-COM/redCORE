@@ -428,6 +428,35 @@ class RPagination
 	}
 
 	/**
+	 * Get the pagination links
+	 *
+	 * @param   string  $layoutId  Layout to render the links
+	 * @param   array   $options   Optional array with settings for the layout
+	 *
+	 * @return  string  Pagination links.
+	 */
+	public function getPaginationLinks($layoutId = 'pagination.list.links', $options = array())
+	{
+		// Allow to receive a null layout
+		$layoutId = (null === $layoutId) ? 'pagination.list.links' : $layoutId;
+
+		$app = JFactory::getApplication();
+
+		$list = array(
+			'prefix'       => $this->prefix,
+			'limit'        => $this->limitstart,
+			'limitstart'   => $this->limitstart,
+			'total'        => $this->total,
+			'limitfield'   => $this->getLimitBox(),
+			'pagescounter' => $this->getPagesCounter(),
+			'pageslinks'   => $this->getPagesLinks(),
+			'formName'     => $this->get('formName')
+		);
+
+		return RLayoutHelper::render($layoutId, array('list' => $list, 'options' => $options));
+	}
+
+	/**
 	 * Return the pagination footer.
 	 *
 	 * @return  string  Pagination footer.
@@ -436,35 +465,7 @@ class RPagination
 	 */
 	public function getListFooter()
 	{
-		$app = JFactory::getApplication();
-
-		$list = array();
-		$list['prefix'] = $this->prefix;
-		$list['limit'] = $this->limit;
-		$list['limitstart'] = $this->limitstart;
-		$list['total'] = $this->total;
-		$list['limitfield'] = $this->getLimitBox();
-		$list['pagescounter'] = $this->getPagesCounter();
-		$list['pageslinks'] = $this->getPagesLinks();
-		$list['formName'] = $this->get('formName');
-
-		// For the backend we force our html.
-		if (JFactory::getApplication()->isSite())
-		{
-			$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
-
-			if (file_exists($chromePath))
-			{
-				include_once $chromePath;
-
-				if (function_exists('pagination_list_footer'))
-				{
-					return pagination_list_footer($list);
-				}
-			}
-		}
-
-		return $this->_list_footer($list);
+		return $this->getPaginationLinks();
 	}
 
 	/**
@@ -571,20 +572,6 @@ class RPagination
 		{
 			return '&#160;';
 		}
-	}
-
-	/**
-	 * Create the HTML for a list footer
-	 *
-	 * @param   array  $list  Pagination list data structure.
-	 *
-	 * @return  string  HTML for a list footer
-	 *
-	 * @since   1.0
-	 */
-	protected function _list_footer($list)
-	{
-		return RLayoutHelper::render('pagination.list.footer', $list);
 	}
 
 	/**
