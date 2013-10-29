@@ -66,7 +66,7 @@ class JFormFieldRpublished extends JFormFieldRpredefinedList
 			// B/C with statuses options
 			if (!isset($this->element['filter']) && isset($this->element['statuses']))
 			{
-				$this->element['filter'] = $this->element['statuses'];
+				$this->element['filter'] = (string) $this->element['statuses'];
 			}
 
 			static::$options[$type][$hash] = parent::getOptions();
