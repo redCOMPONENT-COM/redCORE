@@ -107,6 +107,8 @@ class PlgSystemRedcore extends JPlugin
 		$doc = JFactory::getDocument();
 		$app = JFactory::getApplication();
 
+		RHtml::_('rbootstrap.framework');
+
 		if ($doc->_scripts)
 		{
 			// Remove Mootools
@@ -124,6 +126,12 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
 			}
+
+			// Remove jQuery
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
 		}
 
 		if ($doc->_styleSheets)
