@@ -95,19 +95,11 @@
 	@import "sidebar.less";
 	@import "footer.less";
 	@import "forms.less";
-}
-
-body {
-	padding-top: 40px;
-}
-
-@media (max-width: 767px) {
-	body {
-		padding-top: 0;
-	}
+	@import "responsive.less";
 }
 
 .redcore {
+	padding-top: 40px;
 	.content {
 		margin-top: 10px;
 	}
@@ -166,5 +158,14 @@ body {
 	.opacity-70 {
 		opacity: 0.7;
 		filter: alpha(opacity=70);
+	}
+	// Reset icomoon settings
+	[class^="icon-"]:before,
+	[class*=" icon-"]:before {
+		font-family: inherit;
+		font-style: inherit;
+	}
+	.icon-stack:before {
+	  content: none;
 	}
 }

@@ -7817,15 +7817,13 @@
   float: left;
   margin-left: -20px;
 }
-body {
-  padding-top: 40px;
-}
 @media (max-width: 767px) {
-  body {
+  .redcore .redcore {
     padding-top: 0;
   }
 }
 .redcore {
+  padding-top: 40px;
   /* Force tabs to overflow visible */
 
 }
@@ -7886,4 +7884,12 @@ body {
 .redcore .opacity-70 {
   opacity: 0.7;
   filter: alpha(opacity=70);
+}
+.redcore [class^="icon-"]:before,
+.redcore [class*=" icon-"]:before {
+  font-family: inherit;
+  font-style: inherit;
+}
+.redcore .icon-stack:before {
+  content: none;
 }
