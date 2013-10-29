@@ -1,67 +1,53 @@
 <?php
 /**
  * @package     Redcore
- * @subpackage  Layout
+ * @subpackage  Layouts
  *
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_BASE') or die;
+defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-$formSelector = $data->options->get('formSelector', '#adminForm');
-$searchString = $data->options->get('searchString', null);
+// Receive overridable options
+$data['options'] = !empty($data['options']) ? $data['options'] : array();
 
-// Load the jQuery plugin && CSS
-JHtml::_('rsearchtools.main');
-
-$doc = JFactory::getDocument();
-$script = "
-	(function($){
-		$(document).ready(function() {
-			$('" . $formSelector . "').searchtools(
-				" . $data->options->toString() . "
-			);
-		});
-	})(jQuery);
-";
-$doc->addScriptDeclaration($script);
+if (is_array($data['options']))
+{
+	$data['options'] = new JRegistry($data['options']);
+}
 
 // Options
-$searchField      = $data->options->get('searchField', 'filter_search');
-$showSearchTitle  = $data->options->get('showSearchTitle', false);
-$showFilterButton = $data->options->get('filterButton', true);
-$showOrderButton  = $data->options->get('orderButton', true);
+$searchField  = 'filter_' . $data['options']->get('searchField', 'search');
+$filterButton = $data['options']->get('filterButton', true);
+$searchButton = $data['options']->get('searchButton', true);
 
-$filters = $data->filterForm->getGroup('filter');
+$filters = $data['view']->filterForm->getGroup('filter');
 ?>
-
-<?php if (isset($filters[$searchField])) : ?>
-	<div class="stools-buttons">
-		<?php if ($showSearchTitle) : ?>
-			<label for="filter_search" class="element-invisible">
-				<?php echo JText::_('LIB_REDCORE_SEARCHTOOLS_FIELD_SEARCH'); ?>
-			</label>
-		<?php endif; ?>
+<?php if (!empty($filters[$searchField])) : ?>
+	<?php if ($searchButton) : ?>
+		<label for="filter_search" class="element-invisible">
+			<?php echo JText::_('COM_CONTENT_FILTER_SEARCH_DESC'); ?>
+		</label>
 		<div class="btn-wrapper input-append">
 			<?php echo $filters[$searchField]->input; ?>
-			<button type="submit" class="btn hasTooltip" title="<?php echo RHtml::tooltipText('LIB_REDCORE_SEARCHTOOLS_SUBMIT'); ?>">
+			<button type="submit" class="btn hasTooltip" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
 				<i class="icon-search"></i>
 			</button>
 		</div>
-		<?php if ($showFilterButton) : ?>
-			<div class="btn-wrapper">
-				<button type="button" class="btn hasTooltip js-stools-btn-filter" title="<?php echo RHtml::tooltipText('LIB_REDCORE_SEARCHTOOLS_DESC'); ?>">
-					<?php echo JText::_('LIB_REDCORE_SEARCHTOOLS');?> <i class="caret"></i>
+		<?php if ($filterButton) : ?>
+			<div class="btn-wrapper hidden-phone">
+				<button type="button" class="btn hasTooltip js-stools-btn-filter" title="<?php echo RHtml::tooltipText('JSEARCH_TOOLS_DESC'); ?>">
+					<?php echo JText::_('JSEARCH_TOOLS');?> <i class="caret"></i>
 				</button>
 			</div>
 		<?php endif; ?>
 		<div class="btn-wrapper">
-			<button type="button" class="btn hasTooltip js-stools-btn-clear" title="<?php echo RHtml::tooltipText('LIB_REDCORE_SEARCHTOOLS_CLEAR_DESC'); ?>">
-				<?php echo JText::_('LIB_REDCORE_SEARCHTOOLS_CLEAR');?>
+			<button type="button" class="btn hasTooltip js-stools-btn-clear" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_CLEAR'); ?>">
+				<?php echo JText::_('JSEARCH_FILTER_CLEAR');?>
 			</button>
 		</div>
-	</div>
+	<?php endif; ?>
 <?php endif;
