@@ -49,6 +49,13 @@ abstract class RModelList extends JModelList
 	protected $paginationPrefix = '';
 
 	/**
+	 * Limit field used by the pagination
+	 *
+	 * @var  string
+	 */
+	protected $limitField = 'limit';
+
+	/**
 	 * Limitstart field used by the pagination
 	 *
 	 * @var  string
@@ -83,6 +90,11 @@ abstract class RModelList extends JModelList
 		if ($this->limitstartField == 'auto')
 		{
 			$this->limitstartField = $this->paginationPrefix . 'limitstart';
+		}
+
+		if ($this->limitField == 'auto')
+		{
+			$this->limitField = $this->paginationPrefix . 'limit';
 		}
 
 		parent::__construct($config);
@@ -270,6 +282,8 @@ abstract class RModelList extends JModelList
 							{
 								$value = $ordering;
 							}
+
+							$this->setState('list.' . $name, $value);
 							break;
 
 						case 'direction':
@@ -277,26 +291,27 @@ abstract class RModelList extends JModelList
 							{
 								$value = $direction;
 							}
+
+							$this->setState('list.' . $name, $value);
 							break;
 
-						case 'limit':
+						case $this->limitField:
 							$limit = $value;
+							$this->setState('list.limit', $value);
 							break;
 
 						// Just to keep the default case
 						default:
-							$value = $value;
+							$this->setState('list.' . $name, $value);
 							break;
 					}
-
-					$this->setState('list.' . $name, $value);
 				}
 			}
 			else
 			// Keep B/C for components previous to jform forms for filters
 			{
 				// Pre-fill the limits
-				$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
+				$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $app->getCfg('list_limit'), 'uint');
 				$this->setState('list.limit', $limit);
 
 				// Check if the ordering field is in the white list, otherwise use the incoming value.
