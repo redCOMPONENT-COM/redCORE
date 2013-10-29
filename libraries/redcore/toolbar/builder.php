@@ -366,6 +366,6 @@ final class RToolbarBuilder
 			$link = $uri->toString();
 		}
 
-		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table', 'btn-info');
+		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table');
 	}
 }
