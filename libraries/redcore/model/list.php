@@ -49,6 +49,13 @@ abstract class RModelList extends JModelList
 	protected $paginationPrefix = '';
 
 	/**
+	 * Limitstart field used by the pagination
+	 *
+	 * @var  string
+	 */
+	protected $limitstartField = 'limitstart';
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
@@ -71,6 +78,11 @@ abstract class RModelList extends JModelList
 		if (empty($this->paginationPrefix))
 		{
 			$this->paginationPrefix = strtolower($option . '_' . $view . '_' . $this->getName() . '_');
+		}
+
+		if ($this->limitstartField == 'auto')
+		{
+			$this->limitstartField = $this->paginationPrefix . 'limitstart';
 		}
 
 		parent::__construct($config);
@@ -310,7 +322,7 @@ abstract class RModelList extends JModelList
 				$this->setState('list.direction', $value);
 			}
 
-			$value = $app->getUserStateFromRequest($this->context . '.limitstart', 'limitstart', 0);
+			$value = $app->getUserStateFromRequest($this->context . '.' . $this->limitstartField, $this->limitstartField, 0);
 			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
 			$this->setState('list.start', $limitstart);
 		}
