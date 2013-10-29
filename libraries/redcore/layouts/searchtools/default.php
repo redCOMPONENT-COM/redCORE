@@ -27,7 +27,7 @@ $data['options'] = array_unique(array_merge($customOptions, $data['options']));
 $formSelector = !empty($data['options']['formSelector']) ? $data['options']['formSelector'] : '#adminForm';
 
 // Load search tools
-JHtml::_('searchtools.form', $formSelector, $data['options']);
+RHtml::_('rsearchtools.form', $formSelector, $data['options']);
 
 ?>
 <div class="js-stools clearfix">
