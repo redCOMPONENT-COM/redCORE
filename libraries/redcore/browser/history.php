@@ -161,7 +161,7 @@ class RBrowserHistory
 	 *
 	 * @return  void
 	 */
-	protected function setQueue(array $queue)
+	public function setQueue(array $queue)
 	{
 		$this->session->set($this->sessionVariable, $queue, 'rbrowser');
 	}
