@@ -163,6 +163,50 @@ class RBrowser
 	}
 
 	/**
+	 * Clear the history until the uri.
+	 * Two uris are equal if their view and id vars are the same.
+	 *
+	 * @param   mixed  $uri  The uri until
+	 *
+	 * @return  void
+	 */
+	public function clearHistoryUntil($uri = null)
+	{
+		$history = $this->history->getQueue();
+
+		if (empty($history))
+		{
+			return;
+		}
+
+		if (null === $uri)
+		{
+			$uri = str_replace(Juri::base(), '', Juri::getInstance()->toString());
+		}
+
+		$uri = new JURI($uri);
+		$view = $uri->getVar('view');
+		$id = $uri->getVar('id');
+		$newHistory = array();
+
+		foreach ($history as $oldLink)
+		{
+			$oldUri = new Juri($oldLink);
+			$oldView = $oldUri->getVar('view');
+			$oldId = $oldUri->getVar('id');
+
+			if ($oldView === $view && $oldId === $id)
+			{
+				break;
+			}
+
+			$newHistory[] = $oldLink;
+		}
+
+		$this->history->setQueue($newHistory);
+	}
+
+	/**
 	 * Clear the browser history.
 	 *
 	 * @return  void
