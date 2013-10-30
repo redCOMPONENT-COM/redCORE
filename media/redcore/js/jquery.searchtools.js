@@ -48,7 +48,7 @@
 		this._defaults = defaults;
 
 		// Initialise selectors
-		this.theForm        = $(this.options.formSelector + ' ' + this.options.formSelector);
+		this.theForm        = $(this.options.formSelector);
 
 		// Filters
 		this.filterButton    = $(this.options.formSelector + ' ' + this.options.filterBtnSelector);
