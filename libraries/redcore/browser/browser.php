@@ -188,7 +188,6 @@ class RBrowser
 		$view = $uri->getVar('view');
 		$id = $uri->getVar('id');
 		$newHistory = array();
-		$reachedLink = false;
 
 		foreach ($history as $oldLink)
 		{
@@ -198,14 +197,10 @@ class RBrowser
 
 			if ($oldView === $view && $oldId === $id)
 			{
-				$reachedLink = true;
-				continue;
+				break;
 			}
 
-			if (!$reachedLink)
-			{
-				$newHistory[] = $oldLink;
-			}
+			$newHistory[] = $oldLink;
 		}
 
 		$this->history->setQueue($newHistory);
