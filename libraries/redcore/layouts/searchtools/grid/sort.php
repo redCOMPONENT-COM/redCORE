@@ -14,7 +14,13 @@ $data = $displayData;
 $metatitle = RHtml::tooltipText(JText::_($data->tip ? $data->tip : $data->title), JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN'), 0);
 RHtml::_('rbootstrap.tooltip');
 ?>
-<a href="#" onclick="return false;" class="js-stools-column-order hasTooltip" data-order="<?php echo $data->order; ?>" data-direction="<?php echo strtoupper($data->direction); ?>" data-name="<?php echo JText::_($data->title); ?>" title="<?php echo $metatitle; ?>">
+<a href="#"
+	onclick="return false;"
+	class="js-stools-column-order hasTooltip"
+	data-order="<?php echo $data->order; ?>"
+	data-direction="<?php echo strtoupper($data->direction); ?>"
+	data-name="<?php echo JText::_($data->title); ?>"
+	title="<?php echo $metatitle; ?>">
 	<?php if (!empty($data->icon)) : ?>
 		<i class="<?php echo $data->icon; ?>"></i>
 	<?php endif; ?>
