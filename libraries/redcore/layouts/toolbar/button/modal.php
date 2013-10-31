@@ -22,6 +22,7 @@ $button = $data['button'];
 $class = $button->getClass();
 $iconClass = $button->getIconClass();
 $text = $button->getText();
+$isList = $button->isList();
 
 $dataTarget = $button->getDataTarget();
 
@@ -32,9 +33,20 @@ if (!empty($class))
 {
 	$btnClass .= ' ' . $class;
 }
-?>
 
-<button class="<?php echo $btnClass ?>" data-toggle="modal" data-target="<?php echo $dataTarget ?>">
+$cmd = "jQuery('" . $dataTarget . "').modal('toggle');";
+
+if ($isList)
+{
+	// Get the button command.
+	JHtml::_('behavior.framework');
+	$message = JText::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST');
+	$message = addslashes($message);
+	$cmd = "if (document.adminForm.boxchecked.value == 0) {alert('" . $message . "');jQuery('" . $dataTarget . "').modal('hide');}
+	else {jQuery('" . $dataTarget  . "').modal('toggle');}";
+}
+?>
+<button class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
 	<?php if (!empty($iconClass)) : ?>
 		<i class="<?php echo $iconClass ?>"></i>
 	<?php endif; ?>
