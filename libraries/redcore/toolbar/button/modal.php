@@ -26,6 +26,13 @@ class RToolbarButtonModal extends RToolbarButton
 	protected $dataTarget;
 
 	/**
+	 * Is this applying on a list ?
+	 *
+	 * @var  boolean
+	 */
+	protected $list;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   string   $text        The button text.
