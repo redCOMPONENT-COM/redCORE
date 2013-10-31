@@ -435,10 +435,10 @@ class RPagination
 	 *
 	 * @return  string  Pagination links.
 	 */
-	public function getPaginationLinks($layoutId = 'pagination.list.links', $options = array())
+	public function getPaginationLinks($layoutId = 'pagination.links', $options = array())
 	{
 		// Allow to receive a null layout
-		$layoutId = (null === $layoutId) ? 'pagination.list.links' : $layoutId;
+		$layoutId = (null === $layoutId) ? 'pagination.links' : $layoutId;
 
 		$app = JFactory::getApplication();
 

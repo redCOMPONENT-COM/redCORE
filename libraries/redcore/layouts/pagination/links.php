@@ -61,8 +61,8 @@ if ($currentPage >= $step)
 	<?php if ($showPagesLinks) : ?>
 		<ul class="pagination-list">
 			<?php
-				echo RLayoutHelper::render('pagination.list.link', $pages['start']);
-				echo RLayoutHelper::render('pagination.list.link', $pages['previous']); ?>
+				echo RLayoutHelper::render('pagination.link', $pages['start']);
+				echo RLayoutHelper::render('pagination.link', $pages['previous']); ?>
 			<?php foreach ($pages['pages'] as $k => $page) : ?>
 
 				<?php if (in_array($k, range($range * $step - ($step + 1), $range * $step))) : ?>
@@ -71,11 +71,11 @@ if ($currentPage >= $step)
 					<?php endif; ?>
 				<?php endif; ?>
 
-				<?php echo RLayoutHelper::render('pagination.list.link', $page); ?>
+				<?php echo RLayoutHelper::render('pagination.link', $page); ?>
 			<?php endforeach; ?>
 			<?php
-				echo RLayoutHelper::render('pagination.list.link', $pages['next']);
-				echo RLayoutHelper::render('pagination.list.link', $pages['end']); ?>
+				echo RLayoutHelper::render('pagination.link', $pages['next']);
+				echo RLayoutHelper::render('pagination.link', $pages['end']); ?>
 		</ul>
 	<?php endif; ?>
 	<?php if ($showLimitStart) : ?>
