@@ -130,9 +130,11 @@ class PlgSystemRedcore extends JPlugin
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
 
 			// Remove bootstrap
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
 		}
 
