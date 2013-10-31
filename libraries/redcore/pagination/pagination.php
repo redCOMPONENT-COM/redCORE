@@ -449,11 +449,61 @@ class RPagination
 			'total'        => $this->total,
 			'limitfield'   => $this->getLimitBox(),
 			'pagescounter' => $this->getPagesCounter(),
-			'pageslinks'   => $this->getPagesLinks(),
+			'pages'        => $this->getPaginationPages(),
 			'formName'     => $this->get('formName')
 		);
 
 		return RLayoutHelper::render($layoutId, array('list' => $list, 'options' => $options));
+	}
+
+	/**
+	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x.
+	 *
+	 * @return  string  Pagination page list string.
+	 *
+	 * @since   1.0
+	 */
+	public function getPaginationPages()
+	{
+		$list = array();
+
+		if ($this->total > $this->limit)
+		{
+			// Build the page navigation list.
+			$data = $this->_buildDataObject();
+
+			$list['prefix'] = $this->prefix;
+			$list['formName'] = $this->formName;
+
+			// All
+			$list['all']['active'] = (null !== $data->all->base);
+			$list['all']['data']   = $data->all;
+
+			// Start
+			$list['start']['active'] = (null !== $data->start->base);
+			$list['start']['data']   = $data->start;
+
+			// Previous link
+			$list['previous']['active'] = (null !== $data->previous->base);
+			$list['previous']['data']   = $data->previous;
+
+			// Make sure it exists
+			$list['pages'] = array();
+
+			foreach ($data->pages as $i => $page)
+			{
+				$list['pages'][$i]['active'] = (null !== $page->base);
+				$list['pages'][$i]['data']   = $page;
+			}
+
+			$list['next']['active'] = (null !== $data->next->base);
+			$list['next']['data']   = $data->next;
+
+			$list['end']['active'] = (null !== $data->end->base);
+			$list['end']['data']   = $data->end;
+		}
+
+		return $list;
 	}
 
 	/**
