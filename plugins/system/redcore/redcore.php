@@ -105,7 +105,6 @@ class PlgSystemRedcore extends JPlugin
 		}
 
 		$doc = JFactory::getDocument();
-		$app = JFactory::getApplication();
 
 		RHtml::_('rbootstrap.framework');
 
@@ -132,6 +131,9 @@ class PlgSystemRedcore extends JPlugin
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
+
+			// Remove bootstrap
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
 		}
 
 		if ($doc->_styleSheets)
