@@ -65,13 +65,14 @@ if ($currentPage >= $step)
 				echo RLayoutHelper::render('pagination.link', $pages['previous']); ?>
 			<?php foreach ($pages['pages'] as $k => $page) : ?>
 
+				<?php $output = RLayoutHelper::render('pagination.link', $page); ?>
 				<?php if (in_array($k, range($range * $step - ($step + 1), $range * $step))) : ?>
 					<?php if (($k % $step == 0 || $k == $range * $step - ($step + 1)) && $k != $currentPage && $k != $range * $step - $step) :?>
-						<?php $page['data'] = preg_replace('#(<a.*?>).*?(</a>)#', '$1...$2', $page['data']); ?>
+						<?php $output = preg_replace('#(<a.*?>).*?(</a>)#', '$1...$2', $output); ?>
 					<?php endif; ?>
 				<?php endif; ?>
 
-				<?php echo RLayoutHelper::render('pagination.link', $page); ?>
+				<?php echo $output; ?>
 			<?php endforeach; ?>
 			<?php
 				echo RLayoutHelper::render('pagination.link', $pages['next']);
