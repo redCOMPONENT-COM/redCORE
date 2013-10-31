@@ -11,6 +11,12 @@ defined('JPATH_REDCORE') or die;
 
 $list = $displayData['list'];
 $pages = $list['pages'];
+
+if (empty($pages))
+{
+	return null;
+}
+
 $options = new JRegistry($displayData['options']);
 
 $showLimitBox   = $options->get('showLimitBox', true);
@@ -22,11 +28,14 @@ $currentPage = 1;
 $range = 1;
 $step = 5;
 
-foreach ($pages['pages'] as $k => $page)
+if (!empty($pages['pages']))
 {
-	if (!$page['active'])
+	foreach ($pages['pages'] as $k => $page)
 	{
-		$currentPage = $k;
+		if (!$page['active'])
+		{
+			$currentPage = $k;
+		}
 	}
 }
 
