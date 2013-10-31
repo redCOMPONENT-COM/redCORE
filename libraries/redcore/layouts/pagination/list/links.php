@@ -10,11 +10,37 @@
 defined('JPATH_REDCORE') or die;
 
 $list = $displayData['list'];
+$pages = $list['pages'];
 $options = new JRegistry($displayData['options']);
 
 $showLimitBox   = $options->get('showLimitBox', true);
 $showPagesLinks = $options->get('showPagesLinks', true);
 $showLimitStart = $options->get('showLimitStart', true);
+
+// Calculate to display range of pages
+$currentPage = 1;
+$range = 1;
+$step = 5;
+
+foreach ($pages['pages'] as $k => $page)
+{
+	if (!$page['active'])
+	{
+		$currentPage = $k;
+	}
+}
+
+if ($currentPage >= $step)
+{
+	if ($currentPage % $step == 0)
+	{
+		$range = ceil($currentPage / $step) + 1;
+	}
+	else
+	{
+		$range = ceil($currentPage / $step);
+	}
+}
 ?>
 
 <div class="pagination pagination-toolbar clearfix" style="text-align: center;">
@@ -24,7 +50,24 @@ $showLimitStart = $options->get('showLimitStart', true);
 		</div>
 	<?php endif; ?>
 	<?php if ($showPagesLinks) : ?>
-		<?php echo $list['pageslinks']; ?>
+		<ul class="pagination-list">
+			<?php
+				echo RLayoutHelper::render('pagination.list.link', $pages['start']);
+				echo RLayoutHelper::render('pagination.list.link', $pages['previous']); ?>
+			<?php foreach ($pages['pages'] as $k => $page) : ?>
+
+				<?php if (in_array($k, range($range * $step - ($step + 1), $range * $step))) : ?>
+					<?php if (($k % $step == 0 || $k == $range * $step - ($step + 1)) && $k != $currentPage && $k != $range * $step - $step) :?>
+						<?php $page['data'] = preg_replace('#(<a.*?>).*?(</a>)#', '$1...$2', $page['data']); ?>
+					<?php endif; ?>
+				<?php endif; ?>
+
+				<?php echo RLayoutHelper::render('pagination.list.link', $page); ?>
+			<?php endforeach; ?>
+			<?php
+				echo RLayoutHelper::render('pagination.list.link', $pages['next']);
+				echo RLayoutHelper::render('pagination.list.link', $pages['end']); ?>
+		</ul>
 	<?php endif; ?>
 	<?php if ($showLimitStart) : ?>
 		<input type="hidden" name="<?php echo $list['prefix']; ?>limitstart" value="<?php echo $list['limitstart']; ?>" />
