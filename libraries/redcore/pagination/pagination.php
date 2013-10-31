@@ -472,9 +472,6 @@ class RPagination
 			// Build the page navigation list.
 			$data = $this->_buildDataObject();
 
-			$list['prefix'] = $this->prefix;
-			$list['formName'] = $this->formName;
-
 			// All
 			$list['all']['active'] = (null !== $data->all->base);
 			$list['all']['data']   = $data->all;
