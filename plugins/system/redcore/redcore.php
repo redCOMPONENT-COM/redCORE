@@ -25,6 +25,11 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
+		if (!$this->isRedcoreComponent())
+		{
+			return;
+		}
+
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
 		if (file_exists($redcoreLoader))
