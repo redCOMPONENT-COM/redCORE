@@ -209,10 +209,10 @@ else : ?>
 			<?php endif; ?>
 			<div class="row-fluid">
 				<?php if ($displaySidebar) : ?>
-					<div class="span2 sidebar">
+					<div class="span3 sidebar">
 						<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
 					</div>
-					<div class="span10 content">
+					<div class="span9 content">
 				<?php else : ?>
 					<div class="span12 content">
 				<?php endif; ?>
