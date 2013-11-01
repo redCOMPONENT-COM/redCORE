@@ -7681,7 +7681,7 @@
 .redcore .navbar .dropdown-menu > li > a:focus,
 .redcore .navbar .dropdown-submenu:hover > a,
 .redcore .navbar .dropdown-submenu:focus > a {
-  background-color: #666;
+  background-color: #333;
   background-image: none;
   color: #fff;
   text-decoration: none;
@@ -7783,8 +7783,17 @@
   float: left;
   margin-left: -20px;
 }
+@media (min-width: 767px) and (max-width: 1280px) {
+  .redcore .row-fluid .span2.sidebar {
+    width: 23.0769%;
+  }
+  .redcore .row-fluid .span10.content {
+    width: 74.3094%;
+    margin-left: 1.762%;
+  }
+}
 @media (max-width: 767px) {
-  .redcore .redcore {
+  .redcore {
     padding-top: 0;
   }
 }
