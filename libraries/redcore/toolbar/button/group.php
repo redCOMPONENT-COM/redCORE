@@ -75,4 +75,14 @@ class RToolbarButtonGroup
 	{
 		return $this->buttons;
 	}
+
+	/**
+	 * Check if the group is empty.
+	 *
+	 * @return  boolean  True if empty, false otherwise
+	 */
+	public function isEmpty()
+	{
+		return 0 === count($this->buttons);
+	}
 }
