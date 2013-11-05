@@ -39,4 +39,24 @@ class RText extends JText
 
 		return strtr($string, $replace);
 	}
+
+	/**
+	 * Translate a string into the current language and stores it in the JavaScript language store.
+	 *
+	 * @param   string   $string                The JText key.
+	 * @param   boolean  $jsSafe                Ensure the output is JavaScript safe.
+	 * @param   boolean  $interpretBackSlashes  Interpret \t and \n.
+	 *
+	 * @return  string
+	 */
+	public static function javascriptText($string = null, $jsSafe = false, $interpretBackSlashes = true)
+	{
+		if ($string !== null)
+		{
+			self::script($string, $jsSafe, $interpretBackSlashes);
+			return "Joomla.JText._('" . $string . "')";
+		}
+		else
+			return '';
+	}
 }
