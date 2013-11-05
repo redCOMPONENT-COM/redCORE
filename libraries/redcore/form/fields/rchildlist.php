@@ -65,7 +65,7 @@ class JFormFieldRchildlist extends JFormFieldRlist
 		if ($ajaxUrl)
 		{
 			$siteUrl = JUri::root();
-			$adminUrl = $siteUrl . '/administrator';
+			$adminUrl = $siteUrl . 'administrator';
 
 			$this->ajaxchildOptions['ajaxUrl'] = str_replace(
 				array('{admin}', '{backend}', '{site}', '{frontend}'),
