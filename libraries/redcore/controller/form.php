@@ -739,18 +739,27 @@ class RControllerForm extends JControllerForm
 	 */
 	protected function getRedirectToListRoute($append = null)
 	{
+		$uri = 'index.php?option=' . $this->option . '&view=' . $this->view_list;
+
+		// If we have a return url take it
 		$returnUrl = $this->input->get('return');
 
 		if ($returnUrl)
 		{
-			$returnUrl = base64_decode($returnUrl);
+			$uri = $returnUrl;
+		}
 
-			return JRoute::_($returnUrl . $append, false);
-		}
-		else
+		// Append the vars one by one to override the existing ones
+		// It avoids to have duplicated segments
+		parse_str($append, $vars);
+		$uri = JUri::getInstance($uri);
+
+		foreach ($vars as $name => $val)
 		{
-			return JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $append, false);
+			$uri->setVar($name, $val);
 		}
+
+		return JRoute::_($uri->toString(), false);
 	}
 
 	/**
@@ -762,9 +771,18 @@ class RControllerForm extends JControllerForm
 	 */
 	protected function getRedirectToItemRoute($append = null)
 	{
-		return JRoute::_(
-			'index.php?option=' . $this->option . '&view=' . $this->view_item
-			. $append, false
-		);
+		$uri = 'index.php?option=' . $this->option . '&view=' . $this->view_item;
+
+		// Append the vars one by one to override the existing ones
+		// It avoids to have duplicated segments
+		parse_str($append, $vars);
+		$uri = JUri::getInstance($uri);
+
+		foreach ($vars as $name => $val)
+		{
+			$uri->setVar($name, $val);
+		}
+
+		return JRoute::_($uri->toString(), false);
 	}
 }
