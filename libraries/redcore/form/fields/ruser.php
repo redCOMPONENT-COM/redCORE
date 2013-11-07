@@ -89,7 +89,7 @@ class JFormFieldRuser extends JFormFieldRtext
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide fade',
+					'class' => 'modal hide',
 					'style' => 'width: 800px; height: 500px;'
 				),
 				'params' => array(
