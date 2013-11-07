@@ -444,7 +444,7 @@ class RPagination
 
 		$list = array(
 			'prefix'       => $this->prefix,
-			'limit'        => $this->limitstart,
+			'limit'        => $this->limit,
 			'limitstart'   => $this->limitstart,
 			'total'        => $this->total,
 			'limitfield'   => $this->getLimitBox(),
