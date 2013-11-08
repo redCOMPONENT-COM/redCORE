@@ -24,14 +24,19 @@ abstract class RModel extends JModelLegacy
 	 * @param   string  $name    Model name
 	 * @param   mixed   $client  Client. null = auto, 1 = admin, 0 = frontend
 	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call model from modules
 	 *
 	 * @return  RModel  The model
 	 *
 	 * @throws  InvalidArgumentException
 	 */
-	public static function getAutoInstance($name, $client = null, array $config = array())
+	public static function getAutoInstance($name, $client = null, array $config = array(), $option = '')
 	{
-		$option = JFactory::getApplication()->input->getString('option', '');
+		if ($option === '')
+		{
+			$option = JFactory::getApplication()->input->getString('option', '');
+		}
+
 		$componentName = ucfirst(strtolower(substr($option, 4)));
 		$prefix = $componentName . 'Model';
 
@@ -76,12 +81,13 @@ abstract class RModel extends JModelLegacy
 	 *
 	 * @param   string  $name    Model name
 	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call model from modules
 	 *
 	 * @return  RModel  Model instance
 	 */
-	public static function getAdminInstance($name, array $config = array())
+	public static function getAdminInstance($name, array $config = array(), $option = '')
 	{
-		return self::getAutoInstance($name, 1, $config);
+		return self::getAutoInstance($name, 1, $config, $option);
 	}
 
 	/**
@@ -89,11 +95,12 @@ abstract class RModel extends JModelLegacy
 	 *
 	 * @param   string  $name    Model name
 	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call model from modules
 	 *
 	 * @return  RTable  Model instance
 	 */
-	public static function getFrontInstance($name, array $config = array())
+	public static function getFrontInstance($name, array $config = array(), $option = '')
 	{
-		return self::getAutoInstance($name, 0, $config);
+		return self::getAutoInstance($name, 0, $config, $option);
 	}
 }
