@@ -30,9 +30,9 @@ abstract class RModel extends JModelLegacy
 	 *
 	 * @throws  InvalidArgumentException
 	 */
-	public static function getAutoInstance($name, $client = null, array $config = array(), $option = '')
+	public static function getAutoInstance($name, $client = null, array $config = array(), $option = 'auto')
 	{
-		if ($option === '')
+		if ($option === 'auto')
 		{
 			$option = JFactory::getApplication()->input->getString('option', '');
 		}
@@ -85,7 +85,7 @@ abstract class RModel extends JModelLegacy
 	 *
 	 * @return  RModel  Model instance
 	 */
-	public static function getAdminInstance($name, array $config = array(), $option = '')
+	public static function getAdminInstance($name, array $config = array(), $option = 'auto')
 	{
 		return self::getAutoInstance($name, 1, $config, $option);
 	}
@@ -99,7 +99,7 @@ abstract class RModel extends JModelLegacy
 	 *
 	 * @return  RTable  Model instance
 	 */
-	public static function getFrontInstance($name, array $config = array(), $option = '')
+	public static function getFrontInstance($name, array $config = array(), $option = 'auto')
 	{
 		return self::getAutoInstance($name, 0, $config, $option);
 	}
