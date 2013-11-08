@@ -7652,7 +7652,7 @@
 .redcore .navbar a.brand,
 .redcore .navbar .brand {
   margin-left: 0;
-  padding: 10px;
+  padding: 10px 5px;
   font-weight: 200;
   font-size: 1.5em;
   text-shadow: none;
@@ -7702,6 +7702,7 @@
 .redcore .navbar .divider-vertical {
   border-left: 1px solid #242525;
   border-right: 1px solid #191a1a;
+  margin: 0 5px;
 }
 .redcore .navbar ul a {
   color: #333;
