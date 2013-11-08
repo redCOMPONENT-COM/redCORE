@@ -56,6 +56,7 @@ abstract class RModel extends JModelLegacy
 		elseif ($client === 0)
 		{
 			self::addIncludePath(JPATH_SITE . '/components/' . $option . '/models');
+			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/tables');
 		}
 
 		else
