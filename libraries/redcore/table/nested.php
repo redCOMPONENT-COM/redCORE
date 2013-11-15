@@ -21,13 +21,6 @@ JLoader::import('joomla.database.tablenested');
 class RTableNested extends JTableNested
 {
 	/**
-	 * The options.
-	 *
-	 * @var  array
-	 */
-	protected $_options = array();
-
-	/**
 	 * Prefix to add to log files
 	 *
 	 * @var  string
@@ -680,38 +673,5 @@ class RTableNested extends JTableNested
 		$this->setError('');
 
 		return true;
-	}
-
-	/**
-	 * Set a table option value.
-	 *
-	 * @param   string  $key  The key
-	 * @param   mixed   $val  The default value
-	 *
-	 * @return  JTable
-	 */
-	public function setOption($key, $val)
-	{
-		$this->_options[$key] = $val;
-
-		return $this;
-	}
-
-	/**
-	 * Get a table option value.
-	 *
-	 * @param   string  $key      The key
-	 * @param   mixed   $default  The default value
-	 *
-	 * @return  mixed  The value or the default value
-	 */
-	public function getOption($key, $default = null)
-	{
-		if (isset($this->_options[$key]))
-		{
-			return $this->_options[$key];
-		}
-
-		return $default;
 	}
 }
