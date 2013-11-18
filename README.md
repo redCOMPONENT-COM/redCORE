@@ -16,6 +16,14 @@ redCORE is not a rapid application development tool based on conventions to auto
 
 It is our hope that redCORE will be interesting for other Joomla developers or even the Joomla Core.
 
+Regards
+
+Ronni K. Gothard Christiansen
+
+Director and Founder of redCOMPONENT.com
+
+CEO, redWEB ApS
+
 Wiki
 =====
 
