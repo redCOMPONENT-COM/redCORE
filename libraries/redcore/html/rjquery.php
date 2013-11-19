@@ -293,4 +293,39 @@ abstract class JHtmlRjquery
 
 		return;
 	}
+
+	/**
+	 * Load the flexslider library.
+	 *
+	 * @param   string  $selector  CSS Selector to initalise selects
+	 * @param   array   $options   Optional array with options
+	 *
+	 * @return void
+	 */
+	public static function flexslider($selector = '.flexslider', $options = null)
+	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__][$selector]))
+		{
+			return;
+		}
+
+		self::framework();
+
+		RHelperAsset::load('lib/flexslider/jquery.flexslider.js', self::EXTENSION);
+		RHelperAsset::load('lib/flexslider/flexslider.css', self::EXTENSION);
+
+		$options = static::options2Jregistry($options);
+
+		JFactory::getDocument()->addScriptDeclaration("
+			(function($){
+				$(document).ready(function () {
+					$('" . $selector . "').flexslider(" . $options->toString() . ");
+				});
+			})(jQuery);
+		");
+		static::$loaded[__METHOD__][$selector] = true;
+
+		return;
+	}
 }
