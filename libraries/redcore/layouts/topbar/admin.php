@@ -133,7 +133,7 @@ if ($displayJoomlaMenu)
 						</li>
 						<li class="divider"></li>
 						<li class="">
-							<a href="index.php?option=com_login&amp;task=logout&amp;<?php echo JSession::getFormToken(); ?>=1&amp;return=<?php echo $returnUri; ?>">
+							<a href="index.php?option=com_login&amp;task=logout&amp;<?php echo JSession::getFormToken(); ?>=1">
 								<span class="icon-off"></span>
 								<?php echo JText::_('LIB_REDCORE_ACCOUNT_LOGOUT'); ?>
 							</a>
