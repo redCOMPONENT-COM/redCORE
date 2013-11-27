@@ -101,6 +101,15 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		tip.setStyle("display", "block");';
 			$script[] = '	}';
 
+			$script[] = '	function jSetIframeHeight(iframe)';
+			$script[] = '	{';
+			$script[] = '		var newheight;';
+			$script[] = '		if(iframe) {';
+			$script[] = '			newheight = iframe.contentWindow.document.body.scrollHeight;';
+			$script[] = '			iframe.height= (newheight) + "px";';
+			$script[] = '		}';
+			$script[] = '	}';
+
 			$script[] = "
 				function closeModal(fieldId)
 				{
@@ -226,8 +235,8 @@ class JFormFieldRmedia extends JFormField
 
 		$link = ($link ? $link : 'index.php?option=com_media&amp;view=images&amp;layout=modal&amp;tmpl=component&amp;asset='
 				. $asset . '&amp;author=' . $this->form->getValue($authorField)) . '&amp;fieldid='
-				. $this->id . '&amp;folder=' . $folder
-				. '&amp;redcore=true';
+			. $this->id . '&amp;folder=' . $folder
+			. '&amp;redcore=true';
 
 		// Create the modal object
 		$modal = RModal::getInstance(
@@ -235,14 +244,17 @@ class JFormFieldRmedia extends JFormField
 				'attribs' => array(
 					'id'    => $modalId,
 					'class' => 'modal hide',
-					'style' => 'width: 700px; height: 500px;'
+					'style' => 'width: 820px; height: 500px;'
 				),
 				'params' => array(
 					'showHeader'      => true,
 					'showFooter'      => false,
 					'showHeaderClose' => true,
 					'title' => $modalTitle,
-					'link' => $link
+					'link' => $link,
+					'events' => array (
+						'onload'      => 'jSetIframeHeight'
+					)
 				)
 			),
 			$modalId
