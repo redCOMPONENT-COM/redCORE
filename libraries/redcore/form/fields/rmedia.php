@@ -101,13 +101,13 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		tip.setStyle("display", "block");';
 			$script[] = '	}';
 
-			$script[] = '	function jFixIframe(iframe)';
+			$script[] = '	function jSetIframeHeight(iframe)';
 			$script[] = '	{';
 			$script[] = '		var newheight;';
 			$script[] = '		if(iframe) {';
 			$script[] = '			newheight = iframe.contentWindow.document.body.scrollHeight;';
+			$script[] = '			iframe.height= (newheight) + "px";';
 			$script[] = '		}';
-			$script[] = '		iframe.height= (newheight) + "px";';
 			$script[] = '	}';
 
 			$script[] = "
@@ -253,7 +253,7 @@ class JFormFieldRmedia extends JFormField
 					'title' => $modalTitle,
 					'link' => $link,
 					'events' => array (
-						'onload'      => 'jFixIframe'
+						'onload'      => 'jSetIframeHeight'
 					)
 				)
 			),
