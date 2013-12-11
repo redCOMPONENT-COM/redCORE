@@ -18,7 +18,7 @@ JFormHelper::loadFieldClass('list');
  * @subpackage  Field
  * @since       1.0
  */
-abstract class JFormFieldRcurrency extends JFormFieldList
+class JFormFieldRcurrency extends JFormFieldList
 {
 	/**
 	 * The form field type.
