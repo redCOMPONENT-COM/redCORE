@@ -31,6 +31,35 @@ abstract class JHtmlRsortablelist
 	 */
 	const EXTENSION = 'redcore';
 
+
+	/**
+	 * Load the main Searchtools libraries
+	 *
+	 * @param   mixed  $debug  Is debugging mode on? [optional]
+	 *
+	 * @return  void
+	 *
+	 * @since   3.2
+	 */
+	public static function main()
+	{
+		// Only load once
+		if (!empty(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
+
+		// Depends on jQuery UI
+		JHtml::_('rjquery.ui', array('core', 'sortable'));
+
+		RHelperAsset::load('lib/sortablelist.js', self::EXTENSION);
+		RHelperAsset::load('lib/sortablelist.css', self::EXTENSION);
+
+		static::$loaded[__METHOD__] = true;
+
+		return;
+	}
+
 	/**
 	 * Method to load the Sortable script and make table sortable
 	 *
@@ -51,17 +80,14 @@ abstract class JHtmlRsortablelist
 			return;
 		}
 
-		// Depends on jQuery UI
-		JHtml::_('rjquery.ui', array('core', 'sortable'));
-
-		RHelperAsset::load('lib/sortablelist.js', self::EXTENSION);
-		RHelperAsset::load('lib/sortablelist.css', self::EXTENSION);
+		static::main();
 
 		// Attach sortable to document
 		JFactory::getDocument()->addScriptDeclaration("
 			(function ($){
 				$(document).ready(function (){
-					var sortableList = new $.JSortableList('#" . $tableId . " tbody','" . $formId . "','" . $sortDir . "' , '" . $saveOrderingUrl . "','','" . $nestedList . "');
+					var sortableList = new $.JSortableList('#" . $tableId . " tbody','" . $formId . "','"
+			. $sortDir . "' , '" . $saveOrderingUrl . "','','" . $nestedList . "');
 				});
 			})(jQuery);
 			"

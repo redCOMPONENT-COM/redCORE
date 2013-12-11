@@ -46,12 +46,13 @@ abstract class JHtmlRgrid
 	 * @param   boolean  $checkedOut  True if item is checke out
 	 * @param   string   $name        The name of the form element
 	 * @param   string   $formId      The form id
+	 * @param   string   $idPrefix    Custom prefix
 	 *
 	 * @return  mixed    String of html with a checkbox if item is not checked out, null if checked out.
 	 */
-	public static function id($rowNum, $recId, $checkedOut = false, $name = 'cid', $formId = 'adminForm')
+	public static function id($rowNum, $recId, $checkedOut = false, $name = 'cid', $formId = 'adminForm', $idPrefix = 'cb')
 	{
-		return $checkedOut ? '' : '<input type="checkbox" id="cb' . $rowNum . '" name="' . $name . '[]" value="' . $recId
+		return $checkedOut ? '' : '<input type="checkbox" id="' . $idPrefix . $rowNum . '" name="' . $name . '[]" value="' . $recId
 			. '" onclick="Joomla.isChecked(this.checked, document.getElementById(\'' . $formId . '\'));" />';
 	}
 
@@ -90,8 +91,8 @@ abstract class JHtmlRgrid
 	 * @return  string         The Html code
 	 */
 	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '',
-		$tip = false, $active_class = '',$inactive_class = '',
-		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+	                              $tip = false, $active_class = '',$inactive_class = '',
+	                              $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -127,7 +128,9 @@ abstract class JHtmlRgrid
 				$class = 'unpublished';
 			}
 
-			$html[] = '<a class="btn btn-small ' . $class . '" ' . ($tip ? 'rel="tooltip"' : '') . '';
+			$class .= $tip ? ' hasTooltip' : '';
+
+			$html[] = '<a class="btn btn-small ' . $class . '"';
 			$html[] = ' href="javascript:void(0);" onclick="return listItemTaskForm(\'' . $checkbox . $i . '\',\''
 				. $prefix . $task . '\',\'' . $formId . '\')"';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($active_title) : $active_title, ENT_COMPAT, 'UTF-8')) . '">';
@@ -137,7 +140,7 @@ abstract class JHtmlRgrid
 		}
 		else
 		{
-			$html[] = '<a class="btn btn-micro disabled jgrid" ' . ($tip ? 'rel="tooltip"' : '') . '';
+			$html[] = '<a class="btn btn-micro disabled jgrid ' . ($tip ? 'hasTooltip' : '') . '" ';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($inactive_title) : $inactive_title, ENT_COMPAT, 'UTF-8')) . '">';
 
 			if ($active_class == "protected")
@@ -174,7 +177,7 @@ abstract class JHtmlRgrid
 	 * @return  string       The Html code
 	 */
 	public static function state($states, $value, $i, $prefix = '',
-		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+	                             $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -215,7 +218,7 @@ abstract class JHtmlRgrid
 	 * @return  string  The Html code
 	 */
 	public static function published($value, $i, $prefix = '', $enabled = true,
-		$checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
+	                                 $checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -437,7 +440,7 @@ abstract class JHtmlRgrid
 	 * @return  string
 	 */
 	public static function sort($title, $order, $direction = 'asc', $selected = 0,
-		$task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
+	                            $task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
 	{
 		JHtml::_('rbootstrap.tooltip');
 		static::main();

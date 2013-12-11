@@ -34,14 +34,20 @@ abstract class JHtmlRbootstrap
 	/**
 	 * Load the entire bootstrap framework
 	 *
-	 * @param   mixed  $debug  Is debugging mode on? [optional]
+	 * @param   mixed    $debug    Is debugging mode on? [optional]
+	 * @param   boolean  $loadCss  Load bootstrap CSS ?
 	 *
 	 * @return  void
 	 */
-	public static function framework($debug = null)
+	public static function framework($debug = null, $loadCss = false)
 	{
 		JHtml::_('rjquery.framework');
-		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+
+		if ($loadCss)
+		{
+			RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+		}
+
 		RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
 	}
 
@@ -53,6 +59,8 @@ abstract class JHtmlRbootstrap
 	public static function responsive()
 	{
 		self::framework();
+
+		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
 		RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
 	}
 
@@ -367,7 +375,7 @@ abstract class JHtmlRbootstrap
 		$opt['delay'] = isset($params['delay']) ? $params['delay'] : null;
 		$opt['container'] = isset($params['container']) ? $params['container'] : false;
 
-		$options = JHtml::getJSObject($opt);
+		$options = RHtml::getJSObject($opt);
 
 		// Attach the popover to the document
 		JFactory::getDocument()->addScriptDeclaration(
@@ -404,7 +412,7 @@ abstract class JHtmlRbootstrap
 			// Setup options object
 			$opt['offset'] = (isset($params['offset']) && ($params['offset'])) ? (int) $params['offset'] : 10;
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach ScrollSpy to document
 			JFactory::getDocument()->addScriptDeclaration(
@@ -517,7 +525,7 @@ abstract class JHtmlRbootstrap
 			$opt['updater'] = (isset($params['updater']) && ($params['updater'])) ? (string) $params['updater'] : null;
 			$opt['highlighter'] = (isset($params['highlighter']) && ($params['highlighter'])) ? (int) $params['highlighter'] : null;
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach tooltips to document
 			JFactory::getDocument()->addScriptDeclaration(
@@ -561,7 +569,7 @@ abstract class JHtmlRbootstrap
 			$opt['toggle'] = (isset($params['toggle']) && ($params['toggle'])) ? (boolean) $params['toggle'] : true;
 			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach accordion to document
 			JFactory::getDocument()->addScriptDeclaration(
@@ -600,7 +608,7 @@ abstract class JHtmlRbootstrap
 	 */
 	public static function addSlide($selector, $text, $id, $class = '')
 	{
-		$in = (static::$loaded['JHtmlBootstrap::startAccordion']['active'] == $id) ? ' in' : '';
+		$in = (static::$loaded['JHtmlRbootstrap::startAccordion']['active'] == $id) ? ' in' : '';
 		$class = (!empty($class)) ? ' ' . $class : '';
 
 		$html = '<div class="accordion-group' . $class . '">'
@@ -645,18 +653,18 @@ abstract class JHtmlRbootstrap
 			// Setup options object
 			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
 
-			$options = JHtml::getJSObject($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach tabs to document
 			JFactory::getDocument()
-				->addScriptDeclaration(JLayoutHelper::render('libraries.cms.html.bootstrap.starttabsetscript', array('selector' => $selector)));
+				->addScriptDeclaration(RLayoutHelper::render('libraries.cms.html.bootstrap.starttabsetscript', array('selector' => $selector)));
 
 			// Set static array
 			static::$loaded[__METHOD__][$sig] = true;
 			static::$loaded[__METHOD__][$selector]['active'] = $opt['active'];
 		}
 
-		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.starttabset', array('selector' => $selector));
+		$html = RLayoutHelper::render('libraries.cms.html.bootstrap.starttabset', array('selector' => $selector));
 
 		return $html;
 	}
@@ -668,7 +676,7 @@ abstract class JHtmlRbootstrap
 	 */
 	public static function endTabSet()
 	{
-		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.endtabset');
+		$html = RLayoutHelper::render('libraries.cms.html.bootstrap.endtabset');
 
 		return $html;
 	}
@@ -687,10 +695,10 @@ abstract class JHtmlRbootstrap
 		static $tabScriptLayout = null;
 		static $tabLayout = null;
 
-		$tabScriptLayout = is_null($tabScriptLayout) ? new JLayoutFile('libraries.cms.html.bootstrap.addtabscript') : $tabScriptLayout;
-		$tabLayout = is_null($tabLayout) ? new JLayoutFile('libraries.cms.html.bootstrap.addtab') : $tabLayout;
+		$tabScriptLayout = is_null($tabScriptLayout) ? new RLayoutFile('libraries.cms.html.bootstrap.addtabscript') : $tabScriptLayout;
+		$tabLayout = is_null($tabLayout) ? new RLayoutFile('libraries.cms.html.bootstrap.addtab') : $tabLayout;
 
-		$active = (static::$loaded['JHtmlBootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
+		$active = (static::$loaded['JHtmlRbootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
 
 		// Inject tab into UL
 		JFactory::getDocument()->addScriptDeclaration(
@@ -716,7 +724,7 @@ abstract class JHtmlRbootstrap
 	 */
 	public static function endTab()
 	{
-		$html = JLayoutHelper::render('libraries.cms.html.bootstrap.endtab');
+		$html = RLayoutHelper::render('libraries.cms.html.bootstrap.endtab');
 
 		return $html;
 	}

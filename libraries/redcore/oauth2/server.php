@@ -14,7 +14,7 @@
 defined('_JEXEC') or die( 'Restricted access' );
 
 // Register component prefix
-JLoader::registerPrefix('ROauth2', __DIR__);
+JLoader::registerPrefix('ROauth2', dirname(__FILE__));
 
 /**
  * ROauth2ProtocolRequest class

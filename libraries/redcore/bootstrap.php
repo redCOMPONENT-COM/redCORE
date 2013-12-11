@@ -10,9 +10,9 @@
 
 defined('JPATH_PLATFORM') or die;
 
-define('JPATH_REDCORE', __DIR__);
+define('JPATH_REDCORE', dirname(__FILE__));
 
-require JPATH_REDCORE . '/inflector/inflector.php';
+require JPATH_REDCORE . '/functions.php';
 
 // Use our own base field
 if (!class_exists('JFormField', false))
@@ -39,6 +39,7 @@ JFormHelper::addRulePath(JPATH_REDCORE . '/form/rules');
 
 // HTML helpers
 JHtml::addIncludePath(JPATH_REDCORE . '/html');
+RHtml::addIncludePath(JPATH_REDCORE . '/html');
 
 // Load library language
 $lang = JFactory::getLanguage();

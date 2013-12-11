@@ -337,15 +337,36 @@ final class RToolbarBuilder
 	/**
 	 * Create a modal button.
 	 *
-	 * @param   string  $dataTarget  The data-target selector.
-	 * @param   string  $text        The button text.
-	 * @param   string  $class       The button class.
-	 * @param   string  $iconClass   The icon class.
+	 * @param   string   $dataTarget  The data-target selector.
+	 * @param   string   $text        The button text.
+	 * @param   string   $class       The button class.
+	 * @param   string   $iconClass   The icon class.
+	 * @param   boolean  $list        Is the button applying on a list ?
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createModalButton($dataTarget, $text, $class = '', $iconClass = '')
+	public static function createModalButton($dataTarget, $text, $class = '', $iconClass = '', $list = false)
 	{
-		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass);
+		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass, $list);
+	}
+
+	/**
+	 * Create a csv button to redirecto to a view.
+	 *
+	 * @param   mixed  $link  The link to the view.
+	 *                        If null, it will append &format=csv to the current view.
+	 *
+	 * @return  RToolbarButtonLink  The button
+	 */
+	public static function createCsvButton($link = null)
+	{
+		if (null === $link)
+		{
+			$uri = JUri::getInstance();
+			$uri->setVar('format', 'csv');
+			$link = $uri->toString();
+		}
+
+		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table');
 	}
 }

@@ -52,6 +52,11 @@ abstract class JHtmlRjquery
 
 		self::framework();
 
+		// Add chosen.jquery.js language strings
+		JText::script('JGLOBAL_SELECT_SOME_OPTIONS');
+		JText::script('JGLOBAL_SELECT_AN_OPTION');
+		JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
+
 		RHelperAsset::load('lib/chosen.jquery.js', self::EXTENSION);
 		RHelperAsset::load('lib/chosen.css', self::EXTENSION);
 		RHelperAsset::load('lib/chosen-extra.css', self::EXTENSION);
@@ -104,6 +109,34 @@ abstract class JHtmlRjquery
 	}
 
 	/**
+	 * Load the dependent fields
+	 *
+	 * @param   string  $childFieldSelector  DOM selector to apply the dropdowns
+	 * @param   array   $options             Optional array parameters
+	 *
+	 * @return  void
+	 *
+	 * @since   1.0
+	 */
+	public static function childlist($childFieldSelector = '.js-childlist-child', $options = array())
+	{
+		// This does not cache because we can have multiple instances in the same form ,same parent field and same child field
+		self::framework();
+
+		RHelperAsset::load('jquery.childlist.js', self::EXTENSION);
+
+		$options = static::options2Jregistry($options);
+
+		JFactory::getDocument()->addScriptDeclaration("
+			(function($){
+				$(document).ready(function () {
+					$('" . $childFieldSelector . "').childlist(" . $options->toString() . ");
+				});
+			})(jQuery);
+		");
+	}
+
+	/**
 	 * Load the jQuery framework
 	 *
 	 * @return  void
@@ -123,6 +156,29 @@ abstract class JHtmlRjquery
 		static::$loaded[__METHOD__] = true;
 
 		return;
+	}
+
+	/**
+	 * Function to receive & pre-process javascript options
+	 *
+	 * @param   mixed  $options  Associative array/JRegistry object with options
+	 *
+	 * @return  JRegistry        Options converted to JRegistry object
+	 */
+	private static function options2Jregistry($options)
+	{
+		// Support options array
+		if (is_array($options))
+		{
+			$options = new JRegistry($options);
+		}
+
+		if (!($options instanceof Jregistry))
+		{
+			$options = new JRegistry;
+		}
+
+		return $options;
 	}
 
 	/**
@@ -234,6 +290,41 @@ abstract class JHtmlRjquery
 		RHelperAsset::load('lib/jquery-ui/jquery-ui.custom.min.css', self::EXTENSION);
 
 		static::$loaded[__METHOD__] = true;
+
+		return;
+	}
+
+	/**
+	 * Load the flexslider library.
+	 *
+	 * @param   string  $selector  CSS Selector to initalise selects
+	 * @param   array   $options   Optional array with options
+	 *
+	 * @return void
+	 */
+	public static function flexslider($selector = '.flexslider', $options = null)
+	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__][$selector]))
+		{
+			return;
+		}
+
+		self::framework();
+
+		RHelperAsset::load('lib/flexslider/jquery.flexslider.js', self::EXTENSION);
+		RHelperAsset::load('lib/flexslider/flexslider.css', self::EXTENSION);
+
+		$options = static::options2Jregistry($options);
+
+		JFactory::getDocument()->addScriptDeclaration("
+			(function($){
+				$(document).ready(function () {
+					$('" . $selector . "').flexslider(" . $options->toString() . ");
+				});
+			})(jQuery);
+		");
+		static::$loaded[__METHOD__][$selector] = true;
 
 		return;
 	}

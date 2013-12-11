@@ -74,7 +74,8 @@ class JFormFieldRuser extends JFormFieldRtext
 		$script[] = '		if (old_id != id) {';
 		$script[] = '			document.getElementById("' . $this->id . '_id").value = id;';
 		$script[] = '			document.getElementById("' . $this->id . '").value = title;';
-		$script[] = '			document.getElementById("' . $this->id . '").className = document.getElementById("' . $this->id . '").className.replace(" invalid" , "");';
+		$script[] = '			document.getElementById("' . $this->id . '").className = document.getElementById("'
+			. $this->id . '").className.replace(" invalid" , "");';
 		$script[] = '			' . (string) $this->element['onchange'];
 		$script[] = '		}';
 		$script[] = '		jQuery("#' . $modalId . '").modal("hide")';
@@ -88,7 +89,7 @@ class JFormFieldRuser extends JFormFieldRtext
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide fade',
+					'class' => 'modal hide',
 					'style' => 'width: 800px; height: 500px;'
 				),
 				'params' => array(

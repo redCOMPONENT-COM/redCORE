@@ -1,6 +1,9 @@
 redCORE
 ======
 
+Master: [![Build Status](https://api.travis-ci.com/redCOMPONENT-COM/redCORE.png?branch=master&token=vpkyAMSd8vTHK9zwpML6)](https://magnum.travis-ci.com/redCOMPONENT-COM/redCORE/)
+Develop: [![Build Status](https://api.travis-ci.com/redCOMPONENT-COM/redCORE.png?branch=develop&token=vpkyAMSd8vTHK9zwpML6)](https://magnum.travis-ci.com/redCOMPONENT-COM/redCORE/)
+
 Rapid Application Development library for redCOMPONENT extensions
 
 The main aim of redCORE is to provide a mature and abstracted layer for development that will act as a base model for any future redCOMPONENT extension beeing developed.
@@ -12,6 +15,14 @@ redCORE is a quicker and more uniform way of creating extensions while adding so
 redCORE is not a rapid application development tool based on conventions to automatically create output.
 
 It is our hope that redCORE will be interesting for other Joomla developers or even the Joomla Core.
+
+Regards
+
+Ronni K. Gothard Christiansen
+
+Director and Founder of redCOMPONENT.com
+
+CEO, redWEB ApS
 
 Wiki
 =====

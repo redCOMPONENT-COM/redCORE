@@ -49,6 +49,20 @@ abstract class RModelList extends JModelList
 	protected $paginationPrefix = '';
 
 	/**
+	 * Limit field used by the pagination
+	 *
+	 * @var  string
+	 */
+	protected $limitField = 'limit';
+
+	/**
+	 * Limitstart field used by the pagination
+	 *
+	 * @var  string
+	 */
+	protected $limitstartField = 'limitstart';
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
@@ -71,6 +85,16 @@ abstract class RModelList extends JModelList
 		if (empty($this->paginationPrefix))
 		{
 			$this->paginationPrefix = strtolower($option . '_' . $view . '_' . $this->getName() . '_');
+		}
+
+		if ($this->limitstartField == 'auto')
+		{
+			$this->limitstartField = $this->paginationPrefix . 'limitstart';
+		}
+
+		if ($this->limitField == 'auto')
+		{
+			$this->limitField = $this->paginationPrefix . 'limit';
 		}
 
 		parent::__construct($config);
@@ -204,12 +228,8 @@ abstract class RModelList extends JModelList
 		{
 			$app = JFactory::getApplication();
 
-			// Pre-fill the limit
-			$limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'uint');
-			$this->setState('list.limit', $limit);
-
 			// Receive & set filters
-			if ($filters = $this->getUserStateFromRequest($this->context . '.filter', 'filter'))
+			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
 			{
 				foreach ($filters as $name => $value)
 				{
@@ -217,8 +237,10 @@ abstract class RModelList extends JModelList
 				}
 			}
 
+			$limit = 0;
+
 			// Receive & set list options
-			if ($list = $this->getUserStateFromRequest($this->context . '.list', 'list'))
+			if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
 			{
 				foreach ($list as $name => $value)
 				{
@@ -260,6 +282,8 @@ abstract class RModelList extends JModelList
 							{
 								$value = $ordering;
 							}
+
+							$this->setState('list.' . $name, $value);
 							break;
 
 						case 'direction':
@@ -267,26 +291,55 @@ abstract class RModelList extends JModelList
 							{
 								$value = $direction;
 							}
+
+							$this->setState('list.' . $name, $value);
 							break;
 
-						case 'start':
-							$value = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+						case $this->limitField:
+							$limit = $value;
+							$this->setState('list.limit', $value);
 							break;
 
 						// Just to keep the default case
 						default:
-							$value = $value;
+							$this->setState('list.' . $name, $value);
 							break;
 					}
-
-					$this->setState('list.' . $name, $value);
 				}
 			}
 			else
+			// Keep B/C for components previous to jform forms for filters
 			{
-				$this->setState('list.ordering', $ordering);
-				$this->setState('list.direction', $direction);
+				// Pre-fill the limits
+				$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $app->getCfg('list_limit'), 'uint');
+				$this->setState('list.limit', $limit);
+
+				// Check if the ordering field is in the white list, otherwise use the incoming value.
+				$value = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
+
+				if (!in_array($value, $this->filter_fields))
+				{
+					$value = $ordering;
+					$app->setUserState($this->context . '.ordercol', $value);
+				}
+
+				$this->setState('list.ordering', $value);
+
+				// Check if the ordering direction is valid, otherwise use the incoming value.
+				$value = $app->getUserStateFromRequest($this->context . '.orderdirn', 'filter_order_Dir', $direction);
+
+				if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
+				{
+					$value = $direction;
+					$app->setUserState($this->context . '.orderdirn', $value);
+				}
+
+				$this->setState('list.direction', $value);
 			}
+
+			$value = $app->getUserStateFromRequest($this->context . '.' . $this->limitstartField, $this->limitstartField, 0);
+			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+			$this->setState('list.start', $limitstart);
 		}
 		else
 		{

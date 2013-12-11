@@ -16,7 +16,7 @@ defined('JPATH_REDCORE') or die;
  * @subpackage  Helper
  * @since       1.0
  */
-class RHelperAsset extends JHtml
+class RHelperAsset extends RHtml
 {
 	/**
 	 * Includes assets from media directory, looking in the

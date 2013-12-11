@@ -100,11 +100,11 @@ class RDomObject
 	/**
 	 * Add a children object
 	 *
-	 * @param   REntityDomobject  $child  Child object
+	 * @param   RDomObject  $child  Child object
 	 *
 	 * @return  void
 	 */
-	function addChild($child)
+	public function addChild($child)
 	{
 		$this->children[$child->id] = $child;
 	}
@@ -168,7 +168,7 @@ class RDomObject
 	 * @param   array    $options  Optional array with settings
 	 * @param   integer  $id       The currency id.
 	 *
-	 * @return  REntityDomobject
+	 * @return  RDomObject
 	 */
 	public static function getInstance($options = array(), $id = null)
 	{
@@ -239,7 +239,7 @@ class RDomObject
 	/**
 	 * Render this DOM object
 	 *
-	 * @return  [type]  [description]
+	 * @return  string  The output
 	 */
 	public function render()
 	{
@@ -247,8 +247,8 @@ class RDomObject
 
 		if (!empty($this->tag))
 		{
-			$output .= '<' . $tag . ' ' . $this->renderAttributes() . '>';
-			$output .= '</' . $tag . '>';
+			$output .= '<' . $this->tag . ' ' . $this->renderAttributes() . '>';
+			$output .= '</' . $this->tag . '>';
 		}
 
 		return $output;

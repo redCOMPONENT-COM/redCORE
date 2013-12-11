@@ -26,18 +26,37 @@ class RToolbarButtonModal extends RToolbarButton
 	protected $dataTarget;
 
 	/**
+	 * Is this applying on a list ?
+	 *
+	 * @var  boolean
+	 */
+	protected $list;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param   string  $text        The button text.
-	 * @param   string  $dataTarget  The data-target attribute.
-	 * @param   string  $class       The button class.
-	 * @param   string  $iconClass   The icon class.
+	 * @param   string   $text        The button text.
+	 * @param   string   $dataTarget  The data-target attribute.
+	 * @param   string   $class       The button class.
+	 * @param   string   $iconClass   The icon class.
+	 * @param   boolean  $list        Is the button applying on a list ?
 	 */
-	public function __construct($text = '', $dataTarget = '', $class = '', $iconClass = '')
+	public function __construct($text = '', $dataTarget = '', $class = '', $iconClass = '', $list = false)
 	{
 		parent::__construct($text, $iconClass, $class);
 
 		$this->dataTarget = $dataTarget;
+		$this->list = $list;
+	}
+
+	/**
+	 * Check if the button applies on a list.
+	 *
+	 * @return  boolean  True if applying on a list, false otherwise.
+	 */
+	public function isList()
+	{
+		return $this->list;
 	}
 
 	/**

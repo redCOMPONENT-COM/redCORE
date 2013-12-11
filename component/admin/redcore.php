@@ -13,7 +13,7 @@ if (!class_exists('RLoader'))
 	throw new RuntimeException('Please enable redCORE System plugin!');
 }
 
-RLoader::registerPrefix('Redcore', __DIR__);
+RLoader::registerPrefix('Redcore', dirname(__FILE__));
 
 $app = JFactory::getApplication();
 

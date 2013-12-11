@@ -28,6 +28,14 @@ class JFormFieldRpublished extends JFormFieldRpredefinedList
 	protected $type = 'Rpublished';
 
 	/**
+	 * Cached array of the category items.
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	protected static $options = array();
+
+	/**
 	 * The array of values
 	 *
 	 * @var  string
@@ -39,4 +47,31 @@ class JFormFieldRpublished extends JFormFieldRpredefinedList
 		-2  => 'JTRASHED',
 		'*' => 'JALL'
 	);
+
+	/**
+	 * Method to get the options to populate list
+	 *
+	 * @return  array  The field option objects.
+	 *
+	 * @since   1.0
+	 */
+	protected function getOptions()
+	{
+		// Hash for caching
+		$hash = md5($this->element);
+		$type = strtolower($this->type);
+
+		if (!isset(static::$options[$type][$hash]) && !empty($this->predefinedOptions))
+		{
+			// B/C with statuses options
+			if (!isset($this->element['filter']) && isset($this->element['statuses']))
+			{
+				$this->element['filter'] = (string) $this->element['statuses'];
+			}
+
+			static::$options[$type][$hash] = parent::getOptions();
+		}
+
+		return static::$options[$type][$hash];
+	}
 }

@@ -1,40 +1,46 @@
 <?php
 /**
  * @package     Redcore
- * @subpackage  Layout
+ * @subpackage  Layouts
  *
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_BASE') or die;
-
-JHtml::_('rbootstrap.tooltip');
+defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-$options = isset($data->stoolsOptions) ? $data->stoolsOptions : array();
+// Receive overridable options
+$data['options'] = !empty($data['options']) ? $data['options'] : array();
 
-// Generate options object + common required settings
-$data->options = new JRegistry($options);
-$data->options->set('searchField', 'filter_' . $data->options->get('searchField', 'search'));
-$data->options->set('filtersApplied', !empty($data->activeFilters));
-$data->options->set('defaultLimit', JFactory::getApplication()->getCfg('list_limit', 20));
+// Set some basic options
+$customOptions = array(
+	'filtersHidden'       => isset($data['options']['filtersHidden']) ? $data['options']['filtersHidden'] : empty($data['view']->activeFilters),
+	'defaultLimit'        => isset($data['options']['defaultLimit']) ? $data['options']['defaultLimit'] : JFactory::getApplication()->getCfg('list_limit', 20),
+	'searchFieldSelector' => '#filter_search',
+	'orderFieldSelector'  => '#list_fullordering'
+);
+
+$data['options'] = array_unique(array_merge($customOptions, $data['options']));
+
+$formSelector = !empty($data['options']['formSelector']) ? $data['options']['formSelector'] : '#adminForm';
+
+// Load search tools
+RHtml::_('rsearchtools.form', $formSelector, $data['options']);
 
 ?>
-<div class="stools js-stools clearfix">
-	<div id="filter-bar" class="hidden-phone row-fluid clearfix">
-		<div class="span6">
-			<?php echo $this->sublayout('bar', $data); ?>
+<div class="js-stools clearfix">
+	<div class="clearfix">
+		<div class="js-stools-container-bar">
+			<?php echo RLayoutHelper::render('searchtools.default.bar', $data); ?>
 		</div>
-		<div class="span6 hidden-phone stools-list js-stools-container-order">
-			<?php echo $this->sublayout('list', $data); ?>
+		<div class="js-stools-container-list hidden-phone hidden-tablet">
+			<?php echo RLayoutHelper::render('searchtools.default.list', $data); ?>
 		</div>
 	</div>
 	<!-- Filters div -->
-	<div class="js-stools-container">
-		<div class="js-stools-container-filter stools-filters hidden-phone">
-			<?php  echo $this->sublayout('filters', $data); ?>
-		</div>
+	<div class="js-stools-container-filters hidden-phone clearfix">
+		<?php echo RLayoutHelper::render('searchtools.default.filters', $data); ?>
 	</div>
 </div>

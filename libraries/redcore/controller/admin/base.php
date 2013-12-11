@@ -21,6 +21,19 @@ JLoader::import('joomla.application.component.controlleradmin');
 abstract class RControllerAdminBase extends JControllerAdmin
 {
 	/**
+	 * The method => state map.
+	 *
+	 * @var  array
+	 */
+	protected $states = array(
+		'publish' => 1,
+		'unpublish' => 0,
+		'archive' => 2,
+		'trash' => -2,
+		'report' => -3
+	);
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
@@ -55,7 +68,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		{
 			$name = strstr($class, 'Controller');
 			$name = str_replace('Controller', '', $name);
-			$name = \Doctrine\Common\Inflector\Inflector::singularize($name);
+			$name = RInflector::singularize($name);
 		}
 
 		if (empty($prefix))
@@ -109,15 +122,15 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		// Get items to remove from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
 
+		// Get the model.
+		$model = $this->getModel();
+
 		if (!is_array($cid) || count($cid) < 1)
 		{
 			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
 		}
 		else
 		{
-			// Get the model.
-			$model = $this->getModel();
-
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
 			JArrayHelper::toInteger($cid);
@@ -152,9 +165,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 
 		// Get items to publish from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
-		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
-		$task = $this->getTask();
-		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		$value = JArrayHelper::getValue($this->states, $this->getTask(), 0, 'int');
 
 		if (empty($cid))
 		{
@@ -196,7 +207,6 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			{
 				$this->setMessage(JText::_('JLIB_DATABASE_ERROR_ANCESTOR_NODES_LOWER_STATE'), 'error');
 			}
-
 		}
 
 		$extension = $this->input->get('extension');

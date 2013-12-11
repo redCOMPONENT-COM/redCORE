@@ -25,16 +25,14 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
-		$isAdmin = JFactory::getApplication()->isAdmin();
-
-		if (!$isAdmin || ! $this->isRedcoreComponent())
+		if (!$this->isRedcoreComponent())
 		{
 			return;
 		}
 
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
-		if (file_exists($redcoreLoader) && !class_exists('Inflector'))
+		if (file_exists($redcoreLoader))
 		{
 			require_once $redcoreLoader;
 
@@ -95,21 +93,6 @@ class PlgSystemRedcore extends JPlugin
 		{
 			return;
 		}
-
-		$doc = JFactory::getDocument();
-
-		if (!empty($doc->_styleSheets))
-		{
-			foreach ($doc->_styleSheets as $stylesheet => $data)
-			{
-				// If component.css is included put it at the bottom of the list
-				if (substr_count($stylesheet, 'component.css'))
-				{
-					unset($doc->_styleSheets[$stylesheet]);
-					$doc->_styleSheets[$stylesheet] = $data;
-				}
-			}
-		}
 	}
 
 	/**
@@ -128,8 +111,7 @@ class PlgSystemRedcore extends JPlugin
 
 		$doc = JFactory::getDocument();
 
-		// Base assets to load always with redCORE
-		JHtml::_('rbootstrap.fontawesome');
+		RHtml::_('rbootstrap.framework');
 
 		if ($doc->_scripts)
 		{
@@ -144,28 +126,21 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools.js']);
 				unset($doc->_scripts[JURI::root(true) . '/plugins/system/mtupgrade/mootools.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompresed.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompresed.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompresed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
 			}
 
 			// Remove jQuery
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
 
 			// Remove bootstrap
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
 			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
-
-			// Remove other JS
-			foreach ($doc->_scripts as $script => $value)
-			{
-				if (substr_count($script, 'template.js'))
-				{
-					unset($doc->_scripts[$script]);
-				}
-			}
+			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
 		}
 
 		if ($doc->_styleSheets)
@@ -174,19 +149,6 @@ class PlgSystemRedcore extends JPlugin
 			if ($this->disableMootools())
 			{
 				unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
-			}
-
-			// Disable core bootstrap
-			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.min.css']);
-			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.css']);
-
-			// Disable other CSS
-			foreach ($doc->_styleSheets as $style => $value)
-			{
-				if (substr_count($style, 'template.css'))
-				{
-					unset($doc->_styleSheets[$style]);
-				}
 			}
 		}
 	}
@@ -221,18 +183,16 @@ class PlgSystemRedcore extends JPlugin
 		}
 
 		$componentName = substr($option, 4);
-		$maniFestFile = JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml';
+		$manifestFile = JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml';
 
-		if (!file_exists($maniFestFile))
+		if (file_exists($manifestFile))
 		{
-			return false;
-		}
+			$manifest = new SimpleXMLElement(file_get_contents($manifestFile));
 
-		$manifest = new SimpleXMLElement(file_get_contents($maniFestFile));
-
-		if ($manifest->xpath('//extension/redcore'))
-		{
-			return true;
+			if ($manifest->xpath('//extension/redcore'))
+			{
+				return true;
+			}
 		}
 
 		return false;

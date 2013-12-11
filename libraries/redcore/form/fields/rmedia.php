@@ -101,6 +101,15 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		tip.setStyle("display", "block");';
 			$script[] = '	}';
 
+			$script[] = '	function jSetIframeHeight(iframe)';
+			$script[] = '	{';
+			$script[] = '		var newheight;';
+			$script[] = '		if(iframe) {';
+			$script[] = '			newheight = iframe.contentWindow.document.body.scrollHeight;';
+			$script[] = '			iframe.height= (newheight) + "px";';
+			$script[] = '		}';
+			$script[] = '	}';
+
 			$script[] = "
 				function closeModal(fieldId)
 				{
@@ -226,43 +235,38 @@ class JFormFieldRmedia extends JFormField
 
 		$link = ($link ? $link : 'index.php?option=com_media&amp;view=images&amp;layout=modal&amp;tmpl=component&amp;asset='
 				. $asset . '&amp;author=' . $this->form->getValue($authorField)) . '&amp;fieldid='
-				. $this->id . '&amp;folder=' . $folder
-				. '&amp;redcore=true';
+			. $this->id . '&amp;folder=' . $folder
+			. '&amp;redcore=true';
 
 		// Create the modal object
 		$modal = RModal::getInstance(
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide fade',
-					'style' => 'width: 700px; height: 500px;'
+					'class' => 'modal hide',
+					'style' => 'width: 820px; height: 500px;'
 				),
 				'params' => array(
 					'showHeader'      => true,
 					'showFooter'      => false,
 					'showHeaderClose' => true,
 					'title' => $modalTitle,
-					'link' => $link
+					'link' => $link,
+					'events' => array (
+						'onload'      => 'jSetIframeHeight'
+					)
 				)
 			),
 			$modalId
 		);
 
-		$html[] = RLayoutHelper::render('modal', $modal);
-
-		// The button.
-		if ($this->element['disabled'] != true)
-		{
-			JHtml::_('rbootstrap.tooltip');
-
-			$html[] = '<a class="btn modalAjax" data-toggle="modal" title="' . JText::_('JLIB_FORM_BUTTON_SELECT') . '" href="#' . $modalId . '"'
-				. '>';
-			$html[] = JText::_('JLIB_FORM_BUTTON_SELECT') . '</a><a class="btn hasTooltip" title="' . JText::_('JLIB_FORM_BUTTON_CLEAR') . '" href="#" onclick="';
-			$html[] = 'jInsertFieldValue(\'\', \'' . $this->id . '\');';
-			$html[] = 'return false;';
-			$html[] = '">';
-			$html[] = '<i class="icon-remove"></i></a>';
-		}
+		$html[] = RLayoutHelper::render(
+			'fields.rmedia',
+			array(
+				'modal' => $modal,
+				'field' => $this
+			)
+		);
 
 		$html[] = '</div>';
 
