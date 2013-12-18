@@ -17,6 +17,7 @@ $cssId = $modal->getAttribute('id');
 
 if ($link = $modal->params->get('link', null))
 {
+	// @ToDo Remove re adding css style if more modal buttons are used
 	$styleSheet = "
 	iframe { border: 0 none; }
 	.modal {
@@ -27,21 +28,28 @@ if ($link = $modal->params->get('link', null))
 		padding: 5px;
 	}
 	";
-
 	$doc->addStyleDeclaration($styleSheet);
 
-	$script = "
-		(function($) {
-			$(document).ready(function() {
-				$('#" . $cssId . "').on('show', function () {
-					$('#" . $cssId . " .modal-body').html('<iframe class=\"iframe\" src=\""
-					. $link . "\" height=\"" . $modal->params->get('height', '500px') . "\" width=\"" . $modal->params->get('width', '100%') . "\" scrolling=\"no\"></iframe>');
-				});
-			});
-		})( jQuery );
-	";
+	$jsEvents       = $modal->params->get('events', array());
+	$jsEventsString = '';
 
-	$doc->addScriptDeclaration($script);
+	foreach ($jsEvents as $event => $function)
+	{
+		$jsEventsString .= $event . '="' . $function . '(this)" ';
+	}
+
+	$script   = array();
+
+	$script[] = '	(function($) {';
+	$script[] = '		$(document).ready(function() {';
+	$script[] = '		$(\'#' . $cssId . '\').on(\'show\', function () {';
+	$script[] = '			$(\'#' . $cssId . ' .modal-body\').html(\'<iframe class="iframe" src="' . $link . '" width="' .
+		$modal->params->get('width', '100%') . '" scrolling="no" ' . $jsEventsString . '"></iframe>\');';
+	$script[] = '			});';
+	$script[] = '		});';
+	$script[] = '	})( jQuery );';
+
+	$doc->addScriptDeclaration(implode("\n", $script));
 }
 
 ?>
