@@ -767,4 +767,17 @@ abstract class JHtmlRbootstrap
 
 		RHelperAsset::load('lib/font-awesome/css/font-awesome.min.css', static::EXTENSION);
 	}
+
+	/**
+	 * Load the bootstrap-checkbox.
+	 *
+	 * @return  void
+	 */
+	public static function checkbox()
+	{
+		static::framework();
+
+		RHelperAsset::load('lib/bootstrap-checkbox/css/bootstrap-checkbox.css', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap-checkbox.js', static::EXTENSION);
+	}
 }
