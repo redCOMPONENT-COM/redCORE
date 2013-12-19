@@ -69,10 +69,16 @@ $returnUri = base64_encode($returnUri);
 
 // Joomla menu
 $displayJoomlaMenu = false;
+$displayBackToJoomla = true;
 
 if (isset($data['display_joomla_menu']))
 {
 	$displayJoomlaMenu = (bool) $data['display_joomla_menu'];
+}
+
+if (isset($data['display_back_to_joomla']))
+{
+	$displayBackToJoomla = (bool) $data['display_back_to_joomla'];
 }
 
 if ($displayJoomlaMenu)
@@ -102,9 +108,11 @@ if ($displayJoomlaMenu)
 				<span class="icon-bar"></span>
 			</a>
 			<?php if (!$displayJoomlaMenu) : ?>
+				<?php if ($displayBackToJoomla) : ?>
 				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>">
 					<i class="icon-undo"></i> Back to Joomla
 				</a>
+				<?php endif; ?>
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
 			<a class="brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>

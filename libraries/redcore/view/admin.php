@@ -99,6 +99,13 @@ abstract class RViewAdmin extends RViewBase
 	protected $displayJoomlaMenu = false;
 
 	/**
+	 * True to display "Back to Joomla" link (only if displayJoomlaMenu = false)
+	 *
+	 * @var  boolean
+	 */
+	protected $displayBackToJoomla = true;
+
+	/**
 	 * Execute and display a template script.
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -122,6 +129,7 @@ abstract class RViewAdmin extends RViewBase
 				'topbar_inner_layout' => $this->topBarInnerLayout,
 				'topbar_inner_layout_data' => $this->topBarInnerLayoutData,
 				'display_joomla_menu' => $this->displayJoomlaMenu,
+				'display_back_to_joomla' => $this->displayBackToJoomla,
 			)
 		);
 
