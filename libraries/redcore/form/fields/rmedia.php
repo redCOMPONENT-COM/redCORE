@@ -244,7 +244,7 @@ class JFormFieldRmedia extends JFormField
 				'attribs' => array(
 					'id'    => $modalId,
 					'class' => 'modal hide',
-					'style' => 'width: 820px; height: 500px;'
+					'style' => 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;'
 				),
 				'params' => array(
 					'showHeader'      => true,
@@ -253,7 +253,7 @@ class JFormFieldRmedia extends JFormField
 					'title' => $modalTitle,
 					'link' => $link,
 					'events' => array (
-						'onload'      => 'jSetIframeHeight'
+						'onload' => 'jSetIframeHeight'
 					)
 				)
 			),
