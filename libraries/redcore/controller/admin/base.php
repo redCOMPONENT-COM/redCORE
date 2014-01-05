@@ -348,7 +348,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 */
 	protected function getRedirectToListRoute($append = null)
 	{
-		$returnUrl = $this->input->get('return', null, 'base64');
+		$returnUrl = $this->input->get('return');
 
 		if ($returnUrl)
 		{
