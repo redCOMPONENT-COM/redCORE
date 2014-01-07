@@ -23,8 +23,8 @@ class RText extends JText
 	 *
 	 * @param   string  $string            The string to replace tags from.
 	 * @param   array   $tags              An associative array of tag names as key and their replacement value as values.
-	 * @param   string  $openingSeparator  The opening seperator for the tag.
-	 * @param   string  $closingSeparator  The closing seperator for the tag.
+	 * @param   string  $openingSeparator  The opening separator for the tag.
+	 * @param   string  $closingSeparator  The closing separator for the tag.
 	 *
 	 * @return string The string with tags replaced.
 	 */
