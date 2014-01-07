@@ -33,3 +33,5 @@ $filters = $data['view']->filterForm->getGroup('filter');
 		<?php endif; ?>
 	<?php endforeach; ?>
 <?php endif; ?>
+
+

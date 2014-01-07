@@ -33,8 +33,6 @@ class ROauth2CredentialsSignerPlaintext extends ROauth2CredentialsSigner
 	 */
 	public function sign(ROauth2CredentialsStateToken $state, ROauth2ProtocolRequest $request)
 	{
-		$signed = false;
-
 		$request = $request->getParameters();
 
 		if ($state->__get('client_id') != $request['client_id'])
