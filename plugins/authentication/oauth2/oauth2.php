@@ -36,9 +36,6 @@ class PlgAuthenticationOAuth2 extends JPlugin
 		// Init the flag
 		$request = false;
 
-		// Load the Joomla! application
-		$app = JFactory::getApplication();
-
 		// Get the OAuth2 server instance
 		$oauth_server = new ROAuth2Server;
 
