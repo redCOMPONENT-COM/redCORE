@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ==================================================================  -->
+<!-- redCORE packager                                                    -->
+<!-- This PHING build file generates the redCORE extension package       -->
+<!-- To use in your environment do the following steps:                  -->
+<!--    Change the following variables in build.properties file          -->
+<!--            (copy variables from build.properties.dist )             -->
+<!--    - change the version in variable comp.version                    -->
+<!--    - change the source folder path in variable repo.dir             -->
+<!--    - change the package folder path in variable package.dir         -->
+<!--    - execute this PHING build file                                  -->
+<!-- ==================================================================  -->
+<project name="com_redcore" default="dist">
+	<!-- Do initialization stuff -->
+	<property file="build.properties" override="true"/>
+
+	<property
+			name="extension"
+			value="redCORE"
+			override="true"/>
+
+	<property
+			name="version"
+			value="${comp.version}"
+			override="true"/>
+
+	<!-- Folder where the redCORE repository is located  -->
+	<property
+			name="extpath"
+			value="${repo.dir}"
+			override="true"/>
+
+	<!-- Target dir where packages will be created  -->
+	<property
+			name="targetdir"
+			value="${package.dir}/package-${extension}-v${version}"
+			override="true"/>
+
+	<!-- Version of the redCORE for witch the module is intended to  -->
+	<property
+			name="joomla_version"
+			value="j32"
+			override="true"/>
+
+	<!-- ============================================  -->
+	<!-- Create packages folder                        -->
+	<!-- ============================================  -->
+	<target name="prepare">
+		<!-- Check if the target folder exists. If not, create it -->
+		<if>
+			<available file="${targetdir}" type="dir"/>
+			<then>
+				<echo msg="Removing old ${targetdir}"/>
+				<delete dir="${targetdir}"/>
+			</then>
+		</if>
+		<echo msg="Making directory to store the packages at ${targetdir}"/>
+		<mkdir dir="${targetdir}"/>
+
+	</target>
+
+	<!-- ============================================  -->
+	<!-- Target: build                                 -->
+	<!-- ============================================  -->
+	<!-- Copy the source files to the target folder -->
+
+	<target name="build" depends="prepare">
+
+		<echo msg="Copying INSTALLER files to build directory..."/>
+		<copy todir="${targetdir}">
+			<fileset dir="${extpath}/">
+				<include name="LICENSE.txt"/>
+				<include name="install.php"/>
+				<include name="redcore.xml"/>
+			</fileset>
+		</copy>
+
+		<echo msg="Copying COMPONENT folder to build directory..."/>
+		<copy todir="${targetdir}/component">
+			<fileset dir="${extpath}/component">
+				<include name="**"/>
+				<exclude name=".*"/>
+			</fileset>
+		</copy>
+
+		<echo msg="Copying MEDIA folder to build directory..."/>
+		<copy todir="${targetdir}/media">
+			<fileset dir="${extpath}/media">
+				<include name="**"/>
+				<exclude name=".*"/>
+			</fileset>
+		</copy>
+
+		<echo message="Copying libraries..."/>
+		<copy todir="${targetdir}/libraries" overwrite="true">
+			<fileset dir="${extpath}/libraries">
+				<include name="**"/>
+			</fileset>
+		</copy>
+
+		<echo msg="Copying oauth authentication plugin to build directory..."/>
+		<copy todir="${targetdir}/plugins/authentication/oauth2">
+			<fileset dir="${extpath}/plugins/authentication/oauth2">
+				<include name="**"/>
+				<exclude name=".*"/>
+			</fileset>
+		</copy>
+
+		<echo msg="Copying system redCORE plugin to build directory..."/>
+		<copy todir="${targetdir}/plugins/system/redcore">
+			<fileset dir="${extpath}/plugins/system/redcore">
+				<include name="**"/>
+				<exclude name=".*"/>
+				<exclude name="*.md"/>
+			</fileset>
+		</copy>
+
+	</target>
+
+	<!-- ============================================  -->
+	<!-- (DEFAULT)  Target: dist                       -->
+	<!-- ============================================  -->
+	<target name="dist" depends="build">
+		<echo msg="Creating ZIP archive..."/>
+
+		<if>
+			<available file="${targetdir}/../${extension}-v${version}_${joomla_version}.zip" property="test_zip_exists" value="Yes"/>
+			<then>
+				<echo msg="Removing old ZIP"/>
+				<delete file="${targetdir}/../${extension}-v${version}_${joomla_version}.zip" />
+			</then>
+		</if>
+
+		<zip destfile="${targetdir}/../${extension}-v${version}_${joomla_version}.zip">
+			<fileset dir="${targetdir}">
+				<include name="**"/>
+				<exclude name=".*"/>
+			</fileset>
+		</zip>
+
+		<echo msg="Files copied and compressed in build directory OK!"/>
+	</target>
+</project>
