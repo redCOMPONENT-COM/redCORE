@@ -57,7 +57,7 @@ elseif ($color['0'] != '#')
 }
 $value = htmlspecialchars($color, ENT_COMPAT, 'UTF-8');
 ?>
-<input type="text" style="padding: 4px 6px; padding-left: 30px;"
+<input type="text" style="padding: 4px 6px 4px 30px;"
 		name="<?php echo $data->name; ?>"
 		value="<?php echo $value; ?>"
 		<?php echo $renderedAttributes; ?> />

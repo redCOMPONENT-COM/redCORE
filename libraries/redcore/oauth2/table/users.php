@@ -25,7 +25,7 @@ class ROauth2TableUsers extends JTableUser
 	 *
 	 * @param   string  $key  The key for which to load the credentials.
 	 *
-	 * @return  void
+	 * @return  boolean
 	 *
 	 * @since 1.0
 	 */

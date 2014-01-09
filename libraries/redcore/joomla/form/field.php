@@ -557,7 +557,7 @@ abstract class JFormField
 
 		// Set the visibility.
 		$this->hidden = ($this->hidden || (string) $element['type'] == 'hidden');
-		
+
 		// Add the required class if the field is required.
 		$class = (string) $element ['class'];
 
@@ -870,7 +870,7 @@ abstract class JFormField
 	/**
 	 * Method to get a control group with label and input.
 	 *
-	 * @return  string  A string containing the html for the control goup
+	 * @return  string  A string containing the html for the control group
 	 *
 	 * @since   3.2
 	 */
