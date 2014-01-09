@@ -342,7 +342,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	/**
 	 * Get the JRoute object for a redirect to list.
 	 *
-	 * @param   string  $append  An optionnal string to append to the route
+	 * @param   string  $append  An optional string to append to the route
 	 *
 	 * @return  JRoute  The JRoute object
 	 */
