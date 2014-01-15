@@ -39,4 +39,22 @@ class RText extends JText
 
 		return strtr($string, $replace);
 	}
+	
+	/**
+	 * Simple text format
+	 *
+	 * @param   string	$string	The string to format
+	 * @param   array	$tags 	An associative array of characters to replace
+	 *
+	 * @return  string The formatted string
+	 */
+	public static function format($string, array $tags)
+	{
+		foreach ($tags as $old => $new)
+		{
+			$newString = str_replace($old, $new, $string);
+		}
+
+		return $newString;
+	}
 }
