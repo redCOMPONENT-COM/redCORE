@@ -19,6 +19,59 @@ defined('JPATH_REDCORE') or die;
 abstract class RModel extends JModelLegacy
 {
 	/**
+	 * Returns a Model object, always creating it
+	 *
+	 * @param   string  $type    The model type to instantiate
+	 * @param   string  $prefix  Prefix for the model class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  mixed   A model object or false on failure
+	 *
+	 * @since   11.1
+	 */
+	public static function getInstance($type, $prefix = '', $config = array())
+	{
+		$model = parent::getInstance($type, $prefix, $config);
+
+		if (!$model instanceof JModel && !$model instanceof JModelLegacy)
+		{
+			$type = preg_replace('/[^A-Z0-9_\.-]/i', '', $type);
+			$modelClass = $prefix . ucfirst($type);
+
+			if (!class_exists($modelClass))
+			{
+				jimport('joomla.filesystem.path');
+				$path = JPath::find(self::addIncludePath('', $prefix), self::_createFileName('model', array('name' => $type)));
+
+				if (!$path)
+				{
+					$path = JPath::find(self::addIncludePath(), self::_createFileName('model', array('name' => $type)));
+				}
+
+				if ($path)
+				{
+					require_once $path;
+
+					if (!class_exists($modelClass))
+					{
+						JError::raiseWarning(0, JText::sprintf('JLIB_APPLICATION_ERROR_MODELCLASS_NOT_FOUND', $modelClass));
+
+						return false;
+					}
+				}
+				else
+				{
+					return false;
+				}
+
+				return new $modelClass($config);
+			}
+		}
+
+		return $model;
+	}
+
+	/**
 	 * Get a model instance.
 	 *
 	 * @param   string  $name    Model name
