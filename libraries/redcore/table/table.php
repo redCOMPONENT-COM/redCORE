@@ -749,13 +749,13 @@ class RTable extends JTable
 		// Admin
 		if ($client === 1)
 		{
-			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '/tables');
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/tables');
 		}
 
 		// Site
 		elseif ($client === 0)
 		{
-			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/' . $componentName . '/tables');
+			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/tables');
 		}
 
 		else
