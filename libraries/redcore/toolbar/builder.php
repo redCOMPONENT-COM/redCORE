@@ -152,7 +152,7 @@ final class RToolbarBuilder
 	 */
 	public static function createCheckinButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_CHECKIN', $task, $class, 'icon-checkin');
+		return new RToolbarButtonStandard('JTOOLBAR_CHECKIN', $task, $class, 'icon-check');
 	}
 
 	/**
