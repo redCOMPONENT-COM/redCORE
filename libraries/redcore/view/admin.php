@@ -106,6 +106,13 @@ abstract class RViewAdmin extends RViewBase
 	protected $displayBackToJoomla = true;
 
 	/**
+	 * True to display "Version 1.0.x"
+	 *
+	 * @var  boolean
+	 */
+	protected $displayComponentVersion = false;
+
+	/**
 	 * Execute and display a template script.
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -130,6 +137,7 @@ abstract class RViewAdmin extends RViewBase
 				'topbar_inner_layout_data' => $this->topBarInnerLayoutData,
 				'display_joomla_menu' => $this->displayJoomlaMenu,
 				'display_back_to_joomla' => $this->displayBackToJoomla,
+				'display_component_version' => $this->displayComponentVersion,
 			)
 		);
 
