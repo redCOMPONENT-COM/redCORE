@@ -152,7 +152,7 @@ if (isset($data['display_component_version']))
 							<li>
 								<a href="#" onclick="return false">
 									<i class="icon-info-sign"></i>
-									<?php echo JText::_('JVERSION') . ' ' . $version; ?>
+									<?php echo $componentName . ' ' . $version; ?>
 								</a>
 							</li>
 						<?php endif; ?>
