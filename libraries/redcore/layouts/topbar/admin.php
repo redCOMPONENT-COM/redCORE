@@ -70,6 +70,7 @@ $returnUri = base64_encode($returnUri);
 // Joomla menu
 $displayJoomlaMenu = false;
 $displayBackToJoomla = true;
+$displayComponentVersion = false;
 
 if (isset($data['display_joomla_menu']))
 {
@@ -85,6 +86,14 @@ if ($displayJoomlaMenu)
 {
 	JLoader::import('joomla.application.module.helper');
 	$modules = JModuleHelper::getModules('menu');
+}
+
+if (isset($data['display_component_version']))
+{
+	$displayComponentVersion = (bool) $data['display_component_version'];
+	$componentName = ucfirst(strtolower(substr($option, 4)));
+	$xml = JFactory::getXML(JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml');
+	$version = (string) $xml->version;
 }
 ?>
 <script type="text/javascript">
@@ -139,6 +148,14 @@ if ($displayJoomlaMenu)
 								<?php echo $userName ?>
 							</a>
 						</li>
+						<?php if ($displayComponentVersion) : ?>
+							<li>
+								<a href="#" onclick="return false">
+									<i class="icon-info-sign"></i>
+									<?php echo $componentName . ' v' . $version; ?>
+								</a>
+							</li>
+						<?php endif; ?>
 						<li class="divider"></li>
 						<li class="">
 							<a href="index.php?option=com_login&amp;task=logout&amp;<?php echo JSession::getFormToken(); ?>=1">
