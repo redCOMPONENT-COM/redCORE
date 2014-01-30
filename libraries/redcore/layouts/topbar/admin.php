@@ -152,7 +152,7 @@ if (isset($data['display_component_version']))
 							<li>
 								<a href="#" onclick="return false">
 									<i class="icon-info-sign"></i>
-									<?php echo $componentName . ' ' . $version; ?>
+									<?php echo $componentName . ' v' . $version; ?>
 								</a>
 							</li>
 						<?php endif; ?>
