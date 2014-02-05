@@ -91,8 +91,9 @@ if ($displayJoomlaMenu)
 if (isset($data['display_component_version']))
 {
 	$displayComponentVersion = (bool) $data['display_component_version'];
-	$componentName = ucfirst(strtolower(substr($option, 4)));
-	$xml = JFactory::getXML(JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml');
+	$xmlComponentName = strtolower(substr($option, 4));
+	$componentName = ucfirst($xmlComponentName);
+	$xml = JFactory::getXML(JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $xmlComponentName . '.xml');
 	$version = (string) $xml->version;
 }
 ?>
