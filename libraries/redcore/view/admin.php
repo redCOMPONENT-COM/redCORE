@@ -113,6 +113,13 @@ abstract class RViewAdmin extends RViewBase
 	protected $displayComponentVersion = false;
 
 	/**
+	 * Redirect to another location after logout
+	 *
+	 * @var  string
+	 */
+	protected $logoutReturnUri = 'index.php';
+
+	/**
 	 * Execute and display a template script.
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -138,6 +145,7 @@ abstract class RViewAdmin extends RViewBase
 				'display_joomla_menu' => $this->displayJoomlaMenu,
 				'display_back_to_joomla' => $this->displayBackToJoomla,
 				'display_component_version' => $this->displayComponentVersion,
+				'logoutReturnUri' => $this->logoutReturnUri,
 			)
 		);
 
