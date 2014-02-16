@@ -96,6 +96,15 @@ if (isset($data['display_component_version']))
 	$xml = JFactory::getXML(JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $xmlComponentName . '.xml');
 	$version = (string) $xml->version;
 }
+
+if (!empty($data['logoutReturnUri']))
+{
+	$logoutReturnUri = base64_encode($data['logoutReturnUri']);
+}
+else
+{
+	$logoutReturnUri = base64_encode('index.php');
+}
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function () {
@@ -159,7 +168,7 @@ if (isset($data['display_component_version']))
 						<?php endif; ?>
 						<li class="divider"></li>
 						<li class="">
-							<a href="index.php?option=com_login&amp;task=logout&amp;<?php echo JSession::getFormToken(); ?>=1">
+							<a href="index.php?option=com_login&amp;task=logout&amp;<?php echo JSession::getFormToken(); ?>=1&amp;return=<?php echo $logoutReturnUri; ?>">
 								<span class="icon-off"></span>
 								<?php echo JText::_('LIB_REDCORE_ACCOUNT_LOGOUT'); ?>
 							</a>
