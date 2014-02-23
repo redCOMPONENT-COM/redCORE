@@ -11,7 +11,8 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-$input = JFactory::getApplication()->input;
+$app = JFactory::getApplication();
+$input = $app->input;
 
 /**
  * Handle raw format
@@ -32,6 +33,8 @@ if ('raw' === $format)
 			)
 		);
 	}
+
+	$toolbar = $view->getToolbar();
 
 	// Get the view template.
 	$tpl = $data['tpl'];
@@ -86,6 +89,15 @@ if (!$view instanceof RViewBase)
 	);
 }
 
+if (method_exists($view, 'getToolbar'))
+{
+	$toolbar = $view->getToolbar();
+}
+else
+{
+	$toolbar = null;
+}
+
 // Get the view template.
 $tpl = $data['tpl'];
 
@@ -98,5 +110,17 @@ if ($result instanceof Exception)
 }
 ?>
 <div class="redcore">
-	<?php echo $result; ?>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<?php if ($toolbar instanceof RToolbar) : ?>
+					<div class="row-fluid">
+						<?php echo $toolbar->render() ?>
+					</div>
+				<?php endif; ?>
+
+				<?php echo $result; ?>
+			</div>
+		</div>
+	</div>
 </div>
