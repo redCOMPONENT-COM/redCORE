@@ -3,12 +3,12 @@
 <extension version="3.0" type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_REDCORE</name>
     <author>redCOMPONENT</author>
-    <creationDate>June 2013</creationDate>
-    <copyright>Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
+    <creationDate>February 2014</creationDate>
+    <copyright>Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <description>PLG_SYSTEM_REDCORE_XML_DESCRIPTION</description>
 
     <files>
@@ -20,4 +20,23 @@
         <language tag="en-GB">en-GB/en-GB.plg_system_redcore.ini</language>
         <language tag="en-GB">en-GB/en-GB.plg_system_redcore.sys.ini</language>
     </languages>
+
+    <config>
+        <fields name="params">
+            <fieldset name="REDCORE_FRONTEND">
+                <field name="frontend_jquery" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY" description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="frontend_bootstrap" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP" description="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field name="frontend_mootools_disable" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE" description="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+        </fields>
+    </config>
 </extension>
