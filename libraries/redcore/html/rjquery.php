@@ -155,8 +155,17 @@ abstract class JHtmlRjquery
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
 		{
 			RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
-			RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
 			RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
+		}
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap)
+		{
+			JHtml::_('jquery.framework');
+		}
+
+		// Load jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
+		{
+			RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
 		}
 
 		static::$loaded[__METHOD__] = true;
