@@ -35,6 +35,13 @@ class RBootstrap
 	public static $loadFrontendjQuery = false;
 
 	/**
+	 * Defines if jQuery Migrate should be loaded in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $loadFrontendjQueryMigrate = true;
+
+	/**
 	 * Defines if Bootstrap should be loaded in Frontend component/modules
 	 *
 	 * @var    bool

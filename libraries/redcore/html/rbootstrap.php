@@ -55,6 +55,10 @@ abstract class JHtmlRbootstrap
 
 			RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
 		}
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap)
+		{
+			JHtml::_('bootstrap.framework');
+		}
 	}
 
 	/**

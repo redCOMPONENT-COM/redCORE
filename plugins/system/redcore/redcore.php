@@ -33,6 +33,7 @@ class PlgSystemRedcore extends JPlugin
 
 			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
 			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', false);
+			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
 			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', false);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
 		}
@@ -103,6 +104,11 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
+
+				if ($doc->_styleSheets)
+				{
+					unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
+				}
 			}
 
 			// Remove jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
@@ -110,9 +116,14 @@ class PlgSystemRedcore extends JPlugin
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
+			}
+
+			// Remove jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
+			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
+			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
 			}
 
 			// Remove Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
@@ -120,15 +131,6 @@ class PlgSystemRedcore extends JPlugin
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
-			}
-		}
-
-		if ($doc->_styleSheets)
-		{
-			// Disable mootools
-			if ($this->disableMootools())
-			{
-				unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
 			}
 		}
 	}
