@@ -19,6 +19,33 @@ defined('JPATH_REDCORE') or die;
 abstract class RModel extends JModelLegacy
 {
 	/**
+	 * Added from Joomla's legacy.php to preserve static $paths
+	 *
+	 * @param   string  $type    The model type to instantiate
+	 * @param   string  $prefix  Prefix for the model class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  mixed   A model object or false on failure
+	 */
+	public static function getInstance($type, $prefix = '', $config = array())
+	{
+		return parent::getInstance($type, $prefix, $config);
+	}
+
+	/**
+	 * Added from Joomla's legacy.php to preserve static $paths
+	 *
+	 * @param   mixed   $path    A path or array[sting] of paths to search.
+	 * @param   string  $prefix  A prefix for models.
+	 *
+	 * @return  array  An array with directory elements. If prefix is equal to '', all directories are returned.
+	 */
+	public static function addIncludePath($path = '', $prefix = '')
+	{
+		return parent::addIncludePath($path, $prefix);
+	}
+
+	/**
 	 * Get a model instance.
 	 *
 	 * @param   string  $name    Model name

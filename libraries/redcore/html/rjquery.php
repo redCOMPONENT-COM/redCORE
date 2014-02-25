@@ -149,9 +149,15 @@ abstract class JHtmlRjquery
 			return;
 		}
 
-		RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
-		RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
-		RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
+		// Load jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
+		{
+			RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
+			RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
+			RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
+		}
 
 		static::$loaded[__METHOD__] = true;
 

@@ -43,12 +43,18 @@ abstract class JHtmlRbootstrap
 	{
 		JHtml::_('rjquery.framework');
 
-		if ($loadCss)
-		{
-			RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
-		}
+		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
+		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+		{
+			if ($loadCss)
+			{
+				RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+			}
+
+			RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
+		}
 	}
 
 	/**
@@ -60,8 +66,14 @@ abstract class JHtmlRbootstrap
 	{
 		self::framework();
 
-		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
-		RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
+		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+		{
+			RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+			RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
+		}
 	}
 
 	/**
