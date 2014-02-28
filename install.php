@@ -552,6 +552,8 @@ class Com_RedcoreInstallerScript
 	{
 		require_once JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
+		RBootstrap::bootstrap();
+
 		// Avoid uninstalling redcore if there is a component using it
 		$manifest = $this->getManifest($parent);
 		$isRedcore = 'COM_REDCORE' === (string) $manifest->name;
