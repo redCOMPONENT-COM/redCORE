@@ -142,7 +142,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			}
 			else
 			{
-				$this->setMessage($model->getError());
+				$this->setMessage($model->getError(), 'error');
 			}
 		}
 
@@ -182,26 +182,31 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			// Publish the items.
 			try
 			{
-				$model->publish($cid, $value);
+				if ($model->publish($cid, $value))
+				{
+					if ($value == 1)
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
+					}
+					elseif ($value == 0)
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
+					}
+					elseif ($value == 2)
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
+					}
+					else
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+					}
 
-				if ($value == 1)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
-				}
-				elseif ($value == 0)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
-				}
-				elseif ($value == 2)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
+					$this->setMessage(JText::plural($ntext, count($cid)));
 				}
 				else
 				{
-					$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+					$this->setMessage($model->getError(), 'error');
 				}
-
-				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 			catch (Exception $e)
 			{
