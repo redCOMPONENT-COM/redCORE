@@ -24,7 +24,7 @@
     <config>
         <fields name="params">
             <fieldset name="REDCORE_FRONTEND">
-                <field name="frontend_jquery" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY" description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_DESC">
+                <field name="frontend_jquery" type="list" default="1" label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY" description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
@@ -32,7 +32,7 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name="frontend_bootstrap" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP" description="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP_DESC">
+                <field name="frontend_bootstrap" type="list" default="1" label="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP" description="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>

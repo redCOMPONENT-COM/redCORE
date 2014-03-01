@@ -32,9 +32,9 @@ class PlgSystemRedcore extends JPlugin
 			require_once $redcoreLoader;
 
 			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
-			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', false);
+			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
-			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', false);
+			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
 		}
 	}
@@ -90,6 +90,8 @@ class PlgSystemRedcore extends JPlugin
 
 		if ($doc->_scripts)
 		{
+			$template = JFactory::getApplication()->getTemplate();
+
 			// Remove Mootools if asked by view, or if it's a site view and it has been asked via plugin parameters
 			if ($this->disableMootools() || (!$isAdmin && RBootstrap::$disableFrontendMootools))
 			{
@@ -117,6 +119,11 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
+
+				// Template specific overrides for jQuery files (valid in Joomla 3.x)
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery.min.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery-noconflict.js']);
 			}
 
 			// Remove jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
@@ -124,6 +131,10 @@ class PlgSystemRedcore extends JPlugin
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);
+
+				// Template specific overrides for jQuery files (valid in Joomla 3.x)
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery-migrate.min.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery-migrate.js']);
 			}
 
 			// Remove Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
@@ -131,6 +142,10 @@ class PlgSystemRedcore extends JPlugin
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
+
+				// Template specific overrides for jQuery files (valid in Joomla 3.x)
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.min.js']);
 			}
 		}
 	}

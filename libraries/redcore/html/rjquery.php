@@ -157,7 +157,7 @@ abstract class JHtmlRjquery
 			RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
 			RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
 		}
-		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap)
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
 		{
 			JHtml::_('jquery.framework');
 		}
