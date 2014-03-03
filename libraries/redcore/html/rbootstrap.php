@@ -55,7 +55,7 @@ abstract class JHtmlRbootstrap
 
 			RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
 		}
-		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap)
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
 		{
 			JHtml::_('bootstrap.framework');
 		}
