@@ -49,7 +49,11 @@ $input->set('redcore', true);
 JHtml::_('rbootstrap.framework');
 
 RHelperAsset::load('component.js', 'redcore');
-RHelperAsset::load('component.min.css', 'redcore');
+
+if (RBootstrap::$loadFrontendCSS)
+{
+	RHelperAsset::load('component.min.css', 'redcore');
+}
 
 // Load a custom CSS option for this component if exists
 if ($comOption = $input->get('option', null))
@@ -113,11 +117,16 @@ if ($result instanceof Exception)
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span12">
-				<?php if ($toolbar instanceof RToolbar) : ?>
+				<?php
+					if ($toolbar instanceof RToolbar)
+						:
+				?>
 					<div class="row-fluid">
 						<?php echo $toolbar->render() ?>
 					</div>
-				<?php endif; ?>
+				<?php
+					endif;
+				?>
 
 				<?php echo $result; ?>
 			</div>
