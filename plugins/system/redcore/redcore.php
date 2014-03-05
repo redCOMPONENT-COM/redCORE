@@ -32,6 +32,7 @@ class PlgSystemRedcore extends JPlugin
 			require_once $redcoreLoader;
 
 			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
+			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
 			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
 			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);

@@ -28,11 +28,18 @@ if (!defined('JPATH_REDCORE'))
 class RBootstrap
 {
 	/**
+	 * Defines if redCORE base css should be loaded in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $loadFrontendCSS = false;
+	
+	/**
 	 * Defines if jQuery should be loaded in Frontend component/modules
 	 *
 	 * @var    bool
 	 */
-	public static $loadFrontendjQuery = false;
+	public static $loadFrontendjQuery = true;
 
 	/**
 	 * Defines if jQuery Migrate should be loaded in Frontend component/modules
@@ -46,7 +53,7 @@ class RBootstrap
 	 *
 	 * @var    bool
 	 */
-	public static $loadFrontendBootstrap = false;
+	public static $loadFrontendBootstrap = true;
 
 	/**
 	 * Defines if Mootools should be disabled in Frontend component/modules
