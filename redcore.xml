@@ -49,6 +49,8 @@
         <languages folder="component/admin/language">
             <language tag="en-GB">en-GB/en-GB.com_redcore.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_redcore.sys.ini</language>
+            <language tag="da-DK">da-DK/da-DK.com_redcore.ini</language>
+            <language tag="da-DK">da-DK/da-DK.com_redcore.sys.ini</language>
         </languages>
     </administration>
 
