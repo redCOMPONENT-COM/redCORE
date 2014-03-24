@@ -120,10 +120,18 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.min.js']);
-				unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.css']);
-				unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.min.css']);
+
+				$jQueryChosen = false;
+
+				if (isset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.js'])
+					|| isset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.min.js']))
+				{
+					$jQueryChosen = true;
+					unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.js']);
+					unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.min.js']);
+					unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.css']);
+					unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.min.css']);
+				}
 
 				// Template specific overrides for jQuery files (valid in Joomla 3.x)
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery.min.js']);
@@ -134,8 +142,8 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_styleSheets[JURI::root(true) . '/templates/' . $template . '/css/jui/chosen.css']);
 				unset($doc->_styleSheets[JURI::root(true) . '/templates/' . $template . '/css/jui/chosen.min.css']);
 
-				// Enables chosen for com_media screens
-				if (JFactory::getApplication()->input->getString('option') == 'com_media')
+				// Enables chosen when it was removed
+				if ($jQueryChosen)
 				{
 					RHtml::_('rjquery.chosen', 'select');
 				}
