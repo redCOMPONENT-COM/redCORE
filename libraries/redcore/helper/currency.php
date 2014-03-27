@@ -21,42 +21,6 @@ final class RHelperCurrency
 	protected static $codes;
 
 	/**
-	 * Return supported currencies from http://www.currency-iso.org
-	 *
-	 * @return array
-	 */
-	protected static function get_iso_4217_currency_codes()
-	{
-		if (!self::$codes)
-		{
-			// Xml file was pulled from http://www.currency-iso.org/dam/downloads/table_a1.xml. Should be refreshed sometimes !
-			$xml = file_get_contents(dirname(__FILE__) . '/currency_iso_4217_table.xml');
-			$obj = new SimpleXMLElement($xml);
-
-			$currencies = array();
-
-			foreach ($obj->children()->children() as $country)
-			{
-				$code = (string) $country->Ccy;
-
-				if ($code && !isset($currencies[$code]))
-				{
-					$obj = new stdclass;
-					$obj->name   = (string) $country->CcyNm;
-					$obj->code   = (string) $country->Ccy;
-					$obj->number = (string) $country->CcyNbr;
-
-					$currencies[$code] = $obj;
-				}
-			}
-
-			self::$codes = $currencies;
-		}
-
-		return self::$codes;
-	}
-
-	/**
 	 * Return iso code from iso number
 	 *
 	 * @param   string  $number  iso number
@@ -81,22 +45,13 @@ final class RHelperCurrency
 	/**
 	 * Return number corresponding to iso code
 	 *
-	 * @param   string  $code  3 letters code (e.g USD, EUR,...)
+	 * @param   string  $code  iso 4217 3 letters currency code
 	 *
 	 * @return string
 	 */
 	public static function getIsoNumber($code)
 	{
-		$cur = self::get_iso_4217_currency_codes();
-
-		if (in_array($code, array_keys($cur)))
-		{
-			return $cur[$code]->number;
-		}
-		else
-		{
-			return false;
-		}
+		return self::getCurrency($code)->number;
 	}
 
 	/**
@@ -120,19 +75,101 @@ final class RHelperCurrency
 	/**
 	 * Check if given currency code is valid
 	 *
-	 * @param   string  $currency  iso 4217 currency code
+	 * @param   string  $code  iso 4217 3 letters currency code
 	 *
 	 * @return boolean true if exists
 	 */
-	public static function isValid($currency)
+	public static function isValid($code)
 	{
-		if (!$currency)
+		if (!$code)
 		{
 			return false;
 		}
 
 		$cur = self::get_iso_4217_currency_codes();
 
-		return isset($cur[$currency]);
+		return isset($cur[$code]);
+	}
+
+	/**
+	 * Return decimal precision in number of digits
+	 *
+	 * @param   string  $code  iso 4217 3 letters currency code
+	 *
+	 * @throws OutOfRangeException
+	 *
+	 * @return int
+	 */
+	public static function getPrecision($code)
+	{
+		return self::getCurrency($code)->precision;
+	}
+
+	/**
+	 * Return supported currencies from http://www.currency-iso.org
+	 *
+	 * @return array
+	 */
+	protected static function get_iso_4217_currency_codes()
+	{
+		if (!self::$codes)
+		{
+			// Xml file was pulled from http://www.currency-iso.org/dam/downloads/table_a1.xml. Should be refreshed sometimes !
+			$xml = file_get_contents(dirname(__FILE__) . '/currency_iso_4217_table.xml');
+			$obj = new SimpleXMLElement($xml);
+
+			$currencies = array();
+
+			foreach ($obj->children()->children() as $country)
+			{
+				$code = (string) $country->Ccy;
+
+				if ($code && !isset($currencies[$code]))
+				{
+					$obj = new stdclass;
+					$obj->name   = (string) $country->CcyNm;
+					$obj->code   = (string) $country->Ccy;
+					$obj->number = (string) $country->CcyNbr;
+					$obj->precision = (string) $country->CcyMnrUnts;
+
+					$currencies[$code] = $obj;
+				}
+			}
+
+			self::$codes = $currencies;
+		}
+
+		return self::$codes;
+	}
+
+	/**
+	 * Return currency object
+	 *
+	 * @param   string  $code  iso 4217 3 letters currency code
+	 *
+	 * @return mixed
+	 */
+	protected static function getCurrency($code)
+	{
+		self::throwExceptionIfNotValid($code);
+
+		return self::$codes[$code];
+	}
+
+	/**
+	 * Throws OutOfRangeException if currency code is not valid
+	 *
+	 * @param   string  $code  iso 4217 3 letters currency code
+	 *
+	 * @throws OutOfRangeException
+	 *
+	 * @return void
+	 */
+	protected static function throwExceptionIfNotValid($code)
+	{
+		if (!self::isValid($code))
+		{
+			throw new OutOfRangeException('invalid iso code: ' . $code);
+		}
 	}
 }
