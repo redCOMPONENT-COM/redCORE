@@ -5,7 +5,6 @@
 <!-- To use in your environment do the following steps:                  -->
 <!--    Change the following variables in build.properties file          -->
 <!--            (copy variables from build.properties.dist )             -->
-<!--    - change the source folder path in variable repo.dir             -->
 <!--    - change the package folder path in variable package.dir         -->
 <!--    - execute this PHING build file                                  -->
 <!-- ==================================================================  -->
@@ -21,7 +20,7 @@
     <!-- Folder where the redCORE repository is located  -->
     <property
             name="extpath"
-            value="${repo.dir}"
+            value="."
             override="true"/>
 
     <xmlproperty file="${extpath}/${extension}.xml" prefix="extensionDetails" keepRoot="false" />
@@ -41,6 +40,15 @@
 	<!-- Create packages folder                        -->
 	<!-- ============================================  -->
 	<target name="prepare">
+	    <if>
+	    	<not>
+		        <available file="build.properties" type="file" />
+		    </not>
+	        <then>
+	        	<fail msg="File not found: build.properties" />
+	        </then>
+	    </if>
+
 		<!-- Check if the target folder exists. If not, create it -->
 		<if>
 			<available file="${targetdir}" type="dir"/>
