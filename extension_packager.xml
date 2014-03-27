@@ -5,7 +5,6 @@
 <!-- To use in your environment do the following steps:                  -->
 <!--    Change the following variables in build.properties file          -->
 <!--            (copy variables from build.properties.dist )             -->
-<!--    - change the version in variable comp.version                    -->
 <!--    - change the source folder path in variable repo.dir             -->
 <!--    - change the package folder path in variable package.dir         -->
 <!--    - execute this PHING build file                                  -->
@@ -16,30 +15,26 @@
 
 	<property
 			name="extension"
-			value="redCORE"
+			value="${comp.name}"
 			override="true"/>
 
-	<property
+    <!-- Folder where the redCORE repository is located  -->
+    <property
+            name="extpath"
+            value="${repo.dir}"
+            override="true"/>
+
+    <xmlproperty file="${extpath}/${extension}.xml" prefix="extensionDetails" keepRoot="false" />
+
+    <property
 			name="version"
-			value="${comp.version}"
-			override="true"/>
-
-	<!-- Folder where the redCORE repository is located  -->
-	<property
-			name="extpath"
-			value="${repo.dir}"
+			value="${extensionDetails.version}"
 			override="true"/>
 
 	<!-- Target dir where packages will be created  -->
 	<property
 			name="targetdir"
 			value="${package.dir}/package-${extension}-v${version}"
-			override="true"/>
-
-	<!-- Version of the redCORE for witch the module is intended to  -->
-	<property
-			name="joomla_version"
-			value="j32"
 			override="true"/>
 
 	<!-- ============================================  -->
@@ -124,14 +119,14 @@
 		<echo msg="Creating ZIP archive..."/>
 
 		<if>
-			<available file="${targetdir}/../${extension}-v${version}_${joomla_version}.zip" property="test_zip_exists" value="Yes"/>
+			<available file="${targetdir}/../${extension}-v${version}.zip" property="test_zip_exists" value="Yes"/>
 			<then>
 				<echo msg="Removing old ZIP"/>
-				<delete file="${targetdir}/../${extension}-v${version}_${joomla_version}.zip" />
+				<delete file="${targetdir}/../${extension}-v${version}.zip" />
 			</then>
 		</if>
 
-		<zip destfile="${targetdir}/../${extension}-v${version}_${joomla_version}.zip">
+		<zip destfile="${targetdir}/../${extension}-v${version}.zip">
 			<fileset dir="${targetdir}">
 				<include name="**"/>
 				<exclude name=".*"/>
