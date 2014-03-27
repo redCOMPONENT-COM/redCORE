@@ -708,7 +708,7 @@ abstract class JFormField
 		$text = $this->translateLabel ? JText::_($text) : $text;
 
 		// Build the class for the label.
-		$class = !empty($this->description) ? 'hasTooltip' : '';
+		$class = !empty($this->description) ? 'hasTooltipLabel' : '';
 		$class = $this->required == true ? $class . ' required' : $class;
 		$class = !empty($this->labelClass) ? $class . ' ' . $this->labelClass : $class;
 
@@ -718,7 +718,7 @@ abstract class JFormField
 		// If a description is specified, use it to build a tooltip.
 		if (!empty($this->description))
 		{
-			RHtml::_('rbootstrap.tooltip');
+			RHtml::_('rbootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
 			$label .= ' title="' . RHtml::tooltipText(trim($text, ':'), JText::_($this->description), 0) . '"';
 		}
 
