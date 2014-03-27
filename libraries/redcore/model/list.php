@@ -53,14 +53,14 @@ abstract class RModelList extends JModelList
 	 *
 	 * @var  string
 	 */
-	protected $limitField = 'limit';
+	protected $limitField = 'auto';
 
 	/**
 	 * Limitstart field used by the pagination
 	 *
 	 * @var  string
 	 */
-	protected $limitstartField = 'limitstart';
+	protected $limitstartField = 'auto';
 
 	/**
 	 * Constructor.
