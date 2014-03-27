@@ -41,7 +41,7 @@ final class RToolbarBuilder
 	 */
 	public static function createCopyButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_COPY', $task, $class, 'icon-copy');
+		return new RToolbarButtonStandard('RTOOLBAR_COPY', $task, $class, 'icon-copy');
 	}
 
 	/**
