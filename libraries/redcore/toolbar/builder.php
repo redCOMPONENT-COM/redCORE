@@ -32,6 +32,19 @@ final class RToolbarBuilder
 	}
 
 	/**
+	 * Create a copy button.
+	 *
+	 * @param   string  $task   The task name.
+	 * @param   string  $class  A css class to add to the button.
+	 *
+	 * @return  RToolbarButtonStandard  The button.
+	 */
+	public static function createCopyButton($task, $class = '')
+	{
+		return new RToolbarButtonStandard('RTOOLBAR_COPY', $task, $class, 'icon-copy');
+	}
+
+	/**
 	 * Create a new button.
 	 *
 	 * @param   string  $task   The task name.
