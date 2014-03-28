@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ISO_4217 Pblshd="2013-11-07">
+<ISO_4217 Pblshd="2014-03-15">
 	<CcyTbl>
 		<CcyNtry>
 			<CtryNm>AFGHANISTAN</CtryNm>
@@ -325,7 +325,7 @@
 			<CcyNm IsFund="true">Unidad de Fomento</CcyNm>
 			<Ccy>CLF</Ccy>
 			<CcyNbr>990</CcyNbr>
-			<CcyMnrUnts>0</CcyMnrUnts>
+			<CcyMnrUnts>4</CcyMnrUnts>
 		</CcyNtry>
 		<CcyNtry>
 			<CtryNm>CHILE</CtryNm>
@@ -917,9 +917,9 @@
 		</CcyNtry>
 		<CcyNtry>
 			<CtryNm>LATVIA</CtryNm>
-			<CcyNm>Latvian Lats</CcyNm>
-			<Ccy>LVL</Ccy>
-			<CcyNbr>428</CcyNbr>
+			<CcyNm>Euro</CcyNm>
+			<Ccy>EUR</Ccy>
+			<CcyNbr>978</CcyNbr>
 			<CcyMnrUnts>2</CcyMnrUnts>
 		</CcyNtry>
 		<CcyNtry>
@@ -986,7 +986,7 @@
 			<CcyMnrUnts>2</CcyMnrUnts>
 		</CcyNtry>
 		<CcyNtry>
-			<CtryNm>MACEDONIA, THE FORMER
+			<CtryNm>MACEDONIA, THE FORMER 
 YUGOSLAV REPUBLIC OF</CtryNm>
 			<CcyNm>Denar</CcyNm>
 			<Ccy>MKD</Ccy>
@@ -1390,7 +1390,7 @@ YUGOSLAV REPUBLIC OF</CtryNm>
 			<CcyMnrUnts>2</CcyMnrUnts>
 		</CcyNtry>
 		<CcyNtry>
-			<CtryNm>SAINT HELENA, ASCENSION AND
+			<CtryNm>SAINT HELENA, ASCENSION AND 
 TRISTAN DA CUNHA</CtryNm>
 			<CcyNm>Saint Helena Pound</CcyNm>
 			<Ccy>SHP</Ccy>
