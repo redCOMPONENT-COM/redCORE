@@ -69,10 +69,25 @@ class RBrowser
 	 */
 	public function browse($uri = null, $duplicateLast = false)
 	{
+		// This will enable both SEF and non-SEF URI to be parsed properly
+		$router = JRouter::getInstance('site');
+
 		if (null === $uri)
 		{
-			$uri = str_replace(Juri::base(), '', Juri::getInstance()->toString());
+			$uri = Juri::getInstance();
 		}
+		else
+		{
+			$uri = Juri::getInstance($uri);
+		}
+
+		// We are removing format because of default value is csv if present and if not set
+		// and we are never going to remember csv page in a browser history anyway
+		$uri->delVar('format');
+		$query = $router->parse($uri);
+		$uri = 'index.php?' . Juri::getInstance()->buildQuery($query);
+
+		$uri = str_replace(Juri::base(), '', $uri);
 
 		$this->history->enqueue($uri, $duplicateLast);
 	}
@@ -209,7 +224,7 @@ class RBrowser
 	/**
 	 * Clear the browser history.
 	 *
-	 * @return  void
+	 * @return  RBrowser
 	 */
 	public function clearHistory()
 	{
