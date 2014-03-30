@@ -10,7 +10,7 @@
     <version>1.0.2</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.0.2" />
+    <redcore version="1.0.3" />
 
     <install folder="component/admin">
         <sql>
