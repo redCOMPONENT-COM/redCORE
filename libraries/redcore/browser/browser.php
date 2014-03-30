@@ -224,7 +224,7 @@ class RBrowser
 	/**
 	 * Clear the browser history.
 	 *
-	 * @return  RBrowser
+	 * @return  void
 	 */
 	public function clearHistory()
 	{
