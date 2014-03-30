@@ -87,8 +87,6 @@ class RBrowser
 		$query = $router->parse($uri);
 		$uri = 'index.php?' . Juri::getInstance()->buildQuery($query);
 
-		$uri = str_replace(Juri::base(), '', $uri);
-
 		$this->history->enqueue($uri, $duplicateLast);
 	}
 
