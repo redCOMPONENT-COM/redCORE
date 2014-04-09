@@ -57,4 +57,27 @@ class RText extends JText
 
 		return $newString;
 	}
+
+	/**
+	 * Returns translated string if found in translation files, if it does not exist it returns given string
+	 *
+	 * @param   string  $string     The string key to get from translation files
+	 * @param   string  $prefix     Extension Key prefix
+	 * @param   string  $separator  Separator between Extension prefix and string key
+	 *
+	 * @return  string The string from translation or default string
+	 */
+	public static function getTranslationIfExists($string, $prefix = 'COM_REDCORE', $separator = '_')
+	{
+		$lang = JFactory::getLanguage();
+
+		if ($lang->hasKey(strtoupper($prefix . $separator . $string)))
+		{
+			return RText::_(strtoupper($prefix . $separator . $string));
+		}
+		else
+		{
+			return $string;
+		}
+	}
 }

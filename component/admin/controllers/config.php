@@ -19,6 +19,82 @@ defined('_JEXEC') or die;
 class RedcoreControllerConfig extends RControllerForm
 {
 	/**
+	 * Method to install Content Element.
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function installContentElement()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$app   = JFactory::getApplication();
+
+		$option = $app->input->getString('component');
+		$xmlFile = $app->input->getString('contentElement');
+
+		RTranslationTable::installContentElement($option, $xmlFile);
+
+		parent::edit();
+	}
+
+	/**
+	 * Method to uninstall Content Element.
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function uninstallContentElement()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$app   = JFactory::getApplication();
+
+		$option = $app->input->getString('component');
+		$xmlFile = $app->input->getString('contentElement');
+
+		RTranslationTable::uninstallContentElement($option, $xmlFile);
+
+		parent::edit();
+	}
+
+	/**
+	 * Method to purge Content Element Table.
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function purgeContentElement()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$app   = JFactory::getApplication();
+
+		$option = $app->input->getString('component');
+		$xmlFile = $app->input->getString('contentElement');
+
+		RTranslationTable::purgeContentElement($option, $xmlFile);
+
+		parent::edit();
+	}
+
+	/**
+	 * Method to delete Content Element file.
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function deleteContentElement()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$app   = JFactory::getApplication();
+
+		$option = $app->input->getString('component');
+		$xmlFile = $app->input->getString('contentElement');
+
+		RTranslationTable::deleteContentElement($option, $xmlFile);
+
+		parent::edit();
+	}
+
+	/**
 	 * Method to save a record.
 	 *
 	 * @param   string  $key     The name of the primary key of the URL variable.
@@ -265,10 +341,16 @@ class RedcoreControllerConfig extends RControllerForm
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
 
 		$component = $this->input->get('component');
+		$tab = $this->input->get('tab');
 
 		if ($component)
 		{
 			$append .= '&component=' . $component;
+		}
+
+		if ($tab)
+		{
+			$append .= '&tab=' . $tab;
 		}
 
 		return $append;

@@ -59,4 +59,34 @@ final class RComponentHelper
 
 		return $components;
 	}
+
+	/**
+	 * Get XML manifest file of the component
+	 *
+	 * @param   string  $extensionName  Name of the extension you want to load Manifest file
+	 *
+	 * @return  SimpleXMLElement  Manifest file in XML format
+	 */
+	public static function getComponentManifestFile($extensionName = 'com_redcore')
+	{
+		$xmlComponentName = strtolower(substr($extensionName, 4));
+		$componentXml = JPATH_ADMINISTRATOR . '/components/' . $extensionName . '/' . $xmlComponentName . '.xml';
+		$manifestFile = false;
+
+		if (file_exists($componentXml))
+		{
+			$content = @file_get_contents($componentXml);
+
+			if (!is_string($content))
+			{
+				return false;
+			}
+
+			$manifestFile = new SimpleXMLElement($content);
+
+			$manifestFile->xmlComponentName = $xmlComponentName;
+		}
+
+		return $manifestFile;
+	}
 }
