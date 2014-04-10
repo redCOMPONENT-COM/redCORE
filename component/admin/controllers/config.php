@@ -32,7 +32,14 @@ class RedcoreControllerConfig extends RControllerForm
 		$option = $app->input->getString('component');
 		$xmlFile = $app->input->getString('contentElement');
 
-		RTranslationTable::installContentElement($option, $xmlFile);
+		if ($xmlFile == 'all')
+		{
+			RTranslationTable::batchContentElements($option, 'install');
+		}
+		else
+		{
+			RTranslationTable::installContentElement($option, $xmlFile);
+		}
 
 		parent::edit();
 	}
@@ -51,7 +58,14 @@ class RedcoreControllerConfig extends RControllerForm
 		$option = $app->input->getString('component');
 		$xmlFile = $app->input->getString('contentElement');
 
-		RTranslationTable::uninstallContentElement($option, $xmlFile);
+		if ($xmlFile == 'all')
+		{
+			RTranslationTable::batchContentElements($option, 'uninstall');
+		}
+		else
+		{
+			RTranslationTable::uninstallContentElement($option, $xmlFile);
+		}
 
 		parent::edit();
 	}
@@ -70,7 +84,14 @@ class RedcoreControllerConfig extends RControllerForm
 		$option = $app->input->getString('component');
 		$xmlFile = $app->input->getString('contentElement');
 
-		RTranslationTable::purgeContentElement($option, $xmlFile);
+		if ($xmlFile == 'all')
+		{
+			RTranslationTable::batchContentElements($option, 'purge');
+		}
+		else
+		{
+			RTranslationTable::purgeContentElement($option, $xmlFile);
+		}
 
 		parent::edit();
 	}
@@ -89,7 +110,44 @@ class RedcoreControllerConfig extends RControllerForm
 		$option = $app->input->getString('component');
 		$xmlFile = $app->input->getString('contentElement');
 
-		RTranslationTable::deleteContentElement($option, $xmlFile);
+		if ($xmlFile == 'all')
+		{
+			RTranslationTable::batchContentElements($option, 'delete');
+		}
+		else
+		{
+			RTranslationTable::deleteContentElement($option, $xmlFile);
+		}
+
+		parent::edit();
+	}
+
+	/**
+	 * Method to upload Content Element file.
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function uploadContentElement()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$app   = JFactory::getApplication();
+		$option = $app->input->getString('component');
+		$files  = $app->input->files->get('redcoreContentElement', array(), 'array');
+
+		if (!empty($files))
+		{
+			$uploadedFiles = RTranslationTable::uploadContentElement($option, $files);
+
+			if (!empty($uploadedFiles))
+			{
+				$app->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_UPLOAD_SUCCESS'));
+			}
+		}
+		else
+		{
+			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_UPLOAD_FILE_NOT_FOUND'), 'warning');
+		}
 
 		parent::edit();
 	}

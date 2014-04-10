@@ -105,27 +105,10 @@ final class RTranslationTable
 	 */
 	public static function installContentElement($option = 'com_redcore', $xmlFile = '')
 	{
-		/*JLoader::import('joomla.filesystem.file');
-		JLoader::import('joomla.filesystem.path');
-		$xmlFile = JPath::clean($xmlFile);
-		$xmlFile = JFile::stripExt($xmlFile) . '.xml';
-		$xmlFilePath = RTranslationContentElement::getContentElementXmlPath($option, $xmlFile);*/
-		/*if (JFile::exists($xmlFilePath))
-				{
-
-
-
-
-
-
-					return true;
-				}*/
-
-
 		// Load Content Element
 		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
 
-		if (empty($contentElement))
+		if (empty($contentElement) || empty($contentElement->table))
 		{
 			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
 
@@ -276,7 +259,7 @@ final class RTranslationTable
 		// Load Content Element
 		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
 
-		if (empty($contentElement))
+		if (empty($contentElement) || empty($contentElement->table))
 		{
 			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
 
@@ -327,7 +310,7 @@ final class RTranslationTable
 		// Load Content Element
 		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
 
-		if (empty($contentElement))
+		if (empty($contentElement) || empty($contentElement->table))
 		{
 			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
 
@@ -375,11 +358,11 @@ final class RTranslationTable
 	 */
 	public static function deleteContentElement($option = 'com_redcore', $xmlFile = '')
 	{
-		if (self::uninstallContentElement($option, $xmlFile))
-		{
-			// Load Content Element
-			$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
+		// Load Content Element
+		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
 
+		if (self::uninstallContentElement($option, $xmlFile) || empty($contentElement->table))
+		{
 			if (empty($contentElement))
 			{
 				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
@@ -406,5 +389,61 @@ final class RTranslationTable
 		}
 
 		return false;
+	}
+
+	/**
+	 * Preforms Batch action against all Content elements of given Extension
+	 *
+	 * @param   string  $option  The Extension Name ex. com_redcore
+	 * @param   string  $action  Action to preform
+	 *
+	 * @return  boolean  Returns true if Action was successful
+	 */
+	public static function batchContentElements($option = 'com_redcore', $action = '')
+	{
+		$contentElements = RTranslationHelper::getContentElements($option);
+
+		if (!empty($contentElements))
+		{
+			foreach ($contentElements as $contentElement)
+			{
+				switch ($action)
+				{
+					case 'install':
+						self::installContentElement($option, $contentElement->contentElementXml);
+						break;
+					case 'uninstall':
+						self::uninstallContentElement($option, $contentElement->contentElementXml);
+						break;
+					case 'purge':
+						self::purgeContentElement($option, $contentElement->contentElementXml);
+						break;
+					case 'delete':
+						self::deleteContentElement($option, $contentElement->contentElementXml);
+						break;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Upload Content Element to redcore media location
+	 *
+	 * @param   string  $option  The Extension Name ex. com_redcore
+	 * @param   array   $files   The array of Files (file descriptor returned by PHP)
+	 *
+	 * @return  boolean  Returns true if Upload was successful
+	 */
+	public static function uploadContentElement($option = 'com_redcore', $files = array())
+	{
+		$uploadOptions = array(
+			'allowedFileExtensions' => 'xml',
+			'allowedMIMETypes'      => 'application/xml, text/xml',
+			'overrideExistingFile'  => true,
+		);
+
+		return RFilesystemFile::uploadFiles($files, RTranslationContentElement::getContentElementFolderPath($option), $uploadOptions);
 	}
 }

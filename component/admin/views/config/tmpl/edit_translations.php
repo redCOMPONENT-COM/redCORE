@@ -46,31 +46,69 @@ JHtml::_('rjquery.chosen', 'select');
 </script>
 <div class="tab-pane" id="mainComponentTranslations">
 	<p class="tab-description"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_TRANSLATIONS_DESC'); ?></p>
-	<div class="span12">
-		<div class="span6 offset3">
-			<?php foreach ($this->form->getFieldset('translations') as $field): ?>
-				<div class="control-group">
-					<?php if (!$field->hidden) : ?>
-						<div class="control-label">
-							<?php echo $field->label; ?>
-						</div>
-					<?php endif; ?>
-					<div class="controls">
-						<?php echo $field->input; ?>
-					</div>
+	<div class="row-fluid">
+		<div class="span6 well">
+			<div class="control-group">
+				<div class="control-label">
+					<?php echo $this->form->getLabel('redcoreContentElement[]'); ?>
 				</div>
-			<?php endforeach; ?>
+				<div class="controls">
+					<input type="file" name="redcoreContentElement[]" id="redcoreContentElement" accept="application/xml" class="inputbox" />
+					<button
+						class="btn btn-success"
+						type="button"
+						onclick="setContentElement('', 'config.uploadContentElement')">
+						<i class="icon-upload"></i>
+						<?php echo JText::_('JTOOLBAR_UPLOAD') ?>
+					</button>
+				</div>
+			</div>
+			<div class="control-group" style="margin-top:40px;margin-bottom: 0;">
+				<div class="control-label">
+					<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_FILES_MASS_ACTIONS'); ?>
+				</div>
+				<div class="controls">
+					<button
+						class="btn btn-success"
+						type="button"
+						onclick="setContentElement('all', 'config.installContentElement')">
+						<i class="icon-cogs"></i>
+						<?php echo JText::_('JTOOLBAR_INSTALL') . ' / ' . JText::_('COM_REDCORE_UPDATE'); ?>
+					</button>
+					<button
+						class="btn btn-danger"
+						type="button"
+						onclick="setContentElement('all', 'config.uninstallContentElement')">
+						<i class="icon-cogs"></i>
+						<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
+					</button>
+					<button
+						class="btn btn-danger"
+						type="button"
+						onclick="setContentElement('all', 'config.deleteContentElement')">
+						<i class="icon-remove"></i>
+						<?php echo JText::_('JTOOLBAR_DELETE') ?>
+					</button>
+					<button
+						class="btn btn-danger"
+						type="button"
+						onclick="setContentElement('all', 'config.purgeContentElement')">
+						<i class="icon-trash"></i>
+						<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_PURGE_TRANSLATIONS') ?>
+					</button>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="span12">
+	<div class="row-fluid">
 		<?php if (empty($this->contentElements)): ?>
-			<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_NO_CONTENT_FILES_AVAILABLE'); ?>
+			<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NO_FILES_AVAILABLE'); ?>
 		<?php else : ?>
 			<?php foreach ($this->contentElements as $contentElement): ?>
 				<?php $status = $contentElement->getStatus() ?>
 				<div class="span4">
 					<h4>
-						<?php echo $contentElement->name; ?>
+						<?php echo !empty($contentElement->name) ? $contentElement->name : $contentElement->contentElementXml; ?>
 					</h4>
 					<table class="table table-striped adminlist">
 						<tbody>
@@ -152,6 +190,5 @@ JHtml::_('rjquery.chosen', 'select');
 			<?php endforeach; ?>
 		<?php endif; ?>
 		<div class="clearfix"></div>
-		<?php //var_dump($this->contentElements); ?>
 	</div>
 </div>

@@ -43,7 +43,7 @@ class RedcoreModelConfig extends RModelAdmin
 			'/config'
 		);
 
-		$form->loadFile('translations', true, '/config');
+		$form->loadFile('translations', false, '/config');
 
 		if (empty($form))
 		{

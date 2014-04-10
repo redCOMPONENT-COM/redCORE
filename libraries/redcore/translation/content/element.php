@@ -81,8 +81,8 @@ final class RTranslationContentElement
 		$xmlDoc = new SimpleXMLElement($content);
 
 		$this->xml = $xmlDoc;
-		$this->name = $this->getContentElementName();
 		$this->table = $this->getTableName();
+		$this->name = $this->getContentElementName();
 		$this->primaryKey = $this->getPrimaryKey();
 	}
 
@@ -159,11 +159,18 @@ final class RTranslationContentElement
 	 */
 	public function getStatus()
 	{
+		$return = '';
+
+		if (empty($this->table))
+		{
+			$return .= ' ' . JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_VALID_FILE');
+		}
+
 		$fieldsTable = RTranslationTable::getTranslationsTableColumns($this->table);
 
 		if (empty($fieldsTable))
 		{
-			return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED');
+			return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED') . $return;
 		}
 
 		// Language is automatically added to the table if table exists
@@ -187,14 +194,12 @@ final class RTranslationContentElement
 			}
 		}
 
-		$return = '';
-
 		if (!empty($fields))
 		{
-			$return .= JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_FIELDS_MISSING') . implode(', ', $fields);
+			$return .= ' ' . JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_FIELDS_MISSING') . implode(', ', $fields);
 		}
 
-		return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED') . ' ' . $return;
+		return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED') . $return;
 	}
 
 	/**
@@ -207,6 +212,18 @@ final class RTranslationContentElement
 	 */
 	public static function getContentElementXmlPath($option = 'com_redcore', $xmlFile = '')
 	{
-		return JPATH_SITE . '/media/redcore/contentelements/' . $option . '/' . $xmlFile;
+		return self::getContentElementFolderPath($option) . '/' . $xmlFile;
+	}
+
+	/**
+	 * Get Path to the Content element XML file
+	 *
+	 * @param   string  $option  The Extension Name ex. com_redcore
+	 *
+	 * @return  string  Path to XML file
+	 */
+	public static function getContentElementFolderPath($option = 'com_redcore')
+	{
+		return JPATH_SITE . '/media/redcore/contentelements/' . $option;
 	}
 }

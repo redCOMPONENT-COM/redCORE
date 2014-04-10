@@ -41,7 +41,7 @@ JHtml::_('rjquery.chosen', 'select');
 						<div class="control-group">
 							<?php if (!$field->hidden && $name != "permissions") : ?>
 								<div class="control-label">
-									<?php //echo $field->label; ?>
+									<?php echo $field->label; ?>
 								</div>
 							<?php endif; ?>
 							<div class="<?php if ($name != "permissions") : ?>controls<?php endif; ?>">

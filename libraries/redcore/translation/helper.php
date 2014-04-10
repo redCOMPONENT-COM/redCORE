@@ -19,12 +19,27 @@ defined('_JEXEC') or die;
 final class RTranslationHelper
 {
 	/**
+	 * Defines if jQuery Migrate should be loaded in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $pluginParams = null;
+
+	/**
 	 * An array to hold tables from database
 	 *
 	 * @var    array
 	 * @since  1.0
 	 */
 	public static $contentElements = array();
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		self::$pluginParams = new JRegistry;
+	}
 
 	/**
 	 * Loading of related XML files
