@@ -57,7 +57,10 @@ abstract class RDatabaseDriver extends JDatabaseDriver
 			// If the class still doesn't exist we have nothing left to do but throw an exception.  We did our best.
 			if (!class_exists($class))
 			{
-				throw new RuntimeException(sprintf('Unable to load Database Driver: %s', $options['driver']));
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DRIVER_ERROR', $options['driver']), 'error');
+
+				// We are not supporting this driver
+				return parent::getInstance($options);
 			}
 
 			// Create our new JDatabaseDriver connector based on the options given.

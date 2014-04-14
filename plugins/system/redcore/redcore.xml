@@ -51,7 +51,7 @@
                 <field
                         name="enable_translations"
                         type="list"
-                        default="1"
+                        default="0"
                         label="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON"
                         description="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON_DESC">
                     <option value="1">JYES</option>

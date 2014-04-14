@@ -40,7 +40,7 @@ class PlgSystemRedcore extends JPlugin
 
 			RBootstrap::bootstrap();
 
-			if ($this->params->get('enable_translations', 1) == 1)
+			if ($this->params->get('enable_translations', 0) == 1)
 			{
 				JFactory::$database = null;
 				JFactory::$database = RFactory::getDbo();
