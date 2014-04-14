@@ -1,20 +1,20 @@
 <?php
 /**
- * @package     Joomla.Platform
+ * @package     Redcore
  * @subpackage  Database
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_REDCORE') or die;
 
 /**
- * Joomla Platform Database Driver Class
+ * Database Driver Class extends Joomla Platform Database Driver Class
  *
- * @package     Joomla.Platform
+ * @package     Redcore
  * @subpackage  Database
- * @since       12.1
+ * @since       1.0
  *
  * @method      string  q()   q($text, $escape = true)  Alias for quote method
  * @method      string  qn()  qn($name, $as = null)     Alias for quoteName method
@@ -57,7 +57,10 @@ abstract class RDatabaseDriver extends JDatabaseDriver
 			// If the class still doesn't exist we have nothing left to do but throw an exception.  We did our best.
 			if (!class_exists($class))
 			{
-				throw new RuntimeException(sprintf('Unable to load Database Driver: %s', $options['driver']));
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DRIVER_ERROR', $options['driver']), 'error');
+
+				// We are not supporting this driver
+				return parent::getInstance($options);
 			}
 
 			// Create our new JDatabaseDriver connector based on the options given.
