@@ -8,6 +8,7 @@
  */
 
 defined('_JEXEC') or die;
+$column = 0;
 
 // HTML helpers
 JHtml::_('behavior.keepalive');
@@ -106,7 +107,7 @@ JHtml::_('rjquery.chosen', 'select');
 		<?php else : ?>
 			<?php foreach ($this->contentElements as $contentElement): ?>
 				<?php $status = $contentElement->getStatus() ?>
-				<div class="span4">
+				<div class="span4 well">
 					<h4>
 						<?php echo !empty($contentElement->name) ? $contentElement->name : $contentElement->contentElementXml; ?>
 					</h4>
@@ -187,6 +188,10 @@ JHtml::_('rjquery.chosen', 'select');
 						<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_PURGE_TRANSLATIONS') ?>
 					</button>
 				</div>
+				<?php if ((++$column) % 3 == 0 ) : ?>
+				</div>
+				<div class="row-fluid">
+				<?php endif; ?>
 			<?php endforeach; ?>
 		<?php endif; ?>
 		<div class="clearfix"></div>

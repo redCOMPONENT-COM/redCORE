@@ -37,6 +37,23 @@ class PlgSystemRedcore extends JPlugin
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
 			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
+
+			RBootstrap::bootstrap();
+
+			if ($this->params->get('enable_translations', 1) == 1)
+			{
+				JFactory::$database = null;
+				JFactory::$database = RFactory::getDbo();
+
+				// This is our object now
+				$db = JFactory::getDbo();
+
+				// Enable translations
+				$db->translate = true;
+			}
+
+			// Sets plugin parameters for further use in Translation Helper class
+			RTranslationHelper::$pluginParams = $this->params;
 		}
 	}
 

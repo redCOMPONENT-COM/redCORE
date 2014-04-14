@@ -237,9 +237,9 @@ class RedcoreModelConfig extends RModelAdmin
 	/**
 	 * Gets Installed extensions
 	 *
-	 * @param   string  $extensionType     Extension type
-	 * @param   array   $extensionElements Extension element search type
-	 * @param   string  $extensionFolder   Folder user when searching for plugin
+	 * @param   string  $extensionType      Extension type
+	 * @param   array   $extensionElements  Extension element search type
+	 * @param   string  $extensionFolder    Folder user when searching for plugin
 	 *
 	 * @return  array  List of objects
 	 */

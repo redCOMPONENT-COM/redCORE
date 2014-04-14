@@ -73,17 +73,15 @@ final class RTranslationContentElement
 
 		$content = @file_get_contents(self::getContentElementXmlPath($extension, $contentElementXml));
 
-		if (!is_string($content))
+		if (is_string($content))
 		{
-			return false;
+			$xmlDoc = new SimpleXMLElement($content);
+
+			$this->xml = $xmlDoc;
+			$this->table = $this->getTableName();
+			$this->name = $this->getContentElementName();
+			$this->primaryKey = $this->getPrimaryKey();
 		}
-
-		$xmlDoc = new SimpleXMLElement($content);
-
-		$this->xml = $xmlDoc;
-		$this->table = $this->getTableName();
-		$this->name = $this->getContentElementName();
-		$this->primaryKey = $this->getPrimaryKey();
 	}
 
 	/**
@@ -178,7 +176,7 @@ final class RTranslationContentElement
 		$fieldsXml = $this->getTranslateFields();
 		$fields = array();
 
-		foreach ($fieldsXml as $fieldKey => $field)
+		foreach ($fieldsXml as $field)
 		{
 			$fields[(string) $field['name']] = (string) $field['name'];
 
@@ -210,20 +208,38 @@ final class RTranslationContentElement
 	 *
 	 * @return  string  Path to XML file
 	 */
-	public static function getContentElementXmlPath($option = 'com_redcore', $xmlFile = '')
+	public static function getContentElementXmlPath($option = '', $xmlFile = '')
 	{
-		return self::getContentElementFolderPath($option) . '/' . $xmlFile;
+		if (file_exists(self::getContentElementFolderPath($option) . '/' . $xmlFile))
+		{
+			return self::getContentElementFolderPath($option) . '/' . $xmlFile;
+		}
+
+		return self::getContentElementFolderPath($option, true) . '/' . $xmlFile;
 	}
 
 	/**
 	 * Get Path to the Content element XML file
 	 *
-	 * @param   string  $option  The Extension Name ex. com_redcore
+	 * @param   string  $option       The Extension Name ex. com_redcore
+	 * @param   bool    $fromRedcore  Use redcore folder location
 	 *
 	 * @return  string  Path to XML file
 	 */
-	public static function getContentElementFolderPath($option = 'com_redcore')
+	public static function getContentElementFolderPath($option = '', $fromRedcore = false)
 	{
-		return JPATH_SITE . '/media/redcore/contentelements/' . $option;
+		$extensionPath = JPATH_SITE . '/media/' . $option . '/translations';
+		$redcorePath = JPATH_SITE . '/media/redcore/translations';
+
+		if (empty($option))
+		{
+			return $redcorePath;
+		}
+		elseif (!is_dir($extensionPath) || $fromRedcore)
+		{
+			return $redcorePath . '/' . $option;
+		}
+
+		return $extensionPath;
 	}
 }

@@ -135,19 +135,19 @@ final class RTranslationTable
 			}
 		}
 
-		$newTable = $db->qn(self::getTranslationsTableName($contentElement->table));
-		$originalTable = $db->qn('#__' . $contentElement->table);
+		$newTable = self::getTranslationsTableName($contentElement->table);
+		$originalTable = '#__' . $contentElement->table;
 		$primaryKeys = implode(',', $primaryKeys);
 		$primaryKey = ' KEY ' . $db->qn('language_idx') . ' (' . $primaryKeys . ') ';
+		$allContentElementsFields = implode(',', array_keys($fields));
 
 		if (empty($columns))
 		{
 			$fieldsCreate = implode(',', $fields);
-
-			$query = 'CREATE TABLE ' . $newTable
+			$query = 'CREATE TABLE ' . $db->qn($newTable)
 				. ' (' . $db->qn('language') . ' char(7) NOT NULL DEFAULT ' . $db->q('') . ', '
 				. $primaryKey
-				. ' ) SELECT ' . $fieldsCreate . ' FROM ' . $originalTable . ' where 1 = 2';
+				. ' ) SELECT ' . $fieldsCreate . ' FROM ' . $db->qn($originalTable) . ' where 1 = 2';
 
 			$db->setQuery($query);
 
@@ -185,7 +185,7 @@ final class RTranslationTable
 			{
 				$originalColumns = $db->getTableColumns('#__' . $contentElement->table, false);
 
-				$query = 'ALTER TABLE ' . $newTable
+				$query = 'ALTER TABLE ' . $db->qn($newTable)
 					. ' DROP KEY ' . $db->qn('language_idx');
 
 				foreach ($fields as $fieldKey => $field)
@@ -217,7 +217,7 @@ final class RTranslationTable
 			// We delete extra columns
 			if (!empty($columnKeys))
 			{
-				$query = 'ALTER TABLE ' . $newTable
+				$query = 'ALTER TABLE ' . $db->qn($newTable)
 					. ' DROP KEY ' . $db->qn('language_idx');
 
 				foreach ($columnKeys as $columnKey)
@@ -240,6 +240,9 @@ final class RTranslationTable
 				}
 			}
 		}
+
+		RTranslationHelper::setInstalledTranslationTables($originalTable, $allContentElementsFields);
+		self::saveRedcoreTranslationConfig();
 
 		JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED'), 'message');
 
@@ -274,15 +277,11 @@ final class RTranslationTable
 			// Delete Table
 			$db = JFactory::getDbo();
 
-			$newTable = $db->qn(self::getTranslationsTableName($contentElement->table));
-
-			$query = 'DROP TABLE ' . $newTable;
-
-			$db->setQuery($query);
+			$newTable = self::getTranslationsTableName($contentElement->table);
 
 			try
 			{
-				$db->execute();
+				$db->dropTable($newTable);
 			}
 			catch (Exception $e)
 			{
@@ -290,6 +289,9 @@ final class RTranslationTable
 
 				return false;
 			}
+
+			RTranslationHelper::setInstalledTranslationTables('#__' . $contentElement->table, null);
+			self::saveRedcoreTranslationConfig();
 		}
 
 		JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_UNINSTALLED'), 'message');
@@ -325,15 +327,11 @@ final class RTranslationTable
 			// Delete Table
 			$db = JFactory::getDbo();
 
-			$newTable = $db->qn(self::getTranslationsTableName($contentElement->table));
-
-			$query = 'TRUNCATE ' . $newTable;
-
-			$db->setQuery($query);
+			$newTable = self::getTranslationsTableName($contentElement->table);
 
 			try
 			{
-				$db->execute();
+				$db->truncateTable($newTable);
 			}
 			catch (Exception $e)
 			{
@@ -445,5 +443,61 @@ final class RTranslationTable
 		);
 
 		return RFilesystemFile::uploadFiles($files, RTranslationContentElement::getContentElementFolderPath($option), $uploadOptions);
+	}
+
+	/**
+	 * Method to save the configuration data.
+	 *
+	 * @return  bool   True on success, false on failure.
+	 */
+	public function saveRedcoreTranslationConfig()
+	{
+		$data = array();
+		$component = JComponentHelper::getComponent('com_redcore');
+
+		$component->params->set('translations', RTranslationHelper::getInstalledTranslationTables());
+
+		$data['params'] = $component->params->toString('JSON');
+
+		$dispatcher = RFactory::getDispatcher();
+		$table = JTable::getInstance('Extension');
+		$isNew = true;
+
+		// Load the previous Data
+		if (!$table->load($component->id))
+		{
+			return false;
+		}
+
+		// Bind the data.
+		if (!$table->bind($data))
+		{
+			return false;
+		}
+
+		// Check the data.
+		if (!$table->check())
+		{
+			return false;
+		}
+
+		// Trigger the onConfigurationBeforeSave event.
+		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', $table, $isNew));
+
+		if (in_array(false, $result, true))
+		{
+			return false;
+		}
+
+		// Store the data.
+		if (!$table->store())
+		{
+			return false;
+		}
+
+		// Trigger the onConfigurationAfterSave event.
+		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', $table, $isNew));
+
+		return true;
 	}
 }
