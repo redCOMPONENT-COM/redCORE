@@ -45,7 +45,7 @@ JHtml::_('rjquery.chosen', 'select');
 								</div>
 							<?php endif; ?>
 							<div class="<?php if ($name != "permissions") : ?>controls<?php endif; ?>">
-								<?php //echo $field->input; ?>
+								<?php echo $field->input; ?>
 							</div>
 						</div>
 					<?php endforeach; ?>
