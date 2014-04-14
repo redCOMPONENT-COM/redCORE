@@ -60,6 +60,7 @@
         <folder>fonts</folder>
         <folder>images</folder>
         <folder>js</folder>
+        <folder>translations</folder>
     </media>
 
     <!-- Libraries to install with the component -->
