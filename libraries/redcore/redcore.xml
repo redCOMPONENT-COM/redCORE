@@ -16,6 +16,7 @@
         <folder>client</folder>
         <folder>component</folder>
         <folder>controller</folder>
+        <folder>database</folder>
         <folder>dom</folder>
         <folder>factory</folder>
         <folder>form</folder>
@@ -35,6 +36,7 @@
         <folder>table</folder>
         <folder>text</folder>
         <folder>toolbar</folder>
+        <folder>translation</folder>
         <folder>view</folder>
         <filename>bootstrap.php</filename>
         <filename>functions.php</filename>
