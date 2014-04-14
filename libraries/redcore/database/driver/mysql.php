@@ -1,21 +1,20 @@
 <?php
 /**
- * @package     Joomla.Platform
+ * @package     Redcore
  * @subpackage  Database
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_PLATFORM') or die;
+defined('JPATH_REDCORE') or die;
 
 /**
- * MySQLi database driver
+ * MySQL database driver
  *
- * @package     Joomla.Platform
+ * @package     Redcore
  * @subpackage  Database
- * @see         http://php.net/manual/en/book.mysqli.php
- * @since       12.1
+ * @since       1.0
  */
 class RDatabaseDriverMysql extends RDatabaseDriverMysqli
 {
