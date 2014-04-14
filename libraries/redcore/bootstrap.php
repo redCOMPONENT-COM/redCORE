@@ -33,7 +33,7 @@ class RBootstrap
 	 * @var    bool
 	 */
 	public static $loadFrontendCSS = false;
-	
+
 	/**
 	 * Defines if jQuery should be loaded in Frontend component/modules
 	 *

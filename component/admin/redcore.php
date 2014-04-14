@@ -8,10 +8,12 @@
 
 defined('_JEXEC') or die;
 
-if (!class_exists('RLoader'))
+if (!class_exists('RBootstrap'))
 {
 	throw new RuntimeException('Please enable redCORE System plugin!');
 }
+
+RBootstrap::bootstrap();
 
 RLoader::registerPrefix('Redcore', dirname(__FILE__));
 

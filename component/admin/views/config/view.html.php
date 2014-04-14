@@ -39,6 +39,21 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	protected $components;
 
 	/**
+	 * @var  array
+	 */
+	protected $modules;
+
+	/**
+	 * @var  array
+	 */
+	protected $plugins;
+
+	/**
+	 * @var  array
+	 */
+	protected $contentElements;
+
+	/**
 	 * Display method
 	 *
 	 * @param   string  $tpl  The template name
@@ -53,6 +68,15 @@ class RedcoreViewConfig extends RedcoreHelpersView
 		$this->form	= $model->getForm();
 		$this->component = $model->getComponent();
 		$this->return = JFactory::getApplication()->input->get('return');
+		$option = JFactory::getApplication()->input->getString('component', '');
+
+		$this->modules = $model->getInstalledExtensions('module', array('%' . $this->component->xml->xmlComponentName . '%'));
+		$this->plugins = $model->getInstalledExtensions('plugin', array('%' . $this->component->xml->xmlComponentName . '%'), $this->component->xml->xmlComponentName);
+		$this->componentTitle = RText::getTranslationIfExists($this->component->xml->name, '', '');
+		$this->contentElements = $model->loadContentElements($option);
+		RLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/' . $option . '/layouts';
+
+
 
 		parent::display($tpl);
 	}
@@ -64,7 +88,7 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	 */
 	public function getTitle()
 	{
-		return JText::_('COM_REDCORE_CONFIG_FORM_TITLE');
+		return $this->componentTitle . ' ' . JText::_('COM_REDCORE_CONFIG_FORM_TITLE');
 	}
 
 	/**
