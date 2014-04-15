@@ -4,6 +4,8 @@
 .rdatepicker {
 	position: relative;
 	z-index: 5;
+	margin-top: 8px;
+	width: 150px;
 }
 button.ui-datepicker-trigger {
 	color: #990000;
