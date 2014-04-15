@@ -450,7 +450,7 @@ final class RTranslationTable
 	 *
 	 * @return  bool   True on success, false on failure.
 	 */
-	public function saveRedcoreTranslationConfig()
+	public static function saveRedcoreTranslationConfig()
 	{
 		$data = array();
 		$component = JComponentHelper::getComponent('com_redcore');

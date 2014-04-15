@@ -210,6 +210,8 @@ final class RTranslationContentElement
 	 */
 	public static function getContentElementXmlPath($option = '', $xmlFile = '')
 	{
+		jimport('joomla.filesystem.file');
+
 		if (file_exists(self::getContentElementFolderPath($option) . '/' . $xmlFile))
 		{
 			return self::getContentElementFolderPath($option) . '/' . $xmlFile;
@@ -228,6 +230,7 @@ final class RTranslationContentElement
 	 */
 	public static function getContentElementFolderPath($option = '', $fromRedcore = false)
 	{
+		jimport('joomla.filesystem.path');
 		$extensionPath = JPATH_SITE . '/media/' . $option . '/translations';
 		$redcorePath = JPATH_SITE . '/media/redcore/translations';
 

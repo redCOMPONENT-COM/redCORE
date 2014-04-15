@@ -590,11 +590,53 @@ class Com_RedcoreInstallerScript
 		$this->preventUninstallRedcore($parent);
 
 		// Uninstall extensions
+		$this->uninstallTranslations();
 		$this->uninstallLibraries($parent);
 		$this->uninstallMedia($parent);
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
+	}
+
+	/**
+	 * Uninstall all Translation tables from database
+	 *
+	 * @return  void
+	 */
+	protected function uninstallTranslations()
+	{
+			$class = get_called_class();
+
+			// Delete all tables
+			if ($class == 'Com_RedcoreInstallerScript')
+			{
+				$translationTables = RTranslationHelper::getInstalledTranslationTables();
+
+				if (!empty($translationTables))
+				{
+					$db = JFactory::getDbo();
+
+					foreach ($translationTables as $translationTable => $translationColumns)
+					{
+						$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
+
+						try
+						{
+							$db->dropTable($newTable);
+						}
+						catch (Exception $e)
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DELETE_ERROR', $e->getMessage()), 'error');
+						}
+					}
+				}
+			}
+			// We are uninstalling one of the extensions
+			else
+			{
+				$option = strtolower(strstr($class, 'Installer', true));
+				RTranslationTable::batchContentElements($option, 'uninstall');
+			}
 	}
 
 	/**
