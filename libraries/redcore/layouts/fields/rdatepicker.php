@@ -20,8 +20,6 @@ $script = "
 (function($){
 	$(document).ready(function () {
 		$('" . $data->cssId . "').datepicker(" . $data->datepickerOptions . ");
-		// We will remove all the default images links with a font-awesome icon
-		$('img[src=\"rdatepicker-calendar.gif\"]').replaceWith('<i class=\"icon-calendar icon-2x\"></i>');
 	});
 })(jQuery);
 ";
