@@ -19,6 +19,7 @@
         <folder>database</folder>
         <folder>dom</folder>
         <folder>factory</folder>
+        <folder>filesystem</folder>
         <folder>form</folder>
         <folder>helper</folder>
         <folder>html</folder>
