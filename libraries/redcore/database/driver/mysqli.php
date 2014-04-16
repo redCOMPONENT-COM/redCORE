@@ -38,24 +38,15 @@ class RDatabaseDriverMysqli extends JDatabaseDriverMysqli
 	 */
 	public function replacePrefix($sql, $prefix = '#__')
 	{
-		$literal = parent::replacePrefix($sql, $prefix);
-
 		// Basic check for translations
-		if (!$this->translate
-			|| !stristr($sql, 'SELECT')
-			|| JFactory::getLanguage()->getDefault() == JFactory::getLanguage()->getTag()
-			|| JFactory::getApplication()->isAdmin())
+		if ($this->translate)
 		{
-			return $literal;
+			if ($parsedSql = RDatabaseSqlparserSqltranslation::parseSelectQuery($sql, $prefix))
+			{
+				return parent::replacePrefix($parsedSql, $prefix);
+			}
 		}
 
-		$parsedSql = RTranslationHelper::parseSelectQuery($sql, $prefix);
-
-		if (!empty($parsedSql))
-		{
-			return parent::replacePrefix($parsedSql, $prefix);
-		}
-
-		return $literal;
+		return parent::replacePrefix($sql, $prefix);
 	}
 }

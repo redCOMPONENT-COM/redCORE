@@ -162,7 +162,8 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processLIMIT($parsed) {
-		$sql = ($parsed['offset'] ? $parsed['offset'] . ", " : "") . $parsed['rowcount'];
+		$sql = (!empty($parsed['offset']) ? $parsed['offset'] . ", " : "");
+		$sql .= (!empty($parsed['rowcount']) ? $parsed['rowcount'] : "");
 		if ($sql === "") {
 			throw new RDatabaseSqlparserExceptioncreatesql('LIMIT', 'rowcount', $parsed, 'rowcount');
 		}
@@ -174,6 +175,9 @@ class RDatabaseSqlparserSqlcreator {
 		foreach ($parsed as $k => $v) {
 			$len = strlen($sql);
 			$sql .= $this->processColRef($v);
+			$sql .= $this->processPosition($v);
+			$sql .= $this->processFunction($v);
+			$sql .= $this->processGroupByAlias($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('GROUP', $k, $v, 'expr_type');
@@ -183,6 +187,20 @@ class RDatabaseSqlparserSqlcreator {
 		}
 		$sql = substr($sql, 0, -1);
 		return "GROUP BY " . $sql;
+	}
+
+	protected function processGroupByAlias($parsed) {
+		if ($parsed['expr_type'] !== 'alias') {
+			return "";
+		}
+		return $parsed['base_expr'];
+	}
+
+	protected function processPosition($parsed) {
+		if ($parsed['expr_type'] !== 'pos') {
+			return "";
+		}
+		return $parsed['base_expr'];
 	}
 
 	protected function processRecord($parsed) {
@@ -398,12 +416,21 @@ class RDatabaseSqlparserSqlcreator {
 		}
 
 		$sql = "";
+
 		foreach ($parsed['sub_tree'] as $k => $v) {
 			$len = strlen($sql);
+
+			if ($this->isReserved($v) && !empty($sql) && substr($sql, -1) == ',')
+			{
+				$sql = substr($sql, 0, -1) . ' ';
+			}
+
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processReserved($v);
+			$sql .= $this->processSelectBracketExpression($v);
+			$sql .= $this->processSelectExpression($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('function subtree', $k, $v, 'expr_type');
@@ -411,7 +438,11 @@ class RDatabaseSqlparserSqlcreator {
 
 			$sql .= ($this->isReserved($v) ? " " : ",");
 		}
-		return $parsed['base_expr'] . "(" . substr($sql, 0, -1) . ")";
+
+		$sql2 = $parsed['base_expr'] . "(" . substr($sql, 0, -1) . ")";
+		$sql2 .= !empty($parsed['alias']) ? $this->processAlias($parsed['alias']) : '';
+
+		return $sql2;
 	}
 
 	protected function processSelectExpression($parsed) {
@@ -480,10 +511,13 @@ class RDatabaseSqlparserSqlcreator {
 			return "";
 		}
 		$sql = "";
-		if ($parsed['as']) {
+		if (!empty($parsed['as'])) {
 			$sql .= " as";
 		}
+		if (!empty($parsed['name'])) {
 		$sql .= " " . $parsed['name'];
+		}
+
 		return $sql;
 	}
 
@@ -604,7 +638,7 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function isReserved($parsed) {
-		return ($parsed['expr_type'] === 'reserved');
+		return (!empty($parsed['expr_type']) && $parsed['expr_type'] === 'reserved');
 	}
 
 	protected function processConstant($parsed) {

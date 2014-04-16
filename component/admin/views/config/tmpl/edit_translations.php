@@ -47,6 +47,14 @@ JHtml::_('rjquery.chosen', 'select');
 </script>
 <div class="tab-pane" id="mainComponentTranslations">
 	<p class="tab-description"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_TRANSLATIONS_DESC'); ?></p>
+	<p class="tab-description">
+		<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_PLUGIN_LABEL'); ?>
+		<?php if (RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1) : ?>
+			<span class="badge badge-success"><?php echo JText::_('JENABLED'); ?></span>
+		<?php else : ?>
+			<span class="badge badge-important"><?php echo JText::_('JDISABLED'); ?></span>
+		<?php endif; ?>
+	</p>
 	<div class="row-fluid">
 		<div class="span6 well">
 			<div class="control-group">
@@ -54,7 +62,7 @@ JHtml::_('rjquery.chosen', 'select');
 					<?php echo $this->form->getLabel('redcoreContentElement[]'); ?>
 				</div>
 				<div class="controls">
-					<input type="file" name="redcoreContentElement[]" id="redcoreContentElement" accept="application/xml" class="inputbox" />
+					<input type="file" multiple="multiple" name="redcoreContentElement[]" id="redcoreContentElement" accept="application/xml" class="inputbox" />
 					<button
 						class="btn btn-success"
 						type="button"
@@ -192,6 +200,56 @@ JHtml::_('rjquery.chosen', 'select');
 				</div>
 				<div class="row-fluid">
 				<?php endif; ?>
+			<?php endforeach; ?>
+		<?php endif; ?>
+	</div>
+	<div class="row-fluid">
+		<?php if (!empty($this->missingContentElements)): ?>
+			<?php foreach ($this->missingContentElements as $missingContentElement): ?>
+			<div class="span4 well">
+				<h4>
+					<?php echo $missingContentElement->xml; ?>
+				</h4>
+				<table class="table table-striped adminlist">
+					<tbody>
+					<tr>
+						<td>
+							<strong><?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_TABLE'); ?>:</strong>
+						</td>
+						<td>
+							<strong><?php echo !empty($missingContentElement->table) ? $missingContentElement->table : ''; ?></strong>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_COLUMNS'); ?>:</strong>
+						</td>
+						<td>
+							<strong><?php echo !empty($missingContentElement->columns) ? $missingContentElement->columns : ''; ?></strong>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<strong><?php echo JText::_('JSTATUS'); ?>:</strong>
+						</td>
+						<td>
+							<strong><?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_MISSING_XML_FILE'); ?></strong>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<button
+					class="btn btn-danger"
+					type="button"
+					onclick="setContentElement('<?php echo $missingContentElement->xml; ?>', 'config.uninstallContentElement')">
+					<i class="icon-cogs"></i>
+					<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
+				</button>
+			</div>
+			<?php if ((++$column) % 3 == 0 ) : ?>
+				</div>
+				<div class="row-fluid">
+			<?php endif; ?>
 			<?php endforeach; ?>
 		<?php endif; ?>
 		<div class="clearfix"></div>

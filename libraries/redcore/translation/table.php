@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     Redcore
- * @subpackage  Component
+ * @subpackage  Translation
  *
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  * A Translation Table helper.
  *
  * @package     Redcore
- * @subpackage  Component
+ * @subpackage  Translation
  * @since       1.0
  */
 final class RTranslationTable
@@ -241,7 +241,14 @@ final class RTranslationTable
 			}
 		}
 
-		RTranslationHelper::setInstalledTranslationTables($originalTable, $allContentElementsFields);
+		RTranslationHelper::setInstalledTranslationTables(
+			$option,
+			$originalTable,
+			$allContentElementsFields,
+			explode(',', $primaryKeys),
+			$contentElement->contentElementXml,
+			$contentElement->contentElementXmlPath
+		);
 		self::saveRedcoreTranslationConfig();
 
 		JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED'), 'message');
@@ -259,39 +266,31 @@ final class RTranslationTable
 	 */
 	public static function uninstallContentElement($option = 'com_redcore', $xmlFile = '')
 	{
-		// Load Content Element
-		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
+		$translationTables = RTranslationHelper::getInstalledTranslationTables();
 
-		if (empty($contentElement) || empty($contentElement->table))
+		if (!empty($translationTables))
 		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
-
-			return false;
-		}
-
-		// Check if that table is already installed
-		$columns = self::getTranslationsTableColumns($contentElement->table);
-
-		if (!empty($columns))
-		{
-			// Delete Table
 			$db = JFactory::getDbo();
 
-			$newTable = self::getTranslationsTableName($contentElement->table);
-
-			try
+			foreach ($translationTables as $translationTable => $translationTableParams)
 			{
-				$db->dropTable($newTable);
-			}
-			catch (Exception $e)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+				if ($option == $translationTableParams->option && $xmlFile == $translationTableParams->xml)
+				{
+					$newTable = self::getTranslationsTableName($translationTable, '');
 
-				return false;
-			}
+					try
+					{
+						$db->dropTable($newTable);
 
-			RTranslationHelper::setInstalledTranslationTables('#__' . $contentElement->table, null);
-			self::saveRedcoreTranslationConfig();
+						RTranslationHelper::setInstalledTranslationTables($option, $translationTable, null);
+						self::saveRedcoreTranslationConfig();
+					}
+					catch (Exception $e)
+					{
+						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DELETE_ERROR', $e->getMessage()), 'error');
+					}
+				}
+			}
 		}
 
 		JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_UNINSTALLED'), 'message');
@@ -419,6 +418,23 @@ final class RTranslationTable
 					case 'delete':
 						self::deleteContentElement($option, $contentElement->contentElementXml);
 						break;
+				}
+			}
+		}
+
+		// Delete missing tables as well
+		if ($action == 'uninstall')
+		{
+			$translationTables = RTranslationHelper::getInstalledTranslationTables();
+
+			if (!empty($translationTables))
+			{
+				foreach ($translationTables as $translationTableParams)
+				{
+					if ($option == $translationTableParams->option)
+					{
+						self::uninstallContentElement($option, $translationTableParams->xml);
+					}
 				}
 			}
 		}
