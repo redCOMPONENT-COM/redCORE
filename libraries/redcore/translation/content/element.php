@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     Redcore
- * @subpackage  Component
+ * @subpackage  Translation
  *
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
@@ -13,7 +13,7 @@ defined('_JEXEC') or die;
  * A ContentElement helper.
  *
  * @package     Redcore
- * @subpackage  Component
+ * @subpackage  Translation
  * @since       1.0
  */
 final class RTranslationContentElement
@@ -38,6 +38,13 @@ final class RTranslationContentElement
 	 * @var  String
 	 */
 	public $contentElementXml;
+
+	/**
+	 * Full path to the Content Element XML file
+	 *
+	 * @var  String
+	 */
+	public $contentElementXmlPath;
 
 	/**
 	 * The Content Element name
@@ -70,8 +77,9 @@ final class RTranslationContentElement
 	{
 		$this->extension = $extension;
 		$this->contentElementXml = $contentElementXml;
+		$this->contentElementXmlPath = self::getContentElementXmlPath($extension, $contentElementXml);
 
-		$content = @file_get_contents(self::getContentElementXmlPath($extension, $contentElementXml));
+		$content = @file_get_contents($this->contentElementXmlPath);
 
 		if (is_string($content))
 		{
@@ -225,10 +233,11 @@ final class RTranslationContentElement
 	 *
 	 * @param   string  $option       The Extension Name ex. com_redcore
 	 * @param   bool    $fromRedcore  Use redcore folder location
+	 * @param   bool    $fromOption   Use redcore folder location
 	 *
 	 * @return  string  Path to XML file
 	 */
-	public static function getContentElementFolderPath($option = '', $fromRedcore = false)
+	public static function getContentElementFolderPath($option = '', $fromRedcore = false, $fromOption = false)
 	{
 		jimport('joomla.filesystem.path');
 		$extensionPath = JPATH_SITE . '/media/' . $option . '/translations';
@@ -237,6 +246,10 @@ final class RTranslationContentElement
 		if (empty($option))
 		{
 			return $redcorePath;
+		}
+		elseif ($fromOption)
+		{
+			return $extensionPath;
 		}
 		elseif (!is_dir($extensionPath) || $fromRedcore)
 		{

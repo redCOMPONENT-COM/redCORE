@@ -100,6 +100,35 @@ class RDatabaseSqlparserSqlparserutils {
 		'UTC_TIMESTAMP', 'VALUES', 'VARBINARY', 'VARCHAR', 'VARCHARACTER', 'VARYING',
 		'WHEN', 'WHERE', 'WHILE', 'WITH', 'WRITE', 'XOR', 'YEAR_MONTH', 'ZEROFILL');
 
+	protected $parameterizedFunctions = array('ABS', 'ACOS', 'ADDDATE', 'ADDTIME', 'AES_ENCRYPT', 'AES_DECRYPT',
+		'AGAINST', 'ASCII', 'ASIN', 'ATAN', 'AVG', 'BENCHMARK', 'BIN', 'BIT_AND',
+		'BIT_OR', 'BITCOUNT', 'BITLENGTH', 'CAST', 'CEILING', 'CHAR',
+		'CHAR_LENGTH', 'CHARACTER_LENGTH', 'CHARSET', 'COALESCE', 'COERCIBILITY',
+		'COLLATION', 'COMPRESS', 'CONCAT', 'CONCAT_WS', 'CONV', 'CONVERT',
+		'CONVERT_TZ', 'COS', 'COT', 'COUNT', 'CRC32', 'CURRVAL', 'DATE_ADD',
+		'DATE_DIFF', 'DATE_FORMAT', 'DATE_SUB', 'DAY', 'DAYNAME', 'DAYOFMONTH',
+		'DAYOFWEEK', 'DAYOFYEAR', 'DECODE', 'DEFAULT', 'DEGREES', 'DES_DECRYPT',
+		'DES_ENCRYPT', 'ELT', 'ENCODE', 'ENCRYPT', 'EXP', 'EXPORT_SET',
+		'EXTRACT', 'FIELD', 'FIND_IN_SET', 'FLOOR', 'FORMAT', 'FROM_DAYS',
+		'FROM_UNIXTIME', 'GET_FORMAT', 'GET_LOCK', 'GROUP_CONCAT', 'GREATEST',
+		'HEX', 'HOUR', 'IF', 'IFNULL', 'IN', 'INET_ATON', 'INET_NTOA', 'INSERT',
+		'INSTR', 'INTERVAL', 'IS_FREE_LOCK', 'IS_USED_LOCK', 'LAST_DAY', 'LCASE',
+		'LEAST', 'LEFT', 'LENGTH', 'LN', 'LOAD_FILE', 'LOCATE', 'LOG', 'LOG2',
+		'LOG10', 'LOWER', 'LPAD', 'LTRIM', 'MAKE_SET', 'MAKEDATE', 'MAKETIME',
+		'MASTER_POS_WAIT', 'MATCH', 'MAX', 'MD5', 'MICROSECOND', 'MID', 'MIN',
+		'MINUTE', 'MOD', 'MONTH', 'MONTHNAME', 'NEXTVAL', 'NULLIF', 'OCT',
+		'OCTET_LENGTH', 'OLD_PASSWORD', 'ORD', 'PASSWORD', 'PERIOD_ADD',
+		'PERIOD_DIFF', 'PI', 'POSITION', 'POW', 'POWER', 'QUARTER', 'QUOTE',
+		'RADIANS', 'RELEASE_LOCK', 'REPEAT', 'REPLACE', 'REVERSE', 'RIGHT',
+		'ROUND', 'RPAD', 'RTRIM', 'SEC_TO_TIME', 'SECOND', 'SHA', 'SHA1', 'SIGN',
+		'SOUNDEX', 'SPACE', 'SQRT', 'STD', 'STDDEV', 'STDDEV_POP', 'STDDEV_SAMP',
+		'STRCMP', 'STR_TO_DATE', 'SUBDATE', 'SUBSTRING', 'SUBSTRING_INDEX',
+		'SUBTIME', 'SUM', 'TAN', 'TIME', 'TIMEDIFF', 'TIMESTAMP', 'TIMESTAMPADD',
+		'TIMESTAMPDIFF', 'TIME_FORMAT', 'TIME_TO_SEC', 'TO_DAYS', 'TRIM',
+		'TRUNCATE', 'UCASE', 'UNCOMPRESS', 'UNCOMPRESSED_LENGTH', 'UNHEX',
+		'UPPER', 'VAR_POP', 'VAR_SAMP', 'VARIANCE', 'WEEK', 'WEEKDAY',
+		'WEEKOFYEAR', 'YEAR', 'YEARWEEK');
+
 	protected static $functions = array('ABS', 'ACOS', 'ADDDATE', 'ADDTIME', 'AES_ENCRYPT', 'AES_DECRYPT', 'AGAINST',
 		'ASCII', 'ASIN', 'ATAN', 'AVG', 'BENCHMARK', 'BIN', 'BIT_AND', 'BIT_OR',
 		'BITCOUNT', 'BITLENGTH', 'CAST', 'CEILING', 'CHAR', 'CHAR_LENGTH',
@@ -131,23 +160,9 @@ class RDatabaseSqlparserSqlparserutils {
 		'UTC_TIME', 'UTC_TIMESTAMP', 'UUID', 'VAR_POP', 'VAR_SAMP', 'VARIANCE',
 		'VERSION', 'WEEK', 'WEEKDAY', 'WEEKOFYEAR', 'YEAR', 'YEARWEEK');
 
-    /**
-     * Prints an array only if debug mode is on.
-     * @param array $s
-     * @param boolean $return, if true, the formatted array is returned via return parameter
-     */
-    protected function preprint($arr, $return = false) {
-        $x = "<pre>";
-        $x .= print_r($arr, 1);
-        $x .= "</pre>";
-        if ($return) {
-            return $x;
-        } else {
-            if (isset($_ENV['DEBUG'])) {
-                print $x . "\n";
-            }
-        }
-    }
+	protected $aggregateFunctions = array('AVG', 'SUM', 'COUNT', 'MIN', 'MAX', 'STD', 'STDDEV', 'STDDEV_SAMP',
+		'STDDEV_POP', 'VARIANCE', 'VAR_SAMP', 'VAR_POP', 'GROUP_CONCAT', 'BIT_AND',
+		'BIT_OR', 'BIT_XOR');
 
     /**
      * Ends the given string $haystack with the string $needle?

@@ -288,4 +288,44 @@ class RedcoreModelConfig extends RModelAdmin
 	{
 		return RTranslationHelper::getContentElements($extensionName);
 	}
+
+	/**
+	 * Loading of related XML files
+	 *
+	 * @param   string  $extensionName    Extension name
+	 * @param   array   $contentElements  Content elements
+	 *
+	 * @return  array  List of objects
+	 */
+	public function loadMissingContentElements($extensionName, $contentElements = array())
+	{
+		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+		$missingTables = array();
+
+		foreach ($translationTables as $translationTableKey => $translationTable)
+		{
+			$translationTable->table = str_replace('#__', '', $translationTable->table);
+
+			if ($translationTable->option == $extensionName)
+			{
+				$foundTable = false;
+
+				foreach ($contentElements as $contentElement)
+				{
+					if (!empty($contentElement->table) && $contentElement->table == $translationTable->table)
+					{
+						$foundTable = true;
+						break;
+					}
+				}
+
+				if (!$foundTable)
+				{
+					$missingTables[$translationTableKey] = $translationTable;
+				}
+			}
+		}
+
+		return $missingTables;
+	}
 }

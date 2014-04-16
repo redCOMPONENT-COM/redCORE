@@ -54,6 +54,11 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	protected $contentElements;
 
 	/**
+	 * @var  array
+	 */
+	protected $missingContentElements;
+
+	/**
 	 * Display method
 	 *
 	 * @param   string  $tpl  The template name
@@ -74,9 +79,8 @@ class RedcoreViewConfig extends RedcoreHelpersView
 		$this->plugins = $model->getInstalledExtensions('plugin', array('%' . $this->component->xml->xmlComponentName . '%'), $this->component->xml->xmlComponentName);
 		$this->componentTitle = RText::getTranslationIfExists($this->component->xml->name, '', '');
 		$this->contentElements = $model->loadContentElements($option);
+		$this->missingContentElements = $model->loadMissingContentElements($option, $this->contentElements);
 		RLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/' . $option . '/layouts';
-
-
 
 		parent::display($tpl);
 	}

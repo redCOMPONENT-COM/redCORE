@@ -57,8 +57,17 @@ abstract class RDatabaseDriver extends JDatabaseDriver
 			// If the class still doesn't exist we have nothing left to do but throw an exception.  We did our best.
 			if (!class_exists($class))
 			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DRIVER_ERROR', $options['driver']), 'error');
+				// Only display error in admin
+				if (JFactory::getApplication()->isAdmin())
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DRIVER_ERROR', $options['driver']), 'error');
+				}
 
+				// We will disable plugin option in this instance so we do not try to translate
+				if (!empty(RTranslationHelper::$pluginParams))
+				{
+					RTranslationHelper::$pluginParams->set('enable_translations', 0);
+				}
 				// We are not supporting this driver
 				return parent::getInstance($options);
 			}

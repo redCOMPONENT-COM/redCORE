@@ -605,38 +605,32 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function uninstallTranslations()
 	{
-			$class = get_called_class();
+		$class = get_called_class();
+		$extensionOption = strtolower(strstr($class, 'Installer', true));
 
-			// Delete all tables
-			if ($class == 'Com_RedcoreInstallerScript')
+		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+
+		if (!empty($translationTables))
+		{
+			$db = JFactory::getDbo();
+
+			foreach ($translationTables as $translationTable => $translationTableParams)
 			{
-				$translationTables = RTranslationHelper::getInstalledTranslationTables();
-
-				if (!empty($translationTables))
+				if ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option)
 				{
-					$db = JFactory::getDbo();
+					$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
 
-					foreach ($translationTables as $translationTable => $translationColumns)
+					try
 					{
-						$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
-
-						try
-						{
-							$db->dropTable($newTable);
-						}
-						catch (Exception $e)
-						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DELETE_ERROR', $e->getMessage()), 'error');
-						}
+						$db->dropTable($newTable);
+					}
+					catch (Exception $e)
+					{
+						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DELETE_ERROR', $e->getMessage()), 'error');
 					}
 				}
 			}
-			// We are uninstalling one of the extensions
-			else
-			{
-				$option = strtolower(strstr($class, 'Installer', true));
-				RTranslationTable::batchContentElements($option, 'uninstall');
-			}
+		}
 	}
 
 	/**

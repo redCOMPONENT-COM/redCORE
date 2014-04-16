@@ -16,6 +16,37 @@ defined('JPATH_REDCORE') or die;
  * @subpackage  Database
  * @since       1.0
  */
-class RDatabaseDriverMysql extends RDatabaseDriverMysqli
+class RDatabaseDriverMysql extends JDatabaseDriverMysql
 {
+	/**
+	 * We can choose not to translate query with this variable
+	 *
+	 * @var  boolean
+	 */
+	public $translate = false;
+
+	/**
+	 * This function replaces a string identifier <var>$prefix</var> with the string held is the
+	 * <var>tablePrefix</var> class variable.
+	 *
+	 * @param   string  $sql     The SQL statement to prepare.
+	 * @param   string  $prefix  The common table prefix.
+	 *
+	 * @return  string  The processed SQL statement.
+	 *
+	 * @since   11.1
+	 */
+	public function replacePrefix($sql, $prefix = '#__')
+	{
+		// Basic check for translations
+		if ($this->translate)
+		{
+			if ($parsedSql = RDatabaseSqlparserSqltranslation::parseSelectQuery($sql, $prefix))
+			{
+				return parent::replacePrefix($parsedSql, $prefix);
+			}
+		}
+
+		return parent::replacePrefix($sql, $prefix);
+	}
 }

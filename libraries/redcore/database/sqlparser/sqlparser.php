@@ -1025,14 +1025,17 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		return $res;
 	}
 
-	private function processOrderExpression(&$parseInfo, $select) {
+	private function processOrderExpression(&$parseInfo, $select, $groupby = false) {
 		$parseInfo['expr'] = trim($parseInfo['expr']);
 
 		if ($parseInfo['expr'] === "") {
 			return false;
 		}
 
-		$parseInfo['expr'] = trim($this->revokeEscaping($parseInfo['expr']));
+		if ($groupby)
+			$parseInfo['expr'] = trim($parseInfo['expr']);
+		else
+			$parseInfo['expr'] = trim($this->revokeEscaping($parseInfo['expr']));
 
 		if (is_numeric($parseInfo['expr'])) {
 			$parseInfo['type'] = 'pos';
@@ -1060,7 +1063,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 	}
 
 	private function initParseInfoForOrder() {
-		return array('expr' => "", 'dir' => "ASC", 'type' => 'expression');
+		return array('base_expr' => "", 'expr' => "", 'dir' => "ASC", 'type' => 'expression');
 	}
 
 	private function process_order($tokens, $select) {
@@ -1109,19 +1112,19 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			$trim = strtoupper(trim($token));
 			switch ($trim) {
 			case ',':
-				$parsed = $this->processOrderExpression($parseInfo, $select);
+				$parsed = $this->processOrderExpression($parseInfo, $select, true);
 				unset($parsed['direction']);
 
 				$out[] = $parsed;
 				$parseInfo = $this->initParseInfoForOrder();
 				break;
 			default:
+				$parseInfo['base_expr'] .= $token;
 				$parseInfo['expr'] .= $token;
-
 			}
 		}
 
-		$parsed = $this->processOrderExpression($parseInfo, $select);
+		$parsed = $this->processOrderExpression($parseInfo, $select, true);
 		unset($parsed['direction']);
 		$out[] = $parsed;
 
