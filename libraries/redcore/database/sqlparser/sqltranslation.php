@@ -44,6 +44,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		}
 
 		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+		$translationTables = RTranslationHelper::removeFromEditForm($translationTables);
 
 		if (empty($translationTables))
 		{
@@ -80,12 +81,11 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				foreach ($foundTables as $foundTable)
 				{
 					// Get all columns from that table
-					$tableColumns = $translationTables[$foundTable['originalTableName']]->columns;
+					$tableColumns = (array) $translationTables[$foundTable['originalTableName']]->columns;
 
 					if (!empty($tableColumns))
 					{
-						$tableColumns = explode(',', $tableColumns);
-						$selectAllOriginalColumn = $foundTable['alias']['orginalName'] . '.*';
+						$selectAllOriginalColumn = $foundTable['alias']['originalName'] . '.*';
 						$columns[$selectAllOriginalColumn]['base_expr'] = $selectAllOriginalColumn;
 						$columns[$selectAllOriginalColumn]['table'] = $foundTable;
 
@@ -95,7 +95,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								. 'COALESCE('
 								. $foundTable['alias']['name']
 								. '.' . $tableColumn
-								. ',' . $foundTable['alias']['orginalName']
+								. ',' . $foundTable['alias']['originalName']
 								. '.' . $tableColumn
 								. ')';
 							$columns[$db->qn($tableColumn)]['table'] = $foundTable;
@@ -166,7 +166,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								{
 									$primaryKey = self::getNameIfIncluded(
 										$primaryKeyValue,
-										$column['table']['alias']['orginalName'],
+										$column['table']['alias']['originalName'],
 										array($tagColumnsValue['base_expr']),
 										false
 									);
@@ -188,7 +188,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							{
 								if (!empty($primaryKey) || $groupColumnsKey != 'WHERE')//
 								{
-									$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['orginalName']);
+									$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['originalName']);
 								}
 								else
 								{
@@ -207,12 +207,15 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						{
 							foreach ($tagColumnsValue['sub_tree'] as $subKey => $subTree)
 							{
-								$tagColumnsValue['sub_tree'][$subKey]['sub_tree'] = self::parseColumnReplacements(
-									$tagColumnsValue['sub_tree'][$subKey]['sub_tree'],
-									$columns,
-									$translationTables,
-									$columnFound
-								);
+								if (!empty($tagColumnsValue['sub_tree'][$subKey]['sub_tree']))
+								{
+									$tagColumnsValue['sub_tree'][$subKey]['sub_tree'] = self::parseColumnReplacements(
+										$tagColumnsValue['sub_tree'][$subKey]['sub_tree'],
+										$columns,
+										$translationTables,
+										$columnFound
+									);
+								}
 							}
 						}
 						else
@@ -289,19 +292,19 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							$newTagValue['alias'] = array(
 								'as' => true,
 								'name' => self::getUniqueAlias($newTagValue['table'], $foundTables),
-								'orginalName' => $alias,
+								'originalName' => $alias,
 								'base_expr' => ''
 							);
 
 							$refClause = self::createParserJoinOperand(
 								$newTagValue['alias']['name'],
 								'=',
-								$newTagValue['alias']['orginalName'],
+								$newTagValue['alias']['originalName'],
 								$translationTables[$tableName]
 							);
 							$newTagValue['ref_clause'] = $refClause;
 							$foundTables[$newTagValue['alias']['name']] = $newTagValue;
-							$originalTables[$newTagValue['alias']['orginalName']] = 1;
+							$originalTables[$newTagValue['alias']['originalName']] = 1;
 						}
 					}
 					elseif (!empty($tagValue['sub_tree']))
@@ -310,12 +313,15 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						{
 							foreach ($tagValue['sub_tree'] as $subKey => $subTree)
 							{
-								$tagValue['sub_tree'][$subKey]['sub_tree'] = self::parseTableReplacements(
-									$tagValue['sub_tree'][$subKey]['sub_tree'],
-									$translationTables,
-									$foundTables,
-									$originalTables
-								);
+								if (!empty($tagValue['sub_tree'][$subKey]['sub_tree']))
+								{
+									$tagValue['sub_tree'][$subKey]['sub_tree'] = self::parseTableReplacements(
+										$tagValue['sub_tree'][$subKey]['sub_tree'],
+										$translationTables,
+										$foundTables,
+										$originalTables
+									);
+								}
 							}
 						}
 						else
@@ -422,9 +428,15 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			}
 		}
 
-		$refClause[] = self::createParserElement('colref', $db->qn($newTable) . '.language');
+		$refClause[] = self::createParserElement('colref', $db->qn($newTable) . '.rctranslations_language');
 		$refClause[] = self::createParserElement('operator', '=');
 		$refClause[] = self::createParserElement('colref', $db->q(JFactory::getLanguage()->getTag()));
+
+		$refClause[] = self::createParserElement('operator', 'AND');
+
+		$refClause[] = self::createParserElement('colref', $db->qn($newTable) . '.rctranslations_state');
+		$refClause[] = self::createParserElement('operator', '=');
+		$refClause[] = self::createParserElement('colref', $db->q('1'));
 
 		return $refClause;
 	}
@@ -496,7 +508,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				switch (self::cleanEscaping($fieldFromListQuotes))
 				{
 					case self::cleanEscaping($field):
-					case self::cleanEscaping($fieldFromList['table']['alias']['orginalName'] . '.' . $field):
+					case self::cleanEscaping($fieldFromList['table']['alias']['originalName'] . '.' . $field):
 						return $fieldFromList;
 				}
 			}

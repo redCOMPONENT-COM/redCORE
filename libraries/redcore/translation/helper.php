@@ -125,7 +125,7 @@ class RTranslationHelper
 	 */
 	public static function getContentElements($extensionName = '')
 	{
-		if (empty(self::$contentElements))
+		if (empty(self::$contentElements) || empty(self::$contentElements[$extensionName]))
 		{
 			self::loadContentElements($extensionName);
 		}
@@ -191,42 +191,74 @@ class RTranslationHelper
 	/**
 	 * Set a value to translation table list
 	 *
-	 * @param   string  $option       Extension option name
-	 * @param   string  $table        Table name
-	 * @param   string  $columns      Columns which are set in the table
-	 * @param   array   $primaryKeys  Primary keys of the table
-	 * @param   string  $xml          XML file name of the Content Element
-	 * @param   string  $path         Path to Content Element XML file
+	 * @param   string  $option          Extension option name
+	 * @param   string  $table           Table name
+	 * @param   object  $contentElement  Content Element
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function setInstalledTranslationTables($option, $table, $columns, $primaryKeys = array(), $xml = '', $path = '')
+	public static function setInstalledTranslationTables($option, $table, $contentElement)
 	{
-		if (empty($columns))
+		// Initialize installed tables before proceeding
+		self::getInstalledTranslationTables();
+
+		if (empty($contentElement))
 		{
 			unset(self::$installedTranslationTables[$table]);
+			self::loadContentElements($option);
 		}
 		else
 		{
-			$db = JFactory::getDbo();
+			self::$installedTranslationTables[$table] = array(
+				'option' => $option,
+				'table' => $table,
+				'name' => $contentElement->name,
+				'columns' => $contentElement->allContentElementsFields,
+				'primaryKeys' => $contentElement->allPrimaryKeys,
+				'xml' => $contentElement->contentElementXml,
+				'path' => $contentElement->contentElementXmlPath,
+				'formLinks' => $contentElement->getEditForms(),
+			);
 
-			// Kick out language primary key
-			foreach ($primaryKeys as $primaryKey => $primaryKeyValue)
+			self::loadContentElements($option);
+		}
+	}
+
+	/**
+	 * Checks if this is edit form and restricts table from translations
+	 *
+	 * @param   array  $translationTables  List of translation tables
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function removeFromEditForm($translationTables)
+	{
+		$input = JFactory::getApplication()->input;
+		$option = $input->getString('option', '');
+		$view = $input->getString('view', '');
+		$layout = $input->getString('layout', '');
+		$task = $input->getString('layout', '');
+
+		if ($layout == 'edit' || $task == 'edit')
+		{
+			foreach ($translationTables as $tableKey => $translationTable)
 			{
-				if ($primaryKeyValue == $db->qn('language'))
+				if (!empty($translationTable->formLinks))
 				{
-					unset($primaryKeys[$primaryKey]);
+					foreach ($translationTable->formLinks as $formLink)
+					{
+						$formLinks = explode('#', $formLink);
+
+						if (count($formLinks) > 1 && $option == $formLinks[0] && in_array($view, array('form', $formLinks[1])))
+						{
+							unset($translationTables[$tableKey]);
+							break;
+						}
+					}
 				}
 			}
-
-			self::$installedTranslationTables[$table] = array(
-				'table' => $table,
-				'columns' => $columns,
-				'primaryKeys' => $primaryKeys,
-				'option' => $option,
-				'xml' => $xml,
-				'path' => $path,
-			);
 		}
+
+		return $translationTables;
 	}
 }

@@ -16,44 +16,47 @@ JHtml::_('rjquery.chosen', 'select');
 ?>
 <div class="tab-pane" id="mainComponentConfiguration">
 	<p class="tab-description"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_CONFIGURATION_DESC'); ?></p>
-	<div class="span12">
-		<ul class="nav nav-tabs" id="configTabs">
-			<?php $fieldSets = $this->form->getFieldsets(); ?>
-			<?php foreach ($fieldSets as $name => $fieldSet) : ?>
-				<?php if ($name == 'translations') : ?>
-					<?php continue; ?>
-				<?php endif; ?>
-				<?php $label = empty($fieldSet->label) ? 'COM_CONFIG_' . $name . '_FIELDSET_LABEL' : $fieldSet->label; ?>
-				<li><a href="#<?php echo $name; ?>" data-toggle="tab"><?php echo JText::_($label); ?></a></li>
-			<?php endforeach; ?>
-		</ul>
-		<div class="tab-content">
-			<?php $fieldSets = $this->form->getFieldsets(); ?>
-			<?php foreach ($fieldSets as $name => $fieldSet) : ?>
-				<?php if ($name == 'translations') : ?>
-					<?php continue; ?>
-				<?php endif; ?>
-				<div class="tab-pane" id="<?php echo $name; ?>">
-					<?php if (isset($fieldSet->description) && !empty($fieldSet->description)) : ?>
-						<p class="tab-description"><?php echo JText::_($fieldSet->description); ?></p>
+	<?php if (!empty($this->form)) : ?>
+		<div class="span12">
+			<ul class="nav nav-tabs" id="configTabs">
+				<?php $fieldSets = $this->form->getFieldsets(); ?>
+				<?php foreach ($fieldSets as $name => $fieldSet) : ?>
+					<?php if ($name == 'translations') : ?>
+						<?php continue; ?>
 					<?php endif; ?>
-					<?php foreach ($this->form->getFieldset($name) as $field): ?>
-						<div class="control-group">
-							<?php if (!$field->hidden && $name != "permissions") : ?>
-								<div class="control-label">
-									<?php echo $field->label; ?>
+					<?php $label = empty($fieldSet->label) ? 'COM_CONFIG_' . $name . '_FIELDSET_LABEL' : $fieldSet->label; ?>
+					<li><a href="#<?php echo $name; ?>" data-toggle="tab"><?php echo JText::_($label); ?></a></li>
+				<?php endforeach; ?>
+			</ul>
+			<div class="tab-content">
+				<?php $fieldSets = $this->form->getFieldsets(); ?>
+				<?php foreach ($fieldSets as $name => $fieldSet) : ?>
+					<?php if ($name == 'translations') : ?>
+						<?php continue; ?>
+					<?php endif; ?>
+					<div class="tab-pane" id="<?php echo $name; ?>">
+						<?php if (isset($fieldSet->description) && !empty($fieldSet->description)) : ?>
+							<p class="tab-description"><?php echo JText::_($fieldSet->description); ?></p>
+						<?php endif; ?>
+						<?php foreach ($this->form->getFieldset($name) as $field): ?>
+							<div class="control-group">
+								<?php if (!$field->hidden && $name != "permissions") : ?>
+									<div class="control-label">
+										<?php echo $field->label; ?>
+									</div>
+								<?php endif; ?>
+								<div class="<?php if ($name != "permissions") : ?>controls<?php endif; ?>">
+									<?php echo $field->input; ?>
 								</div>
-							<?php endif; ?>
-							<div class="<?php if ($name != "permissions") : ?>controls<?php endif; ?>">
-								<?php echo $field->input; ?>
 							</div>
-						</div>
-					<?php endforeach; ?>
-				</div>
-			<?php endforeach; ?>
+						<?php endforeach; ?>
+					</div>
+				<?php endforeach; ?>
+			</div>
 		</div>
-	</div>
+		<script type="text/javascript">
+			jQuery('#configTabs a:first').tab('show'); // Select first tab
+		</script>
+	<?php endif; ?>
 </div>
-<script type="text/javascript">
-	jQuery('#configTabs a:first').tab('show'); // Select first tab
-</script>
+

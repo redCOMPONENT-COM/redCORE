@@ -101,7 +101,7 @@ final class RTranslationContentElement
 	{
 		if (!empty($this->xml->reference->table['name']))
 		{
-			return strtolower($this->xml->reference->table['name']);
+			return strtolower((string) $this->xml->reference->table['name']);
 		}
 
 		return '';
@@ -116,7 +116,7 @@ final class RTranslationContentElement
 	{
 		if (!empty($this->xml->name))
 		{
-			return $this->xml->name;
+			return (string) $this->xml->name;
 		}
 
 		return '';
@@ -135,7 +135,7 @@ final class RTranslationContentElement
 			{
 				if ($field['type'] == 'referenceid')
 				{
-					return strtolower($field['name']);
+					return strtolower((string) $field['name']);
 				}
 			}
 		}
@@ -153,6 +153,29 @@ final class RTranslationContentElement
 		if (!empty($this->xml->reference->table->field))
 		{
 			return $this->xml->reference->table->field;
+		}
+
+		return array();
+	}
+
+	/**
+	 * Get list of edit forms where we will not show translation
+	 *
+	 * @return  array  Array of edit form locations
+	 */
+	public function getEditForms()
+	{
+		if (!empty($this->xml->reference->component->form))
+		{
+			$forms = $this->xml->reference->component->form;
+			$formLinks = array();
+
+			foreach ($forms as $form)
+			{
+				$formLinks[] = (string) $form;
+			}
+
+			return $formLinks;
 		}
 
 		return array();
@@ -180,7 +203,11 @@ final class RTranslationContentElement
 		}
 
 		// Language is automatically added to the table if table exists
-		unset($fieldsTable['language']);
+		unset($fieldsTable['rctranslations_id']);
+		unset($fieldsTable['rctranslations_language']);
+		unset($fieldsTable['rctranslations_originals']);
+		unset($fieldsTable['rctranslations_modified']);
+		unset($fieldsTable['rctranslations_state']);
 		$fieldsXml = $this->getTranslateFields();
 		$fields = array();
 

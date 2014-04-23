@@ -43,7 +43,21 @@ class RedcoreModelConfig extends RModelAdmin
 			'/config'
 		);
 
-		$form->loadFile('translations', false, '/config');
+		if (empty($form))
+		{
+			/** @var RForm $form */
+			$form = $this->loadForm(
+				'com_redcore.translations',
+				'config',
+				array('control' => 'jform', 'load_data' => $loadData),
+				false,
+				'/config'
+			);
+		}
+		else
+		{
+			$form->loadFile('translations', false, '/config');
+		}
 
 		if (empty($form))
 		{
@@ -70,12 +84,12 @@ class RedcoreModelConfig extends RModelAdmin
 	/**
 	 * Get the component information.
 	 *
+	 * @param   string  $option  Option name
+	 *
 	 * @return  object
 	 */
-	public function getComponent()
+	public function getComponent($option)
 	{
-		$option = JFactory::getApplication()->input->getString('component');
-
 		$this->loadExtensionLanguage($option, $option);
 		$this->loadExtensionLanguage($option, $option . '.sys');
 

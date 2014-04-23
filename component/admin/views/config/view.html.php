@@ -69,11 +69,11 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	{
 		/** @var RedcoreModelConfig $model */
 		$model = $this->getModel('Config');
+		$option = JFactory::getApplication()->input->getString('component', '');
 
 		$this->form	= $model->getForm();
-		$this->component = $model->getComponent();
+		$this->component = $model->getComponent($option);
 		$this->return = JFactory::getApplication()->input->get('return');
-		$option = JFactory::getApplication()->input->getString('component', '');
 
 		$this->modules = $model->getInstalledExtensions('module', array('%' . $this->component->xml->xmlComponentName . '%'));
 		$this->plugins = $model->getInstalledExtensions('plugin', array('%' . $this->component->xml->xmlComponentName . '%'), $this->component->xml->xmlComponentName);
