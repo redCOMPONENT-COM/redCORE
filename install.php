@@ -279,7 +279,7 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function installTranslations($parent)
 	{
-		// We need it for installing Translation Tables and it is already copied
+		// We need it for installing Translation Tables
 		RBootstrap::bootstrap();
 
 		// Required objects
