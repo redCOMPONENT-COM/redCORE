@@ -122,7 +122,7 @@ class RedcoreModelTranslation extends RModelAdmin
 			$isNew = false;
 		}
 
-		$data['rctranslations_originals'] = RTranslationTable::removeFixedColumnsFromArray($original, $translationTable->columns);
+		$data['rctranslations_originals'] = RTranslationTable::createOriginalValueFromColumns($original, $translationTable->columns);
 
 		// Bind the data.
 		if (!$table->bind($data))

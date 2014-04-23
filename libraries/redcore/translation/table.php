@@ -613,12 +613,30 @@ final class RTranslationTable
 	/**
 	 * Remove fixed columns from array
 	 *
+	 * @param   array  $columns  All the columns from the table
+	 *
+	 * @return  array  Filtered array of columns
+	 */
+	public static function removeFixedColumnsFromArray($columns = array())
+	{
+		unset($columns['rctranslations_id']);
+		unset($columns['rctranslations_language']);
+		unset($columns['rctranslations_originals']);
+		unset($columns['rctranslations_modified']);
+		unset($columns['rctranslations_state']);
+
+		return $columns;
+	}
+
+	/**
+	 * Remove fixed columns from array
+	 *
 	 * @param   array  $original  Original data array
 	 * @param   array  $columns   All the columns from the table
 	 *
 	 * @return  array  Filtered array of columns
 	 */
-	public static function removeFixedColumnsFromArray($original = array(), $columns = array())
+	public static function createOriginalValueFromColumns($original = array(), $columns = array())
 	{
 		$data = array();
 
