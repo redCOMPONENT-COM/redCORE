@@ -203,11 +203,7 @@ final class RTranslationContentElement
 		}
 
 		// Language is automatically added to the table if table exists
-		unset($fieldsTable['rctranslations_id']);
-		unset($fieldsTable['rctranslations_language']);
-		unset($fieldsTable['rctranslations_originals']);
-		unset($fieldsTable['rctranslations_modified']);
-		unset($fieldsTable['rctranslations_state']);
+		$fieldsTable = RTranslationTable::removeFixedColumnsFromArray($fieldsTable);
 		$fieldsXml = $this->getTranslateFields();
 		$fields = array();
 

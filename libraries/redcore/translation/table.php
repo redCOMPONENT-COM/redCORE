@@ -226,11 +226,7 @@ final class RTranslationTable
 			$installedTable = !empty($translationTables[$originalTable]) ? $translationTables[$originalTable] : null;
 
 			// Language is automatically added to the table if table exists
-			unset($columns['rctranslations_id']);
-			unset($columns['rctranslations_language']);
-			unset($columns['rctranslations_originals']);
-			unset($columns['rctranslations_modified']);
-			unset($columns['rctranslations_state']);
+			$columns = self::removeFixedColumnsFromArray($columns);
 			$columnKeys = array_keys($columns);
 
 			foreach ($fields as $fieldKey => $field)
@@ -612,5 +608,43 @@ final class RTranslationTable
 		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', $table, $isNew));
 
 		return true;
+	}
+
+	/**
+	 * Remove fixed columns from array
+	 *
+	 * @param   array  $columns  All the columns from the table
+	 *
+	 * @return  array  Filtered array of columns
+	 */
+	public static function removeFixedColumnsFromArray($columns = array())
+	{
+		unset($columns['rctranslations_id']);
+		unset($columns['rctranslations_language']);
+		unset($columns['rctranslations_originals']);
+		unset($columns['rctranslations_modified']);
+		unset($columns['rctranslations_state']);
+
+		return $columns;
+	}
+
+	/**
+	 * Remove fixed columns from array
+	 *
+	 * @param   array  $original  Original data array
+	 * @param   array  $columns   All the columns from the table
+	 *
+	 * @return  array  Filtered array of columns
+	 */
+	public static function createOriginalValueFromColumns($original = array(), $columns = array())
+	{
+		$data = array();
+
+		foreach ($columns as $column)
+		{
+			$data[$column] = md5($original[$column]);
+		}
+
+		return json_encode($data);
 	}
 }
