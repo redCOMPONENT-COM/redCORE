@@ -148,31 +148,11 @@ $input = JFactory::getApplication()->input;
 						</td>
 					</tr>
 				<?php else:
-					/*
-					// Special Params handling
-					// if translated value is blank then we always copy across the original value
-					$falangManager =  FalangManager::getInstance();
-					if ($falangManager->getCfg('copyparams',1) &&  $translationContent->value==""){
-					$translationContent->value = $field->originalValue;
-					}*/
 					?>
 					<tr>
 						<td colspan="3">
 							<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
 							<textarea name="translation[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
-							<?php
-							/*JLoader::import('models.TranslateParams',FALANG_ADMINPATH);
-							$tpclass = "TranslateParams_".$elementTable->Name;
-							if (!class_exists($tpclass)){
-								$tpclass = "TranslateParams";
-							}
-							$transparams = new $tpclass($field->originalValue,$translationContent->value, $field->Name,$elementTable->Fields);
-							// TODO sort out default value for author in params when editing new translation
-							$retval = $transparams->editTranslation();
-							if ($retval){
-								$editorFields[] = $retval;
-							}*/
-							?>
 						</td>
 					</tr>
 				<?php endif; ?>
@@ -222,12 +202,9 @@ $input = JFactory::getApplication()->input;
 			</div>
 		</div>
 	</div>
-
-	<!-- hidden fields -->
 	<?php foreach ($this->translationTable->primaryKeys as $primaryKey): ?>
 		<input type="hidden" name="translation[<?php echo $primaryKey; ?>]" value="<?php echo $this->item->original->{$primaryKey}; ?>"/>
 	<?php endforeach; ?>
-
 	<input type="hidden" name="option" value="com_redcore"/>
 	<input type="hidden" name="task" value=""/>
 	<input type="hidden" name="id" value="<?php echo $input->getString('id', ''); ?>"/>
