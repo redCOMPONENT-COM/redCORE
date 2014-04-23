@@ -111,6 +111,7 @@ class RedcoreModelTranslation extends RModelAdmin
 		foreach ($translationTable->primaryKeys as $primaryKey)
 		{
 			$data['rctranslations_originals'][$primaryKey] = md5($data[$primaryKey]);
+			$original[$primaryKey] = $data[$primaryKey];
 		}
 
 		$isNew = true;
@@ -123,16 +124,7 @@ class RedcoreModelTranslation extends RModelAdmin
 			$isNew = false;
 		}
 
-
-		foreach ($translationTable->columns as $column)
-		{
-			if (empty($data['rctranslations_originals'][$column]))
-			{
-				$data['rctranslations_originals'][$column] = md5($original[$column]);
-			}
-		}
-
-		$data['rctranslations_originals'] = json_encode($data['rctranslations_originals']);
+		$data['rctranslations_originals'] = RTranslationTable::removeFixedColumnsFromArray($original, $translationTable->columns);
 
 		// Bind the data.
 		if (!$table->bind($data))

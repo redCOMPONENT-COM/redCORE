@@ -92,8 +92,5 @@
 
     <!-- Postflight tasks -->
     <postflight>
-        <task name="deleteMenu">
-            <parameter>1</parameter>
-        </task>
     </postflight>
 </extension>
