@@ -114,7 +114,6 @@ class Com_RedcoreInstallerScript
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
-		$this->installTranslations($parent);
 
 		return true;
 	}
@@ -280,6 +279,9 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function installTranslations($parent)
 	{
+		// We need it for installing Translation Tables and it is already copied
+		RBootstrap::bootstrap();
+
 		// Required objects
 		$manifest  = $parent->get('manifest');
 
@@ -411,6 +413,8 @@ class Com_RedcoreInstallerScript
 
 		// Execute the postflight tasks from the manifest
 		$this->postFlightFromManifest($type, $parent);
+
+		$this->installTranslations($parent);
 
 		return true;
 	}
