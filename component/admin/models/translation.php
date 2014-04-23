@@ -106,11 +106,9 @@ class RedcoreModelTranslation extends RModelAdmin
 		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
 		/** @var RedcoreTableTranslation $table */
 		$table = $this->getTable();
-		$data['rctranslations_originals'] = array();
 
 		foreach ($translationTable->primaryKeys as $primaryKey)
 		{
-			$data['rctranslations_originals'][$primaryKey] = md5($data[$primaryKey]);
 			$original[$primaryKey] = $data[$primaryKey];
 		}
 
