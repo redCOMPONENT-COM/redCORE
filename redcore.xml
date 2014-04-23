@@ -74,6 +74,21 @@
         <plugin name="redcore" group="system"/>
     </plugins>
 
+    <!-- Translations to install with the component -->
+    <translations>
+        <!-- Joomla Core Extensions Translation -->
+        <translation name="com_banners"/>
+        <translation name="com_categories"/>
+        <translation name="com_contact"/>
+        <translation name="com_content"/>
+        <translation name="com_languages"/>
+        <translation name="com_menus"/>
+        <translation name="com_modules"/>
+        <translation name="com_newsfeeds"/>
+        <translation name="com_users"/>
+        <translation name="com_weblinks"/>
+    </translations>
+
     <!-- Postflight tasks -->
     <postflight>
         <task name="deleteMenu">

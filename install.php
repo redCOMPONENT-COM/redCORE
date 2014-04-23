@@ -114,6 +114,7 @@ class Com_RedcoreInstallerScript
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
+		$this->installTranslations($parent);
 
 		return true;
 	}
@@ -266,6 +267,30 @@ class Com_RedcoreInstallerScript
 					$db->setQuery($query);
 					$db->query();
 				}
+			}
+		}
+	}
+
+	/**
+	 * Install the package translations
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	protected function installTranslations($parent)
+	{
+		// Required objects
+		$manifest  = $parent->get('manifest');
+
+		if ($nodes = $manifest->translations->translation)
+		{
+			foreach ($nodes as $node)
+			{
+				$extName   = (string) $node->attributes()->name;
+				$result = RTranslationTable::batchContentElements($extName, 'install', false);
+
+				$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
 			}
 		}
 	}

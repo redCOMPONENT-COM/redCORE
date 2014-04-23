@@ -46,7 +46,7 @@ JHtml::_('rjquery.chosen', 'select');
 	}
 </script>
 <div class="tab-pane" id="mainComponentTranslations">
-	<p class="tab-description"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_TRANSLATIONS_DESC'); ?></p>
+	<p class="tab-description"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_DESC'); ?></p>
 	<p class="tab-description">
 		<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_PLUGIN_LABEL'); ?>
 		<?php if (RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1) : ?>
@@ -59,7 +59,7 @@ JHtml::_('rjquery.chosen', 'select');
 		<div class="span6 well">
 			<div class="control-group">
 				<div class="control-label">
-					<?php echo $this->form->getLabel('redcoreContentElement[]'); ?>
+					<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_TITLE'); ?>
 				</div>
 				<div class="controls">
 					<input type="file" multiple="multiple" name="redcoreContentElement[]" id="redcoreContentElement" accept="application/xml" class="inputbox" />
@@ -111,7 +111,12 @@ JHtml::_('rjquery.chosen', 'select');
 	</div>
 	<div class="row-fluid">
 		<?php if (empty($this->contentElements)): ?>
-			<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NO_FILES_AVAILABLE'); ?>
+			<div class="alert alert-info">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+				<div class="pagination-centered">
+					<h3><?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NO_FILES_AVAILABLE') ?></h3>
+				</div>
+			</div>
 		<?php else : ?>
 			<?php foreach ($this->contentElements as $contentElement): ?>
 				<?php $status = $contentElement->getStatus() ?>
@@ -225,7 +230,7 @@ JHtml::_('rjquery.chosen', 'select');
 							<strong><?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_COLUMNS'); ?>:</strong>
 						</td>
 						<td>
-							<strong><?php echo !empty($missingContentElement->columns) ? $missingContentElement->columns : ''; ?></strong>
+							<strong><?php echo !empty($missingContentElement->columns) ? implode(', ', $missingContentElement->columns) : ''; ?></strong>
 						</td>
 					</tr>
 					<tr>
