@@ -71,7 +71,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		$this->contentElement = JFactory::getApplication()->input->getString('contentelement', '');
 		$this->translationTable = RedcoreHelpersTranslation::getTranslationTable();
 
-		if (!empty($contentElement))
+		if (!empty($this->contentElement))
 		{
 			$this->items = $model->getItems();
 			$this->state = $model->getState();
@@ -81,7 +81,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		}
 		else
 		{
-			//$tpl = 'manage';
+
 		}
 
 		parent::display($tpl);
