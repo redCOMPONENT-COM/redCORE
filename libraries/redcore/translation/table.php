@@ -629,20 +629,21 @@ final class RTranslationTable
 	}
 
 	/**
-	 * Remove fixed columns from array
+	 * Creates json encoded original value with hashed column values needed for editor
 	 *
-	 * @param   array  $original  Original data array
-	 * @param   array  $columns   All the columns from the table
+	 * @param   array         $original  Original data array
+	 * @param   array|object  $columns   All the columns from the table
 	 *
-	 * @return  array  Filtered array of columns
+	 * @return  string  Json encoded string of array values
 	 */
 	public static function createOriginalValueFromColumns($original = array(), $columns = array())
 	{
 		$data = array();
+		$columns = (array) $columns;
 
 		foreach ($columns as $column)
 		{
-			$data[$column] = md5($original[$column]);
+			$data[$column] = md5(!empty($original[$column]) ? $original[$column] : '');
 		}
 
 		return json_encode($data);

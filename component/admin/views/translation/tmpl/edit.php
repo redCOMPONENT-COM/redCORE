@@ -64,7 +64,12 @@ $input = JFactory::getApplication()->input;
 				?>
 				<?php if ($column['type'] != 'params') : ?>
 					<tr>
-						<td colspan="3"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel'];?></strong></td>
+						<td colspan="3"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong>
+						<?php if (!empty($this->item->translation->rctranslations_originals[$columnKey])
+							&& $this->item->translation->rctranslations_originals[$columnKey] != md5($this->item->original->{$columnKey})): ?>
+							<span class="label label-warning"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_STATUS_CHANGED'); ?></span>
+						<?php endif; ?>
+						</td>
 					</tr>
 					<tr>
 						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>

@@ -72,11 +72,11 @@ class RedcoreModelTranslation extends RModelAdmin
 		}
 		else
 		{
-			if (!empty($item->translation->t_rctranslations_originals))
+			if (!empty($item->translation->rctranslations_originals))
 			{
 				$registry = new JRegistry;
-				$registry->loadString($item->translation->t_rctranslations_originals);
-				$item->translation->t_rctranslations_originals = $registry->toArray();
+				$registry->loadString($item->translation->rctranslations_originals);
+				$item->translation->rctranslations_originals = $registry->toArray();
 			}
 
 			$item->rctranslations_state = $item->translation->rctranslations_state;
