@@ -41,18 +41,27 @@ abstract class RedcoreHelpersTranslation extends JObject
 	 */
 	public static function getTranslationItemStatus($item, $columns)
 	{
-		if (empty($item->t_rctranslations_language))
+		if (empty($item->rctranslations_language))
 		{
 			return array('badge' => 'badge-important', 'status' => 'JNONE');
 		}
-		elseif ($item->t_rctranslations_state != 1)
+		elseif ($item->rctranslations_state != 1)
 		{
 			return array('badge' => 'badge-important', 'status' => 'JUNPUBLISHED');
 		}
 		else
 		{
 			$originalValues = new JRegistry;
-			$originalValues->loadString($item->t_rctranslations_originals);
+
+			if (is_array($item->rctranslations_originals))
+			{
+				$originalValues->loadArray($item->rctranslations_originals);
+			}
+			else
+			{
+				$originalValues->loadString((string) $item->rctranslations_originals);
+			}
+
 			$translationStatus = array('badge' => 'badge-success', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_TRANSLATED');
 
 			foreach ($columns as $column)

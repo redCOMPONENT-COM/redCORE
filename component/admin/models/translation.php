@@ -79,9 +79,10 @@ class RedcoreModelTranslation extends RModelAdmin
 				$item->translation->rctranslations_originals = $registry->toArray();
 			}
 
-			$item->rctranslations_state = $item->translation->rctranslations_state;
-			$item->rctranslations_modified = $item->translation->rctranslations_modified;
-			$item->rctranslations_language = $item->translation->rctranslations_language;
+			$item->original->rctranslations_state = $item->rctranslations_state = $item->translation->rctranslations_state;
+			$item->original->rctranslations_modified = $item->rctranslations_modified = $item->translation->rctranslations_modified;
+			$item->original->rctranslations_language = $item->rctranslations_language = $item->translation->rctranslations_language;
+			$item->original->rctranslations_originals = $item->rctranslations_originals = $item->translation->rctranslations_originals;
 			$item->id = $item->translation->rctranslations_id;
 		}
 

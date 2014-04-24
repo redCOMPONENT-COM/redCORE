@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 jimport('joomla.html.editor');
 
-$status = RedcoreHelpersTranslation::getTranslationItemStatus($this->item->translation, array_keys($this->columns));
+$status = RedcoreHelpersTranslation::getTranslationItemStatus($this->item->original, array_keys($this->columns));
 $hiddenFields = array();
 
 // HTML helpers
@@ -152,15 +152,36 @@ $input = JFactory::getApplication()->input;
 							</button>
 						</td>
 					</tr>
+					<tr>
+						<td colspan="3">
+						</td>
+					</tr>
 				<?php else:
 					?>
 					<tr>
 						<td colspan="3">
-							<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
-							<textarea name="translation[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
+							<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php
+								if (is_array($this->item->original->{$columnKey})) :
+									echo json_encode($this->item->original->{$columnKey});
+								else:
+									echo $this->item->original->{$columnKey};
+								endif;
+								?></textarea>
+							<textarea name="translation[<?php echo $columnKey;?>]" style="display:none"></textarea>
 						</td>
 					</tr>
 				<?php endif; ?>
+			<?php endforeach; ?>
+			<?php foreach ($this->noTranslationColumns as $columnKey => $column) : ?>
+				<tr>
+					<td colspan="3"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong></td>
+				</tr>
+				<tr>
+					<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
+					<td id="original_field_<?php echo $columnKey;?>" colspan="2">
+						<?php echo !empty($this->item->original->{$columnKey}) ? $this->item->original->{$columnKey} : '--'; ?>
+					</td>
+				</tr>
 			<?php endforeach; ?>
 		</table>
 		<?php foreach ($this->columns as $columnKey => $column) : ?>

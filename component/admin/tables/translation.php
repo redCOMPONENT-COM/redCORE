@@ -80,6 +80,41 @@ class RedcoreTableTranslation extends RTable
 	}
 
 	/**
+	 * Method to bind an associative array or object to the JTable instance.This
+	 * method only binds properties that are publicly accessible and optionally
+	 * takes an array of properties to ignore when binding.
+	 *
+	 * @param   mixed  $src     An associative array or object to bind to the JTable instance.
+	 * @param   mixed  $ignore  An optional array or space separated list of properties to ignore while binding.
+	 *
+	 * @return  boolean  True on success.
+	 *
+	 * @throws  InvalidArgumentException
+	 */
+	public function bind($src, $ignore = array())
+	{
+		$bind = parent::bind($src, $ignore);
+
+		// We set empty strings to null
+		foreach ($this->getProperties() as $k => $v)
+		{
+			// Only process fields not in the ignore array.
+			if (!in_array($k, $ignore))
+			{
+				if (isset($src[$k]))
+				{
+					if ($src[$k] == '')
+					{
+						$this->$k = null;
+					}
+				}
+			}
+		}
+
+		return $bind;
+	}
+
+	/**
 	 * Method to store a node in the database table.
 	 *
 	 * @param   boolean  $updateNulls  True to update null values as well.
@@ -88,7 +123,7 @@ class RedcoreTableTranslation extends RTable
 	 */
 	public function store($updateNulls = true)
 	{
-		if (!parent::store($updateNulls))
+		if (!parent::store(true))
 		{
 			return false;
 		}

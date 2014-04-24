@@ -76,11 +76,11 @@ class RedcoreModelTranslations extends RModelList
 			$query->select($db->qn('t.' . $column, 't_' . $column));
 		}
 
-		$query->select($db->qn('t.rctranslations_id', 't_rctranslations_id'));
-		$query->select($db->qn('t.rctranslations_language', 't_rctranslations_language'));
-		$query->select($db->qn('t.rctranslations_originals', 't_rctranslations_originals'));
-		$query->select($db->qn('t.rctranslations_modified', 't_rctranslations_modified'));
-		$query->select($db->qn('t.rctranslations_state', 't_rctranslations_state'));
+		$query->select($db->qn('t.rctranslations_id'));
+		$query->select($db->qn('t.rctranslations_language'));
+		$query->select($db->qn('t.rctranslations_originals'));
+		$query->select($db->qn('t.rctranslations_modified'));
+		$query->select($db->qn('t.rctranslations_state'));
 
 		$leftJoinOn = array();
 

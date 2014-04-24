@@ -57,7 +57,7 @@ final class RTranslationTable
 			return $db->getTableColumns($tableName, false);
 		}
 
-		return null;
+		return array();
 	}
 
 	/**
@@ -143,6 +143,12 @@ final class RTranslationTable
 				return false;
 			}
 
+			// We are not saving this fields, we only show them in editor
+			if ((string) $field['translate'] == '0' && (string) $field['type'] != 'referenceid')
+			{
+				continue;
+			}
+
 			$fields[(string) $field['name']] = $db->qn((string) $field['name']);
 
 			if ((string) $field['type'] == 'referenceid')
@@ -170,6 +176,36 @@ final class RTranslationTable
 			return false;
 		}
 
+		$newTableCreated = false;
+
+		if (empty($columns))
+		{
+			$newTableCreated = true;
+			$query = 'CREATE TABLE ' . $db->qn($newTable)
+				. ' ('
+				. $db->qn('rctranslations_id') . ' int(10) PRIMARY KEY AUTO_INCREMENT, '
+				. $db->qn('rctranslations_language') . ' char(7) NOT NULL DEFAULT ' . $db->q('') . ', '
+				. $db->qn('rctranslations_originals') . ' TEXT NOT NULL, '
+				. $db->qn('rctranslations_modified') . ' datetime NOT NULL DEFAULT ' . $db->q('0000-00-00 00:00:00') . ', '
+				. $db->qn('rctranslations_state') . ' tinyint(3) NOT NULL DEFAULT ' . $db->q('1') . ', '
+				. ' KEY ' . $db->qn('language_idx') . ' (' . $db->qn('rctranslations_language') . ') '
+				. ' )';
+
+			$db->setQuery($query);
+
+			try
+			{
+				$db->execute();
+				$columns = $db->getTableColumns($newTable, false);
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+
+				return false;
+			}
+		}
+
 		$primaryKeysIndex = implode(',', $primaryKeys);
 		unset($primaryKeys['rctranslations_language']);
 		$primaryKey = ' KEY ' . $db->qn('language_idx') . ' (' . $primaryKeysIndex . ') ';
@@ -180,68 +216,28 @@ final class RTranslationTable
 			. ' '
 			. implode(', ', $constraintKeys);
 
-		if (empty($columns))
+		// Language is automatically added to the table if table exists
+		$columns = self::removeFixedColumnsFromArray($columns);
+		$columnKeys = array_keys($columns);
+
+		foreach ($fields as $fieldKey => $field)
 		{
-			$fieldsCreate = implode(',', $fields);
-			$query = 'CREATE TABLE ' . $db->qn($newTable)
-				. ' ('
-				. $db->qn('rctranslations_language') . ' char(7) NOT NULL DEFAULT ' . $db->q('') . ', '
-				. $db->qn('rctranslations_originals') . ' TEXT NOT NULL, '
-				. $db->qn('rctranslations_modified') . ' datetime NOT NULL DEFAULT ' . $db->q('0000-00-00 00:00:00') . ', '
-				. $db->qn('rctranslations_state') . ' tinyint(3) NOT NULL DEFAULT ' . $db->q('1') . ', '
-				. $primaryKey
-				. ' ) SELECT ' . $fieldsCreate . ' FROM ' . $db->qn($originalTable) . ' where 1 = 2';
-
-			$db->setQuery($query);
-
-			try
+			foreach ($columnKeys as $columnKey => $columnKeyValue)
 			{
-				$db->execute();
-
-				// Adding the constraints afterwards
-				if (!empty($constraintKeysQuery))
+				if ($fieldKey == $columnKeyValue)
 				{
-					$db->setQuery($constraintKeysQuery);
-					$db->execute();
+					unset($columnKeys[$columnKey]);
+					unset($fields[$fieldKey]);
 				}
-
-				// Add primary key
-				$primaryKeyQuery = 'ALTER TABLE '
-					. $db->qn($newTable)
-					. ' ADD COLUMN '
-					. $db->qn('rctranslations_id') . ' int(10) PRIMARY KEY AUTO_INCREMENT';
-				$db->setQuery($primaryKeyQuery);
-				$db->execute();
-			}
-			catch (Exception $e)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
-
-				return false;
 			}
 		}
-		else
+
+		$queryConstraints = '';
+
+		if (!$newTableCreated)
 		{
 			$translationTables = RTranslationHelper::getInstalledTranslationTables();
 			$installedTable = !empty($translationTables[$originalTable]) ? $translationTables[$originalTable] : null;
-
-			// Language is automatically added to the table if table exists
-			$columns = self::removeFixedColumnsFromArray($columns);
-			$columnKeys = array_keys($columns);
-
-			foreach ($fields as $fieldKey => $field)
-			{
-				foreach ($columnKeys as $columnKey => $columnKeyValue)
-				{
-					if ($fieldKey == $columnKeyValue)
-					{
-						unset($columnKeys[$columnKey]);
-						unset($fields[$fieldKey]);
-					}
-				}
-			}
-
-			$queryConstraints = '';
 
 			if (!empty($installedTable->primaryKeys))
 			{
@@ -250,79 +246,83 @@ final class RTranslationTable
 					$queryConstraints .= ', DROP FOREIGN KEY ' . $db->qn($newTable . '_' . $installedPrimaryKey . '_fk');
 				}
 			}
+		}
 
-			// We Add New columns
-			if (!empty($fields))
+		// We Add New columns
+		if (!empty($fields))
+		{
+			$query = 'ALTER TABLE ' . $db->qn($newTable)
+				. ' DROP KEY ' . $db->qn('language_idx');
+
+			if (!$newTableCreated)
 			{
-				$query = 'ALTER TABLE ' . $db->qn($newTable)
-					. ' DROP KEY ' . $db->qn('language_idx')
-					. $queryConstraints;
+				$query .= $queryConstraints;
+			}
 
-				foreach ($fields as $fieldKey => $field)
+			foreach ($fields as $fieldKey => $field)
+			{
+				if (!empty($originalColumns[$fieldKey]))
 				{
-					if (!empty($originalColumns[$fieldKey]))
-					{
-						$query .= ', ADD COLUMN ' . $field
-							. ' ' . $originalColumns[$fieldKey]->Type
-							. ' ' . ($originalColumns[$fieldKey]->Null == 'NO' ? 'NOT NULL' : 'NULL')
-							. ' DEFAULT ' . $db->q($originalColumns[$fieldKey]->Default);
-					}
-				}
-
-				$query .= ', ADD ' . $primaryKey;
-
-				try
-				{
-					$db->setQuery($query);
-					$db->execute();
-
-					// Adding the constraints afterwards
-					if (!empty($constraintKeysQuery))
-					{
-						$db->setQuery($constraintKeysQuery);
-						$db->execute();
-					}
-				}
-				catch (Exception $e)
-				{
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
-
-					return false;
+					$query .= ', ADD COLUMN ' . $field
+						. ' ' . $originalColumns[$fieldKey]->Type
+						. ' NULL'
+						. ' DEFAULT NULL ';
 				}
 			}
 
-			// We delete extra columns
-			if (!empty($columnKeys))
+			$query .= ', ADD ' . $primaryKey;
+
+			try
 			{
-				$query = 'ALTER TABLE ' . $db->qn($newTable)
-					. ' DROP KEY ' . $db->qn('language_idx')
-					. $queryConstraints;
+				$db->setQuery($query);
+				$db->execute();
 
-				foreach ($columnKeys as $columnKey)
+				// Adding the constraints afterwards
+				if (!empty($constraintKeysQuery))
 				{
-					$query .= ', DROP COLUMN ' . $db->qn($columnKey);
-				}
-
-				$query .= ', ADD ' . $primaryKey;
-
-				try
-				{
-					$db->setQuery($query);
+					$db->setQuery($constraintKeysQuery);
 					$db->execute();
-
-					// Adding the constraints afterwards
-					if (!empty($constraintKeysQuery))
-					{
-						$db->setQuery($constraintKeysQuery);
-						$db->execute();
-					}
 				}
-				catch (Exception $e)
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+
+				return false;
+			}
+		}
+
+		// We delete extra columns
+		if (!empty($columnKeys) && !$newTableCreated)
+		{
+			$query = 'ALTER TABLE ' . $db->qn($newTable)
+				. ' DROP KEY ' . $db->qn('language_idx')
+				. $queryConstraints;
+
+			foreach ($columnKeys as $columnKey)
+			{
+				$query .= ', DROP COLUMN ' . $db->qn($columnKey);
+			}
+
+			$query .= ', ADD ' . $primaryKey;
+
+			try
+			{
+				$db->setQuery($query);
+				$db->execute();
+
+				// Adding the constraints afterwards
+				if (!empty($constraintKeysQuery))
 				{
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
-
-					return false;
+					$db->setQuery($constraintKeysQuery);
+					$db->execute();
 				}
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+
+				return false;
 			}
 		}
 
@@ -631,19 +631,19 @@ final class RTranslationTable
 	/**
 	 * Creates json encoded original value with hashed column values needed for editor
 	 *
-	 * @param   array         $original  Original data array
-	 * @param   array|object  $columns   All the columns from the table
+	 * @param   array|object  $original  Original data array
+	 * @param   array         $columns   All the columns from the table
 	 *
 	 * @return  string  Json encoded string of array values
 	 */
 	public static function createOriginalValueFromColumns($original = array(), $columns = array())
 	{
 		$data = array();
-		$columns = (array) $columns;
+		$original = (array) $original;
 
 		foreach ($columns as $column)
 		{
-			$data[$column] = md5(!empty($original[$column]) ? $original[$column] : '');
+			$data[$column] = md5(isset($original[$column]) ? $original[$column] : '');
 		}
 
 		return json_encode($data);
