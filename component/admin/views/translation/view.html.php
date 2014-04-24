@@ -51,6 +51,11 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	/**
 	 * @var  array
 	 */
+	public $noTranslationColumns;
+
+	/**
+	 * @var  array
+	 */
 	public $fieldsXml;
 
 	/**
@@ -84,9 +89,9 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 		$tableColumns = (array) $this->translationTable->columns;
 		$this->fieldsXml = $this->contentElement->getTranslateFields();
 
-		foreach ($tableColumns as $column)
+		foreach ($this->fieldsXml as $field)
 		{
-			foreach ($this->fieldsXml as $field)
+			foreach ($tableColumns as $column)
 			{
 				if ($column == (string) $field['name'])
 				{
@@ -96,6 +101,13 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 
 					break;
 				}
+			}
+
+			if ((string) $field['translate'] == '0' && (string) $field['type'] != 'referenceid')
+			{
+				$attributes = current($field->attributes());
+				$attributes['titleLabel'] = (string) $field;
+				$this->noTranslationColumns[(string) $field['name']] = $attributes;
 			}
 		}
 

@@ -93,12 +93,12 @@ $columns = array_slice($columns, 0, 8);
 							. '&component=' . $input->getString('component', '')
 							. '&language=' . $selectedLanguage
 							. '&id=' . (implode('###', $primaryId))
-							. '&rctranslations_id=' . $item->t_rctranslations_id
+							. '&rctranslations_id=' . $item->rctranslations_id
 						) . '">' : '';
 					?>
 					<tr>
 						<td>
-							<?php echo JHtml::_('grid.id', $i, $item->t_rctranslations_id); ?>
+							<?php echo JHtml::_('grid.id', $i, $item->rctranslations_id); ?>
 						</td>
 						<td>
 							<span class="badge <?php echo $item->translationStatus['badge']; ?>">
@@ -106,10 +106,10 @@ $columns = array_slice($columns, 0, 8);
 							</span>
 						</td>
 						<td>
-							<?php echo !empty($item->t_rctranslations_modified) ? $this->escape($item->t_rctranslations_modified) : '--'; ?>
+							<?php echo !empty($item->rctranslations_modified) ? $this->escape($item->rctranslations_modified) : '--'; ?>
 						</td>
 						<td>
-							<?php echo !empty($item->t_rctranslations_language) ? $this->escape($item->t_rctranslations_language) : '--'; ?>
+							<?php echo !empty($item->rctranslations_language) ? $this->escape($item->rctranslations_language) : '--'; ?>
 						</td>
 						<?php foreach ($columns as $column) : ?>
 							<td>
