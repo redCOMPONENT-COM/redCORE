@@ -42,6 +42,14 @@ class RTranslationHelper
 	public static $installedTranslationTables = null;
 
 	/**
+	 * Default language
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $siteLanguage = null;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -186,6 +194,31 @@ class RTranslationHelper
 		}
 
 		return self::$installedTranslationTables;
+	}
+
+	/**
+	 * Get default language
+	 *
+	 * @param   string  $client  Name of the client to get (site|admin)
+	 *
+	 * @return  string  Name of the language ex. en-GB
+	 */
+	public static function getSiteLanguage($client = 'site')
+	{
+		if (!isset(self::$siteLanguage))
+		{
+			$db = JFactory::getDbo();
+
+			// We do not want to translate this value
+			$db->translate = false;
+
+			self::$siteLanguage = JComponentHelper::getParams('com_languages')->get($client);
+
+			// We put translation check back on
+			$db->translate = true;
+		}
+
+		return self::$siteLanguage;
 	}
 
 	/**
