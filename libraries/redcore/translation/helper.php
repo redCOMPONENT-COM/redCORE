@@ -42,7 +42,7 @@ class RTranslationHelper
 	public static $installedTranslationTables = null;
 
 	/**
-	 * An array to hold tables from database
+	 * Default language
 	 *
 	 * @var    array
 	 * @since  1.0
