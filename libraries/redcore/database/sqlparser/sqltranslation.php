@@ -37,7 +37,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		 */
 		if (empty($sql)
 			|| !stristr($sql, 'SELECT')
-			|| JComponentHelper::getParams('com_languages')->get('site') == JFactory::getLanguage()->getTag()
+			|| RTranslationHelper::getSiteLanguage() == JFactory::getLanguage()->getTag()
 			|| JFactory::getApplication()->isAdmin())
 		{
 			return null;

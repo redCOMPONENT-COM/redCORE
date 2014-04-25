@@ -86,6 +86,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 		$this->editor = JEditor::getInstance($editor);
 
 		$this->columns = array();
+		$this->noTranslationColumns = array();
 		$tableColumns = (array) $this->translationTable->columns;
 		$this->fieldsXml = $this->contentElement->getTranslateFields();
 
