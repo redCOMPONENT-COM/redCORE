@@ -97,7 +97,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								. '.' . $tableColumn
 								. ',' . $foundTable['alias']['originalName']
 								. '.' . $tableColumn
-								. ')';
+								. ')' . ' AS ' . $db->qn($tableColumn);
 							$columns[$db->qn($tableColumn)]['table'] = $foundTable;
 
 							if (!empty($columns[$selectAllOriginalColumn]['base_expr']))
@@ -105,7 +105,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								$columns[$selectAllOriginalColumn]['base_expr'] .= ',';
 							}
 
-							$columns[$selectAllOriginalColumn]['base_expr'] .= $columns[$db->qn($tableColumn)]['base_expr'] . ' AS ' . $db->qn($tableColumn);
+							$columns[$selectAllOriginalColumn]['base_expr'] .= $columns[$db->qn($tableColumn)]['base_expr'];
 						}
 					}
 				}
