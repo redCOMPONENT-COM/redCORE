@@ -38,7 +38,7 @@ class PlgSystemRedcore extends JPlugin
 			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
 
-			RBootstrap::bootstrap();
+			RBootstrap::bootstrap(false);
 
 			// Sets plugin parameters for further use in Translation Helper class
 			RTranslationHelper::$pluginParams = $this->params;
