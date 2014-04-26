@@ -97,7 +97,8 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								. '.' . $tableColumn
 								. ',' . $foundTable['alias']['originalName']
 								. '.' . $tableColumn
-								. ')' . ' AS ' . $db->qn($tableColumn);
+								. ')';
+							$columns[$db->qn($tableColumn)]['alias'] = $db->qn($tableColumn);
 							$columns[$db->qn($tableColumn)]['table'] = $foundTable;
 
 							if (!empty($columns[$selectAllOriginalColumn]['base_expr']))
@@ -105,7 +106,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								$columns[$selectAllOriginalColumn]['base_expr'] .= ',';
 							}
 
-							$columns[$selectAllOriginalColumn]['base_expr'] .= $columns[$db->qn($tableColumn)]['base_expr'];
+							$columns[$selectAllOriginalColumn]['base_expr'] .= $columns[$db->qn($tableColumn)]['base_expr'] . ' AS ' . $db->qn($tableColumn);
 						}
 					}
 				}
@@ -200,6 +201,22 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								else
 								{
 									$tagColumnsValue['base_expr'] = $column['base_expr'];
+
+									if (!empty($column['alias']))
+									{
+										$alias = $column['alias'];
+
+										if (!empty($tagColumnsValue['alias']['name']))
+										{
+											$alias = $tagColumnsValue['alias']['name'];
+										}
+
+										$tagColumnsValue['alias'] = array(
+											'as' => true,
+											'name' => $alias,
+											'base_expr' => 'as ' . $alias
+										);
+									}
 								}
 							}
 						}
