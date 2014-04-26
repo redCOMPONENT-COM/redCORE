@@ -163,9 +163,12 @@ abstract class RModelList extends JModelList
 				$this->filterFormName,
 				array('control' => '', 'load_data' => $loadData)
 			);
-		}
 
-		$form->setFieldAttribute($this->limitField, 'default', JFactory::getApplication()->getCfg('list_limit'), 'list');
+			if (!empty($form))
+			{
+				$form->setFieldAttribute($this->limitField, 'default', JFactory::getApplication()->getCfg('list_limit'), 'list');
+			}
+		}
 
 		return $form;
 	}
