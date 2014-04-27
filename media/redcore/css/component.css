@@ -7895,3 +7895,10 @@
 .redcore .icon-stack:before {
     content: none;
 }
+.redcore fieldset label {
+    float: inherit;
+    clear: inherit;
+}
+.redcore .controls .btn-group > .btn {
+    min-width: 50px;
+}

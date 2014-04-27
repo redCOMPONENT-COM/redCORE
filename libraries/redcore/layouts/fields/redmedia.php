@@ -13,8 +13,6 @@ $data = $displayData;
 
 // Add jquery UI js.
 JHtml::_('rjquery.framework');
-JHtml::_('rjquery.chosen', 'select');
-
 
 $link = (string) $data->element['link'];
 

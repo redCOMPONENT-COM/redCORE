@@ -43,7 +43,7 @@ class PlgSystemRedcore extends JPlugin
 			// Sets plugin parameters for further use in Translation Helper class
 			RTranslationHelper::$pluginParams = $this->params;
 
-			if ($this->params->get('enable_translations', 0) == 1)
+			if ($this->params->get('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
 			{
 				JFactory::$database = null;
 				JFactory::$database = RFactory::getDbo();
