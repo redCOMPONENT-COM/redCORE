@@ -72,7 +72,7 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '			}';
 			$script[] = '			jMediaRefreshPreview(id);';
 			$script[] = '		};';
-			$script[] = '		jQuery("#' . $modalId . '").modal("hide");';
+			$script[] = '		jQuery("#modal-" + id).modal("hide");';
 			$script[] = '	}';
 
 			$script[] = '	function jMediaRefreshPreview(id) {';
