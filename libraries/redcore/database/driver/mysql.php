@@ -41,7 +41,7 @@ class RDatabaseDriverMysql extends JDatabaseDriverMysql
 		// Basic check for translations
 		if ($this->translate)
 		{
-			if ($parsedSql = RDatabaseSqlparserSqltranslation::parseSelectQuery($sql, $prefix))
+			if ($parsedSql = RDatabaseSqlparserSqltranslation::buildTranslationQuery($sql, $prefix))
 			{
 				return parent::replacePrefix($parsedSql, $prefix);
 			}
