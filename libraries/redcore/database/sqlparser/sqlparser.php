@@ -819,7 +819,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			$base_expr = join("", $tokens);
 		} else {
 			/* remove escape from the alias */
-			$alias['name'] = $this->revokeEscaping(trim($alias['name']));
+			$alias['name'] = trim($alias['name']);
 			$alias['base_expr'] = trim($alias['base_expr']);
 		}
 
