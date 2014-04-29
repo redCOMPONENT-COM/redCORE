@@ -8,6 +8,7 @@
  */
 
 defined('_JEXEC') or die;
+jimport('joomla.html.editor');
 
 /**
  * Translation View

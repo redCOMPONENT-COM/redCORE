@@ -100,13 +100,34 @@ class RedcoreModelTranslation extends RModelAdmin
 	{
 		$translation = JFactory::getApplication()->input->get('translation', array(), 'array');
 		$original = JFactory::getApplication()->input->get('original', array(), 'array');
-		$id = JFactory::getApplication()->input->getString('rctranslations_id', '');
+		$id = (int) $data['rctranslations_id'];
+
 		$data = array_merge($data, $translation);
 
 		$dispatcher = RFactory::getDispatcher();
 		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
 		/** @var RedcoreTableTranslation $table */
 		$table = $this->getTable();
+
+		if (empty($id))
+		{
+			$db	= $this->getDbo();
+			$query = $db->getQuery(true)
+				->select('rctranslations_id')
+				->from($db->qn(RTranslationTable::getTranslationsTableName($translationTable->table, '')))
+				->where('rctranslations_language = ' . $db->q($data['rctranslations_language']));
+
+			foreach ($translationTable->primaryKeys as $primaryKey)
+			{
+				if (!empty($data[$primaryKey]))
+				{
+					$query->where($db->qn($primaryKey) . ' = ' . $db->q($data[$primaryKey]));
+				}
+			}
+
+			$db->setQuery($query);
+			$id = $db->loadResult();
+		}
 
 		foreach ($translationTable->primaryKeys as $primaryKey)
 		{

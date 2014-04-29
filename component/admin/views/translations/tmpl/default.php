@@ -22,8 +22,12 @@ $input = JFactory::getApplication()->input;
 $filters = $input->get('filter', array(), 'array');
 $selectedLanguage = !empty($filters['language']) ? $filters['language'] : '';
 
-// We will display only first 5 columns
-$columns = array_slice($columns, 0, 8);
+foreach ($columns as $key => $column):
+	// We will display only first 5 columns
+	if ($column == 'params' || $key > 7):
+		unset($columns[$key]);
+	endif;
+endforeach;
 ?>
 <form action="<?php echo $action; ?>" name="adminForm" class="adminForm" id="adminForm" method="post">
 	<?php

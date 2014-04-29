@@ -16,7 +16,7 @@ defined('JPATH_REDCORE') or die;
  * @subpackage  Database
  * @since       1.0
  */
-class RDatabaseDriverMysqli extends JDatabaseDriverMysqli
+class RDatabaseMysqli extends JDatabaseMySQLi
 {
 	/**
 	 * We can choose not to translate query with this variable
@@ -24,6 +24,19 @@ class RDatabaseDriverMysqli extends JDatabaseDriverMysqli
 	 * @var  boolean
 	 */
 	public $translate = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param   array  $options  List of options used to configure the connection
+	 *
+	 * @since   12.1
+	 */
+	public function __construct($options)
+	{
+		// Finalize initialisation.
+		parent::__construct($options);
+	}
 
 	/**
 	 * This function replaces a string identifier <var>$prefix</var> with the string held is the
