@@ -158,6 +158,8 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	{
 		if (!empty($parsedSqlColumns) && is_array($parsedSqlColumns))
 		{
+			$db = JFactory::getDbo();
+
 			// Replace all Tables and keys
 			foreach ($parsedSqlColumns as $groupColumnsKey => $parsedColumnGroup)
 			{
@@ -225,6 +227,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 											$alias = $tagColumnsValue['alias']['name'];
 										}
 
+										$alias = $db->qn(self::cleanEscaping($alias));
 										$tagColumnsValue['alias'] = array(
 											'as' => true,
 											'name' => $alias,
