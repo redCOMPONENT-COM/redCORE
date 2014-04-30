@@ -150,7 +150,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	 * @param   array  $parsedSqlColumns   Parsed SQL in array format
 	 * @param   array  $columns            Found replacement tables
 	 * @param   array  $translationTables  List of translation tables
-	 * @param   bool   &$columnFound       Found original tables used for creating unique alias
+	 * @param   bool   &$columnFound       Found at least one column from original table
 	 *
 	 * @return  array  Parsed query with added table joins if found
 	 */
@@ -299,6 +299,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				if (!empty($parsedGroup))
 				{
 					$filteredGroup = array();
+					$filteredGroupEndPosition = array();
 
 					foreach ($parsedGroup as $tagKey => $tagValue)
 					{
@@ -383,8 +384,20 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 						if (!empty($newTagValue))
 						{
-							$filteredGroup[] = $newTagValue;
+							if (!empty($translationTables[$tableName]->tableJoinEndPosition))
+							{
+								$filteredGroupEndPosition[] = $newTagValue;
+							}
+							else
+							{
+								$filteredGroup[] = $newTagValue;
+							}
 						}
+					}
+
+					foreach ($filteredGroupEndPosition as $table)
+					{
+						$filteredGroup[] = $table;
 					}
 
 					$parsedSql[$groupKey] = $filteredGroup;
@@ -407,7 +420,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function getUniqueAlias($originalTableName, $foundTables = array(), $counter = 0)
 	{
 		$string = str_replace('#__', '', $originalTableName);
-		$string .= (string) $counter;
+		$string .= '_' . substr(RFilesystemFile::getUniqueName($counter), 0, 4);
 
 		if (!empty($foundTables[$string]))
 		{
@@ -466,7 +479,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			{
 				$refClause[] = self::createParserElement('colref', $db->qn($newTable) . '.' . $primaryKey);
 				$refClause[] = self::createParserElement('operator', $operator);
-				$refClause[] = self::createParserElement('colref', $oldTable . '.' . $primaryKey);
+				$refClause[] = self::createParserElement('colref', $db->qn(self::cleanEscaping($oldTable)) . '.' . $primaryKey);
 
 				$refClause[] = self::createParserElement('operator', 'AND');
 			}
@@ -482,7 +495,57 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		$refClause[] = self::createParserElement('operator', '=');
 		$refClause[] = self::createParserElement('colref', $db->q('1'));
 
+		if (!empty($tableObject->tableJoinParams))
+		{
+			foreach ($tableObject->tableJoinParams as $join)
+			{
+				$leftSide = $join['left'];
+				$rightSide = $join['right'];
+
+				// Add alias if needed to the left side
+				if (!empty($join['aliasLeft']))
+				{
+					$leftSide = ($join['aliasLeft'] == 'original' ? $db->qn(self::cleanEscaping($oldTable)) : $db->qn($newTable)) . '.' . $leftSide;
+				}
+
+				// Add alias if needed to the right side
+				if (!empty($join['aliasRight']))
+				{
+					$rightSide = ($join['aliasRight'] == 'original' ? $db->qn(self::cleanEscaping($oldTable)) : $db->qn($newTable)) . '.' . $rightSide;
+				}
+
+				$refClause[] = self::createParserElement('operator', $join['expressionOperator']);
+				$refClause[] = self::createParserElement('colref', $leftSide);
+				$refClause[] = self::createParserElement('operator', $join['operator']);
+				$refClause[] = self::createParserElement('colref', $rightSide);
+			}
+		}
+
 		return $refClause;
+	}
+
+	/**
+	 * Create Table Join Parameter
+	 *
+	 * @param   string  $left                Table alias of new table
+	 * @param   string  $operator            Operator of joining tables
+	 * @param   string  $right               Alias of original table
+	 * @param   object  $aliasLeft           Alias of original table
+	 * @param   string  $aliasRight          Language tag you want to fetch translation from
+	 * @param   string  $expressionOperator  Language tag you want to fetch translation from
+	 *
+	 * @return  array  table join param
+	 */
+	public static function createTableJoinParam($left, $operator = '=', $right = '', $aliasLeft = null, $aliasRight = null, $expressionOperator = 'AND')
+	{
+		return array(
+			'left' => $left,
+			'operator' => $operator,
+			'right' => $right,
+			'aliasLeft' => $aliasLeft,
+			'aliasRight' => $aliasRight,
+			'expressionOperator' => $expressionOperator,
+		);
 	}
 
 	/**

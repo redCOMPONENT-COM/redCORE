@@ -159,6 +159,21 @@ final class RTranslationContentElement
 	}
 
 	/**
+	 * Get list of filters for translation editor
+	 *
+	 * @return  array  Array of translatable fields
+	 */
+	public function getTranslateFilter()
+	{
+		if (!empty($this->xml->reference->table->filter))
+		{
+			return $this->xml->reference->table->filter;
+		}
+
+		return array();
+	}
+
+	/**
 	 * Get list of edit forms where we will not show translation
 	 *
 	 * @return  array  Array of edit form locations
