@@ -118,6 +118,15 @@
 			</fileset>
 		</copy>
 
+		<echo msg="Copying language switcher redCORE module to build directory..."/>
+		<copy todir="${targetdir}/modules/mod_redcore_language_switcher">
+			<fileset dir="${extpath}/modules/site/mod_redcore_language_switcher">
+				<include name="**"/>
+				<exclude name=".*"/>
+				<exclude name="*.md"/>
+			</fileset>
+		</copy>
+
 	</target>
 
 	<!-- ============================================  -->

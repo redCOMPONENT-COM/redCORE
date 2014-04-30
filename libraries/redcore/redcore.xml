@@ -2,13 +2,13 @@
 <extension type="library" method="upgrade" version="2.5">
     <name>redCORE - Libraries</name>
     <libraryname>redcore</libraryname>
-    <creationDate>June 2013</creationDate>
+    <creationDate>April 2014</creationDate>
     <author>redCOMPONENT</author>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.0.0</version>
+    <version>1.0.17</version>
     <description>redCORE Libraries</description>
 
     <files>
@@ -34,6 +34,7 @@
         <folder>oauth2</folder>
         <folder>pagination</folder>
         <folder>plugin</folder>
+        <folder>route</folder>
         <folder>table</folder>
         <folder>text</folder>
         <folder>toolbar</folder>
