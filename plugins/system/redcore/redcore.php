@@ -25,6 +25,15 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
+		$oldVersion = version_compare(JVERSION, '3.0', '<');
+		$isAdmin	= JFactory::getApplication()->isAdmin();
+
+		// Remove Bootstrap in Admin (version 2.5.x)
+		if ($oldVersion && $isAdmin)
+		{
+			return;
+		}
+
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
 		if (file_exists($redcoreLoader))
