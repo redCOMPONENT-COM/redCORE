@@ -35,10 +35,11 @@ class ModRedCORELanguageSwitcherHelper
 		$layout = $app->input->getString('layout', '');
 		$id = $app->input->getInt('id', '');
 
-		$location = ($option != '' ? '&option=' . $option : '') .
-			($view != '' ? '&view=' . $view : '') .
-			($layout != '' ? '&layout=' . $layout : '') .
-			($id != '' ? '&id=' . $id : '');
+		// Guessing some usual variables to try and get a better match
+		$location = ($option != '' ? '&option=' . $option : '')
+			. ($view != '' ? '&view=' . $view : '')
+			. ($layout != '' ? '&layout=' . $layout : '')
+			. ($id != '' ? '&id=' . $id : '');
 
 		if (!$Itemid)
 		{
@@ -50,7 +51,7 @@ class ModRedCORELanguageSwitcherHelper
 		foreach ($languages as $i => $language)
 		{
 			$languages[$i]->active = ($language->lang_code == $currentLang);
-			$language->link = RRoute::_('index.php?lang=' . $language->sef . '&Itemid=' . $Itemid . $location);
+			$languages[$i]->link = RRoute::_('index.php?lang=' . $language->sef . '&Itemid=' . $Itemid . $location);
 		}
 
 		return $languages;

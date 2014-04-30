@@ -9,16 +9,12 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-$redCORELoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
+$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
-if (!file_exists($redCORELoader))
+if (!file_exists($redcoreLoader) || !JPluginHelper::isEnabled('system', 'redcore'))
 {
-	throw new Exception(JText::_('COM_REDCORE_INIT_FAILED'), 404);
+	throw new Exception(JText::_('COM_REDSHOPB_REDCORE_INIT_FAILED'), 404);
 }
-
-// Bootstraps redSHOPB2B application
-require_once $redCORELoader;
-RBootstrap::bootstrap();
 
 $app = JFactory::getApplication();
 
@@ -35,4 +31,5 @@ $list = ModRedCORELanguageSwitcherHelper::getList($params);
 
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 
-require JModuleHelper::getLayoutPath('mod_redcore_language_switcher');
+$layout = $params->get('layout', 'default');
+require JModuleHelper::getLayoutPath('mod_redcore_language_switcher', $layout);
