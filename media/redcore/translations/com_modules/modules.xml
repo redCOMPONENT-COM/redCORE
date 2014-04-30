@@ -14,6 +14,7 @@
             <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
             <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
             <field type="params" name="params" translate="1">Parameters</field>
+            <filter>o.client_id = 0</filter>
         </table>
         <component>
             <form>com_modules#modules#cid#task#!edit#client#!1</form>

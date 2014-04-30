@@ -124,6 +124,18 @@ class RedcoreModelTranslations extends RModelList
 			}
 		}
 
+		// Content Element filter
+		$contentElement = RTranslationHelper::getContentElement($table->option, $table->xml);
+		$filters = $contentElement->getTranslateFilter();
+
+		if (!empty($filters))
+		{
+			foreach ($filters as $filter)
+			{
+				$query->where((string) $filter);
+			}
+		}
+
 		// Ordering
 		$orderList = $this->getState('list.ordering');
 		$directionList = $this->getState('list.direction');

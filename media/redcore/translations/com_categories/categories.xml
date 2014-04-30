@@ -13,6 +13,7 @@
 			<field type="htmltext" name="description" translate="1" ebuttons="readmore,pagebreak">Description</field>
 			<field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
 			<field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
+            <filter>o.level > 0</filter>
 		</table>
 		<component>
 			<form>com_categories#categories#cid#task#!edit</form>
