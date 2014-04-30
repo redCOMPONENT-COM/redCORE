@@ -11,8 +11,8 @@
 	<files>
 		<filename module="mod_redcore_language_switcher">mod_redcore_language_switcher.php</filename>
 		<filename>index.html</filename>
-		<folder>tmpl</folder>
 		<filename>helper.php</filename>
+		<folder>tmpl</folder>
 	</files>
     <media destination="mod_redcore_language_switcher" folder="media">
         <folder>css</folder>
