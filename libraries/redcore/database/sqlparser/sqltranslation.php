@@ -384,7 +384,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 						if (!empty($newTagValue))
 						{
-							if (!empty($translationTables[$tableName]->customTableJoinEndPosition))
+							if (!empty($translationTables[$tableName]->tableJoinEndPosition))
 							{
 								$filteredGroupEndPosition[] = $newTagValue;
 							}
@@ -495,28 +495,28 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		$refClause[] = self::createParserElement('operator', '=');
 		$refClause[] = self::createParserElement('colref', $db->q('1'));
 
-		if (!empty($tableObject->customTableJoinParams))
+		if (!empty($tableObject->tableJoinParams))
 		{
-			foreach ($tableObject->customTableJoinParams as $customJoin)
+			foreach ($tableObject->tableJoinParams as $join)
 			{
-				$leftSide = $customJoin['left'];
-				$rightSide = $customJoin['right'];
+				$leftSide = $join['left'];
+				$rightSide = $join['right'];
 
 				// Add alias if needed to the left side
-				if (!empty($customJoin['aliasLeft']))
+				if (!empty($join['aliasLeft']))
 				{
-					$leftSide = ($customJoin['aliasLeft'] == 'original' ? $db->qn(self::cleanEscaping($oldTable)) : $db->qn($newTable)) . '.' . $leftSide;
+					$leftSide = ($join['aliasLeft'] == 'original' ? $db->qn(self::cleanEscaping($oldTable)) : $db->qn($newTable)) . '.' . $leftSide;
 				}
 
 				// Add alias if needed to the right side
-				if (!empty($customJoin['aliasRight']))
+				if (!empty($join['aliasRight']))
 				{
-					$rightSide = ($customJoin['aliasRight'] == 'original' ? $db->qn(self::cleanEscaping($oldTable)) : $db->qn($newTable)) . '.' . $rightSide;
+					$rightSide = ($join['aliasRight'] == 'original' ? $db->qn(self::cleanEscaping($oldTable)) : $db->qn($newTable)) . '.' . $rightSide;
 				}
 
-				$refClause[] = self::createParserElement('operator', $customJoin['expressionOperator']);
+				$refClause[] = self::createParserElement('operator', $join['expressionOperator']);
 				$refClause[] = self::createParserElement('colref', $leftSide);
-				$refClause[] = self::createParserElement('operator', $customJoin['operator']);
+				$refClause[] = self::createParserElement('operator', $join['operator']);
 				$refClause[] = self::createParserElement('colref', $rightSide);
 			}
 		}
@@ -525,7 +525,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	}
 
 	/**
-	 * Create custom Table Join Parameter
+	 * Create Table Join Parameter
 	 *
 	 * @param   string  $left                Table alias of new table
 	 * @param   string  $operator            Operator of joining tables
@@ -534,9 +534,9 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	 * @param   string  $aliasRight          Language tag you want to fetch translation from
 	 * @param   string  $expressionOperator  Language tag you want to fetch translation from
 	 *
-	 * @return  array  custom table join param
+	 * @return  array  table join param
 	 */
-	public static function customTableJoinParam($left, $operator = '=', $right = '', $aliasLeft = null, $aliasRight = null, $expressionOperator = 'AND')
+	public static function createTableJoinParam($left, $operator = '=', $right = '', $aliasLeft = null, $aliasRight = null, $expressionOperator = 'AND')
 	{
 		return array(
 			'left' => $left,
