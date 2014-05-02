@@ -32,7 +32,7 @@ class RDatabaseSqlparserSqlcreator {
 
 	public $created;
 
-	public function __construct($parsed = false) {
+	public function __construct($parsed = null) {
 		if ($parsed) {
 			$this->create($parsed);
 		}
@@ -645,7 +645,14 @@ class RDatabaseSqlparserSqlcreator {
 		if ($parsed['expr_type'] !== 'const') {
 			return "";
 		}
-		return $parsed['base_expr'];
+
+		$sql = $parsed['base_expr'];
+
+		if (isset($parsed['alias'])) {
+			$sql .= $this->processAlias($parsed['alias']);
+		}
+
+		return $sql;
 	}
 
 	protected function processInList($parsed) {
