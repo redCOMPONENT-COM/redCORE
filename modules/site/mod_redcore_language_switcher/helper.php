@@ -45,13 +45,17 @@ class ModRedCORELanguageSwitcherHelper
 		{
 			$menu = $app->getMenu();
 			$active = $menu->getActive();
-			$Itemid = $active->id;
+
+			if ($active)
+			{
+				$Itemid = $active->id;
+			}
 		}
 
 		foreach ($languages as $i => $language)
 		{
 			$languages[$i]->active = ($language->lang_code == $currentLang);
-			$languages[$i]->link = RRoute::_('index.php?lang=' . $language->sef . '&Itemid=' . $Itemid . $location);
+			$languages[$i]->link = RRoute::_('index.php?lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : '') . $location);
 		}
 
 		return $languages;
