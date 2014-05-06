@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Form
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -270,22 +270,22 @@ abstract class JFormField
 	 * @var    mixed
 	 * @since  11.1
 	 */
-	protected $labelclass;
+	protected $labelClass;
 
 	/**
-	 * The javascript onchange of the form field.
-	 *
-	 * @var    string
-	 * @since  3.2
-	 */
+	* The javascript onchange of the form field.
+	*
+	* @var    string
+	* @since  3.2
+	*/
 	protected $onchange;
 
 	/**
-	 * The javascript onclick of the form field.
-	 *
-	 * @var    string
-	 * @since  3.2
-	 */
+	* The javascript onclick of the form field.
+	*
+	* @var    string
+	* @since  3.2
+	*/
 	protected $onclick;
 
 	/**
@@ -303,13 +303,6 @@ abstract class JFormField
 	 * @since  11.1
 	 */
 	protected static $generated_fieldname = '__field';
-
-	/**
-	 * Layout to render the form field
-	 *
-	 * @var  string
-	 */
-	protected $renderLayout = 'joomla.form.renderfield';
 
 	/**
 	 * Method to instantiate the form field object.
@@ -368,7 +361,7 @@ abstract class JFormField
 			case 'validate':
 			case 'value':
 			case 'class':
-			case 'labelclass':
+			case 'labelClass':
 			case 'size':
 			case 'onchange':
 			case 'onclick':
@@ -427,7 +420,7 @@ abstract class JFormField
 			case 'description':
 			case 'hint':
 			case 'value':
-			case 'labelclass':
+			case 'labelClass':
 			case 'onchange':
 			case 'onclick':
 			case 'validate':
@@ -476,16 +469,6 @@ abstract class JFormField
 			case 'translateHint':
 				$value = (string) $value;
 				$this->$name = !($value === 'false' || $value === 'off' || $value === '0');
-				break;
-
-			case 'translate_label':
-				$value = (string) $value;
-				$this->translateLabel = $this->translateLabel && !($value === 'false' || $value === 'off' || $value === '0');
-				break;
-
-			case 'translate_description':
-				$value = (string) $value;
-				$this->translateDescription = $this->translateDescription && !($value === 'false' || $value === 'off' || $value === '0');
 				break;
 
 			case 'size':
@@ -553,11 +536,10 @@ abstract class JFormField
 		$this->group = $group;
 
 		$attributes = array(
-			'multiple', 'name', 'id', 'hint', 'class', 'description', 'labelclass', 'onchange',
+			'multiple', 'name', 'id', 'hint', 'class', 'description', 'labelClass', 'onchange',
 			'onclick', 'validate', 'pattern', 'default', 'required',
 			'disabled', 'readonly', 'autofocus', 'hidden', 'autocomplete', 'spellcheck',
-			'translateHint', 'translateLabel','translate_label', 'translateDescription',
-			'translate_description' ,'size');
+			'translateHint', 'translateLabel', 'translateDescription', 'size');
 
 		$this->default = isset($element['value']) ? (string) $element['value'] : $this->default;
 
@@ -726,9 +708,9 @@ abstract class JFormField
 		$text = $this->translateLabel ? JText::_($text) : $text;
 
 		// Build the class for the label.
-		$class = !empty($this->description) ? 'hasTooltip' : '';
+		$class = !empty($this->description) ? 'hasTooltipLabel' : '';
 		$class = $this->required == true ? $class . ' required' : $class;
-		$class = !empty($this->labelclass) ? $class . ' ' . $this->labelclass : $class;
+		$class = !empty($this->labelClass) ? $class . ' ' . $this->labelClass : $class;
 
 		// Add the opening label tag and main attributes attributes.
 		$label .= '<label id="' . $this->id . '-lbl" for="' . $this->id . '" class="' . $class . '"';
@@ -736,23 +718,23 @@ abstract class JFormField
 		// If a description is specified, use it to build a tooltip.
 		if (!empty($this->description))
 		{
-			// Don't translate discription if specified in the field xml.
-			$description = $this->translateDescription ? JText::_($this->description) : $this->description;
-
 			if (defined('REDCORE_BOOTSTRAPPED'))
 			{
 				RHtml::_('rbootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
-				$label .= ' title="' . RHtml::tooltipText(trim($text, ':'), JText::_($description), 0) . '"';
-			}
-			elseif (version_compare(JVERSION, '3.0', '<'))
-			{
-				JHTML::_('behavior.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
-				$label .= ' title="' . (trim($text . '::' . JText::_($description))) . '"';
+				$label .= ' title="' . RHtml::tooltipText(trim($text, ':'), JText::_($this->description), 0) . '"';
 			}
 			else
 			{
-				JHtml::_('bootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
-				$label .= ' title="' . JHtml::tooltipText(trim($text, ':'), JText::_($description), 0) . '"';
+				if (version_compare(JVERSION, '3.0', '<'))
+				{
+					JHTML::_('behavior.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
+					$label .= ' title="' . (trim($text . '::' . JText::_($this->description))) . '"';
+				}
+				else
+				{
+					JHtml::_('bootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
+					$label .= ' title="' . JHtml::tooltipText(trim($text, ':'), JText::_($this->description), 0) . '"';
+				}
 			}
 		}
 
@@ -906,53 +888,19 @@ abstract class JFormField
 	 *
 	 * @return  string  A string containing the html for the control group
 	 *
-	 * @since      3.2
-	 * @deprecated 3.2.3 Use renderField() instead
-	 */
-	public function getControlGroup()
-	{
-		JLog::add('JFormField->getControlGroup() is deprecated use JFormField->renderField().', JLog::WARNING, 'deprecated');
-
-		return $this->renderField();
-	}
-
-	/**
-	 * Method to get a control group with label and input.
-	 *
-	 * @param   array  $options  Options to be passed into the rendering of the field
-	 *
-	 * @return  string  A string containing the html for the control group
-	 *
 	 * @since   3.2
 	 */
-	public function renderField($options = array())
+	public function getControlGroup()
 	{
 		if ($this->hidden)
 		{
 			return $this->getInput();
 		}
 
-		if (!isset($options['class']))
-		{
-			$options['class'] = '';
-		}
-
-		$options['rel'] = '';
-
-		if (empty($options['hiddenLabel']) && $this->getAttribute('hiddenLabel'))
-		{
-			$options['hiddenLabel'] = true;
-		}
-
-		if ($showon = $this->getAttribute('showon'))
-		{
-			$showon   = explode(':', $showon, 2);
-			$options['class'] .= ' showon_' . implode(' showon_', explode(',', $showon[1]));
-			$id = $this->getName($showon[0]);
-			$options['rel'] = ' rel="showon_' . $id . '"';
-			$options['showonEnabled'] = true;
-		}
-
-		return JLayoutHelper::render($this->renderLayout, array('input' => $this->getInput(), 'label' => $this->getLabel(), 'options' => $options));
+		return
+			'<div class="control-group">'
+			. '<div class="control-label">' . $this->getLabel() . '</div>'
+			. '<div class="controls">' . $this->getInput() . '</div>'
+			. '</div>';
 	}
 }
