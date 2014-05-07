@@ -39,6 +39,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 		try
 		{
+			//$sql = "SELECT `pav`.*,COALESCE(redshopb_product_attribute_value_rctranslations_3d36.id,`pav`.id) AS `id`,COALESCE(redshopb_product_attribute_value_rctranslations_3d36.string_value,`pav`.string_value) AS `string_value`,COALESCE(redshopb_product_attribute_value_rctranslations_af5b.id,COALESCE(redshopb_product_attribute_value_rctranslations_3d36.id,`pav`.id) as `id`) as `id`,COALESCE(redshopb_product_attribute_value_rctranslations_af5b.string_value,COALESCE(redshopb_product_attribute_value_rctranslations_3d36.string_value,`pav`.string_value) as `string_value`) as `string_value`,pa.product_id,pa.type FROM `#__redshopb_product_attribute_value` as `pav` LEFT JOIN `#__redshopb_product_attribute` as `pa` ON (pa.id = pav.product_attribute_id) LEFT JOIN `#__redshopb_product_item_attribute_value_xref` as `pivx` ON (pivx.product_attribute_value_id = pav.id) LEFT JOIN `#__redshopb_product_item` as `pi` ON (pi.id = pivx.product_item_id) LEFT JOIN #__redshopb_product_attribute_value_rctranslations as redshopb_product_attribute_value_rctranslations_af5b ON (`redshopb_product_attribute_value_rctranslations_af5b`.id = `pav`.id AND `redshopb_product_attribute_value_rctranslations_af5b`.rctranslations_language = 'de-DE' AND `redshopb_product_attribute_value_rctranslations_af5b`.rctranslations_state = '1' AND pa.name = 'Size') LEFT JOIN #__redshopb_product_attribute_value_rctranslations as redshopb_product_attribute_value_rctranslations_3d36 ON (`redshopb_product_attribute_value_rctranslations_3d36`.id = `pav`.id AND `redshopb_product_attribute_value_rctranslations_3d36`.rctranslations_language = 'en-GB' AND `redshopb_product_attribute_value_rctranslations_3d36`.rctranslations_state = '1' AND pa.name = 'Size') WHERE pa.product_id IN (129,100,111,115,135,152,101,112) AND pa.state = 1 AND pav.state = 1 AND pi.state = 1 AND pa.enable_flat_display = 1 GROUP BY `pav`.id ORDER BY pav.ordering ASC";
 			$db = JFactory::getDbo();
 			$sqlParser = new RDatabaseSqlparserSqlparser($sql);
 			$parsedSql = $sqlParser->parsed;
@@ -218,7 +219,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								{
 									$tagColumnsValue['base_expr'] = $column['base_expr'];
 
-									if (!empty($column['alias']))
+									if (!empty($column['alias']) && empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition))
 									{
 										$alias = $column['alias'];
 
@@ -239,24 +240,31 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						}
 						elseif (!empty($tagColumnsValue['sub_tree']))
 						{
-							if (!empty($tagColumnsValue['expr_type']) && $tagColumnsValue['expr_type'] == 'expression')
+							if (!empty($tagColumnsValue['expr_type']) && in_array($tagColumnsValue['expr_type'], array('expression')))
 							{
 								foreach ($tagColumnsValue['sub_tree'] as $subKey => $subTree)
 								{
 									if (!empty($tagColumnsValue['sub_tree'][$subKey]['sub_tree']))
 									{
 										$tagColumnsValue['sub_tree'][$subKey]['sub_tree'] = self::parseColumnReplacements(
-											$tagColumnsValue['sub_tree'][$subKey]['sub_tree'],
+											array($groupColumnsKey => $tagColumnsValue['sub_tree'][$subKey]['sub_tree']),
 											$columns,
 											$translationTables,
 											$columnFound
 										);
+										$tagColumnsValue['sub_tree'][$subKey]['sub_tree'] = $tagColumnsValue['sub_tree'][$subKey]['sub_tree'][$groupColumnsKey];
 									}
 								}
 							}
 							else
 							{
-								$tagColumnsValue['sub_tree'] = self::parseColumnReplacements($tagColumnsValue['sub_tree'], $columns, $translationTables, $columnFound);
+								$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
+									array($groupColumnsKey => $tagColumnsValue['sub_tree']),
+									$columns,
+									$translationTables,
+									$columnFound
+								);
+								$tagColumnsValue['sub_tree'] = $tagColumnsValue['sub_tree'][$groupColumnsKey];
 							}
 						}
 
@@ -451,6 +459,11 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				$column[1] = $column[0];
 			}
 
+			if (empty($replaceWith))
+			{
+				return $column[1];
+			}
+
 			$column[0] = $replaceWith;
 		}
 
@@ -581,7 +594,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function getNameIfIncluded($field, $tableAlias = '', $fieldList = array(), $isTable = false)
 	{
 		// No fields to search for
-		if (empty($fieldList))
+		if (empty($fieldList) || empty($field))
 		{
 			return '';
 		}
