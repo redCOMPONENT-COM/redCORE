@@ -63,7 +63,7 @@ abstract class RFilesystemFile extends JFile
 		}
 
 		JPluginHelper::importPlugin('content');
-		$dispatcher	= JEventDispatcher::getInstance();
+		$dispatcher	= RFactory::getDispatcher();
 
 		foreach ($files as &$file)
 		{

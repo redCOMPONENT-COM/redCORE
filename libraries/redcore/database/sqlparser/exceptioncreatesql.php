@@ -42,7 +42,7 @@ class RDatabaseSqlparserExceptioncreatesql extends Exception {
         $this->partkey = $partkey;
         $this->entry = $entry;
         $this->entrykey = $entrykey;
-        parent::__construct("unknown " . $entrykey . " in " . $part . "[" . $partkey . "] " . $entry[$entrykey], 15);
+        parent::__construct("unknown " . $entrykey . " in " . $part . "[" . $partkey . "] " . (empty($entry[$entrykey]) ? '' : $entry[$entrykey]), 15);
     }
 
     public function getEntry() {

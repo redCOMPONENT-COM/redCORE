@@ -110,6 +110,7 @@ class RDatabaseSqlparserSqlcreator {
 
 	protected function processSELECT($parsed) {
 		$sql = "";
+
 		foreach ($parsed as $k => $v) {
 			$len = strlen($sql);
 			$sql .= $this->processColRef($v);
@@ -334,7 +335,7 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processWhereExpression($parsed) {
-		if ($parsed['expr_type'] !== 'expression') {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'expression') {
 			return "";
 		}
 		$sql = "";
@@ -360,7 +361,7 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processWhereBracketExpression($parsed) {
-		if ($parsed['expr_type'] !== 'bracket_expression') {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'bracket_expression') {
 			return "";
 		}
 		$sql = "";
@@ -407,7 +408,7 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processFunction($parsed) {
-		if (($parsed['expr_type'] !== 'aggregate_function') && ($parsed['expr_type'] !== 'function')) {
+		if (empty($parsed['expr_type']) || (($parsed['expr_type'] !== 'aggregate_function') && ($parsed['expr_type'] !== 'function'))) {
 			return "";
 		}
 
@@ -605,14 +606,14 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processOperator($parsed) {
-		if ($parsed['expr_type'] !== 'operator') {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'operator') {
 			return "";
 		}
 		return $parsed['base_expr'];
 	}
 
 	protected function processColRef($parsed) {
-		if ($parsed['expr_type'] !== 'colref') {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'colref') {
 			return "";
 		}
 		$sql = $parsed['base_expr'];
@@ -642,7 +643,7 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processConstant($parsed) {
-		if ($parsed['expr_type'] !== 'const') {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'const') {
 			return "";
 		}
 
@@ -656,7 +657,7 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processInList($parsed) {
-		if ($parsed['expr_type'] !== 'in-list') {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'in-list') {
 			return "";
 		}
 		$sql = $this->processSubTree($parsed, ",");

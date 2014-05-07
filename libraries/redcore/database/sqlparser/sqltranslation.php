@@ -218,7 +218,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								{
 									$tagColumnsValue['base_expr'] = $column['base_expr'];
 
-									if (!empty($column['alias']))
+									if (!empty($column['alias']) && empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition))
 									{
 										$alias = $column['alias'];
 
@@ -239,24 +239,31 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						}
 						elseif (!empty($tagColumnsValue['sub_tree']))
 						{
-							if (!empty($tagColumnsValue['expr_type']) && $tagColumnsValue['expr_type'] == 'expression')
+							if (!empty($tagColumnsValue['expr_type']) && in_array($tagColumnsValue['expr_type'], array('expression')))
 							{
 								foreach ($tagColumnsValue['sub_tree'] as $subKey => $subTree)
 								{
 									if (!empty($tagColumnsValue['sub_tree'][$subKey]['sub_tree']))
 									{
 										$tagColumnsValue['sub_tree'][$subKey]['sub_tree'] = self::parseColumnReplacements(
-											$tagColumnsValue['sub_tree'][$subKey]['sub_tree'],
+											array($groupColumnsKey => $tagColumnsValue['sub_tree'][$subKey]['sub_tree']),
 											$columns,
 											$translationTables,
 											$columnFound
 										);
+										$tagColumnsValue['sub_tree'][$subKey]['sub_tree'] = $tagColumnsValue['sub_tree'][$subKey]['sub_tree'][$groupColumnsKey];
 									}
 								}
 							}
 							else
 							{
-								$tagColumnsValue['sub_tree'] = self::parseColumnReplacements($tagColumnsValue['sub_tree'], $columns, $translationTables, $columnFound);
+								$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
+									array($groupColumnsKey => $tagColumnsValue['sub_tree']),
+									$columns,
+									$translationTables,
+									$columnFound
+								);
+								$tagColumnsValue['sub_tree'] = $tagColumnsValue['sub_tree'][$groupColumnsKey];
 							}
 						}
 
@@ -451,6 +458,11 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				$column[1] = $column[0];
 			}
 
+			if (empty($replaceWith))
+			{
+				return $column[1];
+			}
+
 			$column[0] = $replaceWith;
 		}
 
@@ -581,7 +593,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function getNameIfIncluded($field, $tableAlias = '', $fieldList = array(), $isTable = false)
 	{
 		// No fields to search for
-		if (empty($fieldList))
+		if (empty($fieldList) || empty($field))
 		{
 			return '';
 		}
