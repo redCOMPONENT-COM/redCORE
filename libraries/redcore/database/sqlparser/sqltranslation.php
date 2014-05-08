@@ -257,13 +257,25 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							}
 							else
 							{
-								$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
-									array($groupColumnsKey => $tagColumnsValue['sub_tree']),
-									$columns,
-									$translationTables,
-									$columnFound
-								);
-								$tagColumnsValue['sub_tree'] = $tagColumnsValue['sub_tree'][$groupColumnsKey];
+								if (!is_numeric($tagKey))
+								{
+									$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
+										$tagColumnsValue['sub_tree'],
+										$columns,
+										$translationTables,
+										$columnFound
+									);
+								}
+								else
+								{
+									$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
+										array($groupColumnsKey => $tagColumnsValue['sub_tree']),
+										$columns,
+										$translationTables,
+										$columnFound
+									);
+									$tagColumnsValue['sub_tree'] = $tagColumnsValue['sub_tree'][$groupColumnsKey];
+								}
 							}
 						}
 
