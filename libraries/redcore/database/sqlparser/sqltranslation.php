@@ -255,9 +255,11 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									}
 								}
 							}
-							else
+							elseif (is_array($tagColumnsValue['sub_tree']))
 							{
-								if (!is_numeric($tagKey))
+								$keys = array_keys($tagColumnsValue['sub_tree']);
+
+								if (!is_numeric($keys[0]))
 								{
 									$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
 										$tagColumnsValue['sub_tree'],
