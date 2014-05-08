@@ -203,8 +203,8 @@ abstract class RFilesystemFile extends JFile
 			if (strlen($file['mimeTypeName']) && !in_array($file['mimeTypeName'], $validFileTypes))
 			{
 				$app->enqueueMessage(
-					JText::sprintf('LIB_REDCORE_ERROR_WARNINVALID_MIME', $file['mimeTypeName'], $options['allowedMIMETypes'])
-					, 'error'
+					JText::sprintf('LIB_REDCORE_ERROR_WARNINVALID_MIME', $file['mimeTypeName'], $options['allowedMIMETypes']),
+					'error'
 				);
 
 				return false;
@@ -249,6 +249,9 @@ abstract class RFilesystemFile extends JFile
 			$type = $file['type'];
 		}
 
-		return $type;
+		// Resolves problem of adding charset to the mime type
+		$type = explode(';', $type);
+
+		return $type[0];
 	}
 }
