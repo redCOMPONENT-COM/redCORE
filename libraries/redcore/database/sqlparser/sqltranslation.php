@@ -151,15 +151,15 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	 * @param   array  $columns            Found replacement tables
 	 * @param   array  $translationTables  List of translation tables
 	 * @param   bool   &$columnFound       Found at least one column from original table
+	 * @param   bool   $addAlias           Should we add alias after column name
 	 *
 	 * @return  array  Parsed query with added table joins if found
 	 */
-	public static function parseColumnReplacements($parsedSqlColumns, $columns, $translationTables, &$columnFound)
+	public static function parseColumnReplacements($parsedSqlColumns, $columns, $translationTables, &$columnFound, $addAlias = true)
 	{
 		if (!empty($parsedSqlColumns) && is_array($parsedSqlColumns))
 		{
 			$db = JFactory::getDbo();
-
 			// Replace all Tables and keys
 			foreach ($parsedSqlColumns as $groupColumnsKey => $parsedColumnGroup)
 			{
@@ -170,10 +170,10 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 					foreach ($parsedColumnGroup as $tagKey => $tagColumnsValue)
 					{
 						$column = null;
-
 						if (!empty($tagColumnsValue['expr_type']) && $tagColumnsValue['expr_type'] == 'colref')
 						{
 							$column = self::getNameIfIncluded($tagColumnsValue['base_expr'], '', $columns, false);
+
 
 							if (!empty($column))
 							{
@@ -203,22 +203,22 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$columnFound = true;
 								}
 
-								if ($groupColumnsKey == 'ORDER' || $groupColumnsKey == 'WHERE' || $groupColumnsKey == 'GROUP')
+								if (in_array($groupColumnsKey, array('ORDER', 'WHERE', 'GROUP', 'FROM')))
 								{
-									if (!empty($primaryKey) || $groupColumnsKey != 'WHERE')//
+									if ($groupColumnsKey == 'WHERE')
 									{
-										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['originalName']);
+										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['name']);
 									}
 									else
 									{
-										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['name']);
+										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['originalName']);
 									}
 								}
 								else
 								{
 									$tagColumnsValue['base_expr'] = $column['base_expr'];
 
-									if (!empty($column['alias']) && empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition))
+									if ($addAlias && !empty($column['alias']) && empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition))
 									{
 										$alias = $column['alias'];
 
@@ -257,26 +257,61 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							}
 							elseif (is_array($tagColumnsValue['sub_tree']))
 							{
-								$keys = array_keys($tagColumnsValue['sub_tree']);
+								// We will not replace some aggregate functions columns
+								if (!in_array($tagColumnsValue['expr_type'], array('aggregate_function')) && strtolower($tagColumnsValue['base_expr']) != 'count')
+								{
+									$keys = array_keys($tagColumnsValue['sub_tree']);
+
+									if (!is_numeric($keys[0]))
+									{
+										$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
+											$tagColumnsValue['sub_tree'],
+											$columns,
+											$translationTables,
+											$columnFound,
+											false
+										);
+									}
+									else
+									{
+										$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
+											array($groupColumnsKey => $tagColumnsValue['sub_tree']),
+											$columns,
+											$translationTables,
+											$columnFound,
+											false
+										);
+										$tagColumnsValue['sub_tree'] = $tagColumnsValue['sub_tree'][$groupColumnsKey];
+									}
+								}
+							}
+						}
+						elseif (!empty($tagColumnsValue['ref_clause']))
+						{
+							if (is_array($tagColumnsValue['ref_clause']))
+							{
+								$keys = array_keys($tagColumnsValue['ref_clause']);
 
 								if (!is_numeric($keys[0]))
 								{
-									$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
-										$tagColumnsValue['sub_tree'],
+									$tagColumnsValue['ref_clause'] = self::parseColumnReplacements(
+										$tagColumnsValue['ref_clause'],
 										$columns,
 										$translationTables,
-										$columnFound
+										$columnFound,
+										false
 									);
 								}
 								else
 								{
-									$tagColumnsValue['sub_tree'] = self::parseColumnReplacements(
-										array($groupColumnsKey => $tagColumnsValue['sub_tree']),
+									$tagColumnsValue['ref_clause'] = self::parseColumnReplacements(
+										array($groupColumnsKey => $tagColumnsValue['ref_clause']),
 										$columns,
 										$translationTables,
-										$columnFound
+										$columnFound,
+										false
 									);
-									$tagColumnsValue['sub_tree'] = $tagColumnsValue['sub_tree'][$groupColumnsKey];
+									$tagColumnsValue['ref_clause'] = $tagColumnsValue['ref_clause'][$groupColumnsKey];
 								}
 							}
 						}
