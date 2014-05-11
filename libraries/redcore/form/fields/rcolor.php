@@ -43,6 +43,14 @@ class JFormFieldRcolor extends JFormFieldColor
 	 */
 	protected function getInput()
 	{
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration('
+			function jResetColorValue()
+			{
+				jQuery("#' . $this->id . '").minicolors("value","");
+			}
+		');
+
 		$layout = !empty($this->element['layout']) ? $this->element['layout'] : $this->layout;
 
 		return RLayoutHelper::render(
