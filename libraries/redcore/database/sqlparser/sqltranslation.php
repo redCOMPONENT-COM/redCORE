@@ -205,7 +205,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 								if (in_array($groupColumnsKey, array('ORDER', 'WHERE', 'GROUP', 'FROM')))
 								{
-									if ($groupColumnsKey == 'WHERE')
+									if (empty($primaryKey) && $groupColumnsKey == 'WHERE')
 									{
 										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['name']);
 									}
