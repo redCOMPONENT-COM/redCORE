@@ -203,9 +203,9 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$columnFound = true;
 								}
 
-								if (in_array($groupColumnsKey, array('ORDER', 'WHERE', 'GROUP', 'FROM')))
+								if (in_array($groupColumnsKey, array('ORDER', 'GROUP', 'FROM')))
 								{
-									if (empty($primaryKey) && $groupColumnsKey == 'WHERE')
+									if (empty($primaryKey))
 									{
 										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['name']);
 									}
@@ -216,23 +216,33 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								}
 								else
 								{
-									$tagColumnsValue['base_expr'] = $column['base_expr'];
-
-									if ($addAlias && !empty($column['alias']) && empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition))
+									if ($groupColumnsKey == 'WHERE' && !empty($primaryKey))
 									{
-										$alias = $column['alias'];
+										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['originalName']);
+									}
+									else
+									{
+										$tagColumnsValue['base_expr'] = $column['base_expr'];
 
-										if (!empty($tagColumnsValue['alias']['name']))
+										if ($addAlias
+											&& !empty($column['alias'])
+											&& empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition)
+											&& $groupColumnsKey != 'WHERE')
 										{
-											$alias = $tagColumnsValue['alias']['name'];
-										}
+											$alias = $column['alias'];
 
-										$alias = $db->qn(self::cleanEscaping($alias));
-										$tagColumnsValue['alias'] = array(
-											'as' => true,
-											'name' => $alias,
-											'base_expr' => 'as ' . $alias
-										);
+											if (!empty($tagColumnsValue['alias']['name']))
+											{
+												$alias = $tagColumnsValue['alias']['name'];
+											}
+
+											$alias = $db->qn(self::cleanEscaping($alias));
+											$tagColumnsValue['alias'] = array(
+												'as' => true,
+												'name' => $alias,
+												'base_expr' => 'as ' . $alias
+											);
+										}
 									}
 								}
 							}
