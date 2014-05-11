@@ -57,19 +57,13 @@ elseif ($color['0'] != '#')
 }
 $value = htmlspecialchars($color, ENT_COMPAT, 'UTF-8');
 ?>
-<script type="text/javascript">
-	function jResetColorValue()
-	{
-		jQuery('#<?php echo $attributes['id']; ?>').minicolors('value','');
-	}
-</script>
 <div class="input-append">
 	<input type="text" style="padding: 4px 6px 4px 30px;"
 		name="<?php echo $data->name; ?>"
 		value="<?php echo $value; ?>"
 		<?php echo $renderedAttributes; ?> />
 	<a class="btn hasTooltip" title="" href="#"
-		onclick="jResetColorValue();return false;"
+		onclick="jQuery('#<?php echo $attributes['id']; ?>').minicolors('value',''); return false;"
 		data-original-title="<?php echo JText::_('JLIB_FORM_BUTTON_CLEAR') . ' (' . strtolower(JText::_('LIB_REDCORE_RCOLOR_SET_TRANSPARENT')) . ')'; ?>">
 		<i class="icon-remove"></i>
 	</a>
