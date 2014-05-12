@@ -53,14 +53,14 @@ abstract class RModelList extends JModelList
 	 *
 	 * @var  string
 	 */
-	protected $limitField = 'limit';
+	protected $limitField = 'auto';
 
 	/**
 	 * Limitstart field used by the pagination
 	 *
 	 * @var  string
 	 */
-	protected $limitstartField = 'limitstart';
+	protected $limitstartField = 'auto';
 
 	/**
 	 * Constructor.
@@ -163,6 +163,11 @@ abstract class RModelList extends JModelList
 				$this->filterFormName,
 				array('control' => '', 'load_data' => $loadData)
 			);
+
+			if (!empty($form))
+			{
+				$form->setFieldAttribute($this->limitField, 'default', JFactory::getApplication()->getCfg('list_limit'), 'list');
+			}
 		}
 
 		return $form;

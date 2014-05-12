@@ -37,6 +37,23 @@ class PlgSystemRedcore extends JPlugin
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
 			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
+
+			RBootstrap::bootstrap(false);
+
+			// Sets plugin parameters for further use in Translation Helper class
+			RTranslationHelper::$pluginParams = $this->params;
+
+			if ($this->params->get('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
+			{
+				JFactory::$database = null;
+				JFactory::$database = RFactory::getDbo();
+
+				// This is our object now
+				$db = JFactory::getDbo();
+
+				// Enable translations
+				$db->translate = RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1;
+			}
 		}
 	}
 
@@ -121,14 +138,42 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
 
+				$jQueryChosen = false;
+
+				if (isset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.js'])
+					|| isset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.min.js']))
+				{
+					$jQueryChosen = true;
+					unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.js']);
+					unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.min.js']);
+					unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.css']);
+					unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.min.css']);
+				}
+
 				// Template specific overrides for jQuery files (valid in Joomla 3.x)
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery.js']);
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery-noconflict.js']);
+
+				if (isset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.js'])
+					|| isset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.min.js']))
+				{
+					$jQueryChosen = true;
+					unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.js']);
+					unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.min.js']);
+					unset($doc->_styleSheets[JURI::root(true) . '/templates/' . $template . '/css/jui/chosen.css']);
+					unset($doc->_styleSheets[JURI::root(true) . '/templates/' . $template . '/css/jui/chosen.min.css']);
+				}
+
+				// Enables chosen when it was removed
+				if ($jQueryChosen)
+				{
+					RHtml::_('rjquery.chosen', 'select');
+				}
 			}
 
 			// Remove jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
+			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);

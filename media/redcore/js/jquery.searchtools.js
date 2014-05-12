@@ -312,11 +312,11 @@
 			if (!this.orderField.length)
 			{
 				this.orderField = $('<input>').attr({
-				    type: 'hidden',
-				    id: 'js-stools-field-order',
-				    class: 'js-stools-field-order',
-				    name: self.options.orderFieldName,
-				    value: self.activeOrder + ' ' + this.activeDirection
+					'type': 'hidden',
+					'id': 'js-stools-field-order',
+					'class': 'js-stools-field-order',
+					'name': self.options.orderFieldName,
+					'value': self.activeOrder + ' ' + this.activeDirection
 				});
 
 				this.orderField.appendTo(this.theForm);

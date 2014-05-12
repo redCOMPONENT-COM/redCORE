@@ -19,6 +19,27 @@ defined('JPATH_REDCORE') or die;
 abstract class RViewCsv extends JViewLegacy
 {
 	/**
+	 * This is locale for UTF8 support in CSV files.
+	 *
+	 * @var string
+	 */
+	public $localeEncoding = 'en_GB.UTF-8';
+
+	/**
+	 * Delimiter character for CSV columns
+	 *
+	 * @var string
+	 */
+	public $delimiter = ',';
+
+	/**
+	 * Enclosure character for CSV columns
+	 *
+	 * @var string
+	 */
+	public $enclosure = '"';
+
+	/**
 	 * Get the columns for the csv file.
 	 *
 	 * @return  array  An associative array of column names as key and the title as value.
@@ -52,6 +73,9 @@ abstract class RViewCsv extends JViewLegacy
 		/** @var RModelList $model */
 		$model = $this->getModel();
 
+		// For additional filtering and formating if needed
+		$model->setState('streamOutput', 'csv');
+
 		// Prepare the items
 		$items = $model->getItems();
 		$csvLines[0] = $columns;
@@ -74,13 +98,14 @@ abstract class RViewCsv extends JViewLegacy
 
 		// Get the file name
 		$fileName = $this->getFileName();
+		setlocale(LC_ALL, $this->localeEncoding);
 
 		// Send the headers
 		header("Pragma: public");
 		header("Expires: 0");
 		header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 		header("Cache-Control: private", false);
-		header("Content-type: text/csv");
+		header("Content-type: text/csv; charset=UTF-8");
 		header("Content-Disposition: attachment; filename=\"$fileName.csv\";");
 		header("Content-Transfer-Encoding: binary");
 
@@ -94,7 +119,7 @@ abstract class RViewCsv extends JViewLegacy
 
 		foreach ($csvLines as $line)
 		{
-			fputcsv($stream, $line);
+			fputcsv($stream, $line, $this->delimiter, $this->enclosure);
 		}
 
 		fclose($stream);

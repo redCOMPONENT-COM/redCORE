@@ -271,6 +271,33 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Install the package translations
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	protected function installTranslations($parent)
+	{
+		// We need it for installing Translation Tables
+		RBootstrap::bootstrap();
+
+		// Required objects
+		$manifest  = $parent->get('manifest');
+
+		if ($nodes = $manifest->translations->translation)
+		{
+			foreach ($nodes as $node)
+			{
+				$extName   = (string) $node->attributes()->name;
+				$result = RTranslationTable::batchContentElements($extName, 'install', false);
+
+				$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
+			}
+		}
+	}
+
+	/**
 	 * Function to install redCORE for components
 	 *
 	 * @param   object  $parent  class calling this method
@@ -386,6 +413,8 @@ class Com_RedcoreInstallerScript
 
 		// Execute the postflight tasks from the manifest
 		$this->postFlightFromManifest($type, $parent);
+
+		$this->installTranslations($parent);
 
 		return true;
 	}
@@ -590,11 +619,47 @@ class Com_RedcoreInstallerScript
 		$this->preventUninstallRedcore($parent);
 
 		// Uninstall extensions
+		$this->uninstallTranslations();
 		$this->uninstallLibraries($parent);
 		$this->uninstallMedia($parent);
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
+	}
+
+	/**
+	 * Uninstall all Translation tables from database
+	 *
+	 * @return  void
+	 */
+	protected function uninstallTranslations()
+	{
+		$class = get_called_class();
+		$extensionOption = strtolower(strstr($class, 'Installer', true));
+
+		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+
+		if (!empty($translationTables))
+		{
+			$db = JFactory::getDbo();
+
+			foreach ($translationTables as $translationTable => $translationTableParams)
+			{
+				if ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option)
+				{
+					$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
+
+					try
+					{
+						$db->dropTable($newTable);
+					}
+					catch (Exception $e)
+					{
+						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DELETE_ERROR', $e->getMessage()), 'error');
+					}
+				}
+			}
+		}
 	}
 
 	/**

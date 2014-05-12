@@ -33,7 +33,7 @@ class RBootstrap
 	 * @var    bool
 	 */
 	public static $loadFrontendCSS = false;
-	
+
 	/**
 	 * Defines if jQuery should be loaded in Frontend component/modules
 	 *
@@ -65,14 +65,21 @@ class RBootstrap
 	/**
 	 * Effectively bootstrap redCORE.
 	 *
+	 * @param   bool  $loadBootstrap  Load bootstrap with redcore plugin options
+	 *
 	 * @return  void
 	 */
-	public static function bootstrap()
+	public static function bootstrap($loadBootstrap = true)
 	{
-		if (!defined('REDCORE_BOOTSTRAPPED'))
+		if ($loadBootstrap && !defined('REDCORE_BOOTSTRAPPED'))
+		{
+			define('REDCORE_BOOTSTRAPPED', 1);
+		}
+
+		if (!defined('REDCORE_LIBRARY_LOADED'))
 		{
 			// Sets bootstrapped variable, to avoid bootstrapping redCORE twice
-			define('REDCORE_BOOTSTRAPPED', 1);
+			define('REDCORE_LIBRARY_LOADED', 1);
 
 			// Use our own base field
 			if (!class_exists('JFormField', false))

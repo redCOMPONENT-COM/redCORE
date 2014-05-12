@@ -708,7 +708,7 @@ abstract class JFormField
 		$text = $this->translateLabel ? JText::_($text) : $text;
 
 		// Build the class for the label.
-		$class = !empty($this->description) ? 'hasTooltip' : '';
+		$class = !empty($this->description) ? 'hasTooltipLabel' : '';
 		$class = $this->required == true ? $class . ' required' : $class;
 		$class = !empty($this->labelClass) ? $class . ' ' . $this->labelClass : $class;
 
@@ -718,8 +718,24 @@ abstract class JFormField
 		// If a description is specified, use it to build a tooltip.
 		if (!empty($this->description))
 		{
-			RHtml::_('rbootstrap.tooltip');
-			$label .= ' title="' . RHtml::tooltipText(trim($text, ':'), JText::_($this->description), 0) . '"';
+			if (defined('REDCORE_BOOTSTRAPPED'))
+			{
+				RHtml::_('rbootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
+				$label .= ' title="' . RHtml::tooltipText(trim($text, ':'), JText::_($this->description), 0) . '"';
+			}
+			else
+			{
+				if (version_compare(JVERSION, '3.0', '<'))
+				{
+					JHTML::_('behavior.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
+					$label .= ' title="' . (trim($text . '::' . JText::_($this->description))) . '"';
+				}
+				else
+				{
+					JHtml::_('bootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
+					$label .= ' title="' . JHtml::tooltipText(trim($text, ':'), JText::_($this->description), 0) . '"';
+				}
+			}
 		}
 
 		// Add the label text and closing tag.

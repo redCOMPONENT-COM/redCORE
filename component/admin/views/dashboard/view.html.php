@@ -16,23 +16,24 @@ defined('_JEXEC') or die;
  * @subpackage  Views
  * @since       1.0
  */
-class RedcoreViewDashboard extends RView
+class RedcoreViewDashboard extends RedcoreHelpersView
 {
 	/**
-	 * Get the toolbar to render.
-	 *
-	 * @return  RToolbar
+	 * @var  array
 	 */
-	public function getToolbar()
+	protected $components;
+
+	/**
+	 * Display method
+	 *
+	 * @param   string  $tpl  The template name
+	 *
+	 * @return  void
+	 */
+	public function display($tpl = null)
 	{
-		$group = new RToolbarButtonGroup;
+		$this->components = RedcoreHelpersView::getExtensionsRedcore();
 
-		$option = RToolbarBuilder::createRedcoreOptionsButton('com_redcore');
-
-			$group->addButton($option);
-		$toolbar = new RToolbar;
-		$toolbar->addGroup($group);
-
-		return $toolbar;
+		parent::display($tpl);
 	}
 }

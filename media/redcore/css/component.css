@@ -2339,6 +2339,7 @@
 .redcore .icon-fire {
     background-position: -72px -120px;
 }
+.redcore .icon-eye,
 .redcore .icon-eye-open {
     background-position: -96px -120px;
 }
@@ -6855,6 +6856,7 @@
 .redcore .icon-fire:before {
     content: "\f06d";
 }
+.redcore .icon-eye:before,
 .redcore .icon-eye-open:before {
     content: "\f06e";
 }
@@ -7204,6 +7206,7 @@
 .redcore .icon-food:before {
     content: "\f0f5";
 }
+.redcore .icon-file-add:before,
 .redcore .icon-file-text-alt:before {
     content: "\f0f6";
 }
@@ -7891,4 +7894,11 @@
 }
 .redcore .icon-stack:before {
     content: none;
+}
+.redcore fieldset label {
+    float: inherit;
+    clear: inherit;
+}
+.redcore .controls .btn-group > .btn {
+    min-width: 50px;
 }

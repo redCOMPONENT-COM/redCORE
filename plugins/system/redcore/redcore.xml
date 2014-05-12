@@ -19,6 +19,8 @@
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.plg_system_redcore.ini</language>
         <language tag="en-GB">en-GB/en-GB.plg_system_redcore.sys.ini</language>
+        <language tag="da-DK">da-DK/da-DK.plg_system_redcore.ini</language>
+        <language tag="da-DK">da-DK/da-DK.plg_system_redcore.sys.ini</language>
     </languages>
 
     <config>
@@ -41,6 +43,26 @@
                     <option value="0">JNO</option>
                 </field>
                 <field name="frontend_mootools_disable" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE" description="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+            <fieldset name="PLG_SYSTEM_REDCORE_TRANSLATIONS_OPTIONS">
+                <field
+                        name="enable_translations"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON"
+                        description="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="show_edit_button_on_all_forms"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_TRANSLATIONS_SHOW_TRANSLATION_BUTTON"
+                        description="PLG_SYSTEM_REDCORE_TRANSLATIONS_SHOW_TRANSLATION_BUTTON_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
