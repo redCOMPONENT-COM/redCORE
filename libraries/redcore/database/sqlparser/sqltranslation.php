@@ -70,28 +70,37 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 					if (!empty($tableColumns))
 					{
 						$selectAllOriginalColumn = $foundTable['alias']['originalName'] . '.*';
-						$columns[$selectAllOriginalColumn]['base_expr'] = $selectAllOriginalColumn;
-						$columns[$selectAllOriginalColumn]['table'] = $foundTable;
+						$columnAll = array();
+						$columnAll['base_expr'] = $selectAllOriginalColumn;
+						$columnAll['table'] = $foundTable;
+						$columnAll['columnName'] = $selectAllOriginalColumn;
 
 						foreach ($tableColumns as $tableColumn)
 						{
-							$columns[$db->qn($tableColumn)]['base_expr'] = ''
+							$column = array();
+
+							$column['base_expr'] = ''
 								. 'COALESCE('
 								. $foundTable['alias']['name']
 								. '.' . $tableColumn
 								. ',' . $foundTable['alias']['originalName']
 								. '.' . $tableColumn
 								. ')';
-							$columns[$db->qn($tableColumn)]['alias'] = $db->qn($tableColumn);
-							$columns[$db->qn($tableColumn)]['table'] = $foundTable;
+							$column['alias'] = $db->qn($tableColumn);
+							$column['table'] = $foundTable;
+							$column['columnName'] = $tableColumn;
 
-							if (!empty($columns[$selectAllOriginalColumn]['base_expr']))
+							$columns[] = $column;
+
+							if (!empty($columnAll['base_expr']))
 							{
-								$columns[$selectAllOriginalColumn]['base_expr'] .= ',';
+								$columnAll['base_expr'] .= ',';
 							}
 
-							$columns[$selectAllOriginalColumn]['base_expr'] .= $columns[$db->qn($tableColumn)]['base_expr'] . ' AS ' . $db->qn($tableColumn);
+							$columnAll['base_expr'] .= $column['base_expr'] . ' AS ' . $db->qn($tableColumn);
 						}
+
+						$columns[] = $columnAll;
 					}
 				}
 
@@ -173,7 +182,6 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						if (!empty($tagColumnsValue['expr_type']) && $tagColumnsValue['expr_type'] == 'colref')
 						{
 							$column = self::getNameIfIncluded($tagColumnsValue['base_expr'], '', $columns, false);
-
 
 							if (!empty($column))
 							{
@@ -676,7 +684,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 					continue;
 				}
 
-				switch (self::cleanEscaping($fieldFromListQuotes))
+				switch (self::cleanEscaping($fieldFromList['columnName']))
 				{
 					case $field:
 					case self::cleanEscaping($fieldFromList['table']['alias']['originalName'] . '.' . $field):
