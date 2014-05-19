@@ -156,7 +156,7 @@ final class RTranslationTable
 				$fieldName = (string) $field['name'];
 
 				$primaryKeys[$fieldName] = $db->qn($fieldName);
-				$constraintKey = $db->qn($fieldName . '_fk');
+				$constraintKey = $db->qn(md5($newTable . '_' . $fieldName . '_fk'));
 				$constraintKeys[$constraintKey] = 'ADD CONSTRAINT '
 					. $constraintKey
 					. ' FOREIGN KEY (' . $db->qn($fieldName) . ')'
@@ -243,7 +243,7 @@ final class RTranslationTable
 			{
 				foreach ($installedTable->primaryKeys as $installedPrimaryKey)
 				{
-					$queryConstraints .= ', DROP FOREIGN KEY ' . $db->qn($installedPrimaryKey . '_fk');
+					$queryConstraints .= ', DROP FOREIGN KEY ' . $db->qn(md5($newTable . '_' . $installedPrimaryKey . '_fk'));
 				}
 			}
 		}
