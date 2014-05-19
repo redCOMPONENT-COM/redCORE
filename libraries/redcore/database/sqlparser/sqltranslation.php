@@ -133,6 +133,16 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	 */
 	public static function buildTranslationQuery($sql = '', $prefix = '')
 	{
+		$db = JFactory::getDbo();
+
+		if (!empty($db->parseTablesBefore))
+		{
+			foreach ($db->parseTablesBefore as $tableGroup)
+			{
+				$sql = self::parseSelectQuery($sql, $prefix, $tableGroup->language, $tableGroup->translationTables);
+			}
+		}
+
 		/**
 		 * Basic check for translations, translation will not be inserted if:
 		 * If we do not have SELECT anywhere in query
@@ -144,13 +154,26 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			|| !stristr(mb_strtolower($sql), 'select')
 			|| RTranslationHelper::getSiteLanguage() == JFactory::getLanguage()->getTag())
 		{
-			return null;
+			if (empty($db->parseTablesBefore) && empty($db->parseTablesAfter))
+			{
+				return null;
+			}
 		}
 
 		$translationTables = RTranslationHelper::getInstalledTranslationTables();
 		$translationTables = RTranslationHelper::removeFromEditForm($translationTables);
 
-		return self::parseSelectQuery($sql, $prefix, JFactory::getLanguage()->getTag(), $translationTables);
+		$sql = self::parseSelectQuery($sql, $prefix, JFactory::getLanguage()->getTag(), $translationTables);
+
+		if (!empty($db->parseTablesAfter))
+		{
+			foreach ($db->parseTablesAfter as $tableGroup)
+			{
+				$sql = self::parseSelectQuery($sql, $prefix, $tableGroup->language, $tableGroup->translationTables);
+			}
+		}
+
+		return $sql;
 	}
 
 	/**
@@ -169,6 +192,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		if (!empty($parsedSqlColumns) && is_array($parsedSqlColumns))
 		{
 			$db = JFactory::getDbo();
+
 			// Replace all Tables and keys
 			foreach ($parsedSqlColumns as $groupColumnsKey => $parsedColumnGroup)
 			{
@@ -179,9 +203,10 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 					foreach ($parsedColumnGroup as $tagKey => $tagColumnsValue)
 					{
 						$column = null;
+
 						if (!empty($tagColumnsValue['expr_type']) && $tagColumnsValue['expr_type'] == 'colref')
 						{
-							$column = self::getNameIfIncluded($tagColumnsValue['base_expr'], '', $columns, false);
+							$column = self::getNameIfIncluded($tagColumnsValue['base_expr'], '', $columns, false, $groupColumnsKey);
 
 							if (!empty($column))
 							{
@@ -195,7 +220,8 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 											$primaryKeyValue,
 											$column['table']['alias']['originalName'],
 											array($tagColumnsValue['base_expr']),
-											false
+											false,
+											$groupColumnsKey
 										);
 
 										if (empty($primaryKey))
@@ -234,7 +260,6 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 										if ($addAlias
 											&& !empty($column['alias'])
-											&& empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition)
 											&& $groupColumnsKey != 'WHERE')
 										{
 											$alias = $column['alias'];
@@ -382,7 +407,13 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 						if (!empty($tagValue['expr_type']) && $tagValue['expr_type'] == 'table' && !empty($tagValue['table']))
 						{
-							$tableName = self::getNameIfIncluded($tagValue['table'], '', $translationTables, true);
+							$tableName = self::getNameIfIncluded(
+								$tagValue['table'],
+								!empty($tagValue['alias']['name']) ? $tagValue['alias']['name'] : '',
+								$translationTables,
+								true,
+								$groupKey
+							);
 
 							if (!empty($tableName))
 							{
@@ -654,13 +685,14 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	 * @param   string  $tableAlias  Table alias | optional
 	 * @param   array   $fieldList   List of fields to check against
 	 * @param   bool    $isTable     If we are checking against table string
+	 * @param   string  $groupName   Group name
 	 *
 	 * @return  mixed  Returns List item if Field name is included in field list
 	 */
-	public static function getNameIfIncluded($field, $tableAlias = '', $fieldList = array(), $isTable = false)
+	public static function getNameIfIncluded($field, $tableAlias = '', $fieldList = array(), $isTable = false, $groupName = 'SELECT')
 	{
 		// No fields to search for
-		if (empty($fieldList) || empty($field))
+		if (empty($fieldList) || empty($field) || self::skipTranslationColumn($groupName, $field))
 		{
 			return '';
 		}
@@ -683,6 +715,13 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				switch (self::cleanEscaping($fieldFromListQuotes))
 				{
 					case $field:
+						if (!empty($fieldFromList->tableAliasesToParse)
+							&& !empty($tableAlias)
+							&& !in_array(self::cleanEscaping($tableAlias), $fieldFromList->tableAliasesToParse))
+						{
+							continue;
+						}
+
 						return $fieldFromListQuotes;
 				}
 			}
@@ -725,5 +764,37 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function cleanEscaping($sql)
 	{
 		return str_replace('`', '', trim($sql));
+	}
+
+	/**
+	 * Check for database escape and remove it
+	 *
+	 * @param   string  $groupName  Group name
+	 * @param   string  $field      Field name this can be with or without quotes
+	 *
+	 * @return  bool  Returns true if Field name is included in field list
+	 */
+	public static function skipTranslationColumn($groupName, $field)
+	{
+		$db = JFactory::getDbo();
+
+		if (!empty($db->skipColumns))
+		{
+			foreach ($db->skipColumns as $skipGroupName => $skipColumns)
+			{
+				if (!empty($skipColumns))
+				{
+					foreach ($skipColumns as $column)
+					{
+						if ($groupName == $skipGroupName && self::cleanEscaping($field) == $column)
+						{
+							return true;
+						}
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 }
