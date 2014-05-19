@@ -260,7 +260,6 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 										if ($addAlias
 											&& !empty($column['alias'])
-											//&& empty($translationTables[$column['table']['originalTableName']]->tableJoinEndPosition)
 											&& $groupColumnsKey != 'WHERE')
 										{
 											$alias = $column['alias'];
