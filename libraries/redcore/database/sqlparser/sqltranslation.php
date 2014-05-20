@@ -237,7 +237,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$columnFound = true;
 								}
 
-								if (in_array($groupColumnsKey, array('ORDER', 'GROUP', 'FROM')))
+								if (in_array($groupColumnsKey, array('GROUP', 'FROM')))
 								{
 									if (empty($primaryKey))
 									{
@@ -250,7 +250,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								}
 								else
 								{
-									if ($groupColumnsKey == 'WHERE' && !empty($primaryKey))
+									if (in_array($groupColumnsKey, array('ORDER', 'WHERE')) && !empty($primaryKey))
 									{
 										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['originalName']);
 									}
@@ -260,7 +260,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 										if ($addAlias
 											&& !empty($column['alias'])
-											&& $groupColumnsKey != 'WHERE')
+											&& !in_array($groupColumnsKey, array('ORDER', 'WHERE')))
 										{
 											$alias = $column['alias'];
 
