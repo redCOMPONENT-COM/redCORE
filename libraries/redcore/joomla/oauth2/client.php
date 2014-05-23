@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  OAuth2
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -61,7 +61,7 @@ class JOAuth2Client
 	}
 
 	/**
-	 * Get the access token or redirect to the authentication URL.
+	 * Get the access token or redict to the authentication URL.
 	 *
 	 * @return  string  The access token
 	 *
@@ -80,6 +80,7 @@ class JOAuth2Client
 
 			if ($response->code >= 200 && $response->code < 400)
 			{
+
 				if ($response->headers['Content-Type'] == 'application/json')
 				{
 					$token = array_merge(json_decode($response->body, true), array('created' => time()));
@@ -104,7 +105,6 @@ class JOAuth2Client
 		{
 			$this->application->redirect($this->createUrl());
 		}
-
 		return false;
 	}
 
@@ -214,7 +214,6 @@ class JOAuth2Client
 			{
 				return false;
 			}
-
 			$token = $this->refreshToken($token['refresh_token']);
 		}
 
@@ -232,7 +231,6 @@ class JOAuth2Client
 			{
 				$url .= '?';
 			}
-
 			$url .= $this->getOption('getparam') ? $this->getOption('getparam') : 'access_token';
 			$url .= '=' . $token['access_token'];
 		}
@@ -243,22 +241,21 @@ class JOAuth2Client
 			case 'get':
 			case 'delete':
 			case 'trace':
-				$response = $this->http->$method($url, $headers, $timeout);
-				break;
+			$response = $this->http->$method($url, $headers, $timeout);
+			break;
 			case 'post':
 			case 'put':
 			case 'patch':
-				$response = $this->http->$method($url, $data, $headers, $timeout);
-				break;
+			$response = $this->http->$method($url, $data, $headers, $timeout);
+			break;
 			default:
-				throw new InvalidArgumentException('Unknown HTTP request method: ' . $method . '.');
+			throw new InvalidArgumentException('Unknown HTTP request method: ' . $method . '.');
 		}
 
 		if ($response->code < 200 || $response->code >= 400)
 		{
 			throw new RuntimeException('Error code ' . $response->code . ' received requesting data: ' . $response->body . '.');
 		}
-
 		return $response;
 	}
 
@@ -321,7 +318,6 @@ class JOAuth2Client
 			$value['expires_in'] = $value['expires'];
 			unset($value['expires']);
 		}
-
 		$this->setOption('accesstoken', $value);
 
 		return $this;
@@ -353,10 +349,8 @@ class JOAuth2Client
 			{
 				throw new RuntimeException('No refresh token is available.');
 			}
-
 			$token = $token['refresh_token'];
 		}
-
 		$data['grant_type'] = 'refresh_token';
 		$data['refresh_token'] = $token;
 		$data['client_id'] = $this->getOption('clientid');

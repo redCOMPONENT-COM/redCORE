@@ -3,7 +3,7 @@
  * @package     Joomla.Libraries
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -22,14 +22,16 @@ class RLayoutBase implements RLayout
 	/**
 	 * Options object
 	 *
-	 * @var  JRegistry
+	 * @var    JRegistry
+	 * @since  3.2
 	 */
 	protected $options = null;
 
 	/**
 	 * Debug information messages
 	 *
-	 * @var  array
+	 * @var    array
+	 * @since  3.2
 	 */
 	protected $debugMessages = array();
 
@@ -47,8 +49,8 @@ class RLayoutBase implements RLayout
 		{
 			$this->options = $options;
 		}
-		elseif (is_array($options))
 		// Received array
+		elseif (is_array($options))
 		{
 			$this->options = new JRegistry($options);
 		}
@@ -64,6 +66,8 @@ class RLayoutBase implements RLayout
 	 * Get the options
 	 *
 	 * @return  JRegistry  Object with the options
+	 *
+	 * @since   3.2
 	 */
 	public function getOptions()
 	{
@@ -79,7 +83,9 @@ class RLayoutBase implements RLayout
 	/**
 	 * Function to empty all the options
 	 *
-	 * @return  RLayoutBase  An instance of itself for chaining
+	 * @return  RLayoutBase  Instance of $this to allow chaining.
+	 *
+	 * @since   3.2
 	 */
 	public function resetOptions()
 	{
@@ -104,6 +110,8 @@ class RLayoutBase implements RLayout
 	 * Get the debug messages array
 	 *
 	 * @return  array
+	 *
+	 * @since   3.2
 	 */
 	public function getDebugMessages()
 	{
@@ -128,6 +136,8 @@ class RLayoutBase implements RLayout
 	 * Render the list of debug messages
 	 *
 	 * @return  string  Output text/HTML code
+	 *
+	 * @since   3.2
 	 */
 	public function renderDebugMessages()
 	{
@@ -140,6 +150,8 @@ class RLayoutBase implements RLayout
 	 * @param   string  $message  Message to save
 	 *
 	 * @return  void
+	 *
+	 * @since   3.2
 	 */
 	public function addDebugMessage($message)
 	{
