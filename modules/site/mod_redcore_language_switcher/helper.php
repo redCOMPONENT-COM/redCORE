@@ -34,12 +34,16 @@ class ModRedCORELanguageSwitcherHelper
 		$view = $app->input->getString('view', '');
 		$layout = $app->input->getString('layout', '');
 		$id = $app->input->getInt('id', '');
+		$pid = $app->input->getInt('pid', '');
+		$cid = $app->input->getInt('cid', '');
 
 		// Guessing some usual variables to try and get a better match
 		$location = ($option != '' ? '&option=' . $option : '')
 			. ($view != '' ? '&view=' . $view : '')
 			. ($layout != '' ? '&layout=' . $layout : '')
-			. ($id != '' ? '&id=' . $id : '');
+			. ($id != '' ? '&id=' . $id : '')
+			. ($pid != '' ? '&pid=' . $pid : '')
+			. ($cid != '' ? '&cid=' . $cid : '');
 
 		if (!$Itemid)
 		{

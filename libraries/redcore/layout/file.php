@@ -41,7 +41,8 @@ class RLayoutFile extends RLayoutBase
 	/**
 	 * Paths to search for layouts
 	 *
-	 * @var  array
+	 * @var    array
+	 * @since  3.2
 	 */
 	protected $includePaths = array();
 
@@ -50,7 +51,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @param   string  $layoutId  Dot separated path to the layout file, relative to base path
 	 * @param   string  $basePath  Base path to use when loading layout files
-	 * @param   mixed   $options   Optional custom options to load. JRegistry or array format
+	 * @param   mixed   $options   Optional custom options to load. JRegistry or array format [@since 3.2]
 	 *
 	 * @since   1.0
 	 */
@@ -66,7 +67,6 @@ class RLayoutFile extends RLayoutBase
 		// Init Enviroment
 		$this->setComponent($this->options->get('component', 'auto'));
 		$this->setClient($this->options->get('client', 'auto'));
-		$this->setSuffixes($this->options->get('suffixes', 'none'));
 	}
 
 	/**
@@ -164,6 +164,8 @@ class RLayoutFile extends RLayoutBase
 	 * @param   string  $path  The path to search for layouts
 	 *
 	 * @return  void
+	 *
+	 * @since   3.2
 	 */
 	public function addIncludePath($path)
 	{
@@ -176,6 +178,8 @@ class RLayoutFile extends RLayoutBase
 	 * @param   string  $paths  The path or array of paths to search for layouts
 	 *
 	 * @return  void
+	 *
+	 * @since   3.2
 	 */
 	public function addIncludePaths($paths)
 	{
@@ -193,11 +197,46 @@ class RLayoutFile extends RLayoutBase
 	}
 
 	/**
+	 * Remove one path from the layout search
+	 *
+	 * @param   string  $path  The path to remove from the layout search
+	 *
+	 * @return  void
+	 *
+	 * @since   3.2
+	 */
+	public function removeIncludePath($path)
+	{
+		$this->removeIncludePaths($path);
+	}
+
+	/**
+	 * Remove one or more paths to exclude in layout search
+	 *
+	 * @param   string  $paths  The path or array of paths to remove for the layout search
+	 *
+	 * @return  void
+	 *
+	 * @since   3.2
+	 */
+	public function removeIncludePaths($paths)
+	{
+		if (!empty($paths))
+		{
+			$paths = (array) $paths;
+
+			$this->includePaths = array_diff($this->includePaths, $paths);
+		}
+	}
+
+	/**
 	 * Validate that the active component is valid
 	 *
 	 * @param   string  $option  URL Option of the component. Example: com_content
 	 *
 	 * @return  boolean
+	 *
+	 * @since   3.2
 	 */
 	protected function validComponent($option = null)
 	{
@@ -223,6 +262,8 @@ class RLayoutFile extends RLayoutBase
 	 * @param   string  $option  URL Option of the component. Example: com_content
 	 *
 	 * @return  mixed            Component option string | null for none
+	 *
+	 * @since   3.2
 	 */
 	public function setComponent($option)
 	{
@@ -240,6 +281,7 @@ class RLayoutFile extends RLayoutBase
 					$parts = explode('/', JPATH_COMPONENT);
 					$component = end($parts);
 				}
+
 				break;
 
 			default:
@@ -265,6 +307,8 @@ class RLayoutFile extends RLayoutBase
 	 * @param   mixed  $client  Frontend: 'site' or 0 | Backend: 'admin' or 1
 	 *
 	 * @return  void
+	 *
+	 * @since   3.2
 	 */
 	public function setClient($client)
 	{
@@ -298,6 +342,8 @@ class RLayoutFile extends RLayoutBase
 	 * @param   string  $layoutId  Layout to render
 	 *
 	 * @return  void
+	 *
+	 * @since   3.2
 	 */
 	public function setLayout($layoutId)
 	{
@@ -306,65 +352,11 @@ class RLayoutFile extends RLayoutBase
 	}
 
 	/**
-	 * [setSuffixes description]
-	 *
-	 * @param   mixed  $suffixes  String with a single suffix or 'auto' | 'none' or array of suffixes
-	 *
-	 * @return  void
-	 */
-	public function setSuffixes($suffixes)
-	{
-		if (!empty($suffixes))
-		{
-			if (is_array($suffixes))
-			{
-				$this->options->set('suffixes', $suffixes);
-			}
-			else
-			{
-				switch ($suffixes)
-				{
-					case 'auto':
-						$cmsVersion = new JVersion;
-
-						// Example j311
-						$fullVersion = 'j' . str_replace('.', '', $cmsVersion->getShortVersion());
-
-						// Create suffixes like array('j311', 'j31', 'j3')
-						$suffixes = array(
-							$fullVersion,
-							substr($fullVersion, 0, 3),
-							substr($fullVersion, 0, 2),
-						);
-
-						$this->options->set('suffixes', array_unique($suffixes));
-
-						break;
-					case 'autolanguage':
-						$lang = JFactory::getLanguage();
-						$langTag = $lang->getTag();
-						$langParts = explode('-', $langTag);
-						$suffixes = array($langTag, $langParts[0]);
-						$suffixes[] = $lang->isRTL() ? 'rtl' : 'ltr';
-
-						// Example: array('es-ES', 'es', 'ltr')
-						$this->options->set('suffixes', $suffixes);
-						break;
-					case 'none':
-						$this->options->set('suffixes', array());
-						break;
-					default:
-						$this->options->set('suffixes', array($suffixes));
-						break;
-				}
-			}
-		}
-	}
-
-	/**
 	 * Refresh the list of include paths
 	 *
 	 * @return  void
+	 *
+	 * @since   3.2
 	 */
 	protected function refreshIncludePaths()
 	{
@@ -412,6 +404,8 @@ class RLayoutFile extends RLayoutBase
 	 * @param   boolean  $debug  Enable / Disable debug
 	 *
 	 * @return  void
+	 *
+	 * @since   3.2
 	 */
 	public function setDebug($debug)
 	{
@@ -426,7 +420,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  string  The necessary HTML to display the layout
 	 *
-	 * @since   1.0
+	 * @since   3.2
 	 */
 	public function sublayout($layoutId, $displayData)
 	{
