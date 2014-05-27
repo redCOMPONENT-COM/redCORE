@@ -47,14 +47,14 @@ abstract class RedcoreHelpersTranslation extends JObject
 
 		$filter = $app->getUserStateFromRequest('com_redcore.translations.translations.filter', 'filter', array(), 'array');
 
-		$contentElement = $app->input->get->getString('contentelement', $default);
+		$contentElement = $app->input->get->get('contentelement', null);
 
-		if (empty($contentElement) && !empty($filter['contentelement']))
+		if ($contentElement === null && !empty($filter['contentelement']))
 		{
 			$contentElement = $filter['contentelement'];
 		}
 
-		if (empty($contentElement))
+		if ($contentElement === null)
 		{
 			$contentElement = $app->input->getString('contentelement', $default);
 		}
