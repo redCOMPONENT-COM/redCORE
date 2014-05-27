@@ -102,7 +102,7 @@ endif;
 
 					$editLink = $canEdit ? '<a href="'
 						. JRoute::_('index.php?option=com_redcore&task=translation.edit'
-							. '&contentelement=' . $input->getString('contentelement', '')
+							. '&contentelement=' . $selectedContentElement
 							. '&component=' . $input->getString('component', '')
 							. '&language=' . $selectedLanguage
 							. '&id=' . (implode('###', $primaryId))
