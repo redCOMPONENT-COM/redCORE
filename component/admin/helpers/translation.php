@@ -27,21 +27,39 @@ abstract class RedcoreHelpersTranslation extends JObject
 	 */
 	public static function getTranslationTable($default = '')
 	{
-		$app = JFactory::getApplication();
-		$filter  = $app->input->post->get('filter', array(), 'array');
-
-		if (!empty($filter['contentelement']))
-		{
-			$contentElement = $filter['contentelement'];
-		}
-		else
-		{
-			$contentElement = $app->input->getString('contentelement', $default);
-		}
+		$contentElement = self::getCurrentContentElement();
 
 		$translationTables = RTranslationHelper::getInstalledTranslationTables();
 
 		return !empty($translationTables['#__' . $contentElement]) ? $translationTables['#__' . $contentElement] : null;
+	}
+
+	/**
+	 * Gets translation table object
+	 *
+	 * @param   string  $default  Default Content Element Name
+	 *
+	 * @return  object  Translation Table object
+	 */
+	public static function getCurrentContentElement($default = '')
+	{
+		$app = JFactory::getApplication();
+
+		$filter = $app->getUserStateFromRequest('com_redcore.translations.translations.filter', 'filter', array(), 'array');
+
+		$contentElement = $app->input->get->getString('contentelement', $default);
+
+		if (empty($contentElement) && !empty($filter['contentelement']))
+		{
+			$contentElement = $filter['contentelement'];
+		}
+
+		if (empty($contentElement))
+		{
+			$contentElement = $app->input->getString('contentelement', $default);
+		}
+
+		return $contentElement;
 	}
 
 	/**

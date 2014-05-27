@@ -17,7 +17,6 @@ $action = JRoute::_('index.php?option=com_redcore&view=translations');
 $listOrder = $this->state->get('list.ordering');
 $listDirn = $this->state->get('list.direction');
 $selectedLanguage = $this->state->get('filter.language', '');
-$selectedContentElement = $this->state->get('filter.contentelement', '');
 $input = JFactory::getApplication()->input;
 if (!empty($this->items)):
 	$columns = (array) $this->translationTable->columns;
@@ -102,8 +101,7 @@ endif;
 
 					$editLink = $canEdit ? '<a href="'
 						. JRoute::_('index.php?option=com_redcore&task=translation.edit'
-							. '&contentelement=' . $selectedContentElement
-							. '&component=' . $input->getString('component', '')
+							. '&contentelement=' . $this->contentElementName
 							. '&language=' . $selectedLanguage
 							. '&id=' . (implode('###', $primaryId))
 							. '&rctranslations_id=' . $item->rctranslations_id
@@ -149,7 +147,7 @@ endif;
 		<input type="hidden" name="task" value="">
 		<input type="hidden" name="language" value="<?php echo $selectedLanguage; ?>">
 		<input type="hidden" name="component" value="<?php echo $this->contentElement->extension; ?>">
-		<input type="hidden" name="contentelement" value="<?php echo $selectedContentElement; ?>">
+		<input type="hidden" name="contentelement" value="<?php echo $this->contentElementName; ?>">
 		<input type="hidden" name="boxchecked" value="0">
 		<input type="hidden" name="layout" value="<?php echo JFactory::getApplication()->input->getString('layout'); ?>">
 		<?php echo JHtml::_('form.token'); ?>
