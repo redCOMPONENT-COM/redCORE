@@ -493,8 +493,8 @@ final class RTranslationTable
 
 					try
 					{
-						$db->dropTable($newTable);
 						self::updateTableTriggers(array(), '', $translationTable);
+						$db->dropTable($newTable);
 
 						RTranslationHelper::setInstalledTranslationTables($option, $translationTable, null);
 						self::saveRedcoreTranslationConfig();
