@@ -35,11 +35,11 @@ abstract class RedcoreHelpersTranslation extends JObject
 	}
 
 	/**
-	 * Gets translation table object
+	 * Gets content element name from request
 	 *
 	 * @param   string  $default  Default Content Element Name
 	 *
-	 * @return  object  Translation Table object
+	 * @return  string  Content element name
 	 */
 	public static function getCurrentContentElement($default = '')
 	{
