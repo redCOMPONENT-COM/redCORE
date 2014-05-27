@@ -79,6 +79,13 @@ $column = 0;
 		<?php else : ?>
 			<span class="badge badge-important"><?php echo JText::_('JDISABLED'); ?></span>
 		<?php endif; ?>
+
+		<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_LANGUAGE_FILTER'); ?>
+		<?php if (JPluginHelper::isEnabled('system', 'languagefilter')) : ?>
+			<span class="badge badge-success"><?php echo JText::_('JENABLED'); ?></span>
+		<?php else : ?>
+			<span class="badge badge-important"><?php echo JText::_('JDISABLED'); ?></span>
+		<?php endif; ?>
 	</p>
 	<div class="row-fluid">
 		<div class="span6 well">
