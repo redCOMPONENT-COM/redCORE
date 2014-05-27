@@ -4499,9 +4499,10 @@
     opacity: 0.8;
     filter: alpha(opacity=80);
 }
-.redcore a.modal.btn {
+.redcore a.modal {
     position: inherit;
     width: auto;
+    margin-left: inherit;
 }
 .redcore .modal.fade {
     -webkit-transition: opacity .3s linear, top .3s ease-out;

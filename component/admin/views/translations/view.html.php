@@ -81,7 +81,6 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		{
 			$this->translationTable = RedcoreHelpersTranslation::getTranslationTable();
 			$this->contentElement = RTranslationHelper::getContentElement($this->translationTable->option, $this->translationTable->xml);
-			//$app->input->post->set('component', $this->translationTable->option);
 			$this->items = $model->getItems();
 			$this->filterForm->removeField('component', 'filter');
 		}
@@ -125,8 +124,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		else
 		{
 			return JText::_('COM_REDCORE_TRANSLATIONS_MANAGE_CONTENT_ELEMENTS')
-				. ' '
-				. (!empty($this->componentName) ? ':' . JText::_($this->componentName) : '');
+				. (!empty($this->componentName) ? ' : ' . JText::_($this->componentName) : '');
 		}
 	}
 

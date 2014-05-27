@@ -82,6 +82,10 @@ class RedcoreModelTranslations extends RModelList
 
 		if (empty($table))
 		{
+			$query->select('*')
+				->from('#__extensions')
+				->where('1=2');
+
 			return $query;
 		}
 

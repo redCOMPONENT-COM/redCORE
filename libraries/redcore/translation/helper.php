@@ -350,7 +350,14 @@ class RTranslationHelper
 	 */
 	public static function loadParamsForm($column, $contentElement, $data, $controlName = '')
 	{
-		$formName = !empty($column['formname']) ? $column['formname'] : $column['name'];
+		if (version_compare(JVERSION, '3.0', '<') && !empty($column['formname25']))
+		{
+			$formName = !empty($column['formname']) ? $column['formname25'] : $column['name'];
+		}
+		else
+		{
+			$formName = !empty($column['formname']) ? $column['formname'] : $column['name'];
+		}
 
 		// Handle the optional arguments.
 		$options['control'] = $controlName;
@@ -515,34 +522,6 @@ class RTranslationHelper
 	public static function preprocessFormMenu(JForm $form, $data)
 	{
 		jimport('joomla.filesystem.path');
-/*
-		$lang     = JFactory::getLanguage();
-		$clientId = $data->client_id;
-		$module   = $data->module;
-
-		$client   = JApplicationHelper::getClientInfo($clientId);
-		$formFile = JPath::clean($client->path . '/modules/' . $module . '/' . $module . '.xml');
-
-		// Load the core and/or local language file(s).
-		$lang->load($module, $client->path, null, false, true)
-		||	$lang->load($module, $client->path . '/modules/' . $module, null, false, true);
-
-		if (file_exists($formFile))
-		{
-			// Get the module form.
-			if (!$form->loadFile($formFile, false, '//config'))
-			{
-				throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
-			}
-		}
-
-
-*/
-
-
-
-
-
 		$link = $data->link;
 		$type = $data->type;
 		$formFile = false;

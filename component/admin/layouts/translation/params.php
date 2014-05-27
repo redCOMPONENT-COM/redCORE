@@ -24,8 +24,7 @@ $formType = $translationForm == true ? 'translationForm' : 'originalForm';
 $selectedFieldSets = !empty($column['fieldsets']) ? explode(',', $column['fieldsets']) : null;
 $selectedGroup = !empty($column['fieldsname']) ? $column['fieldsname'] : $name;
 
-$fieldSets = $form->getFieldsets($selectedGroup);
-
+$fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 ?>
 <div class="tab-pane params-pane<?php echo $formType;?>">
 	<?php if (!empty($form)) : ?>
