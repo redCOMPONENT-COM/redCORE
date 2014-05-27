@@ -27,6 +27,14 @@ final class RTranslationTable
 	public static $tableList = array();
 
 	/**
+	 * An array to hold tables columns from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $columnsList = array();
+
+	/**
 	 * Prefix used to identify the tables
 	 *
 	 * @var    array
@@ -52,12 +60,47 @@ final class RTranslationTable
 
 		if (in_array($tableName, self::$tableList))
 		{
-			$db = JFactory::getDbo();
+			if (empty(self::$columnsList[$tableName]))
+			{
+				$db = JFactory::getDbo();
 
-			return $db->getTableColumns($tableName, false);
+				self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+			}
+
+			return self::$columnsList[$tableName];
 		}
 
 		return array();
+	}
+
+	/**
+	 * Get Translations Table Columns Array
+	 *
+	 * @param   string  $tableName  Original table name
+	 * @param   bool    $addPrefix  Add prefix to the table name
+	 *
+	 * @return  array  An array of table columns
+	 */
+	public static function getTableColumns($tableName, $addPrefix = true)
+	{
+		if (empty(self::$tablePrefix))
+		{
+			self::loadTables();
+		}
+
+		if ($addPrefix)
+		{
+			$tableName = self::$tablePrefix . str_replace('#__', '', $tableName);
+		}
+
+		if (empty(self::$columnsList[$tableName]))
+		{
+			$db = JFactory::getDbo();
+
+			self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+		}
+
+		return self::$columnsList[$tableName];
 	}
 
 	/**

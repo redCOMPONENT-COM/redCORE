@@ -51,6 +51,25 @@ class RedcoreModelTranslations extends RModelList
 	}
 
 	/**
+	 * Method to auto-populate the model state.
+	 *
+	 * This method should only be called once per instantiation and is designed
+	 * to be called on the first call to the getState() method unless the model
+	 * configuration flag to ignore the request is set.
+	 *
+	 * Note. Calling getState in this method will result in recursion.
+	 *
+	 * @param   string  $ordering   An optional ordering field.
+	 * @param   string  $direction  An optional direction (asc|desc).
+	 *
+	 * @return  void
+	 */
+	protected function populateState($ordering = null, $direction = null)
+	{
+		parent::populateState($ordering, $direction);
+	}
+
+	/**
 	 * Build an SQL query to load the list data.
 	 *
 	 * @return  JDatabaseQuery
@@ -96,6 +115,11 @@ class RedcoreModelTranslations extends RModelList
 		if ($language = $this->getState('filter.language'))
 		{
 			$leftJoinOn[] = 't.rctranslations_language = ' . $db->q($language);
+		}
+		else
+		{
+			// We will return empty query
+			$leftJoinOn[] = '1 = 2';
 		}
 
 		$leftJoinOn = implode(' AND ', $leftJoinOn);

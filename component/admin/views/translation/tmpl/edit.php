@@ -18,15 +18,71 @@ JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
 JHtml::_('rsearchtools.main');
-//var_dump($this->item);
 $action = JRoute::_('index.php?option=com_redcore&view=translation');
 $input = JFactory::getApplication()->input;
 ?>
 <script type="text/javascript">
-	function setTranslationValue(elementName, elementOriginal)
+	function setTranslationValue(elementName, elementOriginal, setParams)
 	{
-		var val = elementOriginal != '' ? jQuery('[name="' + elementOriginal + '"]').val() : '';
-		jQuery('[name="' + elementName + '"]').val(val);
+		if (setParams)
+		{
+			var originalValue = '';
+			var name = '';
+			var originalField = {};
+			jQuery('#translation_field_' + elementName + ' :input').each(function(){
+				name = jQuery(this).attr('name');
+				originalValue = '';
+				originalField = {};
+				if (name)
+				{
+					if (jQuery(this).is(':checkbox, :radio'))
+					{
+						originalField = jQuery('[name="' + name.replace('translation', 'original') + '"][value="' + jQuery(this).val() + '"]');
+						var checked = (originalField.length > 0) ? jQuery(originalField).is(':checked') : false;
+						var label = jQuery(this).parent().find('[for="' + jQuery(this).attr('id') + '"]');
+
+						jQuery(this).attr('checked', checked);
+						jQuery(label).removeClass('active btn-success btn-danger btn-primary');
+						if (checked)
+						{
+							var css = '';
+							switch(jQuery(this).val()) {
+								case '' : css = 'btn-primary'; break;
+								case '0': css = 'btn-danger'; break;
+								default : css = 'btn-success'; break;
+							}
+							jQuery(label).addClass('active ' + css).button('toggle');
+						}
+					}
+					else
+					{
+						originalField = jQuery('[name="' + name.replace('translation', 'original') + '"]');
+						if (originalField.length > 0)
+						{
+							originalValue = jQuery(originalField).val();
+						}
+						jQuery(this)
+							.val(originalValue)
+							.trigger("liszt:updated");
+					}
+				}
+			});
+		}
+		else
+		{
+			var val = elementOriginal != '' ? jQuery('[name="original[' + elementOriginal + ']"]').val() : '';
+			var targetElement = jQuery('[name="translation[' + elementName + ']"]');
+
+			if (jQuery(targetElement).is('textarea'))
+			{
+				jQuery(targetElement).val(val);
+				jQuery(targetElement).parent().find('iframe').contents().find('body').html(val);
+			}
+			else
+			{
+				jQuery(targetElement).val(val);
+			}
+		}
 	}
 
 	Joomla.submitbutton = function(task)
@@ -62,15 +118,29 @@ $input = JFactory::getApplication()->input;
 					$maxRows = !empty($column['rows']) ? $column['rows'] : 15;
 					$maxCols = !empty($column['columns']) ? $column['columns'] : 30;
 				?>
-				<?php if ($column['type'] != 'params') : ?>
 					<tr>
 						<td colspan="3"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong>
 						<?php if (!empty($this->item->translation->rctranslations_originals[$columnKey])
 							&& $this->item->translation->rctranslations_originals[$columnKey] != md5($this->item->original->{$columnKey})): ?>
 							<span class="label label-warning"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_STATUS_CHANGED'); ?></span>
 						<?php endif; ?>
+							<button
+								class="pull-right btn"
+								type="button"
+								onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
+								<span class="icon-copy"></span>
+								<?php echo JText::_('RTOOLBAR_COPY');?>
+							</button>
+							<button
+								class="pull-right btn"
+								type="button"
+								onclick="setTranslationValue('<?php echo $columnKey;?>', '', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
+								<span class="icon-trash"></span>
+								<?php echo JText::_('JCLEAR');?>
+							</button>
 						</td>
 					</tr>
+			<?php if ($column['type'] != 'params') : ?>
 					<tr>
 						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
 						<td id="original_field_<?php echo $columnKey;?>">
@@ -78,19 +148,10 @@ $input = JFactory::getApplication()->input;
 							<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
 
 						</td>
-						<td style="text-align: right;">
-							<button
-								class="pull-right btn"
-								type="button"
-								onclick="setTranslationValue('translation[<?php echo $columnKey;?>]', 'original[<?php echo $columnKey;?>]');">
-								<span class="icon-copy"></span>
-								<?php echo JText::_('RTOOLBAR_COPY');?>
-							</button>
-						</td>
 					</tr>
 					<tr>
 						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION');?></td>
-						<td>
+						<td id="translation_field_<?php echo $columnKey;?>">
 							<?php if ($column['type'] == 'text' || $column['type'] == 'titletext'): ?>
 								<input
 									class="inputbox"
@@ -142,43 +203,72 @@ $input = JFactory::getApplication()->input;
 								<input class="inputbox" readonly="yes" type="text" name="translation[<?php echo $columnKey;?>]" size="<?php echo $length;?>" value="<?php echo $value; ?>" maxlength="<?php echo $maxLength;?>"/>
 							<?php endif; ?>
 						</td>
-						<td style="text-align: right;">
-							<button
-								class="pull-right btn"
-								type="button"
-								onclick="setTranslationValue('translation[<?php echo $columnKey;?>]', '');">
-								<span class="icon-trash"></span>
-								<?php echo JText::_('JCLEAR');?>
-							</button>
-						</td>
 					</tr>
 					<tr>
-						<td colspan="3">
+						<td colspan="2">
 						</td>
 					</tr>
 				<?php else:
 					?>
 					<tr>
-						<td colspan="3">
-							<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php
-								if (is_array($this->item->original->{$columnKey})) :
-									echo json_encode($this->item->original->{$columnKey});
-								else:
-									echo $this->item->original->{$columnKey};
-								endif;
-								?></textarea>
-							<textarea name="translation[<?php echo $columnKey;?>]" style="display:none"></textarea>
+						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
+						<td id="original_field_<?php echo $columnKey;?>">
+							<button
+								class="btn"
+								type="button"
+								onclick="jQuery(this).parent().find('div:first').toggle()">
+								<span class="icon-plus"></span>
+								<?php echo JText::_('COM_REDCORE_TRANSLATIONS_SHOW_HIDE_ORIGINALS');?>
+							</button>
+							<div style="display:none">
+								<br />
+								<?php echo RLayoutHelper::render(
+									'translation.params',
+									array(
+										'form' => RTranslationHelper::loadParamsForm($column, $this->contentElement, $this->item->original, 'original'),
+										'original' => $this->item->original->{$columnKey},
+										'translation' => $this->item->translation->{$columnKey},
+										'name' => $columnKey,
+										'column' => $column,
+										'translationForm' => false,
+									)
+								); ?>
+								<textarea name="original[params_<?php echo $columnKey;?>]" style="display:none"><?php
+									if (is_array($this->item->original->{$columnKey})) :
+										echo json_encode($this->item->original->{$columnKey});
+									else:
+										echo $this->item->original->{$columnKey};
+									endif;
+									?></textarea>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION');?></td>
+						<td id="translation_field_<?php echo $columnKey;?>">
+							<?php echo RLayoutHelper::render(
+								'translation.params',
+								array(
+									'form' => RTranslationHelper::loadParamsForm($column, $this->contentElement, $this->item->translation, 'translation'),
+									'original' => $this->item->original->{$columnKey},
+									'translation' => $this->item->translation->{$columnKey},
+									'name' => $columnKey,
+									'column' => $column,
+									'translationForm' => true,
+								)
+							);
+							?>
 						</td>
 					</tr>
 				<?php endif; ?>
 			<?php endforeach; ?>
 			<?php foreach ($this->noTranslationColumns as $columnKey => $column) : ?>
 				<tr>
-					<td colspan="3"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong></td>
+					<td colspan="2"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong></td>
 				</tr>
 				<tr>
 					<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
-					<td id="original_field_<?php echo $columnKey;?>" colspan="2">
+					<td id="original_field_<?php echo $columnKey;?>">
 						<?php echo !empty($this->item->original->{$columnKey}) ? $this->item->original->{$columnKey} : '--'; ?>
 					</td>
 				</tr>

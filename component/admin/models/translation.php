@@ -30,6 +30,7 @@ class RedcoreModelTranslation extends RModelAdmin
 		$ids = JFactory::getApplication()->input->getString('id', '');
 		$id = JFactory::getApplication()->input->getString('rctranslations_id', '');
 		$table = RedcoreHelpersTranslation::getTranslationTable();
+		$contentElement = RTranslationHelper::getContentElement($table->option, $table->xml);
 		$db	= $this->getDbo();
 		$query = $db->getQuery(true);
 		$item = new stdClass;
@@ -45,7 +46,6 @@ class RedcoreModelTranslation extends RModelAdmin
 		}
 
 		$db->setQuery($query);
-
 		$item->original = $db->loadObject();
 
 		$query = $db->getQuery(true)
@@ -63,6 +63,14 @@ class RedcoreModelTranslation extends RModelAdmin
 			foreach ($table->columns as $column)
 			{
 				$item->translation->{$column} = null;
+			}
+
+			foreach ($table->primaryKeys as $primaryKey)
+			{
+				if (!empty($item->original->{$primaryKey}))
+				{
+					$item->translation->{$primaryKey} = $item->original->{$primaryKey};
+				}
 			}
 
 			$item->rctranslations_state = 1;
@@ -86,6 +94,26 @@ class RedcoreModelTranslation extends RModelAdmin
 			$item->id = $item->translation->rctranslations_id;
 		}
 
+		$fieldsXml = $contentElement->getTranslateFields();
+
+		foreach ($fieldsXml as $field)
+		{
+			if ((string) $field['translate'] == '0')
+			{
+				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+			}
+
+			if ((string) $field['type'] == 'params' && (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			{
+				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+			}
+
+			if ((string) $field['type'] == 'readonlytext' && (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			{
+				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+			}
+		}
+
 		return $item;
 	}
 
@@ -98,14 +126,53 @@ class RedcoreModelTranslation extends RModelAdmin
 	 */
 	public function save($data)
 	{
+		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
+		$contentElement = RTranslationHelper::getContentElement($translationTable->option, $translationTable->xml);
 		$translation = JFactory::getApplication()->input->get('translation', array(), 'array');
 		$original = JFactory::getApplication()->input->get('original', array(), 'array');
-		$id = (int) $data['rctranslations_id'];
+		$id = !empty($data['rctranslations_id']) ? (int) $data['rctranslations_id'] : 0;
 
 		$data = array_merge($data, $translation);
 
+		$fieldsXml = $contentElement->getTranslateFields();
+
+		foreach ($fieldsXml as $field)
+		{
+			if ((string) $field['type'] == 'params' && (string) $field['translate'] == '1')
+			{
+				$fieldName = (string) $field['name'];
+				$original[$fieldName] = $original['params_' . $fieldName];
+				$paramsChanged = false;
+
+				if (!empty($data[$fieldName]))
+				{
+					$registry = new JRegistry;
+					$registry->loadString($original[$fieldName]);
+					$originalParams = $registry->toArray();
+
+					foreach ($data[$fieldName] as $paramKey => $paramValue)
+					{
+						if ((!isset($originalParams[$paramKey]) && $paramValue != '') || $originalParams[$paramKey] != $paramValue)
+						{
+							$paramsChanged = true;
+
+							break;
+						}
+					}
+
+					if ($paramsChanged)
+					{
+						$data[$fieldName] = json_encode($data[$fieldName]);
+					}
+					else
+					{
+						$data[$fieldName] = '';
+					}
+				}
+			}
+		}
+
 		$dispatcher = RFactory::getDispatcher();
-		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
 		/** @var RedcoreTableTranslation $table */
 		$table = $this->getTable();
 
