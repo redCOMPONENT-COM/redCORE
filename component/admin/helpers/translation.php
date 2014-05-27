@@ -54,7 +54,7 @@ abstract class RedcoreHelpersTranslation extends JObject
 			$contentElement = $filter['contentelement'];
 		}
 
-		if ($contentElement === null)
+		if (JFactory::getApplication()->input->get('view') == 'translation' || $contentElement === null)
 		{
 			$contentElement = $app->input->getString('contentelement', $default);
 		}
