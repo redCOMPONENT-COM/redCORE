@@ -97,7 +97,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 			$this->contentElements = $modelConfig->loadContentElements($this->componentName);
 			$this->missingContentElements = $modelConfig->loadMissingContentElements($this->componentName, $this->contentElements);
 
-			$this->return = base64_encode('index.php?option=com_redcore&view=translations&component=' . $this->componentName);
+			$this->return = base64_encode('index.php?option=com_redcore&view=translations&contentelement=&component=' . $this->componentName);
 			$layout = 'manage';
 			$this->setLayout($layout);
 			$app->input->set('layout', $layout);

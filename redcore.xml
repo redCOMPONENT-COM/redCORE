@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.0.25</version>
+    <version>1.1.0</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.0.25" />
+    <redcore version="1.1.0" />
 
     <install folder="component/admin">
         <sql>
