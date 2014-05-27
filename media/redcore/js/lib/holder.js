@@ -1,7 +1,7 @@
 /*
 
 Holder - 2.2 - client side image placeholders
-(c) 2012-2013 Ivan Malopinsky / http://imsky.co
+(c) 2012-2014 Ivan Malopinsky / http://imsky.co
 
 Provided under the MIT License.
 Commercial use requires attribution.

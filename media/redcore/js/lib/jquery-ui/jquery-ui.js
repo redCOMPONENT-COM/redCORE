@@ -1,7 +1,7 @@
-/*! jQuery UI - v1.10.3 - 2013-05-03
+/*! jQuery UI - v1.10.3 - 2014-05-03
 * http://jqueryui.com
 * Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.draggable.js, jquery.ui.droppable.js, jquery.ui.resizable.js, jquery.ui.selectable.js, jquery.ui.sortable.js, jquery.ui.effect.js, jquery.ui.accordion.js, jquery.ui.autocomplete.js, jquery.ui.button.js, jquery.ui.datepicker.js, jquery.ui.dialog.js, jquery.ui.effect-blind.js, jquery.ui.effect-bounce.js, jquery.ui.effect-clip.js, jquery.ui.effect-drop.js, jquery.ui.effect-explode.js, jquery.ui.effect-fade.js, jquery.ui.effect-fold.js, jquery.ui.effect-highlight.js, jquery.ui.effect-pulsate.js, jquery.ui.effect-scale.js, jquery.ui.effect-shake.js, jquery.ui.effect-slide.js, jquery.ui.effect-transfer.js, jquery.ui.menu.js, jquery.ui.position.js, jquery.ui.progressbar.js, jquery.ui.slider.js, jquery.ui.spinner.js, jquery.ui.tabs.js, jquery.ui.tooltip.js
-* Copyright 2013 jQuery Foundation and other contributors; Licensed MIT */
+* Copyright 2014 jQuery Foundation and other contributors; Licensed MIT */
 (function( $, undefined ) {
 
 var uuid = 0,
@@ -4783,11 +4783,11 @@ $.effects = {
  * jQuery Color Animations v2.1.2
  * https://github.com/jquery/jquery-color
  *
- * Copyright 2013 jQuery Foundation and other contributors
+ * Copyright 2014 jQuery Foundation and other contributors
  * Released under the MIT license.
  * http://jquery.org/license
  *
- * Date: Wed Jan 16 08:47:09 2013 -0600
+ * Date: Wed Jan 16 08:47:09 2014 -0600
  */
 (function( jQuery, undefined ) {
 
@@ -11727,7 +11727,7 @@ $.widget( "ui.menu", {
 		menus.children( ":not(.ui-menu-item)" ).each(function() {
 			var item = $( this );
 			// hyphen, em dash, en dash
-			if ( !/[^\-\u2014\u2013\s]/.test( item.text() ) ) {
+			if ( !/[^\-\u2014\u2014\s]/.test( item.text() ) ) {
 				item.addClass( "ui-widget-content ui-menu-divider" );
 			}
 		});

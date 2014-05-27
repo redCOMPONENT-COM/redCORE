@@ -596,7 +596,7 @@ var Sizzle =
  * Sizzle CSS Selector Engine v1.10.16
  * http://sizzlejs.com/
  *
- * Copyright 2013 jQuery Foundation, Inc. and other contributors
+ * Copyright 2014 jQuery Foundation, Inc. and other contributors
  * Released under the MIT license
  * http://jquery.org/license
  *

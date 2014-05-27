@@ -1,7 +1,7 @@
 /* ===========================================================
  * bootstrap-checkbox.js
  * ===========================================================
- * Copyright 2013 Roberto Montresor
+ * Copyright 2014 Roberto Montresor
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
