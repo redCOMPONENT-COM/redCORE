@@ -355,7 +355,6 @@ final class RTranslationTable
 		$db = JFactory::getDbo();
 
 		$tableKeys = $db->getTableKeys($newTable);
-		var_dump($tableKeys);
 
 		foreach ($fieldsXml as $field)
 		{
