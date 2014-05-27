@@ -1,8 +1,8 @@
-/*! jQuery UI - v1.10.3 - 2014-09-20
+/*! jQuery UI - v1.10.3 - 2013-09-20
 * http://jqueryui.com
 * Includes: jquery.ui.core.css, jquery.ui.resizable.css, jquery.ui.autocomplete.css, jquery.ui.button.css, jquery.ui.datepicker.css, jquery.ui.dialog.css, jquery.ui.menu.css, jquery.ui.progressbar.css, jquery.ui.theme.css
 * To view and modify this theme, visit http://jqueryui.com/themeroller/?ffDefault=Arial%2Csans-serif&fwDefault=bold&fsDefault=1.1em&cornerRadius=6px&bgColorHeader=%23BD362F&bgTextureHeader=highlight_soft&bgImgOpacityHeader=15&borderColorHeader=%23e3a1a1&fcHeader=%23ffffff&iconColorHeader=%23ffffff&bgColorContent=%23ffffff&bgTextureContent=flat&bgImgOpacityContent=75&borderColorContent=%23eeeeee&fcContent=%23333333&iconColorContent=%23cc0000&bgColorDefault=%23eeeeee&bgTextureDefault=highlight_hard&bgImgOpacityDefault=100&borderColorDefault=%23d8dcdf&fcDefault=%23004276&iconColorDefault=%23cc0000&bgColorHover=%23f6f6f6&bgTextureHover=highlight_hard&bgImgOpacityHover=100&borderColorHover=%23cdd5da&fcHover=%23111111&iconColorHover=%23cc0000&bgColorActive=%23ffffff&bgTextureActive=flat&bgImgOpacityActive=65&borderColorActive=%23eeeeee&fcActive=%23cc0000&iconColorActive=%23cc0000&bgColorHighlight=%23fbf8ee&bgTextureHighlight=glass&bgImgOpacityHighlight=55&borderColorHighlight=%23fcd3a1&fcHighlight=%23444444&iconColorHighlight=%23004276&bgColorError=%23f3d8d8&bgTextureError=diagonals_thick&bgImgOpacityError=75&borderColorError=%23cc0000&fcError=%232e2e2e&iconColorError=%23cc0000&bgColorOverlay=%23a6a6a6&bgTextureOverlay=dots_small&bgImgOpacityOverlay=65&opacityOverlay=40&bgColorShadow=%23333333&bgTextureShadow=flat&bgImgOpacityShadow=0&opacityShadow=10&thicknessShadow=8px&offsetTopShadow=-8px&offsetLeftShadow=-8px&cornerRadiusShadow=8px
-* Copyright 2014 jQuery Foundation and other contributors; Licensed MIT */
+* Copyright 2013 jQuery Foundation and other contributors; Licensed MIT */
 
 /* Layout helpers
 ----------------------------------*/
