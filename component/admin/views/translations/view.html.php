@@ -69,7 +69,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	{
 		$model = $this->getModel();
 		$app = JFactory::getApplication();
-		$this->contentElementName   = $app->input->get->get('contentelement', $model->getState('filter.contentelement', ''));
+		$this->contentElementName   = RedcoreHelpersTranslation::getCurrentContentElement();
 		$this->componentName        = $app->input->get->get('component', $model->getState('filter.component', ''));
 
 		$this->activeFilters = $model->getActiveFilters();

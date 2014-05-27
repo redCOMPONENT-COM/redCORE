@@ -234,7 +234,7 @@ else : ?>
 			</div>
 		</div>
 		<footer class="footer pagination-centered navbar navbar-fixed-bottom hidden-phone">
-			Copyright 2013 redcomponent.com. All rights reserved.
+			Copyright 2014 redcomponent.com. All rights reserved.
 		</footer>
 	</div>
 <?php endif; ?>

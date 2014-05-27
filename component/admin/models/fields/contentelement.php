@@ -65,7 +65,7 @@ class JFormFieldContentelement extends JFormFieldList
 			}
 		}
 
-		$contentElement = JFactory::getApplication()->input->get->getString('contentelement', '');
+		$contentElement = RedcoreHelpersTranslation::getCurrentContentElement();
 
 		if (!empty($contentElement))
 		{
