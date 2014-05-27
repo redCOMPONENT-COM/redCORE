@@ -11,6 +11,7 @@
             <field type="titletext" name="name" translate="1">Banner Name</field>
             <field type="text" name="clickurl" translate="1">Click URL</field>
             <field type="textarea" name="custombannercode" translate="1">Custom banner code</field>
+            <field type="state" name="state" translate="1">State</field>
         </table>
         <component>
             <form>com_banners#banners#id#task#!edit</form>

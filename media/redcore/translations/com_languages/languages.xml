@@ -9,6 +9,7 @@
         <table name="languages">
             <field type="referenceid" name="lang_id" translate="0">ID</field>
             <field type="titletext" name="title" translate="1">Title</field>
+            <field type="state" name="published" translate="1">State</field>
         </table>
     </reference>
 </contentelement>

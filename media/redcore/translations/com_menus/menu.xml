@@ -17,6 +17,7 @@
             <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
             <field type="hiddentext" name="home" translate="1" prehandlertranslation="unsetHomeTr">Homepage</field>
             <field type="params" name="params" formname="item" fieldsname="params" xpath="true" translate="1" >Params</field>
+            <field type="state" name="published" translate="1">State</field>
             <filter>o.client_id = 0 AND o.lft > 0</filter>
         </table>
         <component>

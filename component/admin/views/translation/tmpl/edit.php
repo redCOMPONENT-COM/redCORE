@@ -20,6 +20,13 @@ JHtml::_('rjquery.chosen', 'select');
 JHtml::_('rsearchtools.main');
 $action = JRoute::_('index.php?option=com_redcore&view=translation');
 $input = JFactory::getApplication()->input;
+$predefinedOptions = array(
+	1   => 'JPUBLISHED',
+	0   => 'JUNPUBLISHED',
+	2   => 'JARCHIVED',
+	-2  => 'JTRASHED',
+	'*' => 'JALL'
+);
 ?>
 <script type="text/javascript">
 	function setTranslationValue(elementName, elementOriginal, setParams)
@@ -144,9 +151,13 @@ $input = JFactory::getApplication()->input;
 					<tr>
 						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
 						<td id="original_field_<?php echo $columnKey;?>">
-							<?php echo $this->item->original->{$columnKey}; ?>
+							<?php if ($column['type'] == 'state'): ?>
+								<?php echo isset($predefinedOptions[$this->item->original->{$columnKey}]) ?
+									JText::_($predefinedOptions[$this->item->original->{$columnKey}]) : $this->item->original->{$columnKey}; ?>
+							<?php else: ?>
+								<?php echo $this->item->original->{$columnKey}; ?>
+							<?php endif; ?>
 							<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
-
 						</td>
 					</tr>
 					<tr>
@@ -160,6 +171,18 @@ $input = JFactory::getApplication()->input;
 									size="<?php echo $length;?>"
 									value="<?php echo $this->item->translation->{$columnKey}; ?>"
 									<?php echo $maxLength;?> />
+							<?php elseif ($column['type'] == 'state'): ?>
+								<?php echo RLayoutHelper::render(
+									'translation.fields.state',
+									array(
+										'original' => $this->item->original->{$columnKey},
+										'translation' => $this->item->translation->{$columnKey},
+										'name' => $columnKey,
+										'column' => $column,
+										'translationForm' => true,
+										'predefinedOptions' => $predefinedOptions
+									)
+								); ?>
 							<?php elseif ($column['type'] == 'textarea'): ?>
 								<textarea
 									name="translation[<?php echo $columnKey;?>]"
