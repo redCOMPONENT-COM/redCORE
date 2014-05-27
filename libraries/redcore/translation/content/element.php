@@ -226,6 +226,13 @@ final class RTranslationContentElement
 		{
 			$fields[(string) $field['name']] = (string) $field['name'];
 
+			if ((string) $field['translate'] == '0')
+			{
+				unset($fieldsTable[(string) $field['name']]);
+				unset($fields[(string) $field['name']]);
+				continue;
+			}
+
 			foreach ($fieldsTable as $columnKey => $columnKeyValue)
 			{
 				$fields[$columnKey] = $columnKey;

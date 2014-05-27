@@ -66,14 +66,15 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				{
 					// Get all columns from that table
 					$tableColumns = (array) $translationTables[$foundTable['originalTableName']]->columns;
+					$originalTableColumns = RTranslationTable::getTableColumns($foundTable['originalTableName']);
 
 					if (!empty($tableColumns))
 					{
 						$selectAllOriginalColumn = $foundTable['alias']['originalName'] . '.*';
 						$columnAll = array();
-						$columnAll['base_expr'] = $selectAllOriginalColumn;
 						$columnAll['table'] = $foundTable;
 						$columnAll['columnName'] = $selectAllOriginalColumn;
+						$columnAll['base_expr'] = self::addBaseColumns($originalTableColumns, $tableColumns, $foundTable['alias']['originalName']);
 
 						foreach ($tableColumns as $tableColumn)
 						{
@@ -117,6 +118,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		}
 		catch (Exception $e)
 		{
+
 			return null;
 		}
 
@@ -292,7 +294,8 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 											array($groupColumnsKey => $tagColumnsValue['sub_tree'][$subKey]['sub_tree']),
 											$columns,
 											$translationTables,
-											$columnFound
+											$columnFound,
+											false
 										);
 										$tagColumnsValue['sub_tree'][$subKey]['sub_tree'] = $tagColumnsValue['sub_tree'][$subKey]['sub_tree'][$groupColumnsKey];
 									}
@@ -656,6 +659,30 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			'aliasRight' => $aliasRight,
 			'expressionOperator' => $expressionOperator,
 		);
+	}
+
+	/**
+	 * Create Table Join Parameter
+	 *
+	 * @param   array   $originalTableColumns  Table alias of new table
+	 * @param   array   $tableColumns          Operator of joining tables
+	 * @param   string  $alias                 Original table alias
+	 *
+	 * @return  array  table join param
+	 */
+	public static function addBaseColumns($originalTableColumns, $tableColumns, $alias)
+	{
+		$columns = array();
+
+		foreach ($originalTableColumns as $key => $value)
+		{
+			if (!in_array($key, $tableColumns))
+			{
+				$columns[] = $alias . '.' . $key;
+			}
+		}
+
+		return implode(',', $columns);
 	}
 
 	/**

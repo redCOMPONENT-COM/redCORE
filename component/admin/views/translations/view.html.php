@@ -67,21 +67,44 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	 */
 	public function display($tpl = null)
 	{
-		$model = $this->getModel('Translations');
-		$this->contentElement = JFactory::getApplication()->input->getString('contentelement', '');
-		$this->translationTable = RedcoreHelpersTranslation::getTranslationTable();
+		$model = $this->getModel();
+		$app = JFactory::getApplication();
+		$this->contentElementName   = $app->input->get->get('contentelement', $model->getState('filter.contentelement', ''));
+		$this->componentName        = $app->input->get->get('component', $model->getState('filter.component', ''));
 
-		if (!empty($this->contentElement))
+		$this->activeFilters = $model->getActiveFilters();
+		$this->state = $model->getState();
+		$this->filterForm = $model->getForm();
+		$this->pagination = $model->getPagination();
+
+		if (!empty($this->contentElementName))
 		{
+			$this->translationTable = RedcoreHelpersTranslation::getTranslationTable();
+			$this->contentElement = RTranslationHelper::getContentElement($this->translationTable->option, $this->translationTable->xml);
 			$this->items = $model->getItems();
-			$this->state = $model->getState();
-			$this->pagination = $model->getPagination();
-			$this->filterForm = $model->getForm();
-			$this->activeFilters = $model->getActiveFilters();
+			$this->filterForm->removeField('component', 'filter');
 		}
 		else
 		{
+			/** @var RedcoreModelConfig $modelConfig */
+			$modelConfig = RModelAdmin::getInstance('Config', 'RedcoreModel', array('ignore_request' => true));
 
+			if (!empty($this->componentName))
+			{
+				$this->component = $modelConfig->getComponent($this->componentName);
+			}
+
+			$this->contentElements = $modelConfig->loadContentElements($this->componentName);
+			$this->missingContentElements = $modelConfig->loadMissingContentElements($this->componentName, $this->contentElements);
+
+			$this->return = base64_encode('index.php?option=com_redcore&view=translations&component=' . $this->componentName);
+			$layout = 'manage';
+			$this->setLayout($layout);
+			$app->input->set('layout', $layout);
+			$this->filterForm->removeField('language', 'filter');
+			$this->filterForm->removeField('search_translations', 'filter');
+			$this->filterForm->removeField('translations_limit', 'list');
+			$this->filterForm->removeField('contentelement', 'filter');
 		}
 
 		parent::display($tpl);
@@ -94,7 +117,15 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	 */
 	public function getTitle()
 	{
-		return JText::_('COM_REDCORE_TRANSLATIONS');
+		if (!empty($this->contentElement))
+		{
+			return JText::_('COM_REDCORE_TRANSLATIONS') . ' ' . JText::_($this->contentElement->name);
+		}
+		else
+		{
+			return JText::_('COM_REDCORE_TRANSLATIONS_MANAGE_CONTENT_ELEMENTS')
+				. (!empty($this->componentName) ? ' : ' . JText::_($this->componentName) : '');
+		}
 	}
 
 	/**
@@ -107,11 +138,12 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		$firstGroup = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
 
-		//$edit = RToolbarBuilder::createEditButton('translation.edit');
-		//$firstGroup->addButton($edit);
 
 		if (!empty($this->contentElement))
 		{
+			$delete = RToolbarBuilder::createDeleteButton('translations.delete');
+			$firstGroup->addButton($delete);
+
 			// Manage
 			$manage = RToolbarBuilder::createStandardButton(
 				'translations.manageContentElement',

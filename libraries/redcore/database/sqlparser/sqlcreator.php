@@ -280,6 +280,12 @@ class RDatabaseSqlparserSqlcreator {
 		$sql = "";
 		foreach ($parsed['sub_tree'] as $k => $v) {
 			$len = strlen($sql);
+			if (($this->isReserved($v) || $this->isOperator($v)) && !empty($sql) && substr($sql, -1) == ',')
+			{
+				$sql = substr($sql, 0, -1) . ' ';
+			}
+
+			$sql .= $this->processReserved($v);
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processOperator($v);
@@ -341,6 +347,13 @@ class RDatabaseSqlparserSqlcreator {
 		$sql = "";
 		foreach ($parsed['sub_tree'] as $k => $v) {
 			$len = strlen($sql);
+			if (($this->isReserved($v) || $this->isOperator($v)) && !empty($sql) && substr($sql, -1) == ',')
+			{
+				$sql = substr($sql, 0, -1) . ' ';
+			}
+
+			$sql .= $this->processReserved($v);
+
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processOperator($v);
@@ -367,6 +380,12 @@ class RDatabaseSqlparserSqlcreator {
 		$sql = "";
 		foreach ($parsed['sub_tree'] as $k => $v) {
 			$len = strlen($sql);
+			if (($this->isReserved($v) || $this->isOperator($v)) && !empty($sql) && substr($sql, -1) == ',')
+			{
+				$sql = substr($sql, 0, -1) . ' ';
+			}
+
+			$sql .= $this->processReserved($v);
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processOperator($v);
@@ -421,23 +440,25 @@ class RDatabaseSqlparserSqlcreator {
 		foreach ($parsed['sub_tree'] as $k => $v) {
 			$len = strlen($sql);
 
-			if ($this->isReserved($v) && !empty($sql) && substr($sql, -1) == ',')
+			if (($this->isReserved($v) || $this->isOperator($v)) && !empty($sql) && substr($sql, -1) == ',')
 			{
 				$sql = substr($sql, 0, -1) . ' ';
 			}
 
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processConstant($v);
+			$sql .= $this->processOperator($v);
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processReserved($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
+			//$sql .= $this->processSubQuery($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('function subtree', $k, $v, 'expr_type');
 			}
 
-			$sql .= ($this->isReserved($v) ? " " : ",");
+			$sql .= ($this->isReserved($v) || $this->isOperator($v) ? " " : ",");
 		}
 
 		$sql2 = $parsed['base_expr'] . "(" . substr($sql, 0, -1) . ")";
@@ -471,9 +492,17 @@ class RDatabaseSqlparserSqlcreator {
 		$sql = "";
 		foreach ($parsed['sub_tree'] as $k => $v) {
 			$len = strlen($sql);
+
+			if (($this->isReserved($v) || $this->isOperator($v)) && !empty($sql) && substr($sql, -1) == ',')
+			{
+				$sql = substr($sql, 0, -1) . ' ';
+			}
+
+			$sql .= $this->processReserved($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processOperator($v);
 			$sql .= $this->processConstant($v);
+			$sql .= $this->processColRef($v);
 			$sql .= $this->processSubQuery($v);
 			$sql .= $this->processSelectBracketExpression($v);
 
@@ -481,7 +510,7 @@ class RDatabaseSqlparserSqlcreator {
 				throw new RDatabaseSqlparserExceptioncreatesql('expression subtree', $k, $v, 'expr_type');
 			}
 
-			$sql .= $delim;
+			$sql .= ($this->isReserved($v) || $this->isOperator($v) ? " " : $delim);
 		}
 		return substr($sql, 0, -1);
 	}
@@ -640,6 +669,10 @@ class RDatabaseSqlparserSqlcreator {
 
 	protected function isReserved($parsed) {
 		return (!empty($parsed['expr_type']) && $parsed['expr_type'] === 'reserved');
+	}
+
+	protected function isOperator($parsed) {
+		return (!empty($parsed['expr_type']) && $parsed['expr_type'] === 'operator');
 	}
 
 	protected function processConstant($parsed) {

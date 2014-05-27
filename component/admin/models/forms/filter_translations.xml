@@ -14,7 +14,29 @@
                 label="JOPTION_FILTER_LANGUAGE"
                 description="JOPTION_FILTER_LANGUAGE_DESC"
                 onchange="this.form.submit();"
-                >
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_TRANSLATIONS_SELECT_LANGUAGE</option>
+        </field>
+        <field
+                name="component"
+                type="componentlist"
+                label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
+                description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
+        </field>
+        <field
+                name="contentelement"
+                type="contentelement"
+                label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
+                description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_TRANSLATIONS_SELECT_CONTENT_ELEMENT</option>
         </field>
     </fields>
     <fields name="list">

@@ -63,6 +63,10 @@ class RedcoreModelTranslations extends RModelList
 
 		if (empty($table))
 		{
+			$query->select('*')
+				->from('#__extensions')
+				->where('1=2');
+
 			return $query;
 		}
 
@@ -96,6 +100,11 @@ class RedcoreModelTranslations extends RModelList
 		if ($language = $this->getState('filter.language'))
 		{
 			$leftJoinOn[] = 't.rctranslations_language = ' . $db->q($language);
+		}
+		else
+		{
+			// We will return empty query
+			$leftJoinOn[] = '1 = 2';
 		}
 
 		$leftJoinOn = implode(' AND ', $leftJoinOn);

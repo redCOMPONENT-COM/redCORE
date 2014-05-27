@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Redshopb.Admin
+ * @package     Redcore.Admin
  * @subpackage  Layouts
  *
  * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
