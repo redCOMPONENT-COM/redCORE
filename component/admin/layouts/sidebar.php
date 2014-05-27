@@ -70,7 +70,7 @@ if (empty($return))
 		<li class="divider"></li>
 	<?php else: ?>
 		<li>
-			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&layout=manage&return=' . $return) ?>">
+			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&return=' . $return) ?>">
 				<i class="icon-globe"></i>
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 			</a>
