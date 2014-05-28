@@ -497,6 +497,7 @@ class RDatabaseSqlparserSqlcreator {
 			return "";
 		}
 		$sql = $this->processSubTree($parsed, " ");
+
 		return $sql;
 	}
 
