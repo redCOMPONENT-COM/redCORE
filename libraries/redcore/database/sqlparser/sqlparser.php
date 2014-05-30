@@ -697,7 +697,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		if (($sql[0] === '`') && ($sql[strlen($sql) - 1] === '`')) {
 			$sql = substr($sql, 1, -1);
 		}
-		return str_replace('``', '`', $sql);
+		return str_replace('`', '', $sql);
 	}
 
 	private function isWhitespaceToken($token) {
@@ -1097,6 +1097,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		}
 
 		$out[] = $this->processOrderExpression($parseInfo, $select);
+
 		return $out;
 	}
 

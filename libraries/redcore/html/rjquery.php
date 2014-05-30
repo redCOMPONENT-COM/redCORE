@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -163,8 +163,17 @@ abstract class JHtmlRjquery
 		// Load jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
 		{
-			RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
-			RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
+			$doc = JFactory::getDocument();
+
+			$jqueryLib = array(
+				JUri::root(true) . '/media/redcore/js/lib/jquery.min.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
+			);
+			$jqueryNoConflict = array(
+				JUri::root(true) . '/media/redcore/js/lib/jquery-noconflict.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
+			);
+
+			$doc->_scripts = array_merge($jqueryNoConflict, $doc->_scripts);
+			$doc->_scripts = array_merge($jqueryLib, $doc->_scripts);
 		}
 		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
 		{

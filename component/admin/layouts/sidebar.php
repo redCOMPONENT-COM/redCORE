@@ -1,9 +1,9 @@
 <?php
 /**
- * @package     Redshopb.Admin
+ * @package     Redcore.Admin
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -70,7 +70,7 @@ if (empty($return))
 		<li class="divider"></li>
 	<?php else: ?>
 		<li>
-			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&layout=manage&return=' . $return) ?>">
+			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&return=' . $return) ?>">
 				<i class="icon-globe"></i>
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 			</a>

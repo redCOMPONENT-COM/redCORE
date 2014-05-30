@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Translation
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -25,6 +25,14 @@ final class RTranslationTable
 	 * @since  1.0
 	 */
 	public static $tableList = array();
+
+	/**
+	 * An array to hold tables columns from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $columnsList = array();
 
 	/**
 	 * Prefix used to identify the tables
@@ -52,12 +60,47 @@ final class RTranslationTable
 
 		if (in_array($tableName, self::$tableList))
 		{
-			$db = JFactory::getDbo();
+			if (empty(self::$columnsList[$tableName]))
+			{
+				$db = JFactory::getDbo();
 
-			return $db->getTableColumns($tableName, false);
+				self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+			}
+
+			return self::$columnsList[$tableName];
 		}
 
 		return array();
+	}
+
+	/**
+	 * Get Translations Table Columns Array
+	 *
+	 * @param   string  $tableName  Original table name
+	 * @param   bool    $addPrefix  Add prefix to the table name
+	 *
+	 * @return  array  An array of table columns
+	 */
+	public static function getTableColumns($tableName, $addPrefix = true)
+	{
+		if (empty(self::$tablePrefix))
+		{
+			self::loadTables();
+		}
+
+		if ($addPrefix)
+		{
+			$tableName = self::$tablePrefix . str_replace('#__', '', $tableName);
+		}
+
+		if (empty(self::$columnsList[$tableName]))
+		{
+			$db = JFactory::getDbo();
+
+			self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+		}
+
+		return self::$columnsList[$tableName];
 	}
 
 	/**
@@ -124,7 +167,6 @@ final class RTranslationTable
 		$originalColumns = $db->getTableColumns('#__' . $contentElement->table, false);
 		$fields = array();
 		$primaryKeys = array();
-		$constraintKeys = array();
 		$primaryKeys['rctranslations_language'] = $db->qn('rctranslations_language');
 		$fieldsXml = $contentElement->getTranslateFields();
 		$newTable = self::getTranslationsTableName($contentElement->table);
@@ -156,13 +198,6 @@ final class RTranslationTable
 				$fieldName = (string) $field['name'];
 
 				$primaryKeys[$fieldName] = $db->qn($fieldName);
-				$constraintKey = $db->qn(md5($newTable . '_' . $fieldName . '_fk'));
-				$constraintKeys[$constraintKey] = 'ADD CONSTRAINT '
-					. $constraintKey
-					. ' FOREIGN KEY (' . $db->qn($fieldName) . ')'
-					. ' REFERENCES ' . $db->qn($originalTable) . ' (' . $db->qn($fieldName) . ')'
-					. '	ON DELETE CASCADE'
-					. ' ON UPDATE NO ACTION ';
 			}
 		}
 
@@ -206,15 +241,8 @@ final class RTranslationTable
 			}
 		}
 
-		$primaryKeysIndex = implode(',', $primaryKeys);
 		unset($primaryKeys['rctranslations_language']);
-		$primaryKey = ' KEY ' . $db->qn('language_idx') . ' (' . $primaryKeysIndex . ') ';
 		$allContentElementsFields = implode(',', array_keys($fields));
-
-		$constraintKeysQuery = 'ALTER TABLE '
-			. $db->qn($newTable)
-			. ' '
-			. implode(', ', $constraintKeys);
 
 		// Language is automatically added to the table if table exists
 		$columns = self::removeFixedColumnsFromArray($columns);
@@ -232,99 +260,68 @@ final class RTranslationTable
 			}
 		}
 
-		$queryConstraints = '';
-
-		if (!$newTableCreated)
-		{
-			$translationTables = RTranslationHelper::getInstalledTranslationTables();
-			$installedTable = !empty($translationTables[$originalTable]) ? $translationTables[$originalTable] : null;
-
-			if (!empty($installedTable->primaryKeys))
-			{
-				foreach ($installedTable->primaryKeys as $installedPrimaryKey)
-				{
-					$queryConstraints .= ', DROP FOREIGN KEY ' . $db->qn(md5($newTable . '_' . $installedPrimaryKey . '_fk'));
-				}
-			}
-		}
-
 		// We Add New columns
 		if (!empty($fields))
 		{
-			$query = 'ALTER TABLE ' . $db->qn($newTable)
-				. ' DROP KEY ' . $db->qn('language_idx');
-
-			if (!$newTableCreated)
-			{
-				$query .= $queryConstraints;
-			}
+			$newColumns = array();
 
 			foreach ($fields as $fieldKey => $field)
 			{
 				if (!empty($originalColumns[$fieldKey]))
 				{
-					$query .= ', ADD COLUMN ' . $field
+					$newColumns[] = 'ADD COLUMN ' . $field
 						. ' ' . $originalColumns[$fieldKey]->Type
 						. ' NULL'
 						. ' DEFAULT NULL ';
 				}
 			}
 
-			$query .= ', ADD ' . $primaryKey;
-
-			try
+			if (!empty($newColumns))
 			{
-				$db->setQuery($query);
-				$db->execute();
-
-				// Adding the constraints afterwards
-				if (!empty($constraintKeysQuery))
+				try
 				{
-					$db->setQuery($constraintKeysQuery);
+					$query = 'ALTER TABLE ' . $db->qn($newTable) . ' ' . implode(',', $newColumns);
+					$db->setQuery($query);
 					$db->execute();
 				}
-			}
-			catch (Exception $e)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+				catch (Exception $e)
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
-				return false;
+					return false;
+				}
 			}
 		}
 
 		// We delete extra columns
 		if (!empty($columnKeys) && !$newTableCreated)
 		{
-			$query = 'ALTER TABLE ' . $db->qn($newTable)
-				. ' DROP KEY ' . $db->qn('language_idx')
-				. $queryConstraints;
+			$oldColumns = array();
 
 			foreach ($columnKeys as $columnKey)
 			{
-				$query .= ', DROP COLUMN ' . $db->qn($columnKey);
+				$oldColumns[] = 'DROP COLUMN ' . $db->qn($columnKey);
 			}
 
-			$query .= ', ADD ' . $primaryKey;
-
-			try
+			if (!empty($oldColumns))
 			{
-				$db->setQuery($query);
-				$db->execute();
-
-				// Adding the constraints afterwards
-				if (!empty($constraintKeysQuery))
+				try
 				{
-					$db->setQuery($constraintKeysQuery);
+					$query = 'ALTER TABLE ' . $db->qn($newTable) . ' ' . implode(',', $oldColumns);
+					$db->setQuery($query);
 					$db->execute();
 				}
-			}
-			catch (Exception $e)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+				catch (Exception $e)
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
-				return false;
+					return false;
+				}
 			}
 		}
+
+		self::updateTableIndexKeys($fieldsXml, $newTable);
+		self::updateTableTriggers($fieldsXml, $newTable, $originalTable);
 
 		$contentElement->allContentElementsFields = explode(',', $allContentElementsFields);
 		$contentElement->allPrimaryKeys = array_keys($primaryKeys);
@@ -339,6 +336,133 @@ final class RTranslationTable
 		if ($showNotifications)
 		{
 			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED'), 'message');
+		}
+
+		return true;
+	}
+
+	/**
+	 * Adds table Index Keys based on primary keys for improved performace
+	 *
+	 * @param   array   $fieldsXml  Array of fields from content Element
+	 * @param   string  $newTable   Table name
+	 *
+	 * @return  boolean  Returns true if Content element was successfully installed
+	 */
+	public static function updateTableIndexKeys($fieldsXml, $newTable)
+	{
+		$indexKeys = array();
+		$db = JFactory::getDbo();
+
+		$tableKeys = $db->getTableKeys($newTable);
+
+		foreach ($fieldsXml as $field)
+		{
+			if ((string) $field['type'] == 'referenceid')
+			{
+				$fieldName = (string) $field['name'];
+				$languageKey = $db->qn('rctranslations_language');
+				$constraintKey = md5($newTable . '_' . $fieldName . '_idx');
+				$keyFound = false;
+
+				foreach ($tableKeys as $tableKey)
+				{
+					if ($tableKey->Key_name == $constraintKey)
+					{
+						$keyFound = true;
+						break;
+					}
+				}
+
+				if (!$keyFound)
+				{
+					$indexKeys[$constraintKey] = 'ADD KEY '
+						. $db->qn($constraintKey)
+						. ' (' . $languageKey . ',' . $db->qn($fieldName) . ')';
+				}
+			}
+		}
+
+		if (!empty($indexKeys))
+		{
+			$indexKeysQuery = 'ALTER TABLE '
+				. $db->qn($newTable)
+				. ' '
+				. implode(', ', $indexKeys);
+
+			try
+			{
+				$db->setQuery($indexKeysQuery);
+				$db->execute();
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Adds table Index Keys based on primary keys for improved performace
+	 *
+	 * @param   array   $fieldsXml      Array of fields from content Element
+	 * @param   string  $newTable       Translation Table name
+	 * @param   string  $originalTable  Original Table name
+	 *
+	 * @return  boolean  Returns true if Content element was successfully installed
+	 */
+	public static function updateTableTriggers($fieldsXml, $newTable, $originalTable)
+	{
+		$db = JFactory::getDbo();
+		$triggerKey = md5($originalTable . '_rctranslationstrigger');
+
+		try
+		{
+			$db->setQuery('DROP TRIGGER IF EXISTS ' . $db->qn($triggerKey));
+			$db->execute();
+		}
+		catch (Exception $e)
+		{
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+
+			return false;
+		}
+
+		$primaryKeys = array();
+
+		foreach ($fieldsXml as $field)
+		{
+			if ((string) $field['type'] == 'referenceid')
+			{
+				$fieldName = (string) $field['name'];
+				$primaryKeys[] = $db->qn($fieldName) . ' = OLD.' . $db->qn($fieldName);
+			}
+		}
+
+		if (!empty($primaryKeys))
+		{
+			$query = 'CREATE TRIGGER ' . $db->qn($triggerKey) . '
+				AFTER DELETE
+				ON ' . $db->qn($originalTable) . '
+				FOR EACH ROW BEGIN
+					DELETE FROM ' . $db->qn($newTable) . ' WHERE ' . implode(' AND ', $primaryKeys) . ';
+				END;';
+
+			try
+			{
+				$db->setQuery($query);
+				$db->execute();
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+
+				return false;
+			}
 		}
 
 		return true;
@@ -369,6 +493,7 @@ final class RTranslationTable
 
 					try
 					{
+						self::updateTableTriggers(array(), '', $translationTable);
 						$db->dropTable($newTable);
 
 						RTranslationHelper::setInstalledTranslationTables($option, $translationTable, null);

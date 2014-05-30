@@ -11,6 +11,7 @@
             <field type="titletext" name="title" translate="1">Title</field>
             <field type="textarea" name="description" translate="1">Description</field>
             <field type="text" name="url" maxlength="1000" translate="1">URL</field>
+            <field type="state" name="state" translate="1">State</field>
         </table>
     </reference>
 </contentelement>

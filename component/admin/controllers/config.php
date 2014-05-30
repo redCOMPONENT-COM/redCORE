@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Controllers
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -41,7 +41,24 @@ class RedcoreControllerConfig extends RControllerForm
 			RTranslationTable::installContentElement($option, $xmlFile);
 		}
 
-		parent::edit();
+		$this->redirectAfterAction();
+	}
+
+	/**
+	 * Method to install Content Element.
+	 *
+	 * @return  boolean  True if successful, false otherwise.
+	 */
+	public function redirectAfterAction()
+	{
+		if ($this->input->get('layout', '') == 'manage' && $returnUrl = $this->input->get('return'))
+		{
+			$this->setRedirect(JRoute::_(base64_decode($returnUrl), false));
+		}
+		else
+		{
+			parent::edit();
+		}
 	}
 
 	/**
@@ -67,7 +84,7 @@ class RedcoreControllerConfig extends RControllerForm
 			RTranslationTable::uninstallContentElement($option, $xmlFile);
 		}
 
-		parent::edit();
+		$this->redirectAfterAction();
 	}
 
 	/**
@@ -93,7 +110,7 @@ class RedcoreControllerConfig extends RControllerForm
 			RTranslationTable::purgeContentElement($option, $xmlFile);
 		}
 
-		parent::edit();
+		$this->redirectAfterAction();
 	}
 
 	/**
@@ -119,7 +136,7 @@ class RedcoreControllerConfig extends RControllerForm
 			RTranslationTable::deleteContentElement($option, $xmlFile);
 		}
 
-		parent::edit();
+		$this->redirectAfterAction();
 	}
 
 	/**
@@ -149,7 +166,7 @@ class RedcoreControllerConfig extends RControllerForm
 			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_UPLOAD_FILE_NOT_FOUND'), 'warning');
 		}
 
-		parent::edit();
+		$this->redirectAfterAction();
 	}
 
 	/**

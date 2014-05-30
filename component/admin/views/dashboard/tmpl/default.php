@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -61,7 +61,7 @@ $column = 0;
 					<?php echo JText::_('COM_REDCORE_CONFIGURATION') ?>
 				</a>
 				<a class="btn btn-primary"
-				   href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&layout=manage&component=' . $component->option . '&return=' . $return); ?>">
+				   href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&component=' . $component->option . '&return=' . $return); ?>">
 					<i class="icon-globe"></i>
 					<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 				</a>

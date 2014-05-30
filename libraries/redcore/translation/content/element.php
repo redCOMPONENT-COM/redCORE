@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Translation
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -225,6 +225,13 @@ final class RTranslationContentElement
 		foreach ($fieldsXml as $field)
 		{
 			$fields[(string) $field['name']] = (string) $field['name'];
+
+			if ((string) $field['translate'] == '0')
+			{
+				unset($fieldsTable[(string) $field['name']]);
+				unset($fields[(string) $field['name']]);
+				continue;
+			}
 
 			foreach ($fieldsTable as $columnKey => $columnKeyValue)
 			{

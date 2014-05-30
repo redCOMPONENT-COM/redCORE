@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -63,6 +63,10 @@ class RedcoreModelTranslations extends RModelList
 
 		if (empty($table))
 		{
+			$query->select('*')
+				->from('#__extensions')
+				->where('1=2');
+
 			return $query;
 		}
 
@@ -96,6 +100,11 @@ class RedcoreModelTranslations extends RModelList
 		if ($language = $this->getState('filter.language'))
 		{
 			$leftJoinOn[] = 't.rctranslations_language = ' . $db->q($language);
+		}
+		else
+		{
+			// We will return empty query
+			$leftJoinOn[] = '1 = 2';
 		}
 
 		$leftJoinOn = implode(' AND ', $leftJoinOn);

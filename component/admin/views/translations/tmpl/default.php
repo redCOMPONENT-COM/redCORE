@@ -16,18 +16,19 @@ JHtml::_('rjquery.chosen', 'select');
 $action = JRoute::_('index.php?option=com_redcore&view=translations');
 $listOrder = $this->state->get('list.ordering');
 $listDirn = $this->state->get('list.direction');
-$columns = (array) $this->translationTable->columns;
-$this->translationTable->primaryKeys = (array) $this->translationTable->primaryKeys;
+$selectedLanguage = $this->state->get('filter.language', '');
 $input = JFactory::getApplication()->input;
-$filters = $input->get('filter', array(), 'array');
-$selectedLanguage = !empty($filters['language']) ? $filters['language'] : '';
+if (!empty($this->items)):
+	$columns = (array) $this->translationTable->columns;
+	$this->translationTable->primaryKeys = (array) $this->translationTable->primaryKeys;
 
-foreach ($columns as $key => $column):
-	// We will display only first 5 columns
-	if ($column == 'params' || $key > 7):
-		unset($columns[$key]);
-	endif;
-endforeach;
+	foreach ($columns as $key => $column):
+		// We will display only first 5 columns
+		if ($column == 'params' || $key > 7):
+			unset($columns[$key]);
+		endif;
+	endforeach;
+endif;
 ?>
 <form action="<?php echo $action; ?>" name="adminForm" class="adminForm" id="adminForm" method="post">
 	<?php
@@ -47,7 +48,14 @@ endforeach;
 	);
 	?>
 	<hr/>
-	<?php if (empty($this->items)) : ?>
+	<?php if (empty($selectedLanguage)) : ?>
+		<div class="alert alert-info">
+			<button type="button" class="close" data-dismiss="alert">&times;</button>
+			<div class="pagination-centered">
+				<h3><?php echo JText::_('COM_REDCORE_TRANSLATIONS_SELECT_LANGUAGE') ?></h3>
+			</div>
+		</div>
+	<?php elseif (empty($this->items)) : ?>
 		<div class="alert alert-info">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<div class="pagination-centered">
@@ -93,8 +101,7 @@ endforeach;
 
 					$editLink = $canEdit ? '<a href="'
 						. JRoute::_('index.php?option=com_redcore&task=translation.edit'
-							. '&contentelement=' . $input->getString('contentelement', '')
-							. '&component=' . $input->getString('component', '')
+							. '&contentelement=' . $this->contentElementName
 							. '&language=' . $selectedLanguage
 							. '&id=' . (implode('###', $primaryId))
 							. '&rctranslations_id=' . $item->rctranslations_id
@@ -139,9 +146,10 @@ endforeach;
 		<input type="hidden" name="option" value="com_redcore">
 		<input type="hidden" name="task" value="">
 		<input type="hidden" name="language" value="<?php echo $selectedLanguage; ?>">
-		<input type="hidden" name="contentelement" value="<?php echo $input->getString('contentelement', ''); ?>">
-		<input type="hidden" name="component" value="<?php echo $input->getString('component', ''); ?>">
+		<input type="hidden" name="component" value="<?php echo $this->contentElement->extension; ?>">
+		<input type="hidden" name="contentelement" value="<?php echo $this->contentElementName; ?>">
 		<input type="hidden" name="boxchecked" value="0">
+		<input type="hidden" name="layout" value="<?php echo JFactory::getApplication()->input->getString('layout'); ?>">
 		<?php echo JHtml::_('form.token'); ?>
 	</div>
 </form>

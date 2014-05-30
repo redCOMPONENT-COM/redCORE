@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Helper
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -21,14 +21,45 @@ abstract class RedcoreHelpersTranslation extends JObject
 	/**
 	 * Gets translation table object
 	 *
+	 * @param   string  $default  Default Content Element Name
+	 *
 	 * @return  object  Translation Table object
 	 */
-	public static function getTranslationTable()
+	public static function getTranslationTable($default = '')
 	{
-		$contentElement = JFactory::getApplication()->input->getString('contentelement', '');
+		$contentElement = self::getCurrentContentElement();
+
 		$translationTables = RTranslationHelper::getInstalledTranslationTables();
 
 		return !empty($translationTables['#__' . $contentElement]) ? $translationTables['#__' . $contentElement] : null;
+	}
+
+	/**
+	 * Gets content element name from request
+	 *
+	 * @param   string  $default  Default Content Element Name
+	 *
+	 * @return  string  Content element name
+	 */
+	public static function getCurrentContentElement($default = '')
+	{
+		$app = JFactory::getApplication();
+
+		$filter = $app->getUserStateFromRequest('com_redcore.translations.translations.filter', 'filter', array(), 'array');
+
+		$contentElement = $app->input->get->get('contentelement', null);
+
+		if ($contentElement === null && !empty($filter['contentelement']))
+		{
+			$contentElement = $filter['contentelement'];
+		}
+
+		if (JFactory::getApplication()->input->get('view') == 'translation' || $contentElement === null)
+		{
+			$contentElement = $app->input->getString('contentelement', $default);
+		}
+
+		return $contentElement;
 	}
 
 	/**
