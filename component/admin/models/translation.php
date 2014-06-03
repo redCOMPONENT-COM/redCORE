@@ -30,6 +30,13 @@ class RedcoreModelTranslation extends RModelAdmin
 		$ids = JFactory::getApplication()->input->getString('id', '');
 		$id = JFactory::getApplication()->input->getString('rctranslations_id', '');
 		$table = RedcoreHelpersTranslation::getTranslationTable();
+
+		if (empty($table))
+		{
+			// Translation table does not exist we are redirecting to manager
+			JFactory::getApplication()->redirect('index.php?option=com_redcore&view=translations&contentelement=&layout=manage');
+		}
+
 		$contentElement = RTranslationHelper::getContentElement($table->option, $table->xml);
 		$db	= $this->getDbo();
 		$query = $db->getQuery(true);

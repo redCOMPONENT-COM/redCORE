@@ -651,7 +651,7 @@ class Com_RedcoreInstallerScript
 
 					try
 					{
-						RTranslationTable::updateTableTriggers(array(), '', $translationTable);
+						RTranslationTable::removeExistingConstraintKeys($translationTable);
 						$db->dropTable($newTable);
 					}
 					catch (Exception $e)
