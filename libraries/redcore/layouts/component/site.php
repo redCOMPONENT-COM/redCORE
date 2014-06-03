@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -11,7 +11,8 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-$input = JFactory::getApplication()->input;
+$app = JFactory::getApplication();
+$input = $app->input;
 
 /**
  * Handle raw format
@@ -33,6 +34,8 @@ if ('raw' === $format)
 		);
 	}
 
+	$toolbar = $view->getToolbar();
+
 	// Get the view template.
 	$tpl = $data['tpl'];
 
@@ -46,7 +49,11 @@ $input->set('redcore', true);
 JHtml::_('rbootstrap.framework');
 
 RHelperAsset::load('component.js', 'redcore');
-RHelperAsset::load('component.min.css', 'redcore');
+
+if (RBootstrap::$loadFrontendCSS)
+{
+	RHelperAsset::load('component.min.css', 'redcore');
+}
 
 // Load a custom CSS option for this component if exists
 if ($comOption = $input->get('option', null))
@@ -86,6 +93,15 @@ if (!$view instanceof RViewBase)
 	);
 }
 
+if (method_exists($view, 'getToolbar'))
+{
+	$toolbar = $view->getToolbar();
+}
+else
+{
+	$toolbar = null;
+}
+
 // Get the view template.
 $tpl = $data['tpl'];
 
@@ -98,5 +114,22 @@ if ($result instanceof Exception)
 }
 ?>
 <div class="redcore">
-	<?php echo $result; ?>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<?php
+					if ($toolbar instanceof RToolbar)
+						:
+				?>
+					<div class="row-fluid">
+						<?php echo $toolbar->render() ?>
+					</div>
+				<?php
+					endif;
+				?>
+
+				<?php echo $result; ?>
+			</div>
+		</div>
+	</div>
 </div>

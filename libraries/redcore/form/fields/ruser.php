@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Fields
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -89,7 +89,7 @@ class JFormFieldRuser extends JFormFieldRtext
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide fade',
+					'class' => 'modal hide',
 					'style' => 'width: 800px; height: 500px;'
 				),
 				'params' => array(

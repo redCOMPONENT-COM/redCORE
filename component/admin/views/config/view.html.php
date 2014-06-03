@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -39,6 +39,26 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	protected $components;
 
 	/**
+	 * @var  array
+	 */
+	protected $modules;
+
+	/**
+	 * @var  array
+	 */
+	protected $plugins;
+
+	/**
+	 * @var  array
+	 */
+	protected $contentElements;
+
+	/**
+	 * @var  array
+	 */
+	protected $missingContentElements;
+
+	/**
 	 * Display method
 	 *
 	 * @param   string  $tpl  The template name
@@ -49,10 +69,18 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	{
 		/** @var RedcoreModelConfig $model */
 		$model = $this->getModel('Config');
+		$option = JFactory::getApplication()->input->getString('component', '');
 
 		$this->form	= $model->getForm();
-		$this->component = $model->getComponent();
+		$this->component = $model->getComponent($option);
 		$this->return = JFactory::getApplication()->input->get('return');
+
+		$this->modules = $model->getInstalledExtensions('module', array('%' . $this->component->xml->xmlComponentName . '%'));
+		$this->plugins = $model->getInstalledExtensions('plugin', array('%' . $this->component->xml->xmlComponentName . '%'), $this->component->xml->xmlComponentName);
+		$this->componentTitle = RText::getTranslationIfExists($this->component->xml->name, '', '');
+		$this->contentElements = $model->loadContentElements($option);
+		$this->missingContentElements = $model->loadMissingContentElements($option, $this->contentElements);
+		RLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/' . $option . '/layouts';
 
 		parent::display($tpl);
 	}
@@ -64,7 +92,7 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	 */
 	public function getTitle()
 	{
-		return JText::_('COM_REDCORE_CONFIG_FORM_TITLE');
+		return $this->componentTitle . ' ' . JText::_('COM_REDCORE_CONFIG_FORM_TITLE');
 	}
 
 	/**

@@ -6,7 +6,7 @@
  * This work is based on a Louis Landry work about oauth1 server suport for Joomla! Platform.
  * URL: https://github.com/LouisLandry/joomla-platform/tree/9bc988185ccc3e1c437256cc2c927e49312b3d00/libraries/joomla/oauth1
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -33,8 +33,6 @@ class ROauth2CredentialsSignerPlaintext extends ROauth2CredentialsSigner
 	 */
 	public function sign(ROauth2CredentialsStateToken $state, ROauth2ProtocolRequest $request)
 	{
-		$signed = false;
-
 		$request = $request->getParameters();
 
 		if ($state->__get('client_id') != $request['client_id'])

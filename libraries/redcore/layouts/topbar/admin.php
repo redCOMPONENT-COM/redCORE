@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -69,16 +69,40 @@ $returnUri = base64_encode($returnUri);
 
 // Joomla menu
 $displayJoomlaMenu = false;
+$displayBackToJoomla = true;
+$displayComponentVersion = false;
 
 if (isset($data['display_joomla_menu']))
 {
 	$displayJoomlaMenu = (bool) $data['display_joomla_menu'];
 }
 
+if (isset($data['display_back_to_joomla']))
+{
+	$displayBackToJoomla = (bool) $data['display_back_to_joomla'];
+}
+
 if ($displayJoomlaMenu)
 {
 	JLoader::import('joomla.application.module.helper');
 	$modules = JModuleHelper::getModules('menu');
+}
+
+if (isset($data['display_component_version']))
+{
+	$displayComponentVersion = (bool) $data['display_component_version'];
+	$xml = RComponentHelper::getComponentManifestFile($option);
+	$componentName = JText::_($xml->name);
+	$version = (string) $xml->version;
+}
+
+if (!empty($data['logoutReturnUri']))
+{
+	$logoutReturnUri = base64_encode($data['logoutReturnUri']);
+}
+else
+{
+	$logoutReturnUri = base64_encode('index.php');
 }
 ?>
 <script type="text/javascript">
@@ -93,42 +117,64 @@ if ($displayJoomlaMenu)
 		jQuery('.datetime').text(date.toLocaleString());
 	}
 </script>
-<header class="navbar navbar-fixed-top topbar">
+<header class="navbar navbar-fixed-top topbar navbar-inverse">
 	<div class="navbar-inner">
 		<div class="container-fluid">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
 			<?php if (!$displayJoomlaMenu) : ?>
+				<?php if ($displayBackToJoomla) : ?>
 				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>">
 					<i class="icon-undo"></i> Back to Joomla
 				</a>
+				<?php endif; ?>
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
 			<a class="brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>
-			<?php if ($displayJoomlaMenu) : ?>
-				<?php foreach ($modules as $module): ?>
-					<?php echo JModuleHelper::renderModule($module, array('style' => 'standard')); ?>
-				<?php endforeach; ?>
-			<?php endif; ?>
-			<?php if ($displayTopbarInnerLayout) : ?>
-				<?php echo RLayoutHelper::render($topbarInnerLayout, $topbarInnerLayoutData) ?>
-			<?php endif; ?>
-			<div class="nav-right pull-right hidden-tablet hidden-phone">
-				<div class="datetime pull-right"></div>
-				<span class="divider-vertical pull-right"></span>
-
-				<div class="logout pull-right">
-					<a href="<?php echo
-					JRoute::_('index.php?option=com_login&task=logout&' . JSession::getFormToken() . '=1&return=' . $returnUri)
-					?>">
-						<i class="icon-signout"></i> Sign out
-					</a>
-				</div>
-				<span class="divider-vertical pull-right"></span>
-
-				<div class="welcome pull-right">
-					<i class="icon-user"></i>
-					Welcome <?php echo $userName ?>
-				</div>
+			<div class="nav-collapse hidden-phone hidden-tablet">
+				<?php if ($displayJoomlaMenu) : ?>
+					<?php foreach ($modules as $module): ?>
+						<?php echo JModuleHelper::renderModule($module, array('style' => 'standard')); ?>
+					<?php endforeach; ?>
+				<?php endif; ?>
+				<?php if ($displayTopbarInnerLayout) : ?>
+					<?php echo RLayoutHelper::render($topbarInnerLayout, $topbarInnerLayoutData) ?>
+				<?php endif; ?>
 			</div>
+			<ul class="nav nav-user pull-right">
+				<li class="dropdown">
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle">
+						<span class="icon-user"></span>
+						<b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">
+						<li class="">
+							<a href="index.php?option=com_admin&amp;task=profile.edit&amp;id=<?php echo $userId; ?>">
+								<i class="icon-edit-sign icon-2"></i>
+								<?php echo $userName ?>
+							</a>
+						</li>
+						<?php if ($displayComponentVersion) : ?>
+							<li>
+								<a href="#" onclick="return false">
+									<i class="icon-info-sign"></i>
+									<?php echo $componentName . ' v' . $version; ?>
+								</a>
+							</li>
+						<?php endif; ?>
+						<li class="divider"></li>
+						<li class="">
+							<a href="index.php?option=com_login&amp;task=logout&amp;<?php echo JSession::getFormToken(); ?>=1&amp;return=<?php echo $logoutReturnUri; ?>">
+								<span class="icon-off"></span>
+								<?php echo JText::_('LIB_REDCORE_ACCOUNT_LOGOUT'); ?>
+							</a>
+						</li>
+					</ul>
+				</li>
+			</ul>
 		</div>
 	</div>
 </header>

@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  Views
  * @since       1.0
  */
-abstract class RedcoreHelpersView extends RView
+abstract class RedcoreHelpersView extends RViewAdmin
 {
 	/**
 	 * The component title to display in the topbar layout (if using it).
@@ -31,7 +31,7 @@ abstract class RedcoreHelpersView extends RView
 	 *
 	 * @var  boolean
 	 */
-	protected $displaySidebar = false;
+	protected $displaySidebar = true;
 
 	/**
 	 * The sidebar layout name to display.
@@ -67,4 +67,41 @@ abstract class RedcoreHelpersView extends RView
 	 * @var  boolean
 	 */
 	protected $topBarInnerLayout = 'topnav';
+
+	/**
+	 * True to display "Version 1.0.x"
+	 *
+	 * @var  boolean
+	 */
+	protected $displayComponentVersion = true;
+
+	/**
+	 * Loaded redCore extensions
+	 *
+	 * @var  array
+	 */
+	public static $loadedRedcoreExtensions = array();
+
+	/**
+	 * Method to get all extensions that are using redCORE
+	 *
+	 * @return  array  Array of extensions
+	 */
+	public static function getExtensionsRedcore()
+	{
+		if (empty($loadedRedcoreExtensions))
+		{
+			/** @var RedcoreModelConfig $model */
+			$model = RModelAdmin::getInstance('Config', 'RedcoreModel');
+
+			self::$loadedRedcoreExtensions = RComponentHelper::getRedcoreComponents();
+
+			foreach (self::$loadedRedcoreExtensions as $componentKey => $componentName)
+			{
+				self::$loadedRedcoreExtensions[$componentKey] = $model->getComponent($componentName);
+			}
+		}
+
+		return self::$loadedRedcoreExtensions;
+	}
 }

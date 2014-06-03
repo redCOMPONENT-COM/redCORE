@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -34,6 +34,7 @@ class RedcoreModelConfig extends RModelAdmin
 		JForm::addFormPath(JPATH_ADMINISTRATOR . '/components/' . $option);
 
 		// Get the form.
+		/** @var RForm $form */
 		$form = $this->loadForm(
 			'com_redcore.config',
 			'config',
@@ -41,6 +42,22 @@ class RedcoreModelConfig extends RModelAdmin
 			false,
 			'/config'
 		);
+
+		if (empty($form))
+		{
+			/** @var RForm $form */
+			$form = $this->loadForm(
+				'com_redcore.translations',
+				'config',
+				array('control' => 'jform', 'load_data' => $loadData),
+				false,
+				'/config'
+			);
+		}
+		else
+		{
+			$form->loadFile('translations', false, '/config');
+		}
 
 		if (empty($form))
 		{
@@ -67,20 +84,40 @@ class RedcoreModelConfig extends RModelAdmin
 	/**
 	 * Get the component information.
 	 *
+	 * @param   string  $option  Option name
+	 *
 	 * @return  object
 	 */
-	public function getComponent()
+	public function getComponent($option)
 	{
-		$option = JFactory::getApplication()->input->getString('component');
+		$this->loadExtensionLanguage($option, $option);
+		$this->loadExtensionLanguage($option, $option . '.sys');
 
+		$component = JComponentHelper::getComponent($option);
+
+		$component->xml = RComponentHelper::getComponentManifestFile($option);
+
+		return $component;
+	}
+
+	/**
+	 * Load specific language file.
+	 *
+	 * @param   string  $option         Option name
+	 * @param   string  $extensionFile  Extension File Name
+	 *
+	 * @return  object
+	 */
+	public function loadExtensionLanguage($option, $extensionFile)
+	{
 		// Load common and local language files.
 		$lang = JFactory::getLanguage();
-		$lang->load($option, JPATH_BASE, null, false, false)
-		|| $lang->load($option, JPATH_BASE . "/components/$option", null, false, false)
-		|| $lang->load($option, JPATH_BASE, $lang->getDefault(), false, false)
-		|| $lang->load($option, JPATH_BASE . "/components/$option", $lang->getDefault(), false, false);
 
-		return JComponentHelper::getComponent($option);
+		// Load language file
+		$lang->load($extensionFile, JPATH_BASE, null, false, false)
+		|| $lang->load($extensionFile, JPATH_BASE . "/components/$option", null, false, false)
+		|| $lang->load($extensionFile, JPATH_BASE, $lang->getDefault(), false, false)
+		|| $lang->load($extensionFile, JPATH_BASE . "/components/$option", $lang->getDefault(), false, false);
 	}
 
 	/**
@@ -209,5 +246,100 @@ class RedcoreModelConfig extends RModelAdmin
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Gets Installed extensions
+	 *
+	 * @param   string  $extensionType      Extension type
+	 * @param   array   $extensionElements  Extension element search type
+	 * @param   string  $extensionFolder    Folder user when searching for plugin
+	 *
+	 * @return  array  List of objects
+	 */
+	public function getInstalledExtensions($extensionType = 'module', $extensionElements = array('%redcore%'), $extensionFolder = 'redcore')
+	{
+		$db = $this->getDbo();
+		$query = $db->getQuery(true)
+			->select('e.name, e.type, e.element')
+			->from('#__extensions AS e')
+			->where('e.type = ' . $db->q($extensionType))
+			->where('e.client_id = 0')
+			->order('e.name');
+
+		if ($extensionType == 'module')
+		{
+			$query->leftJoin('#__modules as m ON m.module = e.element')
+				->select('m.published as enabled')
+				->group('e.element');
+		}
+		else
+		{
+			$query->select('e.enabled');
+		}
+
+		foreach ($extensionElements as $key => $extensionElement)
+		{
+			$extensionElements[$key] = 'e.element LIKE ' . $db->quote($extensionElement);
+		}
+
+		$query->where(implode(' OR ', $extensionElements) . ($extensionType == 'plugin' ? ' OR e.folder = ' . $db->q($extensionFolder) : ''));
+		$db->setQuery($query);
+
+		$extensions = $db->loadObjectList();
+
+		return $extensions;
+	}
+
+	/**
+	 * Loading of related XML files
+	 *
+	 * @param   string  $extensionName  Extension name
+	 *
+	 * @return  array  List of objects
+	 */
+	public function loadContentElements($extensionName = '')
+	{
+		return RTranslationHelper::getContentElements($extensionName);
+	}
+
+	/**
+	 * Loading of related XML files
+	 *
+	 * @param   string  $extensionName    Extension name
+	 * @param   array   $contentElements  Content elements
+	 *
+	 * @return  array  List of objects
+	 */
+	public function loadMissingContentElements($extensionName, $contentElements = array())
+	{
+		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+		$missingTables = array();
+
+		foreach ($translationTables as $translationTableKey => $translationTable)
+		{
+			$translationTable->table = str_replace('#__', '', $translationTable->table);
+
+			if ($translationTable->option == $extensionName)
+			{
+				$foundTable = false;
+
+				foreach ($contentElements as $contentElement)
+				{
+					if (!empty($contentElement->table) && $contentElement->table == $translationTable->table)
+					{
+						$foundTable = true;
+						break;
+					}
+				}
+
+				if (!$foundTable)
+				{
+					$missingTables[$translationTableKey] = $translationTable;
+				}
+			}
+		}
+
+		return $missingTables;
 	}
 }

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Field
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -65,7 +65,7 @@ class JFormFieldRchildlist extends JFormFieldRlist
 		if ($ajaxUrl)
 		{
 			$siteUrl = JUri::root();
-			$adminUrl = $siteUrl . '/administrator';
+			$adminUrl = $siteUrl . 'administrator';
 
 			$this->ajaxchildOptions['ajaxUrl'] = str_replace(
 				array('{admin}', '{backend}', '{site}', '{frontend}'),

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -40,9 +40,9 @@ if (isset($data['filter_name']))
 <div id="filter-bar" class="btn-toolbar">
 	<div class="filter-search btn-group pull-left">
 		<input type="text" name="filter_<?php echo $filterName ?>" id="filter_<?php echo $filterName ?>" class="js-enter-submits"
-		       placeholder="<?php echo JText::_('JSEARCH'); ?>"
+		       placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>"
 		       value="<?php echo $state->get('filter.' . $filterName); ?>"
-		       title="<?php echo JText::_('JSEARCH'); ?>"/>
+		       title="<?php echo JText::_('JSEARCH_FILTER'); ?>"/>
 	</div>
 	<div class="btn-group hidden-phone">
 		<button class="btn hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">

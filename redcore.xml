@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="2.5" method="upgrade">
     <name>COM_REDCORE</name>
-    <creationDate>June 2013</creationDate>
+    <creationDate>May 2014</creationDate>
     <author>redCOMPONENT</author>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.0.0</version>
+    <version>1.1.2</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.0" />
+    <redcore version="1.1.2" />
 
     <install folder="component/admin">
         <sql>
@@ -49,7 +49,10 @@
         <languages folder="component/admin/language">
             <language tag="en-GB">en-GB/en-GB.com_redcore.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_redcore.sys.ini</language>
+            <language tag="da-DK">da-DK/da-DK.com_redcore.ini</language>
+            <language tag="da-DK">da-DK/da-DK.com_redcore.sys.ini</language>
         </languages>
+        <menu view="dashboard">COM_REDCORE</menu>
     </administration>
 
     <!-- Medias -->
@@ -58,6 +61,7 @@
         <folder>fonts</folder>
         <folder>images</folder>
         <folder>js</folder>
+        <folder>translations</folder>
     </media>
 
     <!-- Libraries to install with the component -->
@@ -71,10 +75,27 @@
         <plugin name="redcore" group="system"/>
     </plugins>
 
+    <!-- Modules to install with the component -->
+    <modules>
+        <module name="mod_redcore_language_switcher"/>
+    </modules>
+
+    <!-- Translations to install with the component -->
+    <translations>
+        <!-- Joomla Core Extensions Translation -->
+        <translation name="com_banners"/>
+        <translation name="com_categories"/>
+        <translation name="com_contact"/>
+        <translation name="com_content"/>
+        <translation name="com_languages"/>
+        <translation name="com_menus"/>
+        <translation name="com_modules"/>
+        <translation name="com_newsfeeds"/>
+        <translation name="com_users"/>
+        <translation name="com_weblinks"/>
+    </translations>
+
     <!-- Postflight tasks -->
     <postflight>
-        <task name="deleteMenu">
-            <parameter>1</parameter>
-        </task>
     </postflight>
 </extension>

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -43,12 +43,22 @@ abstract class JHtmlRbootstrap
 	{
 		JHtml::_('rjquery.framework');
 
-		if ($loadCss)
-		{
-			RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
-		}
+		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
+		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+		{
+			if ($loadCss)
+			{
+				RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+			}
+
+			RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
+		}
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
+		{
+			JHtml::_('bootstrap.framework');
+		}
 	}
 
 	/**
@@ -60,8 +70,14 @@ abstract class JHtmlRbootstrap
 	{
 		self::framework();
 
-		RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
-		RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
+		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+		{
+			RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+			RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
+		}
 	}
 
 	/**
@@ -766,5 +782,18 @@ abstract class JHtmlRbootstrap
 		static::framework();
 
 		RHelperAsset::load('lib/font-awesome/css/font-awesome.min.css', static::EXTENSION);
+	}
+
+	/**
+	 * Load the bootstrap-checkbox.
+	 *
+	 * @return  void
+	 */
+	public static function checkbox()
+	{
+		static::framework();
+
+		RHelperAsset::load('lib/bootstrap-checkbox/css/bootstrap-checkbox.css', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap-checkbox.js', static::EXTENSION);
 	}
 }

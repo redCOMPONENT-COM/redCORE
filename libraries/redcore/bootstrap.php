@@ -1,46 +1,128 @@
 <?php
 /**
  * Bootstrap file.
- * Including this file into your application will make redCORE available to use.
+ * Including this file into your application and executing RBootstrap::bootstrap() will make redCORE available to use.
  *
  * @package    Redcore
- * @copyright  Copyright (C) 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright  Copyright (C) 2014 redCOMPONENT.com. All rights reserved.
  * @license    GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_PLATFORM') or die;
 
-define('JPATH_REDCORE', dirname(__FILE__));
-
-require JPATH_REDCORE . '/functions.php';
-
-// Use our own base field
-if (!class_exists('JFormField', false))
+if (!defined('JPATH_REDCORE'))
 {
-	$baseField = JPATH_LIBRARIES . '/redcore/joomla/form/field.php';
+	// Sets redCORE path variable, to avoid setting it twice
+	define('JPATH_REDCORE', dirname(__FILE__));
 
-	if (file_exists($baseField))
-	{
-		require_once $baseField;
-	}
+	require JPATH_REDCORE . '/functions.php';
 }
 
-// Register the classes for autoload.
-JLoader::registerPrefix('R', JPATH_REDCORE);
+/**
+ * redCORE bootstrap class
+ *
+ * @package     Red
+ * @subpackage  System
+ * @since       1.0
+ */
+class RBootstrap
+{
+	/**
+	 * Defines if redCORE base css should be loaded in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $loadFrontendCSS = false;
 
-// Setup the RLoader.
-RLoader::setup();
+	/**
+	 * Defines if jQuery should be loaded in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $loadFrontendjQuery = true;
 
-// Make available the redCORE fields
-JFormHelper::addFieldPath(JPATH_REDCORE . '/form/fields');
+	/**
+	 * Defines if jQuery Migrate should be loaded in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $loadFrontendjQueryMigrate = true;
 
-// Make available the redCORE form rules
-JFormHelper::addRulePath(JPATH_REDCORE . '/form/rules');
+	/**
+	 * Defines if Bootstrap should be loaded in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $loadFrontendBootstrap = true;
 
-// HTML helpers
-JHtml::addIncludePath(JPATH_REDCORE . '/html');
-RHtml::addIncludePath(JPATH_REDCORE . '/html');
+	/**
+	 * Defines if Mootools should be disabled in Frontend component/modules
+	 *
+	 * @var    bool
+	 */
+	public static $disableFrontendMootools = false;
 
-// Load library language
-$lang = JFactory::getLanguage();
-$lang->load('lib_redcore', JPATH_SITE);
+	/**
+	 * Effectively bootstrap redCORE.
+	 *
+	 * @param   bool  $loadBootstrap  Load bootstrap with redcore plugin options
+	 *
+	 * @return  void
+	 */
+	public static function bootstrap($loadBootstrap = true)
+	{
+		if ($loadBootstrap && !defined('REDCORE_BOOTSTRAPPED'))
+		{
+			define('REDCORE_BOOTSTRAPPED', 1);
+		}
+
+		if (!defined('REDCORE_LIBRARY_LOADED'))
+		{
+			// Sets bootstrapped variable, to avoid bootstrapping redCORE twice
+			define('REDCORE_LIBRARY_LOADED', 1);
+
+			// Use our own base field
+			if (!class_exists('JFormField', false))
+			{
+				$baseField = JPATH_LIBRARIES . '/redcore/joomla/form/field.php';
+
+				if (file_exists($baseField))
+				{
+					require_once $baseField;
+				}
+			}
+
+			// Register the classes for autoload.
+			JLoader::registerPrefix('R', JPATH_REDCORE);
+
+			// Setup the RLoader.
+			RLoader::setup();
+
+			// Make available the redCORE fields
+			JFormHelper::addFieldPath(JPATH_REDCORE . '/form/fields');
+
+			// Make available the redCORE form rules
+			JFormHelper::addRulePath(JPATH_REDCORE . '/form/rules');
+
+			// HTML helpers
+			JHtml::addIncludePath(JPATH_REDCORE . '/html');
+			RHtml::addIncludePath(JPATH_REDCORE . '/html');
+
+			// Load library language
+			$lang = JFactory::getLanguage();
+			$lang->load('lib_redcore', JPATH_SITE);
+
+			// For Joomla! 2.5 compatibility we add some core functions
+			if (version_compare(JVERSION, '3.0', '<'))
+			{
+				RLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redcore/joomla', false, true);
+			}
+
+			// Make available the fields
+			JFormHelper::addFieldPath(JPATH_LIBRARIES . '/redcore/form/fields');
+
+			// Make available the rules
+			JFormHelper::addRulePath(JPATH_LIBRARIES . '/redcore/form/rules');
+		}
+	}
+}

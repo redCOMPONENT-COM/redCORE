@@ -1,2 +1,3 @@
 comp.name=redcore
-www.dir=/var/www/redSOURCE
+www.dir=/var/www/redCORE
+package.dir=/Workspace/RedComponent/packages/redCORE

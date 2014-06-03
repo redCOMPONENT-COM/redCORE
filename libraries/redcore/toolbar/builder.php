@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -29,6 +29,19 @@ final class RToolbarBuilder
 	public static function createEditButton($task, $class = '')
 	{
 		return new RToolbarButtonStandard('JTOOLBAR_EDIT', $task, $class, 'icon-edit');
+	}
+
+	/**
+	 * Create a copy button.
+	 *
+	 * @param   string  $task   The task name.
+	 * @param   string  $class  A css class to add to the button.
+	 *
+	 * @return  RToolbarButtonStandard  The button.
+	 */
+	public static function createCopyButton($task, $class = '')
+	{
+		return new RToolbarButtonStandard('RTOOLBAR_COPY', $task, $class, 'icon-copy');
 	}
 
 	/**
@@ -152,7 +165,7 @@ final class RToolbarBuilder
 	 */
 	public static function createCheckinButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_CHECKIN', $task, $class, 'icon-checkin');
+		return new RToolbarButtonStandard('JTOOLBAR_CHECKIN', $task, $class, 'icon-check');
 	}
 
 	/**
@@ -337,16 +350,17 @@ final class RToolbarBuilder
 	/**
 	 * Create a modal button.
 	 *
-	 * @param   string  $dataTarget  The data-target selector.
-	 * @param   string  $text        The button text.
-	 * @param   string  $class       The button class.
-	 * @param   string  $iconClass   The icon class.
+	 * @param   string   $dataTarget  The data-target selector.
+	 * @param   string   $text        The button text.
+	 * @param   string   $class       The button class.
+	 * @param   string   $iconClass   The icon class.
+	 * @param   boolean  $list        Is the button applying on a list ?
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createModalButton($dataTarget, $text, $class = '', $iconClass = '')
+	public static function createModalButton($dataTarget, $text, $class = '', $iconClass = '', $list = false)
 	{
-		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass);
+		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass, $list);
 	}
 
 	/**
@@ -366,6 +380,6 @@ final class RToolbarBuilder
 			$link = $uri->toString();
 		}
 
-		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table', 'btn-info');
+		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table');
 	}
 }

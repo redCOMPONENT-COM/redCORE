@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -44,7 +44,7 @@ abstract class JHtmlRholder
 	{
 		self::holder();
 
-		$path = JPATH_ROOT . '/media/redcore/js/lib/holder.js/' . $src;
+		$path = JURI::root() . 'media/redcore/js/lib/holder.js/' . $src;
 
 		return '<img data-src="' . $path . '" alt="' . $alt . '" '
 		. trim((is_array($attribs) ? JArrayHelper::toString($attribs) : $attribs) . ' /')

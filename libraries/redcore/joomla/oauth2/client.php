@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  OAuth2
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -241,15 +241,15 @@ class JOAuth2Client
 			case 'get':
 			case 'delete':
 			case 'trace':
-				$response = $this->http->$method($url, $headers, $timeout);
-				break;
+			$response = $this->http->$method($url, $headers, $timeout);
+			break;
 			case 'post':
 			case 'put':
 			case 'patch':
-				$response = $this->http->$method($url, $data, $headers, $timeout);
-				break;
+			$response = $this->http->$method($url, $data, $headers, $timeout);
+			break;
 			default:
-				throw new InvalidArgumentException('Unknown HTTP request method: ' . $method . '.');
+			throw new InvalidArgumentException('Unknown HTTP request method: ' . $method . '.');
 		}
 
 		if ($response->code < 200 || $response->code >= 400)

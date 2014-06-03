@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -74,5 +74,15 @@ class RToolbarButtonGroup
 	public function getButtons()
 	{
 		return $this->buttons;
+	}
+
+	/**
+	 * Check if the group is empty.
+	 *
+	 * @return  boolean  True if empty, false otherwise
+	 */
+	public function isEmpty()
+	{
+		return 0 === count($this->buttons);
 	}
 }
