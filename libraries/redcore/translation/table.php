@@ -352,7 +352,7 @@ final class RTranslationTable
 				}
 				else
 				{
-					JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED'), 'message');
+					JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INNODB_MISSING'), 'message');
 				}
 			}
 			elseif (RTranslationHelper::$pluginParams->get('translations_constraint_type', 'foreign_keys') == 'triggers')
