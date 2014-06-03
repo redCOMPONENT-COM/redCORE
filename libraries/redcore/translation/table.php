@@ -167,7 +167,6 @@ final class RTranslationTable
 		$originalColumns = $db->getTableColumns('#__' . $contentElement->table, false);
 		$fields = array();
 		$primaryKeys = array();
-		$primaryKeys['rctranslations_language'] = $db->qn('rctranslations_language');
 		$fieldsXml = $contentElement->getTranslateFields();
 		$newTable = self::getTranslationsTableName($contentElement->table);
 		$originalTable = '#__' . $contentElement->table;
@@ -213,6 +212,13 @@ final class RTranslationTable
 
 		$newTableCreated = false;
 
+		$db = JFactory::getDbo();
+		$query = 'SHOW VARIABLES LIKE ' . $db->q('have_innodb');
+		$db->setQuery($query);
+
+		$innoDBSupport = $db->loadObject();
+		$innoDBSupport = !empty($innoDBSupport->Value) && strtoupper($innoDBSupport->Value) == 'YES' ? true : false;
+
 		if (empty($columns))
 		{
 			$newTableCreated = true;
@@ -223,8 +229,13 @@ final class RTranslationTable
 				. $db->qn('rctranslations_originals') . ' TEXT NOT NULL, '
 				. $db->qn('rctranslations_modified') . ' datetime NOT NULL DEFAULT ' . $db->q('0000-00-00 00:00:00') . ', '
 				. $db->qn('rctranslations_state') . ' tinyint(3) NOT NULL DEFAULT ' . $db->q('1') . ', '
-				. ' KEY ' . $db->qn('language_idx') . ' (' . $db->qn('rctranslations_language') . ') '
+				. ' KEY ' . $db->qn('language_idx') . ' (' . $db->qn('rctranslations_language') . ',' . $db->qn('rctranslations_state') . ') '
 				. ' )';
+
+			if ($innoDBSupport)
+			{
+				$query .= 'ENGINE=InnoDB';
+			}
 
 			$db->setQuery($query);
 
@@ -241,7 +252,6 @@ final class RTranslationTable
 			}
 		}
 
-		unset($primaryKeys['rctranslations_language']);
 		$allContentElementsFields = implode(',', array_keys($fields));
 
 		// Language is automatically added to the table if table exists
@@ -321,7 +331,35 @@ final class RTranslationTable
 		}
 
 		self::updateTableIndexKeys($fieldsXml, $newTable);
-		self::updateTableTriggers($fieldsXml, $newTable, $originalTable);
+		self::removeExistingConstraintKeys($originalTable, $primaryKeys);
+
+		// New install use default value foreign key if InnoDB is present
+		if (empty(RTranslationHelper::$pluginParams))
+		{
+			if ($innoDBSupport)
+			{
+				self::updateTableForeignKeys($fieldsXml, $newTable, $originalTable);
+			}
+		}
+		else
+		{
+			// Updating existing table
+			if ((RTranslationHelper::$pluginParams->get('translations_constraint_type', 'foreign_keys') == 'foreign_keys'))
+			{
+				if ($innoDBSupport)
+				{
+					self::updateTableForeignKeys($fieldsXml, $newTable, $originalTable);
+				}
+				else
+				{
+					JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INNODB_MISSING'), 'message');
+				}
+			}
+			elseif (RTranslationHelper::$pluginParams->get('translations_constraint_type', 'foreign_keys') == 'triggers')
+			{
+				self::updateTableTriggers($fieldsXml, $newTable, $originalTable);
+			}
+		}
 
 		$contentElement->allContentElementsFields = explode(',', $allContentElementsFields);
 		$contentElement->allPrimaryKeys = array_keys($primaryKeys);
@@ -354,16 +392,17 @@ final class RTranslationTable
 		$indexKeys = array();
 		$db = JFactory::getDbo();
 
-		$tableKeys = $db->getTableKeys($newTable);
+		$tableKeys      = $db->getTableKeys($newTable);
+		$languageKey    = $db->qn('rctranslations_language');
+		$stateKey       = $db->qn('rctranslations_state');
 
 		foreach ($fieldsXml as $field)
 		{
 			if ((string) $field['type'] == 'referenceid')
 			{
-				$fieldName = (string) $field['name'];
-				$languageKey = $db->qn('rctranslations_language');
-				$constraintKey = md5($newTable . '_' . $fieldName . '_idx');
-				$keyFound = false;
+				$fieldName      = (string) $field['name'];
+				$constraintKey  = md5($newTable . '_' . $fieldName . '_idx');
+				$keyFound       = false;
 
 				foreach ($tableKeys as $tableKey)
 				{
@@ -378,7 +417,7 @@ final class RTranslationTable
 				{
 					$indexKeys[$constraintKey] = 'ADD KEY '
 						. $db->qn($constraintKey)
-						. ' (' . $languageKey . ',' . $db->qn($fieldName) . ')';
+						. ' (' . $languageKey . ',' . $stateKey . ',' . $db->qn($fieldName) . ')';
 				}
 			}
 		}
@@ -407,31 +446,18 @@ final class RTranslationTable
 	}
 
 	/**
-	 * Adds table Index Keys based on primary keys for improved performace
+	 * Adds table triggers based on primary keys for constraint between tables
 	 *
 	 * @param   array   $fieldsXml      Array of fields from content Element
 	 * @param   string  $newTable       Translation Table name
 	 * @param   string  $originalTable  Original Table name
 	 *
-	 * @return  boolean  Returns true if Content element was successfully installed
+	 * @return  boolean  Returns true if triggers are successfully installed
 	 */
 	public static function updateTableTriggers($fieldsXml, $newTable, $originalTable)
 	{
 		$db = JFactory::getDbo();
 		$triggerKey = md5($originalTable . '_rctranslationstrigger');
-
-		try
-		{
-			$db->setQuery('DROP TRIGGER IF EXISTS ' . $db->qn($triggerKey));
-			$db->execute();
-		}
-		catch (Exception $e)
-		{
-			JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
-
-			return false;
-		}
-
 		$primaryKeys = array();
 
 		foreach ($fieldsXml as $field)
@@ -462,6 +488,105 @@ final class RTranslationTable
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
 				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Removes table foreign keys based on primary keys for constraint between tables
+	 *
+	 * @param   string  $originalTable  Original Table name
+	 * @param   array   $primaryKeys    Primary keys of the table
+	 *
+	 * @return  boolean  Returns true if Foreign keys are successfully installed
+	 */
+	public static function removeExistingConstraintKeys($originalTable, $primaryKeys = array())
+	{
+		// Remove Triggers
+		$db = JFactory::getDbo();
+		$triggerKey = md5($originalTable . '_rctranslationstrigger');
+
+		try
+		{
+			$db->setQuery('DROP TRIGGER IF EXISTS ' . $db->qn($triggerKey));
+			$db->execute();
+		}
+		catch (Exception $e)
+		{
+
+		}
+
+		if (!empty($primaryKeys))
+		{
+			$newTable = self::getTranslationsTableName($originalTable, '');
+
+			foreach ($primaryKeys as $primaryKey => $primaryKeyQuoted)
+			{
+				$constraintKey = $db->qn(md5($newTable . '_' . $primaryKey . '_fk'));
+
+				$query = 'ALTER TABLE ' . $db->qn($newTable) . ' DROP FOREIGN KEY ' . $constraintKey;
+
+				try
+				{
+					$db->setQuery($query);
+					$db->execute();
+				}
+				catch (Exception $e)
+				{
+
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * Adds table foreign keys Keys based on primary keys for constraint between tables
+	 *
+	 * @param   array   $fieldsXml      Array of fields from content Element
+	 * @param   string  $newTable       Translation Table name
+	 * @param   string  $originalTable  Original Table name
+	 *
+	 * @return  boolean  Returns true if Foreign keys are successfully installed
+	 */
+	public static function updateTableForeignKeys($fieldsXml, $newTable, $originalTable)
+	{
+		$db = JFactory::getDbo();
+
+		if (!empty($fieldsXml))
+		{
+			foreach ($fieldsXml as $field)
+			{
+				if ((string) $field['type'] == 'referenceid')
+				{
+					$fieldName = (string) $field['name'];
+
+					if (!empty($fieldName))
+					{
+						$primaryKey = $db->qn($fieldName);
+						$constraintKey = $db->qn(md5($newTable . '_' . $fieldName . '_fk'));
+						$query = 'ALTER TABLE ' . $db->qn($newTable) . 'ADD CONSTRAINT '
+							. $constraintKey
+							. ' FOREIGN KEY (' . $primaryKey . ')'
+							. ' REFERENCES ' . $db->qn($originalTable) . ' (' . $primaryKey . ')'
+							. '	ON DELETE CASCADE'
+							. ' ON UPDATE NO ACTION ';
+
+						try
+						{
+							$db->setQuery($query);
+							$db->execute();
+						}
+						catch (Exception $e)
+						{
+							JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+
+							return false;
+						}
+					}
+				}
 			}
 		}
 

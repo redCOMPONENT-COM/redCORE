@@ -259,6 +259,7 @@ class RTranslationHelper
 				'xml' => $contentElement->contentElementXml,
 				'path' => $contentElement->contentElementXmlPath,
 				'formLinks' => $contentElement->getEditForms(),
+				'state' => 1,
 			);
 
 			self::loadContentElements($option);
@@ -538,6 +539,7 @@ class RTranslationHelper
 			// Confirm that the option is defined.
 			$option = '';
 			$base = '';
+
 			if (isset($args['option']))
 			{
 				// The option determines the base path to work with.
@@ -547,6 +549,7 @@ class RTranslationHelper
 
 			// Confirm a view is defined.
 			$formFile = false;
+
 			if (isset($args['view']))
 			{
 				$view = $args['view'];
@@ -581,6 +584,7 @@ class RTranslationHelper
 				{
 					$temp = explode(':', $layout);
 					$templatePath = JPATH::clean(JPATH_SITE . '/templates/' . $temp[0] . '/html/' . $option . '/' . $view . '/' . $temp[1] . '.xml');
+
 					if (is_file($templatePath))
 					{
 						$formFile = $templatePath;
@@ -608,6 +612,7 @@ class RTranslationHelper
 				{
 					// Now check for a component manifest file
 					$path = JPath::clean($base . '/metadata.xml');
+
 					if (is_file($path))
 					{
 						$formFile = $path;

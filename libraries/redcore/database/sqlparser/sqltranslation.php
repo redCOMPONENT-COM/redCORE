@@ -239,7 +239,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$columnFound = true;
 								}
 
-								if (in_array($groupColumnsKey, array('GROUP', 'FROM')))
+								if (in_array($groupColumnsKey, array('FROM')))
 								{
 									if (empty($primaryKey) && $groupColumnsKey != 'FROM')
 									{
@@ -252,7 +252,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								}
 								else
 								{
-									if (in_array($groupColumnsKey, array('ORDER', 'WHERE')) && !empty($primaryKey))
+									if (in_array($groupColumnsKey, array('ORDER', 'WHERE', 'GROUP')) && !empty($primaryKey))
 									{
 										$tagColumnsValue['base_expr'] = self::breakColumnAndReplace($tagColumnsValue['base_expr'], $column['table']['alias']['originalName']);
 									}
@@ -262,7 +262,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 										if ($addAlias
 											&& !empty($column['alias'])
-											&& !in_array($groupColumnsKey, array('ORDER', 'WHERE')))
+											&& !in_array($groupColumnsKey, array('ORDER', 'WHERE', 'GROUP')))
 										{
 											$alias = $column['alias'];
 
@@ -286,7 +286,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						{
 							if (!empty($tagColumnsValue['expr_type']) && $tagColumnsValue['expr_type'] == 'subquery')
 							{
-
+								// SubQuery is already parsed so we do not need to parse columns again
 							}
 							elseif (!empty($tagColumnsValue['expr_type']) && in_array($tagColumnsValue['expr_type'], array('expression')))
 							{
