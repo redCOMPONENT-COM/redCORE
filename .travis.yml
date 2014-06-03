@@ -14,3 +14,6 @@ script:
   - find ./libraries -name '*.php' -exec php -l {} \;
   - find ./plugins -name '*.php' -exec php -l {} \;
   - phing -f .travis.xml
+  
+notifications:
+  slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"

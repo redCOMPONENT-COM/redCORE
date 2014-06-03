@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	<fieldset name="translations">
+		<field
+			name="redcoreContentElement[]"
+			id="redcoreContentElement"
+			type="file"
+			label="COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_TITLE"
+			description="COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_TITLE_DESC"
+			class="inputbox"
+            accept="application/xml"
+            multiple="multiple"
+            />
+	</fieldset>
+</config>

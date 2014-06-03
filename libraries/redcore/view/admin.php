@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  View
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -99,6 +99,27 @@ abstract class RViewAdmin extends RViewBase
 	protected $displayJoomlaMenu = false;
 
 	/**
+	 * True to display "Back to Joomla" link (only if displayJoomlaMenu = false)
+	 *
+	 * @var  boolean
+	 */
+	protected $displayBackToJoomla = true;
+
+	/**
+	 * True to display "Version 1.0.x"
+	 *
+	 * @var  boolean
+	 */
+	protected $displayComponentVersion = false;
+
+	/**
+	 * Redirect to another location after logout
+	 *
+	 * @var  string
+	 */
+	protected $logoutReturnUri = 'index.php';
+
+	/**
 	 * Execute and display a template script.
 	 *
 	 * @param   string  $tpl  The name of the template file to parse; automatically searches through the template paths.
@@ -122,6 +143,9 @@ abstract class RViewAdmin extends RViewBase
 				'topbar_inner_layout' => $this->topBarInnerLayout,
 				'topbar_inner_layout_data' => $this->topBarInnerLayoutData,
 				'display_joomla_menu' => $this->displayJoomlaMenu,
+				'display_back_to_joomla' => $this->displayBackToJoomla,
+				'display_component_version' => $this->displayComponentVersion,
+				'logoutReturnUri' => $this->logoutReturnUri,
 			)
 		);
 

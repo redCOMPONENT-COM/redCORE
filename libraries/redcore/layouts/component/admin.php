@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -209,13 +209,13 @@ else : ?>
 			<?php endif; ?>
 			<div class="row-fluid">
 				<?php if ($displaySidebar) : ?>
-				<div class="span2 sidebar">
-					<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
-				</div>
-				<div class="span10 content">
-					<?php else : ?>
+					<div class="span2 sidebar">
+						<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
+					</div>
+					<div class="span10 content">
+				<?php else : ?>
 					<div class="span12 content">
-						<?php endif; ?>
+				<?php endif; ?>
 						<section id="component">
 							<div class="row-fluid">
 								<h1><?php echo $view->getTitle() ?></h1>
@@ -231,11 +231,10 @@ else : ?>
 							</div>
 						</section>
 					</div>
-				</div>
 			</div>
-			<footer class="footer pagination-centered">
-				Copyright 2013 redcomponent.com. All rights reserved.
-			</footer>
 		</div>
+		<footer class="footer pagination-centered navbar navbar-fixed-bottom hidden-phone">
+			Copyright 2014 redcomponent.com. All rights reserved.
+		</footer>
 	</div>
 <?php endif; ?>

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -35,14 +35,14 @@ abstract class JHtmlRjquery
 	 * Load the chosen library
 	 * We use this to avoid Mootools dependency
 	 *
-	 * @param   string  $selector  CSS Selector to initalise selects
-	 * @param   mixed   $debug     Enable debug mode?
+	 * @param   string  $selector  CSS Selector to initialise selects
+	 * @param   array   $options   Optional array parameters
 	 *
 	 * @return  void
 	 *
 	 * @since   1.0
 	 */
-	public static function chosen($selector = '.chosen', $debug = null)
+	public static function chosen($selector = '.chosen', $options = array())
 	{
 		// Only load once
 		if (isset(static::$loaded[__METHOD__][$selector]))
@@ -61,13 +61,22 @@ abstract class JHtmlRjquery
 		RHelperAsset::load('lib/chosen.css', self::EXTENSION);
 		RHelperAsset::load('lib/chosen-extra.css', self::EXTENSION);
 
+		if (empty($options['disable_search_threshold']))
+		{
+			$options['disable_search_threshold'] = 10;
+		}
+
+		if (empty($options['allow_single_deselect']))
+		{
+			$options['allow_single_deselect'] = true;
+		}
+
+		$options = static::options2Jregistry($options);
+
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){
 				$(document).ready(function () {
-					$('" . $selector . "').chosen({
-						disable_search_threshold : 10,
-						allow_single_deselect : true
-					});
+					$('" . $selector . "').chosen(" . $options->toString() . ");
 				});
 			})(jQuery);
 		");
@@ -149,9 +158,24 @@ abstract class JHtmlRjquery
 			return;
 		}
 
-		RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
-		RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
-		RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
+		// Load jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
+		{
+			RHelperAsset::load('lib/jquery.min.js', self::EXTENSION);
+			RHelperAsset::load('lib/jquery-noconflict.js', self::EXTENSION);
+		}
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
+		{
+			JHtml::_('jquery.framework');
+		}
+
+		// Load jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
+		{
+			RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
+		}
 
 		static::$loaded[__METHOD__] = true;
 
@@ -290,6 +314,41 @@ abstract class JHtmlRjquery
 		RHelperAsset::load('lib/jquery-ui/jquery-ui.custom.min.css', self::EXTENSION);
 
 		static::$loaded[__METHOD__] = true;
+
+		return;
+	}
+
+	/**
+	 * Load the flexslider library.
+	 *
+	 * @param   string  $selector  CSS Selector to initalise selects
+	 * @param   array   $options   Optional array with options
+	 *
+	 * @return void
+	 */
+	public static function flexslider($selector = '.flexslider', $options = null)
+	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__][$selector]))
+		{
+			return;
+		}
+
+		self::framework();
+
+		RHelperAsset::load('lib/flexslider/jquery.flexslider.js', self::EXTENSION);
+		RHelperAsset::load('lib/flexslider/flexslider.css', self::EXTENSION);
+
+		$options = static::options2Jregistry($options);
+
+		JFactory::getDocument()->addScriptDeclaration("
+			(function($){
+				$(document).ready(function () {
+					$('" . $selector . "').flexslider(" . $options->toString() . ");
+				});
+			})(jQuery);
+		");
+		static::$loaded[__METHOD__][$selector] = true;
 
 		return;
 	}

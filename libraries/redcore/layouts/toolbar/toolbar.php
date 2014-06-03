@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -58,7 +58,7 @@ $groups = $toolbar->getGroups();
 				echo $button->render();
 			}
 			?>
-			</div>
+		</div>
 		<?php endforeach; ?>
 	</div>
 <?php endif; ?>

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Fields
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -90,9 +90,9 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 			'altFormat'              => array('type' => 'string'),
 			'appendText'             => array('type' => 'string'),
 			'autoSize'               => array('type' => 'boolean'),
-			'buttonImage'            => array('type' => 'string', 'default' => 'rdatepicker-calendar.gif'),
+			'buttonImage'            => array('type' => 'string'),
 			'buttonImageOnly'        => array('type' => 'boolean'),
-			'buttonText'             => array('type' => 'string'),
+			'buttonText'             => array('type' => 'string', 'default' => '<i class="icon-calendar icon-2x"></i>'),
 			'calculateWeek'          => array('type' => 'string'),
 			'changeMonth'            => array('type' => 'boolean'),
 			'changeYear'             => array('type' => 'boolean'),

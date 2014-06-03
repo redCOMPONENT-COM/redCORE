@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -21,7 +21,7 @@ class RToolbar
 	/**
 	 * The buttons in the group.
 	 *
-	 * @var  RToolbarButton[]
+	 * @var  RToolbarButtonGroup[]
 	 */
 	protected $groups = array();
 
@@ -93,6 +93,14 @@ class RToolbar
 	 */
 	public function isEmpty()
 	{
-		return 0 === count($this->groups);
+		foreach ($this->groups as $group)
+		{
+			if (!$group->isEmpty())
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

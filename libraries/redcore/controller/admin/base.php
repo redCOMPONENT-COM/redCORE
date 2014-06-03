@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Controller
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -20,6 +20,19 @@ JLoader::import('joomla.application.component.controlleradmin');
  */
 abstract class RControllerAdminBase extends JControllerAdmin
 {
+	/**
+	 * The method => state map.
+	 *
+	 * @var  array
+	 */
+	protected $states = array(
+		'publish' => 1,
+		'unpublish' => 0,
+		'archive' => 2,
+		'trash' => -2,
+		'report' => -3
+	);
+
 	/**
 	 * Constructor.
 	 *
@@ -129,7 +142,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			}
 			else
 			{
-				$this->setMessage($model->getError());
+				$this->setMessage($model->getError(), 'error');
 			}
 		}
 
@@ -152,9 +165,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 
 		// Get items to publish from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
-		$data = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
-		$task = $this->getTask();
-		$value = JArrayHelper::getValue($data, $task, 0, 'int');
+		$value = JArrayHelper::getValue($this->states, $this->getTask(), 0, 'int');
 
 		if (empty($cid))
 		{
@@ -171,26 +182,31 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			// Publish the items.
 			try
 			{
-				$model->publish($cid, $value);
+				if ($model->publish($cid, $value))
+				{
+					if ($value == 1)
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
+					}
+					elseif ($value == 0)
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
+					}
+					elseif ($value == 2)
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
+					}
+					else
+					{
+						$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+					}
 
-				if ($value == 1)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
-				}
-				elseif ($value == 0)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
-				}
-				elseif ($value == 2)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
+					$this->setMessage(JText::plural($ntext, count($cid)));
 				}
 				else
 				{
-					$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+					$this->setMessage($model->getError(), 'error');
 				}
-
-				$this->setMessage(JText::plural($ntext, count($cid)));
 			}
 			catch (Exception $e)
 			{
@@ -331,7 +347,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	/**
 	 * Get the JRoute object for a redirect to list.
 	 *
-	 * @param   string  $append  An optionnal string to append to the route
+	 * @param   string  $append  An optional string to append to the route
 	 *
 	 * @return  JRoute  The JRoute object
 	 */

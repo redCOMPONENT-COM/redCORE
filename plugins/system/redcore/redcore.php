@@ -3,7 +3,7 @@
  * @package     Joomla.Plugin
  * @subpackage  System.Redcore
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -25,29 +25,36 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
-		if (! $this->isRedcoreComponent())
-		{
-			return;
-		}
-
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
 		if (file_exists($redcoreLoader))
 		{
 			require_once $redcoreLoader;
 
-			// For Joomla! 2.5 compatibility we add some core functions
-			if (version_compare(JVERSION, '3.0', '<'))
+			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
+			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
+			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
+			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
+			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);
+			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
+
+			RBootstrap::bootstrap(false);
+
+			// Sets plugin parameters for further use in Translation Helper class
+			RTranslationHelper::$pluginParams = $this->params;
+
+			if ($this->params->get('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
 			{
-				RLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redcore/joomla', false, true);
+				JFactory::$database = null;
+				JFactory::$database = RFactory::getDbo();
+
+				// This is our object now
+				$db = JFactory::getDbo();
+
+				// Enable translations
+				$db->translate = RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1;
 			}
 		}
-
-		// Make available the fields
-		JFormHelper::addFieldPath(JPATH_LIBRARIES . '/redcore/form/fields');
-
-		// Make available the rules
-		JFormHelper::addRulePath(JPATH_LIBRARIES . '/redcore/form/rules');
 	}
 
 	/**
@@ -93,6 +100,100 @@ class PlgSystemRedcore extends JPlugin
 		{
 			return;
 		}
+
+		$doc = JFactory::getDocument();
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
+		RHtml::_('rbootstrap.framework');
+
+		if ($doc->_scripts)
+		{
+			$template = JFactory::getApplication()->getTemplate();
+
+			// Remove Mootools if asked by view, or if it's a site view and it has been asked via plugin parameters
+			if ($this->disableMootools() || (!$isAdmin && RBootstrap::$disableFrontendMootools))
+			{
+				$doc->addScriptDeclaration("function do_nothing() { return; }");
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-more.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools.js']);
+				unset($doc->_scripts[JURI::root(true) . '/plugins/system/mtupgrade/mootools.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
+
+				if ($doc->_styleSheets)
+				{
+					unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
+				}
+			}
+
+			// Remove jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
+			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
+			{
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
+
+				$jQueryChosen = false;
+
+				if (isset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.js'])
+					|| isset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.min.js']))
+				{
+					$jQueryChosen = true;
+					unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.js']);
+					unset($doc->_scripts[JURI::root(true) . '/media/jui/js/chosen.jquery.min.js']);
+					unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.css']);
+					unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/chosen.min.css']);
+				}
+
+				// Template specific overrides for jQuery files (valid in Joomla 3.x)
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery.min.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery-noconflict.js']);
+
+				if (isset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.js'])
+					|| isset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.min.js']))
+				{
+					$jQueryChosen = true;
+					unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.js']);
+					unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/chosen.jquery.min.js']);
+					unset($doc->_styleSheets[JURI::root(true) . '/templates/' . $template . '/css/jui/chosen.css']);
+					unset($doc->_styleSheets[JURI::root(true) . '/templates/' . $template . '/css/jui/chosen.min.css']);
+				}
+
+				// Enables chosen when it was removed
+				if ($jQueryChosen)
+				{
+					RHtml::_('rjquery.chosen', 'select');
+				}
+			}
+
+			// Remove jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
+			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
+			{
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);
+
+				// Template specific overrides for jQuery files (valid in Joomla 3.x)
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery-migrate.min.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/jquery-migrate.js']);
+			}
+
+			// Remove Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
+			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+			{
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
+
+				// Template specific overrides for jQuery files (valid in Joomla 3.x)
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.js']);
+				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.min.js']);
+			}
+		}
 	}
 
 	/**
@@ -108,68 +209,6 @@ class PlgSystemRedcore extends JPlugin
 		{
 			return;
 		}
-
-		$doc = JFactory::getDocument();
-
-		if ($doc->_scripts)
-		{
-			// Remove Mootools
-			if ($this->disableMootools())
-			{
-				$doc->addScriptDeclaration("function do_nothing() { return; }");
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-more.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools.js']);
-				unset($doc->_scripts[JURI::root(true) . '/plugins/system/mtupgrade/mootools.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompressed.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
-			}
-
-			// Remove jQuery
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-noconflict.js']);
-
-			// Remove bootstrap
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
-			unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
-
-			// Remove other JS
-			foreach ($doc->_scripts as $script => $value)
-			{
-				if (substr_count($script, 'template.js'))
-				{
-					unset($doc->_scripts[$script]);
-				}
-			}
-		}
-
-		if ($doc->_styleSheets)
-		{
-			// Disable mootools
-			if ($this->disableMootools())
-			{
-				unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
-			}
-
-			// Disable core bootstrap
-			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.min.css']);
-			unset($doc->_styleSheets[JURI::root(true) . '/media/jui/css/bootstrap.css']);
-			unset($doc->_styleSheets['templates/system/css/system.css']);
-
-			// Disable other CSS
-			foreach ($doc->_styleSheets as $style => $value)
-			{
-				if (substr_count($style, 'template.css'))
-				{
-					unset($doc->_styleSheets[$style]);
-				}
-			}
-		}
 	}
 
 	/**
@@ -179,42 +218,7 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	private function isRedcoreComponent()
 	{
-		$app = JFactory::getApplication();
-
-		// If the application is admin and the user logged out (this is not a redCORE component)
-		if ($app->isAdmin() && JFactory::getUser()->guest)
-		{
-			return false;
-		}
-
-		// Check the manifest.
-		$option = $app->input->getString('option');
-
-		// Always enabled for redCORE component
-		if ($option == 'com_redcore')
-		{
-			return true;
-		}
-
-		if (empty($option))
-		{
-			return false;
-		}
-
-		$componentName = substr($option, 4);
-		$manifestFile = JPATH_ADMINISTRATOR . '/components/' . $option . '/' . $componentName . '.xml';
-
-		if (file_exists($manifestFile))
-		{
-			$manifest = new SimpleXMLElement(file_get_contents($manifestFile));
-
-			if ($manifest->xpath('//extension/redcore'))
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return defined('REDCORE_BOOTSTRAPPED');
 	}
 
 	/**

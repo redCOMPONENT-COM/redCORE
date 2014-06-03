@@ -1,103 +1,87 @@
 .navbar {
-	background: rgb(196, 49, 49); /* Old browsers */
-	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2M0MzEzMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iI2JjMmYyZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNhZjJiMmIiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background: -moz-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(196, 49, 49, 1)), color-stop(50%, rgba(188, 47, 47, 1)), color-stop(100%, rgba(175, 43, 43, 1))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* IE10+ */
-	background: linear-gradient(to bottom, rgba(196, 49, 49, 1) 0%, rgba(188, 47, 47, 1) 50%, rgba(175, 43, 43, 1) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#c43131', endColorstr='#af2b2b', GradientType=0); /* IE6-8 */
-}
-.navbar {
-	.navbar-inner {
-		background: none;
-	}
+  a.brand,
+  a {
+    color: #b7b7b7;
+  }
 
-	a.brand,
-	a {
-		color: #FFFFFF;
-	}
+  a.back2joomla {
+    float: left;
+    display: block;
+    line-height: 40px;
+    font-size: 85%;
+  }
 
-	a.back2joomla {
-		float: left;
-		display: block;
-		line-height: 40px;
-		font-size: 85%;
-	}
+  a.brand,
+  .brand {
+    margin-left: 0;
+    padding: 10px 5px;
+    font-weight: 200;
+    font-size: 1.5em;
+    text-shadow: none;
+    color: #FFFFFF;
+  }
 
-	a.brand,
-	.brand {
-		margin-left: 0;
-		padding: 10px;
-		font-weight: 200;
-		font-size: 1.5em;
-		text-shadow: none;
-	}
+  .nav > .active > a,
+  .nav > .active > a:hover,
+  .nav > .active > a:focus {
+    background-color: #666;
+    color: #fff;
+  }
 
-	.nav > .active > a,
-	.nav > .active > a:hover,
-	.nav > .active > a:focus {
-		background-color: #AF2B2B;
-		color: #FFFFFF;
-		text-shadow: 0 1px 0 #9E2727;
-	}
+  .nav > li > a {
+    color: #b7b7b7;
+  }
 
-	.nav > li > a {
-		color: #FFFFFF;
-		text-shadow: 0 1px 0 #9E2727;
-	}
+  .nav li.dropdown > .dropdown-toggle .caret {
+    border-bottom-color: #b7b7b7;
+    border-top-color: #b7b7b7;
+  }
 
-	.nav li.dropdown > .dropdown-toggle .caret {
-		border-bottom-color: #FFFFFF;
-		border-top-color: #FFFFFF;
-	}
+  .nav li.dropdown.open > .dropdown-toggle,
+  .nav li.dropdown.active > .dropdown-toggle,
+  .nav li.dropdown.open.active > .dropdown-toggle {
+    background-color: #444;
+    color: #fff;
+  }
 
-	.nav li.dropdown.open > .dropdown-toggle,
-	.nav li.dropdown.active > .dropdown-toggle,
-	.nav li.dropdown.open.active > .dropdown-toggle {
-		background-color: #AF2B2B;
-		color: #FFFFFF;
-	}
+  .dropdown-menu > li > a:hover,
+  .dropdown-menu > li > a:focus,
+  .dropdown-submenu:hover > a,
+  .dropdown-submenu:focus > a {
+    background-color: #333;
+    background-image: none;
+    color: #fff;
+    text-decoration: none;
+  }
 
-	.dropdown-menu > li > a:hover,
-	.dropdown-menu > li > a:focus,
-	.dropdown-submenu:hover > a,
-	.dropdown-submenu:focus > a {
-		background-color: #AF2B2B;
-		background-image: none;
-		color: #FFFFFF;
-		text-decoration: none;
-	}
+  .navbar-search input {
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
+    border: 0 none;
+    color: #0D0D0D;
+    height: 26px;
+    line-height: 26px;
+    margin-top: 2px;
+    padding: 0 10px;
+    transition: all 0.2s ease 0s;
+  }
 
-	.navbar-search input {
-		background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
-		border: 0 none;
-		color: #0D0D0D;
-		height: 26px;
-		line-height: 26px;
-		margin-top: 2px;
-		padding: 0 10px;
-		transition: all 0.2s ease 0s;
-	}
+  .navbar-search input:focus {
+    background: #FFFFFF;
+  }
 
-	.navbar-search input:focus {
-		background: #FFFFFF;
-	}
+  .divider-vertical {
+    border-left: 1px solid #242525;
+    border-right: 1px solid #191a1a;
+    margin: 0 5px;
+  }
 
-	.divider-vertical {
-		border-left: 1px solid #9E2727;
-		border-right: 1px solid #CC3333;
-	}
+  ul a {
+    color: #333;
+  }
 
-	ul a {
-		color: #333;
-	}
-
-	.nav-right,
-	.nav-right a {
-		color: #F5F5F5;
-		line-height: 40px;
-	}
+  .nav-right,
+  .nav-right a {
+    color: #b7b7b7;
+    line-height: 40px;
+  }
 }

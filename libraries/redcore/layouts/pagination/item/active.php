@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -66,7 +66,7 @@ if (!is_numeric($item->text))
 	$title = ' title="' . $item->text . '" ';
 }
 
-$onClick = "document." . $item->formName . "." . $item->prefix . $limit . "; Joomla.submitform('', document.forms['" . $item->formName . "']);return false;";
+$onClick = "document." . $item->formName . "." . $item->prefix . $limit . "; Joomla.submitform(document.forms['" . $item->formName . "'].task.value, document.forms['" . $item->formName . "']);return false;";
 ?>
 <li>
 	<a class="<?php echo implode(' ', $cssClasses); ?>" <?php echo $title; ?> href="#" onclick="<?php echo $onClick; ?>">

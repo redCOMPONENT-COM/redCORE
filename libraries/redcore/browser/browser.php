@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Browser
  *
- * @copyright   Copyright (C) 2012 - 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -69,10 +69,23 @@ class RBrowser
 	 */
 	public function browse($uri = null, $duplicateLast = false)
 	{
+		// This will enable both SEF and non-SEF URI to be parsed properly
+		$router = JRouter::getInstance('site');
+
 		if (null === $uri)
 		{
-			$uri = str_replace(Juri::base(), '', Juri::getInstance()->toString());
+			$uri = Juri::getInstance();
 		}
+		else
+		{
+			$uri = Juri::getInstance($uri);
+		}
+
+		// We are removing format because of default value is csv if present and if not set
+		// and we are never going to remember csv page in a browser history anyway
+		$uri->delVar('format');
+		$query = $router->parse($uri);
+		$uri = 'index.php?' . Juri::getInstance()->buildQuery($query);
 
 		$this->history->enqueue($uri, $duplicateLast);
 	}
@@ -160,6 +173,50 @@ class RBrowser
 	public function getHistory()
 	{
 		return $this->history->getQueue();
+	}
+
+	/**
+	 * Clear the history until the uri.
+	 * Two uris are equal if their view and id vars are the same.
+	 *
+	 * @param   mixed  $uri  The uri until
+	 *
+	 * @return  void
+	 */
+	public function clearHistoryUntil($uri = null)
+	{
+		$history = $this->history->getQueue();
+
+		if (empty($history))
+		{
+			return;
+		}
+
+		if (null === $uri)
+		{
+			$uri = str_replace(Juri::base(), '', Juri::getInstance()->toString());
+		}
+
+		$uri = new JURI($uri);
+		$view = $uri->getVar('view');
+		$id = $uri->getVar('id');
+		$newHistory = array();
+
+		foreach ($history as $oldLink)
+		{
+			$oldUri = new Juri($oldLink);
+			$oldView = $oldUri->getVar('view');
+			$oldId = $oldUri->getVar('id');
+
+			if ($oldView === $view && $oldId === $id)
+			{
+				break;
+			}
+
+			$newHistory[] = $oldLink;
+		}
+
+		$this->history->setQueue($newHistory);
 	}
 
 	/**

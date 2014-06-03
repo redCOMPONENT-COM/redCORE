@@ -3,7 +3,7 @@
  * @package     Joomla.Plugin
  * @subpackage  Authentication.oauth2
  *
- * @copyright   Copyright (C) 2005 - 2013 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -35,9 +35,6 @@ class PlgAuthenticationOAuth2 extends JPlugin
 
 		// Init the flag
 		$request = false;
-
-		// Load the Joomla! application
-		$app = JFactory::getApplication();
 
 		// Get the OAuth2 server instance
 		$oauth_server = new ROAuth2Server;
