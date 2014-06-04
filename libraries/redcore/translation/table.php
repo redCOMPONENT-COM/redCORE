@@ -211,13 +211,7 @@ final class RTranslationTable
 		}
 
 		$newTableCreated = false;
-
-		$db = JFactory::getDbo();
-		$query = 'SHOW VARIABLES LIKE ' . $db->q('have_innodb');
-		$db->setQuery($query);
-
-		$innoDBSupport = $db->loadObject();
-		$innoDBSupport = !empty($innoDBSupport->Value) && strtoupper($innoDBSupport->Value) == 'YES' ? true : false;
+		$innoDBSupport = self::checkIfDatabaseEngineExists();
 
 		if (empty($columns))
 		{
@@ -897,5 +891,36 @@ final class RTranslationTable
 		}
 
 		return json_encode($data);
+	}
+
+	/**
+	 * Checks if InnoDB database engine is installed and enabled on the MySQL server
+	 *
+	 * @param   string  $engine  Database Engine name
+	 *
+	 * @return  boolean  Returns true if InnoDB engine is active
+	 */
+	public static function checkIfDatabaseEngineExists($engine = 'InnoDB')
+	{
+		$db = JFactory::getDbo();
+
+		$db->setQuery('SHOW ENGINES');
+		$results = $db->loadObjectList();
+
+		if (!empty($results))
+		{
+			foreach ($results as $result)
+			{
+				if (strtoupper($result->Engine) == strtoupper($engine))
+				{
+					if (strtoupper($result->Support) != 'NO')
+					{
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 }
