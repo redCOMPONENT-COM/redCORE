@@ -1,7 +1,7 @@
 <?php
 /**
  * @package     Redcore.Admin
- * @subpackage  Templates
+ * @subpackage  Views
  *
  * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
@@ -13,9 +13,9 @@ echo RLayoutHelper::render(
 	'dashboard.extensions',
 	array(
 		'view' => $this,
-		'return' => base64_encode('index.php?option=com_redcore&view=dashboard'),
+		'return' => base64_encode('index.php?option=com_redcore&view=configs'),
 		'components' => $this->components,
 		'configurationLink' => true,
-		'translationLink' => true,
+		'translationLink' => false,
 	)
 );
