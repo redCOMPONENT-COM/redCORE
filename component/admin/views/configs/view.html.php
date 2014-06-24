@@ -10,13 +10,13 @@
 defined('_JEXEC') or die;
 
 /**
- * Dashboard View.
+ * Configs View
  *
  * @package     Redcore.Admin
  * @subpackage  Views
  * @since       1.0
  */
-class RedcoreViewDashboard extends RedcoreHelpersView
+class RedcoreViewConfigs extends RedcoreHelpersView
 {
 	/**
 	 * @var  array
@@ -44,6 +44,6 @@ class RedcoreViewDashboard extends RedcoreHelpersView
 	 */
 	public function getTitle()
 	{
-		return JText::_('COM_REDCORE_DASHBOARD');
+		return JText::_('COM_REDCORE_CONFIGURATION');
 	}
 }

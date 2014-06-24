@@ -131,6 +131,7 @@ class RedcoreModelConfig extends RModelAdmin
 	{
 		$dispatcher = RFactory::getDispatcher();
 		$table = JTable::getInstance('Extension');
+		$option = JFactory::getApplication()->input->getString('component');
 		$isNew = true;
 
 		// Save the rules.
@@ -139,12 +140,12 @@ class RedcoreModelConfig extends RModelAdmin
 			$rules = new JAccessRules($data['params']['rules']);
 			$asset = JTable::getInstance('asset');
 
-			if (!$asset->loadByName($data['option']))
+			if (!$asset->loadByName($option))
 			{
 				$root = JTable::getInstance('asset');
 				$root->loadByName('root.1');
-				$asset->name = $data['option'];
-				$asset->title = $data['option'];
+				$asset->name = $option;
+				$asset->title = $option;
 				$asset->setLocation($root->id, 'last-child');
 			}
 
@@ -158,7 +159,6 @@ class RedcoreModelConfig extends RModelAdmin
 			}
 
 			// We don't need this anymore
-			unset($data['option']);
 			unset($data['params']['rules']);
 		}
 
