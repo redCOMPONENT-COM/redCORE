@@ -30,20 +30,10 @@ class ModRedCORELanguageSwitcherHelper
 		$currentLang = JLanguageHelper::detectLanguage();
 
 		$Itemid = $app->input->getInt('Itemid', 0);
-		$option = $app->input->getString('option', '');
-		$view = $app->input->getString('view', '');
-		$layout = $app->input->getString('layout', '');
-		$id = $app->input->getInt('id', '');
-		$pid = $app->input->getInt('pid', '');
-		$cid = $app->input->getInt('cid', '');
-
-		// Guessing some usual variables to try and get a better match
-		$location = ($option != '' ? '&option=' . $option : '')
-			. ($view != '' ? '&view=' . $view : '')
-			. ($layout != '' ? '&layout=' . $layout : '')
-			. ($id != '' ? '&id=' . $id : '')
-			. ($pid != '' ? '&pid=' . $pid : '')
-			. ($cid != '' ? '&cid=' . $cid : '');
+		$uri = Juri::getInstance();
+		$uri->delVar('lang');
+		$uri->delVar('Itemid');
+		$location = htmlspecialchars($uri->getQuery());
 
 		if (!$Itemid)
 		{
@@ -59,7 +49,7 @@ class ModRedCORELanguageSwitcherHelper
 		foreach ($languages as $i => $language)
 		{
 			$languages[$i]->active = ($language->lang_code == $currentLang);
-			$languages[$i]->link = RRoute::_('index.php?lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : '') . $location);
+			$languages[$i]->link = RRoute::_('index.php?' . $location . '&lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : ''));
 		}
 
 		return $languages;

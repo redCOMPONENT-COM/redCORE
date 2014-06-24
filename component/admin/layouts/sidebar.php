@@ -45,7 +45,7 @@ if (empty($return))
 		<li class="divider"></li>
 	<?php else: ?>
 		<li>
-			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=config&layout=edit&component=com_redcore&return=' . $return) ?>">
+			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=configs') ?>">
 				<i class="icon-cogs"></i>
 				<?php echo JText::_('COM_REDCORE_CONFIGURATION'); ?>
 			</a>

@@ -218,7 +218,7 @@ final class RTranslationTable
 			$newTableCreated = true;
 			$query = 'CREATE TABLE ' . $db->qn($newTable)
 				. ' ('
-				. $db->qn('rctranslations_id') . ' int(10) PRIMARY KEY AUTO_INCREMENT, '
+				. $db->qn('rctranslations_id') . ' int(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, '
 				. $db->qn('rctranslations_language') . ' char(7) NOT NULL DEFAULT ' . $db->q('') . ', '
 				. $db->qn('rctranslations_originals') . ' TEXT NOT NULL, '
 				. $db->qn('rctranslations_modified') . ' datetime NOT NULL DEFAULT ' . $db->q('0000-00-00 00:00:00') . ', '

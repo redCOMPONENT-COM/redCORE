@@ -9,7 +9,7 @@
         <table name="contact_details">
             <field type="referenceid" name="id" translate="0">ID</field>
             <field type="titletext" name="name" translate="1">Name</field>
-            <field type="text" name="alias" translate="1" posthandler="filterName">Alias</field>
+            <field type="text" name="alias" translate="1" posthandler="filterTitle">Alias</field>
             <field type="text" name="con_position" translate="1">Position</field>
             <field type="text" name="email_to" translate="1">Email Address</field>
             <field type="text" name="address" translate="1">Street Address</field>

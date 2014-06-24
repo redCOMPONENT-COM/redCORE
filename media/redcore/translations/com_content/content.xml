@@ -11,7 +11,7 @@
             <field type="titletext" name="title"  length="50" maxlength="250" translate="1">Title</field>
             <field type="text" name="alias"  length="50" maxlength="250" translate="0">Title Alias</field>
             <field type="hiddentext" name="catid"  scope="com_content" translate="0">Category</field>
-            <field type="htmltext" name="introtext" translate="1" prehandleroriginal="fetchArticleText" prehandlertranslation="fetchArticleTranslation" posthandler="saveArticleText" ebuttons="ignore">Article Text</field>
+            <field type="htmltext" name="introtext" translate="1" ebuttons="ignore">Article Text</field>
             <field type="htmltext" name="fulltext" translate="1" ebuttons="readmore">Fulltext</field>
             <field type="text" name="metakey" length="50" maxlength="250" translate="1">Metakey</field>
             <field type="textarea" name="metadesc" rows="5" columns="80" translate="1">Metadesc</field>

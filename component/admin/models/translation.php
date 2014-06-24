@@ -220,6 +220,35 @@ class RedcoreModelTranslation extends RModelAdmin
 
 		$data['rctranslations_originals'] = RTranslationTable::createOriginalValueFromColumns($original, $translationTable->columns);
 
+		// We run posthandler methods
+		foreach ($fieldsXml as $field)
+		{
+			$postHandler = (string) $field['posthandler'];
+			$fieldName = (string) $field['name'];
+
+			if (!empty($postHandler) && (string) $field['translate'] == '1')
+			{
+				$postHandlerFunctions = explode(',', $postHandler);
+
+				foreach ($postHandlerFunctions as $postHandlerFunction)
+				{
+					$postHandlerFunctionArray = explode('::', $postHandlerFunction);
+
+					if (empty($postHandlerFunctionArray[1]))
+					{
+						$postHandlerFunctionArray[1] = $postHandlerFunctionArray[0];
+						$postHandlerFunctionArray[0] = 'RTranslationContentHelper';
+						$postHandlerFunction = 'RTranslationContentHelper::' . $postHandlerFunction;
+					}
+
+					if (method_exists($postHandlerFunctionArray[0], $postHandlerFunctionArray[1]))
+					{
+						call_user_func_array(array($postHandlerFunctionArray[0], $postHandlerFunctionArray[1]), array($field, &$data[$fieldName], &$data, $translationTable));
+					}
+				}
+			}
+		}
+
 		// Bind the data.
 		if (!$table->bind($data))
 		{
