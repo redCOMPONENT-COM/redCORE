@@ -35,7 +35,7 @@ abstract class JHtmlRgrid
 	{
 		JHtml::_('rjquery.framework');
 
-		RHelperAsset::load('redgrid.js', static::EXTENSION);
+		RHelperAsset::load('redgrid.min.js', static::EXTENSION);
 	}
 
 	/**

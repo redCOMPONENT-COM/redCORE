@@ -89,11 +89,11 @@
 			if (!this.orderField.length)
 			{
 				this.orderField = $('<input>').attr({
-				    type: 'hidden',
-				    id: 'js-order-field',
-				    class: 'js-order-field',
-				    name: 'filter_order',
-				    value: this.ordering
+				    'type': 'hidden',
+				    'id': 'js-order-field',
+				    'class': 'js-order-field',
+				    'name': 'filter_order',
+				    'value': this.ordering
 				});
 
 				this.orderField.appendTo(this.theForm);
@@ -143,11 +143,11 @@
 			if (!this.directionField.length)
 			{
 				this.directionField = $('<input>').attr({
-				    type: 'hidden',
-				    id: 'js-direction-field',
-				    class: 'js-direction-field',
-				    name: 'filter_order_Dir',
-				    value: this.direction
+				    'type': 'hidden',
+				    'id': 'js-direction-field',
+				    'class': 'js-direction-field',
+				    'name': 'filter_order_Dir',
+				    'value': this.direction
 				});
 
 				this.directionField.appendTo(this.theForm);
