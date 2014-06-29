@@ -57,8 +57,8 @@ abstract class JHtmlRjquery
 		JText::script('JGLOBAL_SELECT_AN_OPTION');
 		JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
 
-		RHelperAsset::load('lib/chosen.jquery.js', self::EXTENSION);
-		RHelperAsset::load('lib/chosen.css', self::EXTENSION);
+		RHelperAsset::load('lib/chosen.jquery.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/chosen.min.css', self::EXTENSION);
 		RHelperAsset::load('lib/chosen-extra.css', self::EXTENSION);
 
 		if (empty($options['disable_search_threshold']))
@@ -132,7 +132,7 @@ abstract class JHtmlRjquery
 		// This does not cache because we can have multiple instances in the same form ,same parent field and same child field
 		self::framework();
 
-		RHelperAsset::load('jquery.childlist.js', self::EXTENSION);
+		RHelperAsset::load('jquery.childlist.min.js', self::EXTENSION);
 
 		$options = static::options2Jregistry($options);
 
@@ -236,12 +236,12 @@ abstract class JHtmlRjquery
 
 		self::framework();
 
-		RHelperAsset::load('lib/select2/select2.js', self::EXTENSION);
-		RHelperAsset::load('lib/select2/select2.css', self::EXTENSION);
+		RHelperAsset::load('lib/select2/select2.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/select2/select2.min.css', self::EXTENSION);
 
 		if ($bootstrapSupport)
 		{
-			RHelperAsset::load('lib/select2/select2-bootstrap.css', self::EXTENSION);
+			RHelperAsset::load('lib/select2/select2-bootstrap.min.css', self::EXTENSION);
 		}
 
 		RHelperAsset::load('lib/select2/select2-extra.css', self::EXTENSION);
@@ -345,8 +345,8 @@ abstract class JHtmlRjquery
 
 		self::framework();
 
-		RHelperAsset::load('lib/flexslider/jquery.flexslider.js', self::EXTENSION);
-		RHelperAsset::load('lib/flexslider/flexslider.css', self::EXTENSION);
+		RHelperAsset::load('lib/flexslider/jquery.flexslider-min.js', self::EXTENSION);
+		RHelperAsset::load('lib/flexslider/flexslider.min.css', self::EXTENSION);
 
 		$options = static::options2Jregistry($options);
 

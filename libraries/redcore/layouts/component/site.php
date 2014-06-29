@@ -48,7 +48,7 @@ $input->set('redcore', true);
 // Load bootstrap + fontawesome
 JHtml::_('rbootstrap.framework');
 
-RHelperAsset::load('component.js', 'redcore');
+RHelperAsset::load('component.min.js', 'redcore');
 
 if (RBootstrap::$loadFrontendCSS)
 {

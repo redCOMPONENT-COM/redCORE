@@ -52,8 +52,8 @@ abstract class JHtmlRsortablelist
 		// Depends on jQuery UI
 		JHtml::_('rjquery.ui', array('core', 'sortable'));
 
-		RHelperAsset::load('lib/sortablelist.js', self::EXTENSION);
-		RHelperAsset::load('lib/sortablelist.css', self::EXTENSION);
+		RHelperAsset::load('lib/sortablelist.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/sortablelist.min.css', self::EXTENSION);
 
 		static::$loaded[__METHOD__] = true;
 

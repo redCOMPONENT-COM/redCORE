@@ -793,7 +793,7 @@ abstract class JHtmlRbootstrap
 	{
 		static::framework();
 
-		RHelperAsset::load('lib/bootstrap-checkbox/css/bootstrap-checkbox.css', static::EXTENSION);
-		RHelperAsset::load('lib/bootstrap-checkbox.js', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap-checkbox/css/bootstrap-checkbox.min.css', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap-checkbox.min.js', static::EXTENSION);
 	}
 }

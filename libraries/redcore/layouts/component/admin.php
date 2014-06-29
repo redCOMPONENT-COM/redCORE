@@ -50,7 +50,7 @@ $input->set('redcore', true);
 // Load bootstrap + fontawesome
 JHtml::_('rbootstrap.framework');
 
-RHelperAsset::load('component.js', 'redcore');
+RHelperAsset::load('component.min.js', 'redcore');
 RHelperAsset::load('component.min.css', 'redcore');
 
 // Load a custom CSS option for this component if exists
