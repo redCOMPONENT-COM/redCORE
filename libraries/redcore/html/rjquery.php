@@ -366,10 +366,8 @@ abstract class JHtmlRjquery
 	 * Load the LazyLoad library
 	 * https://github.com/tuupola/jquery_lazyload
 	 *
-	 * @param   string  $selector  CSS Selector to initalise selects
+	 * @param   string  $selector  CSS Selector of image for apply LazyLoad
 	 * @param   array   $options   Optional array with options
-	 *
-	 * @todo    Add the multilanguage support
 	 *
 	 * @return  void
 	 */
