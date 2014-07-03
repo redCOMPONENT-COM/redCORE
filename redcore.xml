@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.1.5" />
+    <redcore version="1.1.6" />
 
     <install folder="component/admin">
         <sql>
@@ -94,6 +94,12 @@
         <translation name="com_users"/>
         <translation name="com_weblinks"/>
     </translations>
+
+    <!-- Minimum requirements for extension -->
+    <requirements>
+        <php>5.3.0</php>
+        <mysql>5.0.4</mysql>
+    </requirements>
 
     <!-- Postflight tasks -->
     <postflight>

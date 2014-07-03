@@ -28,16 +28,17 @@ class ModRedCORELanguageSwitcherHelper
 		$app = JFactory::getApplication();
 		$languages = JLanguageHelper::getLanguages();
 		$currentLang = JLanguageHelper::detectLanguage();
+		$db = JFactory::getDbo();
 
 		$Itemid = $app->input->getInt('Itemid', 0);
 		$uri = Juri::getInstance();
 		$uri->delVar('lang');
 		$uri->delVar('Itemid');
 		$location = htmlspecialchars($uri->getQuery());
+		$menu = $app->getMenu();
 
 		if (!$Itemid)
 		{
-			$menu = $app->getMenu();
 			$active = $menu->getActive();
 
 			if ($active)
@@ -48,9 +49,14 @@ class ModRedCORELanguageSwitcherHelper
 
 		foreach ($languages as $i => $language)
 		{
+			$db->forceLanguageTranslation = $language->lang_code;
+			$menu->load();
 			$languages[$i]->active = ($language->lang_code == $currentLang);
 			$languages[$i]->link = RRoute::_('index.php?' . $location . '&lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : ''));
+			$db->forceLanguageTranslation = false;
 		}
+
+		$menu->load();
 
 		return $languages;
 	}
