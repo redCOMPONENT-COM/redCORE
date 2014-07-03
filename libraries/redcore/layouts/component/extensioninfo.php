@@ -125,7 +125,7 @@ JHtml::_('rbootstrap.tooltip');
 			<thead>
 				<tr>
 					<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
-					<th><?php echo JText::_('COM_REDCORE_INSTALLER_WITH_COMPONENT'); ?></th>
+					<th><?php echo JText::_('COM_REDCORE_INSTALL_WITH_COMPONENT'); ?></th>
 					<th><?php echo JText::_('JENABLED'); ?></th>
 				</tr>
 			</thead>
@@ -180,7 +180,7 @@ JHtml::_('rbootstrap.tooltip');
 			<thead>
 				<tr>
 					<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
-					<th><?php echo JText::_('COM_REDCORE_INSTALLER_WITH_COMPONENT'); ?></th>
+					<th><?php echo JText::_('COM_REDCORE_INSTALL_WITH_COMPONENT'); ?></th>
 					<th><?php echo JText::_('JENABLED'); ?></th>
 				</tr>
 			</thead>

@@ -41,27 +41,12 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	/**
 	 * @var  array
 	 */
-	protected $modules;
-
-	/**
-	 * @var  array
-	 */
-	protected $plugins;
-
-	/**
-	 * @var  array
-	 */
 	protected $contentElements;
 
 	/**
 	 * @var  array
 	 */
 	protected $missingContentElements;
-
-	/**
-	 * @var  array
-	 */
-	protected $requirements = array();
 
 	/**
 	 * Display method
@@ -79,28 +64,6 @@ class RedcoreViewConfig extends RedcoreHelpersView
 		$this->form	= $model->getForm();
 		$this->component = $model->getComponent($option);
 		$this->return = JFactory::getApplication()->input->get('return');
-		/*$loadInstallModules = array('%' . $this->component->xml->xmlComponentName . '%');
-		$loadInstallPlugins = array($this->component->xml->xmlComponentName => '%' . $this->component->xml->xmlComponentName . '%');
-
-		if ($this->component->xml->modules)
-		{
-			foreach ($this->component->xml->modules->module as $module)
-			{
-				$loadInstallModules[] = (string) $module['name'];
-			}
-		}
-
-		if ($this->component->xml->plugins)
-		{
-			foreach ($this->component->xml->plugins->plugin as $plugin)
-			{
-				$loadInstallPlugins[(string) $plugin['group']] = (string) $plugin['name'];
-			}
-		}
-
-		$this->modules = $model->getInstalledExtensions('module', $loadInstallModules);
-		$this->plugins = $model->getInstalledExtensions('plugin', $loadInstallPlugins, $this->component->xml->xmlComponentName);
-		$this->requirements = RComponentHelper::checkComponentRequirements($this->component->xml->requirements);*/
 		$this->componentTitle = RText::getTranslationIfExists($this->component->xml->name, '', '');
 		$this->contentElements = $model->loadContentElements($option);
 		$this->missingContentElements = $model->loadMissingContentElements($option, $this->contentElements);

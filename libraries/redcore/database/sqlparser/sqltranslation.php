@@ -291,7 +291,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							{
 								// SubQuery is already parsed so we do not need to parse columns again
 							}
-							elseif (!empty($tagColumnsValue['expr_type']) && in_array($tagColumnsValue['expr_type'], array('expression', 'table_expression')))
+							elseif (!empty($tagColumnsValue['expr_type']) && in_array($tagColumnsValue['expr_type'], array('expression')))
 							{
 								foreach ($tagColumnsValue['sub_tree'] as $subKey => $subTree)
 								{
@@ -465,8 +465,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								$originalTables[$newTagValue['alias']['originalName']] = 1;
 							}
 						}
-						// Unions and other FROM related data
-						// There is an issue in sql parser for multiple UNION
+						// There is an issue in sql parser for UNION and UNION ALL, this is a solution for it
 						elseif (!empty($tagValue['union_tree']))
 						{
 							$subQueryFound = true;
@@ -507,7 +506,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							{
 								foreach ($tagValue['sub_tree'] as $subKey => $subTree)
 								{
-									if (!empty($tagValue['sub_tree'][$subKey]['sub_tree']) && empty($tagValue['sub_tree'][$subKey]['expr_type']))
+									if (!empty($tagValue['sub_tree'][$subKey]['sub_tree']))
 									{
 										$tagValue['sub_tree'][$subKey]['sub_tree'] = self::parseTableReplacements(
 											$tagValue['sub_tree'][$subKey]['sub_tree'],

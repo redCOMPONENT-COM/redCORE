@@ -10,5 +10,5 @@
 defined('_JEXEC') or die;
 ?>
 <div class="tab-pane" id="mainComponentInfo">
-<?php echo RComponentHelper::displayComponentInfo($this->component->option); ?>
+	<?php echo RComponentHelper::displayComponentInfo($this->component->option); ?>
 </div>
