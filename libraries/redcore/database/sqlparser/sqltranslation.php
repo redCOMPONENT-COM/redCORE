@@ -466,7 +466,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							}
 						}
 						// There is an issue in sql parser for UNION and UNION ALL, this is a solution for it
-						elseif (!empty($tagValue['union_tree']))
+						elseif (!empty($tagValue['union_tree']) && is_array($tagValue['union_tree']) && in_array('UNION', $tagValue['union_tree']))
 						{
 							$subQueryFound = true;
 							$unionTree = array();
@@ -484,8 +484,16 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 							$tagValue['base_expr'] = '(' . implode(' UNION ', $unionTree) . ')';
 							$tagValue['expr_type'] = 'const';
-							unset($tagValue['sub_tree']);
-							unset($tagValue['join_type']);
+
+							if (!empty($tagValue['sub_tree']))
+							{
+								unset($tagValue['sub_tree']);
+							}
+
+							if (!empty($tagValue['join_type']))
+							{
+								unset($tagValue['join_type']);
+							}
 						}
 						// Other types of expressions
 						elseif (!empty($tagValue['sub_tree']))
