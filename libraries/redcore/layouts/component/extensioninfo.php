@@ -148,7 +148,7 @@ JHtml::_('rbootstrap.tooltip');
 							<?php if ($fromExtension) : ?>
 							<span class="badge badge-success"><?php echo JText::_('JYES'); ?>
 								<?php else : ?>
-								<span class="badge badge-important"><?php echo JText::_('JNO'); ?>
+								<span class="badge badge-warning"><?php echo JText::_('JNO'); ?>
 									<?php endif; ?>
 							</span>
 						</td>
@@ -203,7 +203,7 @@ JHtml::_('rbootstrap.tooltip');
 							<?php if ($fromExtension) : ?>
 							<span class="badge badge-success"><?php echo JText::_('JYES'); ?>
 								<?php else : ?>
-								<span class="badge badge-important"><?php echo JText::_('JNO'); ?>
+								<span class="badge badge-warning"><?php echo JText::_('JNO'); ?>
 									<?php endif; ?>
 							</span>
 						</td>
