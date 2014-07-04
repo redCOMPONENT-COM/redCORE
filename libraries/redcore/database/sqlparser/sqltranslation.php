@@ -466,7 +466,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							}
 						}
 						// There is an issue in sql parser for UNION and UNION ALL, this is a solution for it
-						elseif (!empty($tagValue['union_tree']) && is_array($tagValue['union_tree']))
+						elseif (!empty($tagValue['union_tree']) && is_array($tagValue['union_tree']) && in_array('UNION', $tagValue['union_tree']))
 						{
 							$subQueryFound = true;
 							$unionTree = array();
