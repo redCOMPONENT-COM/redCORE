@@ -106,7 +106,10 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 					}
 				}
 
-				$parsedSqlColumns = self::parseColumnReplacements($parsedSqlColumns, $columns, $translationTables, $columnFound);
+				if (!empty($foundTables))
+				{
+					$parsedSqlColumns = self::parseColumnReplacements($parsedSqlColumns, $columns, $translationTables, $columnFound);
+				}
 
 				// We are only returning parsed SQL if we found at least one column in translation table
 				if ($columnFound || $subQueryFound)
@@ -136,6 +139,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function buildTranslationQuery($sql = '', $prefix = '')
 	{
 		$db = JFactory::getDbo();
+		$selectedLanguage = !empty($db->forceLanguageTranslation) ? $db->forceLanguageTranslation : JFactory::getLanguage()->getTag();
 
 		if (!empty($db->parseTablesBefore))
 		{
@@ -154,7 +158,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		if (empty($sql)
 			|| JFactory::getApplication()->isAdmin()
 			|| !stristr(mb_strtolower($sql), 'select')
-			|| RTranslationHelper::getSiteLanguage() == JFactory::getLanguage()->getTag())
+			|| RTranslationHelper::getSiteLanguage() == $selectedLanguage)
 		{
 			if (empty($db->parseTablesBefore) && empty($db->parseTablesAfter))
 			{
@@ -164,8 +168,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 		$translationTables = RTranslationHelper::getInstalledTranslationTables();
 		$translationTables = RTranslationHelper::removeFromEditForm($translationTables);
-
-		$sql = self::parseSelectQuery($sql, $prefix, JFactory::getLanguage()->getTag(), $translationTables);
+		$sql = self::parseSelectQuery($sql, $prefix, $selectedLanguage, $translationTables);
 
 		if (!empty($db->parseTablesAfter))
 		{
@@ -462,6 +465,29 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 								$originalTables[$newTagValue['alias']['originalName']] = 1;
 							}
 						}
+						// There is an issue in sql parser for UNION and UNION ALL, this is a solution for it
+						elseif (!empty($tagValue['union_tree']))
+						{
+							$subQueryFound = true;
+							$unionTree = array();
+
+							foreach ($tagValue['union_tree'] as $union)
+							{
+								$union = trim($union);
+
+								if (!empty($union) && strtoupper($union) != 'UNION')
+								{
+									$parsedSubQuery = self::buildTranslationQuery(self::removeParenthesisFromStart($union));
+									$unionTree[] = !empty($parsedSubQuery) ? '(' . $parsedSubQuery . ')' : $union;
+								}
+							}
+
+							$tagValue['base_expr'] = '(' . implode(' UNION ', $unionTree) . ')';
+							$tagValue['expr_type'] = 'const';
+							unset($tagValue['sub_tree']);
+							unset($tagValue['join_type']);
+						}
+						// Other types of expressions
 						elseif (!empty($tagValue['sub_tree']))
 						{
 							if (!empty($tagValue['expr_type']) && $tagValue['expr_type'] == 'subquery')
@@ -476,7 +502,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$subQueryFound = true;
 								}
 							}
-							elseif (!empty($tagValue['expr_type']) && $tagValue['expr_type'] == 'expression')
+							elseif (!empty($tagValue['expr_type']) && in_array($tagValue['expr_type'], array('expression')))
 							{
 								foreach ($tagValue['sub_tree'] as $subKey => $subTree)
 								{
@@ -817,6 +843,67 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function cleanEscaping($sql)
 	{
 		return str_replace('`', '', trim($sql));
+	}
+
+	/**
+	 * Check for enclosing brackets and remove it
+	 *
+	 * @param   string  $sql  Sql to check against
+	 *
+	 * @return  string  Returns sql query without enclosing brackets
+	 */
+	public static function removeParenthesisFromStart($sql)
+	{
+		$parenthesisRemoved = 0;
+
+		$trim = trim($sql);
+
+		if ($trim !== "" && $trim[0] === "(")
+		{
+			// Remove only one parenthesis pair now!
+			$parenthesisRemoved++;
+			$trim[0] = " ";
+			$trim = trim($trim);
+		}
+
+		$parenthesis = $parenthesisRemoved;
+		$i = 0;
+		$string = 0;
+
+		while ($i < strlen($trim))
+		{
+			if ($trim[$i] === "\\")
+			{
+				// An escape character, the next character is irrelevant
+				$i += 2;
+				continue;
+			}
+
+			if ($trim[$i] === "'" || $trim[$i] === '"')
+			{
+				$string++;
+			}
+
+			if (($string % 2 === 0) && ($trim[$i] === "("))
+			{
+				$parenthesis++;
+			}
+
+			if (($string % 2 === 0) && ($trim[$i] === ")"))
+			{
+				if ($parenthesis == $parenthesisRemoved)
+				{
+					$trim[$i] = " ";
+					$parenthesisRemoved--;
+				}
+
+				$parenthesis--;
+			}
+
+			$i++;
+		}
+
+		return trim($trim);
 	}
 
 	/**
