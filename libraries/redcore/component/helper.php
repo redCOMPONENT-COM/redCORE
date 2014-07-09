@@ -118,16 +118,29 @@ final class RComponentHelper
 			'status'    => version_compare($phpRequired, $phpVersion, '<=')
 		);
 
-		$mySqlRequired = !empty($requirements->mysql) ? $requirements->mysql : $redCoreManifest->requirements->mysql;
-		$mySqlRequired = !empty($mySqlRequired) ? (string) $mySqlRequired : '5.0.4';
+		$mySqlRequired = !empty($requirements->mysql) ? (string) $requirements->mysql : '';
 
-		$dbVersion  = JFactory::getDbo()->getVersion();
-		$checked['applications'][] = array(
-			'name'      => JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION'),
-			'current'   => $dbVersion,
-			'required'  => $mySqlRequired,
-			'status'    => version_compare($mySqlRequired, $dbVersion, '<=')
-		);
+		if (!empty($mySqlRequired))
+		{
+			$db = JFactory::getDbo();
+			$dbVersion  = $db->getVersion();
+
+			if (!in_array($db->name, array('mysql', 'mysqli')))
+			{
+				$status = false;
+			}
+			else
+			{
+				$status = version_compare($mySqlRequired, $dbVersion, '<=');
+			}
+
+			$checked['applications'][] = array(
+				'name'      => JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION'),
+				'current'   => $dbVersion,
+				'required'  => $mySqlRequired,
+				'status'    => $status
+			);
+		}
 
 		if (!empty($requirements->extensions))
 		{
