@@ -122,12 +122,23 @@ final class RComponentHelper
 
 		if (!empty($mySqlRequired))
 		{
-			$dbVersion  = JFactory::getDbo()->getVersion();
+			$db = JFactory::getDbo();
+			$dbVersion  = $db->getVersion();
+
+			if (!in_array($db->name, array('mysql', 'mysqli')))
+			{
+				$status = false;
+			}
+			else
+			{
+				$status = version_compare($mySqlRequired, $dbVersion, '<=');
+			}
+
 			$checked['applications'][] = array(
 				'name'      => JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION'),
 				'current'   => $dbVersion,
 				'required'  => $mySqlRequired,
-				'status'    => version_compare($mySqlRequired, $dbVersion, '<=')
+				'status'    => $status
 			);
 		}
 
