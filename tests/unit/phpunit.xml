@@ -1,0 +1,13 @@
+<phpunit
+    bootstrap="/opt/www/jl25_test/redunittests/unit/bootstrap.php"
+    colors="false"
+    stopOnFailure="false"
+    testdox="true"
+    verbose="true"
+    backupStaticAttributes="false"
+    backupGlobals="false">
+    <testsuite name="Redevent">
+        <directory>/opt/www/jl25_test/redunittests/unit/suite/redevent</directory>
+    </testsuite>
+
+</phpunit>

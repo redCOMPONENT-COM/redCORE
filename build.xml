@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="redCORE" default="site" basedir=".">
     <!-- Do initialization stuff -->
-    <target name="site" >
-        <property file="build.properties"  override="true"/>
-        <property name="redcore.src" value="./" />
-        <property name="extension" value="${comp.name}" />
+    <target name="site" depends="setup-properties">
         <if>
             <equals arg1="${extension}" arg2="" />
             <then>
@@ -15,6 +12,12 @@
             </else>
         </if>
     </target>
+
+	<target name="setup-properties">
+		<property file="build.properties"  override="true"/>
+		<property name="redcore.src" value="./" />
+		<property name="extension" value="${comp.name}" />
+	</target>
 
     <!-- Build redCORE as git submodule -->
     <target name="redCORE-submodule" >
@@ -140,4 +143,38 @@
             </fileset>
         </copy>
     </target>
+
+	<!--
+	====================================================================================================
+	Tasks - Unit tests
+	====================================================================================================
+	-->
+	<target name="unit-test" description="Run test suite"
+	        depends="unit-test-prepare">
+		<phpunit configuration="tests/unit/phpunit.xml"
+		         printsummary="true" haltonfailure="true" haltonerror="true"
+		         pharlocation="/usr/local/bin/phpunit">
+			<batchtest>
+				<fileset dir="tests/unit/suite">
+					<include name="**/*Test.php"/>
+				</fileset>
+			</batchtest>
+		</phpunit>
+	</target>
+
+	<target name="unit-test-prepare" description="Copy to test site"
+	        depends="setup-test, redCORE">
+	</target>
+
+	<target name="setup-test" description="Init to copy to test site"
+			depends="setup-properties">
+		<property name="www.dir" value="${www.dirtest}" override="true"/>
+
+		<!-- Test -->
+		<copy todir="${www.dir}/redunittests/unit/suite/redcore" overwrite="true">
+			<fileset dir="tests/unit/suite">
+				<include name="**" />
+			</fileset>
+		</copy>
+	</target>
 </project>
