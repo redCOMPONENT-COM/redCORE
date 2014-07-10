@@ -107,7 +107,7 @@ class Com_RedcoreInstallerScript
 			// In case we are installing redcore
 			if (get_called_class() == 'Com_RedcoreInstallerScript')
 			{
-				if (!$this->checkComponentVersion(JPATH_ADMINISTRATOR . '/components/com_redcore', dirname(__FILE__), 'redcore.xml'))
+				if (!$this->checkComponentVersion($this->getRedcoreComponentFolder(), dirname(__FILE__), 'redcore.xml'))
 				{
 					JFactory::getApplication()->enqueueMessage(
 						JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'),
@@ -401,10 +401,11 @@ class Com_RedcoreInstallerScript
 				{
 					$installer = $this->getInstaller();
 					$redcoreFolder = dirname(__FILE__);
+					$redcoreComponentFolder = $this->getRedcoreComponentFolder();
 
-					if (is_dir($redcoreFolder))
+					if (is_dir($redcoreFolder) && $redcoreFolder != $redcoreComponentFolder)
 					{
-						$install = $this->checkComponentVersion(JPATH_ADMINISTRATOR . '/components/com_redcore', $redcoreFolder, 'redcore.xml');
+						$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
 
 						if ($install)
 						{
@@ -1041,5 +1042,15 @@ class Com_RedcoreInstallerScript
 		}
 
 		return true;
+	}
+
+	/**
+	 * Gets the path of redCORE component
+	 *
+	 * @return  string
+	 */
+	public function getRedcoreComponentFolder()
+	{
+		return JPATH_ADMINISTRATOR . '/components/com_redcore';
 	}
 }

@@ -12,6 +12,7 @@
     <description>redCORE Libraries</description>
 
     <files>
+        <folder>api</folder>
         <folder>browser</folder>
         <folder>client</folder>
         <folder>component</folder>

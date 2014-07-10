@@ -18,6 +18,11 @@ if (!defined('JPATH_REDCORE'))
 	require JPATH_REDCORE . '/functions.php';
 }
 
+if (!defined('JPATH_API'))
+{
+	define('JPATH_API', JPATH_REDCORE . '/api');
+}
+
 /**
  * redCORE bootstrap class
  *

@@ -58,6 +58,42 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
+	 * Check to see if this is API call and render it
+	 *
+	 * @return  void
+	 *
+	 * @since   1.2
+	 */
+	public function onAfterRoute()
+	{
+		if (defined('REDCORE_LIBRARY_LOADED'))
+		{
+			$api = JFactory::getApplication()->input->getString('api', 'Hal');
+
+			if (!empty($api))
+			{
+				$api = ucfirst($api);
+
+				try
+				{
+					$apiClass = new RApiFile($api);
+
+
+				}
+				catch (Exception $e)
+				{
+					// Set the server response code.
+					header('Status: 500', true, 500);
+
+					// An exception has been caught, echo the message and exit.
+					echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)));
+					exit();
+				}
+			}
+		}
+	}
+
+	/**
 	 * This event is triggered after pushing the document buffers into the template placeholders,
 	 * retrieving data from the document and pushing it into the into the JResponse buffer.
 	 * http://docs.joomla.org/Plugin/Events/System
