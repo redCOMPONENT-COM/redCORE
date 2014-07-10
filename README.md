@@ -1,8 +1,9 @@
 redCORE
 ======
 
-Master: [![Build Status](https://api.travis-ci.com/redCOMPONENT-COM/redCORE.png?branch=master&token=vpkyAMSd8vTHK9zwpML6)](https://magnum.travis-ci.com/redCOMPONENT-COM/redCORE/)
-Develop: [![Build Status](https://api.travis-ci.com/redCOMPONENT-COM/redCORE.png?branch=develop&token=vpkyAMSd8vTHK9zwpML6)](https://magnum.travis-ci.com/redCOMPONENT-COM/redCORE/)
+Master: [![Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=master)](https://travis-ci.org/redCOMPONENT-COM/redCORE)
+
+Develop: [![Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=develop)](https://travis-ci.org/redCOMPONENT-COM/redCORE)
 
 Rapid Application Development library for redCOMPONENT extensions
 
