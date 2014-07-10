@@ -403,7 +403,7 @@ class Com_RedcoreInstallerScript
 					$redcoreFolder = dirname(__FILE__);
 					$redcoreComponentFolder = $this->getRedcoreComponentFolder();
 
-					if (is_dir($redcoreFolder) && $redcoreFolder != $redcoreComponentFolder)
+					if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
 					{
 						$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
 
