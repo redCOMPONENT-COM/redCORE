@@ -29,26 +29,52 @@ class currencyTest extends JoomlaTestCase
 	public function testGetIsoCode()
 	{
 		$this->assertEquals(RHelperCurrency::getIsoCode(978), 'EUR');
+		$this->assertEquals(RHelperCurrency::getIsoCode(233445), false);
+		$this->assertEquals(RHelperCurrency::getIsoCode('asdasd'), false);
 	}
 
 	/**
 	 * Test GetIsoNumber
 	 *
 	 * @return void
+	 *
+	 * @throws Exception
 	 */
 	public function testGetIsoNumber()
 	{
 		$this->assertEquals(RHelperCurrency::getIsoNumber('EUR'), 978);
+
+		try
+		{
+			RHelperCurrency::getIsoNumber('A');
+			throw new Exception('there should have been another exception');
+		}
+		catch (OutOfRangeException $e)
+		{
+			// It was expected
+		}
 	}
 
 	/**
 	 * Test getPrecision
+	 *
+	 * @throws Exception
 	 *
 	 * @return void
 	 */
 	public function testGetPrecision()
 	{
 		$this->assertEquals(RHelperCurrency::getPrecision('EUR'), 2);
+
+		try
+		{
+			RHelperCurrency::getPrecision('A');
+			throw new Exception('there should have been another exception');
+		}
+		catch (OutOfRangeException $e)
+		{
+			// It was expected
+		}
 	}
 
 	/**
@@ -60,5 +86,16 @@ class currencyTest extends JoomlaTestCase
 	{
 		$this->assertTrue(RHelperCurrency::isValid('EUR'));
 		$this->assertFalse(RHelperCurrency::isValid('A'));
+	}
+
+	/**
+	 * Test getOptions
+	 *
+	 * @return void
+	 */
+	public function testGetOptions()
+	{
+		$options = RHelperCurrency::getCurrencyOptions();
+		$this->assertTrue(is_array($options) && count($options));
 	}
 }
