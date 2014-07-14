@@ -18,9 +18,9 @@ if (!defined('JPATH_REDCORE'))
 	require JPATH_REDCORE . '/functions.php';
 }
 
-if (!defined('JPATH_API'))
+if (!defined('JPATH_REDCORE_API'))
 {
-	define('JPATH_API', JPATH_REDCORE . '/api');
+	define('JPATH_REDCORE_API', JPATH_REDCORE . '/api');
 }
 
 /**

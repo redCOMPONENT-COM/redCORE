@@ -79,6 +79,7 @@ class PlgSystemRedcore extends JPlugin
 					$apiClass = new RApiFile($api);
 
 
+
 				}
 				catch (Exception $e)
 				{
