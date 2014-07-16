@@ -1,3 +1,5 @@
 comp.name=redcore
 www.dir=/var/www/redCORE
 package.dir=/Workspace/RedComponent/packages/redCORE
+
+www.dirtest=/path/to/joomla/test/site
