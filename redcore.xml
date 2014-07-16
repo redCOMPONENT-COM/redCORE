@@ -98,7 +98,6 @@
     <!-- Minimum requirements for extension -->
     <requirements>
         <php>5.3.0</php>
-        <mysql>5.0.4</mysql>
     </requirements>
 
     <!-- Postflight tasks -->

@@ -68,18 +68,30 @@ class PlgSystemRedcore extends JPlugin
 	{
 		if (defined('REDCORE_LIBRARY_LOADED'))
 		{
-			$api = JFactory::getApplication()->input->getString('api', 'Hal');
+			$input = JFactory::getApplication()->input;
+			$apiName = $input->getString('api', 'Hal');
 
-			if (!empty($api))
+			if (!empty($apiName))
 			{
-				$api = ucfirst($api);
+				$apiName = ucfirst($apiName);
 
 				try
 				{
-					$apiClass = new RApiFile($api);
+					$suffixes = $input->getString('apiversion', '');
+					$suffixes = !empty($suffixes) ? array($suffixes) : array('v2', 'v1');
+					$options = array(
+						'api'       => $apiName,
+						'component' => $input->getString('option', ''),
+						'client' => (int) JFactory::getApplication()->isAdmin(),
+						'suffixes' => $suffixes,
+						'method' => strtoupper($input->getMethod()),
+					);
 
+					// Create instance of Api and fill all required options
+					$api = RApi::getInstance($options);
 
-
+					// Run the api task
+					$api->execute();
 				}
 				catch (Exception $e)
 				{

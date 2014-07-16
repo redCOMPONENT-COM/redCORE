@@ -140,7 +140,7 @@ class Com_RedcoreInstallerScript
 
 			if (!empty($requirements))
 			{
-				foreach ($requirements as $requirement)
+				foreach ($requirements as $key => $requirement)
 				{
 					foreach ($requirement as $checked)
 					{
@@ -153,8 +153,10 @@ class Com_RedcoreInstallerScript
 								$checked['name'] = JText::_($checked['name']);
 							}
 
+							$messageKey = $key == 'extensions' ? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS' : 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
+
 							JFactory::getApplication()->enqueueMessage(
-								JText::sprintf('COM_REDCORE_INSTALL_ERROR_REQUIREMENTS', $checked['name'], $checked['required'], $checked['current']),
+								JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']),
 								'error'
 							);
 
@@ -403,7 +405,7 @@ class Com_RedcoreInstallerScript
 					$redcoreFolder = dirname(__FILE__);
 					$redcoreComponentFolder = $this->getRedcoreComponentFolder();
 
-					if (is_dir($redcoreFolder) && $redcoreFolder != $redcoreComponentFolder)
+					if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
 					{
 						$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
 
