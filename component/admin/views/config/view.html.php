@@ -41,16 +41,6 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	/**
 	 * @var  array
 	 */
-	protected $modules;
-
-	/**
-	 * @var  array
-	 */
-	protected $plugins;
-
-	/**
-	 * @var  array
-	 */
 	protected $contentElements;
 
 	/**
@@ -74,12 +64,10 @@ class RedcoreViewConfig extends RedcoreHelpersView
 		$this->form	= $model->getForm();
 		$this->component = $model->getComponent($option);
 		$this->return = JFactory::getApplication()->input->get('return');
-
-		$this->modules = $model->getInstalledExtensions('module', array('%' . $this->component->xml->xmlComponentName . '%'));
-		$this->plugins = $model->getInstalledExtensions('plugin', array('%' . $this->component->xml->xmlComponentName . '%'), $this->component->xml->xmlComponentName);
 		$this->componentTitle = RText::getTranslationIfExists($this->component->xml->name, '', '');
 		$this->contentElements = $model->loadContentElements($option);
 		$this->missingContentElements = $model->loadMissingContentElements($option, $this->contentElements);
+
 		RLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/' . $option . '/layouts';
 
 		parent::display($tpl);

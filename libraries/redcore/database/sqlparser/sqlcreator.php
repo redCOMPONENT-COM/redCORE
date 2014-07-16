@@ -135,6 +135,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processTable($v, $k);
 			$sql .= $this->processTableExpression($v, $k);
 			$sql .= $this->processSubquery($v, $k);
+			$sql .= $this->processConstant($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('FROM', $k, $v, 'expr_type');
@@ -642,7 +643,10 @@ class RDatabaseSqlparserSqlcreator {
 		}
 		$sql = substr($this->processFROM($parsed['sub_tree']), 5); // remove FROM keyword
 		$sql = "(" . $sql . ")";
-		$sql .= $this->processAlias($parsed['alias']);
+
+		if (isset($parsed['alias'])) {
+			$sql .= $this->processAlias($parsed['alias']);
+		}
 
 		if ($index !== 0) {
 			$sql = $this->processJoin($parsed['join_type']) . " " . $sql;

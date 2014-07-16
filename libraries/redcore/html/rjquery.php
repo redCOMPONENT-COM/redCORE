@@ -361,4 +361,51 @@ abstract class JHtmlRjquery
 
 		return;
 	}
+
+	/**
+	 * Load the LazyLoad library
+	 * https://github.com/tuupola/jquery_lazyload
+	 *
+	 * @param   string  $selector  CSS Selector of image for apply LazyLoad
+	 * @param   array   $options   Optional array with options
+	 *
+	 * @return  void
+	 */
+	public static function lazyload($selector = 'img.lazy', $options = null)
+	{
+		// Only load once
+		if (isset(static::$loaded[__METHOD__][$selector]))
+		{
+			return;
+		}
+
+		self::framework();
+
+		RHelperAsset::load('lib/lazyload/jquery.lazyload.min.js', self::EXTENSION);
+
+		// Generate options with default values
+		$options = static::options2Jregistry($options);
+
+		JFactory::getDocument()->addScriptDeclaration("
+			(function($){
+				$(document).ready(function () {
+					$('" . $selector . "').each(function(index){
+						if (($(this).attr('data-original') == undefined) || ($(this).attr('data-original') == ''))
+						{
+							$(this).attr('data-original', $(this).attr('src'));
+							$(this).removeAttr('src');
+						}
+					});
+
+					$('" . $selector . "').lazyload(
+						" . $options . "
+					);
+				});
+			})(jQuery);
+		");
+
+		static::$loaded[__METHOD__][$selector] = true;
+
+		return;
+	}
 }

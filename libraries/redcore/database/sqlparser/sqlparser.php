@@ -1010,6 +1010,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				$tmp = $this->split_sql($parseInfo['expression']);
 				$parseInfo['sub_tree'] = $this->process_from($tmp);
 				$res['expr_type'] = 'table_expression';
+				$res['union_tree'] = $tmp;
 			}
 		} else {
 			$res['expr_type'] = 'table';

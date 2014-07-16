@@ -9,16 +9,6 @@
 
 defined('_JEXEC') or die;
 
-$bootstrapPaths = array(
-	JPATH_LIBRARIES . '/redcore',
-	dirname(__FILE__) . '/libraries/redcore'
-);
-
-if ($bootstrapFile = JPath::find($bootstrapPaths, 'bootstrap.php'))
-{
-	require_once $bootstrapFile;
-}
-
 /**
  * Custom installation of redCORE
  *
@@ -35,6 +25,18 @@ class Com_RedcoreInstallerScript
 	 */
 	public $status = null;
 
+	/**
+	 * Show component info after install / update
+	 *
+	 * @var  boolean
+	 */
+	public $showComponentInfo = true;
+
+	/**
+	 * Installer instance
+	 *
+	 * @var  JInstaller
+	 */
 	public $installer = null;
 
 	/**
@@ -85,6 +87,90 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Method to run before an install/update/uninstall method
+	 *
+	 * @param   object      $type    type of change (install, update or discover_install)
+	 * @param   JInstaller  $parent  class calling this method
+	 *
+	 * @return bool
+	 */
+	public function preflight($type, $parent)
+	{
+		$this->installRedcore($type, $parent);
+		$this->loadRedcoreLibrary();
+		$this->loadRedcoreLanguage();
+		$manifest  = $this->getManifest($parent);
+		$extensionType      = $manifest->attributes()->type;
+
+		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
+		{
+			// In case we are installing redcore
+			if (get_called_class() == 'Com_RedcoreInstallerScript')
+			{
+				if (!$this->checkComponentVersion($this->getRedcoreComponentFolder(), dirname(__FILE__), 'redcore.xml'))
+				{
+					JFactory::getApplication()->enqueueMessage(
+						JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'),
+						'error'
+					);
+
+					return false;
+				}
+
+				$searchPaths = array(
+					// Discover install
+					JPATH_LIBRARIES . '/redcore/component',
+					// Install
+					dirname(__FILE__) . '/redCORE/libraries/redcore/component',
+					dirname(__FILE__) . '/libraries/redcore/component',
+				);
+
+				if ($componentHelper = JPath::find($searchPaths, 'helper.php'))
+				{
+					require_once $componentHelper;
+				}
+			}
+
+			$requirements = array();
+
+			if (method_exists('RComponentHelper', 'checkComponentRequirements'))
+			{
+				$requirements = RComponentHelper::checkComponentRequirements($manifest->requirements);
+			}
+
+			if (!empty($requirements))
+			{
+				foreach ($requirements as $key => $requirement)
+				{
+					foreach ($requirement as $checked)
+					{
+						if (!$checked['status'])
+						{
+							// In case redCORE cannot be installed we do not have the language string
+							if (get_called_class() == 'Com_RedcoreInstallerScript')
+							{
+								$this->loadRedcoreLanguage(dirname(__FILE__));
+								$checked['name'] = JText::_($checked['name']);
+							}
+
+							$messageKey = $key == 'extensions' ? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS' : 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
+
+							JFactory::getApplication()->enqueueMessage(
+								JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']),
+								'error'
+							);
+
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Method to install the component
 	 *
 	 * @param   object  $parent  Class calling this method
@@ -110,6 +196,7 @@ class Com_RedcoreInstallerScript
 	{
 		// Install extensions
 		$this->installLibraries($parent);
+		$this->loadRedcoreLibrary();
 		$this->installMedia($parent);
 		$this->installModules($parent);
 		$this->installPlugins($parent);
@@ -279,9 +366,6 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function installTranslations($parent)
 	{
-		// We need it for installing Translation Tables
-		RBootstrap::bootstrap();
-
 		// Required objects
 		$manifest  = $parent->get('manifest');
 
@@ -300,13 +384,51 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Function to install redCORE for components
 	 *
+	 * @param   object  $type    type of change (install, update or discover_install)
 	 * @param   object  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
-	protected function installRedcore($parent)
+	protected function installRedcore($type, $parent)
 	{
-		$installer = $this->getInstaller();
+		// If it's installing redcore as dependency
+		if (get_called_class() != 'Com_RedcoreInstallerScript' && $type != 'discover_install')
+		{
+			$manifest  = $this->getManifest($parent);
+			$type      = $manifest->attributes()->type;
+
+			if ($type == 'component')
+			{
+				if ($redcoreNode = $manifest->redcore)
+				{
+					$installer = $this->getInstaller();
+					$redcoreFolder = dirname(__FILE__);
+					$redcoreComponentFolder = $this->getRedcoreComponentFolder();
+
+					if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
+					{
+						$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
+
+						if ($install)
+						{
+							$installer->install($redcoreFolder);
+							$this->loadRedcoreLibrary();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Function to install redCORE for components
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	protected function postInstallRedcore($parent)
+	{
 		$manifest  = $this->getManifest($parent);
 		$type      = $manifest->attributes()->type;
 
@@ -315,11 +437,6 @@ class Com_RedcoreInstallerScript
 			if ($redcoreNode = $manifest->redcore)
 			{
 				$redcoreFolder = dirname(__FILE__);
-
-				if (is_dir($redcoreFolder))
-				{
-					$installer->install($redcoreFolder);
-				}
 
 				if (!empty($redcoreFolder))
 				{
@@ -349,7 +466,7 @@ class Com_RedcoreInstallerScript
 					$query->where("type=" . $db->quote($type));
 					$query->where("element=" . $db->quote($option));
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -408,13 +525,27 @@ class Com_RedcoreInstallerScript
 		// If it's installing redcore as dependency
 		if (get_called_class() != 'Com_RedcoreInstallerScript' && $type != 'discover_install')
 		{
-			$this->installRedcore($parent);
+			$this->postInstallRedcore($parent);
 		}
 
 		// Execute the postflight tasks from the manifest
 		$this->postFlightFromManifest($type, $parent);
 
 		$this->installTranslations($parent);
+
+		if (in_array($type, array('install', 'update', 'discover_install')))
+		{
+			/** @var JXMLElement $manifest */
+			$manifest = $parent->get('manifest');
+			$attributes = current($manifest->attributes());
+
+			// If it's a component
+			if (isset($attributes['type']) && (string) $attributes['type'] == 'component')
+			{
+				$this->loadRedcoreLanguage();
+				$this->displayComponentInfo($parent);
+			}
+		}
 
 		return true;
 	}
@@ -579,9 +710,7 @@ class Com_RedcoreInstallerScript
 	 */
 	private function preventUninstallRedcore($parent)
 	{
-		require_once JPATH_LIBRARIES . '/redcore/bootstrap.php';
-
-		RBootstrap::bootstrap();
+		$this->loadRedcoreLibrary();
 
 		// Avoid uninstalling redcore if there is a component using it
 		$manifest = $this->getManifest($parent);
@@ -833,5 +962,97 @@ class Com_RedcoreInstallerScript
 
 		// Insert the status
 		array_push($this->status->{$type}, $status);
+	}
+
+	/**
+	 * Method to display component info
+	 *
+	 * @param   object  $parent   Class calling this method
+	 * @param   string  $message  Message to apply to the Component info layout
+	 *
+	 * @return  void
+	 */
+	public function displayComponentInfo($parent, $message = '')
+	{
+		if ($this->showComponentInfo)
+		{
+			if (method_exists('RComponentHelper', 'displayComponentInfo'))
+			{
+				$manifest  = $this->getManifest($parent);
+				echo RComponentHelper::displayComponentInfo((string) $manifest->name, $message);
+			}
+		}
+	}
+
+	/**
+	 * Load redCORE component language file
+	 *
+	 * @param   string  $path  Path to the language folder
+	 *
+	 * @return  void
+	 */
+	public function loadRedcoreLanguage($path = JPATH_ADMINISTRATOR)
+	{
+		// Load common and local language files.
+		$lang = JFactory::getLanguage();
+
+		// Load language file
+		$lang->load('com_redcore', $path, null, true, true)
+		|| $lang->load('com_redcore', $path . "/components/com_redcore", null, true, true)
+		|| $lang->load('com_redcore', $path . "/component/admin", null, true, true);
+	}
+
+	/**
+	 * Load redCORE library
+	 *
+	 * @return  void
+	 */
+	public function loadRedcoreLibrary()
+	{
+		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
+
+		if (file_exists($redcoreLoader))
+		{
+			require_once $redcoreLoader;
+
+			RBootstrap::bootstrap(false);
+		}
+	}
+
+	/**
+	 * Checks version of the extension and returns
+	 *
+	 * @param   string  $original  Original path
+	 * @param   string  $source    Install path
+	 * @param   string  $xmlFile   Component filename
+	 *
+	 * @return  boolean  Returns true if current version is lower or equal or if that extension do not exist
+	 */
+	public function checkComponentVersion($original, $source, $xmlFile)
+	{
+		if (is_dir($original))
+		{
+			$source = $source . '/' . $xmlFile;
+			$sourceXml = JFactory::getXML($source);
+			$original = $original . '/' . $xmlFile;
+			$originalXml = JFactory::getXML($original);
+
+			if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Gets the path of redCORE component
+	 *
+	 * @return  string
+	 */
+	public function getRedcoreComponentFolder()
+	{
+		return JPATH_ADMINISTRATOR . '/components/com_redcore';
 	}
 }

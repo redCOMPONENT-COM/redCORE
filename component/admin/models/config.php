@@ -92,9 +92,8 @@ class RedcoreModelConfig extends RModelAdmin
 	{
 		$this->loadExtensionLanguage($option, $option);
 		$this->loadExtensionLanguage($option, $option . '.sys');
-
 		$component = JComponentHelper::getComponent($option);
-
+		$component->option = $option;
 		$component->xml = RComponentHelper::getComponentManifestFile($option);
 
 		return $component;
@@ -251,13 +250,14 @@ class RedcoreModelConfig extends RModelAdmin
 	/**
 	 * Gets Installed extensions
 	 *
-	 * @param   string  $extensionType      Extension type
-	 * @param   array   $extensionElements  Extension element search type
-	 * @param   string  $extensionFolder    Folder user when searching for plugin
+	 * @param   string   $extensionType      Extension type
+	 * @param   array    $extensionElements  Extension element search type
+	 * @param   string   $extensionFolder    Folder user when searching for plugin
+	 * @param   boolean  $loadLanguage       Load language file for that extension
 	 *
 	 * @return  array  List of objects
 	 */
-	public function getInstalledExtensions($extensionType = 'module', $extensionElements = array('%redcore%'), $extensionFolder = 'redcore')
+	public function getInstalledExtensions($extensionType = 'module', $extensionElements = array('%redcore%'), $extensionFolder = 'redcore', $loadLanguage = true)
 	{
 		$db = $this->getDbo();
 		$query = $db->getQuery(true)
@@ -270,23 +270,60 @@ class RedcoreModelConfig extends RModelAdmin
 		if ($extensionType == 'module')
 		{
 			$query->leftJoin('#__modules as m ON m.module = e.element')
-				->select('m.published as enabled')
+				->select('m.published as enabled, m.module as moduleName')
 				->group('e.element');
 		}
 		else
 		{
-			$query->select('e.enabled');
+			$query->select('e.enabled, e.folder');
 		}
 
-		foreach ($extensionElements as $key => $extensionElement)
+		$elements = array();
+
+		foreach ($extensionElements as $group => $extensionElement)
 		{
-			$extensionElements[$key] = 'e.element LIKE ' . $db->quote($extensionElement);
+			if ($extensionType == 'plugin')
+			{
+				$elements[] = '(e.element LIKE ' . $db->q($extensionElement) . ' AND e.folder = ' . $db->quote($group) . ')';
+			}
+			else
+			{
+				$elements[] = 'e.element LIKE ' . $db->q($extensionElement);
+			}
 		}
 
-		$query->where(implode(' OR ', $extensionElements) . ($extensionType == 'plugin' ? ' OR e.folder = ' . $db->q($extensionFolder) : ''));
+		$extensionsSearch = implode(' OR ', $elements);
+
+		if (!empty($elements) && $extensionType == 'plugin')
+		{
+			$extensionsSearch .= ' OR ';
+		}
+
+		$query->where('(' . $extensionsSearch . ($extensionType == 'plugin' ? ' e.folder = ' . $db->q($extensionFolder) : '') . ')');
 		$db->setQuery($query);
 
 		$extensions = $db->loadObjectList();
+
+		if ($loadLanguage && !empty($extensions))
+		{
+			// Load common and local language files.
+			$lang = JFactory::getLanguage();
+
+			foreach ($extensions as $extension)
+			{
+				if ($extensionType == 'plugin')
+				{
+					$extensionName = strtolower('plg_' . $extension->folder . '_' . $extension->element);
+					$lang->load(strtolower($extensionName), JPATH_ADMINISTRATOR, null, false, true)
+					|| $lang->load(strtolower($extensionName), JPATH_PLUGINS . '/' . $extension->folder . '/' . $extension->element, null, false, true);
+				}
+				else
+				{
+					$lang->load($extension->moduleName, JPATH_SITE, null, false, true) ||
+					$lang->load($extension->moduleName,  JPATH_SITE . "/modules/" . $extension->moduleName, null, false, true);
+				}
+			}
+		}
 
 		return $extensions;
 	}
