@@ -170,6 +170,7 @@ abstract class JModuleHelper extends LIB_JModuleHelperDefault
 			JPATH_THEMES . '/' . $template . '/html/' . $module,
 			JPATH_BASE . '/modules/' . $module . '/tmpl',
 		);
+		$templatePaths = array_merge(self::$includePaths, $templatePaths);
 		$dPath = JPATH_BASE . '/modules/' . $module . '/tmpl/default.php';
 
 		// If the template has a layout override use it
@@ -201,7 +202,7 @@ abstract class JModuleHelper extends LIB_JModuleHelperDefault
 		// Loop through the path directories
 		foreach ($path as $dir)
 		{
-			if (!empty($dir) && !in_array($dir, self::$includePaths))
+			if (!empty($dir) && !in_array(JPath::clean($dir), self::$includePaths))
 			{
 				jimport('joomla.filesystem.path');
 				array_unshift(self::$includePaths, JPath::clean($dir));
