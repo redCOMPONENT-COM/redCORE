@@ -27,7 +27,7 @@ Director and Founder of redCOMPONENT.com
 
 CEO, redWEB ApS
 
-Wiki
+Documentation
 =====
 
-https://github.com/redCOMPONENT-COM/redCORE/wiki
+http://redcomponent-com.github.io/redCORE/
