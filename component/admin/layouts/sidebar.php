@@ -76,4 +76,28 @@ if (empty($return))
 			</a>
 		</li>
 	<?php endif; ?>
+
+	<?php if ($view === 'webservices'): ?>
+		<li class="nav-header"><?php echo JText::_('COM_REDCORE_WEBSERVICES') ?></li>
+		<li class="divider"></li>
+	<?php else: ?>
+		<li>
+			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=webservices') ?>">
+				<i class="icon-globe"></i>
+				<?php echo JText::_('COM_REDCORE_WEBSERVICES') ?>
+			</a>
+		</li>
+	<?php endif; ?>
+
+	<?php if ($view === 'oauth_clients'): ?>
+		<li class="nav-header"><?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS') ?></li>
+		<li class="divider"></li>
+	<?php else: ?>
+		<li>
+			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=oauth_clients') ?>">
+				<i class="icon-globe"></i>
+				<?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS') ?>
+			</a>
+		</li>
+	<?php endif; ?>
 </ul>

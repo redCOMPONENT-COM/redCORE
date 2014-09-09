@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Redshopb.Backend
+ * @package     Redcore.Backend
  * @subpackage  Tables
  *
  * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 /**
- * Category table.
+ * Translation table.
  *
  * @package     Redshopb.Backend
  * @subpackage  Tables

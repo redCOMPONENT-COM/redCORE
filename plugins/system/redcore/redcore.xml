@@ -67,12 +67,143 @@
                     <option value="triggers">PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_TRIGGERS</option>
                     <option value="none">PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_NONE</option>
                 </field>
-                <field
+                <!--<field
                         name="show_edit_button_on_all_forms"
                         type="list"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_TRANSLATIONS_SHOW_TRANSLATION_BUTTON"
                         description="PLG_SYSTEM_REDCORE_TRANSLATIONS_SHOW_TRANSLATION_BUTTON_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>-->
+            </fieldset>
+            <fieldset name="PLG_SYSTEM_REDCORE_WEBSERVICES_OPTIONS">
+                <field
+                        name="enable_webservices"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_WEBSERVICES"
+                        description="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_WEBSERVICES_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+            <fieldset name="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_OPTIONS">
+                <field
+                        name="enable_oauth2_server"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENABLE"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENABLE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_use_crypto_tokens"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_CRYPTO_TOKEN"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_CRYPTO_TOKEN_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_store_encrypted_token_string"
+                        type="list"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_STORE_ENCRYPTED_TOKEN_STRING"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_STORE_ENCRYPTED_TOKEN_STRING_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_use_openid_connect"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_OPENID_CONNECT"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_OPENID_CONNECT_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                    name="oauth2_id_lifetime"
+                    type="text"
+                    default="3600"
+                    label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME"
+                    description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME_DESC"
+                    />
+                <field
+                        name="oauth2_access_lifetime"
+                        type="text"
+                        default="3600"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ACCESS_LIFETIME"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ACCESS_LIFETIME_DESC"
+                        />
+                <field
+                        name="oauth2_token_param_name"
+                        type="text"
+                        default="access_token"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_TOKEN_PARAM_NAME"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_TOKEN_PARAM_NAME_DESC"
+                        />
+                <field
+                        name="oauth2_token_bearer_header_name"
+                        type="text"
+                        default="Bearer"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_TOKEN_BEARER_HEADER_NAME"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_TOKEN_BEARER_HEADER_NAME_DESC"
+                        />
+                <field
+                        name="oauth2_enforce_state"
+                        type="list"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENFORCE_STATE"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENFORCE_STATE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_require_exact_redirect_uri"
+                        type="list"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_REQUIRE_EXACT_REDIRECT_URI"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_REQUIRE_EXACT_REDIRECT_URI_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_allow_implicit"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_IMPLICIT"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_IMPLICIT_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_allow_credentials_in_request_body"
+                        type="list"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_CREDENTIALS_IN_REQUEST_BODY"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_CREDENTIALS_IN_REQUEST_BODY_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_allow_public_clients"
+                        type="list"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_PUBLIC_CLIENTS"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_PUBLIC_CLIENTS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_always_issue_new_refresh_token"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
