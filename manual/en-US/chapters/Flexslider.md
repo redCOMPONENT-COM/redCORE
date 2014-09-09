@@ -3,21 +3,21 @@ redCORE integrates [flexslider](https://github.com/woothemes/flexslider) support
 To load flexslider libraries in any page add:
 
 
-```php
+```
 <?php 
 JHtml::_('rjquery.flexslider');
 ```
 That will load basic flexslider libraries and tie it to all divs with class `flexslider`.
 For specific selector, use following:
 
-```php
+```
 <?php 
 JHtml::_('rjquery.flexslider', '.example-class');
 ```
 Where `example-class` is wanted selector.
 You can also provide options array with specific settings for slider.
 
-```php
+```
 <?php 
 JHtml::_('rjquery.flexslider', '.example-class', array('animation' => 'slide'));
 ```
@@ -27,7 +27,7 @@ For more info on available slider options checkout [this page](https://github.co
 
 This is the full function definition for reference.
 
-```php
+```
 <?php 
 public static function flexslider($selector = '.flexslider', $options = null)
 ```

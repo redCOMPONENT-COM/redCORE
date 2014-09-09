@@ -1,6 +1,6 @@
 ## Usage
 
-```php
+```
 <?php
 
 // Will create a context 'redshop.checkout' and browse the current uri

@@ -4,7 +4,7 @@ You can disable the top and side bars.
 
 ### Disable the topbar
 
-```php
+```
 <?php
 
 $input->set('disable_topbar', true);
@@ -12,7 +12,7 @@ $input->set('disable_topbar', true);
 
 ### Disable the sidebar
 
-```php
+```
 <?php
 
 $input->set('disable_sidebar', true);
@@ -20,7 +20,7 @@ $input->set('disable_sidebar', true);
 
 ### Disable both
 
-```php
+```
 <?php
 
 $input->set('hidemainmenu', true);
@@ -39,7 +39,7 @@ This method returns the columns you want to display :
 - the array keys match the name of the columns returned by the model list method `getItems()`
 - the array values correspond to the title you want to display for the corresponding column
 
-```php
+```
 <?php
 
 class RedshopbViewDepartments extends RViewCsv
@@ -70,7 +70,7 @@ The view needs to be saved as `view.csv.php`.
 
 You can display a link to the csv view by using the toolbar button.
 
-```php
+```
 <?php
 
 // If you are in the normal list view 'view.html.php' 

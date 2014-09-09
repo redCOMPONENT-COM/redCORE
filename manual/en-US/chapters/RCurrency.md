@@ -2,7 +2,7 @@
 This field will show a list of ISO 4217 currencies (the value is the ISO 3 letters code)
 
 ### Sample code
-```xml
+```
 <field 
    name="currency" 
    type="rcurrency"

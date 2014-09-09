@@ -18,3 +18,6 @@ You can contribute changes sending your pulls to https://github.com/redCOMPONENT
 To know more about Github pages check: https://pages.github.com/
 
 To Generate the page in your localhost please check https://help.github.com/articles/using-jekyll-with-pages
+
+## Todo's in documentation
+This documentation is missing the anchor feature

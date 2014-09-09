@@ -2,7 +2,7 @@ redCORE integrates bootstrap-checkbox support for checkbox styling.
 
 To load this library use following:
 
-```php
+```
 <?php 
 JHtml::_('rbootstrap.checkbox');
 ```

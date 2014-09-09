@@ -1,6 +1,6 @@
 ## getAutoInstance
 
-```php
+```
 <?php
 $productTable = RTable::getAutoInstance('Product');
 ```
@@ -9,7 +9,7 @@ will get an instance of the backend or frontend table `RedshopTableProduct` if t
 
 ## getAdminInstance
 
-```php
+```
 <?php
 $productTable = RTable::getAdminInstance('Product');
 ```
@@ -18,7 +18,7 @@ will get an instance of the **backend** table `RedshopTableProduct` if the optio
 
 ## getFrontInstance
 
-```php
+```
 <?php
 $productTable = RTable::getFrontInstance('Product');
 ```

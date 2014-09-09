@@ -4,7 +4,7 @@ To integrate redCORE in your component:
 
 You can start using redCORE directly in the installer script (most of the times `install.php`):
 
-```php
+```
 <?php
 /**
  * @package     Redshopb
@@ -50,11 +50,11 @@ That will extend the redCORE installer (**Pkg_RedcoreInstallerScript**) so your 
 
 To be detected as a **redCORE component** the manifest also requires that you add:
 
-```xml
+```
 <redcore version="1.0" />
 ```
 Manifest example:
-```xml
+```
     <name>COM_REDSOURCE</name>
     <creationDate>June 2013</creationDate>
     <author>redCOMPONENT</author>
@@ -70,7 +70,7 @@ Manifest example:
 
 That information is also stored in the standard component parameters so you can do:
 
-```php
+```
 <?php
 $comParams = JComponentHelper::getParams('com_redshopb');
 $redcoreParams = $comParams->get('redcore');

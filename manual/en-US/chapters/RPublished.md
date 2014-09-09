@@ -15,7 +15,7 @@ You can customise which status show/enable with the attribute <code>statuses</co
 
 This field will only show statuses 0,1 (unpublished, published):  
 
-```xml
+```
 <field 
    name="filter_published" 
    type="rpublished"

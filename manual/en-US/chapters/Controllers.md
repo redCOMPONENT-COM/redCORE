@@ -4,7 +4,7 @@
 
 You can force the form controller to redirect to a specific url after save/close by passing the base64 encoded return url in the request :
 
-```php
+```
 <?php
 
 $return = base64_encode('index.php?option=com_redshopb&view=product&layout=edit&id=' 
@@ -15,7 +15,7 @@ $url = JRoute::_('index.php?option=com_redshopb&task=product.edit&id='
 
 in the form item you must add :
 
-```php
+```
 <input type="hidden" name="return" 
 value="<?php echo JFactory::getApplication()->input->get('return') ?>">
 ```

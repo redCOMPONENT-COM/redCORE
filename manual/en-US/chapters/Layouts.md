@@ -17,7 +17,7 @@ Note : the menu is very dirty under Joomla 2.5 as it's not bootstraped.
 
 ### Example
 
-```php
+```
 <?php
 $modal = RModal::getInstance(
     array(

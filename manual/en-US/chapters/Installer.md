@@ -4,7 +4,7 @@ You can specify postflight tasks in the manifest to be executed.
 
 ### Simple Example
 
-```xml
+```
 <postflight>
    <task name="hey" />
    <task name="hello" />
@@ -13,7 +13,7 @@ You can specify postflight tasks in the manifest to be executed.
 
 will execute the functions
 
-```php
+```
 <?php
 
 protected function hey($type, $parent)
@@ -31,7 +31,7 @@ defined in the component installer class.
 
 You can also specify parameters value to be passed to the task. The parameters will be passed in the order they are defined in the manifest file.
 
-```xml
+```
     <postflight>
         <task name="coolTask">
             <parameter>1</parameter>
@@ -42,7 +42,7 @@ You can also specify parameters value to be passed to the task. The parameters w
 
 will execute the function :
 
-```php
+```
 <?php
 
 protected function coolTask($type, $parent, $integer, $string)
@@ -62,7 +62,7 @@ List of the predefined tasks in the redCORE installer available to all component
 
 This is a predefined task that deletes the menu item associated with the current component.
 
-```xml
+```
     <postflight>
         <task name="deleteMenu">
             <parameter>1</parameter>

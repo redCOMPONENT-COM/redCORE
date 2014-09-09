@@ -1,6 +1,6 @@
 There is a base system for list helpers. You can use it like:
 
-```php
+```
 <?php
 final class RedshopbHelperDepartments extends RHelperList
 ```
@@ -22,7 +22,7 @@ Then if the model is not found it will automatically require it.
 
 The new helper will have automatically two functions:
 
-```php
+```
 <?php
 	/**
 	 * Get and instance of the model
@@ -47,13 +47,13 @@ The new helper will have automatically two functions:
 
 ```
 So you can get the associated model fastly from anywhere with: 
-```php
+```
 <?php
 RedshopbHelperDepartments::getModel();
 ```
 You can use the search function with something like:
 
-```php
+```
 <?php
 $departments = RedshopbHelperDepartments::search(array('search' => 'developers'), array('limit' => 2, 'ordering' => 'name', 'direction' => 'desc'));
 ```

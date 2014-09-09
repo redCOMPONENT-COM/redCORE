@@ -2,7 +2,7 @@
 This field will show a list of ISO 3166 countries (the value is the ISO 2 letters code)
 
 ### Sample code
-```xml
+```
 <field 
    name="country" 
    type="rcountry"

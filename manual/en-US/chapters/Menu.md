@@ -1,6 +1,6 @@
 Breadcrumb Example :
 
-```php
+```
 // Create the root node.
 $home = new RMenuNode('home', 'Home', '#');
 

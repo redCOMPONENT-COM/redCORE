@@ -1,6 +1,6 @@
 This field allows you to create a list field dependent on a parent field.
 
-```xml
+```
 <field
 	name="type"
 	type="rchildlist"
@@ -28,7 +28,7 @@ Specific field attributes:
 
 The AJAX function has to return a json encoded list of text / value items. Example:
 
-```php
+```
 <?php
 	/**
 	 * Returns channel columns as json

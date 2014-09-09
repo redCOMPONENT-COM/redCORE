@@ -4,7 +4,7 @@ redCORE integrates the standard Joomla! sorting but using layouts to render the 
 
 This is the most used case for the title of table columns.
 
-```php
+```
 <?php echo JHtml::_('rgrid.sort', 'JGRID_HEADING_ID', 'a.id', $listDirn, $listOrder); ?>
 ```
 
@@ -12,6 +12,6 @@ This is the most used case for the title of table columns.
 
 Special example of the ordering column that only displays an icon.
 
-```php
+```
 <?php echo JHtml::_('rgrid.sort', null, 'a.ordering', $listDirn, $listOrder, null, 'asc', '', 'icon-sort'); ?>
 ```

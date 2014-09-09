@@ -2,7 +2,7 @@
 
 Validates a float value.
 
-```xml
+```
 <field 
       name="price" 
       type="text"
@@ -17,7 +17,7 @@ Validates an integer value.
 
 `signed` : True to allow signed integers like +10, -100. False by default.
 
-```xml
+```
 <field 
       name="price" 
       type="text"
@@ -31,7 +31,7 @@ Validates an integer value.
 
 Validates a date against a format.
 
-```xml
+```
 <field 
       name="name" 
       type="text"
@@ -51,7 +51,7 @@ All range rules work with min and/or max values specified.
 Validates that a date is superior than min and inferior than max (if specified).
 `min` and `max` must be in the same format than `format`.
 
-```xml
+```
 <field 
       name="name" 
       type="text"
@@ -67,7 +67,7 @@ Validates that a date is superior than min and inferior than max (if specified).
 
 Validates that a string has a lenght superior than `min` and inferior than `max` (if specified).
 
-```xml
+```
 <field 
       name="name" 
       type="text"
@@ -82,7 +82,7 @@ Validates that a string has a lenght superior than `min` and inferior than `max`
 
 Validates that an integer or float has a value superior than `min` and inferior than `max` (if specified).
 
-```xml
+```
 <field 
       name="price" 
       type="text"

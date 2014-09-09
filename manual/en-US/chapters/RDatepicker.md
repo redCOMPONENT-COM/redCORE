@@ -5,7 +5,7 @@ It supports almost all the native [datapicker options](http://api.jqueryui.com/d
 ### Example 1: 
 Sample field call:
 
-```xml
+```
 	<field
 		name="inline_to_date"
 		type="rdatepicker"
@@ -15,7 +15,7 @@ Sample field call:
 
 ### Example 2: 
 Force the week to start on monday (`firstDay`), set the default date to today + 60 days (`defaultDate`) and specify the date format to yy-mm-dd (`dateFormat`):
-```xml
+```
 	<field
 		name="inline_to_date"
 		type="rdatepicker"
@@ -27,7 +27,7 @@ Force the week to start on monday (`firstDay`), set the default date to today + 
 ```
 ### Example 3: 
 Same as Example 2 but in this case the calendar will be always shown (`inline = true`) and it will update a hidden field called `return_date` (with `altField="#jform_return_date"` that is the DOM id of the field) 
-```xml
+```
 	<field
 		name="inline_to_date"
 		type="rdatepicker"

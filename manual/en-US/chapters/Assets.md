@@ -1,6 +1,6 @@
 Use RHelperAsset to load JS, CSS & images. That will automatically allow users to override that files in the template and makes asset loading quite simple.
 
-```php
+```
 <?php
 /**
  * Load JS
