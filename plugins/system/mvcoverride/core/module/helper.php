@@ -77,10 +77,10 @@ abstract class JModuleHelper extends LIB_JModuleHelperDefault
 			$content = '';
 			ob_start();
 
-			$pathes = array(JPATH_BASE . '/modules');
-			$pathes = array_merge(self::addIncludePath(), $pathes);
+			$paths = array(JPATH_BASE . '/modules');
+			$paths = array_merge(self::addIncludePath(), $paths);
 
-			include JPath::find($pathes, $module->module . '/' . $module->module . '.php');
+			include JPath::find($paths, $module->module . '/' . $module->module . '.php');
 
 			$module->content = ob_get_contents() . $content;
 			ob_end_clean();
