@@ -205,17 +205,14 @@ abstract class JModuleHelper extends LIB_JModuleHelperDefault
 		{
 			// Force path to array
 			settype($path, 'array');
+			jimport('joomla.filesystem.path');
 
 			// Loop through the path directories
 			foreach ($path as $dir)
 			{
 				if (!empty($dir) && !in_array(JPath::clean($dir), self::$includePaths))
 				{
-					jimport('joomla.filesystem.path');
 					array_unshift(self::$includePaths, JPath::clean($dir));
-
-					// Fix to override include path priority
-					self::$includePaths = array_reverse(self::$includePaths);
 				}
 			}
 		}
