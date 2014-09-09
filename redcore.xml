@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="2.5" method="upgrade">
     <name>COM_REDCORE</name>
-    <creationDate>May 2014</creationDate>
+    <creationDate>August 2014</creationDate>
     <author>redCOMPONENT</author>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
@@ -73,6 +73,7 @@
     <plugins>
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
+        <plugin name="mvcoverride" group="system"/>
     </plugins>
 
     <!-- Modules to install with the component -->

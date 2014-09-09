@@ -133,12 +133,14 @@ JHtml::_('rbootstrap.tooltip');
 			<?php if (!empty($modules)): ?>
 				<?php foreach ($modules as $module):
 					$fromExtension = false;
-					foreach ($xml->modules->module as $xmlModule):
-						if ($module->element == (string) $xmlModule['name']):
-							$fromExtension = true;
-							break;
-						endif;
-					endforeach;
+					if (!empty($xml->modules)):
+						foreach ($xml->modules->module as $xmlModule):
+							if ($module->element == (string) $xmlModule['name']):
+								$fromExtension = true;
+								break;
+							endif;
+						endforeach;
+					endif;
 					?>
 					<tr>
 						<td>
