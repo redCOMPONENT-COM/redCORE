@@ -142,8 +142,6 @@ class MVCOverrideHelperCodepool
 		foreach ($path as $codePool)
 		{
 			$codePool = JPath::clean($codePool);
-			JModuleHelper::addIncludePath($codePool);
-
 			array_push(self::$paths, $codePool);
 		}
 
