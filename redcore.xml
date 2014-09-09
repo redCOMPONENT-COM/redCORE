@@ -62,6 +62,7 @@
         <folder>images</folder>
         <folder>js</folder>
         <folder>translations</folder>
+        <folder>webservices</folder>
     </media>
 
     <!-- Libraries to install with the component -->

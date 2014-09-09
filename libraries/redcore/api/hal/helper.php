@@ -653,7 +653,7 @@ class RApiHalHelper
 			// We put translation check back on
 			$db->translate = true;
 			$parameters = $component->params->toArray();
-			self::$installedWebservices = !empty($parameters) ? $parameters['webservices'] : array();
+			self::$installedWebservices = !empty($parameters['webservices']) ? $parameters['webservices'] : array();
 		}
 
 		return self::$installedWebservices;
