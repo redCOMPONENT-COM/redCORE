@@ -1,6 +1,0 @@
-- [Introduction](chapters/introduction.md)
-- [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
-- **redCORE**
-    - [Adding redCORE to your extension](chapters/add-to-your-extension.md)
-- **Appendices**
-    - [Examples](appendices/examples.md)

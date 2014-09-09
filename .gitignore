@@ -26,7 +26,8 @@ Desktop.ini
 *~.nib
 *~
 
-
+# Kekyll
+_site/
 
 # Never ignore
 !.gitignore

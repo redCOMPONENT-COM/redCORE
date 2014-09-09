@@ -1,6 +1,51 @@
 - [Introduction](chapters/introduction.md)
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
 - **redCORE**
-    - [Adding redCORE to your extension](chapters/add-to-your-extension.md)
+    - [Installer](chapters/Installer.md)
+    - [in your extension](chapters/add-to-your-extension.md)
+- **MVC**
+    - [Model](chapters/Model.md)
+    - [View and CSV](chapters/View.md)
+    - [Table](chapters/Table.md)
+    - [Controllers](chapters/Controllers.md)
+- **Forms**
+    - [Forms](chapters/Forms.md)
+       - [Fields](chapters/Fields.md)
+          - [RChildlist](chapters/RChildlist.md)
+          - [RCountry](chapters/RCountry.md)
+          - [RCurrency](chapters/RCurrency.md)
+          - [RDatepicker](chapters/RDatepicker.md)
+          - [RPublished](chapters/RPublished.md)
+          - [Checkbox](chapters/Checkbox.md)
+       - [Rules](chapters/Rules.md)
+- **Helpers**
+    - [Helpers](chapters/Helpers.md)
+       - [Currency](chapters/Currency.md)
+       - [Country](chapters/Country.md)
+       - [List](chapters/List.md)
+- **Widgets**
+    - [Widgets](chapters/Widgets.md)
+       - Tooltip
+- **Menu**
+    - [Menu](chapters/Menu.md)
+- **HTML**
+    - [Html](chapters/Html.md)
+       - [Sorting](chapters/Sorting.md)
+- **Layouts**
+    - [Layouts](chapters/Layouts.md)
+       - Topbar
+       - Modal
+- **Assets**
+    - [Assets](chapters/Assets.md)
+       - [CSS minified files](chapters/Css-minified-files.md)
+       - [JS minified files](chapters/JS-minified-files.md)
+       - [Chosen](chapters/Chosen.md)
+       - [Select2](chapters/Select2.md)
+       - [Holder](chapters/Holder.md)
+       - [Flexslider](chapters/Flexslider.md)
+    - [Browser](chapters/Browser.md)
+- **Media**
+    - [Icons](chapters/Icons.md)
+
 - **Appendices**
     - [Examples](appendices/examples.md)
