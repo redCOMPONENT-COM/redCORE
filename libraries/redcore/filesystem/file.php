@@ -28,7 +28,6 @@ abstract class RFilesystemFile extends JFile
 	 *                         allowedFileExtensions    => Comma separated string list of allowed file extensions.
 	 *                         allowedMIMETypes         => Comma separated string list of allowed MIME types.
 	 *                         setUniqueFileName        => If set this will mangle destination file name
-	 *                         destinationFileName      => If set this string will be destination file name
 	 *                         overrideExistingFile     => If set this will override File with the same name if it exists
 	 *
 	 * @return array|bool
@@ -47,12 +46,6 @@ abstract class RFilesystemFile extends JFile
 			{
 				$fileExtension = self::getExt($file['name']);
 				$file['destinationFileName'] = self::getUniqueName($file['name']) . '.' . $fileExtension;
-			}
-			elseif (!empty($options['destinationFileName']))
-			{
-				$fileExtension = self::getExt($options['destinationFileName']);
-				$fileExtension = !empty($fileExtension) ? '' : '.' . self::getExt($file['name']);
-				$file['destinationFileName'] = self::makeSafe($options['destinationFileName'] . $fileExtension);
 			}
 			else
 			{

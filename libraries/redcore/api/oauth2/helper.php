@@ -22,7 +22,7 @@ class RApiOauth2Helper
 	 * OAuth2 Server instance
 	 *
 	 * @var    RApiOauth2Oauth2
-	 * @since  1.0
+	 * @since  1.2
 	 */
 	public static $serverApi = null;
 
@@ -30,7 +30,7 @@ class RApiOauth2Helper
 	 * An array to hold installed Webservices data
 	 *
 	 * @var    array
-	 * @since  1.0
+	 * @since  1.2
 	 */
 	public static $installedWebservices = null;
 
@@ -46,12 +46,7 @@ class RApiOauth2Helper
 			->setApiOperation('token')
 			->execute();
 
-		if ($serverApi->response instanceof OAuth2\ResponseInterface)
-		{
-			return $serverApi->response->getParameters();
-		}
-
-		return is_array($serverApi->response) ? $serverApi->response : array($serverApi->response);
+		return $serverApi->response;
 	}
 
 	/**
@@ -84,12 +79,7 @@ class RApiOauth2Helper
 			->setApiOperation('authorize')
 			->execute();
 
-		if ($serverApi->response instanceof OAuth2\ResponseInterface)
-		{
-			return $serverApi->response->getParameters();
-		}
-
-		return is_array($serverApi->response) ? $serverApi->response : array($serverApi->response);
+		return $serverApi->response;
 	}
 
 	/**

@@ -94,11 +94,9 @@ class RApiOauth2Oauth2 extends RApi
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
 		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $serverConfig));
 
-
-		// Add scopes
+		// @todo Add scopes
 		//$doctrine = $storage->getTable('OAuth2Scope');
 		//$scopeUtil = new OAuth2\Scope($doctrine);
-
 		//$this->server->setScopeUtil($scopeUtil);
 	}
 
@@ -151,12 +149,6 @@ class RApiOauth2Oauth2 extends RApi
 				break;
 		}
 
-		//$messages = JFactory::getApplication()->getMessageQueue();
-
-
-		// Set links from resources to the main document
-		//$this->setDataValueToResource($this->hal, $this->resources, $this->data);
-
 		return $this;
 	}
 
@@ -195,7 +187,9 @@ class RApiOauth2Oauth2 extends RApi
 
 		$token = $this->server->getResourceController()->getToken();
 
-		$this->response = json_encode(array('success' => true, 'user_id' => $token['user_id'], 'message' => JText::_('LIB_REDCORE_API_OAUTH2_SERVER_ACCESS_SUCCESS')));
+		$this->response = json_encode(
+			array('success' => true, 'user_id' => $token['user_id'], 'message' => JText::_('LIB_REDCORE_API_OAUTH2_SERVER_ACCESS_SUCCESS'))
+		);
 
 		return $this;
 	}

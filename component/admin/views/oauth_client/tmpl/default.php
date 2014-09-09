@@ -61,12 +61,12 @@ JHtml::_('rjquery.chosen', 'select');
 			</div>
 		</div>
 		<?php if ($this->item->client_id) : ?>
-			<div class="span6 well">
+			<div class="span6 well" style="word-wrap:break-word;">
 				<div class="control-group">
 					<div class="control-label">
 						<?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET'); ?>
 					</div>
-					<div class="controls" style="word-wrap:break-word;">
+					<div class="controls">
 						<?php echo $this->item->client_secret; ?>
 					</div>
 				</div>

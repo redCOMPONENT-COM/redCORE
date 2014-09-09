@@ -38,24 +38,25 @@
 			class="btn-group"
 			default=""
 			>
-            <option value="authorization_code">Authorization Code</option>
-			<option value="implicit">Implicit</option>
-            <option value="password">User Credentials</option>
-            <option value="client_credentials">Client Credentials</option>
-            <option value="refresh_token">Refresh Token</option>
-            <option value="jwt-bearer">JWT Bearer</option>
+            <option value="authorization_code">COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPE_AUTHORIZATION_CODE</option>
+			<option value="implicit">COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPE_IMPLICIT</option>
+            <option value="password">COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPE_USER_CREDENTIALS</option>
+            <option value="client_credentials">COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPE_CLIENT_CREDENTIALS</option>
+            <option value="refresh_token">COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPE_REFRESH_TOKEN</option>
+            <option value="jwt-bearer">COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPE_JWT_BEARER</option>
 		</field>
         <field
                 name="scope"
                 type="text"
                 label="COM_REDCORE_OAUTH_CLIENTS_SCOPE"
                 description="COM_REDCORE_OAUTH_CLIENTS_SCOPE_DESC"
+                readonly="true"
                 />
 		<field
 			name="user_id"
 			type="user"
-			label="COM_REDCORE_OAUTH_CLIENTS_USER_ID"
-			description="COM_REDCORE_OAUTH_CLIENTS_USER_ID_DESC"
+			label="COM_REDCORE_OAUTH_CLIENTS_USER"
+			description="COM_REDCORE_OAUTH_CLIENTS_USER_DESC"
 			>
 		</field>
 	</fieldset>

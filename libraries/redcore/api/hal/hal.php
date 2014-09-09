@@ -64,12 +64,6 @@ class RApiHalHal extends RApi
 	public $uriParams = array();
 
 	/**
-	 * @var    string  Path to webservices folder
-	 * @since  1.2
-	 */
-	public $pathToWebservices = '';
-
-	/**
 	 * @var    SimpleXMLElement  Api Configuration
 	 * @since  1.2
 	 */
@@ -98,7 +92,6 @@ class RApiHalHal extends RApi
 	{
 		parent::__construct($options);
 
-		$this->pathToWebservices = RApiHalHelper::getWebservicesPath();
 		$this->webserviceName = $this->options->get('optionName', '');
 		$viewName = $this->options->get('viewName', '');
 		$this->webserviceName .= !empty($this->webserviceName) && !empty($viewName) ? '-' . $viewName : '';
@@ -115,6 +108,8 @@ class RApiHalHal extends RApi
 			$this->configuration = RApiHalHelper::loadWebserviceConfiguration($this->webserviceName, $this->webserviceVersion);
 			$this->setResources();
 		}
+
+		$this->hal = new RApiHalDocumentResource('');
 	}
 
 	/**
@@ -167,13 +162,11 @@ class RApiHalHal extends RApi
 	 */
 	public function execute()
 	{
-		$this->hal = new RApiHalDocumentResource('');
-
 		if (!empty($this->webserviceName))
 		{
 			if (!$this->isOperationAllowed())
 			{
-				throw new RuntimeException('Operation is not allowed');
+				throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
 			}
 
 			$this->elementName = ucfirst(strtolower((string) $this->getConfig('config.name')));
@@ -790,12 +783,13 @@ class RApiHalHal extends RApi
 		// Check if webservice is published
 		if (!RApiHalHelper::isPublishedWebservice($this->webserviceName, $this->webserviceVersion) && !empty($this->webserviceName))
 		{
-			throw new RuntimeException(sprintf('Webservice is not published: %s', $this->webserviceName));
+			throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_IS_UNPUBLISHED', $this->webserviceName));
 		}
 
 		// Check for allowed operations
 		$allowedOperations = $this->getConfig('operations');
 		$scope = $this->operation;
+		$terminateIfNotAuthorized = true;
 
 		if (!isset($allowedOperations->{$this->operation}))
 		{
@@ -811,6 +805,17 @@ class RApiHalHal extends RApi
 			{
 				return false;
 			}
+
+			if (isset($allowedOperations->task->{$task}['authorization'])
+				&& strtolower($allowedOperations->task->{$task}['authorization']) == 'false')
+			{
+				$terminateIfNotAuthorized = false;
+			}
+		}
+		elseif (isset($allowedOperations->{$this->operation}['authorization'])
+			&& strtolower($allowedOperations->{$this->operation}['authorization']) == 'false')
+		{
+			$terminateIfNotAuthorized = false;
 		}
 
 		// @todo finish scope initialization
@@ -822,7 +827,7 @@ class RApiHalHal extends RApi
 
 		if ($response instanceof OAuth2\Response)
 		{
-			if (!$response->isSuccessful())
+			if (!$response->isSuccessful() && $terminateIfNotAuthorized)
 			{
 				// OAuth2 Server response is in fact correct output for errors
 				$response->send($this->options->get('format', 'json'));
@@ -830,8 +835,7 @@ class RApiHalHal extends RApi
 				JFactory::getApplication()->close();
 			}
 		}
-
-		if (!empty($response['user_id']))
+		elseif (!empty($response['user_id']))
 		{
 			// Load the JUser class on application for this client
 			JFactory::getApplication()->loadIdentity(JFactory::getUser($response['user_id']));
@@ -970,8 +974,6 @@ class RApiHalHal extends RApi
 			{
 				$resource = RApiHalHelper::getXMLElementAttributes($resourcesXml);
 				$resource = RApiHalDocumentResource::defaultResourceField($resource);
-				//$resource['resourceSpecific'] = RApiHalHelper::attributeToString($resource, 'resourceSpecific', 'rcwsGlobal');
-				//$resourceName = $resource['displayName'];
 
 				$resources[$resource['resourceSpecific']][$resource['displayName']] = $resource;
 			}

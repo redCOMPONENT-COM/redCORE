@@ -11,4 +11,3 @@ View the [complete documentation](http://bshaffer.github.io/oauth2-server-php-do
 redcore
 =========
 Install tables have been put into automatic redcore installation procedure.
-Files modified from the original library:

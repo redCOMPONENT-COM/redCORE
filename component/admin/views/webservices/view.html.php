@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  *
  * @package     Redcore.Admin
  * @subpackage  Views
- * @since       1.0
+ * @since       1.2
  */
 class RedcoreViewWebservices extends RedcoreHelpersView
 {

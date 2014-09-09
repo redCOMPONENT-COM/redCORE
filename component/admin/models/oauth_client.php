@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  *
  * @package     Redcore.Backend
  * @subpackage  Models
- * @since       1.0
+ * @since       1.2
  */
 class RedcoreModelOauth_Client extends RModelAdmin
 {
@@ -27,7 +27,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 	 *
 	 * @throws  RuntimeException
 	 *
-	 * @since   1.0
+	 * @since   1.2
 	 */
 	public function save($data)
 	{
@@ -70,7 +70,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 	 *
 	 * @return  mixed    Object on success, false on failure.
 	 *
-	 * @since   12.2
+	 * @since   1.2
 	 */
 	public function getItem($pk = null)
 	{
@@ -82,6 +82,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 		// Get Access token and Authorization codes
 		$db	= $this->getDbo();
 
+		// There can be multiple access tokens that are not expired yet so we only load last one
 		$query = $db->getQuery(true)
 		->select('oat.access_token, oat.expires as access_token_expires')
 		->from('#__redcore_oauth_access_tokens AS oat')
@@ -95,6 +96,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 			$item->access_token_expires = $accessToken->access_token_expires;
 		}
 
+		// There can be multiple authorization codes that are not expired yet so we only load last one
 		$query = $db->getQuery(true)
 			->select('oac.authorization_code, oac.expires as authorization_code_expires')
 			->from('#__redcore_oauth_authorization_codes AS oac')
@@ -108,6 +110,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 			$item->authorization_code_expires = $accessToken->authorization_code_expires;
 		}
 
+		// There can be multiple refresh tokens that are not expired yet so we only load last one
 		$query = $db->getQuery(true)
 			->select('ort.refresh_token, ort.expires as refresh_token_expires')
 			->from('#__redcore_oauth_refresh_tokens AS ort')

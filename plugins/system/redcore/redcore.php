@@ -118,18 +118,6 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
-	 * Check to see if this is API call and render it
-	 *
-	 * @return  void
-	 *
-	 * @since   1.2
-	 */
-	public function onAfterRoute()
-	{
-
-	}
-
-	/**
 	 * This event is triggered after pushing the document buffers into the template placeholders,
 	 * retrieving data from the document and pushing it into the into the JResponse buffer.
 	 * http://docs.joomla.org/Plugin/Events/System

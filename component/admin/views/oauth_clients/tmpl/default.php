@@ -36,7 +36,6 @@ $listDirn = $this->state->get('list.direction');
 	?>
 	<hr/>
 	<div class="row-fluid">
-
 		<table class="table table-striped table-hover" id="oauthClientsList">
 			<thead>
 			<tr>
@@ -47,10 +46,10 @@ $listDirn = $this->state->get('list.direction');
 				<th class="nowrap">
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_CLIENT_ID', 'oc.client_id', $listDirn, $listOrder); ?>
 				</th>
-				<th class="nowrap">
+				<th>
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET', 'oc.client_secret', $listDirn, $listOrder); ?>
 				</th>
-				<th class="nowrap">
+				<th>
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_REDIRECT_URI', 'oc.redirect_uri', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap hidden-phone">
@@ -60,7 +59,7 @@ $listDirn = $this->state->get('list.direction');
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_SCOPE', 'oc.scope', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap">
-					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_USER_ID', 'oc.user_id', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_USER', 'oc.user_id', $listDirn, $listOrder); ?>
 				</th>
 			</tr>
 			</thead>
@@ -104,7 +103,7 @@ $listDirn = $this->state->get('list.direction');
 							</ul>
 						</td>
 						<td>
-							<?php echo $item->user_id; ?>
+							<?php echo $item->name; ?>
 						</td>
 					</tr>
 				<?php endforeach; ?>

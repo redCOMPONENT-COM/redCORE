@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  *
  * @package     Redcore.Admin
  * @subpackage  Views
- * @since       1.0
+ * @since       1.2
  */
 class RedcoreViewOauth_Clients extends RedcoreHelpersView
 {
@@ -99,16 +99,6 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 			{
 				$edit = RToolbarBuilder::createEditButton('oauth_client.edit');
 				$firstGroup->addButton($edit);
-			}
-
-			// Publish / Unpublish
-			if ($canDo->get('core.edit.state'))
-			{
-				$publish = RToolbarBuilder::createPublishButton('oauth_clients.publish');
-				$unpublish = RToolbarBuilder::createUnpublishButton('oauth_clients.unpublish');
-
-				$firstGroup->addButton($publish)
-					->addButton($unpublish);
 			}
 
 			// Delete / Trash

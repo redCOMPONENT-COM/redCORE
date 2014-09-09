@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  *
  * @package     Redcore.Backend
  * @subpackage  Tables
- * @since       1.0
+ * @since       1.2
  */
 class RedcoreTableOauth_Client extends RTable
 {
@@ -29,7 +29,7 @@ class RedcoreTableOauth_Client extends RTable
 	 * Name of the primary key field in the table.
 	 *
 	 * @var    string
-	 * @since  11.1
+	 * @since  1.2
 	 */
 	protected $_tbl_key = 'id';
 

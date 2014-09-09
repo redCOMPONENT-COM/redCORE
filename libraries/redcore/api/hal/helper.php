@@ -22,7 +22,7 @@ class RApiHalHelper
 	 * An array to hold webservices xmls
 	 *
 	 * @var    array
-	 * @since  1.0
+	 * @since  1.2
 	 */
 	public static $webservices = array();
 
@@ -30,7 +30,7 @@ class RApiHalHelper
 	 * An array to hold installed Webservices data
 	 *
 	 * @var    array
-	 * @since  1.0
+	 * @since  1.2
 	 */
 	public static $installedWebservices = null;
 
@@ -267,7 +267,7 @@ class RApiHalHelper
 
 		if (!is_readable($configurationFullPath))
 		{
-			throw new RuntimeException('Configuration file does not exist or is unreadable.');
+			throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_CONFIGURATION_FILE_UNREADABLE'));
 		}
 
 		$content = @file_get_contents($configurationFullPath);

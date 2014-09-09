@@ -14,7 +14,7 @@ defined('_JEXEC') or die;
  *
  * @package     Redcore.Backend
  * @subpackage  Models
- * @since       1.0
+ * @since       1.2
  */
 class RedcoreModelOauth_Clients extends RModelList
 {
@@ -84,7 +84,7 @@ class RedcoreModelOauth_Clients extends RModelList
 	 *
 	 * @return  mixed  An array of data items on success, false on failure.
 	 *
-	 * @since   12.2
+	 * @since   1.2
 	 */
 	public function getItems()
 	{

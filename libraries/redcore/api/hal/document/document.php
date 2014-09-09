@@ -23,7 +23,7 @@ class RApiHalDocumentDocument extends JDocument
 	 * Document name
 	 *
 	 * @var    string
-	 * @since  1.3
+	 * @since  1.2
 	 */
 	protected $_name = 'joomla';
 
@@ -42,7 +42,7 @@ class RApiHalDocumentDocument extends JDocument
 	 *
 	 * @param   array  $options  Associative array of options
 	 *
-	 * @since  1.3
+	 * @since  1.2
 	 */
 	public function __construct($options = array())
 	{
@@ -76,7 +76,7 @@ class RApiHalDocumentDocument extends JDocument
 	 *
 	 * @return  string   The rendered data
 	 *
-	 * @since  1.3
+	 * @since  1.2
 	 */
 	public function render($cache = false, $params = array())
 	{
@@ -121,7 +121,7 @@ class RApiHalDocumentDocument extends JDocument
 	 *
 	 * @return  string
 	 *
-	 * @since  1.3
+	 * @since  1.2
 	 */
 	public function getName()
 	{
@@ -195,7 +195,7 @@ class RApiHalDocumentDocument extends JDocument
 	 *
 	 * @return  string  Modified link
 	 *
-	 * @since   1.3
+	 * @since   1.2
 	 */
 	public function addUriParameters($href, $absoluteHrefs)
 	{
@@ -224,7 +224,7 @@ class RApiHalDocumentDocument extends JDocument
 	 *
 	 * @return  RApiHalDocumentDocument instance of $this to allow chaining
 	 *
-	 * @since   1.3
+	 * @since   1.2
 	 */
 	public function setName($name = 'joomla')
 	{

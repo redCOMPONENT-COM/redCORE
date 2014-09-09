@@ -8,7 +8,6 @@
         <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
         <name>contact</name>
         <version>1.0.0</version>
-
     </config>
 
     <!-- Resource definition -->
@@ -44,7 +43,8 @@
     </resources>
     <operations>
         <!-- If operation is commented out or missing, it will not be possible to use it -->
-        <read>
+        <!-- Authorization tag is optional and default value is True. If set to False, No OAuth2 authorization will be required -->
+        <read authorization="false">
             <list>
                 <!-- If fromHelper is set to true it will run query on web service helper class -->
                 <!-- Api will automatically call getListQuery if queryFunctionList is not specified -->
@@ -54,9 +54,7 @@
                 <pagination listLimit="20" listStart="0" />
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
-                <!-- If you set loadAll to true, api will load all fields (except ones that are hidden) but it will transform specific fields -->
-                <fields loadAll="true">
-                    <!-- If you set loadAll to false, Api will load only fields in this list -->
+                <fields>
                     <field transform="string">name</field>
                     <!-- Disable specific fields from showing -->
                     <field hide="true">checked_out</field>
@@ -84,15 +82,13 @@
                 </resources>
             </list>
             <item>
-                <!-- If fromHelper is set to true it will run query on web service helper class -->
-                <!-- Api will automatically call getItem if queryFunctionList is not specified -->
+                <!-- If fromHelper is set to true it will run query on webservice helper class -->
+                <!-- Api will automatically call getItem if queryFunction is not specified -->
                 <!-- Api will automatically call ExampleModelElement if className is not specified -->
                 <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" queryFunction="" />
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
-                <!-- If you set loadAll to true, api will load all fields (except ones that are hidden) but it will transform specific fields -->
-                <fields loadAll="true">
-                    <!-- If you set loadAll to false, Api will load only fields in this list -->
+                <fields>
                     <field transform="string">name</field>
                     <!-- Disable specific fields from showing -->
                     <field hide="true">checked_out</field>
@@ -129,7 +125,7 @@
                 <!-- Fields can be defined here -->
                 <field name="params" transform="array" />
             </fields>
-            <!--  -->
+
             <resources>
                 <resource displayName="result" />
                 <resource displayName="self" />
@@ -137,7 +133,7 @@
         </create>
         <update>
             <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" updateDataFunction="save" />
-            <!--  -->
+
             <resources>
                 <resource displayName="result" />
                 <resource displayName="self" />
@@ -146,7 +142,7 @@
         <delete>
             <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
             <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" primaryKeys="id" />
-            <!--  -->
+
             <resources>
                 <resource displayName="result" />
             </resources>
@@ -167,7 +163,6 @@
             <featured fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id">
             </featured>
 
-            <!--  -->
             <resources>
                 <resource displayName="result" />
                 <resource resourceSpecific="featured" displayName="result" />

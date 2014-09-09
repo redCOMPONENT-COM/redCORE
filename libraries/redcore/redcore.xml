@@ -32,6 +32,7 @@
         <folder>menu</folder>
         <folder>modal</folder>
         <folder>model</folder>
+        <folder>oauth</folder>
         <folder>oauth2</folder>
         <folder>pagination</folder>
         <folder>plugin</folder>
