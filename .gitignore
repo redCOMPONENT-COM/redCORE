@@ -32,3 +32,6 @@ Desktop.ini
 !.gitignore
 !index.html
 !index.php
+/Gemfile
+
+/Gemfile.lock
