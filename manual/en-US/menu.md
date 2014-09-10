@@ -1,6 +1,12 @@
 - [Introduction](chapters/introduction.md)
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
-- **redCORE**
+- **Translation feature**
+    - @todo
+- **Webservices, hal and oauth2**
+    - @todo
+- **The override plugin**
+    - @todo
+- **Extension Development**
     - [Installer](chapters/Installer.md)
     - [in your extension](chapters/add-to-your-extension.md)
 - **MVC**
