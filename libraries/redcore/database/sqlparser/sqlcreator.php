@@ -383,7 +383,7 @@ class RDatabaseSqlparserSqlcreator {
 	}
 
 	protected function processWhereBracketExpression($parsed) {
-		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'bracket_expression') {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'bracket_expression' || empty($parsed['sub_tree'])) {
 			return "";
 		}
 		$sql = "";
