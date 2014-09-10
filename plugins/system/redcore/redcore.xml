@@ -87,6 +87,15 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
+                <field
+                        name="webservices_default_format"
+                        type="list"
+                        default="JSON"
+                        label="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_FORMAT"
+                        description="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_FORMAT_DESC">
+                    <option value="json">JSON</option>
+                    <option value="xml">XML</option>
+                </field>
             </fieldset>
             <fieldset name="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_OPTIONS">
                 <field
