@@ -16,7 +16,7 @@ defined('JPATH_BASE') or die;
  * @subpackage  Api
  * @since       1.2
  */
-class RApiTransformInt extends RApiTransformBase
+class RApiHalTransformYnglobal extends RApiHalTransformBase
 {
 	/**
 	 * Method to transform an internal representation to an external one.
@@ -27,6 +27,21 @@ class RApiTransformInt extends RApiTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		return (int) $definition;
+		if ($definition == '')
+		{
+			return 'global';
+		}
+
+		if ($definition == 0)
+		{
+			return 'no';
+		}
+
+		if ($definition == 1)
+		{
+			return 'yes';
+		}
+
+		return 'undefined';
 	}
 }

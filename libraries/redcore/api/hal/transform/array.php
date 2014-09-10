@@ -16,32 +16,29 @@ defined('JPATH_BASE') or die;
  * @subpackage  Api
  * @since       1.2
  */
-class RApiTransformYnglobal extends RApiTransformBase
+class RApiHalTransformArray extends RApiHalTransformBase
 {
 	/**
 	 * Method to transform an internal representation to an external one.
 	 *
-	 * @param   string  $definition  Field definition.
+	 * @param   mixed  $definition  Field definition.
 	 *
 	 * @return string Transformed value.
 	 */
 	public static function toExternal($definition)
 	{
-		if ($definition == '')
-		{
-			return 'global';
-		}
+		return is_object($definition) ? JArrayHelper::fromObject($definition) : (array) $definition;
+	}
 
-		if ($definition == 0)
-		{
-			return 'no';
-		}
-
-		if ($definition == 1)
-		{
-			return 'yes';
-		}
-
-		return 'undefined';
+	/**
+	 * Method to transform an external representation to an internal one.
+	 *
+	 * @param   mixed  $definition  Field definition.
+	 *
+	 * @return string Transformed value.
+	 */
+	public static function toInternal($definition)
+	{
+		return !empty($definition) ? (array) $definition : array();
 	}
 }

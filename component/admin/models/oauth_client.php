@@ -85,7 +85,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 		// There can be multiple access tokens that are not expired yet so we only load last one
 		$query = $db->getQuery(true)
 		->select('oat.access_token, oat.expires as access_token_expires')
-		->from('#__redcore_oauth_access_tokens AS oat')
+		->from($db->qn('#__redcore_oauth_access_tokens', 'oat'))
 		->where('oat.client_id = ' . $db->quote($item->client_id))
 		->order('oat.expires DESC');
 		$db->setQuery($query);
@@ -99,7 +99,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 		// There can be multiple authorization codes that are not expired yet so we only load last one
 		$query = $db->getQuery(true)
 			->select('oac.authorization_code, oac.expires as authorization_code_expires')
-			->from('#__redcore_oauth_authorization_codes AS oac')
+			->from($db->qn('#__redcore_oauth_authorization_codes', 'oac'))
 			->where('oac.client_id = ' . $db->quote($item->client_id))
 			->order('oac.expires DESC');
 		$db->setQuery($query);
@@ -113,7 +113,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 		// There can be multiple refresh tokens that are not expired yet so we only load last one
 		$query = $db->getQuery(true)
 			->select('ort.refresh_token, ort.expires as refresh_token_expires')
-			->from('#__redcore_oauth_refresh_tokens AS ort')
+			->from($db->qn('#__redcore_oauth_refresh_tokens', 'ort'))
 			->where('ort.client_id = ' . $db->quote($item->client_id))
 			->order('ort.expires DESC');
 		$db->setQuery($query);

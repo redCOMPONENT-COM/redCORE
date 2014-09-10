@@ -16,7 +16,7 @@ defined('JPATH_BASE') or die;
  * @subpackage  Api
  * @since       1.2
  */
-class RApiTransformDatetime extends RApiTransformBase
+class RApiHalTransformBoolean extends RApiHalTransformBase
 {
 	/**
 	 * Method to transform an internal representation to an external one.
@@ -27,7 +27,16 @@ class RApiTransformDatetime extends RApiTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		// @TODO Convert MySQL data string to ISO 8601.
-		return (string) $definition;
+		if ($definition == 'true')
+		{
+			return true;
+		}
+
+		if ($definition == 'false')
+		{
+			return false;
+		}
+
+		return (boolean) $definition;
 	}
 }

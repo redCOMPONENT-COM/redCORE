@@ -10,35 +10,35 @@
 defined('JPATH_BASE') or die;
 
 /**
- * Transform api output
+ * Interface to transform api output
  *
  * @package     Redcore
  * @subpackage  Api
  * @since       1.2
  */
-class RApiTransformArray extends RApiTransformBase
+abstract class RApiHalTransformBase implements RApiHalTransformInterface
 {
 	/**
 	 * Method to transform an internal representation to an external one.
 	 *
-	 * @param   mixed  $definition  Field definition.
+	 * @param   string  $definition  Field definition.
 	 *
 	 * @return string Transformed value.
 	 */
 	public static function toExternal($definition)
 	{
-		return is_object($definition) ? JArrayHelper::fromObject($definition) : (array) $definition;
+		return $definition;
 	}
 
 	/**
 	 * Method to transform an external representation to an internal one.
 	 *
-	 * @param   mixed  $definition  Field definition.
+	 * @param   string  $definition  Field definition.
 	 *
 	 * @return string Transformed value.
 	 */
 	public static function toInternal($definition)
 	{
-		return !empty($definition) ? (array) $definition : array();
+		return $definition;
 	}
 }

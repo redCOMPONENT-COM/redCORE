@@ -100,6 +100,8 @@ class ROauth
 	 */
 	public function test()
 	{
+		// @todo finish implementing the client
+		return null;
 		$uriFactory = new \OAuth\Common\Http\Uri\UriFactory;
 		$currentUri = $uriFactory->createFromSuperGlobalArray($_SERVER);
 		$currentUri->setQuery('');

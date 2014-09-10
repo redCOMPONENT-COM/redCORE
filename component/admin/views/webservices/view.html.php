@@ -86,34 +86,4 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 	{
 		return JText::_('COM_REDCORE_WEBSERVICES_MANAGE');
 	}
-
-	/**
-	 * Get the toolbar to render.
-	 *
-	 * @return  RToolbar
-
-	public function getToolbar()
-	{
-		$firstGroup = new RToolbarButtonGroup;
-		$secondGroup = new RToolbarButtonGroup;
-
-		$delete = RToolbarBuilder::createDeleteButton('webservices.delete');
-		$firstGroup->addButton($delete);
-
-		// Manage
-		$manage = RToolbarBuilder::createStandardButton(
-			'webservices.manageWebservice',
-			JText::_('COM_REDCORE_WEBSERVICES_MANAGE_CONTENT_ELEMENTS'),
-			'btn btn-primary',
-			'icon-globe',
-			false
-		);
-		$secondGroup->addButton($manage);
-
-		$toolbar = new RToolbar;
-		$toolbar->addGroup($firstGroup)
-			->addGroup($secondGroup);
-
-		return $toolbar;
-	}*/
 }

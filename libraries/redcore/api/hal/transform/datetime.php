@@ -10,13 +10,13 @@
 defined('JPATH_BASE') or die;
 
 /**
- * Interface to transform api output
+ * Transform api output
  *
  * @package     Redcore
  * @subpackage  Api
  * @since       1.2
  */
-abstract class RApiTransformBase implements RApiTransformInterface
+class RApiHalTransformDatetime extends RApiHalTransformBase
 {
 	/**
 	 * Method to transform an internal representation to an external one.
@@ -27,18 +27,7 @@ abstract class RApiTransformBase implements RApiTransformInterface
 	 */
 	public static function toExternal($definition)
 	{
-		return $definition;
-	}
-
-	/**
-	 * Method to transform an external representation to an internal one.
-	 *
-	 * @param   string  $definition  Field definition.
-	 *
-	 * @return string Transformed value.
-	 */
-	public static function toInternal($definition)
-	{
-		return $definition;
+		// @TODO Convert MySQL data string to ISO 8601.
+		return (string) $definition;
 	}
 }

@@ -1052,12 +1052,12 @@ class RApiHalHal extends RApi
 			return $classNames[$fieldType];
 		}
 
-		// Construct the name of the class to do the transform (default is RApiTransformString).
-		$className = 'RApiTransform' . ucfirst($fieldType);
+		// Construct the name of the class to do the transform (default is RApiHalTransformString).
+		$className = 'RApiHalTransform' . ucfirst($fieldType);
 
 		if (!class_exists($className))
 		{
-			$className = 'RApiTransform' . ucfirst($fieldType);
+			$className = 'RApiHalTransform' . ucfirst($fieldType);
 		}
 
 		// Cache it for later.
@@ -1083,7 +1083,7 @@ class RApiHalHal extends RApi
 		$className = $this->getTransformClass($fieldType);
 
 		// Execute the transform.
-		if ($className instanceof RApiTransformInterface)
+		if ($className instanceof RApiHalTransformInterface)
 		{
 			return $directionExternal ? $className::toExternal($definition) : $className::toInternal($definition);
 		}

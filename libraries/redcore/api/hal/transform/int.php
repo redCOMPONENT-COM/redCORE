@@ -16,7 +16,7 @@ defined('JPATH_BASE') or die;
  * @subpackage  Api
  * @since       1.2
  */
-class RApiTransformFloat extends RApiTransformBase
+class RApiHalTransformInt extends RApiHalTransformBase
 {
 	/**
 	 * Method to transform an internal representation to an external one.
@@ -27,23 +27,6 @@ class RApiTransformFloat extends RApiTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		switch ($definition)
-		{
-			case '':
-				$return = 'global';
-				break;
-
-			case 'left':
-			case 'right':
-			case 'none':
-				$return = $definition;
-				break;
-
-			default:
-				$return = 'undefined';
-				break;
-		}
-
-		return $return;
+		return (int) $definition;
 	}
 }

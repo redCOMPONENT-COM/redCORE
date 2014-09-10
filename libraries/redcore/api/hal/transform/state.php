@@ -16,7 +16,7 @@ defined('JPATH_BASE') or die;
  * @subpackage  Api
  * @since       1.2
  */
-class RApiTransformPosition extends RApiTransformBase
+class RApiHalTransformState extends RApiHalTransformBase
 {
 	/**
 	 * Method to transform an internal representation to an external one.
@@ -27,6 +27,19 @@ class RApiTransformPosition extends RApiTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		return (string) $definition;
+		switch ($definition)
+		{
+			case 0:
+				$return = 'unpublished';
+				break;
+			case 1:
+				$return = 'published';
+				break;
+			default:
+				$return = 'undefined';
+				break;
+		}
+
+		return $return;
 	}
 }

@@ -10,13 +10,13 @@
 defined('JPATH_BASE') or die;
 
 /**
- * Transform api output
+ * Interface to transform api output
  *
  * @package     Redcore
  * @subpackage  Api
  * @since       1.2
  */
-class RApiTransformBoolean extends RApiTransformBase
+interface RApiHalTransformInterface
 {
 	/**
 	 * Method to transform an internal representation to an external one.
@@ -25,18 +25,14 @@ class RApiTransformBoolean extends RApiTransformBase
 	 *
 	 * @return string Transformed value.
 	 */
-	public static function toExternal($definition)
-	{
-		if ($definition == 'true')
-		{
-			return true;
-		}
+	public static function toExternal($definition);
 
-		if ($definition == 'false')
-		{
-			return false;
-		}
-
-		return (boolean) $definition;
-	}
+	/**
+	 * Method to transform an external representation to an internal one.
+	 *
+	 * @param   string  $definition  Field definition.
+	 *
+	 * @return string Transformed value.
+	 */
+	public static function toInternal($definition);
 }

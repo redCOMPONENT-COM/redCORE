@@ -56,8 +56,8 @@ class RedcoreModelOauth_Clients extends RModelList
 		$query = $db->getQuery(true)
 			->select('oc.*')
 			->select('u.name')
-			->from('#__redcore_oauth_clients AS oc')
-			->leftJoin('#__users AS u ON u.id = oc.user_id');
+			->from($db->qn('#__redcore_oauth_clients', 'oc'))
+			->leftJoin($db->qn('#__users', 'u') . ' ON u.id = oc.user_id');
 
 		// Filter search
 		$search = $this->getState('filter.search_oauth_clients');
