@@ -15,6 +15,7 @@ script:
   - find ./plugins -name '*.php' -exec php -l {} \;
   - phing -f .travis.xml
   - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/ # Missed debug code checker
+  - php .travis/phpmd.php # PHP mess detector code checker
   
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
