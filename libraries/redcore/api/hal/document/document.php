@@ -1,0 +1,235 @@
+<?php
+/**
+ * @package     Redcore
+ * @subpackage  Document
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('JPATH_BASE') or die;
+
+/**
+ * ApiDocumentHal class, provides an easy interface to parse and display HAL+JSON or HAL+XML output
+ *
+ * @package     Redcore
+ * @subpackage  Document
+ * @see         http://stateless.co/hal_specification.html
+ * @since       1.2
+ */
+class RApiHalDocumentDocument extends JDocument
+{
+	/**
+	 * Document name
+	 *
+	 * @var    string
+	 * @since  1.2
+	 */
+	protected $_name = 'joomla';
+
+	/**
+	 * Render all hrefs as absolute, relative is default
+	 */
+	protected $absoluteHrefs = false;
+
+	/**
+	 * Document format (xml or json)
+	 */
+	protected $documentFormat = false;
+
+	/**
+	 * Class constructor
+	 *
+	 * @param   array  $options  Associative array of options
+	 *
+	 * @since  1.2
+	 */
+	public function __construct($options = array())
+	{
+		parent::__construct($options);
+
+		$this->documentFormat = $options['documentFormat'];
+
+		if (!in_array($this->documentFormat, array('xml', 'json')))
+		{
+			$this->documentFormat = 'json';
+		}
+
+		// Set default mime type.
+		$this->_mime = 'application/hal+' . $this->documentFormat;
+
+		// Set document type.
+		$this->_type = 'hal+' . $this->documentFormat;
+
+		// Set absolute/relative hrefs.
+		$this->absoluteHrefs = isset($options['absoluteHrefs']) ? $options['absoluteHrefs'] : true;
+
+		// Set token if needed
+		$this->uriParams = isset($options['uriParams']) ? $options['uriParams'] : array();
+	}
+
+	/**
+	 * Render the document.
+	 *
+	 * @param   boolean  $cache   If true, cache the output
+	 * @param   array    $params  Associative array of attributes
+	 *
+	 * @return  string   The rendered data
+	 *
+	 * @since  1.2
+	 */
+	public function render($cache = false, $params = array())
+	{
+		$runtime = microtime(true) - $params['startTime'];
+		//jimport('legacy.response.response');
+		JFactory::getApplication()->setHeader('Server', '', true);
+		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
+		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);
+		JFactory::getApplication()->setHeader('Pragma', 'public', true);
+		JFactory::getApplication()->setHeader('Expires', '0', true);
+		JFactory::getApplication()->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		JFactory::getApplication()->setHeader('Cache-Control', 'private', false);
+		JFactory::getApplication()->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+
+		JFactory::getApplication()->sendHeaders();
+
+		//header("Content-Disposition: attachment; filename=\"" . $this->getName() . "." . $this->documentFormat . "\";");
+
+		// Get the HAL object from the buffer.
+		/* @var $hal RApiHalDocumentResource */
+		$hal = $this->getBuffer();
+
+		// If required, change relative links to absolute.
+		if (is_object($hal))
+		{
+			// Adjust hrefs in the _links object.
+			$this->relToAbs($hal, $this->absoluteHrefs);
+		}
+
+		if ($this->documentFormat == 'xml')
+		{
+			echo $hal->getXML()->asXML();
+		}
+		else
+		{
+			echo (string) $hal;
+		}
+	}
+
+	/**
+	 * Returns the document name
+	 *
+	 * @return  string
+	 *
+	 * @since  1.2
+	 */
+	public function getName()
+	{
+		return $this->_name;
+	}
+
+	/**
+	 * Method to convert relative to absolute links.
+	 *
+	 * @param   RApiHalDocumentResource  $hal            Hal object which contains links (_links).
+	 * @param   boolean                  $absoluteHrefs  Should we replace link Href with absolute.
+	 *
+	 * @return  void
+	 */
+	protected function relToAbs($hal, $absoluteHrefs)
+	{
+		if ($links = $hal->getLinks())
+		{
+			// Adjust hrefs in the _links object.
+			/* @var $link RApiHalDocumentLink */
+			foreach ($links as $link)
+			{
+				if (is_array($link))
+				{
+					foreach ($link as $group => $arrayLink)
+					{
+						$href = $arrayLink->getHref();
+						$href = $this->addUriParameters($href, $absoluteHrefs);
+						$arrayLink->setHref($href);
+						$hal->setReplacedLink($arrayLink, $group);
+					}
+				}
+				else
+				{
+					$href = $link->getHref();
+					$href = $this->addUriParameters($href, $absoluteHrefs);
+					$link->setHref($href);
+					$hal->setReplacedLink($link);
+				}
+			}
+		}
+
+		// Adjust hrefs in the _embedded object (if there is one).
+		if ($embedded = $hal->getEmbedded())
+		{
+			foreach ($embedded as $resources)
+			{
+				if (is_object($resources))
+				{
+					$this->relToAbs($resources, $absoluteHrefs);
+				}
+				elseif (is_array($resources))
+				{
+					foreach ($resources as $resource)
+					{
+						if (is_object($resource))
+						{
+							$this->relToAbs($resource, $absoluteHrefs);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Prepares link
+	 *
+	 * @param   string   $href           Link location
+	 * @param   boolean  $absoluteHrefs  Should we replace link Href with absolute.
+	 *
+	 * @return  string  Modified link
+	 *
+	 * @since   1.2
+	 */
+	public function addUriParameters($href, $absoluteHrefs)
+	{
+		if ($absoluteHrefs && substr($href, 0, 1) == '/')
+		{
+			$href = rtrim(JUri::base(), '/') . $href;
+		}
+
+		$uri = JUri::getInstance($href);
+
+		if (!empty($this->uriParams))
+		{
+			foreach ($this->uriParams as $paramKey => $param)
+			{
+				$uri->setVar($paramKey, $param);
+			}
+		}
+
+		return $uri->toString();
+	}
+
+	/**
+	 * Sets the document name
+	 *
+	 * @param   string  $name  Document name
+	 *
+	 * @return  RApiHalDocumentDocument instance of $this to allow chaining
+	 *
+	 * @since   1.2
+	 */
+	public function setName($name = 'joomla')
+	{
+		$this->_name = $name;
+
+		return $this;
+	}
+}

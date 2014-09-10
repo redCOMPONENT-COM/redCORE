@@ -8,10 +8,11 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.2.1</version>
+    <version>1.3.0</version>
     <description>redCORE Libraries</description>
 
     <files>
+        <folder>api</folder>
         <folder>browser</folder>
         <folder>client</folder>
         <folder>component</folder>
@@ -31,6 +32,7 @@
         <folder>menu</folder>
         <folder>modal</folder>
         <folder>model</folder>
+        <folder>oauth</folder>
         <folder>oauth2</folder>
         <folder>pagination</folder>
         <folder>plugin</folder>

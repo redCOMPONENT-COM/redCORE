@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter" addfieldpath="/libraries/redcore/form/fields">
+        <field
+                name="search_oauth_clients"
+                type="text"
+                label="COM_REDCORE_FILTER_SEARCH_DESC"
+                placeholder="JSEARCH_FILTER"
+                class="js-enter-submits"
+                />
+    </fields>
+    <fields name="list">
+        <field
+                name="oauth_clients_limit"
+                type="rlimitbox"
+                class="inputbox input-mini chzn"
+                default="25"
+                label="JGLOBAL_ORDERING_LIST_LIMIT"
+                description="JGLOBAL_ORDERING_LIST_LIMIT_DESC"
+                onchange="this.form.submit();"
+                />
+    </fields>
+</form>

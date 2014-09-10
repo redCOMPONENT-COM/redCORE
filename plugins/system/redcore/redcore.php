@@ -54,6 +54,66 @@ class PlgSystemRedcore extends JPlugin
 				// Enable translations
 				$db->translate = RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1;
 			}
+
+			if ($this->params->get('enable_webservices', 0) == 1 || $this->params->get('enable_oauth2_server', 0) == 1)
+			{
+				$input = JFactory::getApplication()->input;
+				$apiName = $input->getString('api');
+
+				if (!empty($apiName))
+				{
+					try
+					{
+						JFactory::getApplication()->clearHeaders();
+						$optionName = $input->get->getString('option', '');
+						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
+						$viewName = $input->getString('view', '');
+						$version = $input->getString('version', '');
+						$apiName = ucfirst($apiName);
+						$method = strtoupper($input->getMethod());
+						$task = RApiHalHelper::getTask();
+
+						if ($method == 'PUT' || $method == 'DELETE')
+						{
+							$data = file_get_contents("php://input");
+						}
+						else
+						{
+							$data = $input->post->getArray();
+						}
+
+						$options = array(
+							'api'       => $apiName,
+							'optionName' => $optionName,
+							'viewName' => $viewName,
+							'webserviceVersion' => $version,
+							'method' => $method,
+							'task' => $task,
+							'data' => $data,
+							'format' => $input->getString('format', ''),
+							'id' => $input->getString('id', ''),
+							'absoluteHrefs' => $input->get->getBool('absoluteHrefs', true),
+						);
+
+						// Create instance of Api and fill all required options
+						$api = RApi::getInstance($options);
+
+						// Run the api task
+						$api->execute()
+							->render();
+					}
+					catch (Exception $e)
+					{
+						// Set the server response code.
+						header('Status: 500', true, 500);
+
+						// An exception has been caught, echo the message and exit.
+						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)));
+					}
+
+					JFactory::getApplication()->close();
+				}
+			}
 		}
 	}
 

@@ -1,0 +1,172 @@
+<?xml version="1.0" ?>
+<apiservice type="hal">
+    <name>Contact Webservice</name>
+    <author>redCOMPONENT</author>
+    <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
+    <description>Api HAL configuration for Joomla Contact component</description>
+    <config>
+        <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
+        <name>contact</name>
+        <version>1.0.0</version>
+    </config>
+
+    <!-- Resource definition -->
+    <!-- Resources can be grouped with "resourceSpecific" attribute, default value is "rcwsGlobal" -->
+    <resources>
+        <resource displayName="alias" fieldFormat="{alias}" transform="string" />
+        <resource displayName="created" fieldFormat="{created}" transform="datetime" />
+        <resource displayName="checked_out" fieldFormat="{checked_out}" transform="int" />
+        <resource displayName="checked_out_time" fieldFormat="{checked_out_time}" transform="datetime" />
+        <resource displayName="hits" fieldFormat="{hits}" transform="int" />
+        <resource displayName="publishDown" fieldFormat="{publish_down}" transform="datetime" />
+        <resource displayName="publishUp" fieldFormat="{publish_up}" transform="datetime" />
+        <resource displayName="revision" fieldFormat="{version}" transform="int" />
+
+        <resource displayGroup="_links" displayName="curies" fieldFormat="http://docs.joomla.org/Link_relations/{rel}" linkName="joomla" hrefLang="" linkTemplated="true" transform="string" />
+        <resource displayGroup="_links" displayName="self" fieldFormat="/index.php?option=contact&amp;id={id}" transform="string" />
+        <resource displayGroup="_links" displayName="categories.href" fieldFormat="/index.php?option=categories&amp;id={catid}" transform="string" />
+        <resource displayGroup="_links" displayName="checkin.href" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" transform="string" />
+        <resource displayGroup="_links" displayName="checkin.method" fieldFormat="post" transform="string" />
+        <resource displayGroup="_links" displayName="checkout.href" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" transform="string" />
+        <resource displayGroup="_links" displayName="checkout.method" fieldFormat="post" transform="string" />
+        <resource displayGroup="_links" displayName="createdBy.href" fieldFormat="/index.php?option=users&amp;id={created_by}" transform="string" />
+        <resource displayGroup="_links" displayName="modifiedBy.href" fieldFormat="/index.php?option=users&amp;id={modified_by}" transform="string" />
+
+        <resource displayName="apiVersion" fieldFormat="{apiVersion}" transform="string" />
+        <resource displayName="description" fieldFormat="{metadesc}" transform="string" />
+        <resource displayName="keywords" fieldFormat="{metakey}" transform="string" />
+        <resource displayName="robots" fieldFormat="{metadata.robots}" transform="string" />
+        <resource displayName="rights" fieldFormat="{metadata.rights}" transform="string" />
+        <resource displayName="xref" fieldFormat="{xreference}" transform="string" />
+
+        <resource displayName="result" fieldFormat="{result}" transform="boolean" />
+    </resources>
+    <operations>
+        <!-- If operation is commented out or missing, it will not be possible to use it -->
+        <!-- Authorization tag is optional and default value is True. If set to False, No OAuth2 authorization will be required -->
+        <read authorization="false">
+            <list>
+                <!-- If fromHelper is set to true it will run query on web service helper class -->
+                <!-- Api will automatically call getListQuery if queryFunctionList is not specified -->
+                <!-- Api will automatically call ExampleModelElements if className is not specified -->
+                <modelClass fromHelper="false" optionName="com_contact" className="contacts" classPath="" isAdminClass="true" getDataFunction="" />
+
+                <pagination listLimit="20" listStart="0" />
+
+                <!-- Enable or disable fields to read. If left empty, all fields will be available -->
+                <fields>
+                    <field transform="string">name</field>
+                    <!-- Disable specific fields from showing -->
+                    <field hide="true">checked_out</field>
+                </fields>
+                <resources>
+                    <!-- meta data -->
+                    <resource displayName="page" fieldFormat="{page}" transform="int" />
+                    <resource displayName="limit" fieldFormat="{limit}" transform="int" />
+                    <resource displayName="limitstart" fieldFormat="{limitstart}" transform="int" />
+                    <resource displayName="totalItems" fieldFormat="{totalItems}" transform="int" />
+                    <resource displayName="totalPages" fieldFormat="{totalPages}" transform="int" />
+
+                    <!-- items -->
+                    <resource resourceSpecific="listItem" displayName="id" fieldFormat="{id}" transform="int" />
+                    <resource resourceSpecific="listItem" displayName="access" fieldFormat="{access}" transform="int" />
+                    <resource resourceSpecific="listItem" displayName="featured" fieldFormat="{featured}" transform="int" />
+                    <resource resourceSpecific="listItem" displayName="language" fieldFormat="{language}" />
+                    <resource resourceSpecific="listItem" displayName="name" fieldFormat="{name}" />
+                    <resource resourceSpecific="listItem" displayName="ordering" fieldFormat="{ordering}" transform="int" />
+                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="self" fieldFormat="/index.php?option=contact&amp;id={id}" />
+                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="categories.href" fieldFormat="/index.php?option=categories&amp;id={catid}" />
+
+                    <!-- _links -->
+                    <resource displayName="self" fieldFormat="/index.php?option=contact" />
+                </resources>
+            </list>
+            <item>
+                <!-- If fromHelper is set to true it will run query on webservice helper class -->
+                <!-- Api will automatically call getItem if queryFunction is not specified -->
+                <!-- Api will automatically call ExampleModelElement if className is not specified -->
+                <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" queryFunction="" />
+
+                <!-- Enable or disable fields to read. If left empty, all fields will be available -->
+                <fields>
+                    <field transform="string">name</field>
+                    <!-- Disable specific fields from showing -->
+                    <field hide="true">checked_out</field>
+                </fields>
+
+                <resources>
+                    <!-- standard -->
+                    <resource displayName="access" fieldFormat="{access}" transform="int" />
+                    <resource displayName="featured" fieldFormat="{featured}" transform="int" />
+                    <resource displayName="language" fieldFormat="{language}" />
+                    <resource displayName="name" fieldFormat="{name}" />
+                    <resource displayName="ordering" fieldFormat="{ordering}" transform="int" />
+                    <resource displayName="state" fieldFormat="{state}" transform="int" />
+
+                    <!-- _links -->
+                    <resource displayName="self" />
+                    <resource displayName="categories.href" />
+                    <resource displayName="checkout.href" />
+                    <resource displayName="checkout.method" />
+                    <resource displayName="checkin.href" />
+                    <resource displayName="checkin.method" />
+
+                    <!-- metadata -->
+                    <resource displayName="alias" />
+                    <resource displayName="created" />
+                    <resource displayName="publishDown" />
+                    <resource displayName="publishUp" />
+                </resources>
+            </item>
+        </read>
+        <create>
+            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" createDataFunction="" />
+            <fields>
+                <!-- Fields can be defined here -->
+                <field name="params" transform="array" />
+            </fields>
+
+            <resources>
+                <resource displayName="result" />
+                <resource displayName="self" />
+            </resources>
+        </create>
+        <update>
+            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" updateDataFunction="save" />
+
+            <resources>
+                <resource displayName="result" />
+                <resource displayName="self" />
+            </resources>
+        </update>
+        <delete>
+            <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
+            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" primaryKeys="id" />
+
+            <resources>
+                <resource displayName="result" />
+            </resources>
+        </delete>
+        <task>
+            <!-- Default class for all tasks if not otherwise specified -->
+            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" />
+
+            <!-- Each task can be preformed in separate class and system will take this values instead -->
+            <!-- If primaryKeys attribute is defined, only id will be passed to the function. Default is all posted data -->
+            <!-- Standard functions supported by this api:
+                -task-: -function-(-parameters-)
+                featured: featured(id, value)
+                unfeatured: featured(id, value)
+                publish: publish(id, value)
+                unpublish: publish(id, value)
+                -->
+            <featured fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id">
+            </featured>
+
+            <resources>
+                <resource displayName="result" />
+                <resource resourceSpecific="featured" displayName="result" />
+            </resources>
+        </task>
+    </operations>
+</apiservice>
