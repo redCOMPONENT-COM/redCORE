@@ -29,6 +29,11 @@ Desktop.ini
 # Build config
 build.properties
 
+# Github pages and Jekyll files
+/_site/
+/Gemfile
+/Gemfile.lock
+
 # phpunit
 tests/unit/phpunit.xml
 
