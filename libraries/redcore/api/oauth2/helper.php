@@ -41,12 +41,16 @@ class RApiOauth2Helper
 	 */
 	public static function handleTokenRequest()
 	{
-		$serverApi = self::getOauth2Server();
-		$serverApi
+		if (!self::getOauth2Server())
+		{
+			return false;
+		}
+
+		self::$serverApi
 			->setApiOperation('token')
 			->execute();
 
-		return $serverApi->response;
+		return self::$serverApi->response;
 	}
 
 	/**
@@ -58,13 +62,17 @@ class RApiOauth2Helper
 	 */
 	public static function verifyResourceRequest($scope = null)
 	{
-		$serverApi = self::getOauth2Server();
-		$serverApi
+		if (!self::getOauth2Server())
+		{
+			return false;
+		}
+
+		self::$serverApi
 			->setApiOperation('resource')
 			->setOption('scope', $scope)
 			->execute();
 
-		return $serverApi->response;
+		return self::$serverApi->response;
 	}
 
 	/**
@@ -74,12 +82,16 @@ class RApiOauth2Helper
 	 */
 	public static function handleAuthorizeRequest()
 	{
-		$serverApi = self::getOauth2Server();
-		$serverApi
+		if (!self::getOauth2Server())
+		{
+			return false;
+		}
+
+		self::$serverApi
 			->setApiOperation('authorize')
 			->execute();
 
-		return $serverApi->response;
+		return self::$serverApi->response;
 	}
 
 	/**
@@ -89,6 +101,11 @@ class RApiOauth2Helper
 	 */
 	public static function getOauth2Server()
 	{
+		if (RTranslationHelper::$pluginParams->get('enable_oauth2_server', 0) == 0)
+		{
+			return null;
+		}
+
 		if (!isset(self::$serverApi))
 		{
 			$options = array(

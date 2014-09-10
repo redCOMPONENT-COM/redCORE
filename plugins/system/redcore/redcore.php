@@ -55,10 +55,12 @@ class PlgSystemRedcore extends JPlugin
 				$db->translate = RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1;
 			}
 
-			if ($this->params->get('enable_webservices', 0) == 1 || $this->params->get('enable_oauth2_server', 0) == 1)
+			$apiName = JFactory::getApplication()->input->getString('api');
+
+			if (($this->params->get('enable_webservices', 0) == 1 && strtolower($apiName) == 'hal')
+				|| ($this->params->get('enable_oauth2_server', 0) == 1) && strtolower($apiName) == 'oauth2')
 			{
 				$input = JFactory::getApplication()->input;
-				$apiName = $input->getString('api');
 
 				if (!empty($apiName))
 				{
@@ -90,7 +92,7 @@ class PlgSystemRedcore extends JPlugin
 							'method' => $method,
 							'task' => $task,
 							'data' => $data,
-							'format' => $input->getString('format', ''),
+							'format' => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
 							'id' => $input->getString('id', ''),
 							'absoluteHrefs' => $input->get->getBool('absoluteHrefs', true),
 						);

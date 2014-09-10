@@ -76,7 +76,7 @@ class RApi extends RApiBase
 			// If the class still doesn't exist we have nothing left to do but throw an exception.
 			if (!class_exists($class))
 			{
-				throw new RuntimeException(sprintf('Unable to load Api: %s', $options['api']));
+				throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_UNABLE_TO_LOAD_API', $options['api']));
 			}
 
 			// Create our new RApi connector based on the options given.
@@ -86,7 +86,7 @@ class RApi extends RApiBase
 			}
 			catch (RuntimeException $e)
 			{
-				throw new RuntimeException(sprintf('Unable to connect to the Api: %s', $e->getMessage()));
+				throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_UNABLE_TO_CONNECT_TO_API', $e->getMessage()));
 			}
 
 			// Set the new connector to the global instances based on signature.

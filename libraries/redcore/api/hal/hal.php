@@ -835,6 +835,10 @@ class RApiHalHal extends RApi
 				JFactory::getApplication()->close();
 			}
 		}
+		elseif ($response === false && $terminateIfNotAuthorized)
+		{
+			throw new RuntimeException('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE');
+		}
 		elseif (!empty($response['user_id']))
 		{
 			// Load the JUser class on application for this client

@@ -133,7 +133,7 @@ class RApiOauth2Oauth2 extends RApi
 	{
 		if (!$this->isOperationAllowed())
 		{
-			throw new RuntimeException('Operation is not allowed');
+			throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
 		}
 
 		switch ($this->operation)
@@ -250,7 +250,7 @@ class RApiOauth2Oauth2 extends RApi
 	{
 		if (empty($this->operation))
 		{
-			throw new RuntimeException('OAuth2 operation name is empty. Please provide proper option name.');
+			throw new RuntimeException(JText::_('LIB_REDCORE_API_OAUTH2_OPERATION_NOT_SPECIFIED'));
 		}
 
 		return true;
