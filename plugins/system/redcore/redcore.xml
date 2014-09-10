@@ -90,7 +90,7 @@
                 <field
                         name="webservices_default_format"
                         type="list"
-                        default="JSON"
+                        default="json"
                         label="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_FORMAT"
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_FORMAT_DESC">
                     <option value="json">JSON</option>
