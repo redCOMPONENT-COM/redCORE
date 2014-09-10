@@ -12,7 +12,7 @@ before_script:
 
 script:
   - php .travis/phppec.php component/ libraries/ modules/ plugins/ #parse error checker
-  - phing -f .travis.xml
+  - php .travis/phpcs.php # Code Style error checker
   - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/ # Missed debug code checker
   - php .travis/phpmd.php # PHP mess detector code checker
   
