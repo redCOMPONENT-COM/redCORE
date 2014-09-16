@@ -107,6 +107,7 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		if(iframe) {';
 			$script[] = '			newheight = iframe.contentWindow.document.body.scrollHeight;';
 			$script[] = '			iframe.height= (newheight) + "px";';
+			$script[] = '			iframe.setStyle("max-height", iframe.height);';
 			$script[] = '		}';
 			$script[] = '	}';
 
