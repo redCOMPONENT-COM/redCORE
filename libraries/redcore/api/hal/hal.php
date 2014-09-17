@@ -92,11 +92,9 @@ class RApiHalHal extends RApi
 	{
 		parent::__construct($options);
 
-		$this->webserviceName = $this->options->get('optionName', '');
-		$viewName = $this->options->get('viewName', '');
-		$this->webserviceName .= !empty($this->webserviceName) && !empty($viewName) ? '-' . $viewName : '';
-
+		$this->setWebserviceName();
 		$this->webserviceVersion = $this->options->get('webserviceVersion', '');
+		$this->hal = new RApiHalDocumentResource('');
 
 		if (!empty($this->webserviceName))
 		{
@@ -106,22 +104,54 @@ class RApiHalHal extends RApi
 			}
 
 			$this->configuration = RApiHalHelper::loadWebserviceConfiguration($this->webserviceName, $this->webserviceVersion);
-			$this->setResources();
+			$this->triggerFunction('setResources');
 		}
 
-		$this->hal = new RApiHalDocumentResource('');
+		// Init Environment
+		$this->triggerFunction('setApiOperation');
 	}
 
 	/**
-	 * Set Method for Api
-	 *
-	 * @param   string  $operation  Operation name
+	 * Sets Webservice name according to given options
 	 *
 	 * @return  RApi
 	 *
 	 * @since   1.2
 	 */
-	public function setApiOperation($operation = '')
+	public function setWebserviceName()
+	{
+		$task = $this->options->get('task', '');
+
+		if (empty($task))
+		{
+			$taskSplit = explode(',', $task);
+
+			if (count($taskSplit) > 1)
+			{
+				// We will set name of the webservice as a task controller name
+				$this->webserviceName = $this->options->get('optionName', '') . '-' . $taskSplit[0];
+				$task = $taskSplit[1];
+				$this->options->set('task', $task);
+
+				return $this;
+			}
+		}
+
+		$this->webserviceName = $this->options->get('optionName', '');
+		$viewName = $this->options->get('viewName', '');
+		$this->webserviceName .= !empty($this->webserviceName) && !empty($viewName) ? '-' . $viewName : '';
+
+		return $this;
+	}
+
+	/**
+	 * Set Method for Api to be performed
+	 *
+	 * @return  RApi
+	 *
+	 * @since   1.2
+	 */
+	public function setApiOperation()
 	{
 		$method = $this->options->get('method', 'GET');
 		$task = $this->options->get('task', '');
@@ -137,14 +167,26 @@ class RApiHalHal extends RApi
 				break;
 			case 'POST':
 				$method = !empty($task) ? 'TASK' : 'UPDATE';
+
 				break;
 			case 'DELETE':
 				$method = 'DELETE';
 				break;
 
 			default:
-				$method = 'GET';
+				$method = 'READ';
 				break;
+		}
+
+		// If task is pointing to some other operation like apply, update or delete
+		if (!empty($task) && !empty($this->configuration->operations->task->{$task}['useOperation']))
+		{
+			$operation = strtoupper((string) $this->configuration->operations->task->{$task}['useOperation']);
+
+			if (in_array($operation, array('CREATE', 'READ', 'UPDATE', 'DELETE')))
+			{
+				$method = $operation;
+			}
 		}
 
 		$this->operation = strtolower($method);
@@ -164,7 +206,7 @@ class RApiHalHal extends RApi
 	{
 		if (!empty($this->webserviceName))
 		{
-			if (!$this->isOperationAllowed())
+			if (!$this->triggerFunction('isOperationAllowed'))
 			{
 				throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
 			}
@@ -175,26 +217,29 @@ class RApiHalHal extends RApi
 			switch ($this->operation)
 			{
 				case 'create':
-					$this->apiCreate();
+					$this->triggerFunction('apiCreate');
 					break;
 				case 'read':
-					$this->apiRead();
+					$this->triggerFunction('apiRead');
 					break;
 				case 'update':
-					$this->apiUpdate();
+					$this->triggerFunction('apiUpdate');
 					break;
 				case 'delete':
-					$this->apiDelete();
+					$this->triggerFunction('apiDelete');
 					break;
 				case 'task':
-					$this->apiTask();
+					$this->triggerFunction('apiTask');
 					break;
 			}
 		}
 		else
 		{
+			// If default page needs authorization to access it
+			$this->isAuthorized('', RTranslationHelper::$pluginParams->get('webservices_default_page_authorization', 0));
+
 			// No webservice name. We display all webservices available
-			$this->apiDefaultPage();
+			$this->triggerFunction('apiDefaultPage');
 		}
 
 		$messages = JFactory::getApplication()->getMessageQueue();
@@ -262,35 +307,44 @@ class RApiHalHal extends RApi
 		$id = $this->options->get('id', '');
 		$displayTarget = empty($id) ? 'list' : 'item';
 		$currentConfiguration = $this->operationConfiguration->{$displayTarget};
-		$model = $this->loadModel($this->elementName, $currentConfiguration->modelClass);
+		$model = $this->triggerFunction('loadModel', $this->elementName, $currentConfiguration);
 
 		if ($displayTarget == 'list')
 		{
-			$getDataFunction = RApiHalHelper::attributeToString($currentConfiguration->modelClass, 'getDataFunction', 'getItems');
+			$getDataFunction = RApiHalHelper::attributeToString($currentConfiguration, 'getDataFunction', 'getItems');
 
 			$items = method_exists($model, $getDataFunction) ? $model->{$getDataFunction}() : array();
 
 			if (method_exists($model, 'getPagination'))
 			{
 				$pagination = $model->getPagination();
-				$this->setData('limit', $pagination->limit);
-				$this->setData('limitstart', $pagination->limitstart);
-				$this->setData('totalItems', $pagination->total);
-				$this->setData('totalPages', max($pagination->pagesTotal, 1));
-				$this->setData('page', max($pagination->pagesCurrent, 1));
+				$paginationPages = $pagination->getPaginationPages();
+
+				$this->setData(
+					'pagination.previous', isset($paginationPages['previous']['data']->base) ? $paginationPages['previous']['data']->base : $pagination->limitstart
+				);
+				$this->setData(
+					'pagination.next', isset($paginationPages['next']['data']->base) ? $paginationPages['next']['data']->base : $pagination->limitstart
+				);
+				$this->setData('pagination.limit', $pagination->limit);
+				$this->setData('pagination.limitstart', $pagination->limitstart);
+				$this->setData('pagination.totalItems', $pagination->total);
+				$this->setData('pagination.totalPages', max($pagination->pagesTotal, 1));
+				$this->setData('pagination.page', max($pagination->pagesCurrent, 1));
+				$this->setData('pagination.last', ((max($pagination->pagesTotal, 1) - 1) * $pagination->limit));
 			}
 
-			$this->setForRenderList($items, $currentConfiguration);
+			$this->triggerFunction('setForRenderList', $items, $currentConfiguration);
 
 			return $this;
 		}
 
 		// Getting single item
-		$getDataFunction = RApiHalHelper::attributeToString($currentConfiguration->modelClass, 'getDataFunction', 'getItem');
+		$getDataFunction = RApiHalHelper::attributeToString($currentConfiguration, 'getDataFunction', 'getItem');
 
 		$itemObject = method_exists($model, $getDataFunction) ? $model->{$getDataFunction}($id) : array();
 
-		$this->setForRenderItem($itemObject, $currentConfiguration);
+		$this->triggerFunction('setForRenderItem', $itemObject, $currentConfiguration);
 
 		return $this;
 	}
@@ -307,10 +361,9 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 
-		$model = $this->loadModel($this->elementName, $this->operationConfiguration->modelClass);
-		$createDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration->modelClass, 'createDataFunction', 'save');
-
-		$data = $this->processPostData($this->options->get('data', array()), $this->operationConfiguration);
+		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
+		$createDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration, 'createDataFunction', 'save');
+		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
 		$result = method_exists($model, $createDataFunction) ? $model->{$createDataFunction}($data) : null;
 
@@ -333,13 +386,11 @@ class RApiHalHal extends RApi
 	{
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
+		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
+		$deleteDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration, 'deleteDataFunction', 'delete');
+		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
-		$model = $this->loadModel($this->elementName, $this->operationConfiguration->modelClass);
-		$deleteDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration->modelClass, 'deleteDataFunction', 'delete');
-
-		$data = $this->processPostData($this->options->get('data', array()), $this->operationConfiguration);
-
-		$primaryKeys = RApiHalHelper::attributeToString($this->operationConfiguration->modelClass, 'primaryKeys', 'id');
+		$primaryKeys = RApiHalHelper::attributeToString($this->operationConfiguration, 'primaryKeys', 'id');
 		$primaryKeys = explode(',', $primaryKeys);
 
 		if (count($primaryKeys) == 1)
@@ -372,11 +423,9 @@ class RApiHalHal extends RApi
 	{
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
-
-		$model = $this->loadModel($this->elementName, $this->operationConfiguration->modelClass);
-		$updateDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration->modelClass, 'updateDataFunction', 'save');
-
-		$data = $this->processPostData($this->options->get('data', array()), $this->operationConfiguration);
+		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
+		$updateDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration, 'updateDataFunction', 'save');
+		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
 		$result = method_exists($model, $updateDataFunction) ? $model->{$updateDataFunction}($data) : null;
 
@@ -389,7 +438,7 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Execute the Api Update operation.
+	 * Execute the Api Task operation.
 	 *
 	 * @return  mixed  RApi object with information on success, boolean false on failure.
 	 *
@@ -412,12 +461,11 @@ class RApiHalHal extends RApi
 			}
 
 			$taskConfiguration = !empty($this->operationConfiguration->{$task}) ?
-				$this->operationConfiguration->{$task} : $this->operationConfiguration->modelClass;
+				$this->operationConfiguration->{$task} : $this->operationConfiguration;
 
-			$model = $this->loadModel($this->elementName, $taskConfiguration);
+			$model = $this->triggerFunction('loadModel', $this->elementName, $taskConfiguration);
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
-
-			$data = $this->processPostData($this->options->get('data', array()), $taskConfiguration);
+			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
 
 			if (empty($taskConfiguration['functionName']) && in_array($task, RApiMethods::$methods))
 			{
@@ -469,11 +517,6 @@ class RApiHalHal extends RApi
 	 */
 	public function setForRenderList($items, $configuration)
 	{
-		if (method_exists($this->apiHelperClass, 'setForRenderListBefore'))
-		{
-			$this->apiHelperClass->setForRenderListBefore($items, $configuration, $this);
-		}
-
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($configuration);
 
@@ -500,11 +543,6 @@ class RApiHalHal extends RApi
 			$embedItem = new RApiHalDocumentResource('contacts', $item);
 			$embedItem = $this->setDataValueToResource($embedItem, $this->resources, $itemValue, 'listItem');
 			$this->hal->setEmbedded('contacts', $embedItem);
-		}
-
-		if (method_exists($this->apiHelperClass, 'setForRenderListAfter'))
-		{
-			$this->apiHelperClass->setForRenderListAfter($items, $configuration, $this);
 		}
 	}
 
@@ -534,6 +572,7 @@ class RApiHalHal extends RApi
 								$this->assignValueToResource($resource, $data),
 								$resource['displayName'],
 								$resource['linkName'],
+								$resource['displayName'],
 								$resource['hrefLang'],
 								RApiHalHelper::isAttributeTrue($resource, 'linkTemplated')
 							)
@@ -597,11 +636,6 @@ class RApiHalHal extends RApi
 	 */
 	public function setForRenderItem($item, $configuration)
 	{
-		if (method_exists($this->apiHelperClass, 'setForRenderItemBefore'))
-		{
-			$this->apiHelperClass->setForRenderItemBefore($item, $configuration, $this);
-		}
-
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($configuration);
 
@@ -610,11 +644,6 @@ class RApiHalHal extends RApi
 		{
 			$value = !empty($this->resources['rcwsGlobal'][$key]) ? $this->assignValueToResource($this->resources['rcwsGlobal'][$key], $item) : $value;
 			$this->setData($key, $value);
-		}
-
-		if (method_exists($this->apiHelperClass, 'setForRenderItemAfter'))
-		{
-			$this->apiHelperClass->setForRenderItemAfter($item, $configuration, $this);
 		}
 	}
 
@@ -642,9 +671,7 @@ class RApiHalHal extends RApi
 		JFactory::$document = new RApiHalDocumentDocument($documentOptions);
 
 		$body = $this->getBody();
-
-		// Check if the request is CORS ( Cross-origin resource sharing ) and change the body if true
-		$body = $this->prepareBody($body);
+		$body = $this->triggerFunction('prepareBody', $body);
 
 		// Push results into the document.
 		JFactory::$document
@@ -768,6 +795,10 @@ class RApiHalHal extends RApi
 			}
 		}
 
+		// Common functions are not checking this field so we will
+		$data['params'] = !empty($data['params']) ? $data['params'] : null;
+		$data['associations'] = !empty($data['associations']) ? $data['associations'] : array();
+
 		return $data;
 	}
 
@@ -806,14 +837,14 @@ class RApiHalHal extends RApi
 				return false;
 			}
 
-			if (isset($allowedOperations->task->{$task}['authorization'])
-				&& strtolower($allowedOperations->task->{$task}['authorization']) == 'false')
+			if (isset($allowedOperations->task->{$task}['authorizationNeeded'])
+				&& strtolower($allowedOperations->task->{$task}['authorizationNeeded']) == 'false')
 			{
 				$terminateIfNotAuthorized = false;
 			}
 		}
-		elseif (isset($allowedOperations->{$this->operation}['authorization'])
-			&& strtolower($allowedOperations->{$this->operation}['authorization']) == 'false')
+		elseif (isset($allowedOperations->{$this->operation}['authorizationNeeded'])
+			&& strtolower($allowedOperations->{$this->operation}['authorizationNeeded']) == 'false')
 		{
 			$terminateIfNotAuthorized = false;
 		}
@@ -822,6 +853,24 @@ class RApiHalHal extends RApi
 		$scope = '';
 
 		// Does user have permission
+		$this->isAuthorized($scope, $terminateIfNotAuthorized);
+
+		return true;
+	}
+
+	/**
+	 * Log-in client if successful or terminate api if not authorized
+	 *
+	 * @param   string  $scope                     Name of the scope to test against
+	 * @param   bool    $terminateIfNotAuthorized  Terminate api if client is not authorized
+	 *
+	 * @throws RuntimeException
+	 * @return  void
+	 *
+	 * @since   1.2
+	 */
+	public function isAuthorized($scope, $terminateIfNotAuthorized)
+	{
 		/** @var $response OAuth2\Response */
 		$response = RApiOauth2Helper::verifyResourceRequest($scope);
 
@@ -844,8 +893,6 @@ class RApiHalHal extends RApi
 			// Load the JUser class on application for this client
 			JFactory::getApplication()->loadIdentity(JFactory::getUser($response['user_id']));
 		}
-
-		return true;
 	}
 
 	/**
@@ -862,7 +909,7 @@ class RApiHalHal extends RApi
 			return $this->apiHelperClass;
 		}
 
-		$version = $this->options->get('version', '');
+		$version = $this->options->get('webserviceVersion', '');
 		$helperFile = RApiHalHelper::getWebserviceFile(strtolower($this->webserviceName), $version, 'php');
 
 		if (file_exists($helperFile))
@@ -961,7 +1008,7 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Set resources from database if needed
+	 * Set resources from configuration if available
 	 *
 	 * @return  void
 	 *
@@ -1004,7 +1051,7 @@ class RApiHalHal extends RApi
 		$stringsToReplace = array();
 		preg_match_all('/\{([^}]+)\}/', $format, $stringsToReplace);
 
-		if (!empty($stringsToReplace[1]))
+		if (!empty($stringsToReplace[1]) && !RApiHalHelper::isAttributeTrue($resource, 'linkTemplated'))
 		{
 			foreach ($stringsToReplace[1] as $replacementKey)
 			{
@@ -1095,5 +1142,47 @@ class RApiHalHal extends RApi
 		{
 			return $definition;
 		}
+	}
+
+	/**
+	 * Calls method from helper file if exists or method from this class,
+	 * Additionally it Triggers plugin call for specific function in a format RApiHalFunctionName
+	 *
+	 * @param   string  $functionName  Field type.
+	 *
+	 * @return mixed Result from callback function
+	 */
+	public function triggerFunction($functionName)
+	{
+		$apiHelperClass = $this->getHelperObject();
+		$args = func_get_args();
+
+		// Remove function name from arguments
+		array_shift($args);
+
+		// PHP 5.3 workaround
+		$temp = array();
+
+		foreach ($args as &$arg)
+		{
+			$temp[] = &$arg;
+		}
+
+		// We will add this instance of the object as last argument for manipulation in plugin and helper
+		$temp[] = &$this;
+
+		// Checks if that method exists in helper file and executes it
+		if (method_exists($apiHelperClass, $functionName))
+		{
+			$result = call_user_func_array(array($apiHelperClass, $functionName), $temp);
+		}
+		else
+		{
+			$result = call_user_func_array(array($this, $functionName), $temp);
+		}
+
+		JFactory::getApplication()->triggerEvent('RApiHal' . $functionName, $temp);
+
+		return $result;
 	}
 }

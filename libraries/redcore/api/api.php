@@ -112,23 +112,6 @@ class RApi extends RApiBase
 
 		// Main properties
 		$this->setApi($this->options->get('api', 'hal'));
-
-		// Init Environment
-		$this->setApiOperation();
-	}
-
-	/**
-	 * Set Method for Api
-	 *
-	 * @param   string  $operation  Operation name
-	 *
-	 * @return  RApi
-	 *
-	 * @since   1.2
-	 */
-	public function setApiOperation($operation = '')
-	{
-		return $this;
 	}
 
 	/**
