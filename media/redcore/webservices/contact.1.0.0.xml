@@ -8,6 +8,12 @@
         <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
         <name>contact</name>
         <version>1.0.0</version>
+        <!-- Documentation can be included from various sources:
+            auto: documentation is auto generated using this XML as template
+            href: documentation will be loaded from fixed url using url="http://www.sample.com"
+            none: documentation will not be included in methods Rels (not recommended)
+             -->
+        <documentation authorizationNeeded="false" source="auto" />
     </config>
 
     <!-- Resource definition -->
@@ -18,19 +24,19 @@
         <resource displayName="checked_out" fieldFormat="{checked_out}" transform="int" />
         <resource displayName="checked_out_time" fieldFormat="{checked_out_time}" transform="datetime" />
         <resource displayName="hits" fieldFormat="{hits}" transform="int" />
-        <resource displayName="publishDown" fieldFormat="{publish_down}" transform="datetime" />
-        <resource displayName="publishUp" fieldFormat="{publish_up}" transform="datetime" />
         <resource displayName="revision" fieldFormat="{version}" transform="int" />
 
-        <resource displayGroup="_links" displayName="curies" fieldFormat="http://docs.joomla.org/Link_relations/{rel}" linkName="joomla" hrefLang="" linkTemplated="true" transform="string" />
-        <resource displayGroup="_links" displayName="self" fieldFormat="/index.php?option=contact&amp;id={id}" transform="string" />
-        <resource displayGroup="_links" displayName="categories.href" fieldFormat="/index.php?option=categories&amp;id={catid}" transform="string" />
-        <resource displayGroup="_links" displayName="checkin.href" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" transform="string" />
-        <resource displayGroup="_links" displayName="checkin.method" fieldFormat="post" transform="string" />
-        <resource displayGroup="_links" displayName="checkout.href" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" transform="string" />
-        <resource displayGroup="_links" displayName="checkout.method" fieldFormat="post" transform="string" />
-        <resource displayGroup="_links" displayName="createdBy.href" fieldFormat="/index.php?option=users&amp;id={created_by}" transform="string" />
-        <resource displayGroup="_links" displayName="modifiedBy.href" fieldFormat="/index.php?option=users&amp;id={modified_by}" transform="string" />
+        <resource displayGroup="_links" displayName="curies" fieldFormat="http://docs.joomla.org/Link_relations/{rel}" linkName="joomla" hrefLang="" linkTemplated="true" />
+        <resource displayGroup="_links" displayName="self" fieldFormat="/index.php?option=contact&amp;id={id}" />
+        <resource displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
+        <resource displayGroup="_links" displayName="checkin" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" />
+        <resource displayGroup="_links" displayName="checkout" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" />
+        <resource displayGroup="_links" displayName="featured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=featured" />
+        <resource displayGroup="_links" displayName="unfeatured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unfeatured" />
+        <resource displayGroup="_links" displayName="publish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=publish" />
+        <resource displayGroup="_links" displayName="unpublish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unpublish" />
+        <resource displayGroup="_links" displayName="createdBy" fieldFormat="/index.php?option=users&amp;id={created_by}" />
+        <resource displayGroup="_links" displayName="modifiedBy" fieldFormat="/index.php?option=users&amp;id={modified_by}" />
 
         <resource displayName="apiVersion" fieldFormat="{apiVersion}" transform="string" />
         <resource displayName="description" fieldFormat="{metadesc}" transform="string" />
@@ -44,14 +50,11 @@
     <operations>
         <!-- If operation is commented out or missing, it will not be possible to use it -->
         <!-- Authorization tag is optional and default value is True. If set to False, No OAuth2 authorization will be required -->
-        <read authorization="false">
-            <list>
-                <!-- If fromHelper is set to true it will run query on web service helper class -->
-                <!-- Api will automatically call getListQuery if queryFunctionList is not specified -->
-                <!-- Api will automatically call ExampleModelElements if className is not specified -->
-                <modelClass fromHelper="false" optionName="com_contact" className="contacts" classPath="" isAdminClass="true" getDataFunction="" />
-
-                <pagination listLimit="20" listStart="0" />
+        <read authorizationNeeded="false">
+            <!-- If fromHelper is set to true it will run query on web service helper class -->
+            <!-- Api will automatically call getListQuery if queryFunctionList is not specified -->
+            <!-- Api will automatically call ExampleModelElements if className is not specified -->
+            <list fromHelper="false" optionName="com_contact" className="contacts" classPath="" isAdminClass="true" getDataFunction="">
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <fields>
@@ -61,11 +64,11 @@
                 </fields>
                 <resources>
                     <!-- meta data -->
-                    <resource displayName="page" fieldFormat="{page}" transform="int" />
-                    <resource displayName="limit" fieldFormat="{limit}" transform="int" />
-                    <resource displayName="limitstart" fieldFormat="{limitstart}" transform="int" />
-                    <resource displayName="totalItems" fieldFormat="{totalItems}" transform="int" />
-                    <resource displayName="totalPages" fieldFormat="{totalPages}" transform="int" />
+                    <resource displayName="page" fieldFormat="{pagination.page}" transform="int" />
+                    <resource displayName="pageLimit" fieldFormat="{pagination.limit}" transform="int" />
+                    <resource displayName="limitstart" fieldFormat="{pagination.limitstart}" transform="int" />
+                    <resource displayName="totalItems" fieldFormat="{pagination.totalItems}" transform="int" />
+                    <resource displayName="totalPages" fieldFormat="{pagination.totalPages}" transform="int" />
 
                     <!-- items -->
                     <resource resourceSpecific="listItem" displayName="id" fieldFormat="{id}" transform="int" />
@@ -75,17 +78,23 @@
                     <resource resourceSpecific="listItem" displayName="name" fieldFormat="{name}" />
                     <resource resourceSpecific="listItem" displayName="ordering" fieldFormat="{ordering}" transform="int" />
                     <resource resourceSpecific="listItem" displayGroup="_links" displayName="self" fieldFormat="/index.php?option=contact&amp;id={id}" />
-                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="categories.href" fieldFormat="/index.php?option=categories&amp;id={catid}" />
+                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
 
                     <!-- _links -->
                     <resource displayName="self" fieldFormat="/index.php?option=contact" />
+                    <resource displayGroup="_links" displayName="first" fieldFormat="/index.php?option=contact&amp;limitstart=0" />
+                    <resource displayGroup="_links" displayName="previous" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.previous}" />
+                    <resource displayGroup="_links" displayName="next" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.next}" />
+                    <resource displayGroup="_links" displayName="last" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.last}" />
+                    <resource displayGroup="_links" displayName="all" fieldFormat="/index.php?option=contact&amp;limit=0" />
+                    <resource displayGroup="_links" displayName="limit" fieldFormat="/index.php?option=contact&amp;limit={limit}&amp;limitstart={limitstart}" linkTemplated="true" />
+                    <resource displayGroup="_links" displayName="filter" fieldFormat="/index.php?option=contact&amp;filter_search={filter_search}" linkTemplated="true" />
                 </resources>
             </list>
-            <item>
-                <!-- If fromHelper is set to true it will run query on webservice helper class -->
-                <!-- Api will automatically call getItem if queryFunction is not specified -->
-                <!-- Api will automatically call ExampleModelElement if className is not specified -->
-                <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" queryFunction="" />
+            <!-- If fromHelper is set to true it will run query on webservice helper class -->
+            <!-- Api will automatically call getItem if queryFunction is not specified -->
+            <!-- Api will automatically call ExampleModelElement if className is not specified -->
+            <item fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" queryFunction="">
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <fields>
@@ -96,31 +105,61 @@
 
                 <resources>
                     <!-- standard -->
-                    <resource displayName="access" fieldFormat="{access}" transform="int" />
-                    <resource displayName="featured" fieldFormat="{featured}" transform="int" />
-                    <resource displayName="language" fieldFormat="{language}" />
+                    <resource displayName="id" fieldFormat="{id}" transform="int" />
                     <resource displayName="name" fieldFormat="{name}" />
+                    <resource displayName="alias" />
+                    <resource displayName="con_position" fieldFormat="{con_position}" />
+                    <resource displayName="address" fieldFormat="{address}" />
+                    <resource displayName="suburb" fieldFormat="{suburb}" />
+                    <resource displayName="state" fieldFormat="{state}" />
+                    <resource displayName="country" fieldFormat="{country}" />
+                    <resource displayName="postcode" fieldFormat="{postcode}" />
+                    <resource displayName="telephone" fieldFormat="{telephone}" />
+                    <resource displayName="fax" fieldFormat="{fax}" />
+                    <resource displayName="misc" fieldFormat="{misc}" />
+                    <resource displayName="image" fieldFormat="{image}" />
+                    <resource displayName="email_to" fieldFormat="{email_to}" />
+                    <resource displayName="default_con" fieldFormat="{default_con}" transform="int" />
+                    <resource displayName="published" fieldFormat="{published}" transform="int" />
+                    <resource displayName="checked_out" fieldFormat="{checked_out}" transform="int" />
+                    <resource displayName="checked_out_time" fieldFormat="{checked_out_time}" transform="datetime" />
                     <resource displayName="ordering" fieldFormat="{ordering}" transform="int" />
-                    <resource displayName="state" fieldFormat="{state}" transform="int" />
+                    <resource displayName="params" fieldFormat="{params}" />
+                    <resource displayName="user_id" fieldFormat="{user_id}" transform="int" />
+                    <resource displayName="catid" fieldFormat="{catid}" transform="int" />
+                    <resource displayName="access" fieldFormat="{access}" transform="int" />
+                    <resource displayName="mobile" fieldFormat="{mobile}" />
+                    <resource displayName="webpage" fieldFormat="{webpage}" />
+                    <resource displayName="sortname1" fieldFormat="{sortname1}" />
+                    <resource displayName="sortname2" fieldFormat="{sortname2}" />
+                    <resource displayName="sortname3" fieldFormat="{sortname3}" />
+                    <resource displayName="language" fieldFormat="{language}" />
+                    <resource displayName="created" />
+                    <resource displayName="created_by" fieldFormat="{created_by}" transform="int" />
+                    <resource displayName="modified" fieldFormat="{modified}" transform="datetime" />
+                    <resource displayName="modified_by" fieldFormat="{modified_by}" transform="int" />
+                    <resource displayName="metakey" fieldFormat="{metakey}" />
+                    <resource displayName="metadesc" fieldFormat="{metadesc}" />
+                    <resource displayName="metadata" fieldFormat="{metadata}" />
+                    <resource displayName="featured" fieldFormat="{featured}" transform="int" />
+                    <resource displayName="publish_up" fieldFormat="{publish_up}" transform="datetime" />
+                    <resource displayName="publish_down" fieldFormat="{publish_down}" transform="datetime" />
+                    <resource displayName="version" fieldFormat="{version}" />
+                    <resource displayName="hits" fieldFormat="{hits}" transform="int" />
 
                     <!-- _links -->
                     <resource displayName="self" />
-                    <resource displayName="categories.href" />
-                    <resource displayName="checkout.href" />
-                    <resource displayName="checkout.method" />
-                    <resource displayName="checkin.href" />
-                    <resource displayName="checkin.method" />
-
-                    <!-- metadata -->
-                    <resource displayName="alias" />
-                    <resource displayName="created" />
-                    <resource displayName="publishDown" />
-                    <resource displayName="publishUp" />
+                    <resource displayName="categories" />
+                    <resource displayName="checkout" />
+                    <resource displayName="checkin" />
+                    <resource displayName="featured" />
+                    <resource displayName="unfeatured" />
+                    <resource displayName="publish" />
+                    <resource displayName="unpublish" />
                 </resources>
             </item>
         </read>
-        <create>
-            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" createDataFunction="" />
+        <create fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" createDataFunction="">
             <fields>
                 <!-- Fields can be defined here -->
                 <field name="params" transform="array" />
@@ -131,25 +170,22 @@
                 <resource displayName="self" />
             </resources>
         </create>
-        <update>
-            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" updateDataFunction="save" />
+        <update authorizationNeeded="false" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" updateDataFunction="save">
 
             <resources>
                 <resource displayName="result" />
                 <resource displayName="self" />
             </resources>
         </update>
-        <delete>
-            <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
-            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" primaryKeys="id" />
+        <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
+        <delete fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" primaryKeys="id">
 
             <resources>
                 <resource displayName="result" />
             </resources>
         </delete>
-        <task>
-            <!-- Default class for all tasks if not otherwise specified -->
-            <modelClass fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" />
+        <!-- Default class for all tasks if not otherwise specified -->
+        <task fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true">
 
             <!-- Each task can be preformed in separate class and system will take this values instead -->
             <!-- If primaryKeys attribute is defined, only id will be passed to the function. Default is all posted data -->
@@ -160,8 +196,26 @@
                 publish: publish(id, value)
                 unpublish: publish(id, value)
                 -->
-            <featured fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id">
+            <featured fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id" displayName="Make contact featured">
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. ]]></description>
             </featured>
+
+            <unfeatured optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" displayName="Make contact unfeatured">
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. ]]></description>
+            </unfeatured>
+
+            <publish fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id" displayName="Make contact published">
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. ]]></description>
+            </publish>
+
+            <unpublish optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" displayName="Make contact unpublished">
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. ]]></description>
+            </unpublish>
+
+            <!-- If using useOperation you can redirect that task operation to some of the existing ones: create, read, update, delete -->
+            <save useOperation="update" />
+            <apply useOperation="update" />
+            <delete useOperation="delete" />
 
             <resources>
                 <resource displayName="result" />

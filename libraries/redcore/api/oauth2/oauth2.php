@@ -94,6 +94,9 @@ class RApiOauth2Oauth2 extends RApi
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
 		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $serverConfig));
 
+		// Init Environment
+		$this->setApiOperation();
+
 		// @todo Add scopes
 		//$doctrine = $storage->getTable('OAuth2Scope');
 		//$scopeUtil = new OAuth2\Scope($doctrine);
