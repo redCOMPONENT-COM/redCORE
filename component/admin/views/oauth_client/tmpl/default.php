@@ -18,7 +18,7 @@ JHtml::_('rjquery.chosen', 'select');
 <form action="<?php echo $action; ?>" method="post" name="adminForm" id="adminForm"
       class="form-validate form-horizontal">
 	<div class="row-fluid">
-		<div id="main-params" class="span6">
+		<div id="main-params" class="row-fluid">
 			<div class="control-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('client_id'); ?>
@@ -37,6 +37,14 @@ JHtml::_('rjquery.chosen', 'select');
 			</div>
 			<div class="control-group">
 				<div class="control-label">
+					<?php echo $this->form->getLabel('user_id'); ?>
+				</div>
+				<div class="controls">
+					<?php echo $this->form->getInput('user_id'); ?>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="control-label">
 					<?php echo $this->form->getLabel('grant_types'); ?>
 				</div>
 				<div class="controls">
@@ -51,63 +59,30 @@ JHtml::_('rjquery.chosen', 'select');
 					<?php echo $this->form->getInput('scope'); ?>
 				</div>
 			</div>
-			<div class="control-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('user_id'); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput('user_id'); ?>
-				</div>
-			</div>
 		</div>
 		<?php if ($this->item->client_id) : ?>
-			<div class="span6 well" style="word-wrap:break-word;">
-				<div class="control-group">
-					<div class="control-label">
-						<?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET'); ?>
-					</div>
-					<div class="controls">
-						<?php echo $this->item->client_secret; ?>
-					</div>
+			<div class="well" style="word-wrap:break-word;">
+				<span class="label"><?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET'); ?>: </span>
+				<div>
+					<?php echo $this->item->client_secret; ?>
 				</div>
-				<div class="control-group">
-					<div class="control-label">
-						<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_ACCESS_TOKEN'); ?>
-					</div>
-					<div class="controls">
-						<?php if (!empty($this->item->access_token)) : ?>
-							<?php echo $this->item->access_token; ?>
-							(<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_EXPIRES'); ?> <?php echo $this->item->access_token_expires; ?>)
-						<?php else : ?>
-							--
-						<?php endif; ?>
-					</div>
+				<span class="label"><?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_ACCESS_TOKEN'); ?>: </span>
+				<div>
+					<?php if (!empty($this->item->access_token)) : ?>
+						<?php echo $this->item->access_token; ?>
+						(<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_EXPIRES'); ?> <?php echo $this->item->access_token_expires; ?>)
+					<?php else : ?>
+						--
+					<?php endif; ?>
 				</div>
-				<div class="control-group">
-					<div class="control-label">
-						<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_AUTHORIZATION_CODE'); ?>
-					</div>
-					<div class="controls">
-						<?php if (!empty($this->item->authorization_code)) : ?>
-							<?php echo $this->item->authorization_code; ?>
-							(<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_EXPIRES'); ?> <?php echo $this->item->authorization_code_expires; ?>)
-						<?php else : ?>
-							--
-						<?php endif; ?>
-					</div>
-				</div>
-				<div class="control-group">
-					<div class="control-label">
-						<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_REFRESH_TOKEN'); ?>
-					</div>
-					<div class="controls">
-						<?php if (!empty($this->item->refresh_token)) : ?>
-							<?php echo $this->item->refresh_token; ?>
-							(<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_EXPIRES'); ?> <?php echo $this->item->refresh_token_expires; ?>)
-						<?php else : ?>
-							--
-						<?php endif; ?>
-					</div>
+				<span class="label"><?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_AUTHORIZATION_CODE'); ?>: </span>
+				<div>
+					<?php if (!empty($this->item->authorization_code)) : ?>
+						<?php echo $this->item->authorization_code; ?>
+						(<?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_EXPIRES'); ?> <?php echo $this->item->authorization_code_expires; ?>)
+					<?php else : ?>
+						--
+					<?php endif; ?>
 				</div>
 			</div>
 		<?php endif; ?>

@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.3.0" />
+    <redcore version="1.3.1" />
 
     <install folder="component/admin">
         <sql>
@@ -53,6 +53,13 @@
             <language tag="da-DK">da-DK/da-DK.com_redcore.sys.ini</language>
         </languages>
         <menu view="dashboard">COM_REDCORE</menu>
+        <submenu>
+            <menu link="option=com_redcore&amp;view=dashboard" view="dashboard">COM_REDCORE_DASHBOARD</menu>
+            <menu link="option=com_redcore&amp;view=configs" view="configs">COM_REDCORE_CONFIGURATION</menu>
+            <menu link="option=com_redcore&amp;view=translations" view="translations">COM_REDCORE_TRANSLATIONS</menu>
+            <menu link="option=com_redcore&amp;view=webservices" view="webservices">COM_REDCORE_WEBSERVICES</menu>
+            <menu link="option=com_redcore&amp;view=oauth_clients" view="oauth_clients">COM_REDCORE_OAUTH_CLIENTS</menu>
+        </submenu>
     </administration>
 
     <!-- Medias -->

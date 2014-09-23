@@ -64,6 +64,25 @@ class RApiHalHelper
 	}
 
 	/**
+	 * Get Default scopes for all webservices
+	 *
+	 * @return  array
+	 *
+	 * @since   1.2
+	 */
+	public static function getDefaultScopes()
+	{
+		return array(
+			array('scope' => 'create', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_CREATE')),
+			array('scope' => 'read', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_READ')),
+			array('scope' => 'update', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_UPDATE')),
+			array('scope' => 'delete', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DELETE')),
+			array('scope' => 'documentation', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DOCUMENTATION')),
+			array('scope' => 'task', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_TASKS')),
+		);
+	}
+
+	/**
 	 * Method to transform XML to array and get XML attributes
 	 *
 	 * @param   SimpleXMLElement|Array  $element  XML object or array
@@ -337,6 +356,36 @@ class RApiHalHelper
 	}
 
 	/**
+	 * Returns allowed scopes of a given webservice
+	 *
+	 * @param   string  $webserviceName        Webservice name
+	 * @param   string  $version               Version of the webservice
+	 * @param   bool    $getScopeDisplayNames  Return Display name or scope name
+	 *
+	 * @return  string  Status string
+	 *
+	 * @since   1.2
+	 * @throws  RuntimeException
+	 */
+	public static function getScopes($webserviceName, $version, $getScopeDisplayNames = false)
+	{
+		$installedWebservices = self::getInstalledWebservices();
+		$scopes = array();
+
+		if (empty($installedWebservices[$webserviceName][$version]['scopes']))
+		{
+			return '--';
+		}
+
+		foreach ($installedWebservices[$webserviceName][$version]['scopes'] as $scope)
+		{
+			$scopes[] = $getScopeDisplayNames ? $scope['scopeDisplayName'] : $scope['scope'];
+		}
+
+		return implode(',', $scopes);
+	}
+
+	/**
 	 * Uninstall Webservice from site
 	 *
 	 * @param   string  $webservice         Webservice name
@@ -369,6 +418,7 @@ class RApiHalHelper
 		}
 
 		self::saveRedcoreWebserviceConfig();
+		self::saveOAuth2Scopes($webservice, array(), $showNotifications);
 
 		if ($showNotifications)
 		{
@@ -480,19 +530,39 @@ class RApiHalHelper
 		if (!empty($webserviceXml))
 		{
 			$operations = array();
+			$scopes = array();
+			$version = !empty($webserviceXml->config->version) ? (string) $webserviceXml->config->version : $version;
+			$displayWebserviceName = !empty($webserviceXml->name) ? $webserviceXml->name : $webservice;
 
 			if (!empty($webserviceXml->operations))
 			{
 				foreach ($webserviceXml->operations as $operation)
 				{
-					foreach ($operation as  $key => $method)
+					foreach ($operation as $key => $method)
 					{
-						$operations[] = strtoupper(str_replace(array('read', 'create', 'update'), array('GET', 'PUT', 'POST'), $key));
+						if ($key == 'task')
+						{
+							foreach ($method as $taskKey => $task)
+							{
+								$displayName = !empty($task['displayName']) ? (string) $task['displayName'] : $key . ' ' . $taskKey;
+								$scopes[] = array(
+									'scope' => strtolower($webservice . '.' . $key . '.' . $taskKey),
+									'scopeDisplayName' => ucfirst($displayName)
+								);
+							}
+						}
+						else
+						{
+							$operations[] = strtoupper(str_replace(array('read', 'create', 'update'), array('GET', 'PUT', 'POST'), $key));
+							$displayName = !empty($method['displayName']) ? (string) $method['displayName'] : $key;
+							$scopes[] = array(
+								'scope' => strtolower($webservice . '.' . $key),
+								'scopeDisplayName' => ucfirst($displayName)
+							);
+						}
 					}
 				}
 			}
-
-			$version = !empty($webserviceXml->config->version) ? (string) $webserviceXml->config->version : $version;
 
 			self::$installedWebservices[$webservice][$version] = array(
 				'name' => $webservice,
@@ -500,10 +570,12 @@ class RApiHalHelper
 				'displayName' => (string) $webserviceXml->name,
 				'xml' => $webservice . '.' . $version . '.xml',
 				'operations' => implode(',', $operations),
+				'scopes' => $scopes,
 				'state' => 1,
 			);
 
 			self::saveRedcoreWebserviceConfig();
+			self::saveOAuth2Scopes($webservice, $scopes, $showNotifications);
 
 			if ($showNotifications)
 			{
@@ -566,6 +638,50 @@ class RApiHalHelper
 		}
 
 		return true;
+	}
+
+	/**
+	 * Method to save the OAuth2 scopes
+	 *
+	 * @param   string  $webservice         Webservice name
+	 * @param   array   $scopes             Scopes defined in webservice
+	 * @param   bool    $showNotifications  Show notification after each Action
+	 *
+	 * @throws  Exception
+	 * @return  bool   True on success, false on failure.
+	 */
+	public static function saveOAuth2Scopes($webservice, $scopes = array(), $showNotifications = true)
+	{
+		$db = JFactory::getDbo();
+
+		try
+		{
+			$db->transactionStart();
+
+			$query = $db->getQuery(true)
+				->delete('#__redcore_oauth_scopes')->where($db->qn('scope') . ' LIKE ' . $db->q($webservice . '.%'));
+			$db->setQuery($query);
+			$db->execute();
+
+			foreach ($scopes as $scope)
+			{
+				$query = $db->getQuery(true)
+					->insert('#__redcore_oauth_scopes')->set($db->qn('scope') . ' = ' . $db->q($scope['scope']));
+				$db->setQuery($query);
+				$db->execute();
+			}
+
+			$db->transactionCommit();
+		}
+		catch (Exception $e)
+		{
+			$db->transactionRollback();
+
+			if ($showNotifications)
+			{
+				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_SCOPE_ERROR'), 'error');
+			}
+		}
 	}
 
 	/**

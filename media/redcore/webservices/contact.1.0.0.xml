@@ -8,12 +8,8 @@
         <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
         <name>contact</name>
         <version>1.0.0</version>
-        <!-- Documentation can be included from various sources:
-            auto: documentation is auto generated using this XML as template
-            href: documentation will be loaded from fixed url using url="http://www.sample.com"
-            none: documentation will not be included in methods Rels (not recommended)
-             -->
-        <documentation authorizationNeeded="false" source="auto" />
+        <!-- authorizationAssetName is used with Joomla authorization when preforming checks against ACL (if not authorized by scope) -->
+        <authorizationAssetName>com_contact</authorizationAssetName>
     </config>
 
     <!-- Resource definition -->
@@ -26,17 +22,18 @@
         <resource displayName="hits" fieldFormat="{hits}" transform="int" />
         <resource displayName="revision" fieldFormat="{version}" transform="int" />
 
-        <resource displayGroup="_links" displayName="curies" fieldFormat="http://docs.joomla.org/Link_relations/{rel}" linkName="joomla" hrefLang="" linkTemplated="true" />
-        <resource displayGroup="_links" displayName="self" fieldFormat="/index.php?option=contact&amp;id={id}" />
+        <resource displayGroup="_links" displayName="documentation" fieldFormat="/index.php?option=contact&amp;format=doc#{rel}" linkTitle="Documentation" linkName="contact" hrefLang="" linkTemplated="true" linkRel="curies" />
+        <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+        <resource displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}" />
         <resource displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
-        <resource displayGroup="_links" displayName="checkin" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" />
-        <resource displayGroup="_links" displayName="checkout" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" />
-        <resource displayGroup="_links" displayName="featured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=featured" />
-        <resource displayGroup="_links" displayName="unfeatured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unfeatured" />
-        <resource displayGroup="_links" displayName="publish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=publish" />
-        <resource displayGroup="_links" displayName="unpublish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unpublish" />
-        <resource displayGroup="_links" displayName="createdBy" fieldFormat="/index.php?option=users&amp;id={created_by}" />
-        <resource displayGroup="_links" displayName="modifiedBy" fieldFormat="/index.php?option=users&amp;id={modified_by}" />
+        <resource displayGroup="_links" displayName="contact:checkin" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" />
+        <resource displayGroup="_links" displayName="contact:checkout" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" />
+        <resource displayGroup="_links" displayName="contact:featured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=featured" />
+        <resource displayGroup="_links" displayName="contact:unfeatured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unfeatured" />
+        <resource displayGroup="_links" displayName="contact:publish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=publish" />
+        <resource displayGroup="_links" displayName="contact:unpublish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unpublish" />
+        <resource displayGroup="_links" displayName="contact:createdBy" fieldFormat="/index.php?option=users&amp;id={created_by}" />
+        <resource displayGroup="_links" displayName="contact:modifiedBy" fieldFormat="/index.php?option=users&amp;id={modified_by}" />
 
         <resource displayName="apiVersion" fieldFormat="{apiVersion}" transform="string" />
         <resource displayName="description" fieldFormat="{metadesc}" transform="string" />
@@ -49,8 +46,11 @@
     </resources>
     <operations>
         <!-- If operation is commented out or missing, it will not be possible to use it -->
-        <!-- Authorization tag is optional and default value is True. If set to False, No OAuth2 authorization will be required -->
-        <read authorizationNeeded="false">
+        <!-- authorizationNeeded tag is optional and default value is true. If set to false, No OAuth2 authorization will be required -->
+        <!-- authorization tag is used to test user authorization against Joomla ACL. Multiple checks can be performed if separated with comma
+             authorizationAssetName can be overridden if you set it here separated by colon (ex. core.admin:com_contact,core.manage:com_contact) authorizationNeeded="false"
+        -->
+        <read authorization="core.admin,core.manage">
             <!-- If fromHelper is set to true it will run query on web service helper class -->
             <!-- Api will automatically call getListQuery if queryFunctionList is not specified -->
             <!-- Api will automatically call ExampleModelElements if className is not specified -->
@@ -58,11 +58,13 @@
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <fields>
-                    <field transform="string">name</field>
+                    <field name="name" transform="string" />
                     <!-- Disable specific fields from showing -->
-                    <field hide="true">checked_out</field>
+                    <field name="checked_out" hide="true" />
                 </fields>
                 <resources>
+                    <resource displayName="documentation" />
+
                     <!-- meta data -->
                     <resource displayName="page" fieldFormat="{pagination.page}" transform="int" />
                     <resource displayName="pageLimit" fieldFormat="{pagination.limit}" transform="int" />
@@ -77,19 +79,24 @@
                     <resource resourceSpecific="listItem" displayName="language" fieldFormat="{language}" />
                     <resource resourceSpecific="listItem" displayName="name" fieldFormat="{name}" />
                     <resource resourceSpecific="listItem" displayName="ordering" fieldFormat="{ordering}" transform="int" />
-                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="self" fieldFormat="/index.php?option=contact&amp;id={id}" />
+                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}">
+                        <description>Link to contact item</description>
+                    </resource>
                     <resource resourceSpecific="listItem" displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
 
                     <!-- _links -->
-                    <resource displayName="self" fieldFormat="/index.php?option=contact" />
-                    <resource displayGroup="_links" displayName="first" fieldFormat="/index.php?option=contact&amp;limitstart=0" />
-                    <resource displayGroup="_links" displayName="previous" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.previous}" />
-                    <resource displayGroup="_links" displayName="next" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.next}" />
-                    <resource displayGroup="_links" displayName="last" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.last}" />
-                    <resource displayGroup="_links" displayName="all" fieldFormat="/index.php?option=contact&amp;limit=0" />
-                    <resource displayGroup="_links" displayName="limit" fieldFormat="/index.php?option=contact&amp;limit={limit}&amp;limitstart={limitstart}" linkTemplated="true" />
-                    <resource displayGroup="_links" displayName="filter" fieldFormat="/index.php?option=contact&amp;filter_search={filter_search}" linkTemplated="true" />
+                    <resource displayName="base" />
+                    <resource displayName="contact:self" fieldFormat="/index.php?option=contact" />
+                    <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;limitstart=0" linkTitle="Pagination first" />
+                    <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.previous}" linkTitle="Pagination previous" />
+                    <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.next}" linkTitle="Pagination next" />
+                    <resource displayGroup="_links" displayName="contact:last" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.last}" linkTitle="Pagination last" />
+                    <resource displayGroup="_links" displayName="contact:all" fieldFormat="/index.php?option=contact&amp;limit=0" linkTitle="Show all items" />
+                    <resource displayGroup="_links" displayName="contact:limit" fieldFormat="/index.php?option=contact&amp;limit={limit}&amp;limitstart={limitstart}" linkTemplated="true" linkTitle="List limit" />
+                    <resource displayGroup="_links" displayName="contact:filter" fieldFormat="/index.php?option=contact&amp;filter_search={filter_search}" linkTemplated="true" linkTitle="Filter list" />
+                    <resource displayGroup="_links" displayName="contact:sort" fieldFormat="/index.php?option=contact&amp;filter_order={filter_order}&amp;filter_order_Dir={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
                 </resources>
+                <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
             <!-- If fromHelper is set to true it will run query on webservice helper class -->
             <!-- Api will automatically call getItem if queryFunction is not specified -->
@@ -98,12 +105,13 @@
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <fields>
-                    <field transform="string">name</field>
+                    <field name="name" transform="string" />
                     <!-- Disable specific fields from showing -->
-                    <field hide="true">checked_out</field>
+                    <field name="checked_out" hide="true" />
                 </fields>
 
                 <resources>
+
                     <!-- standard -->
                     <resource displayName="id" fieldFormat="{id}" transform="int" />
                     <resource displayName="name" fieldFormat="{name}" />
@@ -148,41 +156,56 @@
                     <resource displayName="hits" fieldFormat="{hits}" transform="int" />
 
                     <!-- _links -->
-                    <resource displayName="self" />
+                    <resource displayName="documentation" />
+                    <resource displayName="base" />
+                    <resource displayName="contact:self" />
                     <resource displayName="categories" />
-                    <resource displayName="checkout" />
-                    <resource displayName="checkin" />
-                    <resource displayName="featured" />
-                    <resource displayName="unfeatured" />
-                    <resource displayName="publish" />
-                    <resource displayName="unpublish" />
+                    <resource displayName="contact:checkout" />
+                    <resource displayName="contact:checkin" />
+                    <resource displayName="contact:featured" />
+                    <resource displayName="contact:unfeatured" />
+                    <resource displayName="contact:publish" />
+                    <resource displayName="contact:unpublish" />
                 </resources>
+                <description><![CDATA[ This operation displays one Contact item. ]]></description>
             </item>
         </read>
-        <create fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" createDataFunction="">
+        <create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" createDataFunction="">
             <fields>
                 <!-- Fields can be defined here -->
-                <field name="params" transform="array" />
+                <field name="params" transform="array" >
+                    <description><![CDATA[ Needed for correct params parsing. ]]></description>
+                </field>
+
+                <description><![CDATA[ Fields listed will be transformed before saving. ]]></description>
             </fields>
 
             <resources>
+                <resource displayName="documentation" />
+                <resource displayName="base" />
                 <resource displayName="result" />
-                <resource displayName="self" />
+                <resource displayName="contact:self" />
             </resources>
+            <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
-        <update authorizationNeeded="false" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" updateDataFunction="save">
+        <update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" updateDataFunction="save">
 
             <resources>
+                <resource displayName="documentation" />
+                <resource displayName="base" />
                 <resource displayName="result" />
-                <resource displayName="self" />
+                <resource displayName="contact:self" />
             </resources>
+            <description><![CDATA[ This operation updates Contact item. ]]></description>
         </update>
         <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
-        <delete fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" primaryKeys="id">
+        <delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" primaryKeys="id">
 
             <resources>
+                <resource displayName="base" />
                 <resource displayName="result" />
             </resources>
+            <description><![CDATA[ This operation deletes Contact item(s). ]]></description>
         </delete>
         <!-- Default class for all tasks if not otherwise specified -->
         <task fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true">
@@ -196,31 +219,64 @@
                 publish: publish(id, value)
                 unpublish: publish(id, value)
                 -->
-            <featured fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id" displayName="Make contact featured">
+            <featured authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id" displayName="task featured">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. ]]></description>
+                <resources>
+                    <resource displayName="base" />
+                    <resource displayName="result" />
+                </resources>
             </featured>
 
-            <unfeatured optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" displayName="Make contact unfeatured">
+            <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. ]]></description>
+                <resources>
+                    <resource displayName="base" />
+                    <resource displayName="result" />
+                </resources>
             </unfeatured>
 
-            <publish fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id" displayName="Make contact published">
+            <publish authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. ]]></description>
+                <resources>
+                    <resource displayName="base" />
+                    <resource displayName="result" />
+                </resources>
             </publish>
 
-            <unpublish optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" displayName="Make contact unpublished">
+            <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. ]]></description>
+                <resources>
+                    <resource displayName="base" />
+                    <resource displayName="result" />
+                </resources>
             </unpublish>
+
+            <checkin authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
+                <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. ]]></description>
+                <resources>
+                    <resource displayName="base" />
+                    <resource displayName="result" />
+                </resources>
+            </checkin>
+
+            <checkout authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
+                <description><![CDATA[ This task enables you to check-out Contact item. ]]></description>
+                <resources>
+                    <resource displayName="base" />
+                    <resource displayName="result" />
+                </resources>
+            </checkout>
 
             <!-- If using useOperation you can redirect that task operation to some of the existing ones: create, read, update, delete -->
             <save useOperation="update" />
             <apply useOperation="update" />
             <delete useOperation="delete" />
-
-            <resources>
-                <resource displayName="result" />
-                <resource resourceSpecific="featured" displayName="result" />
-            </resources>
         </task>
+        <!-- Documentation can be included from various sources:
+            auto: documentation is auto generated using this XML as template
+            url: documentation will be loaded from fixed url using url="http://www.sample.com"
+            none: documentation will not be included in methods Rels (not recommended)
+             -->
+        <documentation authorizationNeeded="false" source="auto" url="" />
     </operations>
 </apiservice>

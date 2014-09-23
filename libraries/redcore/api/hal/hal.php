@@ -82,6 +82,12 @@ class RApiHalHal extends RApi
 	public $apiResources = null;
 
 	/**
+	 * @var    string  Rendered Documentation
+	 * @since  1.2
+	 */
+	public $documentation = '';
+
+	/**
 	 * Method to instantiate the file-based api call.
 	 *
 	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
@@ -91,6 +97,8 @@ class RApiHalHal extends RApi
 	public function __construct($options = null)
 	{
 		parent::__construct($options);
+
+		JPluginHelper::importPlugin('redcore');
 
 		$this->setWebserviceName();
 		$this->webserviceVersion = $this->options->get('webserviceVersion', '');
@@ -155,6 +163,7 @@ class RApiHalHal extends RApi
 	{
 		$method = $this->options->get('method', 'GET');
 		$task = $this->options->get('task', '');
+		$format = $this->options->get('format', '');
 
 		// Set proper operation for given method
 		switch ((string) $method)
@@ -167,7 +176,6 @@ class RApiHalHal extends RApi
 				break;
 			case 'POST':
 				$method = !empty($task) ? 'TASK' : 'UPDATE';
-
 				break;
 			case 'DELETE':
 				$method = 'DELETE';
@@ -183,10 +191,15 @@ class RApiHalHal extends RApi
 		{
 			$operation = strtoupper((string) $this->configuration->operations->task->{$task}['useOperation']);
 
-			if (in_array($operation, array('CREATE', 'READ', 'UPDATE', 'DELETE')))
+			if (in_array($operation, array('CREATE', 'READ', 'UPDATE', 'DELETE', 'DOCUMENTATION')))
 			{
 				$method = $operation;
 			}
+		}
+
+		if ($format == 'doc')
+		{
+			$method = 'documentation';
 		}
 
 		$this->operation = strtolower($method);
@@ -231,6 +244,9 @@ class RApiHalHal extends RApi
 				case 'task':
 					$this->triggerFunction('apiTask');
 					break;
+				case 'documentation':
+					$this->triggerFunction('apiDocumentation');
+					break;
 			}
 		}
 		else
@@ -265,13 +281,11 @@ class RApiHalHal extends RApi
 	public function apiDefaultPage()
 	{
 		// Add standard Joomla namespace as curie.
-		$joomlaCurie = new RApiHalDocumentLink('http://docs.joomla.org/Link_relations/{rel}', 'curies');
-		$joomlaCurie->setName('joomla')
-			->setTemplated(true);
+		$documentationCurie = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc', 'curies', 'Documentation', 'documentation', null, true);
 
 		// Add basic hypermedia links.
-		$this->hal->setLink($joomlaCurie, false, true);
-		$this->hal->setLink(new RApiHalDocumentLink(rtrim(JUri::base(), '/'), 'base'));
+		$this->hal->setLink($documentationCurie, false, true);
+		$this->hal->setLink(new RApiHalDocumentLink(JUri::base(), 'base', JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_DEFAULT_PAGE')));
 
 		$webservices = RApiHalHelper::getInstalledWebservices();
 
@@ -284,13 +298,56 @@ class RApiHalHal extends RApi
 					if ($webservice['state'] == 1)
 					{
 						// We will fetch only top level webservice
-						$this->hal->setLink(new RApiHalDocumentLink('/index.php?option=' . $webservice['name'], $webservice['name'], $webservice['displayName']));
+						$this->hal->setLink(
+							new RApiHalDocumentLink('/index.php?option=' . $webservice['name'], 'documentation:' . $webservice['name'], $webservice['displayName'])
+						);
 
 						break;
 					}
 				}
 			}
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Execute the Api Documentation operation.
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.2
+	 */
+	public function apiDocumentation()
+	{
+		$currentConfiguration = $this->configuration;
+		$documentationNone = false;
+
+		if ($this->operationConfiguration['source'] == 'url')
+		{
+			if (!empty($this->operationConfiguration['url']))
+			{
+				JFactory::getApplication()->redirect($this->operationConfiguration['url']);
+				JFactory::getApplication()->close();
+			}
+
+			$documentationNone = true;
+		}
+
+		if ($this->operationConfiguration['source'] == 'none' || $documentationNone)
+		{
+			$currentConfiguration = null;
+		}
+
+		$this->documentation = RLayoutHelper::render(
+			'webservice.documentation',
+			array(
+				'view' => $this,
+				'options' => array (
+					'xml' => $currentConfiguration,
+				)
+			)
+		);
 
 		return $this;
 	}
@@ -451,9 +508,6 @@ class RApiHalHal extends RApi
 
 		if (!empty($task))
 		{
-			// Get resource list from configuration
-			$this->loadResourceFromConfiguration($this->operationConfiguration);
-
 			// Load resources directly from task group
 			if (!empty($this->operationConfiguration->{$task}->resources))
 			{
@@ -567,15 +621,20 @@ class RApiHalHal extends RApi
 				{
 					if ($resource['displayGroup'] == '_links')
 					{
+						$linkRel = !empty($resource['linkRel']) ? $resource['linkRel'] : $resource['displayName'];
+
+						// We will force curries as link array
+						$linkPlural = $linkRel == 'curies';
+
 						$resourceDocument->setLink(
 							new RApiHalDocumentLink(
 								$this->assignValueToResource($resource, $data),
-								$resource['displayName'],
+								$linkRel,
+								$resource['linkTitle'],
 								$resource['linkName'],
-								$resource['displayName'],
 								$resource['hrefLang'],
 								RApiHalHelper::isAttributeTrue($resource, 'linkTemplated')
-							)
+							), $linkSingular = false, $linkPlural
 						);
 					}
 					else
@@ -598,7 +657,7 @@ class RApiHalHal extends RApi
 	 *
 	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function loadResourceFromConfiguration($configuration)
 	{
@@ -607,6 +666,12 @@ class RApiHalHal extends RApi
 			foreach ($configuration->resources->resource as $resourceXML)
 			{
 				$resource = RApiHalHelper::getXMLElementAttributes($resourceXML);
+
+				if (!empty($resourceXML->description))
+				{
+					$resource['description'] = $resourceXML->description;
+				}
+
 				$resource = RApiHalDocumentResource::defaultResourceField($resource);
 				$resourceName = $resource['displayName'];
 				$resourceSpecific = $resource['resourceSpecific'];
@@ -624,6 +689,45 @@ class RApiHalHal extends RApi
 				}
 			}
 		}
+
+		return $this->resources;
+	}
+
+	/**
+	 * Loads Resource list from configuration file for specific method or task
+	 *
+	 * @param   string  $resourceSpecific  Resource specific string that separates resources
+	 *
+	 * @return RApiHalHal
+	 */
+	public function resetDocumentResources($resourceSpecific = '')
+	{
+		if (!empty($resourceSpecific))
+		{
+			if (isset($this->resources[$resourceSpecific]))
+			{
+				unset($this->resources[$resourceSpecific]);
+			}
+
+			return $this;
+		}
+
+		$this->resources = array();
+
+		return $this;
+	}
+
+	/**
+	 * Loads Resource list from configuration file for specific method or task
+	 *
+	 * @param   string  $a  Current array
+	 * @param   string  $b  Next array
+	 *
+	 * @return RApiHalHal
+	 */
+	public function sortResourcesByDisplayGroup($a, $b)
+	{
+		return strcmp($a["displayGroup"], $b["displayGroup"]);
 	}
 
 	/**
@@ -657,36 +761,55 @@ class RApiHalHal extends RApi
 	 */
 	public function render()
 	{
+		// Set token to uri if used in that way
+		$token = $this->options->get('accessToken', '');
+		$format = $this->options->get('format', 'json');
+
+		if (!empty($token))
+		{
+			$this->setUriParams(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), $token);
+		}
+
 		$this->setUriParams('api', 'Hal');
-		$redCoreApi = 'redCOREAPI';
-		$redCoreApi .= !empty($this->webserviceName) ? ' / ' . $this->webserviceName . ' (version ' . $this->webserviceVersion . ')' : '';
-		JFactory::getApplication()->setHeader('Via', $redCoreApi, true);
 
-		$documentOptions = array(
-			'absoluteHrefs' => $this->options->get('absoluteHrefs', false),
-			'documentFormat' => $this->options->get('format', 'json'),
-			'uriParams' => $this->uriParams,
-		);
+		if ($format == 'doc')
+		{
+			// This is already in HTML format
+			echo $this->documentation;
+		}
+		else
+		{
+			$redCoreApi = 'redCOREAPI';
+			$redCoreApi .= !empty($this->webserviceName) ? ' / ' . $this->webserviceName . ' (version ' . $this->webserviceVersion . ')' : '';
+			JFactory::getApplication()->setHeader('Via', $redCoreApi, true);
 
-		JFactory::$document = new RApiHalDocumentDocument($documentOptions);
+			$documentOptions = array(
+				'absoluteHrefs' => $this->options->get('absoluteHrefs', false),
+				'documentFormat' => $format,
+				'uriParams' => $this->uriParams,
+			);
+			JFactory::$document = new RApiHalDocumentDocument($documentOptions);
 
-		$body = $this->getBody();
-		$body = $this->triggerFunction('prepareBody', $body);
+			$body = $this->getBody();
+			$body = $this->triggerFunction('prepareBody', $body);
 
-		// Push results into the document.
-		JFactory::$document
-			->setBuffer($body)
-			->render(false, array('startTime' => $this->startTime));
+			// Push results into the document.
+			JFactory::$document
+				->setBuffer($body)
+				->render(false, array('startTime' => $this->startTime));
+		}
 	}
 
 	/**
 	 * Method to fill response with requested data
 	 *
+	 * @param   array  $data  Data to set to Hal document if needed
+	 *
 	 * @return  string  Api call output
 	 *
 	 * @since   1.2
 	 */
-	public function getBody()
+	public function getBody($data = array())
 	{
 		// Add data
 		$data = null;
@@ -819,23 +942,29 @@ class RApiHalHal extends RApi
 
 		// Check for allowed operations
 		$allowedOperations = $this->getConfig('operations');
-		$scope = $this->operation;
-		$terminateIfNotAuthorized = true;
 
 		if (!isset($allowedOperations->{$this->operation}))
 		{
 			return false;
 		}
 
+		$scope = $this->operation;
+		$authorizationGroups = !empty($allowedOperations->{$this->operation}['authorization']) ?
+			(string) $allowedOperations->{$this->operation}['authorization'] : '';
+		$terminateIfNotAuthorized = true;
+
 		if ($this->operation == 'task')
 		{
 			$task = $this->options->get('task', '');
-			$scope = $task;
+			$scope .= '.' . $task;
 
 			if (!isset($allowedOperations->task->{$task}))
 			{
 				return false;
 			}
+
+			$authorizationGroups = !empty($allowedOperations->task->{$task}['authorization']) ?
+				(string) $allowedOperations->task->{$task}['authorization'] : '';
 
 			if (isset($allowedOperations->task->{$task}['authorizationNeeded'])
 				&& strtolower($allowedOperations->task->{$task}['authorizationNeeded']) == 'false')
@@ -849,11 +978,48 @@ class RApiHalHal extends RApi
 			$terminateIfNotAuthorized = false;
 		}
 
-		// @todo finish scope initialization
-		$scope = '';
-
 		// Does user have permission
-		$this->isAuthorized($scope, $terminateIfNotAuthorized);
+		if (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 0)
+		{
+			// Use scopes to authorize
+			$scope = array($this->webserviceName . '.' . $scope);
+
+			// Add in Global scope check
+			$scope[] = $this->operation;
+
+			$this->isAuthorized($scope, $terminateIfNotAuthorized);
+		}
+		elseif (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 1)
+		{
+			$this->isAuthorized($scope = null, $terminateIfNotAuthorized);
+
+			// Use Joomla to authorize
+			if ($terminateIfNotAuthorized && !empty($authorizationGroups))
+			{
+				$authorizationGroups = explode(',', $authorizationGroups);
+				$authorized = false;
+				$configAssetName = !empty($this->configuration->config->authorizationAssetName) ?
+					(string) $this->configuration->config->authorizationAssetName : null;
+
+				foreach ($authorizationGroups as $authorizationGroup)
+				{
+					$authorization = explode(':', trim($authorizationGroup));
+					$action = $authorization[0];
+					$assetName = !empty($authorization[1]) ? $authorization[1] : $configAssetName;
+
+					if (JFactory::getUser()->authorise(trim($action), trim($assetName)))
+					{
+						$authorized = true;
+						break;
+					}
+				}
+
+				if (!$authorized)
+				{
+					return false;
+				}
+			}
+		}
 
 		return true;
 	}
