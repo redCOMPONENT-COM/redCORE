@@ -694,7 +694,7 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Loads Resource list from configuration file for specific method or task
+	 * Resets specific Resource list or all Resources
 	 *
 	 * @param   string  $resourceSpecific  Resource specific string that separates resources
 	 *
@@ -718,7 +718,7 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Loads Resource list from configuration file for specific method or task
+	 * Used for ordering arrays
 	 *
 	 * @param   string  $a  Current array
 	 * @param   string  $b  Next array
@@ -1237,6 +1237,11 @@ class RApiHalHal extends RApi
 				{
 					if (isset($value[$replacementKey]))
 					{
+						if (is_array($value[$replacementKey]))
+						{
+							$value[$replacementKey] = json_encode($value[$replacementKey]);
+						}
+
 						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value[$replacementKey]), $format);
 					}
 				}

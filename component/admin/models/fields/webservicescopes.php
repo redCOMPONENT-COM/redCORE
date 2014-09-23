@@ -73,9 +73,9 @@ class JFormFieldWebservicescopes extends JFormFieldList
 						}
 					}
 				}
-
-				static::$cache[$hash] = array_merge(static::$cache[$hash], $options);
 			}
+
+			static::$cache[$hash] = array_merge(static::$cache[$hash], $options);
 		}
 
 		return static::$cache[$hash];

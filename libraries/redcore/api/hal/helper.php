@@ -77,8 +77,8 @@ class RApiHalHelper
 			array('scope' => 'read', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_READ')),
 			array('scope' => 'update', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_UPDATE')),
 			array('scope' => 'delete', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DELETE')),
-			array('scope' => 'documentation', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DOCUMENTATION')),
 			array('scope' => 'task', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_TASKS')),
+			array('scope' => 'documentation', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DOCUMENTATION')),
 		);
 	}
 
