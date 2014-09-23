@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_clients` (
   `client_secret` varchar(80) NOT NULL DEFAULT '',
   `redirect_uri` varchar(2000) NOT NULL DEFAULT '',
   `grant_types` varchar(80),
-  `scope` varchar(100),
+  `scope` TEXT,
   `user_id` varchar(80),
   PRIMARY KEY (`id`),
   KEY `idx_client_id` (`client_id`)
@@ -17,8 +17,9 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_access_tokens` (
   `client_id` varchar(80) NOT NULL DEFAULT '',
   `user_id` varchar(255),
   `expires` TIMESTAMP NOT NULL,
-  `scope` varchar(2000),
-  CONSTRAINT `redcore_access_token_pk` PRIMARY KEY (`access_token`)
+  `scope` TEXT,
+  CONSTRAINT `redcore_access_token_pk` PRIMARY KEY (`access_token`),
+  KEY `idx_client_id` (`client_id`)
 ) DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `#__redcore_oauth_authorization_codes` (
@@ -27,8 +28,9 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_authorization_codes` (
   `user_id` varchar(255),
   `redirect_uri` varchar(2000),
   `expires` TIMESTAMP NOT NULL,
-  `scope` varchar(2000),
-  CONSTRAINT `redcore_auth_code_pk` PRIMARY KEY (`authorization_code`)
+  `scope` TEXT,
+  CONSTRAINT `redcore_auth_code_pk` PRIMARY KEY (`authorization_code`),
+  KEY `idx_client_id` (`client_id`)
 ) DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `#__redcore_oauth_refresh_tokens` (
@@ -36,8 +38,9 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_refresh_tokens` (
   `client_id` varchar(80) NOT NULL DEFAULT '',
   `user_id` varchar(255),
   `expires` TIMESTAMP NOT NULL,
-  `scope` varchar(2000),
-  CONSTRAINT `redcore_refresh_token_pk` PRIMARY KEY (`refresh_token`)
+  `scope` TEXT,
+  CONSTRAINT `redcore_refresh_token_pk` PRIMARY KEY (`refresh_token`),
+  KEY `idx_client_id` (`client_id`)
 ) DEFAULT CHARSET = utf8;
 
 CREATE TABLE IF NOT EXISTS `#__redcore_oauth_users` (

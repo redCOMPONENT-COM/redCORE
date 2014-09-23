@@ -28,6 +28,12 @@ class RApiOauth2Oauth2 extends RApi
 	public $server = null;
 
 	/**
+	 * Main Oauth2 Server configuration
+	 * @var array
+	 */
+	public $serverConfig = null;
+
+	/**
 	 * Result of Oauth2 Server response
 	 * @var OAuth2\ResponseInterface
 	 */
@@ -49,7 +55,7 @@ class RApiOauth2Oauth2 extends RApi
 		OAuth2\Autoloader::register();
 
 		// OAuth2 Server config from plugin
-		$serverConfig = array(
+		$this->serverConfig = array(
 			'use_crypto_tokens'        => (boolean) RTranslationHelper::$pluginParams->get('oauth2_use_crypto_tokens', false),
 			'store_encrypted_token_string' => (boolean) RTranslationHelper::$pluginParams->get('oauth2_store_encrypted_token_string', true),
 			'use_openid_connect'       => (boolean) RTranslationHelper::$pluginParams->get('oauth2_use_openid_connect', false),
@@ -86,13 +92,13 @@ class RApiOauth2Oauth2 extends RApi
 		$password = $conf->get('password');
 
 		$storage = new OAuth2\Storage\Pdo(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
-		$this->server = new OAuth2\Server($storage, $serverConfig);
+		$this->server = new OAuth2\Server($storage, $this->serverConfig);
 
 		// Add the "Client Credentials" grant type (it is the simplest of the grant types)
-		$this->server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage, $serverConfig));
+		$this->server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage, $this->serverConfig));
 
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
-		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $serverConfig));
+		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $this->serverConfig));
 
 		// Init Environment
 		$this->setApiOperation();
@@ -178,10 +184,17 @@ class RApiOauth2Oauth2 extends RApi
 	 */
 	public function apiResource()
 	{
-		$scope = $this->options->get('scope', '');
+		$scopeToCheck = $this->options->get('scope', '');
+		$scopes = array();
+
+		if (is_array($scopeToCheck) && count($scopeToCheck) > 0)
+		{
+			$scopes = $scopeToCheck;
+			$scopeToCheck = null;
+		}
 
 		// Handle a request for an OAuth2.0 Access Token and send the response to the client
-		if (!$this->server->verifyResourceRequest(OAuth2\Request::createFromGlobals(), null, $scope))
+		if (!$this->server->verifyResourceRequest(OAuth2\Request::createFromGlobals(), null, $scopeToCheck))
 		{
 			$this->response = $this->server->getResponse();
 
@@ -189,6 +202,42 @@ class RApiOauth2Oauth2 extends RApi
 		}
 
 		$token = $this->server->getResourceController()->getToken();
+
+		if (!empty($scopes))
+		{
+			$requestValid = false;
+
+			// Check all scopes
+			foreach ($scopes as $scope)
+			{
+				if (!empty($scope) && !empty($token["scope"]) && $this->server->getScopeUtil()->checkScope($scope, $token['scope']))
+				{
+					$requestValid = true;
+					break;
+				}
+			}
+
+			if (!$requestValid)
+			{
+				$this->response = $this->server->getResponse();
+				$this->response->setError(403, 'insufficient_scope', JText::_('LIB_REDCORE_API_OAUTH2_SERVER_INSUFFICIENT_SCOPE'));
+				$this->response->addHttpHeaders(
+					array(
+						'WWW-Authenticate' => sprintf('%s realm="%s", scope="%s", error="%s", error_description="%s"',
+							$this->server->getTokenType()->getTokenType(),
+							$this->serverConfig['www_realm'],
+							implode(', ', $scopes),
+							$this->response->getParameter('error'),
+							$this->response->getParameter('error_description')
+						)
+					)
+				);
+
+				return $this;
+			}
+		}
+
+
 
 		$this->response = json_encode(
 			array('success' => true, 'user_id' => $token['user_id'], 'message' => JText::_('LIB_REDCORE_API_OAUTH2_SERVER_ACCESS_SUCCESS'))

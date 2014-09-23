@@ -71,6 +71,7 @@ class PlgSystemRedcore extends JPlugin
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
 						$viewName = $input->getString('view', '');
 						$version = $input->getString('version', '');
+						$token = $input->getString(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), '');
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
@@ -92,6 +93,7 @@ class PlgSystemRedcore extends JPlugin
 							'method' => $method,
 							'task' => $task,
 							'data' => $data,
+							'accessToken' => $token,
 							'format' => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
 							'id' => $input->getString('id', ''),
 							'absoluteHrefs' => $input->get->getBool('absoluteHrefs', true),

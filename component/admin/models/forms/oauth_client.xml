@@ -47,10 +47,11 @@
 		</field>
         <field
                 name="scope"
-                type="text"
+                type="Webservicescopes"
                 label="COM_REDCORE_OAUTH_CLIENTS_SCOPE"
                 description="COM_REDCORE_OAUTH_CLIENTS_SCOPE_DESC"
-                readonly="true"
+                multiple="true"
+                default=""
                 />
 		<field
 			name="user_id"

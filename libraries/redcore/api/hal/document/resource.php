@@ -605,8 +605,11 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 			'fieldFormat'      => !empty($resource['fieldFormat']) ? $resource['fieldFormat'] : '',
 			'transform'        => !empty($resource['transform']) ? $resource['transform'] : '',
 			'linkName'         => !empty($resource['linkName']) ? $resource['linkName'] : '',
+			'linkTitle'        => !empty($resource['linkTitle']) ? $resource['linkTitle'] : '',
 			'hrefLang'         => !empty($resource['hrefLang']) ? $resource['hrefLang'] : '',
 			'linkTemplated'    => !empty($resource['linkTemplated']) ? $resource['linkTemplated'] : '',
+			'linkRel'          => !empty($resource['linkRel']) ? $resource['linkRel'] : '',
+			'description'      => !empty($resource['description']) ? $resource['description'] : '',
 		);
 
 		return array_merge($resource, $defaultResource);

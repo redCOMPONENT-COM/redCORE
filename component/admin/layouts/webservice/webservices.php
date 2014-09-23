@@ -241,6 +241,7 @@ $column = 0;
 			<?php foreach ($webserviceVersions as $webservice): ?>
 				<?php $status = RApiHalHelper::getStatus((string) $webservice->config->name, (string) $webservice->config->version); ?>
 				<?php $methods = RApiHalHelper::getMethods((string) $webservice->config->name, (string) $webservice->config->version); ?>
+				<?php $scopes = RApiHalHelper::getScopes((string) $webservice->config->name, (string) $webservice->config->version, $getScopeDisplayNames = true); ?>
 				<div class="span4 well">
 					<h4>
 						<?php echo $webservice->name; ?> (<?php echo $webservice->config->name; ?>)
@@ -279,14 +280,28 @@ $column = 0;
 								<strong><?php echo $status; ?></strong>
 							</td>
 						</tr>
-						<tr>
-							<td>
-								<strong><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_METHODS'); ?>:</strong>
-							</td>
-							<td>
-								<strong><?php echo str_replace(',', ', ', $methods); ?></strong>
-							</td>
-						</tr>
+						<?php if ($status != JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED')) :?>
+							<tr>
+								<td>
+									<strong><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_METHODS'); ?>:</strong>
+								</td>
+								<td>
+									<strong><?php echo str_replace(',', ', ', $methods); ?></strong>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<strong><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_AVAILABLE_SCOPES'); ?>:</strong>
+								</td>
+								<td>
+									<ul>
+										<li>
+											<?php echo str_replace(',', '</li><li>', $scopes); ?>
+										</li>
+									</ul>
+								</td>
+							</tr>
+						<?php endif; ?>
 						</tbody>
 					</table>
 					<?php if ($status == JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED')): ?>

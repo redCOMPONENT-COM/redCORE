@@ -46,7 +46,57 @@ class RedcoreModelOauth_Client extends RModelAdmin
 			$data['client_secret'] = $this->generateSecretKey($data['client_id']);
 		}
 
-		return parent::save($data);
+		if (parent::save($data))
+		{
+			return $this->setTokensToExpire($data['client_id']);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Method to update client scopes.
+	 *
+	 * @param   string  $clientId  Client Id
+	 *
+	 * @return  boolean  True on success, False on error.
+	 *
+	 * @throws  RuntimeException
+	 *
+	 * @since   1.2
+	 */
+	public function setTokensToExpire($clientId)
+	{
+		$db = JFactory::getDbo();
+
+		// Update Access Tokens
+		$query = $db->getQuery(true)
+			->update('#__redcore_oauth_access_tokens')
+			->set($db->qn('expires') . ' = NOW()')
+			->where($db->qn('client_id') . ' = ' . $db->q($clientId))
+			->where($db->qn('expires') . ' > NOW()');
+		$db->setQuery($query);
+		$db->execute();
+
+		// Update Authorization codes
+		$query = $db->getQuery(true)
+			->update('#__redcore_oauth_authorization_codes')
+			->set($db->qn('expires') . ' = NOW()')
+			->where($db->qn('client_id') . ' = ' . $db->q($clientId))
+			->where($db->qn('expires') . ' > NOW()');
+		$db->setQuery($query);
+		$db->execute();
+
+		// Update Refresh Tokens
+		$query = $db->getQuery(true)
+			->update('#__redcore_oauth_refresh_tokens')
+			->set($db->qn('expires') . ' = NOW()')
+			->where($db->qn('client_id') . ' = ' . $db->q($clientId))
+			->where($db->qn('expires') . ' > NOW()');
+		$db->setQuery($query);
+		$db->execute();
+
+		return true;
 	}
 
 	/**
