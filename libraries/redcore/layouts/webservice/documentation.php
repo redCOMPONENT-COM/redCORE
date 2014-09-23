@@ -15,7 +15,6 @@ $view = !empty($displayData['view']) ? $displayData['view'] : null;
 $xml = !empty($displayData['options']['xml']) ? $displayData['options']['xml'] : array();
 $date   = new JDate;
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,9 +22,6 @@ $date   = new JDate;
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1\">
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-	<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
-	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </head>
 <body>
 <div class="container-fluid">
