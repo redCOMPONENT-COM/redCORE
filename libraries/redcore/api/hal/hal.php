@@ -1225,6 +1225,11 @@ class RApiHalHal extends RApi
 				{
 					if (isset($value->{$replacementKey}))
 					{
+						if (is_array($value->{$replacementKey}))
+						{
+							$value->{$replacementKey} = json_encode($value->{$replacementKey});
+						}
+
 						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value->{$replacementKey}), $format);
 					}
 				}

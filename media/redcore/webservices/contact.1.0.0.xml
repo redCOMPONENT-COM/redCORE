@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<apiservice type="hal">
+<apiservice>
     <name>Contact Webservice</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
@@ -25,6 +25,7 @@
         <resource displayGroup="_links" displayName="documentation" fieldFormat="/index.php?option=contact&amp;format=doc#{rel}" linkTitle="Documentation" linkName="contact" hrefLang="" linkTemplated="true" linkRel="curies" />
         <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
         <resource displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}" />
+        <resource displayGroup="_links" displayName="contact:list" fieldFormat="/index.php?option=contact" />
         <resource displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
         <resource displayGroup="_links" displayName="contact:checkin" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" />
         <resource displayGroup="_links" displayName="contact:checkout" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" />
@@ -159,6 +160,7 @@
                     <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:self" />
+                    <resource displayName="contact:list" />
                     <resource displayName="categories" />
                     <resource displayName="contact:checkout" />
                     <resource displayName="contact:checkin" />
@@ -183,6 +185,7 @@
             <resources>
                 <resource displayName="documentation" />
                 <resource displayName="base" />
+                <resource displayName="contact:list" />
                 <resource displayName="result" />
                 <resource displayName="contact:self" />
             </resources>
@@ -193,6 +196,7 @@
             <resources>
                 <resource displayName="documentation" />
                 <resource displayName="base" />
+                <resource displayName="contact:list" />
                 <resource displayName="result" />
                 <resource displayName="contact:self" />
             </resources>
@@ -203,6 +207,7 @@
 
             <resources>
                 <resource displayName="base" />
+                <resource displayName="contact:list" />
                 <resource displayName="result" />
             </resources>
             <description><![CDATA[ This operation deletes Contact item(s). ]]></description>
@@ -223,6 +228,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. ]]></description>
                 <resources>
                     <resource displayName="base" />
+                    <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
             </featured>
@@ -231,6 +237,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. ]]></description>
                 <resources>
                     <resource displayName="base" />
+                    <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
             </unfeatured>
@@ -239,6 +246,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. ]]></description>
                 <resources>
                     <resource displayName="base" />
+                    <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
             </publish>
@@ -247,6 +255,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. ]]></description>
                 <resources>
                     <resource displayName="base" />
+                    <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
             </unpublish>
@@ -255,6 +264,7 @@
                 <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. ]]></description>
                 <resources>
                     <resource displayName="base" />
+                    <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
             </checkin>
@@ -263,6 +273,7 @@
                 <description><![CDATA[ This task enables you to check-out Contact item. ]]></description>
                 <resources>
                     <resource displayName="base" />
+                    <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
             </checkout>
