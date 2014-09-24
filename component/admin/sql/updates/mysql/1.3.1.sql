@@ -9,9 +9,6 @@ ADD INDEX `idx_client_id` (`client_id`);
 ALTER TABLE `#__redcore_oauth_refresh_tokens`
 ADD INDEX `idx_client_id` (`client_id`);
 
-ALTER TABLE `#__redcore_oauth_authorization_codes`
-ADD INDEX `idx_client_id` (`client_id`);
-
 ALTER TABLE `#__redcore_oauth_clients`
 CHANGE `scope` `scope` TEXT;
 
