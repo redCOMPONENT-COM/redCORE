@@ -34,6 +34,18 @@ class RApiHalHal extends RApi
 	public $webserviceVersion = '';
 
 	/**
+	 * @var    string  Folder path of the webservice
+	 * @since  1.2
+	 */
+	public $webservicePath = '';
+
+	/**
+	 * @var    array  Installed webservice options
+	 * @since  1.2
+	 */
+	public $webservice = '';
+
+	/**
 	 * For easier access of current configuration parameters
 	 * @var SimpleXMLElement
 	 */
@@ -90,8 +102,9 @@ class RApiHalHal extends RApi
 	/**
 	 * Method to instantiate the file-based api call.
 	 *
-	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
+	 * @param   mixed $options Optional custom options to load. JRegistry or array format
 	 *
+	 * @throws Exception
 	 * @since   1.2
 	 */
 	public function __construct($options = null)
@@ -111,7 +124,15 @@ class RApiHalHal extends RApi
 				$this->webserviceVersion = RApiHalHelper::getNewestWebserviceVersion($this->webserviceName);
 			}
 
-			$this->configuration = RApiHalHelper::loadWebserviceConfiguration($this->webserviceName, $this->webserviceVersion);
+			$this->webservice = RApiHalHelper::getInstalledWebservice($this->webserviceName, $this->webserviceVersion);
+
+			if (empty($this->webservice))
+			{
+				throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_NOT_INSTALLED', $this->webserviceName, $this->webserviceVersion));
+			}
+
+			$this->webservicePath = $this->webservice['path'];
+			$this->configuration = RApiHalHelper::loadWebserviceConfiguration($this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath);
 			$this->triggerFunction('setResources');
 		}
 
@@ -1076,7 +1097,7 @@ class RApiHalHal extends RApi
 		}
 
 		$version = $this->options->get('webserviceVersion', '');
-		$helperFile = RApiHalHelper::getWebserviceFile(strtolower($this->webserviceName), $version, 'php');
+		$helperFile = RApiHalHelper::getWebserviceFile(strtolower($this->webserviceName), $version, 'php', $this->webservicePath);
 
 		if (file_exists($helperFile))
 		{
