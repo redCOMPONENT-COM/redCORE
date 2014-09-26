@@ -19,10 +19,11 @@ $missingWebservices = !empty($displayData['missingWebservices']) ? $displayData[
 $column = 0;
 ?>
 <script type="text/javascript">
-	function setWebservice(webservice, version, task)
+	function setWebservice(webservice, version, task, folder)
 	{
 		document.getElementById('webservice').value = webservice;
 		document.getElementById('version').value = version;
+		document.getElementById('folder').value = folder;
 
 		if (task != '')
 		{
@@ -335,14 +336,14 @@ $column = 0;
 						<button
 							class="btn btn-small btn-primary"
 							type="button"
-							onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.installWebservice')">
+							onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.installWebservice', '<?php echo $webservice->webservicePath; ?>')">
 							<i class="icon-cogs"></i>
 							<?php echo JText::_('COM_REDCORE_UPDATE') ?>
 						</button>
 						<button
 							class="btn btn-small btn-danger"
 							type="button"
-							onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.uninstallWebservice')">
+							onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.uninstallWebservice', '<?php echo $webservice->webservicePath; ?>')">
 							<i class="icon-cogs"></i>
 							<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 						</button>
@@ -351,7 +352,7 @@ $column = 0;
 					<button
 						class="btn btn-small btn-danger"
 						type="button"
-						onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.deleteWebservice')">
+						onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.deleteWebservice', '<?php echo $webservice->webservicePath; ?>')">
 						<i class="icon-remove"></i>
 						<?php echo JText::_('JTOOLBAR_DELETE') ?>
 					</button>

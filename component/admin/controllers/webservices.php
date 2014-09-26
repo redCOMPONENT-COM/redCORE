@@ -31,6 +31,7 @@ class RedcoreControllerWebservices extends RControllerForm
 
 		$webservice = $app->input->getString('webservice');
 		$version = $app->input->getString('version');
+		$folder = $app->input->getString('folder');
 
 		if ($webservice == 'all')
 		{
@@ -38,7 +39,9 @@ class RedcoreControllerWebservices extends RControllerForm
 		}
 		else
 		{
-			RApiHalHelper::installWebservice($webservice, $version);
+			// Load all XMLs before save to get Paths
+			RApiHalHelper::getWebservices();
+			RApiHalHelper::installWebservice($webservice, $version, true, $folder);
 		}
 
 		$this->redirectAfterAction();
@@ -57,6 +60,7 @@ class RedcoreControllerWebservices extends RControllerForm
 
 		$webservice = $app->input->getString('webservice');
 		$version = $app->input->getString('version');
+		$folder = $app->input->getString('folder');
 
 		if ($webservice == 'all')
 		{
@@ -64,7 +68,7 @@ class RedcoreControllerWebservices extends RControllerForm
 		}
 		else
 		{
-			RApiHalHelper::uninstallWebservice($webservice, $version);
+			RApiHalHelper::uninstallWebservice($webservice, $version, true, $folder);
 		}
 
 		$this->redirectAfterAction();
@@ -83,6 +87,7 @@ class RedcoreControllerWebservices extends RControllerForm
 
 		$webservice = $app->input->getString('webservice');
 		$version = $app->input->getString('version');
+		$folder = $app->input->getString('folder');
 
 		if ($webservice == 'all')
 		{
@@ -90,7 +95,7 @@ class RedcoreControllerWebservices extends RControllerForm
 		}
 		else
 		{
-			RApiHalHelper::deleteWebservice($webservice, $version);
+			RApiHalHelper::deleteWebservice($webservice, $version, true, $folder);
 		}
 
 		$this->redirectAfterAction();

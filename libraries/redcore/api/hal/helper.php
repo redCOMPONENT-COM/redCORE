@@ -168,14 +168,15 @@ class RApiHalHelper
 	 *
 	 * @param   string  $webserviceName  Webservice name
 	 * @param   string  $version         Version of the webservice
+	 * @param   string  $path            Path to webservice files
 	 *
 	 * @return  array  List of objects
 	 */
-	public static function getWebservices($webserviceName = '', $version = '1.0.0')
+	public static function getWebservices($webserviceName = '', $version = '1.0.0', $path = '')
 	{
 		if (empty(self::$webservices) || (!empty($webserviceName) && empty(self::$webservices[$webserviceName][$version])))
 		{
-			self::loadwebservices($webserviceName, $version);
+			self::loadWebservices($webserviceName, $version, $path);
 		}
 
 		if (empty($webserviceName))
@@ -196,32 +197,42 @@ class RApiHalHelper
 	 *
 	 * @param   string  $webserviceName  Webservice name
 	 * @param   string  $version         Version of the webservice
+	 * @param   string  $path            Path to webservice files
 	 *
 	 * @return  array  List of objects
 	 */
-	public static function loadwebservices($webserviceName = '', $version = '1.0.0')
+	public static function loadWebservices($webserviceName = '', $version = '1.0.0', $path = '')
 	{
 		jimport('joomla.filesystem.folder');
-		$webservices = array();
 
 		if (empty($webserviceName))
 		{
-			$webserviceXmls = JFolder::files(self::getWebservicesPath(), '.xml', true);
+			$folders = JFolder::folders(self::getWebservicesPath(), '.', true);
+			$webserviceXmls[' '] = JFolder::files(self::getWebservicesPath(), '.xml');
 
-			foreach ($webserviceXmls as $webserviceXml)
+			foreach ($folders as $folder)
 			{
-				$xml = self::loadWebserviceConfiguration($webserviceXml, array(), '');
+				$webserviceXmls[$folder] = JFolder::files(self::getWebservicesPath() . '/' . $folder, '.xml');
+			}
 
-				if (!empty($xml))
+			foreach ($webserviceXmls as $webserviceXmlPath => $webservices)
+			{
+				foreach ($webservices as $webservice)
 				{
-					$version = !empty($xml->config->version) ? (string) $xml->config->version : $version;
-					self::$webservices[(string) $xml->config->name][$version] = $xml;
+					$xml = self::loadWebserviceConfiguration($webservice, '', '', trim($webserviceXmlPath));
+
+					if (!empty($xml))
+					{
+						$version = !empty($xml->config->version) ? (string) $xml->config->version : $version;
+						$xml->webservicePath = trim($webserviceXmlPath);
+						self::$webservices[(string) $xml->config->name][$version] = $xml;
+					}
 				}
 			}
 		}
 		else
 		{
-			self::$webservices[$webserviceName][$version] = self::loadWebserviceConfiguration($webserviceName, $version, 'xml');
+			self::$webservices[$webserviceName][$version] = self::loadWebserviceConfiguration($webserviceName, $version, 'xml', $path);
 		}
 	}
 
@@ -231,18 +242,20 @@ class RApiHalHelper
 	 * @param   string  $webserviceName  Name of the webservice
 	 * @param   string  $version         Suffixes to the file name (ex. 1.0.0)
 	 * @param   string  $extension       Extension of the file to search
+	 * @param   string  $path            Path to webservice files
 	 *
 	 * @return  string  The full path to the api file
 	 *
 	 * @since   1.2
 	 */
-	public static function getWebserviceFile($webserviceName, $version = '', $extension = 'xml')
+	public static function getWebserviceFile($webserviceName, $version = '', $extension = 'xml', $path = '')
 	{
 		JLoader::import('joomla.filesystem.path');
 
 		if (!empty($webserviceName))
 		{
 			$version = !empty($version) ? array(JPath::clean($version)) : array('1.0.0');
+			$webservicePath = !empty($path) ? self::getWebservicesPath() . '/' . $path : self::getWebservicesPath();
 
 			// Search for suffixed versions. Example: content.v1.xml
 			if (!empty($version))
@@ -251,7 +264,7 @@ class RApiHalHelper
 				{
 					$rawPath  = $webserviceName . '.' . $suffix . '.' . $extension;
 
-					if ($configurationFullPath = JPath::find(self::getWebservicesPath(), $rawPath))
+					if ($configurationFullPath = JPath::find($webservicePath, $rawPath))
 					{
 						return $configurationFullPath;
 					}
@@ -261,7 +274,7 @@ class RApiHalHelper
 			// Standard version
 			$rawPath  = $webserviceName . '.' . $extension;
 
-			return JPath::find(self::getWebservicesPath(), $rawPath);
+			return JPath::find($webservicePath, $rawPath);
 		}
 
 		return null;
@@ -273,20 +286,21 @@ class RApiHalHelper
 	 * @param   array   $webserviceName  Name of the webservice file
 	 * @param   string  $version         Suffixes for loading of webservice configuration file
 	 * @param   string  $extension       File extension name
+	 * @param   string  $path            Path to webservice files
 	 *
 	 * @return  object  Loaded configuration object
 	 *
 	 * @since   1.2
-	 * @throws  RuntimeException
+	 * @throws  Exception
 	 */
-	public static function loadWebserviceConfiguration($webserviceName, $version = '', $extension = 'xml')
+	public static function loadWebserviceConfiguration($webserviceName, $version = '', $extension = 'xml', $path = '')
 	{
 		// Check possible overrides, and build the full path to api file
-		$configurationFullPath = self::getWebserviceFile(strtolower($webserviceName), $version, $extension);
+		$configurationFullPath = self::getWebserviceFile(strtolower($webserviceName), $version, $extension, $path);
 
 		if (!is_readable($configurationFullPath))
 		{
-			throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_CONFIGURATION_FILE_UNREADABLE'));
+			throw new Exception(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_CONFIGURATION_FILE_UNREADABLE'));
 		}
 
 		$content = @file_get_contents($configurationFullPath);
@@ -391,10 +405,11 @@ class RApiHalHelper
 	 * @param   string  $webservice         Webservice name
 	 * @param   string  $version            Webservice version
 	 * @param   bool    $showNotifications  Show notifications
+	 * @param   string  $path               Path to webservice files
 	 *
 	 * @return  boolean  Returns true if Webservice was successfully uninstalled
 	 */
-	public static function uninstallWebservice($webservice = '', $version = '1.0.0', $showNotifications = true)
+	public static function uninstallWebservice($webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
 	{
 		self::getInstalledWebservices();
 
@@ -434,15 +449,16 @@ class RApiHalHelper
 	 * @param   string  $webservice         Webservice name
 	 * @param   string  $version            Webservice version
 	 * @param   bool    $showNotifications  Show notifications
+	 * @param   string  $path               Path to webservice files
 	 *
 	 * @return  boolean  Returns true if Content element was successfully purged
 	 */
-	public static function deleteWebservice($webservice = '', $version = '1.0.0', $showNotifications = true)
+	public static function deleteWebservice($webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
 	{
 		if (self::uninstallWebservice($webservice, $version, $showNotifications))
 		{
-			$xmlFilePath = self::getWebserviceFile(strtolower($webservice), $version);
-			$helperFilePath = self::getWebserviceFile(strtolower($webservice), $version, 'php');
+			$xmlFilePath = self::getWebserviceFile(strtolower($webservice), $version, 'xml', $path);
+			$helperFilePath = self::getWebserviceFile(strtolower($webservice), $version, 'php', $path);
 
 			try
 			{
@@ -483,15 +499,15 @@ class RApiHalHelper
 			'overrideExistingFile'  => true,
 		);
 
-		foreach ($files as &$file)
+		foreach ($files as $key => &$file)
 		{
 			$objectFile = new JObject($file);
 
-			$content = @file_get_contents($objectFile->tmp_name);
-			$fileContent = null;
-
 			try
 			{
+				$content = file_get_contents($objectFile->tmp_name);
+				$fileContent = null;
+
 				if (is_string($content))
 				{
 					$fileContent = new SimpleXMLElement($content);
@@ -504,12 +520,12 @@ class RApiHalHelper
 			}
 			catch (Exception $e)
 			{
-				unset($file);
+				unset($files[$key]);
 				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_FILE_NOT_VALID'), 'message');
 			}
 		}
 
-		return RFilesystemFile::uploadFiles($files, self::getWebservicesPath(), $uploadOptions);
+		return RFilesystemFile::uploadFiles($files, self::getWebservicesPath() . '/upload', $uploadOptions);
 	}
 
 	/**
@@ -518,14 +534,15 @@ class RApiHalHelper
 	 * @param   string  $webservice         Webservice Name
 	 * @param   string  $version            Webservice version
 	 * @param   bool    $showNotifications  Show notifications
+	 * @param   string  $path               Path to webservice files
 	 *
 	 * @return  boolean  Returns true if Webservice was successfully installed
 	 */
-	public static function installWebservice($webservice = '', $version = '1.0.0', $showNotifications = true)
+	public static function installWebservice($webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
 	{
 		self::getInstalledWebservices();
 
-		$webserviceXml = self::getWebservices($webservice, $version);
+		$webserviceXml = self::getWebservices($webservice, $version, $path);
 
 		if (!empty($webserviceXml))
 		{
@@ -568,6 +585,7 @@ class RApiHalHelper
 				'name' => $webservice,
 				'version' => $version,
 				'displayName' => (string) $webserviceXml->name,
+				'path' => (string) $webserviceXml->webservicePath,
 				'xml' => $webservice . '.' . $version . '.xml',
 				'operations' => implode(',', $operations),
 				'scopes' => $scopes,
@@ -776,6 +794,27 @@ class RApiHalHelper
 	}
 
 	/**
+	 * Get installed webservice options
+	 *
+	 * @param   string  $webserviceName  Webservice Name
+	 * @param   string  $version         Webservice version
+	 *
+	 * @return  array  Array of webservice options
+	 */
+	public static function getInstalledWebservice($webserviceName, $version)
+	{
+		// Initialise Installed webservices
+		$webservices = self::getInstalledWebservices();
+
+		if (!empty($webservices[$webserviceName][$version]))
+		{
+			return $webservices[$webserviceName][$version];
+		}
+
+		return null;
+	}
+
+	/**
 	 * Checks if specific Webservice is installed and active
 	 *
 	 * @param   string  $webserviceName  Webservice Name
@@ -822,6 +861,6 @@ class RApiHalHelper
 			}
 		}
 
-		return '';
+		return '1.0.0';
 	}
 }
