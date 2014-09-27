@@ -575,7 +575,7 @@ class Com_RedcoreInstallerScript
 
 				if (!JFolder::create($newdir))
 				{
-					JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newdir), JLog::WARNING, 'jerror');
+					JLog::add(JText::sprintf('LIB_REDCORE_INSTALLER_ERROR_FAILED_TO_DELETE', $newdir), JLog::WARNING, 'jerror');
 
 					return false;
 				}
@@ -920,7 +920,7 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
-	 * Uninstall the webservices folder
+	 * Uninstall the webservices
 	 *
 	 * @param   object  $parent  class calling this method
 	 *
@@ -936,7 +936,7 @@ class Com_RedcoreInstallerScript
 			return false;
 		}
 
-		// We will use media removal function to remove webservice files
+		// We will use webservices removal function to remove webservice files
 		$element = $manifest->webservices;
 
 		if (!$element || !count($element->children()))
@@ -969,7 +969,7 @@ class Com_RedcoreInstallerScript
 
 			if ($val === false)
 			{
-				JLog::add('Failed to delete ' . $path, JLog::WARNING, 'jerror');
+				JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_FAILED_TO_DELETE', $path), JLog::WARNING, 'jerror', JLog::WARNING, 'jerror');//
 				$returnValue = false;
 			}
 		}
