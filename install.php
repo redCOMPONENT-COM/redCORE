@@ -521,7 +521,7 @@ class Com_RedcoreInstallerScript
 	 *
 	 * @return  boolean     True on success
 	 *
-	 * @since   3.1
+	 * @since   1.3
 	 */
 	public function installWebservices($parent)
 	{
