@@ -198,6 +198,7 @@ class Com_RedcoreInstallerScript
 		$this->installLibraries($parent);
 		$this->loadRedcoreLibrary();
 		$this->installMedia($parent);
+		$this->installWebservices($parent);
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
@@ -513,6 +514,81 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Method to parse through a webservices element of the installation manifest and take appropriate
+	 * action.
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  boolean     True on success
+	 *
+	 * @since   3.1
+	 */
+	public function installWebservices($parent)
+	{
+		$installer = $this->getInstaller();
+		$manifest  = $this->getManifest($parent);
+		$src       = $parent->getParent()->getPath('source');
+
+		if (!$manifest)
+		{
+			return false;
+		}
+
+		$installer->setPath('source', $src);
+		$element = $manifest->webservices;
+
+		if (!$element || !count($element->children()))
+		{
+			// Either the tag does not exist or has no children therefore we return zero files processed.
+			return false;
+		}
+
+		$copyfiles = array();
+
+		// Here we set the folder we are going to copy the files to.
+		$destination = JPath::clean(RApiHalHelper::getWebservicesPath());
+
+		// Here we set the folder we are going to copy the files from.
+		$folder = (string) $element->attributes()->folder;
+
+		if ($folder && file_exists($src . '/' . $folder))
+		{
+			$source = $src . '/' . $folder;
+		}
+		else
+		{
+			$source = $src;
+		}
+
+		// Process each file in the $files array (children of $tagName).
+		foreach ($element->children() as $file)
+		{
+			$path['src'] = $source . '/' . $file;
+			$path['dest'] = $destination . '/' . $file;
+
+			// Is this path a file or folder?
+			$path['type'] = ($file->getName() == 'folder') ? 'folder' : 'file';
+
+			if (basename($path['dest']) != $path['dest'])
+			{
+				$newdir = dirname($path['dest']);
+
+				if (!JFolder::create($newdir))
+				{
+					JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newdir), JLog::WARNING, 'jerror');
+
+					return false;
+				}
+			}
+
+			// Add the file to the copyfiles array
+			$copyfiles[] = $path;
+		}
+
+		return $installer->copyFiles($copyfiles);
+	}
+
+	/**
 	 * Method to run after an install/update/uninstall method
 	 *
 	 * @param   object  $type    type of change (install, update or discover_install)
@@ -751,6 +827,7 @@ class Com_RedcoreInstallerScript
 		$this->uninstallTranslations();
 		$this->uninstallLibraries($parent);
 		$this->uninstallMedia($parent);
+		$this->uninstallWebservices($parent);
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
@@ -840,6 +917,64 @@ class Com_RedcoreInstallerScript
 		{
 			$installer->removeFiles($manifest->media);
 		}
+	}
+
+	/**
+	 * Uninstall the webservices folder
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  boolean
+	 */
+	protected function uninstallWebservices($parent)
+	{
+		// Required objects
+		$manifest  = $this->getManifest($parent);
+
+		if (!$manifest)
+		{
+			return false;
+		}
+
+		// We will use media removal function to remove webservice files
+		$element = $manifest->webservices;
+
+		if (!$element || !count($element->children()))
+		{
+			// Either the tag does not exist or has no children therefore we return zero files processed.
+			return true;
+		}
+
+		$returnValue = true;
+
+		// Get the array of file nodes to process
+		$files = $element->children();
+		$source = RApiHalHelper::getWebservicesPath();
+
+		// Process each file in the $files array (children of $tagName).
+		foreach ($files as $file)
+		{
+			$path = $source . '/' . $file;
+
+			// Actually delete the files/folders
+
+			if (is_dir($path))
+			{
+				$val = JFolder::delete($path);
+			}
+			else
+			{
+				$val = JFile::delete($path);
+			}
+
+			if ($val === false)
+			{
+				JLog::add('Failed to delete ' . $path, JLog::WARNING, 'jerror');
+				$returnValue = false;
+			}
+		}
+
+		return $returnValue;
 	}
 
 	/**

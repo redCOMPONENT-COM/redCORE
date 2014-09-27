@@ -19,12 +19,12 @@ defined('_JEXEC') or die;
 class RedcoreViewConfig extends RedcoreHelpersView
 {
 	/**
-	 * @var  JForm
+	 * @var  JForm|boolean
 	 */
 	protected $form;
 
 	/**
-	 * @var  string
+	 * @var  object
 	 */
 	protected $component;
 
