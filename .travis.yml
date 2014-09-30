@@ -10,29 +10,29 @@ before_script:
   - phpenv rehash
   - composer install
 
-# Install Apache
-- sudo apt-get update -qq
-- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl > /dev/null
-- sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
-- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla to apache htdocs
-- sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-- sudo /etc/init.d/apache2 restart
-- composer install --dev --prefer-dist
+  # Install Apache
+  - sudo apt-get update -qq
+  - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl > /dev/null
+  - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
+  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla to apache htdocs
+  - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
+  - sudo /etc/init.d/apache2 restart
+  - composer install --dev --prefer-dist
 
-# XVFB
-- "export DISPLAY=:99.0"
-- "Xvfb :99.0 -extension RANDR > /dev/null &"
+  # XVFB
+  - "export DISPLAY=:99.0"
+  - "Xvfb :99.0 -extension RANDR > /dev/null &"
 
-# Window manager
-- echo "c10"
-- "sudo apt-get install fluxbox -y --force-yes"
-- echo "c11"
-- "fluxbox &"
+  # Window manager
+  - echo "c10"
+  - "sudo apt-get install fluxbox -y --force-yes"
+  - echo "c11"
+  - "fluxbox &"
 
-# Selenium server
-- "wget http://selenium-release.storage.googleapis.com/2.43/selenium-server-standalone-2.43.1.jar"
-- "java -jar selenium-server-standalone-2.43.1.jar > /dev/null 2>/dev/null &"
-- sleep 30
+  # Selenium server
+  - "wget http://selenium-release.storage.googleapis.com/2.43/selenium-server-standalone-2.43.1.jar"
+  - "java -jar selenium-server-standalone-2.43.1.jar > /dev/null 2>/dev/null &"
+  - sleep 30
 
 
 script:
