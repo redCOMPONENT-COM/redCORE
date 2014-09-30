@@ -10,11 +10,49 @@ before_script:
   - phpenv rehash
   - composer install
 
+# Install Apache
+- sudo apt-get update -qq
+- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl > /dev/null
+- sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
+- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla to apache htdocs
+- sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
+- sudo /etc/init.d/apache2 restart
+- composer install --dev --prefer-dist
+
+# XVFB
+- "export DISPLAY=:99.0"
+- "Xvfb :99.0 -extension RANDR > /dev/null &"
+
+# Window manager
+- echo "c10"
+- "sudo apt-get install fluxbox -y --force-yes"
+- echo "c11"
+- "fluxbox &"
+
+# Selenium server
+- "wget http://selenium-release.storage.googleapis.com/2.43/selenium-server-standalone-2.43.1.jar"
+- "java -jar selenium-server-standalone-2.43.1.jar > /dev/null 2>/dev/null &"
+- sleep 30
+
+
 script:
   - php .travis/phppec.php component/ libraries/ modules/ plugins/ #parse error checker
   - php .travis/phpcs.php # Code Style error checker
   - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/ # Missed debug code checker
   - php .travis/phpmd.php # PHP mess detector code checker
-  
+  #- php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
+  #- php .travis/phpparseerrorchecker.php component/ modules/ plugins/
+  # - phing -f .travis.xml
+  # Comment all system tests to use only Codeception
+  - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
+  - "wget http://codeception.com/codecept.phar"
+  - php ./codecept.phar build
+  #- php ./codecept.phar run acceptance
+  #- php codecept.phar run acceptance -g Joomla2 --env joomla2
+  - php codecept.phar run acceptance -g Joomla3 --env joomla3
+  #- php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
+  #- mv tests/system/servers/travis.configdef.php tests/system/servers/configdef.php # Create travis system tests config file
+  #- cd tests/system/webdriver/tests/
+  #- phpunit .
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
