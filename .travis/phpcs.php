@@ -41,7 +41,7 @@ $options = array(
 		REPO_BASE . '/modules',
 		REPO_BASE . '/libraries',
 	),
-	'standard'     => array(__DIR__ . '/phpcs/Joomla'),
+	'standard'     => array(__DIR__ . '/phpcs/coding-standards'),
 	'ignored'      => $ignored,
 	'showProgress' => true,
 	'verbosity' => false
