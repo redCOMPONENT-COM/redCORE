@@ -4,3 +4,6 @@
 [submodule "tests/system/joomla-cms2"]
 	path = tests/system/joomla-cms2
 	url = git@github.com:joomla/joomla-cms.git
+[submodule ".travis/phpcs/Joomla"]
+	path = .travis/phpcs/Joomla
+	url = git@github.com:joomla/coding-standards.git
