@@ -3,6 +3,8 @@
 - **Translation feature**
     - @todo
 - **Webservices, hal and oauth2**
+	- [Overview](chapters/webservices/overview.md)
+	- [Deploy Webservice XML files](chapters/webservices/deploy.md)
     - @todo
 - **The override plugin**
     - @todo
