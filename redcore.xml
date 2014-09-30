@@ -1,3 +1,4 @@
+test redcore installer fails
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="2.5" method="upgrade">
     <name>COM_REDCORE</name>
