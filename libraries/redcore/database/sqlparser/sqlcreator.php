@@ -465,7 +465,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
-			//$sql .= $this->processSubQuery($v);
+			$sql .= $this->processSubQuery($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('function subtree', $k, $v, 'expr_type');
