@@ -7,7 +7,7 @@
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>matias@redcomponent.com</authorEmail>
 	<authorUrl>www.matware.com.ar</authorUrl>
-	<version>1.3.1</version>
+	<version>1.3.2</version>
 	<description>PLG_OAUTH2_XML_DESCRIPTION</description>
 	<files>
 		<filename plugin="oauth2">oauth2.php</filename>

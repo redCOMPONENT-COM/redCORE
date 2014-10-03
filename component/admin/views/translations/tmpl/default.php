@@ -18,6 +18,8 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn = $this->state->get('list.direction');
 $selectedLanguage = $this->state->get('filter.language', '');
 $input = JFactory::getApplication()->input;
+$columns = array();
+
 if (!empty($this->items)):
 	$columns = (array) $this->translationTable->columns;
 	$this->translationTable->primaryKeys = (array) $this->translationTable->primaryKeys;

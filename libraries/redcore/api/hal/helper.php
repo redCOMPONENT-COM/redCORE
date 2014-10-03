@@ -73,12 +73,30 @@ class RApiHalHelper
 	public static function getDefaultScopes()
 	{
 		return array(
-			array('scope' => 'create', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_CREATE')),
-			array('scope' => 'read', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_READ')),
-			array('scope' => 'update', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_UPDATE')),
-			array('scope' => 'delete', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DELETE')),
-			array('scope' => 'task', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_TASKS')),
-			array('scope' => 'documentation', 'scopeDisplayName' => JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DOCUMENTATION')),
+			array('scope' => 'site.create',
+				'scopeDisplayName' => JText::_('JSITE') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_CREATE')),
+			array('scope' => 'site.read',
+				'scopeDisplayName' => JText::_('JSITE') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_READ')),
+			array('scope' => 'site.update',
+				'scopeDisplayName' => JText::_('JSITE') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_UPDATE')),
+			array('scope' => 'site.delete',
+				'scopeDisplayName' => JText::_('JSITE') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DELETE')),
+			array('scope' => 'site.task',
+				'scopeDisplayName' => JText::_('JSITE') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_TASKS')),
+			array('scope' => 'site.documentation',
+				'scopeDisplayName' => JText::_('JSITE') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DOCUMENTATION')),
+			array('scope' => 'administrator.create',
+				'scopeDisplayName' => JText::_('JADMINISTRATOR') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_CREATE')),
+			array('scope' => 'administrator.read',
+				'scopeDisplayName' => JText::_('JADMINISTRATOR') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_READ')),
+			array('scope' => 'administrator.update',
+				'scopeDisplayName' => JText::_('JADMINISTRATOR') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_UPDATE')),
+			array('scope' => 'administrator.delete',
+				'scopeDisplayName' => JText::_('JADMINISTRATOR') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DELETE')),
+			array('scope' => 'administrator.task',
+				'scopeDisplayName' => JText::_('JADMINISTRATOR') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_TASKS')),
+			array('scope' => 'administrator.documentation',
+				'scopeDisplayName' => JText::_('JADMINISTRATOR') . ' - ' . JText::_('LIB_REDCORE_API_OAUTH2_CLIENTS_SCOPES_ALL_WEBSERVICES_DOCUMENTATION')),
 		);
 	}
 
@@ -166,17 +184,19 @@ class RApiHalHelper
 	/**
 	 * Loading of webservice XML file
 	 *
-	 * @param   string  $webserviceName  Webservice name
-	 * @param   string  $version         Version of the webservice
-	 * @param   string  $path            Path to webservice files
+	 * @param   string  $client             Client
+	 * @param   string  $webserviceName     Webservice name
+	 * @param   string  $version            Version of the webservice
+	 * @param   string  $path               Path to webservice files
+	 * @param   bool    $showNotifications  Show notifications
 	 *
 	 * @return  array  List of objects
 	 */
-	public static function getWebservices($webserviceName = '', $version = '1.0.0', $path = '')
+	public static function getWebservices($client = '', $webserviceName = '', $version = '1.0.0', $path = '', $showNotifications = false)
 	{
-		if (empty(self::$webservices) || (!empty($webserviceName) && empty(self::$webservices[$webserviceName][$version])))
+		if (empty(self::$webservices) || (!empty($webserviceName) && empty(self::$webservices[$client][$webserviceName][$version])))
 		{
-			self::loadWebservices($webserviceName, $version, $path);
+			self::loadWebservices($client, $webserviceName, $version, $path);
 		}
 
 		if (empty($webserviceName))
@@ -184,9 +204,9 @@ class RApiHalHelper
 			return self::$webservices;
 		}
 
-		if (!empty(self::$webservices[$webserviceName][$version]))
+		if (!empty(self::$webservices[$client][$webserviceName][$version]))
 		{
-			return self::$webservices[$webserviceName][$version];
+			return self::$webservices[$client][$webserviceName][$version];
 		}
 
 		return array();
@@ -195,13 +215,16 @@ class RApiHalHelper
 	/**
 	 * Loading of related XML files
 	 *
-	 * @param   string  $webserviceName  Webservice name
-	 * @param   string  $version         Version of the webservice
-	 * @param   string  $path            Path to webservice files
+	 * @param   string  $client             Client
+	 * @param   string  $webserviceName     Webservice name
+	 * @param   string  $version            Version of the webservice
+	 * @param   string  $path               Path to webservice files
+	 * @param   bool    $showNotifications  Show notifications
 	 *
+	 * @throws Exception
 	 * @return  array  List of objects
 	 */
-	public static function loadWebservices($webserviceName = '', $version = '1.0.0', $path = '')
+	public static function loadWebservices($client = '', $webserviceName = '', $version = '1.0.0', $path = '', $showNotifications = false)
 	{
 		jimport('joomla.filesystem.folder');
 
@@ -219,26 +242,43 @@ class RApiHalHelper
 			{
 				foreach ($webservices as $webservice)
 				{
-					$xml = self::loadWebserviceConfiguration($webservice, '', '', trim($webserviceXmlPath));
-
-					if (!empty($xml))
+					try
 					{
-						$version = !empty($xml->config->version) ? (string) $xml->config->version : $version;
-						$xml->webservicePath = trim($webserviceXmlPath);
-						self::$webservices[(string) $xml->config->name][$version] = $xml;
+						// Version, Extension and Client are already part of file name
+						$xml = self::loadWebserviceConfiguration($webservice, $version = '', $extension = '', trim($webserviceXmlPath));
+
+						if (!empty($xml))
+						{
+							$client = self::getWebserviceClient($xml);
+							$version = !empty($xml->config->version) ? (string) $xml->config->version : $version;
+							$xml->webservicePath = trim($webserviceXmlPath);
+							self::$webservices[$client][(string) $xml->config->name][$version] = $xml;
+						}
+					}
+					catch (Exception $e)
+					{
+						if ($showNotifications)
+						{
+							JFactory::getApplication()->enqueueMessage($e->getMessage(), 'message');
+						}
+						else
+						{
+							throw $e;
+						}
 					}
 				}
 			}
 		}
 		else
 		{
-			self::$webservices[$webserviceName][$version] = self::loadWebserviceConfiguration($webserviceName, $version, 'xml', $path);
+			self::$webservices[$client][$webserviceName][$version] = self::loadWebserviceConfiguration($webserviceName, $version, 'xml', $path, $client);
 		}
 	}
 
 	/**
 	 * Method to finds the full real file path, checking possible overrides
 	 *
+	 * @param   string  $client          Client
 	 * @param   string  $webserviceName  Name of the webservice
 	 * @param   string  $version         Suffixes to the file name (ex. 1.0.0)
 	 * @param   string  $extension       Extension of the file to search
@@ -248,7 +288,7 @@ class RApiHalHelper
 	 *
 	 * @since   1.2
 	 */
-	public static function getWebserviceFile($webserviceName, $version = '', $extension = 'xml', $path = '')
+	public static function getWebserviceFile($client, $webserviceName, $version = '', $extension = 'xml', $path = '')
 	{
 		JLoader::import('joomla.filesystem.path');
 
@@ -264,6 +304,8 @@ class RApiHalHelper
 				{
 					$rawPath  = $webserviceName . '.' . $suffix . '.' . $extension;
 
+					$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
+
 					if ($configurationFullPath = JPath::find($webservicePath, $rawPath))
 					{
 						return $configurationFullPath;
@@ -273,6 +315,7 @@ class RApiHalHelper
 
 			// Standard version
 			$rawPath  = $webserviceName . '.' . $extension;
+			$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
 
 			return JPath::find($webservicePath, $rawPath);
 		}
@@ -287,16 +330,17 @@ class RApiHalHelper
 	 * @param   string  $version         Suffixes for loading of webservice configuration file
 	 * @param   string  $extension       File extension name
 	 * @param   string  $path            Path to webservice files
+	 * @param   string  $client          Client
 	 *
-	 * @return  object  Loaded configuration object
+	 * @return  SimpleXMLElement  Loaded configuration object
 	 *
 	 * @since   1.2
 	 * @throws  Exception
 	 */
-	public static function loadWebserviceConfiguration($webserviceName, $version = '', $extension = 'xml', $path = '')
+	public static function loadWebserviceConfiguration($webserviceName, $version = '', $extension = 'xml', $path = '', $client = '')
 	{
 		// Check possible overrides, and build the full path to api file
-		$configurationFullPath = self::getWebserviceFile(strtolower($webserviceName), $version, $extension, $path);
+		$configurationFullPath = self::getWebserviceFile($client, strtolower($webserviceName), $version, $extension, $path);
 
 		if (!is_readable($configurationFullPath))
 		{
@@ -316,6 +360,7 @@ class RApiHalHelper
 	/**
 	 * Returns string status of a given webservice
 	 *
+	 * @param   string  $client          Client
 	 * @param   string  $webserviceName  Webservice name
 	 * @param   string  $version         Version of the webservice
 	 *
@@ -324,21 +369,21 @@ class RApiHalHelper
 	 * @since   1.2
 	 * @throws  RuntimeException
 	 */
-	public static function getStatus($webserviceName, $version)
+	public static function getStatus($client, $webserviceName, $version)
 	{
 		$installedWebservices = self::getInstalledWebservices();
 
-		if (empty($installedWebservices[$webserviceName][$version]))
+		if (empty($installedWebservices[$client][$webserviceName][$version]))
 		{
 			return JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED');
 		}
 
-		if ($installedWebservices[$webserviceName][$version]['state'] == 0)
+		if ($installedWebservices[$client][$webserviceName][$version]['state'] == 0)
 		{
 			return JText::_('JUNPUBLISHED');
 		}
 
-		if ($installedWebservices[$webserviceName][$version]['state'] == 1)
+		if ($installedWebservices[$client][$webserviceName][$version]['state'] == 1)
 		{
 			return JText::_('JPUBLISHED');
 		}
@@ -349,6 +394,7 @@ class RApiHalHelper
 	/**
 	 * Returns allowed methods of a given webservice
 	 *
+	 * @param   string  $client          Client
 	 * @param   string  $webserviceName  Webservice name
 	 * @param   string  $version         Version of the webservice
 	 *
@@ -357,21 +403,22 @@ class RApiHalHelper
 	 * @since   1.2
 	 * @throws  RuntimeException
 	 */
-	public static function getMethods($webserviceName, $version)
+	public static function getMethods($client, $webserviceName, $version)
 	{
 		$installedWebservices = self::getInstalledWebservices();
 
-		if (empty($installedWebservices[$webserviceName][$version]['operations']))
+		if (empty($installedWebservices[$client][$webserviceName][$version]['operations']))
 		{
 			return '--';
 		}
 
-		return $installedWebservices[$webserviceName][$version]['operations'];
+		return $installedWebservices[$client][$webserviceName][$version]['operations'];
 	}
 
 	/**
 	 * Returns allowed scopes of a given webservice
 	 *
+	 * @param   string  $client                Client
 	 * @param   string  $webserviceName        Webservice name
 	 * @param   string  $version               Version of the webservice
 	 * @param   bool    $getScopeDisplayNames  Return Display name or scope name
@@ -381,17 +428,17 @@ class RApiHalHelper
 	 * @since   1.2
 	 * @throws  RuntimeException
 	 */
-	public static function getScopes($webserviceName, $version, $getScopeDisplayNames = false)
+	public static function getScopes($client, $webserviceName, $version, $getScopeDisplayNames = false)
 	{
 		$installedWebservices = self::getInstalledWebservices();
 		$scopes = array();
 
-		if (empty($installedWebservices[$webserviceName][$version]['scopes']))
+		if (empty($installedWebservices[$client][$webserviceName][$version]['scopes']))
 		{
 			return '--';
 		}
 
-		foreach ($installedWebservices[$webserviceName][$version]['scopes'] as $scope)
+		foreach ($installedWebservices[$client][$webserviceName][$version]['scopes'] as $scope)
 		{
 			$scopes[] = $getScopeDisplayNames ? $scope['scopeDisplayName'] : $scope['scope'];
 		}
@@ -402,6 +449,7 @@ class RApiHalHelper
 	/**
 	 * Uninstall Webservice from site
 	 *
+	 * @param   string  $client             Client
 	 * @param   string  $webservice         Webservice name
 	 * @param   string  $version            Webservice version
 	 * @param   bool    $showNotifications  Show notifications
@@ -409,21 +457,21 @@ class RApiHalHelper
 	 *
 	 * @return  boolean  Returns true if Webservice was successfully uninstalled
 	 */
-	public static function uninstallWebservice($webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
+	public static function uninstallWebservice($client = '', $webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
 	{
 		self::getInstalledWebservices();
 
 		if (!empty($webservice))
 		{
-			if (!empty(self::$installedWebservices[$webservice][$version]))
+			if (!empty(self::$installedWebservices[$client][$webservice][$version]))
 			{
-				if (count(self::$installedWebservices[$webservice]) == 1)
+				if (count(self::$installedWebservices[$client][$webservice]) == 1)
 				{
-					unset(self::$installedWebservices[$webservice]);
+					unset(self::$installedWebservices[$client][$webservice]);
 				}
 				else
 				{
-					unset(self::$installedWebservices[$webservice][$version]);
+					unset(self::$installedWebservices[$client][$webservice][$version]);
 				}
 			}
 		}
@@ -433,7 +481,7 @@ class RApiHalHelper
 		}
 
 		self::saveRedcoreWebserviceConfig();
-		self::saveOAuth2Scopes($webservice, array(), $showNotifications);
+		self::saveOAuth2Scopes($client, $webservice, array(), $showNotifications);
 
 		if ($showNotifications)
 		{
@@ -446,6 +494,7 @@ class RApiHalHelper
 	/**
 	 * Uninstalls Webservice access and deletes XML file
 	 *
+	 * @param   string  $client             Client
 	 * @param   string  $webservice         Webservice name
 	 * @param   string  $version            Webservice version
 	 * @param   bool    $showNotifications  Show notifications
@@ -453,12 +502,12 @@ class RApiHalHelper
 	 *
 	 * @return  boolean  Returns true if Content element was successfully purged
 	 */
-	public static function deleteWebservice($webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
+	public static function deleteWebservice($client, $webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
 	{
-		if (self::uninstallWebservice($webservice, $version, $showNotifications))
+		if (self::uninstallWebservice($client, $webservice, $version, $showNotifications))
 		{
-			$xmlFilePath = self::getWebserviceFile(strtolower($webservice), $version, 'xml', $path);
-			$helperFilePath = self::getWebserviceFile(strtolower($webservice), $version, 'php', $path);
+			$xmlFilePath = self::getWebserviceFile($client, strtolower($webservice), $version, 'xml', $path);
+			$helperFilePath = self::getWebserviceFile($client, strtolower($webservice), $version, 'php', $path);
 
 			try
 			{
@@ -516,7 +565,9 @@ class RApiHalHelper
 				$name = (string) $fileContent->config->name;
 				$version = !empty($fileContent->config->version) ? (string) $fileContent->config->version : '1.0.0';
 
-				$file['name'] = $name . '.' . $version . '.xml';
+				$client = self::getWebserviceClient($fileContent);
+
+				$file['name'] = $client . '.' . $name . '.' . $version . '.xml';
 			}
 			catch (Exception $e)
 			{
@@ -531,6 +582,7 @@ class RApiHalHelper
 	/**
 	 * Install Webservice from site
 	 *
+	 * @param   string  $client             Client
 	 * @param   string  $webservice         Webservice Name
 	 * @param   string  $version            Webservice version
 	 * @param   bool    $showNotifications  Show notifications
@@ -538,18 +590,18 @@ class RApiHalHelper
 	 *
 	 * @return  boolean  Returns true if Webservice was successfully installed
 	 */
-	public static function installWebservice($webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
+	public static function installWebservice($client = '', $webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
 	{
 		self::getInstalledWebservices();
 
-		$webserviceXml = self::getWebservices($webservice, $version, $path);
+		$webserviceXml = self::getWebservices($client, $webservice, $version, $path);
 
 		if (!empty($webserviceXml))
 		{
 			$operations = array();
 			$scopes = array();
+			$client = self::getWebserviceClient($webserviceXml);
 			$version = !empty($webserviceXml->config->version) ? (string) $webserviceXml->config->version : $version;
-			$displayWebserviceName = !empty($webserviceXml->name) ? $webserviceXml->name : $webservice;
 
 			if (!empty($webserviceXml->operations))
 			{
@@ -563,7 +615,7 @@ class RApiHalHelper
 							{
 								$displayName = !empty($task['displayName']) ? (string) $task['displayName'] : $key . ' ' . $taskKey;
 								$scopes[] = array(
-									'scope' => strtolower($webservice . '.' . $key . '.' . $taskKey),
+									'scope' => strtolower($client . '.' . $webservice . '.' . $key . '.' . $taskKey),
 									'scopeDisplayName' => ucfirst($displayName)
 								);
 							}
@@ -573,7 +625,7 @@ class RApiHalHelper
 							$operations[] = strtoupper(str_replace(array('read', 'create', 'update'), array('GET', 'PUT', 'POST'), $key));
 							$displayName = !empty($method['displayName']) ? (string) $method['displayName'] : $key;
 							$scopes[] = array(
-								'scope' => strtolower($webservice . '.' . $key),
+								'scope' => strtolower($client . '.' . $webservice . '.' . $key),
 								'scopeDisplayName' => ucfirst($displayName)
 							);
 						}
@@ -581,7 +633,7 @@ class RApiHalHelper
 				}
 			}
 
-			self::$installedWebservices[$webservice][$version] = array(
+			self::$installedWebservices[$client][$webservice][$version] = array(
 				'name' => $webservice,
 				'version' => $version,
 				'displayName' => (string) $webserviceXml->name,
@@ -589,11 +641,12 @@ class RApiHalHelper
 				'xml' => $webservice . '.' . $version . '.xml',
 				'operations' => implode(',', $operations),
 				'scopes' => $scopes,
+				'client' => $client,
 				'state' => 1,
 			);
 
 			self::saveRedcoreWebserviceConfig();
-			self::saveOAuth2Scopes($webservice, $scopes, $showNotifications);
+			self::saveOAuth2Scopes($client, $webservice, $scopes, $showNotifications);
 
 			if ($showNotifications)
 			{
@@ -625,25 +678,30 @@ class RApiHalHelper
 
 		if (!empty($webservices))
 		{
-			foreach ($webservices as $webserviceVersions)
+			foreach ($webservices as $webserviceNames)
 			{
-				foreach ($webserviceVersions as $webservice)
+				foreach ($webserviceNames as $webserviceVersions)
 				{
-					$name = (string) $webservice->config->name;
-					$version = (string) $webservice->config->version;
-
-					switch ($action)
+					foreach ($webserviceVersions as $webservice)
 					{
-						case 'install':
-							self::installWebservice($name, $version, $showNotifications);
-							break;
-						case 'uninstall':
-							self::uninstallWebservice($name, $version, $showNotifications);
-							break;
-							break;
-						case 'delete':
-							self::deleteWebservice($name, $version, $showNotifications);
-							break;
+						$client = self::getWebserviceClient($webservice);
+						$path = $webservice->webservicePath;
+						$name = (string) $webservice->config->name;
+						$version = (string) $webservice->config->version;
+
+						switch ($action)
+						{
+							case 'install':
+								self::installWebservice($client, $name, $version, $showNotifications, $path);
+								break;
+							case 'uninstall':
+								self::uninstallWebservice($client, $name, $version, $showNotifications, $path);
+								break;
+								break;
+							case 'delete':
+								self::deleteWebservice($client, $name, $version, $showNotifications, $path);
+								break;
+						}
 					}
 				}
 			}
@@ -661,6 +719,7 @@ class RApiHalHelper
 	/**
 	 * Method to save the OAuth2 scopes
 	 *
+	 * @param   string  $client             Client
 	 * @param   string  $webservice         Webservice name
 	 * @param   array   $scopes             Scopes defined in webservice
 	 * @param   bool    $showNotifications  Show notification after each Action
@@ -668,7 +727,7 @@ class RApiHalHelper
 	 * @throws  Exception
 	 * @return  bool   True on success, false on failure.
 	 */
-	public static function saveOAuth2Scopes($webservice, $scopes = array(), $showNotifications = true)
+	public static function saveOAuth2Scopes($client, $webservice, $scopes = array(), $showNotifications = true)
 	{
 		$db = JFactory::getDbo();
 
@@ -677,7 +736,7 @@ class RApiHalHelper
 			$db->transactionStart();
 
 			$query = $db->getQuery(true)
-				->delete('#__redcore_oauth_scopes')->where($db->qn('scope') . ' LIKE ' . $db->q($webservice . '.%'));
+				->delete('#__redcore_oauth_scopes')->where($db->qn('scope') . ' LIKE ' . $db->q($client . '.' . $webservice . '.%'));
 			$db->setQuery($query);
 			$db->execute();
 
@@ -716,9 +775,12 @@ class RApiHalHelper
 
 		if (!empty($installedWebservices))
 		{
-			foreach ($installedWebservices as $webserviceName => $webserviceVersions)
+			foreach ($installedWebservices as $webserviceClient => $webserviceNames)
 			{
-				uasort($installedWebservices[$webserviceName], 'version_compare');
+				foreach ($webserviceNames as $webserviceName => $webserviceVersions)
+				{
+					uasort($installedWebservices[$webserviceClient][$webserviceName], 'version_compare');
+				}
 			}
 		}
 
@@ -796,19 +858,20 @@ class RApiHalHelper
 	/**
 	 * Get installed webservice options
 	 *
+	 * @param   string  $client          Client
 	 * @param   string  $webserviceName  Webservice Name
 	 * @param   string  $version         Webservice version
 	 *
 	 * @return  array  Array of webservice options
 	 */
-	public static function getInstalledWebservice($webserviceName, $version)
+	public static function getInstalledWebservice($client, $webserviceName, $version)
 	{
 		// Initialise Installed webservices
 		$webservices = self::getInstalledWebservices();
 
-		if (!empty($webservices[$webserviceName][$version]))
+		if (!empty($webservices[$client][$webserviceName][$version]))
 		{
-			return $webservices[$webserviceName][$version];
+			return $webservices[$client][$webserviceName][$version];
 		}
 
 		return null;
@@ -817,12 +880,13 @@ class RApiHalHelper
 	/**
 	 * Checks if specific Webservice is installed and active
 	 *
+	 * @param   string  $client          Client
 	 * @param   string  $webserviceName  Webservice Name
 	 * @param   string  $version         Webservice version
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function isPublishedWebservice($webserviceName, $version)
+	public static function isPublishedWebservice($client, $webserviceName, $version)
 	{
 		$installedWebservices = self::getInstalledWebservices();
 
@@ -830,10 +894,10 @@ class RApiHalHelper
 		{
 			if (empty($version))
 			{
-				$version = self::getNewestWebserviceVersion($webserviceName);
+				$version = self::getNewestWebserviceVersion($client, $webserviceName);
 			}
 
-			$webservice = $installedWebservices[$webserviceName][$version];
+			$webservice = $installedWebservices[$client][$webserviceName][$version];
 
 			return !empty($webservice['state']);
 		}
@@ -844,23 +908,36 @@ class RApiHalHelper
 	/**
 	 * Checks if specific Webservice is installed and active
 	 *
+	 * @param   string  $client          Client
 	 * @param   string  $webserviceName  Webservice Name
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function getNewestWebserviceVersion($webserviceName)
+	public static function getNewestWebserviceVersion($client, $webserviceName)
 	{
 		$installedWebservices = self::getInstalledWebservices();
 
 		if (!empty($installedWebservices))
 		{
 			// First element is always newest
-			foreach ($installedWebservices[$webserviceName] as $version => $webservice)
+			foreach ($installedWebservices[$client][$webserviceName] as $version => $webservice)
 			{
 				return $version;
 			}
 		}
 
 		return '1.0.0';
+	}
+
+	/**
+	 * Returns Client of the webservice
+	 *
+	 * @param   SimpleXMLElement|array  $xmlElement  XML object
+	 *
+	 * @return  string
+	 */
+	public static function getWebserviceClient($xmlElement)
+	{
+		return !empty($xmlElement['client']) && strtolower($xmlElement['client']) == 'administrator' ? 'administrator' : 'site';
 	}
 }

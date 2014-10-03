@@ -58,17 +58,21 @@ class JFormFieldWebservicescopes extends JFormFieldList
 
 			if (!empty($installedWebservices))
 			{
-				foreach ($installedWebservices as $webserviceName => $webserviceVersions)
+				foreach ($installedWebservices as $webserviceClient => $webserviceNames)
 				{
-					foreach ($webserviceVersions as $version => $webservice)
+					foreach ($webserviceNames as $webserviceName => $webserviceVersions)
 					{
-						$webserviceDisplayName = !empty($webservice['displayName']) ? $webservice['displayName'] : $webserviceName;
-
-						if (!empty($webservice['scopes']))
+						foreach ($webserviceVersions as $version => $webservice)
 						{
-							foreach ($webservice['scopes'] as $scope)
+							$webserviceDisplayName = JText::_('J' . $webserviceClient) . ' '
+								. (!empty($webservice['displayName']) ? $webservice['displayName'] : $webserviceName);
+
+							if (!empty($webservice['scopes']))
 							{
-								$options[$webserviceDisplayName][] = $scope;
+								foreach ($webservice['scopes'] as $scope)
+								{
+									$options[$webserviceDisplayName][] = $scope;
+								}
 							}
 						}
 					}

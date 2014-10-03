@@ -23,7 +23,7 @@ class RApiHalTransformArray extends RApiHalTransformBase
 	 *
 	 * @param   mixed  $definition  Field definition.
 	 *
-	 * @return string Transformed value.
+	 * @return array Transformed value.
 	 */
 	public static function toExternal($definition)
 	{
@@ -35,7 +35,7 @@ class RApiHalTransformArray extends RApiHalTransformBase
 	 *
 	 * @param   mixed  $definition  Field definition.
 	 *
-	 * @return string Transformed value.
+	 * @return array Transformed value.
 	 */
 	public static function toInternal($definition)
 	{
