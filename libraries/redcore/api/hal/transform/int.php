@@ -23,7 +23,7 @@ class RApiHalTransformInt extends RApiHalTransformBase
 	 *
 	 * @param   string  $definition  Field definition.
 	 *
-	 * @return string Transformed value.
+	 * @return int Transformed value.
 	 */
 	public static function toExternal($definition)
 	{

@@ -400,7 +400,7 @@ class Com_RedcoreInstallerScript
 
 			if ($type == 'component')
 			{
-				if ($redcoreNode = $manifest->redcore)
+				if ($manifest->redcore)
 				{
 					$installer = $this->getInstaller();
 					$redcoreFolder = dirname(__FILE__);
@@ -563,6 +563,7 @@ class Com_RedcoreInstallerScript
 		// Process each file in the $files array (children of $tagName).
 		foreach ($element->children() as $file)
 		{
+			$path = array();
 			$path['src'] = $source . '/' . $file;
 			$path['dest'] = $destination . '/' . $file;
 
@@ -644,7 +645,6 @@ class Com_RedcoreInstallerScript
 			foreach ($tasks as $task)
 			{
 				$attributes = current($task->attributes());
-				$taskName = null;
 
 				// No task name
 				if (!isset($attributes['name']))
