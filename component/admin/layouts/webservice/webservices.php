@@ -19,8 +19,9 @@ $missingWebservices = !empty($displayData['missingWebservices']) ? $displayData[
 $column = 0;
 ?>
 <script type="text/javascript">
-	function setWebservice(webservice, version, task, folder)
+	function setWebservice(client, webservice, version, folder, task)
 	{
+		document.getElementById('client').value = client;
 		document.getElementById('webservice').value = webservice;
 		document.getElementById('version').value = version;
 		document.getElementById('folder').value = folder;
@@ -48,15 +49,26 @@ $column = 0;
 			e.preventDefault();
 			var url = jQuery(this).attr('data-remote');
 			var format = jQuery(this).attr('data-remote-format');
-			var dataType = format == 'xml' ? 'text' : 'json';
+			var dataType = format == 'json' ? 'json' : 'text';
 
 			jQuery.get(url, null, function(data){
-				data = format == 'xml' ?
-					formatXml(data)
-						.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;').replace(/\n/g,'') :
-					syntaxHighlight(data);
+				if (format == 'xml')
+				{
+					data = formatXml(data)
+						.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/ /g, '&nbsp;').replace(/\n/g,'');
+					data = jQuery('<pre></pre>').html(data);
+				}
+				else if (format == 'json')
+				{
+					data = syntaxHighlight(data);
+					data = jQuery('<pre></pre>').html(data);
+				}
+				else if (format == 'doc')
+				{
+					data = jQuery(data).contents();
+				}
 
-				jQuery('#webservicePreview .modal-body pre').html(data);
+				jQuery('#webservicePreview .modal-body').html(data);
 				jQuery('#webservicePreview').modal('show');
 			}, dataType);
 
@@ -172,7 +184,7 @@ $column = 0;
 					<button
 						class="btn btn-success"
 						type="button"
-						onclick="setWebservice('', '', 'webservices.uploadWebservice')">
+						onclick="setWebservice('', '', '', '', 'webservices.uploadWebservice')">
 						<i class="icon-upload"></i>
 						<?php echo JText::_('JTOOLBAR_UPLOAD') ?>
 					</button>
@@ -186,21 +198,21 @@ $column = 0;
 					<button
 						class="btn btn-success"
 						type="button"
-						onclick="setWebservice('all', '', 'webservices.installWebservice')">
+						onclick="setWebservice('', 'all', '', '', 'webservices.installWebservice')">
 						<i class="icon-cogs"></i>
 						<?php echo JText::_('JTOOLBAR_INSTALL') . ' / ' . JText::_('COM_REDCORE_UPDATE'); ?>
 					</button>
 					<button
 						class="btn btn-danger"
 						type="button"
-						onclick="setWebservice('all', '', 'webservices.uninstallWebservice')">
+						onclick="setWebservice('', 'all', '', '', 'webservices.uninstallWebservice')">
 						<i class="icon-cogs"></i>
 						<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 					</button>
 					<button
 						class="btn btn-danger"
 						type="button"
-						onclick="setWebservice('all', '', 'webservices.deleteWebservice')">
+						onclick="setWebservice('', 'all', '', '', 'webservices.deleteWebservice')">
 						<i class="icon-remove"></i>
 						<?php echo JText::_('JTOOLBAR_DELETE') ?>
 					</button>
@@ -238,131 +250,161 @@ $column = 0;
 			</div>
 		<?php else : ?>
 
-		<?php foreach ($webservices as $webserviceVersions): ?>
-			<?php foreach ($webserviceVersions as $webservice): ?>
-				<?php $status = RApiHalHelper::getStatus((string) $webservice->config->name, (string) $webservice->config->version); ?>
-				<?php $methods = RApiHalHelper::getMethods((string) $webservice->config->name, (string) $webservice->config->version); ?>
-				<?php $scopes = RApiHalHelper::getScopes((string) $webservice->config->name, (string) $webservice->config->version, $getScopeDisplayNames = true); ?>
-				<div class="span4 well">
-					<h4>
-						<?php echo $webservice->name; ?> (<?php echo $webservice->config->name; ?>)
-					</h4>
-					<table class="table table-striped adminlist">
-						<tbody>
-						<tr>
-							<td>
-								<strong><?php echo JText::_('JAUTHOR'); ?>:</strong>
-							</td>
-							<td>
-								<strong><?php echo !empty($webservice->author) ? $webservice->author : ''; ?></strong>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<strong><?php echo JText::_('JVERSION'); ?>:</strong>
-							</td>
-							<td>
-								<strong><?php echo !empty($webservice->config->version) ? $webservice->config->version : ''; ?></strong>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<strong><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?>:</strong>
-							</td>
-							<td>
-								<strong><?php echo !empty($webservice->description) ? $webservice->description : ''; ?></strong>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<strong><?php echo JText::_('JSTATUS'); ?>:</strong>
-							</td>
-							<td>
-								<strong><?php echo $status; ?></strong>
-							</td>
-						</tr>
-						<?php if ($status != JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED')) :?>
-							<tr>
-								<td>
-									<strong><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_METHODS'); ?>:</strong>
-								</td>
-								<td>
-									<strong><?php echo str_replace(',', ', ', $methods); ?></strong>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<strong><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_AVAILABLE_SCOPES'); ?>:</strong>
-								</td>
-								<td>
-									<ul>
-										<li>
-											<?php echo str_replace(',', '</li><li>', $scopes); ?>
-										</li>
-									</ul>
-								</td>
-							</tr>
-						<?php endif; ?>
-						</tbody>
-					</table>
-					<?php if ($status == JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED')): ?>
-						<button
-							class="btn btn-small btn-success"
-							type="button"
-							onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.installWebservice')">
-							<i class="icon-cogs"></i>
-							<?php echo JText::_('JTOOLBAR_INSTALL') ?>
-						</button>
-						<?php $disabled = ' disabled="disabled" '; ?>
-					<?php else: ?>
-						<button
-							class="btn btn-small btn-primary"
-							type="button"
-							data-remote-format="json"
-							data-remote="../index.php?api=Hal&option=<?php echo $webservice->config->name; ?>"
-							data-target="#webservicePreview">
-							<i class="icon-cogs"></i>
-							<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_PREVIEW_JSON') ?>
-						</button>
-						<button
-							class="btn btn-small btn-primary"
-							type="button"
-							data-remote-format="xml"
-							data-remote="../index.php?api=Hal&format=xml&option=<?php echo $webservice->config->name; ?>"
-							data-target="#webservicePreview">
-							<i class="icon-cogs"></i>
-							<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_PREVIEW_XML') ?>
-						</button>
-						<button
-							class="btn btn-small btn-primary"
-							type="button"
-							onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.installWebservice', '<?php echo $webservice->webservicePath; ?>')">
-							<i class="icon-cogs"></i>
-							<?php echo JText::_('COM_REDCORE_UPDATE') ?>
-						</button>
-						<button
-							class="btn btn-small btn-danger"
-							type="button"
-							onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.uninstallWebservice', '<?php echo $webservice->webservicePath; ?>')">
-							<i class="icon-cogs"></i>
-							<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
-						</button>
-						<?php $disabled = ''; ?>
+		<?php foreach ($webservices as $clients => $webserviceNames): ?>
+			<div class='clearfix'></div>
+			<h3><?php echo JText::_('J' . $clients); ?></h3>
+			<?php foreach ($webserviceNames as $webserviceVersions):
+					foreach ($webserviceVersions as $webservice):
+						$webserviceClient = RApiHalHelper::getWebserviceClient($webservice);
+						$status = RApiHalHelper::getStatus($webserviceClient, (string) $webservice->config->name, (string) $webservice->config->version);
+						$webserviceClientUri = '&webserviceClient=' . $webserviceClient;
+						$methods = RApiHalHelper::getMethods($webserviceClient, (string) $webservice->config->name, (string) $webservice->config->version);
+						$scopes = RApiHalHelper::getScopes(
+							$webserviceClient, (string) $webservice->config->name, (string) $webservice->config->version, $getScopeDisplayNames = true
+						);
+						$webserviceRead = !empty($webservice->operations->read) && strtolower($webservice->operations->read['authorizationNeeded']) == 'false';
+						$webserviceDocumentation = !empty($webservice->operations->documentation['authorizationNeeded'])
+							&& strtolower($webservice->operations->documentation['authorizationNeeded']) == 'false';
+					?>
+						<div class="span4 well">
+							<h4>
+								<?php echo $webservice->name; ?> (<?php echo $webservice->config->name; ?>)
+							</h4>
+							<table class="table table-striped adminlist">
+								<tbody>
+								<tr>
+									<td>
+										<strong><?php echo JText::_('JAUTHOR'); ?>:</strong>
+									</td>
+									<td>
+										<strong><?php echo !empty($webservice->author) ? $webservice->author : ''; ?></strong>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong><?php echo JText::_('JVERSION'); ?>:</strong>
+									</td>
+									<td>
+										<strong><?php echo !empty($webservice->config->version) ? $webservice->config->version : ''; ?></strong>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?>:</strong>
+									</td>
+									<td>
+										<strong><?php echo !empty($webservice->description) ? $webservice->description : ''; ?></strong>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong><?php echo JText::_('JSTATUS'); ?>:</strong>
+									</td>
+									<td>
+										<strong><?php echo $status; ?></strong>
+									</td>
+								</tr>
+								<?php if ($status != JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED')) :?>
+									<tr>
+										<td>
+											<strong><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_METHODS'); ?>:</strong>
+										</td>
+										<td>
+											<strong><?php echo str_replace(',', ', ', $methods); ?></strong>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<strong><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_AVAILABLE_SCOPES'); ?>:</strong>
+										</td>
+										<td>
+											<ul>
+												<li>
+													<?php echo str_replace(',', '</li><li>', $scopes); ?>
+												</li>
+											</ul>
+										</td>
+									</tr>
+								<?php endif; ?>
+								</tbody>
+							</table>
+							<?php if ($status == JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED')): ?>
+								<button
+									class="btn btn-mini btn-success"
+									type="button"
+									onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.installWebservice')">
+									<i class="icon-cogs"></i>
+									<?php echo JText::_('JTOOLBAR_INSTALL') ?>
+								</button>
+								<?php $disabled = ' disabled="disabled" '; ?>
+							<?php else: ?>
+								<button
+									class="btn btn-mini btn-primary"
+									type="button"
+									<?php if (!$webserviceDocumentation) : ?>
+										disabled="disabled"
+									<?php endif; ?>
+									data-remote-format="doc"
+									data-remote="../index.php?api=Hal&format=doc&option=<?php echo $webservice->config->name . $webserviceClientUri; ?>"
+									data-target="#webservicePreview">
+									<i class="icon-file-text"></i>
+									<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DOCUMENTATION') ?>
+								</button>
+								<button
+									class="btn btn-mini btn-primary"
+									type="button"
+									<?php if (!$webserviceRead) : ?>
+										disabled="disabled"
+									<?php endif; ?>
+									data-remote-format="json"
+									data-remote="../index.php?api=Hal&option=<?php echo $webservice->config->name . $webserviceClientUri; ?>"
+									data-target="#webservicePreview">
+									<i class="icon-file-text"></i>
+									<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_PREVIEW_JSON') ?>
+								</button>
+								<button
+									class="btn btn-mini btn-primary"
+									type="button"
+									<?php if (!$webserviceRead) : ?>
+										disabled="disabled"
+									<?php endif; ?>
+									data-remote-format="xml"
+									data-remote="../index.php?api=Hal&format=xml&option=<?php echo $webservice->config->name . $webserviceClientUri; ?>"
+									data-target="#webservicePreview">
+									<i class="icon-file-text"></i>
+									<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_PREVIEW_XML') ?>
+								</button>
+								<button
+									class="btn btn-mini btn-primary"
+									type="button"
+									onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.installWebservice')">
+									<i class="icon-cogs"></i>
+									<?php echo JText::_('COM_REDCORE_UPDATE') ?>
+								</button>
+								<button
+									class="btn btn-mini btn-danger"
+									type="button"
+									onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.uninstallWebservice')">
+									<i class="icon-cogs"></i>
+									<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
+								</button>
+								<?php $disabled = ''; ?>
+							<?php endif; ?>
+							<button
+								class="btn btn-mini btn-danger"
+								type="button"
+								onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.deleteWebservice')">
+								<i class="icon-remove"></i>
+								<?php echo JText::_('JTOOLBAR_DELETE') ?>
+							</button>
+						</div>
+						<?php if ((++$column) % 3 == 0 ) : ?>
+					</div>
+					<div class="row-fluid">
 					<?php endif; ?>
-					<button
-						class="btn btn-small btn-danger"
-						type="button"
-						onclick="setWebservice('<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', 'webservices.deleteWebservice', '<?php echo $webservice->webservicePath; ?>')">
-						<i class="icon-remove"></i>
-						<?php echo JText::_('JTOOLBAR_DELETE') ?>
-					</button>
-				</div>
-				<?php if ((++$column) % 3 == 0 ) : ?>
-			</div>
-			<div class="row-fluid">
-			<?php endif; ?>
+				<?php endforeach; ?>
 			<?php endforeach; ?>
-		<?php endforeach; ?>
+			<?php endforeach; ?>
 		<?php endif; ?>
 	</div>
 	<div class="row-fluid">
@@ -401,9 +443,9 @@ $column = 0;
 				</tbody>
 			</table>
 			<button
-				class="btn btn-small btn-danger"
+				class="btn btn-mini btn-danger"
 				type="button"
-				onclick="setWebservice('<?php echo $missingWebservice->name; ?>', '<?php echo $missingWebservice->version; ?>', 'webservices.uninstallWebservice')">
+				onclick="setWebservice('', <?php echo $missingWebservice->name; ?>', '<?php echo $missingWebservice->version; ?>', '<?php echo $missingWebservice->path; ?>', 'webservices.uninstallWebservice')">
 				<i class="icon-cogs"></i>
 				<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 			</button>

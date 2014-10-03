@@ -58,7 +58,7 @@ class RedcoreModelWebservices extends RModelList
 	 */
 	public function getItems()
 	{
-		$items = RApiHalHelper::getWebservices();
+		$items = RApiHalHelper::getWebservices($client = '', $webserviceName = '', $version = '', $path = '', $showNotifications = true);
 
 		return $items;
 	}

@@ -1,9 +1,10 @@
 <?xml version="1.0" ?>
-<apiservice>
+<!-- Default value for client attribute is site. If client is set to "administrator" then it will only be triggered through administrator call  -->
+<apiservice client="administrator">
     <name>Contact Webservice</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
-    <description>Api HAL configuration for Joomla Contact component</description>
+    <description>Api HAL configuration for Joomla Administrator Contact component</description>
     <config>
         <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
         <name>contact</name>
@@ -15,13 +16,6 @@
     <!-- Resource definition -->
     <!-- Resources can be grouped with "resourceSpecific" attribute, default value is "rcwsGlobal" -->
     <resources>
-        <resource displayName="alias" fieldFormat="{alias}" transform="string" />
-        <resource displayName="created" fieldFormat="{created}" transform="datetime" />
-        <resource displayName="checked_out" fieldFormat="{checked_out}" transform="int" />
-        <resource displayName="checked_out_time" fieldFormat="{checked_out_time}" transform="datetime" />
-        <resource displayName="hits" fieldFormat="{hits}" transform="int" />
-        <resource displayName="revision" fieldFormat="{version}" transform="int" />
-
         <resource displayGroup="_links" displayName="documentation" fieldFormat="/index.php?option=contact&amp;format=doc#{rel}" linkTitle="Documentation" linkName="contact" hrefLang="" linkTemplated="true" linkRel="curies" />
         <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
         <resource displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}" />
@@ -35,13 +29,6 @@
         <resource displayGroup="_links" displayName="contact:unpublish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unpublish" />
         <resource displayGroup="_links" displayName="contact:createdBy" fieldFormat="/index.php?option=users&amp;id={created_by}" />
         <resource displayGroup="_links" displayName="contact:modifiedBy" fieldFormat="/index.php?option=users&amp;id={modified_by}" />
-
-        <resource displayName="apiVersion" fieldFormat="{apiVersion}" transform="string" />
-        <resource displayName="description" fieldFormat="{metadesc}" transform="string" />
-        <resource displayName="keywords" fieldFormat="{metakey}" transform="string" />
-        <resource displayName="robots" fieldFormat="{metadata.robots}" transform="string" />
-        <resource displayName="rights" fieldFormat="{metadata.rights}" transform="string" />
-        <resource displayName="xref" fieldFormat="{xreference}" transform="string" />
 
         <resource displayName="result" fieldFormat="{result}" transform="boolean" />
     </resources>
@@ -107,8 +94,6 @@
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <fields>
                     <field name="name" transform="string" />
-                    <!-- Disable specific fields from showing -->
-                    <field name="checked_out" hide="true" />
                 </fields>
 
                 <resources>
@@ -116,7 +101,7 @@
                     <!-- standard -->
                     <resource displayName="id" fieldFormat="{id}" transform="int" />
                     <resource displayName="name" fieldFormat="{name}" />
-                    <resource displayName="alias" />
+                    <resource displayName="alias" fieldFormat="{alias}" transform="string" />
                     <resource displayName="con_position" fieldFormat="{con_position}" />
                     <resource displayName="address" fieldFormat="{address}" />
                     <resource displayName="suburb" fieldFormat="{suburb}" />
@@ -143,7 +128,7 @@
                     <resource displayName="sortname2" fieldFormat="{sortname2}" />
                     <resource displayName="sortname3" fieldFormat="{sortname3}" />
                     <resource displayName="language" fieldFormat="{language}" />
-                    <resource displayName="created" />
+                    <resource displayName="created" fieldFormat="{created}" transform="datetime" />
                     <resource displayName="created_by" fieldFormat="{created_by}" transform="int" />
                     <resource displayName="modified" fieldFormat="{modified}" transform="datetime" />
                     <resource displayName="modified_by" fieldFormat="{modified_by}" transform="int" />
@@ -175,11 +160,13 @@
         <create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" createDataFunction="">
             <fields>
                 <!-- Fields can be defined here -->
-                <field name="params" transform="array" >
+                <field name="params" transform="array">
                     <description><![CDATA[ Needed for correct params parsing. ]]></description>
                 </field>
+                <field name="language" defaultValue="*" />
+                <field name="published" transform="int" defaultValue="1" />
 
-                <description><![CDATA[ Fields listed will be transformed before saving. ]]></description>
+                <description><![CDATA[ Fields listed will be transformed before saving or default value can be assigned. ]]></description>
             </fields>
 
             <resources>
@@ -206,6 +193,7 @@
         <delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" primaryKeys="id">
 
             <resources>
+                <resource displayName="documentation" />
                 <resource displayName="base" />
                 <resource displayName="contact:list" />
                 <resource displayName="result" />
@@ -227,6 +215,7 @@
             <featured authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id" displayName="task featured">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. ]]></description>
                 <resources>
+                    <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
@@ -236,6 +225,7 @@
             <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. ]]></description>
                 <resources>
+                    <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
@@ -245,6 +235,7 @@
             <publish authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" primaryKeys="id">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. ]]></description>
                 <resources>
+                    <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
@@ -254,6 +245,7 @@
             <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. ]]></description>
                 <resources>
+                    <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
@@ -263,6 +255,7 @@
             <checkin authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
                 <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. ]]></description>
                 <resources>
+                    <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
@@ -272,6 +265,7 @@
             <checkout authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
                 <description><![CDATA[ This task enables you to check-out Contact item. ]]></description>
                 <resources>
+                    <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />

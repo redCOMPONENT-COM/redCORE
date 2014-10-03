@@ -22,6 +22,12 @@ class RApiHalHal extends RApi
 	public $elementName = null;
 
 	/**
+	 * @var    string  Name of the Client
+	 * @since  1.2
+	 */
+	public $client = '';
+
+	/**
 	 * @var    string  Name of the Webservice
 	 * @since  1.2
 	 */
@@ -102,7 +108,7 @@ class RApiHalHal extends RApi
 	/**
 	 * Method to instantiate the file-based api call.
 	 *
-	 * @param   mixed $options Optional custom options to load. JRegistry or array format
+	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
 	 *
 	 * @throws Exception
 	 * @since   1.2
@@ -114,6 +120,7 @@ class RApiHalHal extends RApi
 		JPluginHelper::importPlugin('redcore');
 
 		$this->setWebserviceName();
+		$this->client = $this->options->get('webserviceClient', 'site');
 		$this->webserviceVersion = $this->options->get('webserviceVersion', '');
 		$this->hal = new RApiHalDocumentResource('');
 
@@ -121,10 +128,10 @@ class RApiHalHal extends RApi
 		{
 			if (empty($this->webserviceVersion))
 			{
-				$this->webserviceVersion = RApiHalHelper::getNewestWebserviceVersion($this->webserviceName);
+				$this->webserviceVersion = RApiHalHelper::getNewestWebserviceVersion($this->client, $this->webserviceName);
 			}
 
-			$this->webservice = RApiHalHelper::getInstalledWebservice($this->webserviceName, $this->webserviceVersion);
+			$this->webservice = RApiHalHelper::getInstalledWebservice($this->client, $this->webserviceName, $this->webserviceVersion);
 
 			if (empty($this->webservice))
 			{
@@ -132,7 +139,9 @@ class RApiHalHal extends RApi
 			}
 
 			$this->webservicePath = $this->webservice['path'];
-			$this->configuration = RApiHalHelper::loadWebserviceConfiguration($this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath);
+			$this->configuration = RApiHalHelper::loadWebserviceConfiguration(
+				$this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath, $this->client
+			);
 			$this->triggerFunction('setResources');
 		}
 
@@ -312,18 +321,21 @@ class RApiHalHal extends RApi
 
 		if (!empty($webservices))
 		{
-			foreach ($webservices as $webserviceName => $webserviceVersions)
+			foreach ($webservices as $webserviceClient => $webserviceNames)
 			{
-				foreach ($webserviceVersions as $webserviceVersion => $webservice)
+				foreach ($webserviceNames as $webserviceName => $webserviceVersions)
 				{
-					if ($webservice['state'] == 1)
+					foreach ($webserviceVersions as $webserviceVersion => $webservice)
 					{
-						// We will fetch only top level webservice
-						$this->hal->setLink(
-							new RApiHalDocumentLink('/index.php?option=' . $webservice['name'], 'documentation:' . $webservice['name'], $webservice['displayName'])
-						);
+						if ($webservice['state'] == 1)
+						{
+							// We will fetch only top level webservice
+							$this->hal->setLink(
+								new RApiHalDocumentLink('/index.php?option=' . $webservice['name'], 'documentation:' . $webservice['name'], $webservice['displayName'])
+							);
 
-						break;
+							break;
+						}
 					}
 				}
 			}
@@ -784,11 +796,17 @@ class RApiHalHal extends RApi
 	{
 		// Set token to uri if used in that way
 		$token = $this->options->get('accessToken', '');
+		$client = $this->options->get('webserviceClient', '');
 		$format = $this->options->get('format', 'json');
 
 		if (!empty($token))
 		{
 			$this->setUriParams(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), $token);
+		}
+
+		if ($client == 'administrator')
+		{
+			$this->setUriParams('webserviceClient', $client);
 		}
 
 		$this->setUriParams('api', 'Hal');
@@ -934,7 +952,8 @@ class RApiHalHal extends RApi
 			{
 				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
 				$fieldAttributes['transform'] = !empty($fieldAttributes['transform']) ? $fieldAttributes['transform'] : 'string';
-				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : '';
+				$fieldAttributes['defaultValue'] = !empty($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
+				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
 				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
 			}
 		}
@@ -956,7 +975,7 @@ class RApiHalHal extends RApi
 	public function isOperationAllowed()
 	{
 		// Check if webservice is published
-		if (!RApiHalHelper::isPublishedWebservice($this->webserviceName, $this->webserviceVersion) && !empty($this->webserviceName))
+		if (!RApiHalHelper::isPublishedWebservice($this->client, $this->webserviceName, $this->webserviceVersion) && !empty($this->webserviceName))
 		{
 			throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_IS_UNPUBLISHED', $this->webserviceName));
 		}
@@ -1003,10 +1022,10 @@ class RApiHalHal extends RApi
 		if (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 0)
 		{
 			// Use scopes to authorize
-			$scope = array($this->webserviceName . '.' . $scope);
+			$scope = array($this->client . '.' . $this->webserviceName . '.' . $scope);
 
 			// Add in Global scope check
-			$scope[] = $this->operation;
+			$scope[] = $this->client . '.' . $this->operation;
 
 			$this->isAuthorized($scope, $terminateIfNotAuthorized);
 		}
@@ -1097,14 +1116,14 @@ class RApiHalHal extends RApi
 		}
 
 		$version = $this->options->get('webserviceVersion', '');
-		$helperFile = RApiHalHelper::getWebserviceFile(strtolower($this->webserviceName), $version, 'php', $this->webservicePath);
+		$helperFile = RApiHalHelper::getWebserviceFile($this->client, strtolower($this->webserviceName), $version, 'php', $this->webservicePath);
 
 		if (file_exists($helperFile))
 		{
 			require_once $helperFile;
 		}
 
-		$helperClassName = 'RApiHalHelper' . ucfirst(strtolower((string) $this->getConfig('config.name')));
+		$helperClassName = 'RApiHalHelper' . ucfirst($this->client) . ucfirst(strtolower((string) $this->getConfig('config.name')));
 
 		if (class_exists($helperClassName))
 		{
@@ -1244,7 +1263,7 @@ class RApiHalHal extends RApi
 			{
 				if (is_object($value))
 				{
-					if (isset($value->{$replacementKey}))
+					if (property_exists($value, $replacementKey))
 					{
 						if (is_array($value->{$replacementKey}))
 						{
@@ -1256,7 +1275,7 @@ class RApiHalHal extends RApi
 				}
 				elseif (is_array($value))
 				{
-					if (isset($value[$replacementKey]))
+					if (property_exists($value, $replacementKey))
 					{
 						if (is_array($value[$replacementKey]))
 						{

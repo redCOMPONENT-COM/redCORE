@@ -16,7 +16,7 @@ defined('JPATH_BASE') or die;
  * @subpackage  Api Helper
  * @since       1.2
  */
-class RApiHalHelperContact
+class RApiHalHelperAdministratorContact
 {
 	/**
 	 * Checks if operation is allowed from the configuration file
@@ -80,6 +80,15 @@ class RApiHalHelperContact
 	 * @since   1.2
 	 */
 	/* public function apiTask(RApiHalHal $apiHal){} */
+
+	/**
+	 * Execute the Api Documentation operation.
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.2
+	 */
+	/* public function apiDocumentation(RApiHalHal $apiHal){} */
 
 	/**
 	 * Process posted data from json or object to array

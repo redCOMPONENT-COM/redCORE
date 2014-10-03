@@ -1,3 +1,7 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DELETE FROM `#__redcore_oauth_scopes` WHERE `scope` IN ('create', 'read', 'update', 'delete', 'documentation', 'task');
+
 INSERT INTO `#__redcore_oauth_scopes` (`scope`) VALUES
   ('site.create'),
   ('site.read'),
@@ -11,3 +15,5 @@ INSERT INTO `#__redcore_oauth_scopes` (`scope`) VALUES
   ('administrator.delete'),
   ('administrator.documentation'),
   ('administrator.task');
+
+SET FOREIGN_KEY_CHECKS = 1;

@@ -27,14 +27,6 @@ class RApiOauth2Helper
 	public static $serverApi = null;
 
 	/**
-	 * An array to hold installed Webservices data
-	 *
-	 * @var    array
-	 * @since  1.2
-	 */
-	public static $installedWebservices = null;
-
-	/**
 	 * Handles token Request
 	 *
 	 * @return  array  parameter array

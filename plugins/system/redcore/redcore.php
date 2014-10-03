@@ -67,6 +67,7 @@ class PlgSystemRedcore extends JPlugin
 					try
 					{
 						JFactory::getApplication()->clearHeaders();
+						$webserviceClient = $input->get->getString('webserviceClient', '');
 						$optionName = $input->get->getString('option', '');
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
 						$viewName = $input->getString('view', '');
@@ -75,6 +76,11 @@ class PlgSystemRedcore extends JPlugin
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
+
+						if (empty($webserviceClient))
+						{
+							$webserviceClient = JFactory::getApplication()->isAdmin() ? 'administrator' : 'site';
+						}
 
 						if ($method == 'PUT' || $method == 'DELETE')
 						{
@@ -86,17 +92,18 @@ class PlgSystemRedcore extends JPlugin
 						}
 
 						$options = array(
-							'api'       => $apiName,
-							'optionName' => $optionName,
-							'viewName' => $viewName,
+							'api'               => $apiName,
+							'optionName'        => $optionName,
+							'viewName'          => $viewName,
 							'webserviceVersion' => $version,
-							'method' => $method,
-							'task' => $task,
-							'data' => $data,
-							'accessToken' => $token,
-							'format' => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
-							'id' => $input->getString('id', ''),
-							'absoluteHrefs' => $input->get->getBool('absoluteHrefs', true),
+							'webserviceClient'  => $webserviceClient,
+							'method'            => $method,
+							'task'              => $task,
+							'data'              => $data,
+							'accessToken'       => $token,
+							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
+							'id'                => $input->getString('id', ''),
+							'absoluteHrefs'     => $input->get->getBool('absoluteHrefs', true),
 						);
 
 						// Create instance of Api and fill all required options

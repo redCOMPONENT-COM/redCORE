@@ -1,0 +1,134 @@
+<?xml version="1.0" ?>
+<!-- Default value for client attribute is site. If client is set to "administrator" then it will only be triggered through administrator call  -->
+<apiservice client="site">
+    <name>Contact Webservice</name>
+    <author>redCOMPONENT</author>
+    <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
+    <description>Api HAL configuration for Joomla Contact component</description>
+    <config>
+        <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
+        <name>contact</name>
+        <version>1.0.0</version>
+        <authorizationAssetName>com_contact</authorizationAssetName>
+    </config>
+
+    <resources>
+        <resource displayGroup="_links" displayName="documentation" fieldFormat="/index.php?option=contact&amp;format=doc#{rel}" linkTitle="Documentation" linkName="contact" hrefLang="" linkTemplated="true" linkRel="curies" />
+        <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+        <resource displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}" />
+        <resource displayGroup="_links" displayName="contact:list" fieldFormat="/index.php?option=contact" />
+        <resource displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
+
+        <resource displayName="result" fieldFormat="{result}" transform="boolean" />
+    </resources>
+    <operations>
+        <read authorizationNeeded="false">
+            <list fromHelper="false" optionName="com_contact" className="category" classPath="" isAdminClass="false" getDataFunction="">
+                <resources>
+                    <resource displayName="documentation" />
+
+                    <!-- meta data -->
+                    <resource displayName="page" fieldFormat="{pagination.page}" transform="int" />
+                    <resource displayName="pageLimit" fieldFormat="{pagination.limit}" transform="int" />
+                    <resource displayName="limitstart" fieldFormat="{pagination.limitstart}" transform="int" />
+                    <resource displayName="totalItems" fieldFormat="{pagination.totalItems}" transform="int" />
+                    <resource displayName="totalPages" fieldFormat="{pagination.totalPages}" transform="int" />
+
+                    <!-- items -->
+                    <resource resourceSpecific="listItem" displayName="id" fieldFormat="{id}" transform="int" />
+                    <resource resourceSpecific="listItem" displayName="access" fieldFormat="{access}" transform="int" />
+                    <resource resourceSpecific="listItem" displayName="featured" fieldFormat="{featured}" transform="int" />
+                    <resource resourceSpecific="listItem" displayName="language" fieldFormat="{language}" />
+                    <resource resourceSpecific="listItem" displayName="name" fieldFormat="{name}" />
+                    <resource resourceSpecific="listItem" displayName="ordering" fieldFormat="{ordering}" transform="int" />
+                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}">
+                        <description>Link to contact item</description>
+                    </resource>
+                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
+
+                    <!-- _links -->
+                    <resource displayName="base" />
+                    <resource displayName="contact:self" fieldFormat="/index.php?option=contact" />
+                    <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;limitstart=0" linkTitle="Pagination first" />
+                    <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.previous}" linkTitle="Pagination previous" />
+                    <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.next}" linkTitle="Pagination next" />
+                    <resource displayGroup="_links" displayName="contact:last" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.last}" linkTitle="Pagination last" />
+                    <resource displayGroup="_links" displayName="contact:all" fieldFormat="/index.php?option=contact&amp;limit=0" linkTitle="Show all items" />
+                    <resource displayGroup="_links" displayName="contact:limit" fieldFormat="/index.php?option=contact&amp;limit={limit}&amp;limitstart={limitstart}" linkTemplated="true" linkTitle="List limit" />
+                    <resource displayGroup="_links" displayName="contact:filter" fieldFormat="/index.php?option=contact&amp;filter_search={filter_search}" linkTemplated="true" linkTitle="Filter list" />
+                    <resource displayGroup="_links" displayName="contact:sort" fieldFormat="/index.php?option=contact&amp;filter_order={filter_order}&amp;filter_order_Dir={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
+                </resources>
+                <description><![CDATA[ This operation lists Contact items. ]]></description>
+            </list>
+
+            <item fromHelper="false" optionName="com_contact" className="contact" classPath="" isAdminClass="false" queryFunction="">
+                <resources>
+                    <!-- standard -->
+                    <resource displayName="id" fieldFormat="{id}" transform="int" />
+                    <resource displayName="name" fieldFormat="{name}" />
+                    <resource displayName="alias" fieldFormat="{alias}" transform="string" />
+                    <resource displayName="con_position" fieldFormat="{con_position}" />
+                    <resource displayName="address" fieldFormat="{address}" />
+                    <resource displayName="suburb" fieldFormat="{suburb}" />
+                    <resource displayName="state" fieldFormat="{state}" />
+                    <resource displayName="country" fieldFormat="{country}" />
+                    <resource displayName="postcode" fieldFormat="{postcode}" />
+                    <resource displayName="telephone" fieldFormat="{telephone}" />
+                    <resource displayName="fax" fieldFormat="{fax}" />
+                    <resource displayName="misc" fieldFormat="{misc}" />
+                    <resource displayName="image" fieldFormat="{image}" />
+                    <resource displayName="email_to" fieldFormat="{email_to}" />
+                    <resource displayName="default_con" fieldFormat="{default_con}" transform="int" />
+                    <resource displayName="published" fieldFormat="{published}" transform="int" />
+                    <resource displayName="checked_out" fieldFormat="{checked_out}" transform="int" />
+                    <resource displayName="checked_out_time" fieldFormat="{checked_out_time}" transform="datetime" />
+                    <resource displayName="ordering" fieldFormat="{ordering}" transform="int" />
+                    <resource displayName="params" fieldFormat="{params}" />
+                    <resource displayName="user_id" fieldFormat="{user_id}" transform="int" />
+                    <resource displayName="catid" fieldFormat="{catid}" transform="int" />
+                    <resource displayName="access" fieldFormat="{access}" transform="int" />
+                    <resource displayName="mobile" fieldFormat="{mobile}" />
+                    <resource displayName="webpage" fieldFormat="{webpage}" />
+                    <resource displayName="sortname1" fieldFormat="{sortname1}" />
+                    <resource displayName="sortname2" fieldFormat="{sortname2}" />
+                    <resource displayName="sortname3" fieldFormat="{sortname3}" />
+                    <resource displayName="language" fieldFormat="{language}" />
+                    <resource displayName="created" fieldFormat="{created}" transform="datetime" />
+                    <resource displayName="created_by" fieldFormat="{created_by}" transform="int" />
+                    <resource displayName="modified" fieldFormat="{modified}" transform="datetime" />
+                    <resource displayName="modified_by" fieldFormat="{modified_by}" transform="int" />
+                    <resource displayName="metakey" fieldFormat="{metakey}" />
+                    <resource displayName="metadesc" fieldFormat="{metadesc}" />
+                    <resource displayName="metadata" fieldFormat="{metadata}" />
+                    <resource displayName="featured" fieldFormat="{featured}" transform="int" />
+                    <resource displayName="publish_up" fieldFormat="{publish_up}" transform="datetime" />
+                    <resource displayName="publish_down" fieldFormat="{publish_down}" transform="datetime" />
+                    <resource displayName="version" fieldFormat="{version}" />
+                    <resource displayName="hits" fieldFormat="{hits}" transform="int" />
+
+                    <!-- _links -->
+                    <resource displayName="documentation" />
+                    <resource displayName="base" />
+                    <resource displayName="contact:self" />
+                    <resource displayName="contact:list" />
+                    <resource displayName="categories" />
+                </resources>
+                <description><![CDATA[ This operation displays one Contact item. ]]></description>
+            </item>
+        </read>
+
+        <task>
+            <hit fromHelper="false" optionName="com_contact" className="contact" classPath="" isAdminClass="false" functionName="">
+                <description><![CDATA[ This task enables you to Increase the hit counter for the contact. ]]></description>
+                <resources>
+                    <resource displayName="documentation" />
+                    <resource displayName="base" />
+                    <resource displayName="contact:list" />
+                    <resource displayName="result" />
+                </resources>
+            </hit>
+        </task>
+
+        <documentation authorizationNeeded="false" source="auto" url="" />
+    </operations>
+</apiservice>

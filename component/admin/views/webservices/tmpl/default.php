@@ -53,6 +53,7 @@ $searchToolsOptions = array(
 	<div>
 		<input type="hidden" name="return" value="<?php echo $this->return; ?>" />
 		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="client" id="client" value="" />
 		<input type="hidden" name="webservice" id="webservice" value="" />
 		<input type="hidden" name="version" id="version" value="" />
 		<input type="hidden" name="folder" id="folder" value="" />
