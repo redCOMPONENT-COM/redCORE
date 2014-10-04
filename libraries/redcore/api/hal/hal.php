@@ -1123,7 +1123,8 @@ class RApiHalHal extends RApi
 			require_once $helperFile;
 		}
 
-		$helperClassName = 'RApiHalHelper' . ucfirst($this->client) . ucfirst(strtolower((string) $this->getConfig('config.name')));
+		$webserviceName = preg_replace('/[^A-Z0-9_\.-]/i', '', $this->webserviceName);
+		$helperClassName = 'RApiHalHelper' . ucfirst($this->client) . ucfirst(strtolower($webserviceName));
 
 		if (class_exists($helperClassName))
 		{
@@ -1275,7 +1276,7 @@ class RApiHalHal extends RApi
 				}
 				elseif (is_array($value))
 				{
-					if (property_exists($value, $replacementKey))
+					if (isset($value[$replacementKey]))
 					{
 						if (is_array($value[$replacementKey]))
 						{
