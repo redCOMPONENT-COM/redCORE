@@ -166,4 +166,41 @@ class RApi extends RApiBase
 	{
 		$this->options->set('debug', (boolean) $debug);
 	}
+
+	/**
+	 * Returns posted data in array format
+	 *
+	 * @return  array
+	 *
+	 * @since   1.2
+	 */
+	public static function getPostedData()
+	{
+		$input = JFactory::getApplication()->input;
+		$inputData = file_get_contents("php://input");
+
+		if (is_object($inputData))
+		{
+			$inputData = JArrayHelper::fromObject($inputData);
+		}
+		elseif ($data_json = @json_decode($inputData))
+		{
+			if (json_last_error() == JSON_ERROR_NONE)
+			{
+				$inputData = (array) $data_json;
+			}
+		}
+		elseif (!empty($inputData) && !is_array($inputData))
+		{
+			parse_str($inputData, $inputData);
+		}
+		else
+		{
+			$inputData = $input->post->getArray();
+		}
+
+		$postedData = new JInput($inputData);
+
+		return $postedData->getArray();
+	}
 }

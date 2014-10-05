@@ -147,6 +147,9 @@ class RApiHalHal extends RApi
 
 		// Init Environment
 		$this->triggerFunction('setApiOperation');
+
+		// Set initial status code
+		$this->setStatusCode($this->statusCode);
 	}
 
 	/**
@@ -452,14 +455,31 @@ class RApiHalHal extends RApi
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
-		$createDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration, 'createDataFunction', 'save');
+		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'createDataFunction', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
-		$result = method_exists($model, $createDataFunction) ? $model->{$createDataFunction}($data) : null;
+		// Prepare parameters for the function
+		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
+		$result = null;
+
+		// Checks if that method exists in model class file and executes it
+		if (method_exists($model, $functionName))
+		{
+			$result = call_user_func_array(array($model, $functionName), $args);
+		}
 
 		if (method_exists($model, 'getState'))
 		{
 			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
+		}
+
+		if ($result)
+		{
+			$this->setStatusCode(201);
+		}
+		else
+		{
+			$this->setStatusCode(400);
 		}
 
 		$this->setData('result', $result);
@@ -477,27 +497,27 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
-		$deleteDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration, 'deleteDataFunction', 'delete');
+		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'deleteDataFunction', 'delete');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
-		$primaryKeys = RApiHalHelper::attributeToString($this->operationConfiguration, 'primaryKeys', 'id');
-		$primaryKeys = explode(',', $primaryKeys);
+		// Prepare parameters for the function
+		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
+		$result = null;
 
-		if (count($primaryKeys) == 1)
+		// Checks if that method exists in model class file and executes it
+		if (method_exists($model, $functionName))
 		{
-			$itemId = isset($data[$primaryKeys[0]]) ? $data[$primaryKeys[0]] : 0;
+			$result = call_user_func_array(array($model, $functionName), $args);
+		}
+
+		if ($result)
+		{
+			$this->setStatusCode(200);
 		}
 		else
 		{
-			$itemId = array();
-
-			foreach ($primaryKeys as $key => $primaryKey)
-			{
-				$itemId[$key][] = isset($data[$primaryKey]) ? $data[$primaryKey] : 0;
-			}
+			$this->setStatusCode(400);
 		}
-
-		$result = method_exists($model, $deleteDataFunction) ? $model->{$deleteDataFunction}($itemId) : null;
 
 		$this->setData('result', $result);
 	}
@@ -514,14 +534,31 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
-		$updateDataFunction = RApiHalHelper::attributeToString($this->operationConfiguration, 'updateDataFunction', 'save');
+		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'updateDataFunction', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
-		$result = method_exists($model, $updateDataFunction) ? $model->{$updateDataFunction}($data) : null;
+		// Prepare parameters for the function
+		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
+		$result = null;
+
+		// Checks if that method exists in model class and executes it
+		if (method_exists($model, $functionName))
+		{
+			$result = call_user_func_array(array($model, $functionName), $args);
+		}
 
 		if (method_exists($model, 'getState'))
 		{
 			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
+		}
+
+		if ($result)
+		{
+			$this->setStatusCode(200);
+		}
+		else
+		{
+			$this->setStatusCode(400);
 		}
 
 		$this->setData('result', $result);
@@ -554,41 +591,29 @@ class RApiHalHal extends RApi
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
 			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
 
-			if (empty($taskConfiguration['functionName']) && in_array($task, RApiMethods::$methods))
+			// Prepare parameters for the function
+			$args = $this->buildFunctionArgs($taskConfiguration, $data);
+			$result = null;
+
+			// Checks if that method exists in model class and executes it
+			if (method_exists($model, $functionName))
 			{
-				$result = RApiMethods::$task($model, $taskConfiguration, $data);
-			}
-			else
-			{
-				// If primaryKeys is defined then we pass only Id(s)
-				if (!empty($taskConfiguration['primaryKeys']))
-				{
-					$primaryKeys = explode(',', (string) $taskConfiguration['primaryKeys']);
-
-					if (count($primaryKeys) == 1)
-					{
-						$data = isset($data[$primaryKeys[0]]) ? $data[$primaryKeys[0]] : 0;
-					}
-					else
-					{
-						$dataValues = array();
-
-						foreach ($primaryKeys as $key => $primaryKey)
-						{
-							$dataValues[$key][] = isset($data[$primaryKey]) ? $data[$primaryKey] : 0;
-						}
-
-						$data = $dataValues;
-					}
-				}
-
-				$result = method_exists($model, $functionName) ? $model->{$functionName}($data) : null;
+				$result = call_user_func_array(array($model, $functionName), $args);
 			}
 
 			if (method_exists($model, 'getState'))
 			{
 				$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
 			}
+		}
+
+		if ($result)
+		{
+			$this->setStatusCode(200);
+		}
+		else
+		{
+			$this->setStatusCode(400);
 		}
 
 		$this->setData('result', $result);
@@ -834,8 +859,9 @@ class RApiHalHal extends RApi
 
 			// Push results into the document.
 			JFactory::$document
+				->setHal($this)
 				->setBuffer($body)
-				->render(false, array('startTime' => $this->startTime));
+				->render(false);
 		}
 	}
 
@@ -921,7 +947,7 @@ class RApiHalHal extends RApi
 	/**
 	 * Process posted data from json or object to array
 	 *
-	 * @param   mixed             $data           Raw Posted data
+	 * @param   array             $data           Raw Posted data
 	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
 	 *
 	 * @return  mixed  Array with posted data.
@@ -930,21 +956,7 @@ class RApiHalHal extends RApi
 	 */
 	public function processPostData($data, $configuration)
 	{
-		if (is_object($data))
-		{
-			$data = JArrayHelper::fromObject($data);
-		}
-		elseif ($data_json = json_decode($data))
-		{
-			if (json_last_error() == JSON_ERROR_NONE)
-			{
-				$data = (array) $data_json;
-			}
-		}
-		elseif (!empty($data) && !is_array($data))
-		{
-			parse_str($data, $data);
-		}
+		$data = (array) $data;
 
 		if (!empty($data) && !empty($configuration->fields))
 		{
@@ -1401,5 +1413,56 @@ class RApiHalHal extends RApi
 		JFactory::getApplication()->triggerEvent('RApiHal' . $functionName, $temp);
 
 		return $result;
+	}
+
+	/**
+	 * Get all defined fields and transform them if needed to expected format. Then it puts it into array for function call
+	 *
+	 * @param   SimpleXMLElement  $configuration  Configuration for current action
+	 * @param   array             $data           List of posted data
+	 *
+	 * @return array List of parameters to pass to the function
+	 */
+	public function buildFunctionArgs($configuration, $data)
+	{
+		$args = array();
+		$result = null;
+
+		if (!empty($configuration['functionArgs']))
+		{
+			$functionArgs = explode(',', (string) $configuration['functionArgs']);
+
+			foreach ($functionArgs as $functionArg)
+			{
+				$parameter = explode('{', $functionArg);
+
+				// First field is the name of the data field and second is transformation
+				$parameter[0] = trim($parameter[0]);
+				$parameter[1] = !empty($parameter[1]) ? strtolower(trim(str_replace('}', '', $parameter[1]))) : 'string';
+
+				// If we set argument to value, then it will not be transformed, instead we will take field name as a value
+				if ($parameter[1] == 'value')
+				{
+					$args[] = $parameter[0];
+				}
+				else
+				{
+					if (isset($data[$parameter[0]]))
+					{
+						$args[] = $this->transformField($parameter[1], $data[$parameter[0]]);
+					}
+					else
+					{
+						$args[] = null;
+					}
+				}
+			}
+		}
+		else
+		{
+			$args[] = &$data;
+		}
+
+		return $args;
 	}
 }
