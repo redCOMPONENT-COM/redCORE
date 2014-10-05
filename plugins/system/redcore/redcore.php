@@ -76,19 +76,11 @@ class PlgSystemRedcore extends JPlugin
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
+						$data = RApi::getPostedData();
 
 						if (empty($webserviceClient))
 						{
 							$webserviceClient = JFactory::getApplication()->isAdmin() ? 'administrator' : 'site';
-						}
-
-						if ($method == 'PUT' || $method == 'DELETE')
-						{
-							$data = file_get_contents("php://input");
-						}
-						else
-						{
-							$data = $input->post->getArray();
 						}
 
 						$options = array(

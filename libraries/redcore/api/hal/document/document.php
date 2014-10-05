@@ -38,6 +38,12 @@ class RApiHalDocumentDocument extends JDocument
 	protected $documentFormat = false;
 
 	/**
+	 * @var    RApiHalHal  Main HAL object
+	 * @since  1.2
+	 */
+	public $hal = null;
+
+	/**
 	 * Class constructor
 	 *
 	 * @param   array  $options  Associative array of options
@@ -80,8 +86,10 @@ class RApiHalDocumentDocument extends JDocument
 	 */
 	public function render($cache = false, $params = array())
 	{
-		$runtime = microtime(true) - $params['startTime'];
-		//jimport('legacy.response.response');
+		$runtime = microtime(true) - $this->hal->startTime;
+
+		// Joomla does not support setting status codes so we apply direct PHP function
+		header($this->hal->statusText, true, $this->hal->statusCode);
 		JFactory::getApplication()->setHeader('Server', '', true);
 		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
 		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);
@@ -126,6 +134,22 @@ class RApiHalDocumentDocument extends JDocument
 	public function getName()
 	{
 		return $this->_name;
+	}
+
+	/**
+	 * Sets HAL object to the document
+	 *
+	 * @param   RApiHalHal  $hal  Hal object
+	 *
+	 * @return   RApiHalDocumentDocument
+	 *
+	 * @since  1.2
+	 */
+	public function setHal($hal)
+	{
+		$this->hal = $hal;
+
+		return $this;
 	}
 
 	/**
