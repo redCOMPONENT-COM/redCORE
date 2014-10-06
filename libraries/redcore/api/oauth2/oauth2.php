@@ -50,6 +50,9 @@ class RApiOauth2Oauth2 extends RApi
 	{
 		parent::__construct($options);
 
+		// Get the global JAuthentication object.
+		jimport('joomla.user.authentication');
+
 		// Register OAuth2 classes
 		require_once dirname(__FILE__) . '/Autoloader.php';
 		OAuth2\Autoloader::register();
@@ -91,7 +94,7 @@ class RApiOauth2Oauth2 extends RApi
 		$username = $conf->get('user');
 		$password = $conf->get('password');
 
-		$storage = new OAuth2\Storage\Pdo(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
+		$storage = new OAuth2\Storage\PdoRedcore(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
 		$this->server = new OAuth2\Server($storage, $this->serverConfig);
 
 		// Add the "Client Credentials" grant type (it is the simplest of the grant types)
@@ -99,6 +102,9 @@ class RApiOauth2Oauth2 extends RApi
 
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
 		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $this->serverConfig));
+
+		// Add the "User Credentials" grant type (this is modified to suit Joomla authorization)
+		$this->server->addGrantType(new OAuth2\GrantType\UserCredentials($storage, $this->serverConfig));
 
 		// Init Environment
 		$this->setApiOperation();
