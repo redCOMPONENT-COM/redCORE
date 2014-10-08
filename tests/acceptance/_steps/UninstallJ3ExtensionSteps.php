@@ -30,7 +30,7 @@ class UninstallJ3ExtensionSteps extends \AcceptanceTester
 		$I = $this;
 		$I->amOnPage(\ExtensionManagerPage::$URL);
 		$I->click("Manage");
-		$I->fillField(\ExtensionManagerPage::$extensionSearch, $extensionName);
+		$I->fillField(\ExtensionManagerPage::$extensionSearchJ3, $extensionName);
 		$I->click(\ExtensionManagerPage::$searchButtonJ3);
 		$I->click(\ExtensionManagerPage::$extensionNameLink);
 		$name = $I->grabTextFrom(\ExtensionManagerPage::$extensionTable);
