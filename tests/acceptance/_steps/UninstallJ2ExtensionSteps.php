@@ -32,7 +32,6 @@ class UninstallJ2ExtensionSteps extends \AcceptanceTester
 		$I->click("Manage");
 		$I->fillField(\ExtensionManagerPage::$extensionSearchJ2, $extensionName);
 		$I->click(\ExtensionManagerPage::$searchButtonJ2);
-		$I->click(\ExtensionManagerPage::$extensionNameLink);
 		$name = $I->grabTextFrom(\ExtensionManagerPage::$extensionTableJ2);
 
 		while (strtolower($name) != strtolower($extensionName))
