@@ -28,7 +28,9 @@ class ExtensionManagerPage
 
 	public static $demoDataInstallSuccessMessage = "Sample data successfully installed";
 
-	public static $extensionSearch = "//input[@id='filter_search']";
+	public static $extensionSearchJ3 = "//input[@id='filter_search']";
+
+	public static $extensionSearchJ2 = "//input[@id='filters_search']";
 
 	public static $checkAll = "//input[@onclick='Joomla.checkAll(this)']";
 
@@ -36,7 +38,9 @@ class ExtensionManagerPage
 
 	public static $extensionNameLink = "//a[contains(text(),'Name')]";
 
-	public static $extensionTable = "//form[@id='adminForm']/table/tbody/tr[1]/td[2]//span";
+	public static $extensionTable = "//form[@id='adminForm']/div/table/tbody/tr[1]/td[2]/span";
+
+	public static $extensionTableJ2 = "//form[@id='adminForm']/table/tbody/tr[1]/td[2]/span";
 
 	public static $uninstallSuccessMessageJ3 = "//p[contains(text(),'successful')]";
 
