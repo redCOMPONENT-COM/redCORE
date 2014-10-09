@@ -29,8 +29,11 @@ class InstallJoomla2Steps extends \AcceptanceTester
 		$this->acceptanceTester = $I;
 		$I->amOnPage(\InstallJoomla2ManagerPage::$URL);
 		$cfg = $I->getConfig();
+		$I->click(\InstallJoomla2ManagerPage::$languageForJoomla);
 		$I->click('Next');
+		$I->waitForText(\InstallJoomla2ManagerPage::$preinstallationCheckPage);
 		$I->click('Next');
+		$I->waitForText(\InstallJoomla2ManagerPage::$LicenseCheckPage);
 		$I->click('Next');
 		$I->waitForText(\InstallJoomla2ManagerPage::$databaseConfigurationPage);
 

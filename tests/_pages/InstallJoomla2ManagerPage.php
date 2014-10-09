@@ -18,6 +18,12 @@ class InstallJoomla2ManagerPage
 	// Include url of current page
 	public static $URL = '/installation/index.php';
 
+	public static $preinstallationCheckPage = "Pre-Installation Check";
+
+	public static $languageForJoomla = "//option[@value='en-US']";
+
+	public static $LicenseCheckPage = "License";
+
 	public static $databaseConfigurationPage = "Database Configuration";
 
 	public static $ftpConfigurationPage = "FTP Configuration";

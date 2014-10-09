@@ -37,7 +37,7 @@ class InstallationJ2Group extends \Codeception\Platform\Group
 
 		if (file_exists($joomla2ConfigurationFile))
 		{
-			chmod($joomla2ConfigurationFile, 0777);
+			#chmod($joomla2ConfigurationFile, 0777);
 			unlink($joomla2ConfigurationFile);
 		}
 	}
