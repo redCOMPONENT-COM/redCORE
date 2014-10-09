@@ -30,7 +30,11 @@ $ignored = array(
 	REPO_BASE . '/component/admin/tables/*',
 	REPO_BASE . '/component/site/views/*/tmpl/*',
 	REPO_BASE . '/component/site/layouts/*',
-	REPO_BASE . '/libraries/redcore/api/*'
+	REPO_BASE . '/libraries/redcore/api/*',
+	REPO_BASE . '/libraries/redcore/layouts/webservice/*',
+	REPO_BASE . '/libraries/redcore/model/admin.php',
+	REPO_BASE . '/libraries/redcore/oauth/*',
+	REPO_BASE . '/libraries/redcore/oauth2/*'
 );
 
 // Build the options for the sniffer
