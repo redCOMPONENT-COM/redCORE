@@ -1,6 +1,6 @@
 ## OAuth2 Server in redCORE
 
-OAuth2 Server in redCORE is based on Brent Shaffer project "OAuth2 Server library for PHP" more information about it can be found [here](https://github.com/bshaffer/oauth2-server-php).
+OAuth2 Server in redCORE is based on Brent Shaffer project "OAuth2 Server library for PHP". More information about it can be found [here](https://github.com/bshaffer/oauth2-server-php).
 
 OAuth 2.0 focuses on client developer simplicity while providing specific authorization flows for web applications, desktop applications, mobile phones, and living room devices.
 The primary goal of OAuth2 is to allow developers to interact with your site without requiring them to store sensitive credentials.
