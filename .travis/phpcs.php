@@ -34,7 +34,8 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/layouts/webservice/*',
 	REPO_BASE . '/libraries/redcore/model/admin.php',
 	REPO_BASE . '/libraries/redcore/oauth/*',
-	REPO_BASE . '/libraries/redcore/oauth2/*'
+	REPO_BASE . '/libraries/redcore/oauth2/*',
+	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*'
 );
 
 // Build the options for the sniffer
