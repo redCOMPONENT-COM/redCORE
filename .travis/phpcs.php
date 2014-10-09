@@ -36,6 +36,7 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/oauth/*',
 	REPO_BASE . '/libraries/redcore/oauth2/*',
 	REPO_BASE . '/libraries/redcore/table/*',
+	REPO_BASE . '/libraries/redcore/route/route.php',
 	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*'
 );
 
