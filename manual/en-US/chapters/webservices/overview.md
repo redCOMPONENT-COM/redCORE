@@ -8,7 +8,7 @@ Generating mapping XML file which will expose your webservice is very easy and y
 
 We have provided many webservice XML files which you can use to expose Joomla core as a standalone API.
 
-1. Contact - this webservice provides full access to com_contact CRUD functionality and exposes number of specific tasks
+1. `Contact` (site and administrator) - this webservice provides full access to com_contact CRUD functionality and exposes number of specific tasks
 
 
 ### Getting started with redCORE webservices
