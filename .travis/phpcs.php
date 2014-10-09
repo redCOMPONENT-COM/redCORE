@@ -44,6 +44,7 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/html/rgrid.php',
 	REPO_BASE . '/libraries/redcore/functions.php',
 	REPO_BASE . '/libraries/redcore/form/form.php',
+	REPO_BASE . '/libraries/redcore/database/sqlparser/*',
 	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*'
 );
 
