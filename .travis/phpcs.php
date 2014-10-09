@@ -68,8 +68,7 @@ $numErrors = $phpcs->process($options);
 if ($numErrors)
 {
 	fwrite(STDOUT, sprintf("\033[37;41mThere were %d issues detected.\033[0m\n", $numErrors));
-	// @Todo: change this to 1 when all the code style issues are fixed.
-	exit(0);
+	exit(1);
 }
 else
 {
