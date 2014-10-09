@@ -20,8 +20,8 @@
 	- [Access token](chapters/oauth2/token.md)
 	- [Joomla user connection](chapters/oauth2/joomla_user_connection.md)
 	- [Scope](chapters/oauth2/scope.md)
-- **The override plugin**
-    - @todo
+- **The Override plugin**
+    - [Overview](chapters/mvcoverride/overview.md)
 - **Extension Development**
     - [Installer](chapters/Installer.md)
     - [in your extension](chapters/add-to-your-extension.md)
