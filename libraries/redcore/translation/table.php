@@ -533,7 +533,6 @@ final class RTranslationTable
 				}
 			}
 		}
-
 	}
 
 	/**
