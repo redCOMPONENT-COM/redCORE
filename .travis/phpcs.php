@@ -38,6 +38,7 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/table/*',
 	REPO_BASE . '/libraries/redcore/inflector/*',
 	REPO_BASE . '/libraries/redcore/route/route.php',
+	REPO_BASE . '/libraries/redcore/controller/admin.php',
 	REPO_BASE . '/libraries/redcore/model/model.php',
 	REPO_BASE . '/libraries/redcore/modal/modal.php',
 	REPO_BASE . '/libraries/redcore/html/rsortablelist.php',
@@ -47,7 +48,8 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/database/sqlparser/*',
 	REPO_BASE . '/libraries/redcore/database/driver.php',
 	REPO_BASE . '/libraries/redcore/database/*',
-	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*'
+	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*',
+	REPO_BASE . '/modules/site/mod_redcore_language_switcher/css/*'
 );
 
 // Build the options for the sniffer
