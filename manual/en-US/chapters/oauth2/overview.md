@@ -7,6 +7,44 @@ The primary goal of OAuth2 is to allow developers to interact with your site wit
 OAuth2 replaces a username and password that must be entered manually or stored locally so that it is available every time you run the script,
 and which are transmitted to the server on every request.
 
+### Protocol flow
+
+     +--------+                               +---------------+
+     |        |--(A)- Authorization Request ->|   Resource    |
+     |        |                               |     Owner     |
+     |        |<-(B)-- Authorization Grant ---|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(C)-- Authorization Grant -->| Authorization |
+     | Client |                               |     Server    |
+     |        |<-(D)----- Access Token -------|               |
+     |        |                               +---------------+
+     |        |
+     |        |                               +---------------+
+     |        |--(E)----- Access Token ------>|    Resource   |
+     |        |                               |     Server    |
+     |        |<-(F)--- Protected Resource ---|               |
+     +--------+                               +---------------+
+
+The abstract OAuth 2.0 flow illustrated describes the interaction between the four roles and includes the following steps:
+
+   **(A)**  - The client requests authorization from the resource owner. The authorization request can be made directly to the resource owner
+        (as shown), or preferably indirectly via the authorization server as an intermediary.
+
+   **(B)**  - The client receives an authorization grant, which is a credential representing the resource owner's authorization,
+        expressed using one of four grant types defined in this specification or using an extension grant type. The
+        authorization grant type depends on the method used by the client to request authorization and the types supported by the authorization server.
+
+   **(C)**  - The client requests an access token by authenticating with the authorization server and presenting the authorization grant.
+
+   **(D)**  - The authorization server authenticates the client and validates the authorization grant, and if valid, issues an access token.
+
+   **(E)**  - The client requests the protected resource from the resource server and authenticates by presenting the access token.
+
+   **(F)**  - The resource server validates the access token, and if valid, serves the request.
+
+
 ### Roles
 1. `The Third-Party Application: "Client"` -
 The client is the application that is attempting to get access to the user's account. It needs to get permission from the user before it can do so.

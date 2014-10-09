@@ -3,6 +3,39 @@
 The `User Credentials` grant type (Resource Owner Password Credentials) is used when the user has a trusted relationship with the client,
 and so can supply credentials directly.
 
+[User credentials grant type on tools.ietf.org](http://tools.ietf.org/html/rfc6749#section-4.3)
+
+### User Credentials Protocol
+
+     +----------+
+     | Resource |
+     |  Owner   |
+     |          |
+     +----------+
+          v
+          |    Resource Owner
+         (A) Password Credentials
+          |
+          v
+     +---------+                                  +---------------+
+     |         |>--(B)---- Resource Owner ------->|               |
+     |         |         Password Credentials     | Authorization |
+     | Client  |                                  |     Server    |
+     |         |<--(C)---- Access Token ---------<|               |
+     |         |    (w/ Optional Refresh Token)   |               |
+     +---------+                                  +---------------+
+
+The flow illustrated includes the following steps:
+
+   **(A)** -  The resource owner provides the client with its username and password.
+
+   **(B)** -  The client requests an access token from the authorization server's token endpoint by including the credentials received from the resource owner.
+   When making the request, the client authenticates with the authorization server.
+
+   **(C)** -  The authorization server authenticates the client and validates the resource owner credentials, and if valid, issues an access token.
+
+### Implementation
+
 If you are the client owner, you can authenticate with the `User Credentials` Grant type.
 This will allow you to skip the authorization step of authenticating the user, and logging in directly to your site with username and password.
 
