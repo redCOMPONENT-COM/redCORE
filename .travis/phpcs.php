@@ -29,6 +29,7 @@ $ignored = array(
 	REPO_BASE . '/component/admin/layouts/*',
 	REPO_BASE . '/component/admin/tables/*',
 	REPO_BASE . '/component/admin/models/config.php',
+	REPO_BASE . '/component/admin/controllers/oauth_client.php',
 	REPO_BASE . '/component/site/views/*/tmpl/*',
 	REPO_BASE . '/component/site/layouts/*',
 	REPO_BASE . '/libraries/redcore/api/*',
