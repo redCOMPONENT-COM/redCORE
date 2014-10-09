@@ -26,6 +26,12 @@ Desktop.ini
 *~.nib
 *~
 
+# Build config
+build.properties
+
+# Travis
+.travis/
+
 # Kekyll
 _site/
 

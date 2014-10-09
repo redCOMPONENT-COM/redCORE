@@ -2,8 +2,24 @@
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
 - **Translation feature**
     - @todo
-- **Webservices, hal and oauth2**
+- **Webservices and HAL**
+	- [Overview](chapters/webservices/overview.md)
+	- [Deploy Webservice XML files](chapters/webservices/deploy.md)
     - @todo
+- **OAuth2 Server**
+	- [Overview](chapters/oauth2/overview.md)
+		- [Breakdown Step-by-step](chapters/oauth2/breakdown.md)
+	- [OAuth2 Clients](chapters/oauth2/clients.md)
+	- [Authorization Grant types](chapters/oauth2/grant_types.md)
+		- [Authorization code flow](chapters/oauth2/grant_type_authorization_code.md)
+		- [User credentials flow](chapters/oauth2/grant_type_password.md)
+		- [Implicit flow](chapters/oauth2/grant_type_implicit.md)
+		- [Client credentials flow](chapters/oauth2/grant_type_client_credentials.md)
+		- [Refresh token flow](chapters/oauth2/grant_type_refresh_token.md)
+		- [JWT Bearer flow](chapters/oauth2/grant_type_jwt_bearer.md)
+	- [Access token](chapters/oauth2/token.md)
+	- [Joomla user connection](chapters/oauth2/joomla_user_connection.md)
+	- [Scope](chapters/oauth2/scope.md)
 - **The override plugin**
     - @todo
 - **Extension Development**
