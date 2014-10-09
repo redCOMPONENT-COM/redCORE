@@ -31,13 +31,15 @@ $ignored = array(
 	REPO_BASE . '/component/site/views/*/tmpl/*',
 	REPO_BASE . '/component/site/layouts/*',
 	REPO_BASE . '/libraries/redcore/api/*',
-	REPO_BASE . '/libraries/redcore/layouts/webservice/*',
+	REPO_BASE . '/libraries/redcore/layouts/*',
 	REPO_BASE . '/libraries/redcore/model/admin.php',
 	REPO_BASE . '/libraries/redcore/oauth/*',
 	REPO_BASE . '/libraries/redcore/oauth2/*',
 	REPO_BASE . '/libraries/redcore/table/*',
 	REPO_BASE . '/libraries/redcore/inflector/*',
 	REPO_BASE . '/libraries/redcore/route/route.php',
+	REPO_BASE . '/libraries/redcore/model/model.php',
+	REPO_BASE . '/libraries/redcore/modal/modal.php',
 	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*'
 );
 
