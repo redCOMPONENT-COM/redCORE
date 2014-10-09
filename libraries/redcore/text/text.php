@@ -39,12 +39,12 @@ class RText extends JText
 
 		return strtr($string, $replace);
 	}
-	
+
 	/**
 	 * Simple text format
 	 *
-	 * @param   string	$string	The string to format
-	 * @param   array	$tags 	An associative array of characters to replace
+	 * @param   string  $string  The string to format
+	 * @param   array   $tags    An associative array of characters to replace
 	 *
 	 * @return  string The formatted string
 	 */
@@ -73,7 +73,7 @@ class RText extends JText
 
 		if ($lang->hasKey(strtoupper($prefix . $separator . $string)))
 		{
-			return RText::_(strtoupper($prefix . $separator . $string));
+			return self::_(strtoupper($prefix . $separator . $string));
 		}
 		else
 		{
