@@ -30,7 +30,7 @@ class InstallationJ3Group extends \Codeception\Platform\Group
 
 		if (file_exists($joomla3ConfigurationFile))
 		{
-			#chmod($joomla3ConfigurationFile, 0777);
+			chmod($joomla3ConfigurationFile, 0777);
 			unlink($joomla3ConfigurationFile);
 		}
 	}
