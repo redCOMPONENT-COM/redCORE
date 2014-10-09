@@ -5,6 +5,24 @@ such as their website URL or application icon, or they may wish to get statistic
 In this case, applications need a way to get an access token for their own account, outside the context of any specific user.
 OAuth provides the client_credentials grant type for this purpose.
 
+### Client Credentials Protocol
+
+     +---------+                                  +---------------+
+     |         |                                  |               |
+     |         |>--(A)- Client Authentication --->| Authorization |
+     | Client  |                                  |     Server    |
+     |         |<--(B)---- Access Token ---------<|               |
+     |         |                                  |               |
+     +---------+                                  +---------------+
+
+The flow illustrated includes the following steps:
+
+   **(A)** -  The client authenticates with the authorization server and requests an access token from the token endpoint.
+
+   **(B)** -  The authorization server authenticates the client, and if valid, issues an access token.
+
+### Implementation
+
 To use the client credentials grant type, make a POST request like the following:
 
 ```

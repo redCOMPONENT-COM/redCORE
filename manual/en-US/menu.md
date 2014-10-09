@@ -4,6 +4,10 @@
     - @todo
 - **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)
+	- [Webservices](chapters/webservices/webservices.md)
+		- [XML mapping file](chapters/webservices/xml_file.md)
+		- [Helper file](chapters/webservices/helper_file.md)
+		- [Plugin methods](chapters/webservices/plugin_methods.md)
 	- [Deploy Webservice XML files](chapters/webservices/deploy.md)
     - @todo
 - **OAuth2 Server**

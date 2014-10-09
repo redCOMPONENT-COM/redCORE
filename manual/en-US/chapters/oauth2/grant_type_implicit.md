@@ -5,6 +5,64 @@ It is optimized for public clients, such as those implemented in javascript or o
 
 [Implicit grant type on tools.ietf.org](http://tools.ietf.org/html/rfc6749#section-4.2)
 
+### Implicit Protocol
+
+     +----------+
+     | Resource |
+     |  Owner   |
+     |          |
+     +----------+
+          ^
+          |
+         (B)
+     +----|-----+          Client Identifier     +---------------+
+     |         -+----(A)-- & Redirection URI --->|               |
+     |  User-   |                                | Authorization |
+     |  Agent  -|----(B)-- User authenticates -->|     Server    |
+     |          |                                |               |
+     |          |<---(C)--- Redirection URI ----<|               |
+     |          |          with Access Token     +---------------+
+     |          |            in Fragment
+     |          |                                +---------------+
+     |          |----(D)--- Redirection URI ---->|   Web-Hosted  |
+     |          |          without Fragment      |     Client    |
+     |          |                                |    Resource   |
+     |     (F)  |<---(E)------- Script ---------<|               |
+     |          |                                +---------------+
+     +-|--------+
+       |    |
+      (A)  (G) Access Token
+       |    |
+       ^    v
+     +---------+
+     |         |
+     |  Client |
+     |         |
+     +---------+
+
+The flow illustrated includes the following steps:
+
+   **(A)** -  The client initiates the flow by directing the resource owner's user-agent to the authorization endpoint.  The client includes its client identifier,
+   requested scope, local state, and a redirection URI to which the authorization server will send the user-agent back once access is granted (or denied).
+
+   **(B)** -  The authorization server authenticates the resource owner (via the user-agent) and establishes whether the resource owner grants
+   or denies the client's access request.
+
+   **(C)** -  Assuming the resource owner grants access, the authorization server redirects the user-agent back to the client using the redirection URI provided earlier.
+   The redirection URI includes the access token in the URI fragment.
+
+   **(D)** -  The user-agent follows the redirection instructions by making a request to the web-hosted client resource (which does not include the fragment per [RFC2616]).
+   The user-agent retains the fragment information locally.
+
+   **(E)** -  The web-hosted client resource returns a web page (typically an HTML document with an embedded script) capable of accessing
+   the full redirection URI including the fragment retained by the user-agent, and extracting the access token (and other parameters) contained in the fragment.
+
+   **(F)** -  The user-agent executes the script provided by the web-hosted client resource locally, which extracts the access token.
+
+   **(G)** -  The user-agent passes the access token to the client.
+
+### Implementation
+
 Use the `Implicit` Grant Type by setting the `allow_implicit` option to true for the `authorize` endpoint in redCORE plugin options.
 
 ### Using Implicit grant type
