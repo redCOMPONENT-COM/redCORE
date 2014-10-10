@@ -31,11 +31,8 @@ abstract class JHtmlRsortablelist
 	 */
 	const EXTENSION = 'redcore';
 
-
 	/**
 	 * Load the main Searchtools libraries
-	 *
-	 * @param   mixed  $debug  Is debugging mode on? [optional]
 	 *
 	 * @return  void
 	 *

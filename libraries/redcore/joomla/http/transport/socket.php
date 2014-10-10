@@ -308,5 +308,4 @@ class JHttpTransportSocket implements JHttpTransport
 	{
 		return function_exists('fsockopen') && is_callable('fsockopen');
 	}
-
 }
