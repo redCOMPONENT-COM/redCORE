@@ -202,13 +202,13 @@ class RApiHalHal extends RApi
 		switch ((string) $method)
 		{
 			case 'PUT':
-				$method = 'CREATE';
+				$method = 'UPDATE';
 				break;
 			case 'GET':
 				$method = !empty($task) ? 'TASK' : 'READ';
 				break;
 			case 'POST':
-				$method = !empty($task) ? 'TASK' : 'UPDATE';
+				$method = !empty($task) ? 'TASK' : 'CREATE';
 				break;
 			case 'DELETE':
 				$method = 'DELETE';
