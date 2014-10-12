@@ -4,12 +4,18 @@
     - @todo
 - **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)
-	- [Webservices](chapters/webservices/webservices.md)
+		- [Breakdown Step-by-step](chapters/webservices/breakdown.md)
+	- [HAL](chapters/webservices/hal.md)
+	- [Creating Webservice](chapters/webservices/creating_webservice.md)
 		- [XML mapping file](chapters/webservices/xml_file.md)
 		- [Helper file](chapters/webservices/helper_file.md)
 		- [Plugin methods](chapters/webservices/plugin_methods.md)
+		- [Transform fields](chapters/webservices/transform.md)
 	- [Deploy Webservice XML files](chapters/webservices/deploy.md)
-    - @todo
+		- [Installing webservice](chapters/webservices/installation.md)
+	- **Sample Output**
+		- [Read List](chapters/webservices/output_read_list.md)
+		- [Read Item](chapters/webservices/output_read_item.md)
 - **OAuth2 Server**
 	- [Overview](chapters/oauth2/overview.md)
 		- [Breakdown Step-by-step](chapters/oauth2/breakdown.md)
