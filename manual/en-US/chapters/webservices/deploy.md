@@ -1,6 +1,6 @@
 ## Deploying webservice XMLs
 
-Webservices in redCORE are defined using one XML document and optionally one php helper file.
+Webservices in redCORE are defined using one XML mapping file and optionally one php Helper file.
 There are couple of ways to set them in correct folder that redCORE uses when scaning for webservice XML files.
 
 Folder from which redCORE scan webservice files is: `media/redcore/webservices`. Please note that webservices are grouped in different folders.
@@ -9,7 +9,7 @@ Although redCORE will scan files directly from root folder. It is good practice 
 
 ### Deploy your webservices through [redCORE installer](chapters/Installer.md)
 
-If you are using redCORE installer on your extension you can deploy your webservices with a simple XML tab withing your extension installation manifest file.
+If you are using redCORE installer on your extension you can deploy your webservices with a XML element within your extension installation manifest file.
 
 ```
 <extension>
