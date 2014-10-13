@@ -940,4 +940,47 @@ class RApiHalHelper
 	{
 		return !empty($xmlElement['client']) && strtolower($xmlElement['client']) == 'administrator' ? 'administrator' : 'site';
 	}
+
+	/**
+	 * Generate a JWT
+	 *
+	 * @param   string  $privateKey  The private key to use to sign the token
+	 * @param   string  $iss         The issuer, usually the client_id
+	 * @param   string  $sub         The subject, usually a user_id
+	 * @param   string  $aud         The audience, usually the URI for the oauth server
+	 * @param   string  $exp         The expiration date. If the current time is greater than the exp, the JWT is invalid
+	 * @param   string  $nbf         The "not before" time. If the current time is less than the nbf, the JWT is invalid
+	 * @param   string  $jti         The "jwt token identifier", or nonce for this JWT
+	 *
+	 * @return string  JWT
+	 */
+	public static function generateJWT($privateKey, $iss, $sub, $aud, $exp = null, $nbf = null, $jti = null)
+	{
+		if (!$exp)
+		{
+			$exp = time() + 1000;
+		}
+
+		$params = array(
+			'iss' => $iss,
+			'sub' => $sub,
+			'aud' => $aud,
+			'exp' => $exp,
+			'iat' => time(),
+		);
+
+		if ($nbf)
+		{
+			$params['nbf'] = $nbf;
+		}
+
+		if ($jti)
+		{
+			$params['jti'] = $jti;
+		}
+
+		$jwtUtil = new \OAuth2\Encryption\Jwt;
+
+		return $jwtUtil->encode($params, $privateKey, 'RS256');
+	}
 }

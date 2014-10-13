@@ -27,12 +27,12 @@ class RApiHalTransformBoolean extends RApiHalTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		if ($definition == 'true')
+		if ($definition == 'true' || $definition == '1')
 		{
 			return true;
 		}
 
-		if ($definition == 'false')
+		if ($definition == 'false' || $definition == '0')
 		{
 			return false;
 		}

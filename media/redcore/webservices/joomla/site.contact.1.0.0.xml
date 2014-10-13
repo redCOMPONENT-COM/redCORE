@@ -23,7 +23,7 @@
     </resources>
     <operations>
         <read authorizationNeeded="false">
-            <list fromHelper="false" optionName="com_contact" className="category" classPath="" isAdminClass="false" getDataFunction="">
+            <list fromHelper="false" optionName="com_contact" className="category" classPath="" isAdminClass="false" functionName="">
                 <resources>
                     <resource displayName="documentation" />
 
@@ -61,7 +61,7 @@
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
 
-            <item fromHelper="false" optionName="com_contact" className="contact" classPath="" isAdminClass="false" queryFunction="">
+            <item fromHelper="false" optionName="com_contact" className="contact" classPath="" isAdminClass="false" functionName="">
                 <resources>
                     <!-- standard -->
                     <resource displayName="id" fieldFormat="{id}" transform="int" />

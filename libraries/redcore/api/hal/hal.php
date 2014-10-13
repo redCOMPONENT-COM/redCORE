@@ -404,9 +404,9 @@ class RApiHalHal extends RApi
 
 		if ($displayTarget == 'list')
 		{
-			$getDataFunction = RApiHalHelper::attributeToString($currentConfiguration, 'getDataFunction', 'getItems');
+			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
 
-			$items = method_exists($model, $getDataFunction) ? $model->{$getDataFunction}() : array();
+			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
 			if (method_exists($model, 'getPagination'))
 			{
@@ -433,9 +433,9 @@ class RApiHalHal extends RApi
 		}
 
 		// Getting single item
-		$getDataFunction = RApiHalHelper::attributeToString($currentConfiguration, 'getDataFunction', 'getItem');
+		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'getDataFunction', 'getItem');
 
-		$itemObject = method_exists($model, $getDataFunction) ? $model->{$getDataFunction}($id) : array();
+		$itemObject = method_exists($model, $functionName) ? $model->{$functionName}($id) : array();
 
 		$this->triggerFunction('setForRenderItem', $itemObject, $currentConfiguration);
 
@@ -455,7 +455,7 @@ class RApiHalHal extends RApi
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
-		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'createDataFunction', 'save');
+		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
 		// Prepare parameters for the function
@@ -497,7 +497,7 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
-		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'deleteDataFunction', 'delete');
+		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'delete');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
 		// Prepare parameters for the function
@@ -534,7 +534,7 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
-		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'updateDataFunction', 'save');
+		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
 		// Prepare parameters for the function
@@ -1335,15 +1335,17 @@ class RApiHalHal extends RApi
 		// Construct the name of the class to do the transform (default is RApiHalTransformString).
 		$className = 'RApiHalTransform' . ucfirst($fieldType);
 
-		if (!class_exists($className))
+		if (class_exists($className))
 		{
-			$className = 'RApiHalTransform' . ucfirst($fieldType);
+			$classInstance = new $className;
+
+			// Cache it for later.
+			$classNames[$fieldType] = $classInstance;
+
+			return $classNames[$fieldType];
 		}
 
-		// Cache it for later.
-		$classNames[$fieldType] = $className;
-
-		return $className;
+		return $this->getTransformClass('string');
 	}
 
 	/**
