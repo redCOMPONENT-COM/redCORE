@@ -40,9 +40,9 @@
         -->
         <read authorization="core.admin,core.manage">
             <!-- If fromHelper is set to true it will run query on web service helper class -->
-            <!-- Api will automatically call getListQuery if queryFunctionList is not specified -->
+            <!-- Api will automatically call getItems if functionName is not specified -->
             <!-- Api will automatically call ExampleModelElements if className is not specified -->
-            <list fromHelper="false" optionName="com_contact" className="contacts" classPath="" isAdminClass="true" getDataFunction="">
+            <list fromHelper="false" optionName="com_contact" className="contacts" classPath="" isAdminClass="true" functionName="">
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <fields>
@@ -87,9 +87,9 @@
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
             <!-- If fromHelper is set to true it will run query on webservice helper class -->
-            <!-- Api will automatically call getItem if queryFunction is not specified -->
+            <!-- Api will automatically call getItem if functionName is not specified -->
             <!-- Api will automatically call ExampleModelElement if className is not specified -->
-            <item fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" queryFunction="">
+            <item fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <fields>
@@ -157,7 +157,7 @@
                 <description><![CDATA[ This operation displays one Contact item. ]]></description>
             </item>
         </read>
-        <create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" createDataFunction="">
+        <create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
             <fields>
                 <!-- Fields can be defined here -->
                 <field name="params" transform="array">
@@ -178,7 +178,7 @@
             </resources>
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
-        <update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" updateDataFunction="save">
+        <update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="save">
 
             <resources>
                 <resource displayName="documentation" />
@@ -190,7 +190,7 @@
             <description><![CDATA[ This operation updates Contact item. ]]></description>
         </update>
         <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
-        <delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" deleteDataFunction="" functionArgs="id{int}">
+        <delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
 
             <resources>
                 <resource displayName="documentation" />

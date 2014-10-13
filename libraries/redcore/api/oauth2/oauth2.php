@@ -97,22 +97,29 @@ class RApiOauth2Oauth2 extends RApi
 		$storage = new OAuth2\Storage\PdoRedcore(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
 		$this->server = new OAuth2\Server($storage, $this->serverConfig);
 
-		// Add the "Client Credentials" grant type (it is the simplest of the grant types)
-		$this->server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage, $this->serverConfig));
-
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
 		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $this->serverConfig));
+
+		// Add the "Client Credentials" grant type (it is the simplest of the grant types)
+		$this->server->addGrantType(new OAuth2\GrantType\ClientCredentials($storage, $this->serverConfig));
 
 		// Add the "User Credentials" grant type (this is modified to suit Joomla authorization)
 		$this->server->addGrantType(new OAuth2\GrantType\UserCredentials($storage, $this->serverConfig));
 
+		// Add the "Refresh Token" grant type (this is great for extending expiration time on tokens)
+		$this->server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, $this->serverConfig));
+
+		/*
+		 * @todo Implement JwtBearer Grant type with public_key
+		// Typically, the URI of the oauth server
+		$audience = rtrim(JUri::base(), '/');
+
+		// Add the "Refresh Token" grant type (this is great for extending expiration time on tokens)
+		$this->server->addGrantType(new OAuth2\GrantType\JwtBearer($storage, $audience));
+		*/
+
 		// Init Environment
 		$this->setApiOperation();
-
-		// @todo Add scopes
-		//$doctrine = $storage->getTable('OAuth2Scope');
-		//$scopeUtil = new OAuth2\Scope($doctrine);
-		//$this->server->setScopeUtil($scopeUtil);
 	}
 
 	/**
