@@ -51,33 +51,8 @@ class JFormFieldWebservicescopes extends JFormFieldList
 		if (!isset(static::$cache[$hash]))
 		{
 			static::$cache[$hash] = parent::getOptions();
-			$installedWebservices = RApiHalHelper::getInstalledWebservices();
 
-			// Options for all webservices
-			$options[JText::_('COM_REDCORE_OAUTH_CLIENTS_SCOPES_ALL_WEBSERVICES')] = RApiHalHelper::getDefaultScopes();
-
-			if (!empty($installedWebservices))
-			{
-				foreach ($installedWebservices as $webserviceClient => $webserviceNames)
-				{
-					foreach ($webserviceNames as $webserviceName => $webserviceVersions)
-					{
-						foreach ($webserviceVersions as $version => $webservice)
-						{
-							$webserviceDisplayName = JText::_('J' . $webserviceClient) . ' '
-								. (!empty($webservice['displayName']) ? $webservice['displayName'] : $webserviceName);
-
-							if (!empty($webservice['scopes']))
-							{
-								foreach ($webservice['scopes'] as $scope)
-								{
-									$options[$webserviceDisplayName][] = $scope;
-								}
-							}
-						}
-					}
-				}
-			}
+			$options = RApiHalHelper::getWebserviceScopes();
 
 			static::$cache[$hash] = array_merge(static::$cache[$hash], $options);
 		}

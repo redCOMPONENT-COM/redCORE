@@ -27,6 +27,14 @@ class RApiOauth2Helper
 	public static $serverApi = null;
 
 	/**
+	 * OAuth2 Client Scopes
+	 *
+	 * @var    array
+	 * @since  1.2
+	 */
+	public static $clientScopes = array();
+
+	/**
 	 * Handles token Request
 	 *
 	 * @return  array  parameter array
@@ -108,5 +116,32 @@ class RApiOauth2Helper
 		}
 
 		return self::$serverApi;
+	}
+
+	/**
+	 * Gets Client Scopes
+	 *
+	 * @param   string  $clientId  Client Id
+	 *
+	 * @return  array
+	 */
+	public static function getClientScopes($clientId = '')
+	{
+		if (isset(self::$clientScopes[$clientId]))
+		{
+			return self::$clientScopes[$clientId];
+		}
+
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true)
+			->select('oc.scope')
+			->from($db->qn('#__redcore_oauth_clients', 'oc'))
+			->where('oc.client_id = ' . $db->q($clientId));
+
+		$db->setQuery($query);
+
+		$clientScopes = $db->loadResult();
+
+		return $clientScopes;
 	}
 }
