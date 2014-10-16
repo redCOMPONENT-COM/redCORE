@@ -942,6 +942,58 @@ class RApiHalHelper
 	}
 
 	/**
+	 * Returns Scopes of the webservice
+	 *
+	 * @param   array  $filterScopes  Scopes that will be used as a filter
+	 *
+	 * @return  array
+	 */
+	public static function getWebserviceScopes($filterScopes = array())
+	{
+		$options = array();
+		$installedWebservices = self::getInstalledWebservices();
+
+		if (empty($filterScopes))
+		{
+			// Options for all webservices
+			$options[JText::_('COM_REDCORE_OAUTH_CLIENTS_SCOPES_ALL_WEBSERVICES')] = self::getDefaultScopes();
+		}
+
+		if (!empty($installedWebservices))
+		{
+			foreach ($installedWebservices as $webserviceClient => $webserviceNames)
+			{
+				foreach ($webserviceNames as $webserviceName => $webserviceVersions)
+				{
+					foreach ($webserviceVersions as $version => $webservice)
+					{
+						$webserviceDisplayName = JText::_('J' . $webserviceClient) . ' '
+							. (!empty($webservice['displayName']) ? $webservice['displayName'] : $webserviceName);
+
+						if (!empty($webservice['scopes']))
+						{
+							foreach ($webservice['scopes'] as $scope)
+							{
+								$scopeParts = explode('.', $scope['scope']);
+
+								// For global check of filtered scopes using $client . '.' . $operation
+								$globalCheck = $scopeParts[0] . '.' . $scopeParts[2];
+
+								if (empty($filterScopes) || in_array($scope['scope'], $filterScopes) || in_array($globalCheck, $filterScopes))
+								{
+									$options[$webserviceDisplayName][] = $scope;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $options;
+	}
+
+	/**
 	 * Generate a JWT
 	 *
 	 * @param   string  $privateKey  The private key to use to sign the token

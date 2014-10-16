@@ -183,7 +183,16 @@ class RApiOauth2Oauth2 extends RApi
 	 */
 	public function apiToken()
 	{
-		$this->response = $this->server->handleTokenRequest(OAuth2\Request::createFromGlobals());
+		$request = OAuth2\Request::createFromGlobals();
+		$user = null;
+
+		// Implicit grant type and Authorization code grant type require user to be logged in before authorising
+		if ($request->request('grant_type') == 'implicit' || $request->request('grant_type') == 'authorization_code')
+		{
+			$user = $this->getLoggedUser();
+		}
+
+		$this->response = $this->server->handleTokenRequest($request);
 
 		return $this;
 	}
@@ -250,8 +259,6 @@ class RApiOauth2Oauth2 extends RApi
 			}
 		}
 
-
-
 		$this->response = json_encode(
 			array('success' => true, 'user_id' => $token['user_id'], 'message' => JText::_('LIB_REDCORE_API_OAUTH2_SERVER_ACCESS_SUCCESS'))
 		);
@@ -268,6 +275,7 @@ class RApiOauth2Oauth2 extends RApi
 	 */
 	public function apiAuthorize()
 	{
+		$user = $this->getLoggedUser();
 		$request = OAuth2\Request::createFromGlobals();
 		$response = new OAuth2\Response;
 
@@ -279,25 +287,44 @@ class RApiOauth2Oauth2 extends RApi
 			return $this;
 		}
 
-		if (empty($_POST))
+		$clientId = $request->query('client_id');
+		$scopes = RApiOauth2Helper::getClientScopes($clientId);
+
+		if ($request->request('authorized', '') == '')
 		{
+			$clientScopes = !empty($scopes) ? explode(' ', $scopes) : array();
+
+			if (!empty($clientScopes))
+			{
+				$clientScopes = RApiHalHelper::getWebserviceScopes($clientScopes);
+			}
+
+			$currentUri = JUri::getInstance();
+			$formAction = JUri::root() . 'index.php?' . $currentUri->getQuery();
+
 			// Display an authorization form
-			$this->response = RLayoutHelper::render('oauth2.authorize');
+			$this->response = RLayoutHelper::render(
+				'oauth2.authorize',
+				array(
+					'view' => $this,
+					'options' => array (
+						'clientId' => $clientId,
+						'formAction' => $formAction,
+						'scopes' => $clientScopes,
+					)
+				)
+			);
 
 			return $this;
 		}
 
 		// Print the authorization code if the user has authorized your client
-		$is_authorized = ($_POST['authorized'] === 'yes');
-		$this->server->handleAuthorizeRequest($request, $response, $is_authorized);
+		$is_authorized = $request->request('authorized', '') === JText::_('LIB_REDCORE_API_OAUTH2_SERVER_AUTHORIZE_CLIENT_YES');
 
-		/*if ($is_authorized && $_POST['debug'])
-		{
-			// This is only here so that you get to see your code in the cURL request. Otherwise, we'd redirect back to the client
-			$code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=')+5, 40);
+		// We are setting client scope instead of requesting scope from user request
+		$request->request['scope'] = $scopes;
 
-			exit("SUCCESS! Authorization Code: $code");
-		}*/
+		$this->server->handleAuthorizeRequest($request, $response, $is_authorized, $user->id);
 
 		$this->response = $response;
 
@@ -319,6 +346,33 @@ class RApiOauth2Oauth2 extends RApi
 		}
 
 		return true;
+	}
+
+	/**
+	 * Gets logged In user or redirect to login page
+	 *
+	 * @return JUser  Instance of the logged in user
+	 */
+	public function getLoggedUser()
+	{
+		$user = JFactory::getUser();
+
+		// If user is not logged in we redirect him to the login page
+		if (empty($user->id))
+		{
+			$currentUri = JUri::getInstance();
+			$returnUrl = JUri::root() . 'index.php?' . $currentUri->getQuery();
+
+			$loginLink = RRoute::_(JUri::root() . 'index.php?option=com_users&view=login');
+
+			$loginPage = new JUri($loginLink);
+			$loginPage->setVar('return', base64_encode(htmlspecialchars($returnUrl)));
+
+			JFactory::getApplication()->redirect($loginPage);
+			JFactory::getApplication()->close();
+		}
+
+		return $user;
 	}
 
 	/**
