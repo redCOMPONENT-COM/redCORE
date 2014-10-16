@@ -942,7 +942,7 @@ class RApiHalHelper
 	}
 
 	/**
-	 * Returns Client of the webservice
+	 * Returns Scopes of the webservice
 	 *
 	 * @param   array  $filterScopes  Scopes that will be used as a filter
 	 *
