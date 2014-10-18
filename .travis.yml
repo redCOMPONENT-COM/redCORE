@@ -48,8 +48,8 @@ script:
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
   - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
   - php vendor/bin/codecept build
-  - php vendor/bin/codecept run acceptance -g $TEST_SUITE --env $TEST_SUITE
-  - php vendor/bin/codecept run acceptance -g $TEST_SUITE --env $TEST_SUITE
+  - "php vendor/bin/codecept run acceptance -g $TEST_SUITE --env $TEST_SUITE"
+  - "php vendor/bin/codecept run acceptance -g $TEST_SUITE --env $TEST_SUITE"
   - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
