@@ -5,7 +5,7 @@ php:
 
 env:
   - TEST_SUITE=joomla2
-  #- TEST_SUITE=joomla3
+  - TEST_SUITE=joomla3
 
 before_script:
   - phpenv rehash
@@ -50,7 +50,7 @@ script:
   - php vendor/bin/codecept build
   - echo $TEST_SUITE
   - "php vendor/bin/codecept run acceptance -g $TEST_SUITE --env $TEST_SUITE"
-  #- "php vendor/bin/codecept run acceptance -g $TEST_SUITE --env $TEST_SUITE"
+  - "php vendor/bin/codecept run acceptance"
   - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
