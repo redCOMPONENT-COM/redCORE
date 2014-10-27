@@ -698,33 +698,11 @@ class JImage
 			imagecolortransparent($handle, $color);
 			imagefill($handle, 0, 0, $color);
 
-			imagecopyresized(
-				$handle,
-				$this->handle,
-				$offset->x,
-				$offset->y,
-				0,
-				0,
-				$dimensions->width,
-				$dimensions->height,
-				$this->getWidth(),
-				$this->getHeight()
-			);
+			imagecopyresized($handle, $this->handle, $offset->x, $offset->y, 0, 0, $dimensions->width, $dimensions->height, $this->getWidth(), $this->getHeight());
 		}
 		else
 		{
-			imagecopyresampled(
-				$handle,
-				$this->handle,
-				$offset->x,
-				$offset->y,
-				0,
-				0,
-				$dimensions->width,
-				$dimensions->height,
-				$this->getWidth(),
-				$this->getHeight()
-			);
+			imagecopyresampled($handle, $this->handle, $offset->x, $offset->y, 0, 0, $dimensions->width, $dimensions->height, $this->getWidth(), $this->getHeight());
 		}
 
 		// If we are resizing to a new image, create a new JImage object.
@@ -766,16 +744,19 @@ class JImage
 		$width   = $this->sanitizeWidth($width, $height);
 		$height  = $this->sanitizeHeight($height, $width);
 
+		$resizewidth = $width;
+		$resizeheight = $height;
+
 		if (($this->getWidth() / $width) < ($this->getHeight() / $height))
 		{
-			$this->resize($width, 0, false);
+			$resizeheight = 0;
 		}
 		else
 		{
-			$this->resize(0, $height, false);
+			$resizewidth = 0;
 		}
 
-		return $this->crop($width, $height, null, null, $createNew);
+		return $this->resize($resizewidth, $resizeheight, $createNew)->crop($width, $height, null, null, false);
 	}
 
 	/**
@@ -805,9 +786,15 @@ class JImage
 		// Create the new truecolor image handle.
 		$handle = imagecreatetruecolor($this->getWidth(), $this->getHeight());
 
-		// Allow transparency for the new image handle.
-		imagealphablending($handle, false);
-		imagesavealpha($handle, true);
+		// Make background transparent if no external background color is provided.
+		if ($background == -1)
+		{
+			// Allow transparency for the new image handle.
+			imagealphablending($handle, false);
+			imagesavealpha($handle, true);
+
+			$background = imagecolorallocatealpha($handle, 0, 0, 0, 127);
+		}
 
 		// Copy the image
 		imagecopy($handle, $this->handle, 0, 0, 0, 0, $this->getWidth(), $this->getHeight());
