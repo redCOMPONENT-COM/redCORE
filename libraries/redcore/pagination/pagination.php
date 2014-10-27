@@ -87,7 +87,7 @@ class RPagination
 	 *
 	 * @var  string
 	 */
-	protected $formName = 'adminForm';
+	public $formName = 'adminForm';
 
 	/**
 	 * Constructor.
