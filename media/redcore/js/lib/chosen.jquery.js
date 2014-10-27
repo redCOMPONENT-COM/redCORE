@@ -171,7 +171,7 @@
             if (this.form_field.getAttribute("data-placeholder")) {
                 this.default_text = this.form_field.getAttribute("data-placeholder");
             } else if (this.is_multiple) {
-                this.default_text = this.default_text = this.options.placeholder_text_multiple || this.options.placeholder_text || Joomla.JText.JGLOBAL_SELECT_SOME_OPTIONS || Joomla.JText._('JGLOBAL_SELECT_SOME_OPTIONS') || AbstractChosen.default_multiple_text;
+                this.default_text = this.options.placeholder_text_multiple || this.options.placeholder_text || Joomla.JText.JGLOBAL_SELECT_SOME_OPTIONS || Joomla.JText._('JGLOBAL_SELECT_SOME_OPTIONS') || AbstractChosen.default_multiple_text;
             } else {
                 this.default_text = this.options.placeholder_text_single || this.options.placeholder_text || Joomla.JText.JGLOBAL_SELECT_AN_OPTION || Joomla.JText._('JGLOBAL_SELECT_SOME_OPTION') || AbstractChosen.default_single_text;
             }
