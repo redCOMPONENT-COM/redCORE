@@ -39,6 +39,7 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/oauth2/*',
 	REPO_BASE . '/libraries/redcore/table/*',
 	REPO_BASE . '/libraries/redcore/inflector/*',
+	REPO_BASE . '/libraries/redcore/joomla/*',
 	REPO_BASE . '/libraries/redcore/route/route.php',
 	REPO_BASE . '/libraries/redcore/controller/admin.php',
 	REPO_BASE . '/libraries/redcore/model/model.php',

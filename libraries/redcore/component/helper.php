@@ -50,7 +50,7 @@ final class RComponentHelper
 
 					$element = new SimpleXMLElement($content);
 
-					if ('com_redcore' === trim(strtolower($element->name)))
+					if (!isset($element->name) || 'com_redcore' === trim(strtolower($element->name)))
 					{
 						continue;
 					}
@@ -62,7 +62,7 @@ final class RComponentHelper
 				}
 				catch (Exception $e)
 				{
-					JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+					JFactory::getApplication()->enqueueMessage($e->getMessage() . ': ' . $folder . '/' . $folderFile, 'error');
 				}
 			}
 		}
