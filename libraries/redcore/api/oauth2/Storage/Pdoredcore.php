@@ -38,12 +38,10 @@ class PdoRedcore extends Pdo
 	 */
 	public function checkUserCredentials($username, $password)
 	{
-		$auth = \JAuthentication::getInstance();
 		$credentials = array('username' => $username, 'password' => $password);
-		$options = array();
-		$response = $auth->authenticate($credentials, $options);
+		$response = \JFactory::getApplication()->login($credentials);
 
-		return $response->status == \JAuthentication::STATUS_SUCCESS;
+		return $response;
 	}
 
 	/**
