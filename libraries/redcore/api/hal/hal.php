@@ -1163,6 +1163,14 @@ class RApiHalHal extends RApi
 			return $this->getHelperObject();
 		}
 
+		$isAdmin = RApiHalHelper::isAttributeTrue($configuration, 'isAdminClass');
+
+		$optionName = !empty($configuration['optionName']) ? $configuration['optionName'] : $elementName;
+
+		// Add com_ to the element name if not exist
+		$optionName = (strpos($optionName, 'com_') === 0 ? '' : 'com_') . $optionName;
+		$this->addModelIncludePaths($isAdmin, $optionName);
+
 		if (!empty($configuration['className']))
 		{
 			$modelClass = (string) $configuration['className'];
@@ -1176,30 +1184,46 @@ class RApiHalHal extends RApi
 			{
 				return new $modelClass;
 			}
-
-			$elementName = $modelClass;
 		}
 
-		$isAdmin = RApiHalHelper::isAttributeTrue($configuration, 'isAdminClass');
+		// Views are separated by dash
+		$view = explode('-', $elementName);
 
-		$optionName = !empty($configuration['optionName']) ? $configuration['optionName'] : $elementName;
+		if (!empty($view[1]))
+		{
+			$elementName = $view[1];
+		}
 
-		// Add com_ to the element name if not exist
-		$optionName = (strpos($optionName, 'com_') === 0 ? '' : 'com_') . $optionName;
+		if ($isAdmin)
+		{
+			return RModel::getAdminInstance($elementName, array(), $optionName);
+		}
 
+		return RModel::getFrontInstance($elementName, array(), $optionName);
+	}
+
+	/**
+	 * Load model class for data manipulation
+	 *
+	 * @param   boolean  $isAdmin     Is client admin or site
+	 * @param   string   $optionName  Option name
+	 *
+	 * @return  void
+	 *
+	 * @since   1.3
+	 */
+	public function addModelIncludePaths($isAdmin, $optionName)
+	{
 		if ($isAdmin)
 		{
 			RModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $optionName . '/models');
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $optionName . '/tables');
-
-			return RModel::getAdminInstance($elementName, array(), $optionName);
 		}
 		else
 		{
 			RModel::addIncludePath(JPATH_SITE . '/components/' . $optionName . '/models');
 			JTable::addIncludePath(JPATH_SITE . '/components/' . $optionName . '/tables');
-
-			return RModel::getFrontInstance($elementName, array(), $optionName);
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $optionName . '/tables');
 		}
 	}
 
