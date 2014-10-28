@@ -1203,7 +1203,7 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Load model class for data manipulation
+	 * Add include paths for model class
 	 *
 	 * @param   boolean  $isAdmin     Is client admin or site
 	 * @param   string   $optionName  Option name
