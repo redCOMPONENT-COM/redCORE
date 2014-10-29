@@ -314,7 +314,7 @@ class RApiHalHelper
 			}
 
 			// Standard version
-			$rawPath  = $webserviceName . '.' . $extension;
+			$rawPath = (empty($extension)) ? $webserviceName : $webserviceName . '.' . $extension;
 			$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
 
 			return JPath::find($webservicePath, $rawPath);
