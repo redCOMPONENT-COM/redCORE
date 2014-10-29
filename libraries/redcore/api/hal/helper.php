@@ -302,8 +302,8 @@ class RApiHalHelper
 			{
 				foreach ($version as $suffix)
 				{
-					$rawPath  = $webserviceName . '.' . $suffix . '.' . $extension;
-
+					$rawPath = $webserviceName . '.' . $suffix;
+					$rawPath = !empty($extension) ? $rawPath . '.' . $extension : $rawPath;
 					$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
 
 					if ($configurationFullPath = JPath::find($webservicePath, $rawPath))
@@ -314,7 +314,7 @@ class RApiHalHelper
 			}
 
 			// Standard version
-			$rawPath = (empty($extension)) ? $webserviceName : $webserviceName . '.' . $extension;
+			$rawPath = !empty($extension) ? $webserviceName . '.' . $extension : $webserviceName;
 			$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
 
 			return JPath::find($webservicePath, $rawPath);
