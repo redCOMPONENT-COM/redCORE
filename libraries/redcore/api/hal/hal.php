@@ -652,9 +652,9 @@ class RApiHalHal extends RApi
 				}
 			}
 
-			$embedItem = new RApiHalDocumentResource('contacts', $item);
+			$embedItem = new RApiHalDocumentResource('item', $item);
 			$embedItem = $this->setDataValueToResource($embedItem, $this->resources, $itemValue, 'listItem');
-			$this->hal->setEmbedded('contacts', $embedItem);
+			$this->hal->setEmbedded('item', $embedItem);
 		}
 	}
 
@@ -1182,12 +1182,24 @@ class RApiHalHal extends RApi
 
 			if (!empty($configuration['classPath']))
 			{
-				require_once $configuration['classPath'];
-			}
+				require_once JPATH_SITE . '/' . $configuration['classPath'];
 
-			if (class_exists($modelClass))
+				if (class_exists($modelClass))
+				{
+					return new $modelClass;
+				}
+			}
+			else
 			{
-				return new $modelClass;
+				$componentName = ucfirst(strtolower(substr($optionName, 4)));
+				$prefix = $componentName . 'Model';
+
+				$model = RModel::getInstance($modelClass, $prefix);
+
+				if ($model)
+				{
+					return $model;
+				}
 			}
 		}
 
