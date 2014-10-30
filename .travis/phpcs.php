@@ -48,6 +48,7 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/database/driver.php',
 	REPO_BASE . '/libraries/redcore/table/*',
 	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*',
+	REPO_BASE . '/modules/site/mod_redcore_language_switcher/css/mod_redcore_language_switcher.css',
 );
 
 // Build the options for the sniffer
