@@ -91,8 +91,8 @@ abstract class JHtmlRgrid
 	 * @return  string         The Html code
 	 */
 	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '',
-	                              $tip = false, $active_class = '',$inactive_class = '',
-	                              $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+		$tip = false, $active_class = '',$inactive_class = '',
+		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -177,7 +177,7 @@ abstract class JHtmlRgrid
 	 * @return  string       The Html code
 	 */
 	public static function state($states, $value, $i, $prefix = '',
-	                             $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -218,7 +218,7 @@ abstract class JHtmlRgrid
 	 * @return  string  The Html code
 	 */
 	public static function published($value, $i, $prefix = '', $enabled = true,
-	                                 $checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
+		$checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -440,7 +440,7 @@ abstract class JHtmlRgrid
 	 * @return  string
 	 */
 	public static function sort($title, $order, $direction = 'asc', $selected = 0,
-	                            $task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
+		$task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
 	{
 		JHtml::_('rbootstrap.tooltip');
 		static::main();

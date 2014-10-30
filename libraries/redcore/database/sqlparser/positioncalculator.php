@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package     Redcore
+ * @subpackage  Exception
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('JPATH_REDCORE') or die;
 
 /**
  * This file implements the calculator for the position elements of

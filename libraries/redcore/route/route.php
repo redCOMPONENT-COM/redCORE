@@ -23,18 +23,18 @@ class RRoute extends JRoute
 	 *
 	 * @var  object
 	 */
-	protected static $_customRouteClass = null;
+	protected static $customRouteClass = null;
 
 	/**
 	 * Sets a custom route class
 	 *
-	 * @param   string  $customRouteClass  The class corresponding to a redCORE based app
+	 * @param   string  $setCustomRouteClass  The class corresponding to a redCORE based app
 	 *
 	 * @return  void
 	 */
-	public static function setCustomRoute($customRouteClass)
+	public static function setCustomRoute($setCustomRouteClass)
 	{
-		self::$_customRouteClass = $customRouteClass;
+		self::$customRouteClass = $setCustomRouteClass;
 	}
 
 	/**
@@ -50,11 +50,11 @@ class RRoute extends JRoute
 	 */
 	public static function _($url, $xhtml = true, $ssl = null)
 	{
-		if (self::$_customRouteClass)
+		if (self::$customRouteClass)
 		{
-			$customRouteClass = self::$_customRouteClass;
+			$getCustomRouteClass = self::$customRouteClass;
 
-			return $customRouteClass::_($url, $xhtml, $ssl);
+			return $getCustomRouteClass::_($url, $xhtml, $ssl);
 		}
 
 		return parent::_($url, $xhtml, $ssl);

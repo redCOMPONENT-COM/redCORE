@@ -29,6 +29,8 @@ $ignored = array(
 	REPO_BASE . '/component/admin/layouts/*',
 	REPO_BASE . '/component/site/views/*/tmpl/*',
 	REPO_BASE . '/component/site/layouts/*',
+	REPO_BASE . '/libraries/redcore/api/hal/document/resource.php',
+	REPO_BASE . '/libraries/redcore/api/hal/document/link.php',
 	REPO_BASE . '/libraries/redcore/api/oauth2/*',
 	REPO_BASE . '/libraries/redcore/layouts/*',
 	REPO_BASE . '/libraries/redcore/model/admin.php',
@@ -44,6 +46,7 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/database/sqlparser/sqlparser.php',
 	REPO_BASE . '/libraries/redcore/database/sqlparser/sqlparserutils.php',
 	REPO_BASE . '/libraries/redcore/database/driver.php',
+	REPO_BASE . '/libraries/redcore/table/*',
 	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*',
 );
 
