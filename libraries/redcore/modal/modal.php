@@ -47,17 +47,6 @@ final class RModal extends RDomObject
 	public $params = null;
 
 	/**
-	 * Constructor
-	 *
-	 * @param   array    $options  Optional array with settings
-	 * @param   integer  $id       The currency id.
-	 */
-	public function __construct($options = array(), $id = null)
-	{
-		parent::__construct($options, $id);
-	}
-
-	/**
 	 * Get the header content
 	 *
 	 * @return  string

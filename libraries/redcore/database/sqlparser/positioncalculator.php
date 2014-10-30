@@ -89,9 +89,9 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
                 $after = $sql[$pos + strlen($value)];
             }
 
-            # if we have an operator, it should be surrounded by
-            # whitespace, comma, parenthesis, digit or letter, end_of_string
-            # an operator should not be surrounded by another operator
+	        // if we have an operator, it should be surrounded by
+	        // whitespace, comma, parenthesis, digit or letter, end_of_string
+	        // an operator should not be surrounded by another operator
 
             if ($expr_type === 'operator') {
 
@@ -111,8 +111,8 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
                 break;
             }
 
-            # in all other cases we accept
-            # whitespace, comma, operators, parenthesis and end_of_string
+	        // in all other cases we accept
+	        // whitespace, comma, operators, parenthesis and end_of_string
 
             $ok = ($before === "" || in_array($before, self::$allowedOnOther, true));
             $ok = $ok && ($after === "" || in_array($after, self::$allowedOnOther, true));
@@ -135,29 +135,29 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
                     || ($key === 'expr_type' && $parsed === 'table_expression')
                     || ($key === 'expr_type' && $parsed === 'record')
                     || ($key === 'expr_type' && $parsed === 'in-list') || ($key === 'alias' && $parsed !== false)) {
-                # we hold the current position and come back after the next base_expr
-                # we do this, because the next base_expr contains the complete expression/subquery/record
-                # and we have to look into it too
+	            // we hold the current position and come back after the next base_expr
+	            // we do this, because the next base_expr contains the complete expression/subquery/record
+	            // and we have to look into it too
                 $backtracking[] = $charPos;
 
             } elseif (($key === 'ref_clause' || $key === 'columns') && $parsed !== false) {
-                # we hold the current position and come back after n base_expr(s)
-                # there is an array of sub-elements before (!) the base_expr clause of the current element
-                # so we go through the sub-elements and must come at the end
+	            // we hold the current position and come back after n base_expr(s)
+	            // there is an array of sub-elements before (!) the base_expr clause of the current element
+	            // so we go through the sub-elements and must come at the end
                 $backtracking[] = $charPos;
                 for ($i = 1; $i < count($parsed); $i++) {
-                    $backtracking[] = false; # backtracking only after n base_expr!
+                    $backtracking[] = false; // backtracking only after n base_expr!
                 }
             } elseif ($key === 'sub_tree' && $parsed !== false) {
-                # we prevent wrong backtracking on subtrees (too much array_pop())
-                # there is an array of sub-elements after(!) the base_expr clause of the current element
-                # so we go through the sub-elements and must not come back at the end
+	            // we prevent wrong backtracking on subtrees (too much array_pop())
+	            // there is an array of sub-elements after(!) the base_expr clause of the current element
+	            // so we go through the sub-elements and must not come back at the end
                 for ($i = 1; $i < count($parsed); $i++) {
                     $backtracking[] = false;
                 }
             } else {
-                # move the current pos after the keyword
-                # SELECT, WHERE, INSERT etc.
+	            // move the current pos after the keyword
+	            // SELECT, WHERE, INSERT etc.
                 if (in_array($key, parent::$reserved)) {
                     $charPos = stripos($sql, $key, $charPos);
                     $charPos += strlen($key);
@@ -172,7 +172,7 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
         foreach ($parsed as $key => $value) {
             if ($key === 'base_expr') {
 
-                #$this->printPos("0", $sql, $charPos, $key, $value, $backtracking);
+	            // $this->printPos("0", $sql, $charPos, $key, $value, $backtracking);
 
                 $subject = substr($sql, $charPos);
                 $pos = $this->findPositionWithinString($subject, $value,
@@ -185,14 +185,14 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
                 $parsed['position'] = $charPos + $pos;
                 $charPos += $pos + strlen($value);
 
-                #$this->printPos("1", $sql, $charPos, $key, $value, $backtracking);
+	            // $this->printPos("1", $sql, $charPos, $key, $value, $backtracking);
 
                 $oldPos = array_pop($backtracking);
                 if (isset($oldPos) && $oldPos !== false) {
                     $charPos = $oldPos;
                 }
 
-                #$this->printPos("2", $sql, $charPos, $key, $value, $backtracking);
+	            // $this->printPos("2", $sql, $charPos, $key, $value, $backtracking);
 
             } else {
                 $this->lookForBaseExpression($sql, $charPos, $parsed[$key], $key, $backtracking);

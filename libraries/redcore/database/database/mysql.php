@@ -26,19 +26,6 @@ class RDatabaseMysql extends JDatabaseMySQL
 	public $translate = false;
 
 	/**
-	 * Constructor.
-	 *
-	 * @param   array  $options  List of options used to configure the connection
-	 *
-	 * @since   12.1
-	 */
-	public function __construct($options)
-	{
-		// Finalize initialisation.
-		parent::__construct($options);
-	}
-
-	/**
 	 * This function replaces a string identifier <var>$prefix</var> with the string held is the
 	 * <var>tablePrefix</var> class variable.
 	 *

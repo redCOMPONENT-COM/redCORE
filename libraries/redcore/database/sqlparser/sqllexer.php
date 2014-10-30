@@ -229,8 +229,8 @@ class RDatabaseSqlparserSqllexer extends RDatabaseSqlparserSqlparserutils {
         return $tokens;
     }
 
-    # backticks are not balanced within one token, so we have
-    # to re-combine some tokens
+	// backticks are not balanced within one token, so we have
+	// to re-combine some tokens
     private function balanceCharacter($tokens, $idx, $char) {
 
         $token_count = count($tokens);
@@ -279,7 +279,7 @@ class RDatabaseSqlparserSqllexer extends RDatabaseSqlparserSqlparserutils {
                 $k = $i - 1;
                 $len = strlen($tokens[$i]);
                 while (($k >= 0) && ($len == strlen($tokens[$i]))) {
-                    if (!isset($tokens[$k])) { # FIXME: this can be wrong if we have schema . table . column
+                    if (!isset($tokens[$k])) { // FIXME: this can be wrong if we have schema . table . column
                         $k--;
                         continue;
                     }

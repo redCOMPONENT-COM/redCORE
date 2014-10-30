@@ -32,4 +32,4 @@ $filters = $data['view']->filterForm->getGroup('filter');
 			</div>
 		<?php endif; ?>
 	<?php endforeach; ?>
-<?php endif; ?>
+<?php endif;

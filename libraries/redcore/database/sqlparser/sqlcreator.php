@@ -84,7 +84,7 @@ class RDatabaseSqlparserSqlcreator {
 
 	protected function processInsertStatement($parsed) {
 		return $this->processINSERT($parsed['INSERT']) . " " . $this->processVALUES($parsed['VALUES']);
-		# TODO: subquery?
+		// TODO: subquery?
 	}
 
 	protected function processDeleteStatement($parsed) {

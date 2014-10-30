@@ -61,4 +61,4 @@ $groups = $toolbar->getGroups();
 		</div>
 		<?php endforeach; ?>
 	</div>
-<?php endif; ?>
+<?php endif;
