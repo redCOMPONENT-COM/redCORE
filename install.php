@@ -825,12 +825,12 @@ class Com_RedcoreInstallerScript
 
 		// Uninstall extensions
 		$this->uninstallTranslations();
-		$this->uninstallLibraries($parent);
 		$this->uninstallMedia($parent);
 		$this->uninstallWebservices($parent);
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
+		$this->uninstallLibraries($parent);
 	}
 
 	/**
