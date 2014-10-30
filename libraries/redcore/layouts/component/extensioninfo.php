@@ -94,7 +94,11 @@ JHtml::_('rbootstrap.tooltip');
 						<strong><?php echo $xml->media['folder']; ?></strong><br/>
 					</td>
 					<td>
-						<span class="badge badge-success"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?></span> / <span class="badge badge-success"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?></span>
+						<span class="badge badge-success">
+							<?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?>
+						</span> / <span class="badge badge-success">
+							<?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?>
+						</span>
 					</td>
 					<td>
 						<?php if (@!is_dir(JPATH_SITE . '/' . $xml->media['folder'])) : ?>

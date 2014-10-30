@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package     Redcore
+ * @subpackage  Exception
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('JPATH_REDCORE') or die;
 
 /**
  * A pure PHP SQL (non validating) parser w/ focus on MySQL dialect of SQL
@@ -47,26 +56,26 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 	}
 
 	public function parse($sql, $calcPositions = false) {
-		#lex the SQL statement
+		// lex the SQL statement
 		$inputArray = $this->split_sql($sql);
 
-		#This is the highest level lexical analysis.  This is the part of the
-		#code which finds UNION and UNION ALL query parts
+		// This is the highest level lexical analysis.  This is the part of the
+		// code which finds UNION and UNION ALL query parts
 		$queries = $this->processUnion($inputArray);
 
-		# If there was no UNION or UNION ALL in the query, then the query is
-		# stored at $queries[0].
+		//  If there was no UNION or UNION ALL in the query, then the query is
+		//  stored at $queries[0].
 		if (!$this->isUnion($queries)) {
 			$queries = $this->processSQL($queries[0]);
 		}
 
-		# calc the positions of some important tokens
+		// calc the positions of some important tokens
 		if ($calcPositions) {
 			$calculator = new RDatabaseSqlparserPositioncalculator();
 			$queries = $calculator->setPositionsWithinSQL($sql, $queries);
 		}
 
-		# store the parsed queries
+		// store the parsed queries
 		$this->parsed = $queries;
 		return $this->parsed;
 	}
@@ -74,41 +83,41 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 	private function processUnion($inputArray) {
 		$outputArray = array();
 
-		#sometimes the parser needs to skip ahead until a particular
-		#token is found
+		// sometimes the parser needs to skip ahead until a particular
+		// token is found
 		$skipUntilToken = false;
 
-		#This is the last type of union used (UNION or UNION ALL)
-		#indicates a) presence of at least one union in this query
-		#          b) the type of union if this is the first or last query
+		// This is the last type of union used (UNION or UNION ALL)
+		// indicates a) presence of at least one union in this query
+		//           b) the type of union if this is the first or last query
 		$unionType = false;
 
-		#Sometimes a "query" consists of more than one query (like a UNION query)
-		#this array holds all the queries
+		// Sometimes a "query" consists of more than one query (like a UNION query)
+		// this array holds all the queries
 		$queries = array();
 
 		foreach ($inputArray as $key => $token) {
 			$trim = trim($token);
 
-			# overread all tokens till that given token
+			// overread all tokens till that given token
 			if ($skipUntilToken) {
 				if ($trim === "") {
-					continue; # read the next token
+					continue; //  read the next token
 				}
 				if (strtoupper($trim) === $skipUntilToken) {
 					$skipUntilToken = false;
-					continue; # read the next token
+					continue; // read the next token
 				}
 			}
 
 			if (strtoupper($trim) !== "UNION") {
-				$outputArray[] = $token; # here we get empty tokens, if we remove these, we get problems in parse_sql()
+				$outputArray[] = $token; // here we get empty tokens, if we remove these, we get problems in parse_sql()
 				continue;
 			}
 
 			$unionType = "UNION";
 
-			# we are looking for an ALL token right after UNION
+			// we are looking for an ALL token right after UNION
 			for ($i = $key + 1; $i < count($inputArray); ++$i) {
 				if (trim($inputArray[$i]) === "") {
 					continue;
@@ -116,18 +125,18 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				if (strtoupper($inputArray[$i]) !== "ALL") {
 					break;
 				}
-				# the other for-loop should overread till "ALL"
+				// the other for-loop should overread till "ALL"
 				$skipUntilToken = "ALL";
 				$unionType = "UNION ALL";
 			}
 
-			# store the tokens related to the unionType
+			// store the tokens related to the unionType
 			$queries[$unionType][] = $outputArray;
 			$outputArray = array();
 		}
 
-		# the query tokens after the last UNION or UNION ALL
-		# or we don't have an UNION/UNION ALL
+		// the query tokens after the last UNION or UNION ALL
+		// or we don't have an UNION/UNION ALL
 		if (!empty($outputArray)) {
 			if ($unionType) {
 				$queries[$unionType][] = $outputArray;
@@ -163,7 +172,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 						continue;
 					}
 
-					# starts with "(select"
+					// starts with "(select"
 					if (preg_match("/^\\(\\s*select\\s*/i", $token)) {
 						$queries[$unionType][$key] = $this->parse($this->removeParenthesisFromStart($token));
 						break;
@@ -174,7 +183,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				}
 			}
 		}
-		# it can be parsed or not
+		// it can be parsed or not
 		return $queries;
 	}
 
@@ -188,8 +197,8 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		return false;
 	}
 
-	#this function splits up a SQL statement into easy to "parse"
-	#tokens for the SQL processor
+	// this function splits up a SQL statement into easy to "parse"
+	// tokens for the SQL processor
 	private function split_sql($sql) {
 		return $this->lexer->split($sql);
 	}
@@ -207,9 +216,9 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		for ($tokenNumber = 0; $tokenNumber < $tokenCount; ++$tokenNumber) {
 
 			$token = $tokens[$tokenNumber];
-			$trim = trim($token); # this removes also \n and \t!
+			$trim = trim($token); // this removes also \n and \t!
 
-			# if it starts with an "(", it should follow a SELECT
+			// if it starts with an "(", it should follow a SELECT
 			if ($trim !== "" && $trim[0] == "(" && $token_category == "") {
 				$token_category = 'SELECT';
 			}
@@ -219,12 +228,12 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			 */
 			if ($skip_next) {
 				if ($trim === "") {
-					if ($token_category !== "") { # is this correct??
+					if ($token_category !== "") { // is this correct??
 						$out[$token_category][] = $token;
 					}
 					continue;
 				}
-				#to skip the token we replace it with whitespace
+				// to skip the token we replace it with whitespace
 				$trim = "";
 				$token = "";
 				$skip_next = false;
@@ -278,28 +287,28 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				break;
 
 			case 'EVENT':
-			# issue 71
+				// issue 71
 				if ($prev_category === 'DROP' || $prev_category === 'ALTER' || $prev_category === 'CREATE') {
 					$token_category = $upper;
 				}
 				break;
 
 			case 'DATA':
-			# prevent wrong handling of DATA as keyword
+				// prevent wrong handling of DATA as keyword
 				if ($prev_category === 'LOAD') {
 					$token_category = $upper;
 				}
 				break;
 
 			case 'PASSWORD':
-			# prevent wrong handling of PASSWORD as keyword
+				// prevent wrong handling of PASSWORD as keyword
 				if ($prev_category === 'SET') {
 					$token_category = $upper;
 				}
 				break;
 
 			case 'INTO':
-			# prevent wrong handling of CACHE within LOAD INDEX INTO CACHE...
+				// prevent wrong handling of CACHE within LOAD INDEX INTO CACHE...
 				if ($prev_category === 'LOAD') {
 					$out[$prev_category][] = $upper;
 					continue 2;
@@ -308,14 +317,14 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				break;
 
 			case 'USER':
-			# prevent wrong processing as keyword
+				// prevent wrong processing as keyword
 				if ($prev_category === 'CREATE' || $prev_category === 'RENAME' || $prev_category === 'DROP') {
 					$token_category = $upper;
 				}
 				break;
 
 			case 'VIEW':
-			# prevent wrong processing as keyword
+				// prevent wrong processing as keyword
 				if ($prev_category === 'CREATE' || $prev_category === 'ALTER' || $prev_category === 'DROP') {
 					$token_category = $upper;
 				}
@@ -477,8 +486,8 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				break;
 			}
 
-			# remove obsolete category after union (empty category because of
-			# empty token before select)
+			// remove obsolete category after union (empty category because of
+			// empty token before select)
 			if ($token_category !== "" && ($prev_category === $token_category)) {
 				$out[$token_category][] = $token;
 			}
@@ -506,11 +515,11 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			$out['UPDATE'] = $this->process_from($out['UPDATE']);
 		}
 		if (!empty($out['GROUP'])) {
-			# set empty array if we have partial SQL statement 
+			// set empty array if we have partial SQL statement
 			$out['GROUP'] = $this->process_group($out['GROUP'], isset($out['SELECT']) ? $out['SELECT'] : array());
 		}
 		if (!empty($out['ORDER'])) {
-			# set empty array if we have partial SQL statement
+			// set empty array if we have partial SQL statement
 			$out['ORDER'] = $this->process_order($out['ORDER'], isset($out['SELECT']) ? $out['SELECT'] : array());
 		}
 		if (!empty($out['LIMIT'])) {
@@ -791,16 +800,16 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 		$stripped = $this->process_expr_list($stripped);
 
-		# TODO: the last part can also be a comment, don't use array_pop
+		// TODO: the last part can also be a comment, don't use array_pop
 
-		# we remove the last token, if it is a colref,
-		# it can be an alias without an AS
+		// we remove the last token, if it is a colref,
+		// it can be an alias without an AS
 		$last = array_pop($stripped);
 		if (!$alias && $this->isColumnReference($last)) {
 
-			# TODO: it can be a comment, don't use array_pop
+			// TODO: it can be a comment, don't use array_pop
 
-			# check the token before the colref
+			// check the token before the colref
 			$prev = array_pop($stripped);
 
 			if ($this->isReserved($prev) || $this->isConstant($prev) || $this->isAggregateFunction($prev)
@@ -809,7 +818,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 				$alias = array('as' => false, 'name' => trim($last['base_expr']),
 							   'base_expr' => trim($last['base_expr']));
-				#remove the last token
+				// remove the last token
 				array_pop($tokens);
 				$base_expr = join("", $tokens);
 			}
@@ -823,11 +832,11 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			$alias['base_expr'] = trim($alias['base_expr']);
 		}
 
-		# this is always done with $stripped, how we do it twice?
+		// this is always done with $stripped, how we do it twice?
 		$processed = $this->process_expr_list($tokens);
 
-		# if there is only one part, we copy the expr_type
-		# in all other cases we use "expression" as global type
+		// if there is only one part, we copy the expr_type
+		// in all other cases we use "expression" as global type
 		$type = 'expression';
 		if (count($processed) == 1) {
 			if (!$this->isSubQuery($processed[0])) {
@@ -875,7 +884,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 			default:
 				$parseInfo['expression'] .= $token;
-				if ($parseInfo['ref_type'] !== false) { # all after ON / USING
+				if ($parseInfo['ref_type'] !== false) { // all after ON / USING
 					$parseInfo['ref_expr'] .= $token;
 				}
 				break;
@@ -946,7 +955,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 			default:
 				if ($upper === "") {
-					continue; # ends the switch statement!
+					continue; // ends the switch statement!
 				}
 
 				if ($parseInfo['token_count'] === 0) {
@@ -967,11 +976,11 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 	}
 
 	private function initParseInfoForFrom($parseInfo = false) {
-		# first init
+		// first init
 		if ($parseInfo === false) {
 			$parseInfo = array('join_type' => "", 'saved_join_type' => "JOIN");
 		}
-		# loop init
+		// loop init
 		return array('expression' => "", 'token_count' => 0, 'table' => "", 'alias' => false, 'join_type' => "",
 					 'next_join_type' => "", 'saved_join_type' => $parseInfo['saved_join_type'],
 					 'ref_type' => false, 'ref_expr' => false, 'base_expr' => false, 'sub_tree' => false,
@@ -982,11 +991,11 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 		$res = array();
 
-		# exchange the join types (join_type is save now, saved_join_type holds the next one)
-		$parseInfo['join_type'] = $parseInfo['saved_join_type']; # initialized with JOIN
+		// exchange the join types (join_type is save now, saved_join_type holds the next one)
+		$parseInfo['join_type'] = $parseInfo['saved_join_type']; // initialized with JOIN
 		$parseInfo['saved_join_type'] = ($parseInfo['next_join_type'] ? $parseInfo['next_join_type'] : 'JOIN');
 
-		# we have a reg_expr, so we have to parse it
+		// we have a reg_expr, so we have to parse it
 		if ($parseInfo['ref_expr'] !== false) {
 			$unparsed = $this->split_sql($this->removeParenthesisFromStart($parseInfo['ref_expr']));
 
@@ -999,7 +1008,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			$parseInfo['ref_expr'] = $this->process_expr_list($unparsed);
 		}
 
-		# there is an expression, we have to parse it
+		// there is an expression, we have to parse it
 		if (substr(trim($parseInfo['table']), 0, 1) == '(') {
 			$parseInfo['expression'] = $this->removeParenthesisFromStart($parseInfo['table']);
 
@@ -1041,7 +1050,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		if (is_numeric($parseInfo['expr'])) {
 			$parseInfo['type'] = 'pos';
 		} else {
-			#search to see if the expression matches an alias
+			// search to see if the expression matches an alias
 			foreach ($select as $clause) {
 				if (!$clause['alias']) {
 					continue;
@@ -1150,7 +1159,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		while ($i < strlen($trim)) {
 
 			if ($trim[$i] === "\\") {
-				$i += 2; # an escape character, the next character is irrelevant
+				$i += 2; // an escape character, the next character is irrelevant
 				continue;
 			}
 
@@ -1206,7 +1215,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			}
 
 			if ($skip_next) {
-				# skip the next non-whitespace token
+				// skip the next non-whitespace token
 				$skip_next = false;
 				continue;
 			}
@@ -1215,16 +1224,16 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 			/* is it a subquery?*/
 			if (preg_match("/^\\(\\s*SELECT/i", $parseInfo['trim'])) {
-				#tokenize and parse the subquery.
-				#we remove the enclosing parenthesis for the tokenizer
+				// tokenize and parse the subquery.
+				// we remove the enclosing parenthesis for the tokenizer
 				$parseInfo['processed'] = $this->parse($this->removeParenthesisFromStart($parseInfo['trim']));
 				$parseInfo['tokenType'] = 'subquery';
 
 			} elseif ($parseInfo['upper'][0] === '(' && substr($parseInfo['upper'], -1) === ')') {
 				/* is it an inlist (upper is derived from trim!) */
 
-				# if we have a colref followed by a parenthesis pair,
-				# it isn't a colref, it is a user-function
+				// if we have a colref followed by a parenthesis pair,
+				// it isn't a colref, it is a user-function
 				if ($parseInfo['prevTokenType'] === 'colref' || $parseInfo['prevTokenType'] === 'function'
 						|| $parseInfo['prevTokenType'] === 'aggregate_function') {
 
@@ -1285,13 +1294,13 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				switch ($parseInfo['upper']) {
 
 				case '*':
-					$parseInfo['processed'] = false; #no subtree
+					$parseInfo['processed'] = false; // no subtree
 
-					# last token is colref, const or expression
-					# it is an operator, in all other cases it is an all-columns-alias
-					# if the previous colref ends with a dot, the * is the all-columns-alias
+					// last token is colref, const or expression
+					// it is an operator, in all other cases it is an all-columns-alias
+					// if the previous colref ends with a dot, the * is the all-columns-alias
 					if (!is_array($parseInfo['expr'])) {
-						$parseInfo['tokenType'] = "colref"; # single or first element of select -> *
+						$parseInfo['tokenType'] = "colref"; // single or first element of select -> *
 						break;
 					}
 
@@ -1304,7 +1313,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 					}
 
 					if ($last['expr_type'] === 'colref' && substr($last['base_expr'], -1, 1) === ".") {
-						$last['base_expr'] .= '*'; # tablealias dot *
+						$last['base_expr'] .= '*'; // tablealias dot *
 						$parseInfo['expr'][] = $last;
 						continue 2;
 					}

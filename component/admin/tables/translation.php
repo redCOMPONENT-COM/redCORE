@@ -19,20 +19,6 @@ defined('_JEXEC') or die;
 class RedcoreTableTranslation extends RTable
 {
 	/**
-	 * The table name without the prefix.
-	 *
-	 * @var  string
-	 */
-	protected $_tableName = 'extension';
-
-	/**
-	 * The table primary key
-	 *
-	 * @var  string
-	 */
-	protected $_tbl_key = 'rctranslations_id';
-
-	/**
 	 * Constructor
 	 *
 	 * @param   JDatabase  &$db  A database connector object
@@ -41,6 +27,9 @@ class RedcoreTableTranslation extends RTable
 	 */
 	public function __construct(&$db)
 	{
+		$this->_tableName = 'extension';
+		$this->_tbl_key = 'rctranslations_id';
+
 		$table = RedcoreHelpersTranslation::getTranslationTable();
 
 		$this->_tbl = RTranslationTable::getTranslationsTableName($table->table, '');

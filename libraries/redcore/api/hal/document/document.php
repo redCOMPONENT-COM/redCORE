@@ -25,7 +25,7 @@ class RApiHalDocumentDocument extends JDocument
 	 * @var    string
 	 * @since  1.2
 	 */
-	protected $_name = 'joomla';
+	protected $name = 'joomla';
 
 	/**
 	 * Render all hrefs as absolute, relative is default
@@ -101,8 +101,6 @@ class RApiHalDocumentDocument extends JDocument
 
 		JFactory::getApplication()->sendHeaders();
 
-		//header("Content-Disposition: attachment; filename=\"" . $this->getName() . "." . $this->documentFormat . "\";");
-
 		// Get the HAL object from the buffer.
 		/* @var $hal RApiHalDocumentResource */
 		$hal = $this->getBuffer();
@@ -133,7 +131,7 @@ class RApiHalDocumentDocument extends JDocument
 	 */
 	public function getName()
 	{
-		return $this->_name;
+		return $this->name;
 	}
 
 	/**
@@ -252,7 +250,7 @@ class RApiHalDocumentDocument extends JDocument
 	 */
 	public function setName($name = 'joomla')
 	{
-		$this->_name = $name;
+		$this->name = $name;
 
 		return $this;
 	}

@@ -22,4 +22,4 @@ $list = $data['view']->filterForm->getGroup('list');
 			</div>
 		<?php endforeach; ?>
 	</div>
-<?php endif; ?>
+<?php endif;

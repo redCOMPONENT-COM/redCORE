@@ -237,4 +237,4 @@ else : ?>
 			Copyright 2014 redcomponent.com. All rights reserved.
 		</footer>
 	</div>
-<?php endif; ?>
+<?php endif;

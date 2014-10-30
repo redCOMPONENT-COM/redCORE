@@ -19,7 +19,7 @@ abstract class RApiHalDocumentBase
 	/**
 	 * @var SimpleXMLElement
 	 */
-	protected $_xml;
+	protected $xml;
 
 	/**
 	 * Sets XML attributes for RApiHalDocumentLink

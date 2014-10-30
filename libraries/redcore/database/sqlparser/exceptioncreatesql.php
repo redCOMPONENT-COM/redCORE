@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package     Redcore
+ * @subpackage  Exception
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('JPATH_REDCORE') or die;
 
 /**
  * This file implements some expection classes which are used within the
@@ -30,34 +39,79 @@
  * DAMAGE.
  */
 
-class RDatabaseSqlparserExceptioncreatesql extends Exception {
+/**
+ * SQL Parser Exception
+ *
+ * @package     Redcore.Backend
+ * @subpackage  Models
+ * @since       1.0
+ */
+class RDatabaseSqlparserExceptioncreatesql extends Exception
+{
+	protected $part;
 
-    protected $part;
-    protected $partkey;
-    protected $entry;
-    protected $entrykey;
+	protected $partkey;
 
-    public function __construct($part, $partkey, $entry, $entrykey) {
-        $this->part = $part;
-        $this->partkey = $partkey;
-        $this->entry = $entry;
-        $this->entrykey = $entrykey;
-        parent::__construct("unknown " . $entrykey . " in " . $part . "[" . $partkey . "] " . (empty($entry[$entrykey]) ? '' : $entry[$entrykey]), 15);
-    }
+	protected $entry;
 
-    public function getEntry() {
-        return $this->entry;
-    }
+	protected $entrykey;
 
-    public function getEntryKey() {
-        return $this->entrykey;
-    }
+	/**
+	 * Constructor
+	 *
+	 * @param   string  $part      Part
+	 * @param   string  $partkey   partkey
+	 * @param   string  $entry     entry
+	 * @param   string  $entrykey  entrykey
+	 *
+	 * @since   1.2
+	 */
+	public function __construct($part, $partkey, $entry, $entrykey)
+	{
+		$this->part = $part;
+		$this->partkey = $partkey;
+		$this->entry = $entry;
+		$this->entrykey = $entrykey;
+		parent::__construct("unknown " . $entrykey . " in " . $part . "[" . $partkey . "] " . (empty($entry[$entrykey]) ? '' : $entry[$entrykey]), 15);
+	}
 
-    public function getSQLPart() {
-        return $this->part;
-    }
+	/**
+	 * Gets entry
+	 *
+	 * @return  string
+	 */
+	public function getEntry()
+	{
+		return $this->entry;
+	}
 
-    public function getSQLPartKey() {
-        return $this->partkey;
-    }
+	/**
+	 * Gets entry key
+	 *
+	 * @return  string
+	 */
+	public function getEntryKey()
+	{
+		return $this->entrykey;
+	}
+
+	/**
+	 * Gets SQL Part
+	 *
+	 * @return  string
+	 */
+	public function getSQLPart()
+	{
+		return $this->part;
+	}
+
+	/**
+	 * Gets SQL Part key
+	 *
+	 * @return  string
+	 */
+	public function getSQLPartKey()
+	{
+		return $this->partkey;
+	}
 }
