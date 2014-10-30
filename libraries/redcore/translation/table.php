@@ -253,9 +253,16 @@ final class RTranslationTable
 			try
 			{
 				$db->execute();
-				$columns = $db->getTableColumns($newTable, false);
+
+				self::$tablePrefix = '';
+				$columns = self::getTableColumns($newTable);
+
+				if (empty($columns))
+				{
+					throw new RuntimeException($newTable);
+				}
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -305,7 +312,7 @@ final class RTranslationTable
 					$db->setQuery($query);
 					$db->execute();
 				}
-				catch (Exception $e)
+				catch (RuntimeException $e)
 				{
 					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -332,7 +339,7 @@ final class RTranslationTable
 					$db->setQuery($query);
 					$db->execute();
 				}
-				catch (Exception $e)
+				catch (RuntimeException $e)
 				{
 					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -445,7 +452,7 @@ final class RTranslationTable
 				$db->setQuery($indexKeysQuery);
 				$db->execute();
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -494,7 +501,7 @@ final class RTranslationTable
 				$db->setQuery($query);
 				$db->execute();
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -524,7 +531,7 @@ final class RTranslationTable
 			$db->setQuery('DROP TRIGGER IF EXISTS ' . $db->qn($triggerKey));
 			$db->execute();
 		}
-		catch (Exception $e)
+		catch (RuntimeException $e)
 		{
 
 		}
@@ -544,7 +551,7 @@ final class RTranslationTable
 					$db->setQuery($query);
 					$db->execute();
 				}
-				catch (Exception $e)
+				catch (RuntimeException $e)
 				{
 
 				}
@@ -589,7 +596,7 @@ final class RTranslationTable
 							$db->setQuery($query);
 							$db->execute();
 						}
-						catch (Exception $e)
+						catch (RuntimeException $e)
 						{
 							JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -684,7 +691,7 @@ final class RTranslationTable
 			{
 				$db->truncateTable($newTable);
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
