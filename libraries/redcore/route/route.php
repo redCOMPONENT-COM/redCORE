@@ -28,7 +28,7 @@ class RRoute extends JRoute
 	/**
 	 * Sets a custom route class
 	 *
-	 * @param   string  $setCustomRouteClass  The class corresponding to a redCORE based app
+	 * @param   object  $setCustomRouteClass  The class corresponding to a redCORE based app
 	 *
 	 * @return  void
 	 */
