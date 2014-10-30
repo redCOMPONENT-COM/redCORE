@@ -93,14 +93,19 @@ final class RTranslationTable
 			$tableName = self::$tablePrefix . str_replace('#__', '', $tableName);
 		}
 
-		if (empty(self::$columnsList[$tableName]))
+		if (in_array($tableName, self::$tableList))
 		{
-			$db = JFactory::getDbo();
+			if (empty(self::$columnsList[$tableName]))
+			{
+				$db = JFactory::getDbo();
 
-			self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+				self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+			}
+
+			return self::$columnsList[$tableName];
 		}
 
-		return self::$columnsList[$tableName];
+		return array();
 	}
 
 	/**
@@ -162,9 +167,21 @@ final class RTranslationTable
 		// Create table with fields
 		$db = JFactory::getDbo();
 
+		$originalColumns = self::getTableColumns($contentElement->table);
+
+		// If original table is not present then we cannot create shadow table
+		if (empty($originalColumns))
+		{
+			JFactory::getApplication()->enqueueMessage(
+				JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_TABLE', $xmlFile, (string) $contentElement->table),
+				'error'
+			);
+
+			return false;
+		}
+
 		// Check if that table is already installed
 		$columns = self::getTranslationsTableColumns($contentElement->table);
-		$originalColumns = $db->getTableColumns('#__' . $contentElement->table, false);
 		$fields = array();
 		$primaryKeys = array();
 		$fieldsXml = $contentElement->getTranslateFields();
