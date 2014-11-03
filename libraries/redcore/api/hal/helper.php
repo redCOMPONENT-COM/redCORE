@@ -811,7 +811,7 @@ class RApiHalHelper
 		}
 
 		// Trigger the onConfigurationBeforeSave event.
-		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', $table, $isNew));
+		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', &$table, $isNew));
 
 		if (in_array(false, $result, true))
 		{
@@ -825,7 +825,7 @@ class RApiHalHelper
 		}
 
 		// Trigger the onConfigurationAfterSave event.
-		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', $table, $isNew));
+		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', &$table, $isNew));
 
 		return true;
 	}
