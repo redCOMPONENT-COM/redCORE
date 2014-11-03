@@ -35,6 +35,14 @@ final class RTranslationTable
 	public static $columnsList = array();
 
 	/**
+	 * An array to hold database engines from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $dbEngines = array();
+
+	/**
 	 * Prefix used to identify the tables
 	 *
 	 * @var    array
@@ -349,7 +357,11 @@ final class RTranslationTable
 		}
 
 		self::updateTableIndexKeys($fieldsXml, $newTable);
-		self::removeExistingConstraintKeys($originalTable, $primaryKeys);
+
+		if (!$newTableCreated)
+		{
+			self::removeExistingConstraintKeys($originalTable, $primaryKeys);
+		}
 
 		// New install use default value foreign key if InnoDB is present
 		if (empty(RTranslationHelper::$pluginParams))
@@ -522,6 +534,8 @@ final class RTranslationTable
 	 */
 	public static function removeExistingConstraintKeys($originalTable, $primaryKeys = array())
 	{
+		$innoDBSupport = self::checkIfDatabaseEngineExists();
+
 		// Remove Triggers
 		$db = JFactory::getDbo();
 		$triggerKey = md5($originalTable . '_rctranslationstrigger');
@@ -536,7 +550,7 @@ final class RTranslationTable
 
 		}
 
-		if (!empty($primaryKeys))
+		if ($innoDBSupport && !empty($primaryKeys))
 		{
 			$newTable = self::getTranslationsTableName($originalTable, '');
 
@@ -544,7 +558,7 @@ final class RTranslationTable
 			{
 				$constraintKey = $db->qn(md5($newTable . '_' . $primaryKey . '_fk'));
 
-				$query = 'ALTER TABLE ' . $db->qn($newTable) . ' DROP FOREIGN KEY ' . $constraintKey;
+				$query = 'ALTER TABLE ' . $db->qn($newTable) . ' DROP FOREIGN KEY ' . $constraintKey . ' # ' . $newTable . '_' . $primaryKey . '_fk';
 
 				try
 				{
@@ -584,7 +598,7 @@ final class RTranslationTable
 					{
 						$primaryKey = $db->qn($fieldName);
 						$constraintKey = $db->qn(md5($newTable . '_' . $fieldName . '_fk'));
-						$query = 'ALTER TABLE ' . $db->qn($newTable) . 'ADD CONSTRAINT '
+						$query = 'ALTER TABLE ' . $db->qn($newTable) . ' ADD CONSTRAINT '
 							. $constraintKey
 							. ' FOREIGN KEY (' . $primaryKey . ')'
 							. ' REFERENCES ' . $db->qn($originalTable) . ' (' . $primaryKey . ')'
@@ -858,7 +872,7 @@ final class RTranslationTable
 		}
 
 		// Trigger the onConfigurationBeforeSave event.
-		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', $table, $isNew));
+		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', &$table, $isNew));
 
 		if (in_array(false, $result, true))
 		{
@@ -872,7 +886,7 @@ final class RTranslationTable
 		}
 
 		// Trigger the onConfigurationAfterSave event.
-		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', $table, $isNew));
+		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', &$table, $isNew));
 
 		return true;
 	}
@@ -925,25 +939,29 @@ final class RTranslationTable
 	 */
 	public static function checkIfDatabaseEngineExists($engine = 'InnoDB')
 	{
-		$db = JFactory::getDbo();
-
-		$db->setQuery('SHOW ENGINES');
-		$results = $db->loadObjectList();
-
-		if (!empty($results))
+		if (!isset(self::$dbEngines[$engine]))
 		{
-			foreach ($results as $result)
+			self::$dbEngines[$engine] = false;
+			$db = JFactory::getDbo();
+
+			$db->setQuery('SHOW ENGINES');
+			$results = $db->loadObjectList();
+
+			if (!empty($results))
 			{
-				if (strtoupper($result->Engine) == strtoupper($engine))
+				foreach ($results as $result)
 				{
-					if (strtoupper($result->Support) != 'NO')
+					if (strtoupper($result->Engine) == strtoupper($engine))
 					{
-						return true;
+						if (strtoupper($result->Support) != 'NO')
+						{
+							self::$dbEngines[$engine] = true;
+						}
 					}
 				}
 			}
 		}
 
-		return false;
+		return self::$dbEngines[$engine];
 	}
 }
