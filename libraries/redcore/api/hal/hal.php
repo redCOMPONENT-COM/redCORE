@@ -1060,8 +1060,6 @@ class RApiHalHal extends RApi
 
 				if (!$form)
 				{
-					$app->enqueueMessage($model->getError(), 'error');
-
 					return false;
 				}
 
@@ -1281,7 +1279,7 @@ class RApiHalHal extends RApi
 	 */
 	public function loadModel($elementName, $configuration)
 	{
-		$this->setOptionName($elementName, $configuration);
+		$this->setOptionViewName($elementName, $configuration);
 
 		if (RApiHalHelper::isAttributeTrue($configuration, 'fromHelper'))
 		{
@@ -1374,7 +1372,7 @@ class RApiHalHal extends RApi
 	 *
 	 * @since   1.3
 	 */
-	public function setOptionName($elementName, $configuration)
+	public function setOptionViewName($elementName, $configuration)
 	{
 		// Views are separated by dash
 		$view = explode('-', $elementName);
@@ -1434,7 +1432,7 @@ class RApiHalHal extends RApi
 			// Get the validation messages.
 			$errors = $model->getErrors();
 
-			// Push up to three validation messages out to the user.
+			// Push up all validation messages out to the user.
 			for ($i = 0, $n = count($errors); $i < $n; $i++)
 			{
 				if ($errors[$i] instanceof Exception)

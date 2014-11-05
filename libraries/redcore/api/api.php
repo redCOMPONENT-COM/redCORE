@@ -185,6 +185,8 @@ class RApi extends RApiBase
 		|| $lang->load($option, $path . "/components/$option", null, false, false)
 		|| $lang->load($option, $path, $lang->getDefault(), false, false)
 		|| $lang->load($option, $path . "/components/$option", $lang->getDefault(), false, false);
+
+		return $this;
 	}
 
 	/**

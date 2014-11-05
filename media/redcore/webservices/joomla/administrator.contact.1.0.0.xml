@@ -181,14 +181,7 @@
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
         <update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="">
-            <fields>
-                <!-- Fields can be defined here -->
-                <field name="params" transform="array">
-                    <description><![CDATA[ Needed for correct params parsing. ]]></description>
-                </field>
 
-                <description><![CDATA[ Fields listed will be transformed before saving or default value can be assigned. ]]></description>
-            </fields>
             <resources>
                 <resource displayName="documentation" />
                 <resource displayName="base" />
