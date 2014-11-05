@@ -112,6 +112,9 @@ class RApi extends RApiBase
 
 		// Main properties
 		$this->setApi($this->options->get('api', 'hal'));
+
+		// Load Library language
+		$this->loadExtensionLanguage('lib_joomla', JPATH_ADMINISTRATOR);
 	}
 
 	/**

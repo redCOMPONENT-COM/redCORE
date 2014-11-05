@@ -628,7 +628,7 @@ class RApiHalHal extends RApi
 
 			$model = $this->triggerFunction('loadModel', $this->elementName, $taskConfiguration);
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
-			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
+			$data = $this->triggerFunction('processPostData', $this->options->getArray('data', array()), $taskConfiguration);
 			$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
 
 			if ($data === false)
@@ -1007,7 +1007,15 @@ class RApiHalHal extends RApi
 	 */
 	public function processPostData($data, $configuration)
 	{
-		$data = (array) $data;
+		if (is_object($data))
+		{
+			$data = JArrayHelper::fromObject($data);
+		}
+
+		if (!is_array($data))
+		{
+			$data = (array) $data;
+		}
 
 		if (!empty($data) && !empty($configuration->fields))
 		{
@@ -1022,7 +1030,7 @@ class RApiHalHal extends RApi
 		}
 
 		// Common functions are not checking this field so we will
-		$data['params'] = isset($data['params']) ? $data['params'] : array();
+		$data['params'] = isset($data['params']) ? $data['params'] : null;
 		$data['associations'] = isset($data['associations']) ? $data['associations'] : array();
 
 		return $data;
@@ -1065,6 +1073,10 @@ class RApiHalHal extends RApi
 
 				// Test whether the data is valid.
 				$validData = $model->validate($form, $data);
+
+				// Common functions are not checking this field so we will
+				$validData['params'] = isset($validData['params']) ? $validData['params'] : null;
+				$validData['associations'] = isset($validData['associations']) ? $validData['associations'] : array();
 
 				return $validData;
 			}
