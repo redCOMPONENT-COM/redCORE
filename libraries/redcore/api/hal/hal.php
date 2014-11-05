@@ -628,7 +628,7 @@ class RApiHalHal extends RApi
 
 			$model = $this->triggerFunction('loadModel', $this->elementName, $taskConfiguration);
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
-			$data = $this->triggerFunction('processPostData', $this->options->getArray('data', array()), $taskConfiguration);
+			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
 			$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
 
 			if ($data === false)
