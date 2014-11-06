@@ -208,22 +208,40 @@ class RApi extends RApiBase
 		{
 			$inputData = JArrayHelper::fromObject($inputData);
 		}
-		elseif ($data_json = @json_decode($inputData))
+		elseif(is_string($inputData))
 		{
-			if (json_last_error() == JSON_ERROR_NONE)
+			$parsedData = null;
+
+			// We try to transform it into JSON
+			if ($data_json = @json_decode($inputData, true))
 			{
-				$inputData = (array) $data_json;
+				if (json_last_error() == JSON_ERROR_NONE)
+				{
+					$parsedData = (array) $data_json;
+				}
 			}
-		}
-		elseif (!empty($inputData) && !is_array($inputData))
-		{
-			parse_str($inputData, $inputData);
+
+			// We try to transform it into XML
+			if (is_null($parsedData) && $xml = @simplexml_load_string($inputData))
+			{
+				$json = json_encode((array) $xml);
+				$parsedData = json_decode($json, true);
+			}
+
+			// We try to transform it into Array
+			if (is_null($parsedData) && !empty($inputData) && !is_array($inputData))
+			{
+				parse_str($inputData, $parsedData);
+			}
+
+			$inputData = $parsedData;
 		}
 		else
 		{
 			$inputData = $input->post->getArray();
 		}
 
+		// Filter data with JInput default filter
 		$postedData = new JInput($inputData);
 
 		return $postedData->getArray();
