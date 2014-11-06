@@ -106,6 +106,18 @@ class RApiHalHal extends RApi
 	public $documentation = '';
 
 	/**
+	 * @var    string  Option name (optional)
+	 * @since  1.3
+	 */
+	public $optionName = '';
+
+	/**
+	 * @var    string  View name (optional)
+	 * @since  1.3
+	 */
+	public $viewName = '';
+
+	/**
 	 * Method to instantiate the file-based api call.
 	 *
 	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
@@ -458,6 +470,18 @@ class RApiHalHal extends RApi
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
+		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
+
+		if ($data === false)
+		{
+			// Not Acceptable
+			$this->setStatusCode(406);
+			$this->triggerFunction('displayErrors', $model);
+			$this->setData('result', $data);
+
+			return;
+		}
+
 		// Prepare parameters for the function
 		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
 		$result = null;
@@ -479,6 +503,7 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
+			$this->triggerFunction('displayErrors', $model);
 			$this->setStatusCode(400);
 		}
 
@@ -516,6 +541,7 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
+			$this->triggerFunction('displayErrors', $model);
 			$this->setStatusCode(400);
 		}
 
@@ -536,6 +562,18 @@ class RApiHalHal extends RApi
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
+
+		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
+
+		if ($data === false)
+		{
+			// Not Acceptable
+			$this->setStatusCode(406);
+			$this->triggerFunction('displayErrors', $model);
+			$this->setData('result', $data);
+
+			return;
+		}
 
 		// Prepare parameters for the function
 		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
@@ -558,6 +596,7 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
+			$this->triggerFunction('displayErrors', $model);
 			$this->setStatusCode(400);
 		}
 
@@ -590,6 +629,17 @@ class RApiHalHal extends RApi
 			$model = $this->triggerFunction('loadModel', $this->elementName, $taskConfiguration);
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
 			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
+			$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
+
+			if ($data === false)
+			{
+				// Not Acceptable
+				$this->setStatusCode(406);
+				$this->triggerFunction('displayErrors', $model);
+				$this->setData('result', $data);
+
+				return;
+			}
 
 			// Prepare parameters for the function
 			$args = $this->buildFunctionArgs($taskConfiguration, $data);
@@ -613,6 +663,7 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
+			$this->triggerFunction('displayErrors', $model);
 			$this->setStatusCode(400);
 		}
 
@@ -956,7 +1007,15 @@ class RApiHalHal extends RApi
 	 */
 	public function processPostData($data, $configuration)
 	{
-		$data = (array) $data;
+		if (is_object($data))
+		{
+			$data = JArrayHelper::fromObject($data);
+		}
+
+		if (!is_array($data))
+		{
+			$data = (array) $data;
+		}
 
 		if (!empty($data) && !empty($configuration->fields))
 		{
@@ -971,10 +1030,79 @@ class RApiHalHal extends RApi
 		}
 
 		// Common functions are not checking this field so we will
-		$data['params'] = !empty($data['params']) ? $data['params'] : null;
-		$data['associations'] = !empty($data['associations']) ? $data['associations'] : array();
+		$data['params'] = isset($data['params']) ? $data['params'] : null;
+		$data['associations'] = isset($data['associations']) ? $data['associations'] : array();
 
 		return $data;
+	}
+
+	/**
+	 * Validates posted data
+	 *
+	 * @param   object            $model          Model
+	 * @param   array             $data           Raw Posted data
+	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
+	 *
+	 * @return  mixed  Array with posted data or false.
+	 *
+	 * @since   1.3
+	 */
+	public function validatePostData($model, $data, $configuration)
+	{
+		$data = (array) $data;
+		$app = JFactory::getApplication();
+		$validateMethod = strtolower(RApiHalHelper::attributeToString($configuration, 'validateData', 'none'));
+
+		if ($validateMethod == 'none')
+		{
+			return $data;
+		}
+
+		if ($validateMethod == 'form')
+		{
+			if (method_exists($model, 'getForm'))
+			{
+				// Validate the posted data.
+				// Sometimes the form needs some posted data, such as for plugins and modules.
+				$form = $model->getForm($data, false);
+
+				if (!$form)
+				{
+					return false;
+				}
+
+				// Test whether the data is valid.
+				$validData = $model->validate($form, $data);
+
+				// Common functions are not checking this field so we will
+				$validData['params'] = isset($validData['params']) ? $validData['params'] : null;
+				$validData['associations'] = isset($validData['associations']) ? $validData['associations'] : array();
+
+				return $validData;
+			}
+
+			$app->enqueueMessage(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_FUNCTION_DONT_EXIST'), 'error');
+
+			return false;
+		}
+
+		if ($validateMethod == 'function')
+		{
+			$validateMethod = strtolower(RApiHalHelper::attributeToString($configuration, 'validateDataFunction', 'validate'));
+
+			if (method_exists($model, $validateMethod))
+			{
+				$result = $model->{$validateMethod}($data);
+
+				return $result;
+			}
+
+			$app->enqueueMessage(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_FUNCTION_DONT_EXIST'), 'error');
+
+			return false;
+		}
+
+		return false;
 	}
 
 	/**
@@ -1163,18 +1291,15 @@ class RApiHalHal extends RApi
 	 */
 	public function loadModel($elementName, $configuration)
 	{
+		$this->setOptionViewName($elementName, $configuration);
+
 		if (RApiHalHelper::isAttributeTrue($configuration, 'fromHelper'))
 		{
 			return $this->getHelperObject();
 		}
 
 		$isAdmin = RApiHalHelper::isAttributeTrue($configuration, 'isAdminClass');
-
-		$optionName = !empty($configuration['optionName']) ? $configuration['optionName'] : $elementName;
-
-		// Add com_ to the element name if not exist
-		$optionName = (strpos($optionName, 'com_') === 0 ? '' : 'com_') . $optionName;
-		$this->addModelIncludePaths($isAdmin, $optionName);
+		$this->addModelIncludePaths($isAdmin, $this->optionName);
 
 		if (!empty($configuration['className']))
 		{
@@ -1191,7 +1316,7 @@ class RApiHalHal extends RApi
 			}
 			else
 			{
-				$componentName = ucfirst(strtolower(substr($optionName, 4)));
+				$componentName = ucfirst(strtolower(substr($this->optionName, 4)));
 				$prefix = $componentName . 'Model';
 
 				$model = RModel::getInstance($modelClass, $prefix);
@@ -1203,20 +1328,12 @@ class RApiHalHal extends RApi
 			}
 		}
 
-		// Views are separated by dash
-		$view = explode('-', $elementName);
-
-		if (!empty($view[1]))
-		{
-			$elementName = $view[1];
-		}
-
 		if ($isAdmin)
 		{
-			return RModel::getAdminInstance($elementName, array(), $optionName);
+			return RModel::getAdminInstance($this->viewName, array(), $this->optionName);
 		}
 
-		return RModel::getFrontInstance($elementName, array(), $optionName);
+		return RModel::getFrontInstance($this->viewName, array(), $this->optionName);
 	}
 
 	/**
@@ -1233,15 +1350,59 @@ class RApiHalHal extends RApi
 	{
 		if ($isAdmin)
 		{
-			RModel::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $optionName . '/models');
-			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $optionName . '/tables');
+			$this->loadExtensionLanguage($optionName, JPATH_ADMINISTRATOR);
+			$path = JPATH_ADMINISTRATOR . '/components/' . $optionName;
+			RModel::addIncludePath($path . '/models');
+			JTable::addIncludePath($path . '/tables');
+			RForm::addFormPath($path . '/models/forms');
+			RForm::addFieldPath($path . '/models/fields');
 		}
 		else
 		{
-			RModel::addIncludePath(JPATH_SITE . '/components/' . $optionName . '/models');
-			JTable::addIncludePath(JPATH_SITE . '/components/' . $optionName . '/tables');
+			$this->loadExtensionLanguage($optionName);
+			$path = JPATH_SITE . '/components/' . $optionName;
+			RModel::addIncludePath($path . '/models');
+			JTable::addIncludePath($path . '/tables');
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $optionName . '/tables');
+			RForm::addFormPath($path . '/models/forms');
+			RForm::addFieldPath($path . '/models/fields');
 		}
+
+		if (!defined('JPATH_COMPONENT'))
+		{
+			define('JPATH_COMPONENT', $path);
+		}
+	}
+
+	/**
+	 * Sets option and view name
+	 *
+	 * @param   string            $elementName    Element name
+	 * @param   SimpleXMLElement  $configuration  Configuration for current action
+	 *
+	 * @return  void
+	 *
+	 * @since   1.3
+	 */
+	public function setOptionViewName($elementName, $configuration)
+	{
+		// Views are separated by dash
+		$view = explode('-', $elementName);
+		$elementName = $view[0];
+		$viewName = $elementName;
+
+		if (!empty($view[1]))
+		{
+			$viewName = $view[1];
+		}
+
+		$optionName = !empty($configuration['optionName']) ? $configuration['optionName'] : $elementName;
+
+		// Add com_ to the element name if not exist
+		$optionName = (strpos($optionName, 'com_') === 0 ? '' : 'com_') . $optionName;
+
+		$this->optionName = $optionName;
+		$this->viewName = $viewName;
 	}
 
 	/**
@@ -1265,6 +1426,37 @@ class RApiHalHal extends RApi
 		}
 
 		return is_string($configuration) ? (string) $configuration : $configuration;
+	}
+
+	/**
+	 * Gets errors from model and places it into Application message queue
+	 *
+	 * @param   object  $model  Model
+	 *
+	 * @return void
+	 */
+	public function displayErrors($model)
+	{
+		if (method_exists($model, 'getErrors'))
+		{
+			$app = JFactory::getApplication();
+
+			// Get the validation messages.
+			$errors = $model->getErrors();
+
+			// Push up all validation messages out to the user.
+			for ($i = 0, $n = count($errors); $i < $n; $i++)
+			{
+				if ($errors[$i] instanceof Exception)
+				{
+					$app->enqueueMessage($errors[$i]->getMessage(), 'warning');
+				}
+				else
+				{
+					$app->enqueueMessage($errors[$i], 'warning');
+				}
+			}
+		}
 	}
 
 	/**

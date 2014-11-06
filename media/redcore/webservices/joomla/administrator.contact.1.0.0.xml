@@ -157,7 +157,9 @@
                 <description><![CDATA[ This operation displays one Contact item. ]]></description>
             </item>
         </read>
-        <create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
+        <!-- validateData can be set as: none, form, function. Default value is "none". If option function is selected then validateDataFunction attribute will be used -->
+        <!-- validateDataFunction is a function name used to check data before passing it to the operation. Default value is "validate". -->
+        <create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" validateData="form" validateDataFunction="">
             <fields>
                 <!-- Fields can be defined here -->
                 <field name="params" transform="array">
@@ -178,7 +180,7 @@
             </resources>
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
-        <update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="save">
+        <update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="">
 
             <resources>
                 <resource displayName="documentation" />
@@ -190,7 +192,7 @@
             <description><![CDATA[ This operation updates Contact item. ]]></description>
         </update>
         <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
-        <delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
+        <delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="form" validateDataFunction="">
 
             <resources>
                 <resource displayName="documentation" />
@@ -205,7 +207,7 @@
 
             <!-- Each task can be preformed in separate class and system will take this values instead -->
             <!-- If functionArgs attribute is defined, only arguments defined there will be pulled from posted data and passed to the function. Default is to send all posted data in one array -->
-            <featured authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int},1{value}" displayName="task featured">
+            <featured authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int},1{value}" displayName="task featured" validateData="" validateDataFunction="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. Expected data: id of the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" />
@@ -215,7 +217,7 @@
                 </resources>
             </featured>
 
-            <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="featured" functionArgs="id{int},0{value}">
+            <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="featured" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. Expected data: id of the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" />
@@ -225,7 +227,7 @@
                 </resources>
             </unfeatured>
 
-            <publish authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
+            <publish authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. Expected data: id of the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" />
@@ -235,7 +237,7 @@
                 </resources>
             </publish>
 
-            <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="publish" functionArgs="id{int},0{value}">
+            <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="publish" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. Expected data: id of the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" />
@@ -245,7 +247,7 @@
                 </resources>
             </unpublish>
 
-            <checkin authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
+            <checkin authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
                 <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. Expected data: id of the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" />
@@ -255,7 +257,7 @@
                 </resources>
             </checkin>
 
-            <checkout authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
+            <checkout authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
                 <description><![CDATA[ This task enables you to check-out Contact item. Expected data: id of the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" />

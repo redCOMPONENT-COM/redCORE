@@ -112,6 +112,9 @@ class RApi extends RApiBase
 
 		// Main properties
 		$this->setApi($this->options->get('api', 'hal'));
+
+		// Load Library language
+		$this->loadExtensionLanguage('lib_joomla', JPATH_ADMINISTRATOR);
 	}
 
 	/**
@@ -165,6 +168,28 @@ class RApi extends RApiBase
 	public function setDebug($debug)
 	{
 		$this->options->set('debug', (boolean) $debug);
+	}
+
+	/**
+	 * Load extension language file.
+	 *
+	 * @param   string  $option  Option name
+	 * @param   string  $path    Path to language file
+	 *
+	 * @return  object
+	 */
+	public function loadExtensionLanguage($option, $path = JPATH_SITE)
+	{
+		// Load common and local language files.
+		$lang = JFactory::getLanguage();
+
+		// Load language file
+		$lang->load($option, $path, null, false, false)
+		|| $lang->load($option, $path . "/components/$option", null, false, false)
+		|| $lang->load($option, $path, $lang->getDefault(), false, false)
+		|| $lang->load($option, $path . "/components/$option", $lang->getDefault(), false, false);
+
+		return $this;
 	}
 
 	/**
