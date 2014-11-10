@@ -62,7 +62,6 @@ class RedcoreModelOauth_Client extends RModelAdmin
 			$data['client_secret'] = $this->generateSecretKey($data['client_id']);
 		}
 
-
 		if (parent::save($data))
 		{
 			return $this->setTokensToExpire($data['client_id']);
