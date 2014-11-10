@@ -8,14 +8,14 @@
  */
 namespace OAuth2\Storage;
 
-defined('JPATH_BASE') or die;
+defined('JPATH_REDCORE') or die;
 
 /**
  * Extended PDO storage for all storage types
  *
  * @since  1.2
  */
-class PdoRedcore extends Pdo
+class Pdoredcore extends Pdo
 {
 	/**
 	 * Grant access tokens for basic user credentials.

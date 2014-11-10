@@ -70,8 +70,8 @@ $listDirn = $this->state->get('list.direction');
 					$canChange = 1;
 					$canEdit = 1;
 					$canCheckin = 1;
-					$grantTypes = explode(',', $item->grant_types);
-					$scopes = explode(',', $item->scope);
+					$grantTypes = explode(' ', $item->grant_types);
+					$scopes = explode(' ', $item->scope);
 					?>
 					<tr>
 						<td>
@@ -82,10 +82,10 @@ $listDirn = $this->state->get('list.direction');
 							<?php echo $item->client_id; ?>
 							</a>
 						</td>
-						<td>
+						<td style="word-wrap:break-word;">
 							<?php echo $item->client_secret; ?>
 						</td>
-						<td>
+						<td style="word-wrap:break-word;">
 							<?php echo $item->redirect_uri; ?>
 						</td>
 						<td>
@@ -97,8 +97,13 @@ $listDirn = $this->state->get('list.direction');
 						</td>
 						<td>
 							<ul class="unstyled ctypes">
-								<?php foreach ($scopes as $scope): ?>
-									<li><?php echo $scope; ?></li>
+								<?php foreach ($scopes as $key => $scope): ?>
+									<?php if ($key < 5): ?>
+										<li><?php echo $scope; ?></li>
+									<?php else : ?>
+										<li>...</li>
+										<?php break; ?>
+									<?php endif; ?>
 								<?php endforeach; ?>
 							</ul>
 						</td>

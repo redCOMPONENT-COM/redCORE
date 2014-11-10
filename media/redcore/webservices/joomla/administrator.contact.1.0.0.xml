@@ -39,16 +39,24 @@
              authorizationAssetName can be overridden if you set it here separated by colon (ex. core.admin:com_contact,core.manage:com_contact) authorizationNeeded="false"
         -->
         <read authorization="core.admin,core.manage">
-            <!-- If fromHelper is set to true it will run query on web service helper class -->
             <!-- Api will automatically call getItems if functionName is not specified -->
-            <!-- Api will automatically call ExampleModelElements if className is not specified -->
-            <list fromHelper="false" optionName="com_contact" className="contacts" classPath="" isAdminClass="true" functionName="">
+            <!-- Api will automatically call ExampleModelElements if modelClassName is not specified -->
+            <!-- dataMode can be model, helper or table. Default is model. If you use "table" then tableName attribute must be set.
+                 If it is set to "helper" it will run operation on web service helper class -->
+            <list dataMode="table" optionName="com_contact" modelClassName="contacts" modelClassPath="" isAdminClass="true" functionName="" tableName="contact_details">
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
+                <!-- isFilterField defines specific fields as filter fields when using dataMode="table". When filtering fields must be in format filter[fieldName] -->
+                <!-- isPrimaryField defines specific fields as primary key fields when using dataMode="table". -->
                 <fields>
-                    <field name="name" transform="string" />
+                    <field name="id" transform="int" isFilterField="true" isPrimaryField="true" />
+                    <field name="name" transform="string" isFilterField="true" isSearchableField="true" />
+                    <field name="ordering" transform="int" />
+                    <field name="access" transform="int" />
+                    <field name="language" />
+                    <field name="featured" transform="int" />
                     <!-- Disable specific fields from showing -->
-                    <field name="checked_out" hide="true" />
+                    <field name="checked_out" isHiddenField="true" />
                 </fields>
                 <resources>
                     <resource displayName="documentation" />
@@ -75,27 +83,20 @@
                     <!-- _links -->
                     <resource displayName="base" />
                     <resource displayName="contact:self" fieldFormat="/index.php?option=contact" />
-                    <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;limitstart=0" linkTitle="Pagination first" />
-                    <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.previous}" linkTitle="Pagination previous" />
-                    <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.next}" linkTitle="Pagination next" />
-                    <resource displayGroup="_links" displayName="contact:last" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.last}" linkTitle="Pagination last" />
-                    <resource displayGroup="_links" displayName="contact:all" fieldFormat="/index.php?option=contact&amp;limit=0" linkTitle="Show all items" />
-                    <resource displayGroup="_links" displayName="contact:limit" fieldFormat="/index.php?option=contact&amp;limit={limit}&amp;limitstart={limitstart}" linkTemplated="true" linkTitle="List limit" />
-                    <resource displayGroup="_links" displayName="contact:filter" fieldFormat="/index.php?option=contact&amp;filter_search={filter_search}" linkTemplated="true" linkTitle="Filter list" />
-                    <resource displayGroup="_links" displayName="contact:sort" fieldFormat="/index.php?option=contact&amp;filter_order={filter_order}&amp;filter_order_Dir={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
+                    <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;list[limitstart]=0" linkTitle="Pagination first" />
+                    <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.previous}" linkTitle="Pagination previous" />
+                    <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.next}" linkTitle="Pagination next" />
+                    <resource displayGroup="_links" displayName="contact:last" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.last}" linkTitle="Pagination last" />
+                    <resource displayGroup="_links" displayName="contact:all" fieldFormat="/index.php?option=contact&amp;list[limit]=0" linkTitle="Show all items" />
+                    <resource displayGroup="_links" displayName="contact:limit" fieldFormat="/index.php?option=contact&amp;list[limit]={limit}&amp;list[limitstart]={limitstart}" linkTemplated="true" linkTitle="List limit" />
+                    <resource displayGroup="_links" displayName="contact:filter" fieldFormat="/index.php?option=contact&amp;filter[search]={filter_search}" linkTemplated="true" linkTitle="Filter list" />
+                    <resource displayGroup="_links" displayName="contact:sort" fieldFormat="/index.php?option=contact&amp;filter[order]={filter_order}&amp;filter[order_Dir]={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
                 </resources>
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
-            <!-- If fromHelper is set to true it will run query on webservice helper class -->
             <!-- Api will automatically call getItem if functionName is not specified -->
-            <!-- Api will automatically call ExampleModelElement if className is not specified -->
-            <item fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
-
-                <!-- Enable or disable fields to read. If left empty, all fields will be available -->
-                <fields>
-                    <field name="name" transform="string" />
-                </fields>
-
+            <!-- Api will automatically call ExampleModelElement if modelClassName is not specified -->
+            <item dataMode="table" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" tableName="contact_details">
                 <resources>
 
                     <!-- standard -->
@@ -159,12 +160,10 @@
         </read>
         <!-- validateData can be set as: none, form, function. Default value is "none". If option function is selected then validateDataFunction attribute will be used -->
         <!-- validateDataFunction is a function name used to check data before passing it to the operation. Default value is "validate". -->
-        <create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" validateData="form" validateDataFunction="">
+        <create dataMode="table" authorization="core.create" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" validateData="form" validateDataFunction="" tableName="contact_details">
             <fields>
-                <!-- Fields can be defined here -->
-                <field name="params" transform="array">
-                    <description><![CDATA[ Needed for correct params parsing. ]]></description>
-                </field>
+                <field name="name" transform="string" isRequiredField="true" />
+                <field name="catid" transform="int" isRequiredField="true" />
                 <field name="language" defaultValue="*" />
                 <field name="published" transform="int" defaultValue="1" />
 
@@ -180,8 +179,16 @@
             </resources>
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
-        <update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="">
+        <update dataMode="table" authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="" tableName="contact_details">
+            <fields>
+                <field name="id" transform="int" isRequiredField="true" />
+                <field name="name" transform="string" isRequiredField="true" />
+                <field name="catid" transform="int" isRequiredField="true" />
+                <field name="language" defaultValue="*" />
+                <field name="published" transform="int" defaultValue="1" />
 
+                <description><![CDATA[ Fields listed will be transformed before saving or default value can be assigned. ]]></description>
+            </fields>
             <resources>
                 <resource displayName="documentation" />
                 <resource displayName="base" />
@@ -192,8 +199,12 @@
             <description><![CDATA[ This operation updates Contact item. ]]></description>
         </update>
         <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
-        <delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="form" validateDataFunction="">
+        <delete dataMode="table" authorization="core.delete" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="form" validateDataFunction="" tableName="contact_details">
+            <fields>
+                <field name="id" transform="int" isRequiredField="true" />
 
+                <description><![CDATA[ Fields needed for Delete operation. ]]></description>
+            </fields>
             <resources>
                 <resource displayName="documentation" />
                 <resource displayName="base" />
@@ -203,68 +214,85 @@
             <description><![CDATA[ This operation deletes Contact item(s). Expected data: id of the contact(s). ]]></description>
         </delete>
         <!-- Default class for all tasks if not otherwise specified -->
-        <task fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true">
+        <task optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true">
 
             <!-- Each task can be preformed in separate class and system will take this values instead -->
             <!-- If functionArgs attribute is defined, only arguments defined there will be pulled from posted data and passed to the function. Default is to send all posted data in one array -->
-            <featured authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int},1{value}" displayName="task featured" validateData="" validateDataFunction="">
-                <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. Expected data: id of the contact. ]]></description>
+            <featured authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int},1{value}" displayName="task featured" validateData="" validateDataFunction="">
+                <fields>
+                    <field name="id" transform="int" isRequiredField="true" />
+
+                    <description><![CDATA[ Fields needed for Featured task operation. ]]></description>
+                </fields>
                 <resources>
                     <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. Expected data: id of the contact. ]]></description>
             </featured>
 
-            <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="featured" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
-                <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. Expected data: id of the contact. ]]></description>
+            <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="featured" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
+                <fields>
+                    <field name="id" transform="int" isRequiredField="true" />
+                </fields>
                 <resources>
                     <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. Expected data: id of the contact. ]]></description>
             </unfeatured>
 
-            <publish authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
-                <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. Expected data: id of the contact. ]]></description>
-                <resources>
+            <publish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
+                <fields>
+                    <field name="id" transform="int" isRequiredField="true" />
+                </fields><resources>
                     <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. Expected data: id of the contact. ]]></description>
             </publish>
 
-            <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="publish" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
-                <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. Expected data: id of the contact. ]]></description>
-                <resources>
+            <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="publish" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
+                <fields>
+                    <field name="id" transform="int" isRequiredField="true" />
+                </fields><resources>
                     <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
+                <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. Expected data: id of the contact. ]]></description>
             </unpublish>
 
-            <checkin authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
-                <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. Expected data: id of the contact. ]]></description>
-                <resources>
+            <checkin authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
+                <fields>
+                    <field name="id" transform="int" isRequiredField="true" />
+                </fields><resources>
                     <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
+                <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. Expected data: id of the contact. ]]></description>
             </checkin>
 
-            <checkout authorization="core.edit,core.edit.own" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
-                <description><![CDATA[ This task enables you to check-out Contact item. Expected data: id of the contact. ]]></description>
+            <checkout authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
+                <fields>
+                    <field name="id" transform="int" isRequiredField="true" />
+                </fields>
                 <resources>
                     <resource displayName="documentation" />
                     <resource displayName="base" />
                     <resource displayName="contact:list" />
                     <resource displayName="result" />
                 </resources>
+                <description><![CDATA[ This task enables you to check-out Contact item. Expected data: id of the contact. ]]></description>
             </checkout>
 
             <!-- If using useOperation you can redirect that task operation to some of the existing ones: create, read, update, delete -->

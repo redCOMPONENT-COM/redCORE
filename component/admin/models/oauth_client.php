@@ -31,6 +31,22 @@ class RedcoreModelOauth_Client extends RModelAdmin
 	 */
 	public function save($data)
 	{
+		if (isset($data['grant_types']))
+		{
+			foreach ($data['grant_types'] as $grantType)
+			{
+				if ($grantType == 'client_credentials')
+				{
+					if (empty($data['user_id']))
+					{
+						$this->setError(JText::_('COM_REDCORE_OAUTH_CLIENTS_ERROR_CLIENT_CREDENTIALS_JOOMLA_USER'));
+
+						return false;
+					}
+				}
+			}
+		}
+
 		if (isset($data['grant_types']) && is_array($data['grant_types']))
 		{
 			$data['grant_types'] = implode(' ', $data['grant_types']);
@@ -45,6 +61,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 		{
 			$data['client_secret'] = $this->generateSecretKey($data['client_id']);
 		}
+
 
 		if (parent::save($data))
 		{

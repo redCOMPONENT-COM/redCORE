@@ -88,8 +88,7 @@ class RApiHalDocumentDocument extends JDocument
 	{
 		$runtime = microtime(true) - $this->hal->startTime;
 
-		// Joomla does not support setting status codes so we apply direct PHP function
-		header($this->hal->statusText, true, $this->hal->statusCode);
+		JFactory::getApplication()->setHeader('Status', $this->hal->statusCode . ' ' . $this->hal->statusText, true);
 		JFactory::getApplication()->setHeader('Server', '', true);
 		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
 		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);

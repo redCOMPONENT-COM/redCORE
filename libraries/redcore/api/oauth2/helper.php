@@ -19,7 +19,7 @@ defined('JPATH_BASE') or die;
 class RApiOauth2Helper
 {
 	/**
-	 * OAuth2 Server instance
+	 * Oauth2 Server instance
 	 *
 	 * @var    RApiOauth2Oauth2
 	 * @since  1.2
@@ -41,7 +41,7 @@ class RApiOauth2Helper
 	 */
 	public static function handleTokenRequest()
 	{
-		if (!self::getOauth2Server())
+		if (!self::getOAuth2Server())
 		{
 			return false;
 		}
@@ -62,7 +62,7 @@ class RApiOauth2Helper
 	 */
 	public static function verifyResourceRequest($scope = null)
 	{
-		if (!self::getOauth2Server())
+		if (!self::getOAuth2Server())
 		{
 			return false;
 		}
@@ -82,7 +82,7 @@ class RApiOauth2Helper
 	 */
 	public static function handleAuthorizeRequest()
 	{
-		if (!self::getOauth2Server())
+		if (!self::getOAuth2Server())
 		{
 			return false;
 		}
@@ -99,7 +99,7 @@ class RApiOauth2Helper
 	 *
 	 * @return  RApiOauth2Oauth2
 	 */
-	public static function getOauth2Server()
+	public static function getOAuth2Server()
 	{
 		if (RTranslationHelper::$pluginParams->get('enable_oauth2_server', 0) == 0)
 		{

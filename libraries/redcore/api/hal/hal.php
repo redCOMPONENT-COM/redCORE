@@ -94,6 +94,12 @@ class RApiHalHal extends RApi
 	public $apiHelperClass = null;
 
 	/**
+	 * @var    object  Dynamic model class object
+	 * @since  1.3
+	 */
+	public $apiDynamicModelClass = null;
+
+	/**
 	 * @var    array  Loaded resources from configuration file
 	 * @since  1.2
 	 */
@@ -116,6 +122,12 @@ class RApiHalHal extends RApi
 	 * @since  1.3
 	 */
 	public $viewName = '';
+
+	/**
+	 * @var    string  Dynamic model name used if dataMode="table"
+	 * @since  1.3
+	 */
+	public $dynamicModelClassName = 'RApiHalModelItem';
 
 	/**
 	 * Method to instantiate the file-based api call.
@@ -411,6 +423,7 @@ class RApiHalHal extends RApi
 	{
 		$id = $this->options->get('id', '');
 		$displayTarget = empty($id) ? 'list' : 'item';
+		$this->dynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
 		$currentConfiguration = $this->operationConfiguration->{$displayTarget};
 		$model = $this->triggerFunction('loadModel', $this->elementName, $currentConfiguration);
 
@@ -521,9 +534,24 @@ class RApiHalHal extends RApi
 	{
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
+
+		// Delete function requires references and not values like we use in call_user_func_array so we use List delete function
+		$this->dynamicModelClassName = 'RApiHalModelList';
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'delete');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
+
+		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
+
+		if ($data === false)
+		{
+			// Not Acceptable
+			$this->setStatusCode(406);
+			$this->triggerFunction('displayErrors', $model);
+			$this->setData('result', $data);
+
+			return;
+		}
 
 		// Prepare parameters for the function
 		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
@@ -629,7 +657,7 @@ class RApiHalHal extends RApi
 			$model = $this->triggerFunction('loadModel', $this->elementName, $taskConfiguration);
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
 			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
-			$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
+			$data = $this->triggerFunction('validatePostData', $model, $data, $taskConfiguration);
 
 			if ($data === false)
 			{
@@ -685,27 +713,30 @@ class RApiHalHal extends RApi
 
 		$listResourcesKeys = array_keys($this->resources['listItem']);
 
-		// Filter out all fields that are not in resource list and apply appropriate transform rules
-		foreach ($items as $itemValue)
+		if (!empty($items))
 		{
-			$item = JArrayHelper::fromObject($itemValue);
-
-			foreach ($item as $key => $value)
+			// Filter out all fields that are not in resource list and apply appropriate transform rules
+			foreach ($items as $itemValue)
 			{
-				if (!in_array($key, $listResourcesKeys))
-				{
-					unset($item[$key]);
-					continue;
-				}
-				else
-				{
-					$item[$key] = $this->assignValueToResource($this->resources['listItem'][$key], $item);
-				}
-			}
+				$item = JArrayHelper::fromObject($itemValue);
 
-			$embedItem = new RApiHalDocumentResource('item', $item);
-			$embedItem = $this->setDataValueToResource($embedItem, $this->resources, $itemValue, 'listItem');
-			$this->hal->setEmbedded('item', $embedItem);
+				foreach ($item as $key => $value)
+				{
+					if (!in_array($key, $listResourcesKeys))
+					{
+						unset($item[$key]);
+						continue;
+					}
+					else
+					{
+						$item[$key] = $this->assignValueToResource($this->resources['listItem'][$key], $item);
+					}
+				}
+
+				$embedItem = new RApiHalDocumentResource('item', $item);
+				$embedItem = $this->setDataValueToResource($embedItem, $this->resources, $itemValue, 'listItem');
+				$this->hal->setEmbedded('item', $embedItem);
+			}
 		}
 	}
 
@@ -852,11 +883,18 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($configuration);
 
-		// Filter out all fields that are not in resource list and apply appropriate transform rules
-		foreach ($item as $key => $value)
+		if (!empty($item) && !empty($item->id))
 		{
-			$value = !empty($this->resources['rcwsGlobal'][$key]) ? $this->assignValueToResource($this->resources['rcwsGlobal'][$key], $item) : $value;
-			$this->setData($key, $value);
+			// Filter out all fields that are not in resource list and apply appropriate transform rules
+			foreach ($item as $key => $value)
+			{
+				$value = !empty($this->resources['rcwsGlobal'][$key]) ? $this->assignValueToResource($this->resources['rcwsGlobal'][$key], $item) : $value;
+				$this->setData($key, $value);
+			}
+		}
+		else
+		{
+			$this->setStatusCode(204);
 		}
 	}
 
@@ -1051,11 +1089,30 @@ class RApiHalHal extends RApi
 	{
 		$data = (array) $data;
 		$app = JFactory::getApplication();
+
+		// We are checking required fields set in webservice XMLs
+		if (!$this->checkRequiredFields($data, $configuration))
+		{
+			return false;
+		}
+
 		$validateMethod = strtolower(RApiHalHelper::attributeToString($configuration, 'validateData', 'none'));
 
 		if ($validateMethod == 'none')
 		{
 			return $data;
+		}
+
+		if (!empty($data) && !empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
+				$fieldAttributes['transform'] = !empty($fieldAttributes['transform']) ? $fieldAttributes['transform'] : 'string';
+				$fieldAttributes['defaultValue'] = !empty($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
+				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
+				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
+			}
 		}
 
 		if ($validateMethod == 'form')
@@ -1103,6 +1160,39 @@ class RApiHalHal extends RApi
 		}
 
 		return false;
+	}
+
+	/**
+	 * Validates posted data
+	 *
+	 * @param   array             $data           Raw Posted data
+	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
+	 *
+	 * @return  mixed  Array with posted data or false.
+	 *
+	 * @since   1.3
+	 */
+	public function checkRequiredFields($data, $configuration)
+	{
+		if (!empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				if (RApiHalHelper::isAttributeTrue($field, 'isRequiredField'))
+				{
+					if (empty($data[(string) $field['name']]))
+					{
+						JFactory::getApplication()->enqueueMessage(
+							JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']), 'error'
+						);
+
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -1280,6 +1370,140 @@ class RApiHalHal extends RApi
 	}
 
 	/**
+	 * Gets instance of dynamic model object class (for table bind)
+	 *
+	 * @param   SimpleXMLElement  $configuration  Configuration for current action
+	 *
+	 * @return  mixed It will return Api dynamic model class
+	 *
+	 * @since   1.3
+	 */
+	public function getDynamicModelObject($configuration)
+	{
+		if (!empty($this->apiDynamicModelClass))
+		{
+			return $this->apiDynamicModelClass;
+		}
+
+		$tableName = RApiHalHelper::attributeToString($configuration, 'tableName', '');
+
+		if (empty($tableName))
+		{
+			throw new RuntimeException('LIB_REDCORE_API_HAL_WEBSERVICE_TABLE_NAME_NOT_SET');
+		}
+
+		$context = $this->webserviceName . '.' . $this->webserviceVersion;
+
+		// We are not using prefix like str_replace(array('.', '-'), array('_', '_'), $context) . '_';
+		$paginationPrefix = '';
+		$filterFields = $this->getFilterFields($configuration);
+		$primaryFields = $this->getPrimaryFields($configuration);
+		$fields = $this->getAllFields($configuration);
+
+		$config = array(
+			'tableName' => $tableName,
+			'context'   => $context,
+			'paginationPrefix' => $paginationPrefix,
+			'filterFields' => $filterFields,
+			'primaryFields' => $primaryFields,
+			'fields' => $fields,
+		);
+
+		$dynamicModelClassName = $this->dynamicModelClassName;
+
+		if (class_exists($dynamicModelClassName))
+		{
+			$this->apiDynamicModelClass = new $dynamicModelClassName($config);
+		}
+
+		return $this->apiDynamicModelClass;
+	}
+
+	/**
+	 * Gets list of filter fields from operation configuration
+	 *
+	 * @param   SimpleXMLElement  $configuration  Configuration for current action
+	 *
+	 * @return  array
+	 *
+	 * @since   1.3
+	 */
+	public function getFilterFields($configuration)
+	{
+		// We have one search filter field
+		$filterFields = array('search');
+
+		if (!empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				$isFilterField = RApiHalHelper::isAttributeTrue($field, 'isFilterField');
+
+				if ($isFilterField)
+				{
+					$filterFields[] = (string) $field["name"];
+				}
+			}
+		}
+
+		return $filterFields;
+	}
+
+	/**
+	 * Gets list of primary fields from operation configuration
+	 *
+	 * @param   SimpleXMLElement  $configuration  Configuration for current action
+	 *
+	 * @return  array
+	 *
+	 * @since   1.3
+	 */
+	public function getPrimaryFields($configuration)
+	{
+		$primaryFields = array();
+
+		if (!empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				$isPrimaryField = RApiHalHelper::isAttributeTrue($field, 'isPrimaryField');
+
+				if ($isPrimaryField)
+				{
+					$primaryFields[] = (string) $field["name"];
+				}
+			}
+		}
+
+		return $primaryFields;
+	}
+
+	/**
+	 * Gets list of all fields from operation configuration
+	 *
+	 * @param   SimpleXMLElement  $configuration  Configuration for current action
+	 *
+	 * @return  array
+	 *
+	 * @since   1.3
+	 */
+	public function getAllFields($configuration)
+	{
+		$fields = array();
+
+		if (!empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
+				$fields[] = $fieldAttributes;
+			}
+		}
+
+		return $fields;
+	}
+
+	/**
 	 * Load model class for data manipulation
 	 *
 	 * @param   string            $elementName    Element name
@@ -1292,22 +1516,27 @@ class RApiHalHal extends RApi
 	public function loadModel($elementName, $configuration)
 	{
 		$this->setOptionViewName($elementName, $configuration);
+		$isAdmin = RApiHalHelper::isAttributeTrue($configuration, 'isAdminClass');
+		$this->addModelIncludePaths($isAdmin, $this->optionName);
+		$dataMode = strtolower(RApiHalHelper::attributeToString($configuration, 'dataMode', 'model'));
 
-		if (RApiHalHelper::isAttributeTrue($configuration, 'fromHelper'))
+		if ($dataMode == 'helper')
 		{
 			return $this->getHelperObject();
 		}
 
-		$isAdmin = RApiHalHelper::isAttributeTrue($configuration, 'isAdminClass');
-		$this->addModelIncludePaths($isAdmin, $this->optionName);
-
-		if (!empty($configuration['className']))
+		if ($dataMode == 'table')
 		{
-			$modelClass = (string) $configuration['className'];
+			return $this->getDynamicModelObject($configuration);
+		}
 
-			if (!empty($configuration['classPath']))
+		if (!empty($configuration['modelClassName']))
+		{
+			$modelClass = (string) $configuration['modelClassName'];
+
+			if (!empty($configuration['modelClassPath']))
 			{
-				require_once JPATH_SITE . '/' . $configuration['classPath'];
+				require_once JPATH_SITE . '/' . $configuration['modelClassPath'];
 
 				if (class_exists($modelClass))
 				{
@@ -1684,7 +1913,8 @@ class RApiHalHal extends RApi
 				{
 					if (isset($data[$parameter[0]]))
 					{
-						$args[] = $this->transformField($parameter[1], $data[$parameter[0]]);
+						$parameterValue = $this->transformField($parameter[1], $data[$parameter[0]]);
+						$args[] = &$parameterValue;
 					}
 					else
 					{
