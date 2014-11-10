@@ -100,6 +100,12 @@ class RApiHalHal extends RApi
 	public $apiDynamicModelClass = null;
 
 	/**
+	 * @var    string  Dynamic model name used if dataMode="table"
+	 * @since  1.3
+	 */
+	public $apiDynamicModelClassName = 'RApiHalModelItem';
+
+	/**
 	 * @var    array  Loaded resources from configuration file
 	 * @since  1.2
 	 */
@@ -122,12 +128,6 @@ class RApiHalHal extends RApi
 	 * @since  1.3
 	 */
 	public $viewName = '';
-
-	/**
-	 * @var    string  Dynamic model name used if dataMode="table"
-	 * @since  1.3
-	 */
-	public $dynamicModelClassName = 'RApiHalModelItem';
 
 	/**
 	 * Method to instantiate the file-based api call.
@@ -423,7 +423,7 @@ class RApiHalHal extends RApi
 	{
 		$id = $this->options->get('id', '');
 		$displayTarget = empty($id) ? 'list' : 'item';
-		$this->dynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
+		$this->apiDynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
 		$currentConfiguration = $this->operationConfiguration->{$displayTarget};
 		$model = $this->triggerFunction('loadModel', $this->elementName, $currentConfiguration);
 
@@ -536,7 +536,7 @@ class RApiHalHal extends RApi
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 
 		// Delete function requires references and not values like we use in call_user_func_array so we use List delete function
-		$this->dynamicModelClassName = 'RApiHalModelList';
+		$this->apiDynamicModelClassName = 'RApiHalModelList';
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'delete');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
@@ -894,6 +894,7 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
+			// 204 => 'No Content'
 			$this->setStatusCode(204);
 		}
 	}
@@ -1101,18 +1102,6 @@ class RApiHalHal extends RApi
 		if ($validateMethod == 'none')
 		{
 			return $data;
-		}
-
-		if (!empty($data) && !empty($configuration->fields))
-		{
-			foreach ($configuration->fields->field as $field)
-			{
-				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
-				$fieldAttributes['transform'] = !empty($fieldAttributes['transform']) ? $fieldAttributes['transform'] : 'string';
-				$fieldAttributes['defaultValue'] = !empty($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
-				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
-				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
-			}
 		}
 
 		if ($validateMethod == 'form')
@@ -1409,11 +1398,11 @@ class RApiHalHal extends RApi
 			'fields' => $fields,
 		);
 
-		$dynamicModelClassName = $this->dynamicModelClassName;
+		$apiDynamicModelClassName = $this->apiDynamicModelClassName;
 
-		if (class_exists($dynamicModelClassName))
+		if (class_exists($apiDynamicModelClassName))
 		{
-			$this->apiDynamicModelClass = new $dynamicModelClassName($config);
+			$this->apiDynamicModelClass = new $apiDynamicModelClassName($config);
 		}
 
 		return $this->apiDynamicModelClass;

@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 /**
- * Translation table.
+ * redCORE Dynamic Table
  *
  * @package     Redshopb.Backend
  * @subpackage  Tables
