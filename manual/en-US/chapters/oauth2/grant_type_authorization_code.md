@@ -59,20 +59,33 @@ The flow illustrated includes the following steps:
 
 To make this Authorization code api call use this URL:
 
-http://YOUR-SITE/index.php?option=authorize&api=oauth2&response_type=code&client_id=your_client_id&redirect_uri=your_redirect_uri
+http://YOUR-SITE/index.php?option=authorize&api=oauth2&response_type=code&client_id=your_client_id&redirect_uri=your_redirect_uri&state=xxy
 
 The `client_id` and `redirect_uri` must match information in your OAuth Client description as registered with your site.
 
 The `response_type` is `code` or `token`, with `token` you can do Implicit OAuth and directly issue an access token.
 The `code` response is an `authorization token` that must be exchanged with the Client Secret to get the `access token`.
+The `state` provides any state that might be useful to your application upon receipt of the response. 
+The redCORE OAuth2 Server roundtrips this parameter, so your application receives the same value it sent. 
+To mitigate against cross-site request forgery (CSRF), it is strongly recommended to include an anti-forgery token in the state, 
+and confirm it in the response.
 
 Page the user sees describes the application (client) that is requesting access, using fields you filled out when you created your client.
 
+### Second step
 
-### How to use it
+redCORE OAuth2 Server handles user authentication, session, and user consent if the user is not logged in yet. 
+
+`Not logged in` users will be redirected to the login screen where they will have an username / password box from 
+Joomla where they can login to the site. If user has successfully logged in he will be redirected to the `user consent form`.
+
+`user consent form` is shown when user is already logged in to the site. 
+There user will be able to decide if he wants to let api client to use his account to preform specific tasks on his behalf by authorizing the request.
+
+### Third step
 
 Once the user has authorized the request, he will be redirected to the `redirect_url`.
-The request will look like the following: http://YOUR-SITE/?code=somecodehere12345
+The request will look like the following: http://YOUR-SITE/?code=somecodehere12345&state=xxy
 
 This is a time-limited code that your application can exchange for a full authorization token.
 To do this you will need to pass the code to the token endpoint by making a POST request to the token endpoint:

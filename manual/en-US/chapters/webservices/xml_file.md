@@ -142,7 +142,7 @@ This operation will process posted data and call method for saving the item.
 
 ```
 ...
-	<create authorization="core.create" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="">
+	<create authorization="core.create" dataMode="" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="">
 		<fields>
 			...
 		</fields>
@@ -169,7 +169,7 @@ This operation will output HAL document with data specified within your resource
 ```
 ...
 	<read>
-		<list fromHelper="false" optionName="com_contact" className="contacts" classPath="" isAdminClass="true" functionName="">
+		<list dataMode="" optionName="com_contact" modelClassName="contacts" modelClassPath="" isAdminClass="true" functionName="">
 			<fields>
 				...
 			</fields>
@@ -202,7 +202,7 @@ Read more about Operation attributes [here](#operation-attributes), and Operatio
 ```
 ...
 	<read>
-		<item fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="">
+		<item dataMode="" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="">
 			<fields>
 				...
 			</fields>
@@ -231,7 +231,7 @@ This operation will process posted data and call method for saving the item.
 
 ```
 ...
-	<update authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="">
+	<update authorization="core.edit,core.edit.own" dataMode="" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="">
 		<fields>
 			...
 		</fields>
@@ -255,7 +255,7 @@ This operation will process posted data and call method for deleting the item.
 
 ```
 ...
-	<delete authorization="core.delete" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
+	<delete authorization="core.delete" dataMode="" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
 		<fields>
 			...
 		</fields>
@@ -282,7 +282,7 @@ Each task can be preformed in separate class and redCORE webservice API will act
 ```
 ...
 	<task>
-		<publish authorization="core.edit,core.edit.own" fromHelper="false" optionName="com_contact" className="" classPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
+		<publish authorization="core.edit,core.edit.own" dataMode="" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}">
 			<fields>
 				...
 			</fields>
@@ -343,16 +343,17 @@ Note. _Every element have a `description` child element where you can set descri
 `authorizationNeeded` is used to separate operations that require permissions to be used and those that do not need authorization. 
 This is mainly used for `site` tasks or documentation. 
 
-`authorization` is used to check permission if system is using Joomla ACL for authorization of operations.
+`dataMode` can be model, helper or table. Default is model. If you use "table" then `tableName` attribute must be set. 
+If it is set to "helper" it will run operation on webservice helper class (that is shipped with webservice).
 
-`fromHelper` can be used to switch from calling the function in helper file (that is shipped with webservice). Default is set to False.
+`authorization` is used to check permission if system is using Joomla ACL for authorization of operations.
 
 `optionName` is used to add include path to model and table classes. Include paths will depend if you set `isAdminClass` to true or not.
 
-`className` is the name used when creating object. By default it will be instanced using `optionName` and webservice `name` identifier. 
+`modelClassName` is the name used when creating object. By default it will be instanced using `optionName` and webservice `name` identifier. 
 If your class name is different than Joomla default naming convention then you can set it directly to this attribute (Ex. `ContactModelContact`)
 
-`classPath` is the direct path to your model class. If you set this attribute to specific php file, it will be included before creating new instance of the object.
+`modelClassPath` is the direct path to your model class. If you set this attribute to specific php file, it will be included before creating new instance of the object.
 
 `isAdminClass` is set to False by default. If you set it to True it will load model from the `administrator` client and it will include paths to the admin models.
 
@@ -361,6 +362,16 @@ If your class name is different than Joomla default naming convention then you c
 `functionArgs` If this attribute is defined, only arguments defined there will be pulled from posted data and passed to the function. 
 Default is to send all posted data in one array.
 
+`validateData` can be set as: none, form, function. Default value is "none". If option "form" is selected then data will be validated against model form. 
+If option "function" is selected then validateDataFunction attribute will be used to preform validation.
+
+`validateDataFunction` To use this feature you must set your `validateData` attribute to "function". 
+Defined function will be used to check data before passing it to the operation. Default function name if not set is "validate". 
+
+`tableName` is used to define table in your database that you want to attach to. 
+To use this feature you must set your operation `dataMode` attribute to "table". 
+With this you can preform all CRUD functions without having model set. 
+
 #### Operation child elements <a id="operation-child-elements"></a>
 `fields` group is used to further process posted data.
 
@@ -368,4 +379,34 @@ Default is to send all posted data in one array.
 
 `description` is used when redCORE API is generating documentation for this webservice. 
 
+#### Operation fields <a id="operation-fields"></a>
 
+Operation fields have a different attributes depending for `read` and different for every other operation. 
+This is the list of attributes used in operation fields:
+
+`name` is used to identify database column (or field name) when getting or setting an item from database.
+
+`transform` is used to transform the data in specific format. Default value for transform is `string`. 
+You can read more about transform [here](chapters/webservices/transform.md)
+
+`isFilterField` is used only in `read list` operation. To use this feature you must set in `read list` operation `dataMode` attribute to "table". 
+With this attribute you can set this field to be a filter field. 
+Example of usage: `http://YOUR-SITE/index.php?option=com_contact&filter[catid]=4&api=Hal`
+
+`isSearchableField` is used only in `read list` operation. To use this feature you must set in `read list` operation `dataMode` attribute to "table". 
+With this attribute you can set this field to be a searchable field. 
+It will gather all defined fields with this attribute and place it in the same _WHERE_ clause with a _OR_ condition.
+Example of usage: `http://YOUR-SITE/index.php?option=com_contact&filter[search]=test&api=Hal`
+
+`isHiddenField` is used only in `read list` operation. To use this feature you must set in `read list` operation `dataMode` attribute to "table". 
+With this attribute you can set this field not to be loaded from the database. 
+This is usefull if you have large database tables and you do not want to load all fields with every request. 
+
+`isPrimaryField` is used only in `read item` operation. To use this feature you must set in `read list` operation `dataMode` attribute to "table". 
+With this attribute you can set this field to be a primary field instead of default `id`. 
+**If your table primary key is `id` then you do not have to define this attribute anywhere. **
+
+`isRequiredField` is used in every operation. 
+With this attribute you can set this field to be a required an it will be checked before preforming an operation. 
+
+`defaultValue` if set it will ensure that your field have specified value defined if the field is not set at all.
