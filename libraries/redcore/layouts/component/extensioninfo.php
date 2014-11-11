@@ -94,7 +94,11 @@ JHtml::_('rbootstrap.tooltip');
 						<strong><?php echo $xml->media['folder']; ?></strong><br/>
 					</td>
 					<td>
-						<span class="badge badge-success"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?></span> / <span class="badge badge-success"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?></span>
+						<span class="badge badge-success">
+							<?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?>
+						</span> / <span class="badge badge-success">
+							<?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?>
+						</span>
 					</td>
 					<td>
 						<?php if (@!is_dir(JPATH_SITE . '/' . $xml->media['folder'])) : ?>
@@ -133,12 +137,14 @@ JHtml::_('rbootstrap.tooltip');
 			<?php if (!empty($modules)): ?>
 				<?php foreach ($modules as $module):
 					$fromExtension = false;
-					foreach ($xml->modules->module as $xmlModule):
-						if ($module->element == (string) $xmlModule['name']):
-							$fromExtension = true;
-							break;
-						endif;
-					endforeach;
+					if (!empty($xml->modules)):
+						foreach ($xml->modules->module as $xmlModule):
+							if ($module->element == (string) $xmlModule['name']):
+								$fromExtension = true;
+								break;
+							endif;
+						endforeach;
+					endif;
 					?>
 					<tr>
 						<td>

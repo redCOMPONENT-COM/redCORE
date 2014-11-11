@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package     Redcore
+ * @subpackage  Exception
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('JPATH_REDCORE') or die;
 
 /**
  * This file contains the lexer, which splits the SQL statement just before parsing.
@@ -229,8 +238,8 @@ class RDatabaseSqlparserSqllexer extends RDatabaseSqlparserSqlparserutils {
         return $tokens;
     }
 
-    # backticks are not balanced within one token, so we have
-    # to re-combine some tokens
+	// backticks are not balanced within one token, so we have
+	// to re-combine some tokens
     private function balanceCharacter($tokens, $idx, $char) {
 
         $token_count = count($tokens);
@@ -279,7 +288,7 @@ class RDatabaseSqlparserSqllexer extends RDatabaseSqlparserSqlparserutils {
                 $k = $i - 1;
                 $len = strlen($tokens[$i]);
                 while (($k >= 0) && ($len == strlen($tokens[$i]))) {
-                    if (!isset($tokens[$k])) { # FIXME: this can be wrong if we have schema . table . column
+                    if (!isset($tokens[$k])) { // FIXME: this can be wrong if we have schema . table . column
                         $k--;
                         continue;
                     }

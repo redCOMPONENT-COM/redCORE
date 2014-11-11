@@ -5,7 +5,9 @@ Master: [![Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?bran
 
 Develop: [![Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=develop)](https://travis-ci.org/redCOMPONENT-COM/redCORE)
 
-Rapid Application Development library for redCOMPONENT extensions
+Scrutinizer (develop): [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/?branch=develop)
+
+Rapid Application Development library for redCOMPONENT extensions.
 
 The main aim of redCORE is to provide a mature and abstracted layer for development that will act as a base model for any future redCOMPONENT extension beeing developed.
 
@@ -27,7 +29,7 @@ Director and Founder of redCOMPONENT.com
 
 CEO, redWEB ApS
 
-Wiki
+Documentation
 =====
 
-https://github.com/redCOMPONENT-COM/redCORE/wiki
+http://redcomponent-com.github.io/redCORE/

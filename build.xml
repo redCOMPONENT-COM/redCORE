@@ -35,7 +35,6 @@
         <delete dir="${www.dir}/libraries/${extension}" quiet="yes" includeemptydirs="true"/>
         <delete dir="${www.dir}/media/${extension}" quiet="yes" includeemptydirs="true"/>
         <delete dir="${www.dir}/plugins/system/${extension}" quiet="yes" includeemptydirs="true"/>
-        <delete dir="${www.dir}/plugins/authentication/oauth2" quiet="yes" includeemptydirs="true"/>
         <delete dir="${www.dir}/modules/mod_redcore_language_switcher" quiet="yes" includeemptydirs="true"/>
 
         <!-- Libraries -->

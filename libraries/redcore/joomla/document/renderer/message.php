@@ -26,34 +26,43 @@ class JDocumentRendererMessage extends JDocumentRenderer
 	 * @param   string  $content  Not used.
 	 *
 	 * @return  string  The output of the script
+	 *
+	 * @since   11.1
 	 */
-	public function render($name, $params = array (), $content = null)
+	public function render($name, $params = array(), $content = null)
 	{
 		$msgList = $this->getData();
-		$buffer = null;
+		$displayData = array(
+			'msgList' => $msgList,
+			'name' => $name,
+			'params' => $params,
+			'content' => $content
+		);
+
 		$app = JFactory::getApplication();
 		$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/message.php';
-		$itemOverride = false;
 
 		if (file_exists($chromePath))
 		{
 			include_once $chromePath;
-
-			if (function_exists('renderMessage'))
-			{
-				$itemOverride = true;
-			}
 		}
 
-		$buffer = ($itemOverride) ? renderMessage($msgList) : $this->renderDefaultMessage($msgList);
+		if (function_exists('renderMessage'))
+		{
+			JLog::add('renderMessage() is deprecated. Override system message rendering with layouts instead.', JLog::WARNING, 'deprecated');
 
-		return $buffer;
+			return renderMessage($msgList);
+		}
+
+		return RLayoutHelper::render('joomla.system.message', $displayData);
 	}
 
 	/**
 	 * Get and prepare system message data for output
 	 *
 	 * @return  array  An array contains system message
+	 *
+	 * @since   12.2
 	 */
 	private function getData()
 	{
@@ -76,45 +85,5 @@ class JDocumentRendererMessage extends JDocumentRenderer
 		}
 
 		return $lists;
-	}
-
-	/**
-	 * Render the system message if no message template file found
-	 *
-	 * @param   array  $msgList  An array contains system message
-	 *
-	 * @return  string  System message markup
-	 */
-	private function renderDefaultMessage($msgList)
-	{
-		$buffer  = null;
-		$buffer .= "\n<div id=\"system-message-container\">";
-		$alert = array('error' => 'alert-error', 'warning' => '', 'notice' => 'alert-info', 'message' => 'alert-success');
-
-		// Only render the message list and the close button if $msgList has items
-		if (is_array($msgList) && (count($msgList) >= 1))
-		{
-			$buffer .= '<button type="button" class="close" data-dismiss="alert">&times;</button>';
-
-			foreach ($msgList as $type => $msgs)
-			{
-				$buffer .= '<div class="alert ' . $alert[$type] . '">';
-				$buffer .= "\n<h4 class=\"alert-heading\">" . JText::_($type) . "</h4>";
-
-				if (count($msgs))
-				{
-					foreach ($msgs as $msg)
-					{
-						$buffer .= "\n\t\t<p>" . $msg . "</p>";
-					}
-				}
-
-				$buffer .= "\n</div>";
-			}
-		}
-
-		$buffer .= "\n</div>";
-
-		return $buffer;
 	}
 }

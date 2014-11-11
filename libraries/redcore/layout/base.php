@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('JPATH_BASE') or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Base class for rendering a display layout
@@ -40,7 +40,7 @@ class RLayoutBase implements RLayout
 	 *
 	 * @param   mixed  $options  Array / JRegistry object with the options to load
 	 *
-	 * @return  RLayoutBase      An instance of itself for chaining
+	 * @return  RLayoutBase  Instance of $this to allow chaining.
 	 */
 	public function setOptions($options = null)
 	{

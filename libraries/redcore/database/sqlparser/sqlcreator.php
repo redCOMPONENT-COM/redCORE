@@ -1,4 +1,13 @@
 <?php
+/**
+ * @package     Redcore
+ * @subpackage  Exception
+ *
+ * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ */
+
+defined('JPATH_REDCORE') or die;
 
 /**
  * A pure PHP SQL creator, which generates SQL from the output of RDatabaseSqlparserSqlparser.
@@ -84,7 +93,7 @@ class RDatabaseSqlparserSqlcreator {
 
 	protected function processInsertStatement($parsed) {
 		return $this->processINSERT($parsed['INSERT']) . " " . $this->processVALUES($parsed['VALUES']);
-		# TODO: subquery?
+		// TODO: subquery?
 	}
 
 	protected function processDeleteStatement($parsed) {
@@ -386,6 +395,10 @@ class RDatabaseSqlparserSqlcreator {
 		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'bracket_expression') {
 			return "";
 		}
+		elseif (empty($parsed['sub_tree']))
+		{
+			return "()";
+		}
 		$sql = "";
 		foreach ($parsed['sub_tree'] as $k => $v) {
 			$len = strlen($sql);
@@ -461,7 +474,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
-			//$sql .= $this->processSubQuery($v);
+			$sql .= $this->processSubQuery($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('function subtree', $k, $v, 'expr_type');

@@ -1,7 +1,7 @@
 div.mod-languages ul {
 	margin: 0;
 	padding: 0;
-	list-style:none;
+	list-style: none;
 }
 
 div.mod-languages li {
@@ -10,15 +10,15 @@ div.mod-languages li {
 }
 
 div.mod-languages ul.lang-inline li {
-	display:inline;
+	display: inline;
 }
 
 div.mod-languages ul.lang-block li {
-	display:block;
+	display: block;
 }
 
 div.mod-languages img {
-	border:none;
+	border: none;
 }
 
 div.mod-languages a {

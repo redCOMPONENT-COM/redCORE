@@ -76,8 +76,11 @@ class RedcoreModelConfig extends RModelAdmin
 	 *
 	 * @return  JTable
 	 */
-	public function getTable($name = 'Extension', $prefix = 'JTable', $config = array())
+	public function getTable($name = null, $prefix = '', $config = array())
 	{
+		$name = !empty($name) ? $name : 'Extension';
+		$prefix = !empty($prefix) ? $prefix : 'JTable';
+
 		return parent::getTable($name, $prefix, $config);
 	}
 
@@ -257,7 +260,11 @@ class RedcoreModelConfig extends RModelAdmin
 	 *
 	 * @return  array  List of objects
 	 */
-	public function getInstalledExtensions($extensionType = 'module', $extensionElements = array('%redcore%'), $extensionFolder = 'redcore', $loadLanguage = true)
+	public function getInstalledExtensions(
+		$extensionType = 'module',
+		$extensionElements = array('%redcore%'),
+		$extensionFolder = 'redcore',
+		$loadLanguage = true)
 	{
 		$db = $this->getDbo();
 		$query = $db->getQuery(true)

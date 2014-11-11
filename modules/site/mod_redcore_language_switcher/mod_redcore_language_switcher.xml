@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="module" version="2.5" client="site" method="upgrade">
 	<name>MOD_REDCORE_LANGUAGE_SWITCHER</name>
-	<version>0.0.1</version>
-	<creationDate>April 2014</creationDate>
+	<version>1.4.0</version>
+	<creationDate>August 2014</creationDate>
 	<author>redCOMPONENT.com</author>
 	<authorEmail>email@redcomponent.com</authorEmail>
 	<copyright>redCOMPONENT</copyright>
@@ -21,6 +21,8 @@
     <languages folder="language">
         <language tag="en-GB">en-GB/en-GB.mod_redcore_language_switcher.ini</language>
         <language tag="en-GB">en-GB/en-GB.mod_redcore_language_switcher.sys.ini</language>
+        <language tag="da-DK">da-DK/da-DK.mod_redcore_language_switcher.ini</language>
+        <language tag="da-DK">da-DK/da-DK.mod_redcore_language_switcher.sys.ini</language>
     </languages>
 	<config>
 		<fields name="params">

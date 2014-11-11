@@ -7,7 +7,7 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_BASE') or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
  * Base class for rendering a display layout
@@ -261,7 +261,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @param   string  $option  URL Option of the component. Example: com_content
 	 *
-	 * @return  mixed            Component option string | null for none
+	 * @return  mixed  Component option string | null for none
 	 *
 	 * @since   3.2
 	 */

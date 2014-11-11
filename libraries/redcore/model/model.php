@@ -29,7 +29,9 @@ abstract class RModel extends JModelLegacy
 	 */
 	public static function getInstance($type, $prefix = '', $config = array())
 	{
-		return parent::getInstance($type, $prefix, $config);
+		$return = parent::getInstance($type, $prefix, $config);
+
+		return $return;
 	}
 
 	/**
@@ -42,7 +44,9 @@ abstract class RModel extends JModelLegacy
 	 */
 	public static function addIncludePath($path = '', $prefix = '')
 	{
-		return parent::addIncludePath($path, $prefix);
+		$return = parent::addIncludePath($path, $prefix);
+
+		return $return;
 	}
 
 	/**

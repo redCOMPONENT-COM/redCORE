@@ -69,7 +69,6 @@ abstract class RViewBase extends JViewLegacy
 		return true;
 	}
 
-
 	/**
 	 * Get the view title.
 	 *

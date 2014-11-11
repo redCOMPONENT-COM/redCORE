@@ -170,17 +170,18 @@
 			</fileset>
 		</copy>
 
-		<echo msg="Copying oauth authentication plugin to build directory..."/>
-		<copy todir="${targetdir}/plugins/authentication/oauth2">
-			<fileset dir="${extpath}/plugins/authentication/oauth2">
-				<include name="**"/>
-				<exclude name=".*"/>
-			</fileset>
-		</copy>
-
 		<echo msg="Copying system redCORE plugin to build directory..."/>
 		<copy todir="${targetdir}/plugins/system/redcore">
 			<fileset dir="${extpath}/plugins/system/redcore">
+				<include name="**"/>
+				<exclude name=".*"/>
+				<exclude name="*.md"/>
+			</fileset>
+		</copy>
+
+		<echo msg="Copying system MVC override plugin to build directory..."/>
+		<copy todir="${targetdir}/plugins/system/mvcoverride">
+			<fileset dir="${extpath}/plugins/system/mvcoverride">
 				<include name="**"/>
 				<exclude name=".*"/>
 				<exclude name="*.md"/>

@@ -54,7 +54,34 @@
 				$("label[for=" + $(this).attr('id') + "]").addClass('active btn-success');
 			}
 		});
-	})
+
+        if (typeof Joomla == 'object')
+        {
+            /**
+             * Generic submit form
+             *
+             * Needed for frontend since Joomla does not have it in the frontend
+             */
+            Joomla.submitform = function(task, form) {
+                if (typeof(form) === 'undefined') {
+                    form = document.getElementById('adminForm');
+                }
+
+                if (typeof(task) !== 'undefined' && task !== "") {
+                    form.task.value = task;
+                }
+
+                // Submit the form.
+                if (typeof form.onsubmit == 'function') {
+                    form.onsubmit();
+                }
+                if (typeof form.fireEvent == "function") {
+                    form.fireEvent('submit');
+                }
+                form.submit();
+            };
+        }
+	});
 })(jQuery);
 
 /**

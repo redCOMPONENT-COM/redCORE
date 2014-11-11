@@ -21,7 +21,7 @@ class RTranslationHelper
 	/**
 	 * Defines if jQuery Migrate should be loaded in Frontend component/modules
 	 *
-	 * @var    bool
+	 * @var    JRegistry
 	 */
 	public static $pluginParams = null;
 

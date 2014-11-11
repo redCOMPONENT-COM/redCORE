@@ -312,6 +312,13 @@ abstract class JFormField
 	protected $renderLayout = 'joomla.form.renderfield';
 
 	/**
+	 * Layout to render the label
+	 *
+	 * @var  string
+	 */
+	protected $renderLabelLayout = 'joomla.form.renderlabel';
+
+	/**
 	 * Method to instantiate the form field object.
 	 *
 	 * @param   JForm  $form  The form to attach to the form field object.
@@ -576,22 +583,10 @@ abstract class JFormField
 		// Set the visibility.
 		$this->hidden = ($this->hidden || (string) $element['type'] == 'hidden');
 
-		// Add the required class if the field is required.
-		$class = (string) $element ['class'];
-
+		// Add required to class list if field is required.
 		if ($this->required)
 		{
-			if ($class)
-			{
-				if (strpos($class, 'required') === false)
-				{
-					$this->element ['class'] = $class . ' required';
-				}
-			}
-			else
-			{
-				$this->element ['class'] = 'required';
-			}
+			$this->class = trim($this->class . ' required');
 		}
 
 		return true;
@@ -714,59 +709,30 @@ abstract class JFormField
 	 */
 	protected function getLabel()
 	{
-		$label = '';
-
 		if ($this->hidden)
 		{
-			return $label;
+			return '';
 		}
 
 		// Get the label text from the XML element, defaulting to the element name.
 		$text = $this->element['label'] ? (string) $this->element['label'] : (string) $this->element['name'];
 		$text = $this->translateLabel ? JText::_($text) : $text;
 
-		// Build the class for the label.
-		$class = !empty($this->description) ? 'hasTooltip' : '';
-		$class = $this->required == true ? $class . ' required' : $class;
-		$class = !empty($this->labelclass) ? $class . ' ' . $this->labelclass : $class;
+		// Forcing the Alias field to display the tip below
+		$position = $this->element['name'] == 'alias' ? ' data-placement="bottom" ' : '';
 
-		// Add the opening label tag and main attributes attributes.
-		$label .= '<label id="' . $this->id . '-lbl" for="' . $this->id . '" class="' . $class . '"';
+		$description = ($this->translateDescription && !empty($this->description)) ? JText::_($this->description) : $this->description;
 
-		// If a description is specified, use it to build a tooltip.
-		if (!empty($this->description))
-		{
-			// Don't translate discription if specified in the field xml.
-			$description = $this->translateDescription ? JText::_($this->description) : $this->description;
+		$displayData = array(
+			'text'        => $text,
+			'description' => $description,
+			'for'         => $this->id,
+			'required'    => (bool) $this->required,
+			'classes'     => explode(' ', $this->labelclass),
+			'position'    => $position
+		);
 
-			if (defined('REDCORE_BOOTSTRAPPED'))
-			{
-				RHtml::_('rbootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
-				$label .= ' title="' . RHtml::tooltipText(trim($text, ':'), JText::_($description), 0) . '"';
-			}
-			elseif (version_compare(JVERSION, '3.0', '<'))
-			{
-				JHTML::_('behavior.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
-				$label .= ' title="' . (trim($text . '::' . JText::_($description))) . '"';
-			}
-			else
-			{
-				JHtml::_('bootstrap.tooltip', '.hasTooltipLabel', array('placement' => 'right'));
-				$label .= ' title="' . JHtml::tooltipText(trim($text, ':'), JText::_($description), 0) . '"';
-			}
-		}
-
-		// Add the label text and closing tag.
-		if ($this->required)
-		{
-			$label .= '>' . $text . '<span class="star">&#160;*</span></label>';
-		}
-		else
-		{
-			$label .= '>' . $text . '</label>';
-		}
-
-		return $label;
+		return RLayoutHelper::render($this->renderLabelLayout, $displayData);
 	}
 
 	/**

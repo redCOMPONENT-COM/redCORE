@@ -54,6 +54,69 @@ class PlgSystemRedcore extends JPlugin
 				// Enable translations
 				$db->translate = RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1;
 			}
+
+			$apiName = JFactory::getApplication()->input->getString('api');
+
+			if (($this->params->get('enable_webservices', 0) == 1 && strtolower($apiName) == 'hal')
+				|| ($this->params->get('enable_oauth2_server', 0) == 1) && strtolower($apiName) == 'oauth2')
+			{
+				$input = JFactory::getApplication()->input;
+
+				if (!empty($apiName))
+				{
+					try
+					{
+						JFactory::getApplication()->clearHeaders();
+						$webserviceClient = $input->get->getString('webserviceClient', '');
+						$optionName = $input->get->getString('option', '');
+						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
+						$viewName = $input->getString('view', '');
+						$version = $input->getString('version', '');
+						$token = $input->getString(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), '');
+						$apiName = ucfirst($apiName);
+						$method = strtoupper($input->getMethod());
+						$task = RApiHalHelper::getTask();
+						$data = RApi::getPostedData();
+
+						if (empty($webserviceClient))
+						{
+							$webserviceClient = JFactory::getApplication()->isAdmin() ? 'administrator' : 'site';
+						}
+
+						$options = array(
+							'api'               => $apiName,
+							'optionName'        => $optionName,
+							'viewName'          => $viewName,
+							'webserviceVersion' => $version,
+							'webserviceClient'  => $webserviceClient,
+							'method'            => $method,
+							'task'              => $task,
+							'data'              => $data,
+							'accessToken'       => $token,
+							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
+							'id'                => $input->getString('id', ''),
+							'absoluteHrefs'     => $input->get->getBool('absoluteHrefs', true),
+						);
+
+						// Create instance of Api and fill all required options
+						$api = RApi::getInstance($options);
+
+						// Run the api task
+						$api->execute()
+							->render();
+					}
+					catch (Exception $e)
+					{
+						// Set the server response code.
+						header('Status: 500', true, 500);
+
+						// An exception has been caught, echo the message and exit.
+						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)));
+					}
+
+					JFactory::getApplication()->close();
+				}
+			}
 		}
 	}
 

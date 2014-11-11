@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Redshopb.Backend
+ * @package     Redcore.Backend
  * @subpackage  Tables
  *
  * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 /**
- * Category table.
+ * Translation table.
  *
  * @package     Redshopb.Backend
  * @subpackage  Tables
@@ -18,20 +18,6 @@ defined('_JEXEC') or die;
  */
 class RedcoreTableTranslation extends RTable
 {
-	/**
-	 * The table name without the prefix.
-	 *
-	 * @var  string
-	 */
-	protected $_tableName = 'extension';
-
-	/**
-	 * The table primary key
-	 *
-	 * @var  string
-	 */
-	protected $_tbl_key = 'rctranslations_id';
-
 	/**
 	 * Constructor
 	 *
@@ -41,6 +27,9 @@ class RedcoreTableTranslation extends RTable
 	 */
 	public function __construct(&$db)
 	{
+		$this->_tableName = 'extension';
+		$this->_tbl_key = 'rctranslations_id';
+
 		$table = RedcoreHelpersTranslation::getTranslationTable();
 
 		$this->_tbl = RTranslationTable::getTranslationsTableName($table->table, '');

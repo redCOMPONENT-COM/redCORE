@@ -25,34 +25,44 @@ final class RComponentHelper
 	 */
 	public static function getRedcoreComponents()
 	{
-		$iterator = new RecursiveIteratorIterator(
-			new RecursiveDirectoryIterator(JPATH_ADMINISTRATOR . '/components')
-		);
+		$componentPath = JPATH_ADMINISTRATOR . '/components';
+		$folders = JFolder::folders($componentPath);
 
 		$components = array();
 
-		/** @var SplFileInfo $fileInfo */
-		foreach ($iterator as $fileInfo)
+		foreach ($folders as $folder)
 		{
-			if ($fileInfo->isFile() && 'xml' === pathinfo($fileInfo->getFilename(), PATHINFO_EXTENSION))
+			$componentFolderPath = $componentPath . '/' . $folder;
+			$folderFiles = JFolder::files($componentFolderPath, '.xml');
+
+			foreach ($folderFiles as $folderFile)
 			{
-				$content = @file_get_contents($fileInfo->getRealPath());
+				$componentXmlPath = $componentFolderPath . '/' . $folderFile;
 
-				if (!is_string($content))
+				try
 				{
-					continue;
+					$content = @file_get_contents($componentXmlPath);
+
+					if (!is_string($content))
+					{
+						continue;
+					}
+
+					$element = new SimpleXMLElement($content);
+
+					if (!isset($element->name) || 'com_redcore' === trim(strtolower($element->name)))
+					{
+						continue;
+					}
+
+					if ($element->xpath('//redcore'))
+					{
+						$components[] = 'com_' . strstr($folderFile, '.xml', true);
+					}
 				}
-
-				$element = new SimpleXMLElement($content);
-
-				if ('com_redcore' === trim(strtolower($element->name)))
+				catch (Exception $e)
 				{
-					continue;
-				}
-
-				if ($element->xpath('//redcore'))
-				{
-					$components[] = 'com_' . strstr($fileInfo->getFilename(), '.xml', true);
+					JFactory::getApplication()->enqueueMessage($e->getMessage() . ': ' . $folder . '/' . $folderFile, 'error');
 				}
 			}
 		}

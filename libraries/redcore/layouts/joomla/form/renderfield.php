@@ -22,7 +22,7 @@ defined('_JEXEC') or die;
 <?php
 if (!empty($displayData['options']['showonEnabled']))
 {
-	JHtml::_('jquery.framework');
+	JHtml::_('rjquery.framework');
 	JHtml::_('script', 'jui/cms.js', false, true);
 }
 ?>

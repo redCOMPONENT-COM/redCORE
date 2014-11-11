@@ -20,9 +20,9 @@ class RTable extends JTable
 {
 	/**
 	 * The options.
-     *
-     * @var  array
-     */
+	 *
+	 * @var  array
+	 */
 	protected $_options = array();
 
 	/**
