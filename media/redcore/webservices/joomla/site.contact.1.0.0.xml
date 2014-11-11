@@ -23,7 +23,7 @@
     </resources>
     <operations>
         <read authorizationNeeded="false">
-            <list fromHelper="false" optionName="com_contact" className="category" classPath="" isAdminClass="false" functionName="">
+            <list optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="">
                 <resources>
                     <resource displayName="documentation" />
 
@@ -61,7 +61,7 @@
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
 
-            <item fromHelper="false" optionName="com_contact" className="contact" classPath="" isAdminClass="false" functionName="">
+            <item optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
                 <resources>
                     <!-- standard -->
                     <resource displayName="id" fieldFormat="{id}" transform="int" />
@@ -118,7 +118,7 @@
         </read>
 
         <task>
-            <hit fromHelper="false" optionName="com_contact" className="contact" classPath="" isAdminClass="false" functionName="">
+            <hit optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
                 <description><![CDATA[ This task enables you to Increase the hit counter for the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" />

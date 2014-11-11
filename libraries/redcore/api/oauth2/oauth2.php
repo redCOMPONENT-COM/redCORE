@@ -6,7 +6,7 @@
  * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
-defined('JPATH_BASE') or die;
+defined('JPATH_REDCORE') or die;
 
 /**
  * Class to represent a HAL standard object.
@@ -22,19 +22,19 @@ class RApiOauth2Oauth2 extends RApi
 	public $optionName = null;
 
 	/**
-	 * Main Oauth2 Server object
+	 * Main OAuth2 Server object
 	 * @var OAuth2\Server
 	 */
 	public $server = null;
 
 	/**
-	 * Main Oauth2 Server configuration
+	 * Main OAuth2 Server configuration
 	 * @var array
 	 */
 	public $serverConfig = null;
 
 	/**
-	 * Result of Oauth2 Server response
+	 * Result of OAuth2 Server response
 	 * @var OAuth2\ResponseInterface
 	 */
 	public $response = null;
@@ -94,7 +94,7 @@ class RApiOauth2Oauth2 extends RApi
 		$username = $conf->get('user');
 		$password = $conf->get('password');
 
-		$storage = new OAuth2\Storage\PdoRedcore(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
+		$storage = new OAuth2\Storage\Pdoredcore(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
 		$this->server = new OAuth2\Server($storage, $this->serverConfig);
 
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
