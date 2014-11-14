@@ -86,7 +86,7 @@
 
     <!-- Modules to install with the component -->
     <modules>
-        <module name="mod_redcore_language_switcher"/>
+        <module name="mod_redcore_language_switcher" client="site"/>
     </modules>
 
     <!-- Translations to install with the component -->
