@@ -64,12 +64,8 @@ class RedcoreViewConfig extends RedcoreHelpersView
 		$lang = JFactory::getLanguage();
 
 		// Load component language files
-		$lang->load($option, JPATH_ADMINISTRATOR, 'en-GB', true, false)
-		|| $lang->load($option, JPATH_ADMINISTRATOR . '/components/' . $option, 'en-GB', true, false)
-		|| $lang->load($option, JPATH_ADMINISTRATOR, null, true, false)
-		|| $lang->load($option, JPATH_ADMINISTRATOR . '/components/' . $option, null, true, false)
-		|| $lang->load($option, JPATH_ADMINISTRATOR, RTranslationHelper::getSiteLanguage(), true, true)
-		|| $lang->load($option, JPATH_ADMINISTRATOR . '/components/' . $option, RTranslationHelper::getSiteLanguage(), true, true);
+		$lang->load($option, JPATH_ADMINISTRATOR, 'en-GB', false, false)
+		|| $lang->load($option, JPATH_ADMINISTRATOR . '/components/' . $option, 'en-GB', false, false);
 
 		$this->form	= $model->getForm();
 		$this->component = $model->getComponent($option);
