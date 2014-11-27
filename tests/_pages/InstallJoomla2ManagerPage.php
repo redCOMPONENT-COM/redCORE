@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     RedShop
+ * @package     redCORE
  * @subpackage  Page Class
  * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
@@ -18,9 +18,9 @@ class InstallJoomla2ManagerPage
 	// Include url of current page
 	public static $URL = '/installation/index.php';
 
-	public static $preinstallationCheckPage = "Pre-Installation Check";
+	public static $englishLanguage = "//option[@value='en-US']";
 
-	public static $languageForJoomla = "//option[@value='en-US']";
+	public static $preinstallationCheckPage = "Pre-Installation Check";
 
 	public static $LicenseCheckPage = "License";
 
@@ -29,6 +29,8 @@ class InstallJoomla2ManagerPage
 	public static $ftpConfigurationPage = "FTP Configuration";
 
 	public static $mainConfigurationPage = "Main Configuration";
+
+	public static $successfulInstallation = "Congratulations! Joomla! is now installed";
 
 	public static $installSampleData = "//input[@value='Install Sample Data']";
 
@@ -55,4 +57,6 @@ class InstallJoomla2ManagerPage
 	public static $adminPasswordConfirm = "#jform_admin_password2";
 
 	public static $removeOldDatabase = "#jform_db_old1";
+
+	public static $sampleFile = "//input[@name='jform[sample_file]']";
 }
