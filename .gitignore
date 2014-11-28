@@ -38,6 +38,9 @@ phing-latest.phar
 # phpunit
 tests/unit/phpunit.xml
 
+# Phing
+phing-latest.phar
+
 # composer
 composer.lock
 composer.phar
