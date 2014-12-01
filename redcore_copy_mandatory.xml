@@ -92,37 +92,6 @@
             <exclude name="**/jquery-ui.js"/>
             <exclude name="**/select2.js"/>
 
-            <exclude name="**/jqplot.barRenderer.js"/>
-            <exclude name="**/jqplot.BezierCurveRenderer.js"/>
-            <exclude name="**/jqplot.blockRenderer.js"/>
-            <exclude name="**/jqplot.bubbleRenderer.js"/>
-            <exclude name="**/jqplot.canvasAxisLabelRenderer.js"/>
-            <exclude name="**/jqplot.canvasAxisTickRenderer.js"/>
-            <exclude name="**/jqplot.canvasOverlay.js"/>
-            <exclude name="**/jqplot.canvasTextRenderer.js"/>
-            <exclude name="**/jqplot.categoryAxisRenderer.js"/>
-            <exclude name="**/jqplot.ciParser.js"/>
-            <exclude name="**/jqplot.cursor.js"/>
-            <exclude name="**/jqplot.dateAxisRenderer.js"/>
-            <exclude name="**/jqplot.donutRenderer.js"/>
-            <exclude name="**/jqplot.dragable.js"/>
-            <exclude name="**/jqplot.enhancedLegendRenderer.js"/>
-            <exclude name="**/jqplot.funnelRenderer.js"/>
-            <exclude name="**/jqplot.highlighter.js"/>
-            <exclude name="**/jqplot.json2.js"/>
-            <exclude name="**/jqplot.logAxisRenderer.js"/>
-            <exclude name="**/jqplot.mekkoAxisRenderer.js"/>
-            <exclude name="**/jqplot.mekkoRenderer.js"/>
-            <exclude name="**/jqplot.meterGaugeRenderer.js"/>
-            <exclude name="**/jqplot.mobile.js"/>
-            <exclude name="**/jqplot.ohlcRenderer.js"/>
-            <exclude name="**/jqplot.pieRenderer.js"/>
-            <exclude name="**/jqplot.pointLabels.js"/>
-            <exclude name="**/jqplot.pyramidAxisRenderer.js"/>
-            <exclude name="**/jqplot.pyramidGridRenderer.js"/>
-            <exclude name="**/jqplot.pyramidRenderer.js"/>
-            <exclude name="**/jqplot.trendline.js"/>
-
             <!-- Excluding map files -->
             <exclude name="**/jquery-1.11.0.min.map"/>
 
