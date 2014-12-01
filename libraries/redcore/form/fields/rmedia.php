@@ -135,7 +135,7 @@ class JFormFieldRmedia extends JFormField
 		$attr .= $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 
 		// The text field.
-		$html[] = '<div class="input-prepend input-append">';
+		$html[] = '<div class="input-prepend input-append input-group">';
 
 		// The Preview.
 		$preview = (string) $this->element['preview'];
@@ -194,11 +194,11 @@ class JFormFieldRmedia extends JFormField
 
 			if ($showAsTooltip)
 			{
-				$html[] = '<div class="media-preview add-on">';
+				$html[] = '<div class="media-preview add-on input-group-addon">';
 				$tooltip = $previewImgEmpty . $previewImg;
 				$options = array(
 					'title' => JText::_('JLIB_FORM_MEDIA_PREVIEW_SELECTED_IMAGE'),
-					'text' => '<i class="' . RHtmlMedia::getFAPrefix() . '-eye-open"></i>',
+					'text' => '<i class="icon-eye-open"></i>',
 					'class' => 'hasTipPreview'
 				);
 				$html[] = RHtml::tooltip($tooltip, $options);
@@ -206,14 +206,14 @@ class JFormFieldRmedia extends JFormField
 			}
 			else
 			{
-				$html[] = '<div class="media-preview add-on" style="height:auto">';
+				$html[] = '<div class="media-preview add-on input-group-addon" style="height:auto">';
 				$html[] = ' ' . $previewImgEmpty;
 				$html[] = ' ' . $previewImg;
 				$html[] = '</div>';
 			}
 		}
 
-		$html[] = '	<input type="text" class="input-small" name="' . $this->name . '" id="' . $this->id . '" value="'
+		$html[] = '	<input type="text" class="input-small input-sm" name="' . $this->name . '" id="' . $this->id . '" value="'
 			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" readonly="readonly"' . $attr . ' />';
 
 		$directory = (string) $this->element['directory'];

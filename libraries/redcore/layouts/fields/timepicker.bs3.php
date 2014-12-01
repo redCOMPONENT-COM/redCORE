@@ -43,7 +43,7 @@ JFactory::getDocument()->addScriptDeclaration($script);
 		'<input class="' . <?php echo $class ?> . '" name="' . <?php echo $name ?> . '" type="text"
 		        id="' .  <?php echo $id ?> . '" value="' . <?php echo $value ?> . '" />';
 	<?php endif; ?>
-	<span class="add-on">
-		<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-clock"></i>
+	<span class="input-group-addon">
+		<i class="icon-clock"></i>
 	</span>
 </div>

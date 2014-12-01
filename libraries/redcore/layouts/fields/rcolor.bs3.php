@@ -62,9 +62,9 @@ $value = htmlspecialchars($color, ENT_COMPAT, 'UTF-8');
 		name="<?php echo $data->name; ?>"
 		value="<?php echo $value; ?>"
 		<?php echo $renderedAttributes; ?> />
-	<a class="btn hasTooltip" title="" href="#"
+	<a class="btn btn-default hasTooltip" title="" href="#"
 		onclick="jQuery('#<?php echo $attributes['id']; ?>').minicolors('value',''); return false;"
 		data-original-title="<?php echo JText::_('JLIB_FORM_BUTTON_CLEAR') . ' (' . strtolower(JText::_('LIB_REDCORE_RCOLOR_SET_TRANSPARENT')) . ')'; ?>">
-		<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+		<i class="icon-remove"></i>
 	</a>
 </div>

@@ -33,19 +33,19 @@ $filters = $data['view']->filterForm->getGroup('filter');
 		</label>
 		<div class="btn-wrapper input-append">
 			<?php echo $filters[$searchField]->input; ?>
-			<button type="submit" class="btn hasTooltip" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
-				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-search"></i>
+			<button type="submit" class="btn btn-default hasTooltip" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
+				<i class="icon-search"></i>
 			</button>
 		</div>
 		<?php if ($filterButton) : ?>
-			<div class="btn-wrapper hidden-phone">
-				<button type="button" class="btn hasTooltip js-stools-btn-filter" title="<?php echo RHtml::tooltipText('JSEARCH_TOOLS_DESC'); ?>">
+			<div class="btn-wrapper hidden-xs">
+				<button type="button" class="btn btn-default hasTooltip js-stools-btn-filter" title="<?php echo RHtml::tooltipText('JSEARCH_TOOLS_DESC'); ?>">
 					<?php echo JText::_('JSEARCH_TOOLS');?> <i class="caret"></i>
 				</button>
 			</div>
 		<?php endif; ?>
 		<div class="btn-wrapper">
-			<button type="button" class="btn hasTooltip js-stools-btn-clear" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_CLEAR'); ?>">
+			<button type="button" class="btn btn-default hasTooltip js-stools-btn-clear" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_CLEAR'); ?>">
 				<?php echo JText::_('JSEARCH_FILTER_CLEAR');?>
 			</button>
 		</div>

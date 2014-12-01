@@ -27,5 +27,5 @@ $data = $displayData;
 	href="#"
 	onclick="jQuery('#<?php echo $data['field']->id; ?>').val(''); return false;"
 	>
-	<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+	<i class="icon-remove"></i>
 </a>

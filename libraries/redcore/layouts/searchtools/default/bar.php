@@ -34,7 +34,7 @@ $filters = $data['view']->filterForm->getGroup('filter');
 		<div class="btn-wrapper input-append">
 			<?php echo $filters[$searchField]->input; ?>
 			<button type="submit" class="btn hasTooltip" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
-				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-search"></i>
+				<i class="icon-search"></i>
 			</button>
 		</div>
 		<?php if ($filterButton) : ?>

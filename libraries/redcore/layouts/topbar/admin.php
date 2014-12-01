@@ -121,14 +121,14 @@ else
 	<div class="navbar-inner">
 		<div class="container-fluid">
 			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-				<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-bar"></span>
-				<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-bar"></span>
-				<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
 			</a>
 			<?php if (!$displayJoomlaMenu) : ?>
 				<?php if ($displayBackToJoomla) : ?>
 				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-undo"></i> Back to Joomla
+					<i class="icon-undo"></i> Back to Joomla
 				</a>
 				<?php endif; ?>
 				<span class="divider-vertical pull-left"></span>
@@ -147,20 +147,20 @@ else
 			<ul class="nav nav-user pull-right">
 				<li class="dropdown">
 					<a href="#" data-toggle="dropdown" class="dropdown-toggle">
-						<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-user"></span>
+						<span class="icon-user"></span>
 						<b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
 						<li class="">
 							<a href="index.php?option=com_admin&amp;task=profile.edit&amp;id=<?php echo $userId; ?>">
-								<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-edit-sign icon-2"></i>
+								<i class="icon-edit-sign icon-2"></i>
 								<?php echo $userName ?>
 							</a>
 						</li>
 						<?php if ($displayComponentVersion) : ?>
 							<li>
 								<a href="#" onclick="return false">
-									<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-info-sign"></i>
+									<i class="icon-info-sign"></i>
 									<?php echo $componentName . ' v' . $version; ?>
 								</a>
 							</li>
@@ -168,7 +168,7 @@ else
 						<li class="divider"></li>
 						<li class="">
 							<a href="index.php?option=com_login&amp;task=logout&amp;<?php echo JSession::getFormToken(); ?>=1&amp;return=<?php echo $logoutReturnUri; ?>">
-								<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-off"></span>
+								<span class="icon-off"></span>
 								<?php echo JText::_('LIB_REDCORE_ACCOUNT_LOGOUT'); ?>
 							</a>
 						</li>

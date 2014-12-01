@@ -31,15 +31,6 @@ abstract class RHtmlMedia
 	public static $frameworkSuffix = '';
 
 	/**
-	 * @var    string  Framework name to use
-	 * @since  1.4
-	 */
-	public static $fontAwesomePrefix = array(
-		'bootstrap2' => 'icon',
-		'bootstrap3' => 'fa fa',
-	);
-
-	/**
 	 * Get selected framework
 	 *
 	 * @return  string  Framework name
@@ -49,18 +40,6 @@ abstract class RHtmlMedia
 	public static function getFramework()
 	{
 		return self::$framework;
-	}
-
-	/**
-	 * Get Font awesome icon prefix
-	 *
-	 * @return  string  Font awesome prefix
-	 *
-	 * @since   1.4
-	 */
-	public static function getFAPrefix()
-	{
-		return self::$fontAwesomePrefix[self::$framework];
 	}
 
 	/**

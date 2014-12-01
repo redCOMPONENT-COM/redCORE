@@ -81,16 +81,16 @@ if ($displayJoomlaMenu)
 	$modules = JModuleHelper::getModules('menu');
 }
 ?>
-<header class="navbar navbar-fixed-top topbar">
+<header class="navbar-nav navbar-fixed-top topbar">
 	<div class="navbar-inner">
 		<div class="container-fluid">
 			<?php if (!$displayJoomlaMenu) : ?>
 				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-undo"></i> Back to Joomla
+					<i class="icon-undo"></i> Back to Joomla
 				</a>
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
-			<a class="brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>
+			<a class="navbar-brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>
 			<?php if ($displayJoomlaMenu) : ?>
 				<?php foreach ($modules as $module): ?>
 					<?php echo JModuleHelper::renderModule($module, array('style' => 'standard')); ?>
@@ -99,7 +99,7 @@ if ($displayJoomlaMenu)
 			<?php if ($displayTopbarInnerLayout) : ?>
 				<?php echo RLayoutHelper::render($topbarInnerLayout, $topbarInnerLayoutData) ?>
 			<?php endif; ?>
-			<div class="nav-right pull-right hidden-tablet hidden-phone">
+			<div class="nav-right pull-right hidden-sm hidden-xs">
 				<div class="datetime pull-right"></div>
 				<span class="divider-vertical pull-right"></span>
 
@@ -107,13 +107,13 @@ if ($displayJoomlaMenu)
 					<a href="<?php echo
 					JRoute::_('index.php?option=com_login&task=logout&' . JSession::getFormToken() . '=1&return=' . $returnUri)
 					?>">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-signout"></i> Sign out
+						<i class="icon-signout"></i> Sign out
 					</a>
 				</div>
 				<span class="divider-vertical pull-right"></span>
 
 				<div class="welcome pull-right">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-user"></i>
+					<i class="icon-user"></i>
 					Welcome <?php echo $userName ?>
 				</div>
 			</div>

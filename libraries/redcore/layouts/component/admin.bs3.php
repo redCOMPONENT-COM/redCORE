@@ -176,24 +176,24 @@ if ($result instanceof Exception)
 	});
 </script>
 <?php if ($view->getLayout() === 'modal') : ?>
-	<div class="row-fluid redcore">
+	<div class="row redcore">
 		<section id="component">
-			<div class="row-fluid message-sys"></div>
-			<div class="row-fluid">
+			<div class="row message-sys"></div>
+			<div class="container-fluid">
 				<?php echo $result ?>
 			</div>
 		</section>
 	</div>
 <?php elseif ($templateComponent) : ?>
 	<div class="container-fluid redcore">
-		<div class="span12 content">
+		<div class="col-md-12 content">
 			<section id="component">
-				<div class="row-fluid">
+				<div class="row">
 					<h1><?php echo $view->getTitle() ?></h1>
 				</div>
-				<div class="row-fluid message-sys"></div>
+				<div class="row message-sys"></div>
 				<hr/>
-				<div class="row-fluid">
+				<div class="container-fluid">
 					<?php echo $result ?>
 				</div>
 			</section>
@@ -206,33 +206,33 @@ else : ?>
 			<?php if ($displayTopbar) : ?>
 				<?php echo RLayoutHelper::render($topbarLayout, $topbarData) ?>
 			<?php endif; ?>
-			<div class="row-fluid">
+			<div class="container-fluid">
 				<?php if ($displaySidebar) : ?>
-					<div class="span2 sidebar">
+					<div class="col-md-2 sidebar">
 						<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
 					</div>
-					<div class="span10 content">
+					<div class="col-md-10 content">
 				<?php else : ?>
-					<div class="span12 content">
+					<div class="col-md-12 content">
 				<?php endif; ?>
 						<section id="component">
-							<div class="row-fluid">
+							<div class="row">
 								<h1><?php echo $view->getTitle() ?></h1>
 							</div>
 							<?php if ($toolbar instanceof RToolbar) : ?>
-								<div class="row-fluid">
+								<div class="row">
 									<?php echo $toolbar->render() ?>
 								</div>
 							<?php endif; ?>
-							<div class="row-fluid message-sys"></div>
-							<div class="row-fluid">
+							<div class="row message-sys"></div>
+							<div class="container-fluid">
 								<?php echo $result ?>
 							</div>
 						</section>
 					</div>
 			</div>
 		</div>
-		<footer class="footer pagination-centered navbar navbar-fixed-bottom hidden-phone">
+		<footer class="footer pagination-centered navbar-nav navbar-fixed-bottom hidden-xs">
 			Copyright 2014 redcomponent.com. All rights reserved.
 		</footer>
 	</div>

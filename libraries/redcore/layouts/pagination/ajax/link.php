@@ -19,26 +19,26 @@ switch ((string) $text)
 {
 	// Check for "Start" item
 	case JText::_('JLIB_HTML_START') :
-		$icon   = RHtmlMedia::getFAPrefix() . "-first";
+		$icon   = "icon-first";
 		$moveTo = 1;
 		break;
 
 	// Check for "Prev" item
 	case $text == JText::_('JPREVIOUS') :
-		$icon   = RHtmlMedia::getFAPrefix() . "-previous";
+		$icon   = "icon-previous";
 		$moveTo = $currentPage - 1;
 		break;
 
 	// Check for "Next" item
 	case JText::_('JNEXT') :
-		$icon   = RHtmlMedia::getFAPrefix() . "-next";
+		$icon   = "icon-next";
 		$moveTo = $currentPage + 1;
 		break;
 
 	// Check for "End" item
 	case JText::_('JLIB_HTML_END') :
 		$moveTo = $numberOfPages;
-		$icon   = RHtmlMedia::getFAPrefix() . "-last";
+		$icon   = "icon-last";
 		break;
 
 	default:

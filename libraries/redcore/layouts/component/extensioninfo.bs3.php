@@ -23,8 +23,8 @@ JHtml::_('rbootstrap.tooltip');
 		width: 100%;
 	}
 </style>
-<div class="row-fluid">
-	<div class="span12">
+<div class="row">
+	<div class="col-md-12">
 		<h3>
 			<strong><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></strong>: <?php echo RText::getTranslationIfExists($xml->name, '', ''); ?>
 		</h3>
@@ -120,8 +120,8 @@ JHtml::_('rbootstrap.tooltip');
 	</div>
 </div>
 
-<div class="row-fluid" style="margin-top:20px;">
-	<div class="span6">
+<div class="row" style="margin-top:20px;">
+	<div class="col-md-6">
 		<h4>
 			<?php echo RText::getTranslationIfExists($xml->name, '', ''); ?> <?php echo JText::_('COM_REDCORE_CONFIG_MODULES'); ?>
 		</h4>
@@ -178,7 +178,7 @@ JHtml::_('rbootstrap.tooltip');
 		</table>
 	</div>
 
-	<div class="span6">
+	<div class="col-md-6">
 		<h4>
 			<?php echo RText::getTranslationIfExists($xml->name, '', ''); ?> <?php echo JText::_('COM_REDCORE_CONFIG_PLUGINS'); ?>
 		</h4>

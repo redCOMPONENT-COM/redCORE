@@ -46,11 +46,11 @@ if (isset($data['filter_name']))
 	</div>
 	<div class="btn-group hidden-phone">
 		<button class="btn hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">
-			<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-search"></i>
+			<i class="icon-search"></i>
 		</button>
 		<button class="btn hasTooltip" type="button" onclick="document.id('filter_<?php echo $filterName ?>').value='';this.form.submit();"
 		        title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>">
-			<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+			<i class="icon-remove"></i>
 		</button>
 	</div>
 </div>

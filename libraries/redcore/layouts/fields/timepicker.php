@@ -44,6 +44,6 @@ JFactory::getDocument()->addScriptDeclaration($script);
 		        id="' .  <?php echo $id ?> . '" value="' . <?php echo $value ?> . '" />';
 	<?php endif; ?>
 	<span class="add-on">
-		<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-clock"></i>
+		<i class="icon-clock"></i>
 	</span>
 </div>

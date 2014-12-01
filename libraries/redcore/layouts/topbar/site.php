@@ -86,7 +86,7 @@ if ($displayJoomlaMenu)
 		<div class="container-fluid">
 			<?php if (!$displayJoomlaMenu) : ?>
 				<a class="back2joomla" href="<?php echo JRoute::_('index.php') ?>">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-undo"></i> Back to Joomla
+					<i class="icon-undo"></i> Back to Joomla
 				</a>
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
@@ -107,13 +107,13 @@ if ($displayJoomlaMenu)
 					<a href="<?php echo
 					JRoute::_('index.php?option=com_login&task=logout&' . JSession::getFormToken() . '=1&return=' . $returnUri)
 					?>">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-signout"></i> Sign out
+						<i class="icon-signout"></i> Sign out
 					</a>
 				</div>
 				<span class="divider-vertical pull-right"></span>
 
 				<div class="welcome pull-right">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-user"></i>
+					<i class="icon-user"></i>
 					Welcome <?php echo $userName ?>
 				</div>
 			</div>

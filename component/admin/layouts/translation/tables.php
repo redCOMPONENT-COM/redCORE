@@ -99,7 +99,7 @@ $column = 0;
 						class="btn btn-success"
 						type="button"
 						onclick="setContentElement('', 'config.uploadContentElement')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-upload"></i>
+						<i class="icon-upload"></i>
 						<?php echo JText::_('JTOOLBAR_UPLOAD') ?>
 					</button>
 				</div>
@@ -113,28 +113,28 @@ $column = 0;
 						class="btn btn-success"
 						type="button"
 						onclick="setContentElement('all', 'config.installContentElement')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+						<i class="icon-cogs"></i>
 						<?php echo JText::_('JTOOLBAR_INSTALL') . ' / ' . JText::_('COM_REDCORE_UPDATE'); ?>
 					</button>
 					<button
 						class="btn btn-danger"
 						type="button"
 						onclick="setContentElement('all', 'config.uninstallContentElement')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+						<i class="icon-cogs"></i>
 						<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 					</button>
 					<button
 						class="btn btn-danger"
 						type="button"
 						onclick="setContentElement('all', 'config.deleteContentElement')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+						<i class="icon-remove"></i>
 						<?php echo JText::_('JTOOLBAR_DELETE') ?>
 					</button>
 					<button
 						class="btn btn-danger"
 						type="button"
 						onclick="setContentElement('all', 'config.purgeContentElement')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-trash"></i>
+						<i class="icon-trash"></i>
 						<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_PURGE_TRANSLATIONS') ?>
 					</button>
 				</div>
@@ -197,7 +197,7 @@ $column = 0;
 					class="btn btn-small btn-success"
 					type="button"
 					onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.installContentElement')">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+					<i class="icon-cogs"></i>
 					<?php echo JText::_('JTOOLBAR_INSTALL') ?>
 				</button>
 				<?php $disabled = ' disabled="disabled" '; ?>
@@ -206,19 +206,19 @@ $column = 0;
 					class="btn btn-small btn-primary"
 					type="button"
 					onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.installContentElement')">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+					<i class="icon-cogs"></i>
 					<?php echo JText::_('COM_REDCORE_UPDATE') ?>
 				</button>
 				<a class="btn btn-small btn-primary"
 				   href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=' . str_replace('#__', '', $contentElement->table)); ?>">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-globe"></i>
+					<i class="icon-globe"></i>
 					<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 				</a>
 				<button
 					class="btn btn-small btn-danger"
 					type="button"
 					onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.uninstallContentElement')">
-					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+					<i class="icon-cogs"></i>
 					<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 				</button>
 				<?php $disabled = ''; ?>
@@ -227,14 +227,14 @@ $column = 0;
 				class="btn btn-small btn-danger"
 				type="button"
 				onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.deleteContentElement')">
-				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+				<i class="icon-remove"></i>
 				<?php echo JText::_('JTOOLBAR_DELETE') ?>
 			</button>
 			<button
 				class="btn btn-small btn-danger"
 				type="button"
 				onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.purgeContentElement')" <?php echo $disabled; ?>>
-				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-trash"></i>
+				<i class="icon-trash"></i>
 				<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_PURGE_TRANSLATIONS') ?>
 			</button>
 		</div>
@@ -284,7 +284,7 @@ $column = 0;
 				class="btn btn-small btn-danger"
 				type="button"
 				onclick="setContentElement('<?php echo $missingContentElement->xml; ?>', 'config.uninstallContentElement')">
-				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+				<i class="icon-cogs"></i>
 				<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 			</button>
 		</div>

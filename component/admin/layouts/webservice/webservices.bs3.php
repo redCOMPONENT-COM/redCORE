@@ -173,9 +173,9 @@ $column = 0;
 			<span class="badge badge-important"><?php echo JText::_('JDISABLED'); ?></span>
 		<?php endif; ?>
 	</p>
-	<div class="row-fluid">
-		<div class="span6 well">
-			<div class="control-group">
+	<div class="row">
+		<div class="col-md-6 well">
+			<div class="form-group">
 				<div class="control-label">
 					<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_TITLE'); ?>
 				</div>
@@ -185,12 +185,12 @@ $column = 0;
 						class="btn btn-success"
 						type="button"
 						onclick="setWebservice('', '', '', '', 'webservices.uploadWebservice')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-upload"></i>
+						<i class="icon-upload"></i>
 						<?php echo JText::_('JTOOLBAR_UPLOAD') ?>
 					</button>
 				</div>
 			</div>
-			<div class="control-group" style="margin-top:40px;margin-bottom: 0;">
+			<div class="form-group" style="margin-top:40px;margin-bottom: 0;">
 				<div class="control-label">
 					<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_ALL'); ?>
 				</div>
@@ -199,21 +199,21 @@ $column = 0;
 						class="btn btn-success"
 						type="button"
 						onclick="setWebservice('', 'all', '', '', 'webservices.installWebservice')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+						<i class="icon-cogs"></i>
 						<?php echo JText::_('JTOOLBAR_INSTALL') . ' / ' . JText::_('COM_REDCORE_UPDATE'); ?>
 					</button>
 					<button
 						class="btn btn-danger"
 						type="button"
 						onclick="setWebservice('', 'all', '', '', 'webservices.uninstallWebservice')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+						<i class="icon-cogs"></i>
 						<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 					</button>
 					<button
 						class="btn btn-danger"
 						type="button"
 						onclick="setWebservice('', 'all', '', '', 'webservices.deleteWebservice')">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+						<i class="icon-remove"></i>
 						<?php echo JText::_('JTOOLBAR_DELETE') ?>
 					</button>
 				</div>
@@ -240,7 +240,7 @@ $column = 0;
 			</div>
 		</div>
 	</div>
-	<div class="row-fluid">
+	<div class="row">
 		<?php if (empty($webservices)): ?>
 			<div class="alert alert-info">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -266,7 +266,7 @@ $column = 0;
 						$webserviceDocumentation = !empty($webservice->operations->documentation['authorizationNeeded'])
 							&& strtolower($webservice->operations->documentation['authorizationNeeded']) == 'false';
 					?>
-						<div class="span4 well">
+						<div class="col-md-4 well">
 							<h4>
 								<?php echo $webservice->name; ?> (<?php echo $webservice->config->name; ?>)
 							</h4>
@@ -330,16 +330,16 @@ $column = 0;
 							</table>
 							<?php if ($status == JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED')): ?>
 								<button
-									class="btn btn-mini btn-success"
+									class="btn btn-xs btn-success"
 									type="button"
 									onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.installWebservice')">
-									<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+									<i class="icon-cogs"></i>
 									<?php echo JText::_('JTOOLBAR_INSTALL') ?>
 								</button>
 								<?php $disabled = ' disabled="disabled" '; ?>
 							<?php else: ?>
 								<button
-									class="btn btn-mini btn-primary"
+									class="btn btn-xs btn-primary"
 									type="button"
 									<?php if (!$webserviceDocumentation) : ?>
 										disabled="disabled"
@@ -347,11 +347,11 @@ $column = 0;
 									data-remote-format="doc"
 									data-remote="../index.php?api=Hal&format=doc&option=<?php echo $webservice->config->name . $webserviceClientUri; ?>"
 									data-target="#webservicePreview">
-									<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-file-text"></i>
+									<i class="icon-file-text"></i>
 									<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DOCUMENTATION') ?>
 								</button>
 								<button
-									class="btn btn-mini btn-primary"
+									class="btn btn-xs btn-primary"
 									type="button"
 									<?php if (!$webserviceRead) : ?>
 										disabled="disabled"
@@ -359,11 +359,11 @@ $column = 0;
 									data-remote-format="json"
 									data-remote="../index.php?api=Hal&option=<?php echo $webservice->config->name . $webserviceClientUri; ?>"
 									data-target="#webservicePreview">
-									<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-file-text"></i>
+									<i class="icon-file-text"></i>
 									<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_PREVIEW_JSON') ?>
 								</button>
 								<button
-									class="btn btn-mini btn-primary"
+									class="btn btn-xs btn-primary"
 									type="button"
 									<?php if (!$webserviceRead) : ?>
 										disabled="disabled"
@@ -371,46 +371,46 @@ $column = 0;
 									data-remote-format="xml"
 									data-remote="../index.php?api=Hal&format=xml&option=<?php echo $webservice->config->name . $webserviceClientUri; ?>"
 									data-target="#webservicePreview">
-									<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-file-text"></i>
+									<i class="icon-file-text"></i>
 									<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_PREVIEW_XML') ?>
 								</button>
 								<button
-									class="btn btn-mini btn-primary"
+									class="btn btn-xs btn-primary"
 									type="button"
 									onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.installWebservice')">
-									<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+									<i class="icon-cogs"></i>
 									<?php echo JText::_('COM_REDCORE_UPDATE') ?>
 								</button>
 								<button
-									class="btn btn-mini btn-danger"
+									class="btn btn-xs btn-danger"
 									type="button"
 									onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.uninstallWebservice')">
-									<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+									<i class="icon-cogs"></i>
 									<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 								</button>
 								<?php $disabled = ''; ?>
 							<?php endif; ?>
 							<button
-								class="btn btn-mini btn-danger"
+								class="btn btn-xs btn-danger"
 								type="button"
 								onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.deleteWebservice')">
-								<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+								<i class="icon-remove"></i>
 								<?php echo JText::_('JTOOLBAR_DELETE') ?>
 							</button>
 						</div>
 						<?php if ((++$column) % 3 == 0 ) : ?>
 					</div>
-					<div class="row-fluid">
+					<div class="row">
 					<?php endif; ?>
 				<?php endforeach; ?>
 			<?php endforeach; ?>
 			<?php endforeach; ?>
 		<?php endif; ?>
 	</div>
-	<div class="row-fluid">
+	<div class="row">
 		<?php if (!empty($missingWebservices)): ?>
 		<?php foreach ($missingWebservices as $missingWebservice): ?>
-		<div class="span4 well">
+		<div class="col-md-4 well">
 			<h4>
 				<?php echo $missingWebservice; ?>
 			</h4>
@@ -443,16 +443,16 @@ $column = 0;
 				</tbody>
 			</table>
 			<button
-				class="btn btn-mini btn-danger"
+				class="btn btn-xs btn-danger"
 				type="button"
 				onclick="setWebservice('', <?php echo $missingWebservice->name; ?>', '<?php echo $missingWebservice->version; ?>', '<?php echo $missingWebservice->path; ?>', 'webservices.uninstallWebservice')">
-				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+				<i class="icon-cogs"></i>
 				<?php echo JText::_('JTOOLBAR_UNINSTALL') ?>
 			</button>
 		</div>
 		<?php if ((++$column) % 3 == 0 ) : ?>
 	</div>
-	<div class="row-fluid">
+	<div class="row">
 		<?php endif; ?>
 		<?php endforeach; ?>
 		<?php endif; ?>

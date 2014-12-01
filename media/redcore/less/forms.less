@@ -1,3 +1,5 @@
+@import "./bootstrap3/variables.less";
+
 form {
 	/* Radio buttons */
 	fieldset.radio.btn-group {
@@ -16,4 +18,27 @@ form {
 		float: left;
 		margin-left: -20px;
 	}
+
+  // Shared size and type resets
+  select,
+  textarea,
+  input[type="text"],
+  input[type="password"],
+  input[type="datetime"],
+  input[type="datetime-local"],
+  input[type="date"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  input[type="number"],
+  input[type="email"],
+  input[type="url"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="color"],
+  .uneditable-input {
+    height: @input-height-base;
+    font-size: @font-size-base;
+    line-height: @line-height-computed;
+  }
 }

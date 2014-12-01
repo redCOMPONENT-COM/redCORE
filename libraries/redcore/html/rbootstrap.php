@@ -627,14 +627,14 @@ abstract class JHtmlRbootstrap
 		$in = (static::$loaded['JHtmlRbootstrap::startAccordion']['active'] == $id) ? ' in' : '';
 		$class = (!empty($class)) ? ' ' . $class : '';
 
-		$html = '<div class="accordion-group' . $class . '">'
-			. '<div class="accordion-heading">'
+		$html = '<div class="panel panel-default accordion-group' . $class . '">'
+			. '<div class="panel-heading accordion-heading">'
 			. '<strong><a href="#' . $id . '" data-parent="#' . $selector . '" data-toggle="collapse" class="accordion-toggle">'
 			. $text
 			. '</a></strong>'
 			. '</div>'
-			. '<div class="accordion-body collapse' . $in . '" id="' . $id . '">'
-			. '<div class="accordion-inner">';
+			. '<div class="panel-collapse accordion-body collapse' . $in . '" id="' . $id . '">'
+			. '<div class="panel-body accordion-inner">';
 
 		return $html;
 	}

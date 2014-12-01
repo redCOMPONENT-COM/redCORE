@@ -25,7 +25,7 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 		</div>
 	<?php else : ?>
 		<?php foreach ($components as $component): ?>
-			<div class="span4 well">
+			<div class="col-md-4 well">
 				<h4>
 					<?php echo !empty($component->xml->name) ? RText::getTranslationIfExists($component->xml->name, '', '') : $component->option; ?>
 				</h4>
@@ -61,14 +61,14 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 					<a
 						class="btn btn-primary"
 						href="<?php echo JRoute::_('index.php?option=com_redcore&view=config&layout=edit&component=' . $component->option . '&return=' . $return); ?>">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
+						<i class="icon-cogs"></i>
 						<?php echo JText::_('COM_REDCORE_CONFIGURATION') ?>
 					</a>
 				<?php endif; ?>
 				<?php if ($translationLink): ?>
 					<a class="btn btn-primary"
 					   href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&component=' . $component->option . '&return=' . $return); ?>">
-						<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-globe"></i>
+						<i class="icon-globe"></i>
 						<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 					</a>
 				<?php endif; ?>

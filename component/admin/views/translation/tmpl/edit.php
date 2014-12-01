@@ -112,8 +112,8 @@ $predefinedOptions = array(
 	}
 </script>
 <form action="<?php echo $action; ?>" method="post" name="adminForm" id="adminForm" class="form-validate form-horizontal">
-	<div class="row-fluid">
-		<div class="span8" id="translationDetails">
+	<div class="row">
+		<div class="col-md-8" id="translationDetails">
 		<table class="table table-striped">
 			<?php foreach ($this->columns as $columnKey => $column) : ?>
 				<?php if ($column['type'] == 'referenceid' || $column['type'] == 'hiddentext') : ?>
@@ -132,17 +132,17 @@ $predefinedOptions = array(
 							<span class="label label-warning"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_STATUS_CHANGED'); ?></span>
 						<?php endif; ?>
 							<button
-								class="pull-right btn"
+								class="pull-right btn btn-default"
 								type="button"
 								onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
-								<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-copy"></span>
+								<span class="icon-copy"></span>
 								<?php echo JText::_('RTOOLBAR_COPY');?>
 							</button>
 							<button
-								class="pull-right btn"
+								class="pull-right btn btn-default"
 								type="button"
 								onclick="setTranslationValue('<?php echo $columnKey;?>', '', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
-								<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-trash"></span>
+								<span class="icon-trash"></span>
 								<?php echo JText::_('JCLEAR');?>
 							</button>
 						</td>
@@ -209,15 +209,15 @@ $predefinedOptions = array(
 								);
 								?>
 							<?php elseif ($column['type'] == 'images'): ?>
-								<div class="input-prepend input-append">
+								<div class="input-group">
 									<input
-										class="input-large"
+										class="input-lg"
 										type="text"
 										name="translation[<?php echo $columnKey;?>]"
 										id="translation<?php echo $columnKey;?>"
 										size="<?php echo $length;?>"
 										value="<?php echo $this->item->translation->{$columnKey}; ?>" <?php echo $maxLength;?>/>
-									<a class="modal btn" title="<?php echo JText::_("JSELECT")?>"
+									<a class="modal btn btn-default" title="<?php echo JText::_("JSELECT")?>"
 										href="index.php?option=com_media&amp;view=images&amp;tmpl=component&amp;fieldid=translation<?php echo $columnKey;?>"
 										rel="{handler: 'iframe', size: {x: 800, y: 500}}"><?php echo JText::_("JSELECT")?></a>
 								</div>
@@ -237,10 +237,10 @@ $predefinedOptions = array(
 						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
 						<td id="original_field_<?php echo $columnKey;?>">
 							<button
-								class="btn"
+								class="btn btn-default"
 								type="button"
 								onclick="jQuery(this).parent().find('div:first').toggle()">
-								<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-plus"></span>
+								<span class="icon-plus"></span>
 								<?php echo JText::_('COM_REDCORE_TRANSLATIONS_SHOW_HIDE_ORIGINALS');?>
 							</button>
 							<div style="display:none">
@@ -304,8 +304,8 @@ $predefinedOptions = array(
 			<?php endif; ?>
 		<?php endforeach; ?>
 		</div>
-		<div class="span4">
-			<div class="control-group">
+		<div class="col-md-4">
+			<div class="form-group">
 				<div class="control-label">
 					<?php echo JText::_('JSTATUS'); ?>
 				</div>
@@ -315,7 +315,7 @@ $predefinedOptions = array(
 					</span>
 				</div>
 			</div>
-			<div class="control-group">
+			<div class="form-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('rctranslations_language'); ?>
 				</div>
@@ -323,7 +323,7 @@ $predefinedOptions = array(
 					<?php echo $this->form->getInput('rctranslations_language'); ?>
 				</div>
 			</div>
-			<div class="control-group">
+			<div class="form-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('rctranslations_state'); ?>
 				</div>
@@ -331,7 +331,7 @@ $predefinedOptions = array(
 					<?php echo $this->form->getInput('rctranslations_state'); ?>
 				</div>
 			</div>
-			<div class="control-group">
+			<div class="form-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('rctranslations_modified'); ?>
 				</div>

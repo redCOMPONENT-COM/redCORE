@@ -14,7 +14,7 @@ $data = $displayData;
 
 <?php echo RLayoutHelper::render('modal', $data['modal']); ?>
 <a
-	class="btn modalAjax"
+	class="btn btn-default modalAjax"
 	data-toggle="modal"
 	title="<?php echo JText::_('JLIB_FORM_BUTTON_SELECT'); ?>"
 	href="#<?php echo $data['modal']->getAttribute('id'); ?>"
@@ -22,10 +22,10 @@ $data = $displayData;
 	<?php echo JText::_('JLIB_FORM_BUTTON_SELECT'); ?>
 </a>
 <a
-	class="btn hasTooltip"
+	class="btn btn-default hasTooltip"
 	title="<?php echo JText::_('JLIB_FORM_BUTTON_CLEAR'); ?>"
 	href="#"
 	onclick="jQuery('#<?php echo $data['field']->id; ?>').val(''); return false;"
 	>
-	<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+	<i class="icon-remove"></i>
 </a>

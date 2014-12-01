@@ -68,7 +68,7 @@ abstract class JHtmlRgrid
 	{
 		return '<a href="javascript:saveorder(' . (count($rows) - 1) . ', \'' . $task . '\')"
 		rel="tooltip" class="btn btn-micro pull-right" title="'
-		. JText::_('JLIB_HTML_SAVE_ORDER') . '"><i class="' . RHtmlMedia::getFAPrefix() . '-save"></i></a>';
+		. JText::_('JLIB_HTML_SAVE_ORDER') . '"><i class="icon-save"></i></a>';
 	}
 
 	/**
@@ -118,23 +118,23 @@ abstract class JHtmlRgrid
 			$class = '';
 
 			// Prepare the class.
-			if ($active_class === 'plus-sign')
+			if ($active_class === 'plus')
 			{
 				$class = 'published';
 			}
 
-			elseif ($active_class === 'minus-sign')
+			elseif ($active_class === 'minus')
 			{
 				$class = 'unpublished';
 			}
 
 			$class .= $tip ? ' hasTooltip' : '';
 
-			$html[] = '<a class="btn btn-small ' . $class . '"';
+			$html[] = '<a class="btn btn-small btn-sm ' . $class . '"';
 			$html[] = ' href="javascript:void(0);" onclick="return listItemTaskForm(\'' . $checkbox . $i . '\',\''
 				. $prefix . $task . '\',\'' . $formId . '\')"';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($active_title) : $active_title, ENT_COMPAT, 'UTF-8')) . '">';
-			$html[] = '<i class="' . RHtmlMedia::getFAPrefix() . '-' . $active_class . '">';
+			$html[] = '<i class="icon-' . $active_class . '">';
 			$html[] = '</i>';
 			$html[] = '</a>';
 		}
@@ -145,11 +145,11 @@ abstract class JHtmlRgrid
 
 			if ($active_class == "protected")
 			{
-				$html[] = '<i class="' . RHtmlMedia::getFAPrefix() . '-lock"></i>';
+				$html[] = '<i class="icon-lock"></i>';
 			}
 			else
 			{
-				$html[] = '<i class="' . RHtmlMedia::getFAPrefix() . '-' . $inactive_class . '"></i>';
+				$html[] = '<i class="icon-' . $inactive_class . '"></i>';
 			}
 
 			$html[] = '</a>';
@@ -228,8 +228,8 @@ abstract class JHtmlRgrid
 			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
-		$states = array(1 => array('unpublish', 'JPUBLISHED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JPUBLISHED', false, 'ok-sign  ' . RHtmlMedia::getFAPrefix() . '-green', 'ok-sign ' . RHtmlMedia::getFAPrefix() . '-green'),
-			0 => array('publish', 'JUNPUBLISHED', 'JLIB_HTML_PUBLISH_ITEM', 'JUNPUBLISHED', false, 'remove-sign  ' . RHtmlMedia::getFAPrefix() . '-red', 'remove-sign  ' . RHtmlMedia::getFAPrefix() . '-red'),
+		$states = array(1 => array('unpublish', 'JPUBLISHED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JPUBLISHED', false, 'ok-sign icon-green', 'ok-sign icon-green'),
+			0 => array('publish', 'JUNPUBLISHED', 'JLIB_HTML_PUBLISH_ITEM', 'JUNPUBLISHED', false, 'remove icon-red', 'remove icon-red'),
 			2 => array('unpublish', 'JARCHIVED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JARCHIVED', false, 'hdd', 'hdd'),
 			-2 => array('publish', 'JTRASHED', 'JLIB_HTML_PUBLISH_ITEM', 'JTRASHED', false, 'trash', 'trash'));
 
@@ -446,7 +446,7 @@ abstract class JHtmlRgrid
 		static::main();
 
 		$direction = strtolower($direction);
-		$orderIcons = array(RHtmlMedia::getFAPrefix() . '-chevron-up', RHtmlMedia::getFAPrefix() . '-chevron-down');
+		$orderIcons = array('icon-chevron-up', 'icon-chevron-down');
 		$index = (int) ($direction == 'desc');
 
 		if ($order != $selected)
@@ -511,11 +511,11 @@ abstract class JHtmlRgrid
 		$html = '<a href="#" onclick="Joomla.tableOrdering(\'' . $order . '\',\'' . $direction . '\',\'' . $task . '\');return false;"'
 			. ' class="hasTooltip" title="' . RHtml::tooltipText(JText::_($tip ? $tip : $title), JText::_('JGLOBAL_CLICK_TO_SORT_THIS_COLUMN'), 0) . '">';
 
-		$html .= '<i class="' . RHtmlMedia::getFAPrefix() . '-sort"></i>';
+		$html .= '<i class="icon-sort"></i>';
 
 		if ($order == $selected)
 		{
-			$html .= ' <i class="' . RHtmlMedia::getFAPrefix() . '-' . $icon[$index] . '"></i>';
+			$html .= ' <i class="icon-' . $icon[$index] . '"></i>';
 		}
 
 		$html .= '</a>';

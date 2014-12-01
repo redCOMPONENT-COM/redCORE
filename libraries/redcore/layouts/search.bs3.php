@@ -39,18 +39,18 @@ if (isset($data['filter_name']))
 
 <div id="filter-bar" class="btn-toolbar">
 	<div class="filter-search btn-group pull-left">
-		<input type="text" name="filter_<?php echo $filterName ?>" id="filter_<?php echo $filterName ?>" class="js-enter-submits"
+		<input type="text" name="filter_<?php echo $filterName ?>" id="filter_<?php echo $filterName ?>" class="form-control js-enter-submits"
 		       placeholder="<?php echo JText::_('JSEARCH_FILTER'); ?>"
 		       value="<?php echo $state->get('filter.' . $filterName); ?>"
 		       title="<?php echo JText::_('JSEARCH_FILTER'); ?>"/>
 	</div>
-	<div class="btn-group hidden-phone">
-		<button class="btn hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">
-			<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-search"></i>
+	<div class="btn-group hidden-xs">
+		<button class="btn btn-default hasTooltip" type="submit" title="<?php echo JText::_('JSEARCH_FILTER_SUBMIT'); ?>">
+			<i class="icon-search"></i>
 		</button>
-		<button class="btn hasTooltip" type="button" onclick="document.id('filter_<?php echo $filterName ?>').value='';this.form.submit();"
+		<button class="btn btn-default hasTooltip" type="button" onclick="document.id('filter_<?php echo $filterName ?>').value='';this.form.submit();"
 		        title="<?php echo JText::_('JSEARCH_FILTER_CLEAR'); ?>">
-			<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-remove"></i>
+			<i class="icon-remove"></i>
 		</button>
 	</div>
-</div>
+</div>buga vuga

@@ -92,7 +92,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 			'autoSize'               => array('type' => 'boolean'),
 			'buttonImage'            => array('type' => 'string'),
 			'buttonImageOnly'        => array('type' => 'boolean'),
-			'buttonText'             => array('type' => 'string', 'default' => '<i class="' . RHtmlMedia::getFAPrefix() . '-calendar icon-2x"></i>'),
+			'buttonText'             => array('type' => 'string', 'default' => '<i class="icon-calendar icon-2x"></i>'),
 			'calculateWeek'          => array('type' => 'string'),
 			'changeMonth'            => array('type' => 'boolean'),
 			'changeYear'             => array('type' => 'boolean'),

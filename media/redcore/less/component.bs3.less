@@ -121,13 +121,27 @@
     opacity: 0.4;
     filter: alpha(opacity=40);
   }
-  // Reset icomoon settings
+
+  // Set fontawesome icon settings
   [class^="icon-"]:before,
   [class*=" icon-"]:before {
-    font-family: inherit;
-    font-style: inherit;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome; // shortening font declaration
+    font-size: inherit; // can't have font-size inherit on line above, so need to override
+    text-rendering: auto; // optimizelegibility throws things off #1094
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     color: inherit;
   }
+
+  // Set button default settings
+  /*[class^="btn "],
+  [class*=" btn "] {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+  }*/
+
   .icon-stack:before {
     content: none;
   }
@@ -200,5 +214,8 @@
     overflow: hidden;
     background-color: #e5e5e5;
     border-bottom: 1px solid #ffffff;
+  }
+  .list-group{
+    margin:0;
   }
 }
