@@ -59,6 +59,10 @@ abstract class RHtmlMedia
 		{
 			self::$frameworkSuffix = 'bs3';
 		}
+		elseif ($framework = 'foundation5')
+		{
+			self::$frameworkSuffix = 'fd5';
+		}
 		else
 		{
 			self::$frameworkSuffix = '';
@@ -87,6 +91,9 @@ abstract class RHtmlMedia
 		{
 			RHelperAsset::load('component.bs3.min.css', 'redcore');
 		}
+		elseif (self::$framework == 'foundation5')
+		{
+		}
 	}
 
 	/**
@@ -112,6 +119,9 @@ abstract class RHtmlMedia
 		elseif (self::$framework == 'bootstrap3')
 		{
 			RHelperAsset::load('lib/bootstrap3/bootstrap.min.js', 'redcore');
+		}
+		elseif (self::$framework == 'foundation5')
+		{
 		}
 	}
 }
