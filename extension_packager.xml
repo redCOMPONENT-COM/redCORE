@@ -70,134 +70,12 @@
 	<target name="build" depends="prepare">
 
 		<echo msg="Copying INSTALLER files to build directory..."/>
-		<copy todir="${targetdir}">
-			<fileset dir="${extpath}/">
-				<include name="LICENSE.txt"/>
-				<include name="install.php"/>
-				<include name="redcore.xml"/>
-			</fileset>
-		</copy>
-
-		<echo msg="Copying COMPONENT folder to build directory..."/>
-		<copy todir="${targetdir}/component">
-			<fileset dir="${extpath}/component">
-				<include name="**"/>
-				<exclude name=".*"/>
-			</fileset>
-		</copy>
-
-		<echo msg="Copying MEDIA folder to build directory..."/>
-		<copy todir="${targetdir}/media">
-			<fileset dir="${extpath}/media">
-				<include name="**"/>
-				<exclude name=".*"/>
-                <!-- Excluding less files -->
-                <exclude name="redcore/less/**"/>
-
-                <!-- Excluding css non-minified files -->
-                <exclude name="**/component.css"/>
-                <exclude name="**/chosen.css"/>
-                <exclude name="**/sortablelist.css"/>
-                <exclude name="**/bootstrap/css/bootstrap.css"/>
-                <exclude name="**/bootstrap/css/bootstrap-responsive.css"/>
-                <exclude name="**/bootstrap3/css/bootstrap.css"/>
-                <exclude name="**/bootstrap3/css/bootstrap-theme.css"/>
-                <exclude name="**/bootstrap-checkbox.css"/>
-                <exclude name="**/bootstrap-timepicker.css"/>
-                <exclude name="**/flexslider.css"/>
-                <exclude name="**/font-awesome.css"/>
-                <exclude name="**/font-awesome-ie7.css"/>
-                <exclude name="**/jquery-ui/jquery-ui.custom.css"/>
-                <exclude name="**/select2.css"/>
-                <exclude name="**/select2-bootstrap.css"/>
-
-                <!-- Excluding js-minified files -->
-                <exclude name="**/component.js"/>
-                <exclude name="**/jquery.searchtools.js"/>
-                <exclude name="**/redgrid.js"/>
-                <exclude name="**/jquery.childlist.js"/>
-                <exclude name="**/bootstrap.js"/>
-                <exclude name="**/bootstrap-checkbox.js"/>
-                <exclude name="**/bootstrap-timepicker.js"/>
-                <exclude name="**/chosen.jquery.js"/>
-                <exclude name="**/jquery.js"/>
-                <exclude name="**/jquery-migrate.js"/>
-                <exclude name="**/sortablelist.js"/>
-                <exclude name="**/jquery.flexslider.js"/>
-                <exclude name="**/jquery.lazyload.js"/>
-                <exclude name="**/jquery-ui.js"/>
-                <exclude name="**/select2.js"/>
-
-                <exclude name="**/jqplot.barRenderer.js"/>
-                <exclude name="**/jqplot.BezierCurveRenderer.js"/>
-                <exclude name="**/jqplot.blockRenderer.js"/>
-                <exclude name="**/jqplot.bubbleRenderer.js"/>
-                <exclude name="**/jqplot.canvasAxisLabelRenderer.js"/>
-                <exclude name="**/jqplot.canvasAxisTickRenderer.js"/>
-                <exclude name="**/jqplot.canvasOverlay.js"/>
-                <exclude name="**/jqplot.canvasTextRenderer.js"/>
-                <exclude name="**/jqplot.categoryAxisRenderer.js"/>
-                <exclude name="**/jqplot.ciParser.js"/>
-                <exclude name="**/jqplot.cursor.js"/>
-                <exclude name="**/jqplot.dateAxisRenderer.js"/>
-                <exclude name="**/jqplot.donutRenderer.js"/>
-                <exclude name="**/jqplot.dragable.js"/>
-                <exclude name="**/jqplot.enhancedLegendRenderer.js"/>
-                <exclude name="**/jqplot.funnelRenderer.js"/>
-                <exclude name="**/jqplot.highlighter.js"/>
-                <exclude name="**/jqplot.json2.js"/>
-                <exclude name="**/jqplot.logAxisRenderer.js"/>
-                <exclude name="**/jqplot.mekkoAxisRenderer.js"/>
-                <exclude name="**/jqplot.mekkoRenderer.js"/>
-                <exclude name="**/jqplot.meterGaugeRenderer.js"/>
-                <exclude name="**/jqplot.mobile.js"/>
-                <exclude name="**/jqplot.ohlcRenderer.js"/>
-                <exclude name="**/jqplot.pieRenderer.js"/>
-                <exclude name="**/jqplot.pointLabels.js"/>
-                <exclude name="**/jqplot.pyramidAxisRenderer.js"/>
-                <exclude name="**/jqplot.pyramidGridRenderer.js"/>
-                <exclude name="**/jqplot.pyramidRenderer.js"/>
-                <exclude name="**/jqplot.trendline.js"/>
-
-                <!-- Excluding map files -->
-                <exclude name="**/jquery-1.11.0.min.map"/>
-
-			</fileset>
-		</copy>
-
-		<echo message="Copying libraries..."/>
-		<copy todir="${targetdir}/libraries" overwrite="true">
-			<fileset dir="${extpath}/libraries">
-				<include name="**"/>
-			</fileset>
-		</copy>
-
-		<echo msg="Copying system redCORE plugin to build directory..."/>
-		<copy todir="${targetdir}/plugins/system/redcore">
-			<fileset dir="${extpath}/plugins/system/redcore">
-				<include name="**"/>
-				<exclude name=".*"/>
-				<exclude name="*.md"/>
-			</fileset>
-		</copy>
-
-		<echo msg="Copying system MVC override plugin to build directory..."/>
-		<copy todir="${targetdir}/plugins/system/mvcoverride">
-			<fileset dir="${extpath}/plugins/system/mvcoverride">
-				<include name="**"/>
-				<exclude name=".*"/>
-				<exclude name="*.md"/>
-			</fileset>
-		</copy>
-
-		<echo msg="Copying language switcher redCORE module to build directory..."/>
-		<copy todir="${targetdir}/modules/mod_redcore_language_switcher">
-			<fileset dir="${extpath}/modules/site/mod_redcore_language_switcher">
-				<include name="**"/>
-				<exclude name=".*"/>
-				<exclude name="*.md"/>
-			</fileset>
-		</copy>
+        <phing phingfile="redcore_copy_mandatory.xml"
+               target="copyframework"
+               haltonfailure="true">
+            <property name="redcoretargetdir" value="${targetdir}" />
+            <property name="redcorepath" value="${project.basedir}" />
+        </phing>
 
 	</target>
 
@@ -223,5 +101,7 @@
 		</zip>
 
 		<echo msg="Files copied and compressed in build directory OK!"/>
+
+        <delete dir="${targetdir}" />
 	</target>
 </project>
