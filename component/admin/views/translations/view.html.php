@@ -148,7 +148,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 				'translations.manageContentElement',
 				JText::_('COM_REDCORE_TRANSLATIONS_MANAGE_CONTENT_ELEMENTS'),
 				'btn btn-primary',
-				'icon-globe',
+				RHtmlMedia::getFAPrefix() . '-globe',
 				false
 			);
 			$secondGroup->addButton($manage);

@@ -26,7 +26,7 @@ if (empty($return))
 	<?php else: ?>
 		<li>
 			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=dashboard') ?>">
-				<i class="icon-dashboard"></i>
+				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-dashboard"></i>
 				<?php echo JText::_('COM_REDCORE_DASHBOARD') ?>
 			</a>
 		</li>
@@ -37,7 +37,7 @@ if (empty($return))
 		<?php foreach ($components as $component) : ?>
 			<li class="<?php echo $option == $component->option ? 'active' : ''; ?>">
 				<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=config&layout=edit&component=' . $component->option . '&return=' . $return) ?>">
-					<i class="icon-cogs"></i>
+					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
 					<?php echo JText::_($component->xml->name); ?>
 				</a>
 			</li>
@@ -46,7 +46,7 @@ if (empty($return))
 	<?php else: ?>
 		<li>
 			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=configs') ?>">
-				<i class="icon-cogs"></i>
+				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-cogs"></i>
 				<?php echo JText::_('COM_REDCORE_CONFIGURATION'); ?>
 			</a>
 		</li>
@@ -62,7 +62,7 @@ if (empty($return))
 					. str_replace('#__', '', $translationTable->table)
 					. '&return=' . $return
 				); ?>">
-					<i class="icon-globe"></i>
+					<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-globe"></i>
 					<?php echo $translationTable->name; ?>
 				</a>
 			</li>
@@ -71,7 +71,7 @@ if (empty($return))
 	<?php else: ?>
 		<li>
 			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&return=' . $return) ?>">
-				<i class="icon-globe"></i>
+				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-globe"></i>
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 			</a>
 		</li>
@@ -83,7 +83,7 @@ if (empty($return))
 	<?php else: ?>
 		<li>
 			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=webservices') ?>">
-				<i class="icon-globe"></i>
+				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-globe"></i>
 				<?php echo JText::_('COM_REDCORE_WEBSERVICES') ?>
 			</a>
 		</li>
@@ -95,7 +95,7 @@ if (empty($return))
 	<?php else: ?>
 		<li>
 			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=oauth_clients') ?>">
-				<i class="icon-globe"></i>
+				<i class="<?php echo RHtmlMedia::getFAPrefix(); ?>-globe"></i>
 				<?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS') ?>
 			</a>
 		</li>

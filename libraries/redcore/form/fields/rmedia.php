@@ -198,7 +198,7 @@ class JFormFieldRmedia extends JFormField
 				$tooltip = $previewImgEmpty . $previewImg;
 				$options = array(
 					'title' => JText::_('JLIB_FORM_MEDIA_PREVIEW_SELECTED_IMAGE'),
-					'text' => '<i class="icon-eye-open"></i>',
+					'text' => '<i class="' . RHtmlMedia::getFAPrefix() . '-eye-open"></i>',
 					'class' => 'hasTipPreview'
 				);
 				$html[] = RHtml::tooltip($tooltip, $options);

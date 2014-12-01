@@ -17,23 +17,23 @@ switch ((string) $item->text)
 {
 	// Check for "Start" item
 	case JText::_('JLIB_HTML_START') :
-		$icon = "icon-backward";
+		$icon = RHtmlMedia::getFAPrefix() . "-backward";
 		break;
 
 	// Check for "Prev" item
 	case $item->text == JText::_('JPREV') :
 		$item->text = JText::_('JPREVIOUS');
-		$icon = "icon-step-backward";
+		$icon = RHtmlMedia::getFAPrefix() . "-step-backward";
 		break;
 
 	// Check for "Next" item
 	case JText::_('JNEXT') :
-		$icon = "icon-step-forward";
+		$icon = RHtmlMedia::getFAPrefix() . "-step-forward";
 		break;
 
 	// Check for "End" item
 	case JText::_('JLIB_HTML_END') :
-		$icon = "icon-forward";
+		$icon = RHtmlMedia::getFAPrefix() . "-forward";
 		break;
 
 	default:

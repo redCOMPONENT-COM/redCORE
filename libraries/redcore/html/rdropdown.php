@@ -46,7 +46,7 @@ abstract class JHtmlRdropdown
 		}
 
 		// Depends on Bootstrap
-		JHtml::_('rbootstrap.framework');
+		RHtmlMedia::loadFrameworkJs();
 
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){

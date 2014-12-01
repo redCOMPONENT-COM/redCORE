@@ -167,7 +167,7 @@ class PlgSystemRedcore extends JPlugin
 		$doc = JFactory::getDocument();
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		RHtml::_('rbootstrap.framework');
+		RHtmlMedia::loadFrameworkJs();
 
 		if ($doc->_scripts)
 		{

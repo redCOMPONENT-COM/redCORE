@@ -135,14 +135,14 @@ $predefinedOptions = array(
 								class="pull-right btn"
 								type="button"
 								onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
-								<span class="icon-copy"></span>
+								<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-copy"></span>
 								<?php echo JText::_('RTOOLBAR_COPY');?>
 							</button>
 							<button
 								class="pull-right btn"
 								type="button"
 								onclick="setTranslationValue('<?php echo $columnKey;?>', '', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
-								<span class="icon-trash"></span>
+								<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-trash"></span>
 								<?php echo JText::_('JCLEAR');?>
 							</button>
 						</td>
@@ -240,7 +240,7 @@ $predefinedOptions = array(
 								class="btn"
 								type="button"
 								onclick="jQuery(this).parent().find('div:first').toggle()">
-								<span class="icon-plus"></span>
+								<span class="<?php echo RHtmlMedia::getFAPrefix(); ?>-plus"></span>
 								<?php echo JText::_('COM_REDCORE_TRANSLATIONS_SHOW_HIDE_ORIGINALS');?>
 							</button>
 							<div style="display:none">

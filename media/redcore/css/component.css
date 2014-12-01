@@ -7619,6 +7619,15 @@
   text-shadow: none;
   color: #FFFFFF;
 }
+.redcore .navbar a.navbar-brand,
+.redcore .navbar .navbar-brand {
+  margin-left: 0;
+  padding: 10px 5px;
+  font-weight: 200;
+  font-size: 1.5em;
+  text-shadow: none;
+  color: #FFFFFF;
+}
 .redcore .navbar .nav > .active > a,
 .redcore .navbar .nav > .active > a:hover,
 .redcore .navbar .nav > .active > a:focus {

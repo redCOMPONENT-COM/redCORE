@@ -129,7 +129,7 @@ class JFormFieldRuser extends JFormFieldRtext
 		{
 			$html[] = '		<a class="btn btn-primary modalAjax" data-toggle="modal" title="' . JText::_('JLIB_FORM_CHANGE_USER') . '" href="#' . $modalId . '"'
 				. ' rel="{handler: \'iframe\', size: {x: 800, y: 500}}">';
-			$html[] = '<i class="icon-user"></i></a>';
+			$html[] = '<i class="' . RHtmlMedia::getFAPrefix() . '-user"></i></a>';
 		}
 
 		$html[] = '</div>';

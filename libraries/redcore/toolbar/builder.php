@@ -28,7 +28,7 @@ final class RToolbarBuilder
 	 */
 	public static function createEditButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_EDIT', $task, $class, 'icon-edit');
+		return new RToolbarButtonStandard('JTOOLBAR_EDIT', $task, $class, RHtmlMedia::getFAPrefix() . '-edit');
 	}
 
 	/**
@@ -41,7 +41,7 @@ final class RToolbarBuilder
 	 */
 	public static function createCopyButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('RTOOLBAR_COPY', $task, $class, 'icon-copy');
+		return new RToolbarButtonStandard('RTOOLBAR_COPY', $task, $class, RHtmlMedia::getFAPrefix() . '-copy');
 	}
 
 	/**
@@ -64,7 +64,7 @@ final class RToolbarBuilder
 			$class .= ' btn-success';
 		}
 
-		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-file-text-alt', '', false);
+		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, RHtmlMedia::getFAPrefix() . '-file-text-alt', '', false);
 	}
 
 	/**
@@ -77,7 +77,7 @@ final class RToolbarBuilder
 	 */
 	public static function createPublishButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_PUBLISH', $task, $class, 'icon-plus-sign');
+		return new RToolbarButtonStandard('JTOOLBAR_PUBLISH', $task, $class, RHtmlMedia::getFAPrefix() . '-plus-sign');
 	}
 
 	/**
@@ -90,7 +90,7 @@ final class RToolbarBuilder
 	 */
 	public static function createUnpublishButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_UNPUBLISH', $task, $class, 'icon-minus-sign');
+		return new RToolbarButtonStandard('JTOOLBAR_UNPUBLISH', $task, $class, RHtmlMedia::getFAPrefix() . '-minus-sign');
 	}
 
 	/**
@@ -103,7 +103,7 @@ final class RToolbarBuilder
 	 */
 	public static function createTrashButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_TRASH', $task, $class, 'icon-trash');
+		return new RToolbarButtonStandard('JTOOLBAR_TRASH', $task, $class, RHtmlMedia::getFAPrefix() . '-trash');
 	}
 
 	/**
@@ -116,7 +116,7 @@ final class RToolbarBuilder
 	 */
 	public static function createArchiveButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_ARCHIVE', $task, $class, 'icon-archive');
+		return new RToolbarButtonStandard('JTOOLBAR_ARCHIVE', $task, $class, RHtmlMedia::getFAPrefix() . '-archive');
 	}
 
 	/**
@@ -129,7 +129,7 @@ final class RToolbarBuilder
 	 */
 	public static function createFeaturedButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JFEATURED', $task, $class, 'icon-featured');
+		return new RToolbarButtonStandard('JFEATURED', $task, $class, RHtmlMedia::getFAPrefix() . '-featured');
 	}
 
 	/**
@@ -152,7 +152,7 @@ final class RToolbarBuilder
 			$class .= ' btn-danger';
 		}
 
-		return new RToolbarButtonStandard('JTOOLBAR_DELETE', $task, $class, 'icon-remove-sign');
+		return new RToolbarButtonStandard('JTOOLBAR_DELETE', $task, $class, RHtmlMedia::getFAPrefix() . '-remove-sign');
 	}
 
 	/**
@@ -165,7 +165,7 @@ final class RToolbarBuilder
 	 */
 	public static function createCheckinButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_CHECKIN', $task, $class, 'icon-check');
+		return new RToolbarButtonStandard('JTOOLBAR_CHECKIN', $task, $class, RHtmlMedia::getFAPrefix() . '-check');
 	}
 
 	/**
@@ -188,7 +188,7 @@ final class RToolbarBuilder
 			$class .= ' btn-danger';
 		}
 
-		return new RToolbarButtonStandard('JTOOLBAR_CANCEL', $task, $class, 'icon-remove', false);
+		return new RToolbarButtonStandard('JTOOLBAR_CANCEL', $task, $class, RHtmlMedia::getFAPrefix() . '-remove', false);
 	}
 
 	/**
@@ -211,7 +211,7 @@ final class RToolbarBuilder
 			$class .= ' btn-danger';
 		}
 
-		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-remove', false);
+		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, RHtmlMedia::getFAPrefix() . '-remove', false);
 	}
 
 	/**
@@ -234,7 +234,7 @@ final class RToolbarBuilder
 			$class .= ' btn-success';
 		}
 
-		return new RToolbarButtonStandard('JTOOLBAR_APPLY', $task, $class, 'icon-save', false);
+		return new RToolbarButtonStandard('JTOOLBAR_APPLY', $task, $class, RHtmlMedia::getFAPrefix() . '-save', false);
 	}
 
 	/**
@@ -247,7 +247,7 @@ final class RToolbarBuilder
 	 */
 	public static function createSaveAndCloseButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_SAVE', $task, $class, 'icon-save', false);
+		return new RToolbarButtonStandard('JTOOLBAR_SAVE', $task, $class, RHtmlMedia::getFAPrefix() . '-save', false);
 	}
 
 	/**
@@ -260,7 +260,7 @@ final class RToolbarBuilder
 	 */
 	public static function createSaveAndNewButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_SAVE_AND_NEW', $task, $class, 'icon-save', false);
+		return new RToolbarButtonStandard('JTOOLBAR_SAVE_AND_NEW', $task, $class, RHtmlMedia::getFAPrefix() . '-save', false);
 	}
 
 	/**
@@ -273,7 +273,7 @@ final class RToolbarBuilder
 	 */
 	public static function createSaveAsCopyButton($task, $class = '')
 	{
-		return new RToolbarButtonStandard('JTOOLBAR_SAVE_AS_COPY', $task, $class, 'icon-copy', false);
+		return new RToolbarButtonStandard('JTOOLBAR_SAVE_AS_COPY', $task, $class, RHtmlMedia::getFAPrefix() . '-copy', false);
 	}
 
 	/**
@@ -309,7 +309,7 @@ final class RToolbarBuilder
 		$link = 'index.php?option=com_config&amp;view=component&amp;component=' .
 			$component . '&amp;path=' . $path . '&amp;return=' . $return;
 
-		return new RToolbarButtonLink('JToolbar_Options', $link, $class, 'icon-cogs');
+		return new RToolbarButtonLink('JToolbar_Options', $link, $class, RHtmlMedia::getFAPrefix() . '-cogs');
 	}
 
 	/**
@@ -328,7 +328,7 @@ final class RToolbarBuilder
 		$link = 'index.php?option=com_redcore&view=config&layout=edit&component=' .
 			$component . '&return=' . $return;
 
-		return new RToolbarButtonLink('JToolbar_Options', $link, $class, 'icon-cogs');
+		return new RToolbarButtonLink('JToolbar_Options', $link, $class, RHtmlMedia::getFAPrefix() . '-cogs');
 	}
 
 	/**
@@ -380,6 +380,6 @@ final class RToolbarBuilder
 			$link = $uri->toString();
 		}
 
-		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table');
+		return self::createLinkButton($link, 'LIB_REDCORE_CSV', RHtmlMedia::getFAPrefix() . '-table');
 	}
 }
