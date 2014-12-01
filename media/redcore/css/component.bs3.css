@@ -8313,12 +8313,6 @@
 .redcore {
   padding-top: 40px;
   /* Force tabs to overflow visible */
-  /*[class^="btn "],
-  [class*=" btn "] {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-  }*/
   /*
   .modal {
     position: fixed;

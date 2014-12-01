@@ -13,7 +13,6 @@
 
   // Core variables and mixins
   @import "./bootstrap3/variables.less"; // Modify this for custom colors, font-sizes, etc
-  //@import "./bootstrap3/mixins.less";
 
   // redCORE - customisation & mixins
   //@import "variables.less";
@@ -26,11 +25,7 @@
   color: @text-color;
   background-color: @body-bg;
 
-  // Font path variable
-  //@icon-font-path: "lib/bootstrap3/fonts/";
-
   // complete bootstrap
-  //@import "./bootstrap3/bootstrap.less";
   @import (less) "../css/lib/bootstrap3/css/bootstrap.css";
 
   // Overriding font location to "lib/bootstrap3/fonts"
@@ -48,7 +43,6 @@
   @import "sidebar.less";
   @import "footer.less";
   @import "forms.less";
-  //@import "responsive.less";
 }
 
 // Modal backdrop not namespaced
@@ -133,14 +127,6 @@
     -moz-osx-font-smoothing: grayscale;
     color: inherit;
   }
-
-  // Set button default settings
-  /*[class^="btn "],
-  [class*=" btn "] {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-  }*/
 
   .icon-stack:before {
     content: none;
