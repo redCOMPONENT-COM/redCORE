@@ -58,10 +58,13 @@
 
             <!-- Excluding css non-minified files -->
             <exclude name="**/component.css"/>
+            <exclude name="**/component.bs3.css"/>
             <exclude name="**/chosen.css"/>
             <exclude name="**/sortablelist.css"/>
             <exclude name="**/bootstrap/css/bootstrap.css"/>
             <exclude name="**/bootstrap/css/bootstrap-responsive.css"/>
+            <exclude name="**/bootstrap3/css/bootstrap.css"/>
+            <exclude name="**/bootstrap3/css/bootstrap-theme.css"/>
             <exclude name="**/bootstrap-checkbox.css"/>
             <exclude name="**/bootstrap-timepicker.css"/>
             <exclude name="**/flexslider.css"/>
@@ -77,6 +80,7 @@
             <exclude name="**/redgrid.js"/>
             <exclude name="**/jquery.childlist.js"/>
             <exclude name="**/bootstrap.js"/>
+            <exclude name="**/bootstrap3/bootstrap.js"/>
             <exclude name="**/bootstrap-checkbox.js"/>
             <exclude name="**/bootstrap-timepicker.js"/>
             <exclude name="**/chosen.jquery.js"/>
