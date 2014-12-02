@@ -1,0 +1,8 @@
+I WANT TO GET VIA WEBSERVICES AN EXISTING CONTACT WITH ID=1 AT COM_CONTACTS IN HAL FORMAT
+
+I am http authenticated 'service_user'," '123456'
+I have http header 'Content-Type'," 'application/x-www-form-urlencoded'
+I send get 'index.php'," ['option' => 'contact'," 'api' => 'Hal'," 'id' => 1]"
+I see response code is "200"
+I see response is json ""
+I see response contains 'id":"1'
