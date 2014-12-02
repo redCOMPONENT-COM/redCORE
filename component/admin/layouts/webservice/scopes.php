@@ -23,27 +23,27 @@ $hiddenLabel = isset($displayData['options']['hiddenLabel']) ? (bool) $displayDa
 $column = 0;
 ?>
 
-<div class="control-group <?php echo $class; ?>">
-	<div class="row-fluid">
+<div class="form-group <?php echo $class; ?>">
+	<div class="row">
 		<?php foreach ($options as $webServiceName => $scopes) :?>
-			<div class="span4 well">
-				<h4>
-					<?php echo $webServiceName; ?>
-				</h4>
-				<?php foreach ($scopes as $scope) :?>
-					<?php $isChecked = in_array($scope['scope'], $value) ? ' checked="checked" ' : ''; ?>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" name="<?php echo $name; ?>" <?php echo $isChecked; ?> value="<?php echo $scope['scope']; ?>" />
-							<?php echo $scope['scopeDisplayName']; ?>
-						</label>
-					</div>
-				<?php endforeach;?>
-			</div>
-			<?php if ((++$column) % 3 == 0 ) : ?>
+		<div class="col-md-4 well">
+			<h4>
+				<?php echo $webServiceName; ?>
+			</h4>
+			<?php foreach ($scopes as $scope) :?>
+				<?php $isChecked = in_array($scope['scope'], $value) ? ' checked="checked" ' : ''; ?>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" name="<?php echo $name; ?>" <?php echo $isChecked; ?> value="<?php echo $scope['scope']; ?>" />
+						<?php echo $scope['scopeDisplayName']; ?>
+					</label>
 				</div>
-				<div class="row-fluid">
-			<?php endif; ?>
+			<?php endforeach;?>
+		</div>
+		<?php if ((++$column) % 3 == 0 ) : ?>
+	</div>
+	<div class="row">
+		<?php endif; ?>
 		<?php endforeach;?>
 	</div>
 </div>
