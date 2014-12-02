@@ -370,14 +370,17 @@ class Com_RedcoreInstallerScript
 		// Required objects
 		$manifest  = $parent->get('manifest');
 
-		if ($nodes = $manifest->translations->translation)
+		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
-			foreach ($nodes as $node)
+			if ($nodes = $manifest->translations->translation)
 			{
-				$extName   = (string) $node->attributes()->name;
-				$result = RTranslationTable::batchContentElements($extName, 'install', false);
+				foreach ($nodes as $node)
+				{
+					$extName   = (string) $node->attributes()->name;
+					$result = RTranslationTable::batchContentElements($extName, 'install', false);
 
-				$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
+					$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
+				}
 			}
 		}
 	}
@@ -794,7 +797,7 @@ class Com_RedcoreInstallerScript
 
 		if ($isRedcore)
 		{
-			if ($components = RComponentHelper::getRedcoreComponents())
+			if ((method_exists('RComponentHelper', 'getRedcoreComponents')) && $components = RComponentHelper::getRedcoreComponents())
 			{
 				$app = JFactory::getApplication();
 
@@ -851,7 +854,8 @@ class Com_RedcoreInstallerScript
 
 			foreach ($translationTables as $translationTable => $translationTableParams)
 			{
-				if ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option)
+				if ((method_exists('RTranslationTable', 'getTranslationsTableName'))
+					&& ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option))
 				{
 					$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
 
@@ -1109,6 +1113,8 @@ class Com_RedcoreInstallerScript
 	 */
 	public function displayComponentInfo($parent, $message = '')
 	{
+		$this->loadRedcoreLibrary();
+
 		if ($this->showComponentInfo)
 		{
 			if (method_exists('RComponentHelper', 'displayComponentInfo'))
@@ -1144,13 +1150,21 @@ class Com_RedcoreInstallerScript
 	 */
 	public function loadRedcoreLibrary()
 	{
-		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
-
-		if (file_exists($redcoreLoader))
+		if (!class_exists('RBootstrap'))
 		{
-			require_once $redcoreLoader;
+			$searchPaths = array(
+				// Install
+				dirname(__FILE__) . '/libraries/redcore',
+				// Discover install
+				JPATH_LIBRARIES . '/redcore'
+			);
 
-			RBootstrap::bootstrap(false);
+			if ($redcoreLoader = JPath::find($searchPaths, 'bootstrap.php'))
+			{
+				require_once $redcoreLoader;
+
+				RBootstrap::bootstrap(false);
+			}
 		}
 	}
 
