@@ -179,7 +179,7 @@ final class RComponentHelper
 		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_redcore/models', 'RedcoreModel');
 		$option = strtolower($option);
 		/** @var RedcoreModelConfig $modelConfig */
-		$modelConfig = RModelAdmin::getInstance('Config', 'RedcoreModel', array('ignore_request' => true));
+		$modelConfig = JModelLegacy::getInstance('Config', 'RedcoreModel', array('ignore_request' => true));
 
 		$component = $modelConfig->getComponent($option);
 

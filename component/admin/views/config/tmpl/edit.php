@@ -30,7 +30,7 @@ JHtml::_('rjquery.chosen', 'select');
 		<li><a href="#mainComponentTranslations" data-toggle="tab"><?php echo JText::_('COM_REDCORE_TRANSLATIONS'); ?></a></li>
 		<li><a href="#mainComponentInfo" data-toggle="tab"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_INFO'); ?></a></li>
 	</ul>
-	<div class="tab-content row-fluid">
+	<div class="tab-content">
 		<?php echo $this->loadTemplate('configuration'); ?>
 		<?php echo $this->loadTemplate('translations'); ?>
 		<?php echo $this->loadTemplate('info'); ?>

@@ -1347,7 +1347,7 @@ class RApiHalHal extends RApi
 			require_once $helperFile;
 		}
 
-		$webserviceName = preg_replace('/[^A-Z0-9_\.-]/i', '', $this->webserviceName);
+		$webserviceName = preg_replace('/[^A-Z0-9_\.]/i', '', $this->webserviceName);
 		$helperClassName = 'RApiHalHelper' . ucfirst($this->client) . ucfirst(strtolower($webserviceName));
 
 		if (class_exists($helperClassName))

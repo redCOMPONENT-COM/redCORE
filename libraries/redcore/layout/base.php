@@ -59,6 +59,20 @@ class RLayoutBase implements RLayout
 			$this->options = new JRegistry;
 		}
 
+		if (!empty(RHtmlMedia::$frameworkSuffix))
+		{
+			$suffixes = $this->options->get('suffixes', array());
+
+			foreach ($suffixes as &$suffix)
+			{
+				$suffix .= '.' . RHtmlMedia::$frameworkSuffix;
+			}
+
+			$suffixes[] = RHtmlMedia::$frameworkSuffix;
+
+			$this->options->set('suffixes', $suffixes);
+		}
+
 		return $this;
 	}
 

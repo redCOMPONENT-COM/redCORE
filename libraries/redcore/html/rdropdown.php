@@ -46,7 +46,7 @@ abstract class JHtmlRdropdown
 		}
 
 		// Depends on Bootstrap
-		JHtml::_('rbootstrap.framework');
+		RHtmlMedia::loadFrameworkJs();
 
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){
@@ -91,7 +91,7 @@ abstract class JHtmlRdropdown
 		}
 
 		$dropDownList = '<div class="btn-group" style="margin-left:6px;display:none">
-							<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-mini">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-mini btn-xs">
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">';
