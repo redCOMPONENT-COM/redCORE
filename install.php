@@ -1150,21 +1150,13 @@ class Com_RedcoreInstallerScript
 	 */
 	public function loadRedcoreLibrary()
 	{
-		if (!class_exists('RBootstrap'))
+		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
+
+		if (file_exists($redcoreLoader))
 		{
-			$searchPaths = array(
-				// Install
-				dirname(__FILE__) . '/libraries/redcore',
-				// Discover install
-				JPATH_LIBRARIES . '/redcore'
-			);
+			require_once $redcoreLoader;
 
-			if ($redcoreLoader = JPath::find($searchPaths, 'bootstrap.php'))
-			{
-				require_once $redcoreLoader;
-
-				RBootstrap::bootstrap(false);
-			}
+			RBootstrap::bootstrap(false);
 		}
 	}
 
