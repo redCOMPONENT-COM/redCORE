@@ -59,9 +59,7 @@ if ($activeNode)
 				</li>
 			<?php else : ?>
 				<li>
-					<a href="<?php echo $link->getTarget(); ?>">
-						<?php echo $link->getContent(); ?>
-					</a>
+					<a href="<?php echo $link->getTarget(); ?>"><?php echo $link->getContent(); ?></a>
 					<span class="divider">/</span>
 				</li>
 			<?php endif; ?>
