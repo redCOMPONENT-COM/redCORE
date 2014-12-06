@@ -546,8 +546,6 @@ class Com_RedcoreInstallerScript
 			return false;
 		}
 
-		$copyfiles = array();
-
 		// Here we set the folder we are going to copy the files to.
 		$destination = JPath::clean(RApiHalHelper::getWebservicesPath());
 
@@ -562,6 +560,26 @@ class Com_RedcoreInstallerScript
 		{
 			$source = $src;
 		}
+
+		$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
+
+		return $installer->copyFiles($copyFiles);
+	}
+
+	/**
+	 * Method to parse through a xml element of the installation manifest and take appropriate action.
+	 *
+	 * @param   SimpleXMLElement  $element      Element to iterate
+	 * @param   string            $source       Source location of the files
+	 * @param   string            $destination  Destination location of the files
+	 *
+	 * @return  array
+	 *
+	 * @since   1.4
+	 */
+	public function prepareFilesForCopy($element, $source, $destination)
+	{
+		$copyFiles = array();
 
 		// Process each file in the $files array (children of $tagName).
 		foreach ($element->children() as $file)
@@ -586,10 +604,10 @@ class Com_RedcoreInstallerScript
 			}
 
 			// Add the file to the copyfiles array
-			$copyfiles[] = $path;
+			$copyFiles[] = $path;
 		}
 
-		return $installer->copyFiles($copyfiles);
+		return $copyFiles;
 	}
 
 	/**
