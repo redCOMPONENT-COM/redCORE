@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     RedShop
+ * @package     redCORE
  * @subpackage  Step Class
  * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
@@ -8,7 +8,7 @@
 
 namespace AcceptanceTester;
 /**
- * Class InstallExtensionStep
+ * Class InstallExtensionJ2Steps
  *
  * @package  AcceptanceTester
  *
@@ -16,7 +16,7 @@ namespace AcceptanceTester;
  *
  * @link     http://codeception.com/docs/07-AdvancedUsage#StepObjects
  */
-class InstallExtensionSteps extends \AcceptanceTester
+class InstallExtensionJ2Steps extends \AcceptanceTester
 {
 	/**
 	 * Function to Install redCORE, inside Joomla 2.5
