@@ -87,9 +87,9 @@ $column = 0;
 			<span class="badge badge-important"><?php echo JText::_('JDISABLED'); ?></span>
 		<?php endif; ?>
 	</p>
-	<div class="row-fluid">
-		<div class="span6 well">
-			<div class="control-group">
+	<div class="row">
+		<div class="col-md-6 well">
+			<div class="form-group">
 				<div class="control-label">
 					<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_TITLE'); ?>
 				</div>
@@ -104,7 +104,7 @@ $column = 0;
 					</button>
 				</div>
 			</div>
-			<div class="control-group" style="margin-top:40px;margin-bottom: 0;">
+			<div class="form-group" style="margin-top:40px;margin-bottom: 0;">
 				<div class="control-label">
 					<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_FILES_MASS_ACTIONS'); ?>
 				</div>
@@ -141,7 +141,7 @@ $column = 0;
 			</div>
 		</div>
 	</div>
-	<div class="row-fluid">
+	<div class="row">
 		<?php if (empty($contentElements)): ?>
 			<div class="alert alert-info">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -152,7 +152,7 @@ $column = 0;
 		<?php else : ?>
 		<?php foreach ($contentElements as $contentElement): ?>
 		<?php $status = $contentElement->getStatus() ?>
-		<div class="span4 well">
+		<div class="col-md-4 well">
 			<h4>
 				<?php echo !empty($contentElement->name) ? $contentElement->name : $contentElement->contentElementXml; ?>
 			</h4>
@@ -194,7 +194,7 @@ $column = 0;
 			</table>
 			<?php if ($status == JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED')): ?>
 				<button
-					class="btn btn-small btn-success"
+					class="btn btn-sm btn-success"
 					type="button"
 					onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.installContentElement')">
 					<i class="icon-cogs"></i>
@@ -203,19 +203,19 @@ $column = 0;
 				<?php $disabled = ' disabled="disabled" '; ?>
 			<?php else: ?>
 				<button
-					class="btn btn-small btn-primary"
+					class="btn btn-sm btn-primary"
 					type="button"
 					onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.installContentElement')">
 					<i class="icon-cogs"></i>
 					<?php echo JText::_('COM_REDCORE_UPDATE') ?>
 				</button>
-				<a class="btn btn-small btn-primary"
+				<a class="btn btn-sm btn-primary"
 				   href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=' . str_replace('#__', '', $contentElement->table)); ?>">
 					<i class="icon-globe"></i>
 					<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 				</a>
 				<button
-					class="btn btn-small btn-danger"
+					class="btn btn-sm btn-danger"
 					type="button"
 					onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.uninstallContentElement')">
 					<i class="icon-cogs"></i>
@@ -224,14 +224,14 @@ $column = 0;
 				<?php $disabled = ''; ?>
 			<?php endif; ?>
 			<button
-				class="btn btn-small btn-danger"
+				class="btn btn-sm btn-danger"
 				type="button"
 				onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.deleteContentElement')">
 				<i class="icon-remove"></i>
 				<?php echo JText::_('JTOOLBAR_DELETE') ?>
 			</button>
 			<button
-				class="btn btn-small btn-danger"
+				class="btn btn-sm btn-danger"
 				type="button"
 				onclick="setContentElement('<?php echo $contentElement->contentElementXml; ?>', 'config.purgeContentElement')" <?php echo $disabled; ?>>
 				<i class="icon-trash"></i>
@@ -240,15 +240,15 @@ $column = 0;
 		</div>
 		<?php if ((++$column) % 3 == 0 ) : ?>
 	</div>
-	<div class="row-fluid">
+	<div class="row">
 		<?php endif; ?>
 		<?php endforeach; ?>
 		<?php endif; ?>
 	</div>
-	<div class="row-fluid">
+	<div class="row">
 		<?php if (!empty($missingContentElements)): ?>
 		<?php foreach ($missingContentElements as $missingContentElement): ?>
-		<div class="span4 well">
+		<div class="col-md-4 well">
 			<h4>
 				<?php echo $missingContentElement->xml; ?>
 			</h4>
@@ -281,7 +281,7 @@ $column = 0;
 				</tbody>
 			</table>
 			<button
-				class="btn btn-small btn-danger"
+				class="btn btn-sm btn-danger"
 				type="button"
 				onclick="setContentElement('<?php echo $missingContentElement->xml; ?>', 'config.uninstallContentElement')">
 				<i class="icon-cogs"></i>
@@ -290,7 +290,7 @@ $column = 0;
 		</div>
 		<?php if ((++$column) % 3 == 0 ) : ?>
 	</div>
-	<div class="row-fluid">
+	<div class="row">
 		<?php endif; ?>
 		<?php endforeach; ?>
 		<?php endif; ?>

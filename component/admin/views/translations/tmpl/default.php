@@ -18,6 +18,8 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn = $this->state->get('list.direction');
 $selectedLanguage = $this->state->get('filter.language', '');
 $input = JFactory::getApplication()->input;
+$columns = array();
+
 if (!empty($this->items)):
 	$columns = (array) $this->translationTable->columns;
 	$this->translationTable->primaryKeys = (array) $this->translationTable->primaryKeys;
@@ -66,21 +68,21 @@ endif;
 		<table class="table table-striped table-hover" id="translationList">
 			<thead>
 			<tr>
-				<th style="width:1%" class="hidden-phone">
+				<th style="width:1%" class="hidden-xs">
 					<input type="checkbox" name="checkall-toggle" value=""
 					       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JText::_('JSTATUS'); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JText::_('JGLOBAL_FIELD_MODIFIED_LABEL'); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JHtml::_('rsearchtools.sort', 'JGRID_HEADING_LANGUAGE', 't.rctranslations_language', $listDirn, $listOrder); ?>
 				</th>
 				<?php foreach ($columns as $column) : ?>
-					<th style="width:20%" class="nowrap hidden-phone">
+					<th style="width:20%" class="nowrap hidden-xs">
 						<?php echo JHtml::_('rsearchtools.sort', $column, 't.' . $column, $listDirn, $listOrder); ?>
 					</th>
 				<?php endforeach; ?>

@@ -19,7 +19,7 @@ defined('JPATH_BASE') or die;
 class RApiOauth2Helper
 {
 	/**
-	 * OAuth2 Server instance
+	 * Oauth2 Server instance
 	 *
 	 * @var    RApiOauth2Oauth2
 	 * @since  1.2
@@ -27,12 +27,12 @@ class RApiOauth2Helper
 	public static $serverApi = null;
 
 	/**
-	 * An array to hold installed Webservices data
+	 * OAuth2 Client Scopes
 	 *
 	 * @var    array
 	 * @since  1.2
 	 */
-	public static $installedWebservices = null;
+	public static $clientScopes = array();
 
 	/**
 	 * Handles token Request
@@ -41,7 +41,7 @@ class RApiOauth2Helper
 	 */
 	public static function handleTokenRequest()
 	{
-		if (!self::getOauth2Server())
+		if (!self::getOAuth2Server())
 		{
 			return false;
 		}
@@ -62,7 +62,7 @@ class RApiOauth2Helper
 	 */
 	public static function verifyResourceRequest($scope = null)
 	{
-		if (!self::getOauth2Server())
+		if (!self::getOAuth2Server())
 		{
 			return false;
 		}
@@ -82,7 +82,7 @@ class RApiOauth2Helper
 	 */
 	public static function handleAuthorizeRequest()
 	{
-		if (!self::getOauth2Server())
+		if (!self::getOAuth2Server())
 		{
 			return false;
 		}
@@ -99,7 +99,7 @@ class RApiOauth2Helper
 	 *
 	 * @return  RApiOauth2Oauth2
 	 */
-	public static function getOauth2Server()
+	public static function getOAuth2Server()
 	{
 		if (RTranslationHelper::$pluginParams->get('enable_oauth2_server', 0) == 0)
 		{
@@ -116,5 +116,32 @@ class RApiOauth2Helper
 		}
 
 		return self::$serverApi;
+	}
+
+	/**
+	 * Gets Client Scopes
+	 *
+	 * @param   string  $clientId  Client Id
+	 *
+	 * @return  array
+	 */
+	public static function getClientScopes($clientId = '')
+	{
+		if (isset(self::$clientScopes[$clientId]))
+		{
+			return self::$clientScopes[$clientId];
+		}
+
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true)
+			->select('oc.scope')
+			->from($db->qn('#__redcore_oauth_clients', 'oc'))
+			->where('oc.client_id = ' . $db->q($clientId));
+
+		$db->setQuery($query);
+
+		$clientScopes = $db->loadResult();
+
+		return $clientScopes;
 	}
 }

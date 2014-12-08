@@ -35,6 +35,14 @@ final class RTranslationTable
 	public static $columnsList = array();
 
 	/**
+	 * An array to hold database engines from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $dbEngines = array();
+
+	/**
 	 * Prefix used to identify the tables
 	 *
 	 * @var    array
@@ -93,14 +101,19 @@ final class RTranslationTable
 			$tableName = self::$tablePrefix . str_replace('#__', '', $tableName);
 		}
 
-		if (empty(self::$columnsList[$tableName]))
+		if (in_array($tableName, self::$tableList))
 		{
-			$db = JFactory::getDbo();
+			if (empty(self::$columnsList[$tableName]))
+			{
+				$db = JFactory::getDbo();
 
-			self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+				self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+			}
+
+			return self::$columnsList[$tableName];
 		}
 
-		return self::$columnsList[$tableName];
+		return array();
 	}
 
 	/**
@@ -162,9 +175,21 @@ final class RTranslationTable
 		// Create table with fields
 		$db = JFactory::getDbo();
 
+		$originalColumns = self::getTableColumns($contentElement->table);
+
+		// If original table is not present then we cannot create shadow table
+		if (empty($originalColumns))
+		{
+			JFactory::getApplication()->enqueueMessage(
+				JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_TABLE', $xmlFile, (string) $contentElement->table),
+				'error'
+			);
+
+			return false;
+		}
+
 		// Check if that table is already installed
 		$columns = self::getTranslationsTableColumns($contentElement->table);
-		$originalColumns = $db->getTableColumns('#__' . $contentElement->table, false);
 		$fields = array();
 		$primaryKeys = array();
 		$fieldsXml = $contentElement->getTranslateFields();
@@ -236,9 +261,16 @@ final class RTranslationTable
 			try
 			{
 				$db->execute();
-				$columns = $db->getTableColumns($newTable, false);
+
+				self::$tablePrefix = '';
+				$columns = self::getTableColumns($newTable);
+
+				if (empty($columns))
+				{
+					throw new RuntimeException($newTable);
+				}
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -288,7 +320,7 @@ final class RTranslationTable
 					$db->setQuery($query);
 					$db->execute();
 				}
-				catch (Exception $e)
+				catch (RuntimeException $e)
 				{
 					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -315,7 +347,7 @@ final class RTranslationTable
 					$db->setQuery($query);
 					$db->execute();
 				}
-				catch (Exception $e)
+				catch (RuntimeException $e)
 				{
 					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -325,7 +357,11 @@ final class RTranslationTable
 		}
 
 		self::updateTableIndexKeys($fieldsXml, $newTable);
-		self::removeExistingConstraintKeys($originalTable, $primaryKeys);
+
+		if (!$newTableCreated)
+		{
+			self::removeExistingConstraintKeys($originalTable, $primaryKeys);
+		}
 
 		// New install use default value foreign key if InnoDB is present
 		if (empty(RTranslationHelper::$pluginParams))
@@ -428,7 +464,7 @@ final class RTranslationTable
 				$db->setQuery($indexKeysQuery);
 				$db->execute();
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -477,7 +513,7 @@ final class RTranslationTable
 				$db->setQuery($query);
 				$db->execute();
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -498,6 +534,8 @@ final class RTranslationTable
 	 */
 	public static function removeExistingConstraintKeys($originalTable, $primaryKeys = array())
 	{
+		$innoDBSupport = self::checkIfDatabaseEngineExists();
+
 		// Remove Triggers
 		$db = JFactory::getDbo();
 		$triggerKey = md5($originalTable . '_rctranslationstrigger');
@@ -507,12 +545,12 @@ final class RTranslationTable
 			$db->setQuery('DROP TRIGGER IF EXISTS ' . $db->qn($triggerKey));
 			$db->execute();
 		}
-		catch (Exception $e)
+		catch (RuntimeException $e)
 		{
 
 		}
 
-		if (!empty($primaryKeys))
+		if ($innoDBSupport && !empty($primaryKeys))
 		{
 			$newTable = self::getTranslationsTableName($originalTable, '');
 
@@ -520,20 +558,19 @@ final class RTranslationTable
 			{
 				$constraintKey = $db->qn(md5($newTable . '_' . $primaryKey . '_fk'));
 
-				$query = 'ALTER TABLE ' . $db->qn($newTable) . ' DROP FOREIGN KEY ' . $constraintKey;
+				$query = 'ALTER TABLE ' . $db->qn($newTable) . ' DROP FOREIGN KEY ' . $constraintKey . ' # ' . $newTable . '_' . $primaryKey . '_fk';
 
 				try
 				{
 					$db->setQuery($query);
 					$db->execute();
 				}
-				catch (Exception $e)
+				catch (RuntimeException $e)
 				{
 
 				}
 			}
 		}
-
 	}
 
 	/**
@@ -561,7 +598,7 @@ final class RTranslationTable
 					{
 						$primaryKey = $db->qn($fieldName);
 						$constraintKey = $db->qn(md5($newTable . '_' . $fieldName . '_fk'));
-						$query = 'ALTER TABLE ' . $db->qn($newTable) . 'ADD CONSTRAINT '
+						$query = 'ALTER TABLE ' . $db->qn($newTable) . ' ADD CONSTRAINT '
 							. $constraintKey
 							. ' FOREIGN KEY (' . $primaryKey . ')'
 							. ' REFERENCES ' . $db->qn($originalTable) . ' (' . $primaryKey . ')'
@@ -573,7 +610,7 @@ final class RTranslationTable
 							$db->setQuery($query);
 							$db->execute();
 						}
-						catch (Exception $e)
+						catch (RuntimeException $e)
 						{
 							JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -668,7 +705,7 @@ final class RTranslationTable
 			{
 				$db->truncateTable($newTable);
 			}
-			catch (Exception $e)
+			catch (RuntimeException $e)
 			{
 				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
 
@@ -835,7 +872,7 @@ final class RTranslationTable
 		}
 
 		// Trigger the onConfigurationBeforeSave event.
-		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', $table, $isNew));
+		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', &$table, $isNew));
 
 		if (in_array(false, $result, true))
 		{
@@ -849,7 +886,7 @@ final class RTranslationTable
 		}
 
 		// Trigger the onConfigurationAfterSave event.
-		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', $table, $isNew));
+		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', &$table, $isNew));
 
 		return true;
 	}
@@ -902,25 +939,29 @@ final class RTranslationTable
 	 */
 	public static function checkIfDatabaseEngineExists($engine = 'InnoDB')
 	{
-		$db = JFactory::getDbo();
-
-		$db->setQuery('SHOW ENGINES');
-		$results = $db->loadObjectList();
-
-		if (!empty($results))
+		if (!isset(self::$dbEngines[$engine]))
 		{
-			foreach ($results as $result)
+			self::$dbEngines[$engine] = false;
+			$db = JFactory::getDbo();
+
+			$db->setQuery('SHOW ENGINES');
+			$results = $db->loadObjectList();
+
+			if (!empty($results))
 			{
-				if (strtoupper($result->Engine) == strtoupper($engine))
+				foreach ($results as $result)
 				{
-					if (strtoupper($result->Support) != 'NO')
+					if (strtoupper($result->Engine) == strtoupper($engine))
 					{
-						return true;
+						if (strtoupper($result->Support) != 'NO')
+						{
+							self::$dbEngines[$engine] = true;
+						}
 					}
 				}
 			}
 		}
 
-		return false;
+		return self::$dbEngines[$engine];
 	}
 }

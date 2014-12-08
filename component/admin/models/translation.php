@@ -110,12 +110,14 @@ class RedcoreModelTranslation extends RModelAdmin
 				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
 			}
 
-			if ((string) $field['type'] == 'params' && (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			if ((string) $field['type'] == 'params'
+				&& (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
 			{
 				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
 			}
 
-			if ((string) $field['type'] == 'readonlytext' && (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			if ((string) $field['type'] == 'readonlytext'
+				&& (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
 			{
 				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
 			}
@@ -243,7 +245,12 @@ class RedcoreModelTranslation extends RModelAdmin
 
 					if (method_exists($postHandlerFunctionArray[0], $postHandlerFunctionArray[1]))
 					{
-						call_user_func_array(array($postHandlerFunctionArray[0], $postHandlerFunctionArray[1]), array($field, &$data[$fieldName], &$data, $translationTable));
+						call_user_func_array(
+							array(
+								$postHandlerFunctionArray[0],
+								$postHandlerFunctionArray[1]),
+								array($field, &$data[$fieldName], &$data, $translationTable)
+						);
 					}
 				}
 			}

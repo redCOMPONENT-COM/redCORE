@@ -68,7 +68,12 @@ if($displayData['active'])
 		$title = ' title="' . $item->text . '" ';
 	}
 
-	$onClick = "document." . $item->formName . "." . $item->prefix . $limit . "; Joomla.submitform(document.forms['" . $item->formName . "'].task.value, document.forms['" . $item->formName . "']);return false;";
+	$onClick = "document."
+		. $item->formName
+		. "."
+		. $item->prefix
+		. $limit
+		. "; Joomla.submitform(document.forms['" . $item->formName . "'].task.value, document.forms['" . $item->formName . "']);return false;";
 }
 else
 {

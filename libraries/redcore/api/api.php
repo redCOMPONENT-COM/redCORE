@@ -112,6 +112,9 @@ class RApi extends RApiBase
 
 		// Main properties
 		$this->setApi($this->options->get('api', 'hal'));
+
+		// Load Library language
+		$this->loadExtensionLanguage('lib_joomla', JPATH_ADMINISTRATOR);
 	}
 
 	/**
@@ -165,5 +168,82 @@ class RApi extends RApiBase
 	public function setDebug($debug)
 	{
 		$this->options->set('debug', (boolean) $debug);
+	}
+
+	/**
+	 * Load extension language file.
+	 *
+	 * @param   string  $option  Option name
+	 * @param   string  $path    Path to language file
+	 *
+	 * @return  object
+	 */
+	public function loadExtensionLanguage($option, $path = JPATH_SITE)
+	{
+		// Load common and local language files.
+		$lang = JFactory::getLanguage();
+
+		// Load language file
+		$lang->load($option, $path, null, false, false)
+		|| $lang->load($option, $path . "/components/$option", null, false, false)
+		|| $lang->load($option, $path, $lang->getDefault(), false, false)
+		|| $lang->load($option, $path . "/components/$option", $lang->getDefault(), false, false);
+
+		return $this;
+	}
+
+	/**
+	 * Returns posted data in array format
+	 *
+	 * @return  array
+	 *
+	 * @since   1.2
+	 */
+	public static function getPostedData()
+	{
+		$input = JFactory::getApplication()->input;
+		$inputData = file_get_contents("php://input");
+
+		if (is_object($inputData))
+		{
+			$inputData = JArrayHelper::fromObject($inputData);
+		}
+		elseif(is_string($inputData))
+		{
+			$parsedData = null;
+
+			// We try to transform it into JSON
+			if ($data_json = @json_decode($inputData, true))
+			{
+				if (json_last_error() == JSON_ERROR_NONE)
+				{
+					$parsedData = (array) $data_json;
+				}
+			}
+
+			// We try to transform it into XML
+			if (is_null($parsedData) && $xml = @simplexml_load_string($inputData))
+			{
+				$json = json_encode((array) $xml);
+				$parsedData = json_decode($json, true);
+			}
+
+			// We try to transform it into Array
+			if (is_null($parsedData) && !empty($inputData) && !is_array($inputData))
+			{
+				parse_str($inputData, $parsedData);
+			}
+
+			$inputData = $parsedData;
+		}
+		else
+		{
+			$inputData = $input->post->getArray();
+		}
+
+		// Filter data with JInput default filter
+		$postedData = new JInput($inputData);
+
+		return $postedData->getArray();
 	}
 }

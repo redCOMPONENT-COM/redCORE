@@ -96,6 +96,13 @@
 		init: function () {
 			var self = this;
 
+			// IE < 9 - Avoid to submit placeholder value
+			if(!document.addEventListener  ) {
+				if (this.searchField.val() === this.searchField.attr('placeholder')) {
+					this.searchField.val('');
+				}
+			}
+
 			// Get values
 			this.searchString = this.searchField.val();
 
@@ -142,7 +149,7 @@
 
 				// Order to set
 				var newOrderCol = $(this).attr('data-order');
-				var newDirection = 'ASC';
+				var newDirection = $(this).attr('data-direction');
 				var newOrdering = newOrderCol + ' ' + newDirection;
 
 				// The data-order attrib is required

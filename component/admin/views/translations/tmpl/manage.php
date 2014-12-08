@@ -59,7 +59,7 @@ $searchToolsOptions = array(
 	<ul class="nav nav-tabs" id="mainTabs">
 		<li><a href="#mainComponentTranslations" data-toggle="tab"><?php echo JText::_('COM_REDCORE_TRANSLATIONS'); ?></a></li>
 	</ul>
-	<div class="tab-content row-fluid">
+	<div class="tab-content">
 		<?php echo RLayoutHelper::render(
 			'translation.tables',
 			array(

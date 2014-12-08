@@ -23,16 +23,16 @@ class RApiHalTransformBoolean extends RApiHalTransformBase
 	 *
 	 * @param   string  $definition  Field definition.
 	 *
-	 * @return string Transformed value.
+	 * @return boolean Transformed value.
 	 */
 	public static function toExternal($definition)
 	{
-		if ($definition == 'true')
+		if ($definition == 'true' || $definition == '1')
 		{
 			return true;
 		}
 
-		if ($definition == 'false')
+		if ($definition == 'false' || $definition == '0')
 		{
 			return false;
 		}

@@ -46,13 +46,12 @@ if ('raw' === $format)
 $input->set('redcore', true);
 
 // Load bootstrap + fontawesome
-JHtml::_('rbootstrap.framework');
-
+RHtmlMedia::loadFrameworkJs();
 RHelperAsset::load('component.min.js', 'redcore');
 
 if (RBootstrap::$loadFrontendCSS)
 {
-	RHelperAsset::load('component.min.css', 'redcore');
+	RHtmlMedia::loadFrameworkCss();
 }
 
 // Load a custom CSS option for this component if exists

@@ -31,4 +31,3 @@ RHtml::_('rbootstrap.tooltip');
 		<i class="<?php echo $data->orderIcon; ?>"></i>
 	<?php endif; ?>
 </a>
-

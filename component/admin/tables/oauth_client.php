@@ -19,21 +19,6 @@ defined('_JEXEC') or die;
 class RedcoreTableOauth_Client extends RTable
 {
 	/**
-	 * The table name without the prefix.
-	 *
-	 * @var  string
-	 */
-	protected $_tableName = 'redcore_oauth_clients';
-
-	/**
-	 * Name of the primary key field in the table.
-	 *
-	 * @var    string
-	 * @since  1.2
-	 */
-	protected $_tbl_key = 'id';
-
-	/**
 	 * @var  int
 	 */
 	public $id;
@@ -67,6 +52,21 @@ class RedcoreTableOauth_Client extends RTable
 	 * @var string
 	 */
 	public $user_id;
+
+	/**
+	 * Constructor
+	 *
+	 * @param   JDatabase  &$db  A database connector object
+	 *
+	 * @throws  UnexpectedValueException
+	 */
+	public function __construct(&$db)
+	{
+		$this->_tableName = 'redcore_oauth_clients';
+		$this->_tbl_key = 'id';
+
+		parent::__construct($db);
+	}
 
 	/**
 	 * Checks that the object is valid and able to be stored.

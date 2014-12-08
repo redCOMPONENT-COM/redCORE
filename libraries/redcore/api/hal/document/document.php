@@ -25,7 +25,7 @@ class RApiHalDocumentDocument extends JDocument
 	 * @var    string
 	 * @since  1.2
 	 */
-	protected $_name = 'joomla';
+	protected $name = 'joomla';
 
 	/**
 	 * Render all hrefs as absolute, relative is default
@@ -36,6 +36,12 @@ class RApiHalDocumentDocument extends JDocument
 	 * Document format (xml or json)
 	 */
 	protected $documentFormat = false;
+
+	/**
+	 * @var    RApiHalHal  Main HAL object
+	 * @since  1.2
+	 */
+	public $hal = null;
 
 	/**
 	 * Class constructor
@@ -80,8 +86,9 @@ class RApiHalDocumentDocument extends JDocument
 	 */
 	public function render($cache = false, $params = array())
 	{
-		$runtime = microtime(true) - $params['startTime'];
-		//jimport('legacy.response.response');
+		$runtime = microtime(true) - $this->hal->startTime;
+
+		JFactory::getApplication()->setHeader('Status', $this->hal->statusCode . ' ' . $this->hal->statusText, true);
 		JFactory::getApplication()->setHeader('Server', '', true);
 		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
 		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);
@@ -92,8 +99,6 @@ class RApiHalDocumentDocument extends JDocument
 		JFactory::getApplication()->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
 
 		JFactory::getApplication()->sendHeaders();
-
-		//header("Content-Disposition: attachment; filename=\"" . $this->getName() . "." . $this->documentFormat . "\";");
 
 		// Get the HAL object from the buffer.
 		/* @var $hal RApiHalDocumentResource */
@@ -125,7 +130,23 @@ class RApiHalDocumentDocument extends JDocument
 	 */
 	public function getName()
 	{
-		return $this->_name;
+		return $this->name;
+	}
+
+	/**
+	 * Sets HAL object to the document
+	 *
+	 * @param   RApiHalHal  $hal  Hal object
+	 *
+	 * @return   RApiHalDocumentDocument
+	 *
+	 * @since  1.2
+	 */
+	public function setHal($hal)
+	{
+		$this->hal = $hal;
+
+		return $this;
 	}
 
 	/**
@@ -228,7 +249,7 @@ class RApiHalDocumentDocument extends JDocument
 	 */
 	public function setName($name = 'joomla')
 	{
-		$this->_name = $name;
+		$this->name = $name;
 
 		return $this;
 	}

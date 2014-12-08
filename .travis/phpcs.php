@@ -27,10 +27,27 @@ fwrite(STDOUT, "\033[32;1mInitializing PHP_CodeSniffer checks.\033[0m\n");
 $ignored = array(
 	REPO_BASE . '/component/admin/views/*/tmpl/*',
 	REPO_BASE . '/component/admin/layouts/*',
-	REPO_BASE . '/component/admin/tables/*',
 	REPO_BASE . '/component/site/views/*/tmpl/*',
 	REPO_BASE . '/component/site/layouts/*',
-	REPO_BASE . '/libraries/redcore/api/*'
+	REPO_BASE . '/libraries/redcore/api/hal/document/resource.php',
+	REPO_BASE . '/libraries/redcore/api/hal/document/link.php',
+	REPO_BASE . '/libraries/redcore/api/oauth2/*',
+	REPO_BASE . '/libraries/redcore/layouts/*',
+	REPO_BASE . '/libraries/redcore/model/admin.php',
+	REPO_BASE . '/libraries/redcore/oauth/*',
+	REPO_BASE . '/libraries/redcore/joomla/*',
+	REPO_BASE . '/libraries/redcore/controller/admin.php',
+	REPO_BASE . '/libraries/redcore/form/form.php',
+	REPO_BASE . '/libraries/redcore/database/sqlparser/lexersplitter.php',
+	REPO_BASE . '/libraries/redcore/database/sqlparser/positioncalculator.php',
+	REPO_BASE . '/libraries/redcore/database/sqlparser/sqlcreator.php',
+	REPO_BASE . '/libraries/redcore/database/sqlparser/sqllexer.php',
+	REPO_BASE . '/libraries/redcore/database/sqlparser/sqlparser.php',
+	REPO_BASE . '/libraries/redcore/database/sqlparser/sqlparserutils.php',
+	REPO_BASE . '/libraries/redcore/database/driver.php',
+	REPO_BASE . '/libraries/redcore/table/*',
+	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*',
+	REPO_BASE . '/modules/site/mod_redcore_language_switcher/css/mod_redcore_language_switcher.css',
 );
 
 // Build the options for the sniffer
@@ -60,8 +77,7 @@ $numErrors = $phpcs->process($options);
 if ($numErrors)
 {
 	fwrite(STDOUT, sprintf("\033[37;41mThere were %d issues detected.\033[0m\n", $numErrors));
-	// @Todo: change this to 1 when all the code style issues are fixed.
-	exit(0);
+	exit(1);
 }
 else
 {

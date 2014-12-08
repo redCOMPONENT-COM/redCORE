@@ -27,23 +27,6 @@ class RApiHalTransformFloat extends RApiHalTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		switch ($definition)
-		{
-			case '':
-				$return = 'global';
-				break;
-
-			case 'left':
-			case 'right':
-			case 'none':
-				$return = $definition;
-				break;
-
-			default:
-				$return = 'undefined';
-				break;
-		}
-
-		return $return;
+		return (float) $definition;
 	}
 }

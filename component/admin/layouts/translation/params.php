@@ -28,7 +28,7 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 ?>
 <div class="tab-pane params-pane<?php echo $formType;?>">
 	<?php if (!empty($form)) : ?>
-		<div class="span12">
+		<div class="col-md-12">
 			<ul class="nav nav-tabs params-tabs<?php echo $formType;?>">
 				<?php foreach ($fieldSets as $name => $fieldSet) : ?>
 					<?php
@@ -61,7 +61,7 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 							<p class="tab-description"><?php echo RText::getTranslationIfExists($fieldSet->description, '', ''); ?></p>
 						<?php endif; ?>
 						<?php foreach ($form->getFieldset($name) as $field): ?>
-							<div class="control-group">
+							<div class="form-group">
 								<?php if (!$field->hidden && $name != "permissions") : ?>
 									<div class="control-label">
 										<?php echo $field->label; ?>

@@ -91,8 +91,8 @@ abstract class JHtmlRgrid
 	 * @return  string         The Html code
 	 */
 	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '',
-	                              $tip = false, $active_class = '',$inactive_class = '',
-	                              $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+		$tip = false, $active_class = '',$inactive_class = '',
+		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -118,19 +118,19 @@ abstract class JHtmlRgrid
 			$class = '';
 
 			// Prepare the class.
-			if ($active_class === 'plus-sign')
+			if ($active_class === 'plus')
 			{
 				$class = 'published';
 			}
 
-			elseif ($active_class === 'minus-sign')
+			elseif ($active_class === 'minus')
 			{
 				$class = 'unpublished';
 			}
 
 			$class .= $tip ? ' hasTooltip' : '';
 
-			$html[] = '<a class="btn btn-small ' . $class . '"';
+			$html[] = '<a class="btn btn-small btn-sm ' . $class . '"';
 			$html[] = ' href="javascript:void(0);" onclick="return listItemTaskForm(\'' . $checkbox . $i . '\',\''
 				. $prefix . $task . '\',\'' . $formId . '\')"';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($active_title) : $active_title, ENT_COMPAT, 'UTF-8')) . '">';
@@ -177,7 +177,7 @@ abstract class JHtmlRgrid
 	 * @return  string       The Html code
 	 */
 	public static function state($states, $value, $i, $prefix = '',
-	                             $enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -218,7 +218,7 @@ abstract class JHtmlRgrid
 	 * @return  string  The Html code
 	 */
 	public static function published($value, $i, $prefix = '', $enabled = true,
-	                                 $checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
+		$checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
 	{
 		if (is_array($prefix))
 		{
@@ -228,8 +228,8 @@ abstract class JHtmlRgrid
 			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
-		$states = array(1 => array('unpublish', 'JPUBLISHED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JPUBLISHED', false, 'ok-sign  icon-green', 'ok-sign icon-green'),
-			0 => array('publish', 'JUNPUBLISHED', 'JLIB_HTML_PUBLISH_ITEM', 'JUNPUBLISHED', false, 'remove-sign  icon-red', 'remove-sign  icon-red'),
+		$states = array(1 => array('unpublish', 'JPUBLISHED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JPUBLISHED', false, 'ok-sign icon-green', 'ok-sign icon-green'),
+			0 => array('publish', 'JUNPUBLISHED', 'JLIB_HTML_PUBLISH_ITEM', 'JUNPUBLISHED', false, 'remove icon-red', 'remove icon-red'),
 			2 => array('unpublish', 'JARCHIVED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JARCHIVED', false, 'hdd', 'hdd'),
 			-2 => array('publish', 'JTRASHED', 'JLIB_HTML_PUBLISH_ITEM', 'JTRASHED', false, 'trash', 'trash'));
 
@@ -440,7 +440,7 @@ abstract class JHtmlRgrid
 	 * @return  string
 	 */
 	public static function sort($title, $order, $direction = 'asc', $selected = 0,
-	                            $task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
+		$task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
 	{
 		JHtml::_('rbootstrap.tooltip');
 		static::main();

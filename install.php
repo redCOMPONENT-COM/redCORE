@@ -370,14 +370,17 @@ class Com_RedcoreInstallerScript
 		// Required objects
 		$manifest  = $parent->get('manifest');
 
-		if ($nodes = $manifest->translations->translation)
+		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
-			foreach ($nodes as $node)
+			if ($nodes = $manifest->translations->translation)
 			{
-				$extName   = (string) $node->attributes()->name;
-				$result = RTranslationTable::batchContentElements($extName, 'install', false);
+				foreach ($nodes as $node)
+				{
+					$extName   = (string) $node->attributes()->name;
+					$result = RTranslationTable::batchContentElements($extName, 'install', false);
 
-				$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
+					$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
+				}
 			}
 		}
 	}
@@ -400,7 +403,7 @@ class Com_RedcoreInstallerScript
 
 			if ($type == 'component')
 			{
-				if ($redcoreNode = $manifest->redcore)
+				if ($manifest->redcore)
 				{
 					$installer = $this->getInstaller();
 					$redcoreFolder = dirname(__FILE__);
@@ -543,8 +546,6 @@ class Com_RedcoreInstallerScript
 			return false;
 		}
 
-		$copyfiles = array();
-
 		// Here we set the folder we are going to copy the files to.
 		$destination = JPath::clean(RApiHalHelper::getWebservicesPath());
 
@@ -560,9 +561,30 @@ class Com_RedcoreInstallerScript
 			$source = $src;
 		}
 
+		$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
+
+		return $installer->copyFiles($copyFiles);
+	}
+
+	/**
+	 * Method to parse through a xml element of the installation manifest and take appropriate action.
+	 *
+	 * @param   SimpleXMLElement  $element      Element to iterate
+	 * @param   string            $source       Source location of the files
+	 * @param   string            $destination  Destination location of the files
+	 *
+	 * @return  array
+	 *
+	 * @since   1.4
+	 */
+	public function prepareFilesForCopy($element, $source, $destination)
+	{
+		$copyFiles = array();
+
 		// Process each file in the $files array (children of $tagName).
 		foreach ($element->children() as $file)
 		{
+			$path = array();
 			$path['src'] = $source . '/' . $file;
 			$path['dest'] = $destination . '/' . $file;
 
@@ -582,10 +604,10 @@ class Com_RedcoreInstallerScript
 			}
 
 			// Add the file to the copyfiles array
-			$copyfiles[] = $path;
+			$copyFiles[] = $path;
 		}
 
-		return $installer->copyFiles($copyfiles);
+		return $copyFiles;
 	}
 
 	/**
@@ -644,7 +666,6 @@ class Com_RedcoreInstallerScript
 			foreach ($tasks as $task)
 			{
 				$attributes = current($task->attributes());
-				$taskName = null;
 
 				// No task name
 				if (!isset($attributes['name']))
@@ -794,7 +815,7 @@ class Com_RedcoreInstallerScript
 
 		if ($isRedcore)
 		{
-			if ($components = RComponentHelper::getRedcoreComponents())
+			if ((method_exists('RComponentHelper', 'getRedcoreComponents')) && $components = RComponentHelper::getRedcoreComponents())
 			{
 				$app = JFactory::getApplication();
 
@@ -825,12 +846,12 @@ class Com_RedcoreInstallerScript
 
 		// Uninstall extensions
 		$this->uninstallTranslations();
-		$this->uninstallLibraries($parent);
 		$this->uninstallMedia($parent);
 		$this->uninstallWebservices($parent);
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
+		$this->uninstallLibraries($parent);
 	}
 
 	/**
@@ -851,7 +872,8 @@ class Com_RedcoreInstallerScript
 
 			foreach ($translationTables as $translationTable => $translationTableParams)
 			{
-				if ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option)
+				if ((method_exists('RTranslationTable', 'getTranslationsTableName'))
+					&& ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option))
 				{
 					$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
 
@@ -1109,6 +1131,8 @@ class Com_RedcoreInstallerScript
 	 */
 	public function displayComponentInfo($parent, $message = '')
 	{
+		$this->loadRedcoreLibrary();
+
 		if ($this->showComponentInfo)
 		{
 			if (method_exists('RComponentHelper', 'displayComponentInfo'))

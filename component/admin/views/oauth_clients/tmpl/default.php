@@ -35,11 +35,11 @@ $listDirn = $this->state->get('list.direction');
 	);
 	?>
 	<hr/>
-	<div class="row-fluid">
+	<div class="row">
 		<table class="table table-striped table-hover" id="oauthClientsList">
 			<thead>
 			<tr>
-				<th class="hidden-phone">
+				<th class="hidden-xs">
 					<input type="checkbox" name="checkall-toggle" value=""
 					       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 				</th>
@@ -52,10 +52,10 @@ $listDirn = $this->state->get('list.direction');
 				<th>
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_REDIRECT_URI', 'oc.redirect_uri', $listDirn, $listOrder); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPES', 'oc.grant_types', $listDirn, $listOrder); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_SCOPE', 'oc.scope', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap">
@@ -70,8 +70,8 @@ $listDirn = $this->state->get('list.direction');
 					$canChange = 1;
 					$canEdit = 1;
 					$canCheckin = 1;
-					$grantTypes = explode(',', $item->grant_types);
-					$scopes = explode(',', $item->scope);
+					$grantTypes = explode(' ', $item->grant_types);
+					$scopes = explode(' ', $item->scope);
 					?>
 					<tr>
 						<td>
@@ -82,23 +82,28 @@ $listDirn = $this->state->get('list.direction');
 							<?php echo $item->client_id; ?>
 							</a>
 						</td>
-						<td>
+						<td style="word-wrap:break-word;">
 							<?php echo $item->client_secret; ?>
 						</td>
-						<td>
+						<td style="word-wrap:break-word;">
 							<?php echo $item->redirect_uri; ?>
 						</td>
 						<td>
-							<ul class="unstyled ctypes">
+							<ul class="list-unstyled ctypes">
 								<?php foreach ($grantTypes as $grantType): ?>
 									<li><?php echo $grantType; ?></li>
 								<?php endforeach; ?>
 							</ul>
 						</td>
 						<td>
-							<ul class="unstyled ctypes">
-								<?php foreach ($scopes as $scope): ?>
-									<li><?php echo $scope; ?></li>
+							<ul class="list-unstyled ctypes">
+								<?php foreach ($scopes as $key => $scope): ?>
+									<?php if ($key < 5): ?>
+										<li><?php echo $scope; ?></li>
+									<?php else : ?>
+										<li>...</li>
+										<?php break; ?>
+									<?php endif; ?>
 								<?php endforeach; ?>
 							</ul>
 						</td>

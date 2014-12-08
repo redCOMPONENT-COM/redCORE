@@ -138,7 +138,6 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		$firstGroup = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
 
-
 		if (!empty($this->contentElement))
 		{
 			$delete = RToolbarBuilder::createDeleteButton('translations.delete');

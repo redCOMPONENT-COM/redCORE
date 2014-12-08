@@ -15,7 +15,7 @@ $components = !empty($displayData['components']) ? $displayData['components'] : 
 $configurationLink = !empty($displayData['configurationLink']) ? true : false;
 $translationLink = !empty($displayData['translationLink']) ? true : false;
 ?>
-<div class="row-fluid">
+<div class="row">
 	<?php if (empty($components)): ?>
 		<div class="alert alert-info">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -25,7 +25,7 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 		</div>
 	<?php else : ?>
 		<?php foreach ($components as $component): ?>
-			<div class="span4 well">
+			<div class="col-md-4 well">
 				<h4>
 					<?php echo !empty($component->xml->name) ? RText::getTranslationIfExists($component->xml->name, '', '') : $component->option; ?>
 				</h4>
@@ -75,7 +75,7 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 			</div>
 			<?php if ((++$column) % 3 == 0 ) : ?>
 				</div>
-				<div class="row-fluid">
+				<div class="row">
 			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php endif; ?>

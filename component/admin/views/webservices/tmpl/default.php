@@ -41,7 +41,7 @@ $searchToolsOptions = array(
 	<ul class="nav nav-tabs" id="mainTabs">
 		<li><a href="#mainComponentWebservices" data-toggle="tab"><?php echo JText::_('COM_REDCORE_WEBSERVICES'); ?></a></li>
 	</ul>
-	<div class="tab-content row-fluid">
+	<div class="tab-content">
 		<?php echo RLayoutHelper::render(
 			'webservice.webservices',
 			array(
@@ -53,6 +53,7 @@ $searchToolsOptions = array(
 	<div>
 		<input type="hidden" name="return" value="<?php echo $this->return; ?>" />
 		<input type="hidden" name="task" value="" />
+		<input type="hidden" name="client" id="client" value="" />
 		<input type="hidden" name="webservice" id="webservice" value="" />
 		<input type="hidden" name="version" id="version" value="" />
 		<input type="hidden" name="folder" id="folder" value="" />

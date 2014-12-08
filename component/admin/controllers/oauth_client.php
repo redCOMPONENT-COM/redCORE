@@ -16,6 +16,6 @@ defined('_JEXEC') or die;
  * @subpackage  Controllers
  * @since       1.0
  */
-class RedcoreControllerOauth_client extends RControllerForm
+class RedcoreControllerOauth_Client extends RControllerForm
 {
 }

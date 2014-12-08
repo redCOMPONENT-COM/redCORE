@@ -41,7 +41,15 @@ class Autoloader
             return;
         }
 
-        if (file_exists($file = $this->dir.'/'.str_replace('\\', '/', $class).'.php')) {
+	    $class = str_replace('\\', '/', $class);
+
+	    if (strpos($class, 'OAuth2') === 0)
+	    {
+		    $count = 1;
+		    $class = str_replace('OAuth2', 'oauth2', $class, $count);
+	    }
+
+        if (file_exists($file = $this->dir . '/' . $class . '.php')) {
             require $file;
         }
     }

@@ -354,7 +354,7 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	 *
 	 * @return string
 	 */
-	public function __toJson()
+	public function toJson()
 	{
 		if (defined(JSON_NUMERIC_CHECK) && $this->jsonNumericCheck)
 		{
@@ -371,7 +371,7 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	 */
 	public function __toString()
 	{
-		return $this->__toJson();
+		return $this->toJson();
 	}
 
 	/**
@@ -388,8 +388,7 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 			$xml = new SimpleXMLElement('<resource></resource>');
 		}
 
-		$this->_xml = $xml;
-		//$this->setXMLAttributes($this->_xml, $this->getSelf());
+		$this->xml = $xml;
 
 		foreach ($this->_links as $links)
 		{
@@ -406,10 +405,10 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 			}
 		}
 
-		$this->_addData($this->_xml, $this->_data);
+		$this->_addData($this->xml, $this->_data);
 		$this->_getEmbedded($this->_embedded);
 
-		return $this->_xml;
+		return $this->xml;
 	}
 
 	/**
@@ -439,7 +438,7 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 				else
 				{
 					$rel = is_numeric($rel) ? $_rel : $rel;
-					$this->_xml->addChild('resource')->addAttribute('rel', $rel);
+					$this->xml->addChild('resource')->addAttribute('rel', $rel);
 				}
 			}
 		}
@@ -454,7 +453,7 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	 */
 	protected function _getEmbRes(RApiHalDocumentResource $embed)
 	{
-		$resource = $this->_xml->addChild('resource');
+		$resource = $this->xml->addChild('resource');
 
 		return $embed->getXML($resource);
 	}
@@ -468,7 +467,7 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	 */
 	public function setXML(SimpleXMLElement $xml)
 	{
-		$this->_xml = $xml;
+		$this->xml = $xml;
 
 		return $this;
 	}
@@ -534,7 +533,7 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	 */
 	protected function _addLink(RApiHalDocumentLink $link)
 	{
-		$this->setXMLAttributes($this->_xml->addChild('link'), $link);
+		$this->setXMLAttributes($this->xml->addChild('link'), $link);
 
 		return $this;
 	}

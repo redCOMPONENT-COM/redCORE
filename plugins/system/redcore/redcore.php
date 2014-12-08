@@ -67,6 +67,7 @@ class PlgSystemRedcore extends JPlugin
 					try
 					{
 						JFactory::getApplication()->clearHeaders();
+						$webserviceClient = $input->get->getString('webserviceClient', '');
 						$optionName = $input->get->getString('option', '');
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
 						$viewName = $input->getString('view', '');
@@ -75,28 +76,26 @@ class PlgSystemRedcore extends JPlugin
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
+						$data = RApi::getPostedData();
 
-						if ($method == 'PUT' || $method == 'DELETE')
+						if (empty($webserviceClient))
 						{
-							$data = file_get_contents("php://input");
-						}
-						else
-						{
-							$data = $input->post->getArray();
+							$webserviceClient = JFactory::getApplication()->isAdmin() ? 'administrator' : 'site';
 						}
 
 						$options = array(
-							'api'       => $apiName,
-							'optionName' => $optionName,
-							'viewName' => $viewName,
+							'api'               => $apiName,
+							'optionName'        => $optionName,
+							'viewName'          => $viewName,
 							'webserviceVersion' => $version,
-							'method' => $method,
-							'task' => $task,
-							'data' => $data,
-							'accessToken' => $token,
-							'format' => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
-							'id' => $input->getString('id', ''),
-							'absoluteHrefs' => $input->get->getBool('absoluteHrefs', true),
+							'webserviceClient'  => $webserviceClient,
+							'method'            => $method,
+							'task'              => $task,
+							'data'              => $data,
+							'accessToken'       => $token,
+							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
+							'id'                => $input->getString('id', ''),
+							'absoluteHrefs'     => $input->get->getBool('absoluteHrefs', true),
 						);
 
 						// Create instance of Api and fill all required options
@@ -168,7 +167,7 @@ class PlgSystemRedcore extends JPlugin
 		$doc = JFactory::getDocument();
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		RHtml::_('rbootstrap.framework');
+		RHtmlMedia::loadFrameworkJs();
 
 		if ($doc->_scripts)
 		{

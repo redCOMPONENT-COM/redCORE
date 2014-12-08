@@ -15,6 +15,7 @@ $view = !empty($displayData['view']) ? $displayData['view'] : null;
 $xml = !empty($displayData['options']['xml']) ? $displayData['options']['xml'] : array();
 $operationXml = !empty($displayData['options']['operationXml']) ? $displayData['options']['operationXml'] : array();
 $operationName = !empty($displayData['options']['operationName']) ? $displayData['options']['operationName'] : '';
+$isOperationRead = $operationName == 'read list' || $operationName == 'read item';
 $view->resetDocumentResources();
 $resources = $view->loadResourceFromConfiguration($operationXml);
 
@@ -88,6 +89,12 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 				<tr>
 					<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_NAME'); ?></th>
 					<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_TRANSFORM'); ?></th>
+					<?php if ($isOperationRead) : ?>
+						<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_FILTER'); ?></th>
+						<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_SEARCHABLE'); ?></th>
+					<?php else: ?>
+						<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_REQUIRED'); ?></th>
+					<?php endif; ?>
 					<th><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?></th>
 				</tr>
 				</thead>
@@ -99,6 +106,12 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 						<tr>
 							<td><?php echo $field['name']; ?></td>
 							<td><?php echo !empty($field['transform']) ? $field['transform'] : 'string'; ?></td>
+							<?php if ($isOperationRead) : ?>
+								<td><?php echo RApiHalHelper::isAttributeTrue($field, 'isFilterField') ? JText::_('JYES') : JText::_('JNO'); ?></td>
+								<td><?php echo RApiHalHelper::isAttributeTrue($field, 'isSearchableField') ? JText::_('JYES') : JText::_('JNO'); ?></td>
+							<?php else: ?>
+								<td><?php echo RApiHalHelper::isAttributeTrue($field, 'isRequiredField') ? JText::_('JYES') : JText::_('JNO'); ?></td>
+							<?php endif; ?>
 							<td><?php echo !empty($field->description) ? $field->description : ''; ?></td>
 						</tr>
 					<?php endforeach; ?>

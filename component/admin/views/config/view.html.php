@@ -61,6 +61,12 @@ class RedcoreViewConfig extends RedcoreHelpersView
 		$model = $this->getModel('Config');
 		$option = JFactory::getApplication()->input->getString('component', '');
 
+		$lang = JFactory::getLanguage();
+
+		// Load component language files
+		$lang->load($option, JPATH_ADMINISTRATOR, 'en-GB', false, false)
+		|| $lang->load($option, JPATH_ADMINISTRATOR . '/components/' . $option, 'en-GB', false, false);
+
 		$this->form	= $model->getForm();
 		$this->component = $model->getComponent($option);
 		$this->return = JFactory::getApplication()->input->get('return');

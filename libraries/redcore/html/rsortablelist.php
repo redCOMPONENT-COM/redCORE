@@ -31,11 +31,8 @@ abstract class JHtmlRsortablelist
 	 */
 	const EXTENSION = 'redcore';
 
-
 	/**
 	 * Load the main Searchtools libraries
-	 *
-	 * @param   mixed  $debug  Is debugging mode on? [optional]
 	 *
 	 * @return  void
 	 *
@@ -72,7 +69,7 @@ abstract class JHtmlRsortablelist
 	 *
 	 * @return  void
 	 */
-	public static function sortable($tableId, $formId, $sortDir = 'asc', $saveOrderingUrl, $proceedSaveOrderButton = true, $nestedList = false)
+	public static function sortable($tableId, $formId, $sortDir = 'asc', $saveOrderingUrl = '', $proceedSaveOrderButton = true, $nestedList = false)
 	{
 		// Only load once
 		if (isset(self::$loaded[__METHOD__]))

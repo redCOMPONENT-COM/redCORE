@@ -48,10 +48,9 @@ $input->set('tmpl', 'component');
 $input->set('redcore', true);
 
 // Load bootstrap + fontawesome
-JHtml::_('rbootstrap.framework');
-
+RHtmlMedia::loadFrameworkCss();
+RHtmlMedia::loadFrameworkJs();
 RHelperAsset::load('component.min.js', 'redcore');
-RHelperAsset::load('component.min.css', 'redcore');
 
 // Load a custom CSS option for this component if exists
 if ($comOption = $input->get('option', null))
@@ -237,4 +236,4 @@ else : ?>
 			Copyright 2014 redcomponent.com. All rights reserved.
 		</footer>
 	</div>
-<?php endif; ?>
+<?php endif;

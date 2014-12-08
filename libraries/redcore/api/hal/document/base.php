@@ -19,7 +19,7 @@ abstract class RApiHalDocumentBase
 	/**
 	 * @var SimpleXMLElement
 	 */
-	protected $_xml;
+	protected $xml;
 
 	/**
 	 * Sets XML attributes for RApiHalDocumentLink
@@ -27,7 +27,7 @@ abstract class RApiHalDocumentBase
 	 * @param   SimpleXMLElement     $xml   XML document
 	 * @param   RApiHalDocumentLink  $link  Link element
 	 *
-	 * @return AbstractHal
+	 * @return RApiHalDocumentBase
 	 */
 	public function setXMLAttributes(SimpleXMLElement $xml, RApiHalDocumentLink $link)
 	{

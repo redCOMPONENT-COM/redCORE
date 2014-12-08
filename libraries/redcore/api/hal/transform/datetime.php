@@ -23,11 +23,17 @@ class RApiHalTransformDatetime extends RApiHalTransformBase
 	 *
 	 * @param   string  $definition  Field definition.
 	 *
-	 * @return string Transformed value.
+	 * @return string The date string in ISO 8601 format.
 	 */
 	public static function toExternal($definition)
 	{
-		// @TODO Convert MySQL data string to ISO 8601.
-		return (string) $definition;
+		if (empty($definition) || $definition == '0000-00-00 00:00:00')
+		{
+			return '';
+		}
+
+		$date = new JDate($definition);
+
+		return $date->toISO8601();
 	}
 }
