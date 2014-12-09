@@ -256,6 +256,12 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.min.js']);
 			}
+
+			// Load stylesheet for fixing tooltip in administrator of Joomla 2.x
+			if ($isAdmin && version_compare(JVERSION, '3.0', '<'))
+			{
+				$doc->addStyleSheet(JURI::root(true) . '/media/redcore/css/tooltip.css');
+			}
 		}
 	}
 
