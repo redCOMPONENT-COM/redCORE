@@ -33,9 +33,24 @@ $title = '';
 // If a description is specified, use it to build a tooltip.
 if (!empty($desc))
 {
-	JHtml::_('rbootstrap.tooltip');
-	$classes[] = 'hasTooltip';
-	$title = ' title="' . RHtml::tooltipText(trim($text, ':'), $desc, 0) . '"';
+	if (defined('REDCORE_BOOTSTRAPPED') && version_compare(JVERSION, '3.0', '<'))
+	{
+		$classes[] = 'hasTooltip';
+		JHtml::_('rbootstrap.tooltip', '.hasTooltip');
+		$title = ' title="' . RHtml::tooltipText(trim($text, ':'), $desc, 0) . '"';
+	}
+	elseif (version_compare(JVERSION, '3.0', '<'))
+	{
+		$classes[] = 'hasTooltip';
+		JHTML::_('behavior.tooltip', '.hasTooltip', array('placement' => 'right'));
+		$title = ' title="' . (trim($text . '::' . $desc)) . '"';
+	}
+	else
+	{
+		$classes[] = 'hasTooltip';
+		JHtml::_('rbootstrap.tooltip', '.hasTooltip');
+		$title = ' title="' . RHtml::tooltipText(trim($text, ':'), $desc, 0) . '"';
+	}
 }
 
 // If required, there's a class for that.
