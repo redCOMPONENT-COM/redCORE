@@ -220,7 +220,7 @@ $column = 0;
 			</div>
 		</div>
 	</div>
-	<div class="modal fade large"
+	<div class="modal large"
 	     id="webservicePreview"
 	     tabindex="-1"
 	     role="dialog"
