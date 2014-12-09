@@ -650,7 +650,7 @@ class RApiHalHelper
 
 			if ($showNotifications)
 			{
-				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_UNINSTALLED'), 'message');
+				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_INSTALLED'), 'message');
 			}
 
 			return true;
