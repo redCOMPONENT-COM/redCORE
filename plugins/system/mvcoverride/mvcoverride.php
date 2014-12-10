@@ -82,7 +82,7 @@ class PlgSystemMVCOverride extends JPlugin
 		$includePath[] = JPATH_THEMES . '/' . $template . '/code';
 
 		// Register additional include paths for code replacements from plugins
-		$app->triggerEvent('redcoreMVCOverridePaths', array(&$includePath));
+		$app->triggerEvent('onMVCOverrideIncludePaths', array(&$includePath));
 
 		MVCOverrideHelperCodepool::addCodePath($includePath);
 
