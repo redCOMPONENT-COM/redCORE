@@ -37,13 +37,26 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 				<p><?php echo $operationXml->resources->description ?></p>
 			<?php endif; ?>
 			<?php foreach ($resources as $resourceGroupName => $resourceGroup) : ?>
-				<?php usort($resourceGroup, array($view, "sortResourcesByDisplayGroup"));
-				$currentDisplayGroup = '--'; ?>
+				<?php
+					$i = 0;
+
+					foreach ($resourceGroup as $resName => $res)
+					{
+						$resourceGroup[$resName]['original_order'] = $i;
+						$i++;
+					}
+
+					usort($resourceGroup, array($view, "sortResourcesByDisplayGroup"));
+					$currentDisplayGroup = '--';
+				?>
 				<h4><?php echo $resourceGroupName == 'rcwsGlobal' ? JText::_('JDEFAULT') : ucfirst($resourceGroupName); ?>
 					 <?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCES'); ?></h4>
 
 				<div class="container-fluid">
-					<?php foreach ($resourceGroup as $resource) : ?>
+					<?php
+						foreach ($resourceGroup as $resource) :
+							unset($resource['original_order']);
+					?>
 						<?php if ($currentDisplayGroup != $resource['displayGroup']) : ?>
 							<?php if ($currentDisplayGroup != '--') : ?>
 								</table>
