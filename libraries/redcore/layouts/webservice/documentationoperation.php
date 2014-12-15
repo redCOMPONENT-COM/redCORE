@@ -21,10 +21,12 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 
 ?>
 <div class="container-fluid">
-	<h3><?php echo ucfirst($operationName); ?></h3>
-	<?php if (!empty($operationXml->description)) : ?>
-		<p><?php echo $operationXml->description ?></p>
-	<?php endif; ?>
+	<div class="page-header">
+		<h3><span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span> <?php echo ucfirst($operationName); ?></h3>		
+		<?php if (!empty($operationXml->description)) : ?>
+			<p><?php echo $operationXml->description ?></p>
+		<?php endif; ?>
+	</div>
 
 	<?php if (!empty($operationXml['useOperation'])): ?>
 		<?php echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_USE_OPERATION',
@@ -80,7 +82,7 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 			<?php endforeach; ?>
 		<?php endif; ?>
 		<?php if (!empty($operationXml->fields)) : ?>
-			<h4><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELDS'); ?></h4>
+			<h4><span class="label label-warning"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_PARAMETERS'); ?></span> <?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELDS'); ?></h4>
 			<?php if (!empty($operationXml->fields->description)) : ?>
 				<p><?php echo $operationXml->fields->description ?></p>
 			<?php endif; ?>
