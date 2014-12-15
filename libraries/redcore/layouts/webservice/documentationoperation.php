@@ -114,7 +114,7 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 							<?php else: ?>
 								<td><?php echo RApiHalHelper::isAttributeTrue($field, 'isRequiredField') ? JText::_('JYES') : JText::_('JNO'); ?></td>
 							<?php endif; ?>
-							<td><?php echo !empty($field['description']) ? $field['description'] : ''; ?></td>
+							<td><?php echo !empty($field->description) ? $field->description : ''; ?></td>
 						</tr>
 					<?php endforeach; ?>
 				<?php endforeach; ?>
