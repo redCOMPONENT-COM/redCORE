@@ -21,7 +21,9 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 
 ?>
 <div class="container-fluid">
-	<h3><?php echo ucfirst($operationName); ?></h3>
+	<div class="page-header">
+		<h3><span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span> <?php echo ucfirst($operationName); ?></h3>		
+	</div>
 	<?php if (!empty($operationXml->description)) : ?>
 		<p><?php echo $operationXml->description ?></p>
 	<?php endif; ?>

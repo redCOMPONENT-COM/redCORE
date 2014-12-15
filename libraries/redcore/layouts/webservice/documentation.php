@@ -73,7 +73,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-							<hr />
+							<br />
 						<?php endif;
 
 						if (isset($xml->operations->read->item)) : ?>
@@ -89,7 +89,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-							<hr />
+							<br />
 						<?php endif;
 					elseif ($operationName == 'task') :
 						foreach ($operation as $taskName => $task) : ?>
@@ -105,7 +105,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-							<hr />
+							<br />
 						<?php endforeach;
 					else : ?>
 						<a name="<?php echo $operationName; ?>"></a>
@@ -120,7 +120,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-						<hr />
+						<br />
 					<?php endif; ?>
 			<?php endforeach; ?>
 		<?php endforeach; ?>
