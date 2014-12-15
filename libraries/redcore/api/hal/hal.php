@@ -867,7 +867,14 @@ class RApiHalHal extends RApi
 	 */
 	public function sortResourcesByDisplayGroup($a, $b)
 	{
-		return strcmp($a["displayGroup"], $b["displayGroup"]);
+		$sort = strcmp($a["displayGroup"], $b["displayGroup"]);
+
+		if (!$sort)
+		{
+			return ($a['original_order'] < $b['original_order'] ? -1 : 1);
+		}
+
+		return $sort;
 	}
 
 	/**
