@@ -8,58 +8,40 @@
 <!--    - change the package folder path in variable package.dir         -->
 <!--    - execute this PHING build file                                  -->
 <!-- ==================================================================  -->
-<project name="com_redcore" default="dist">
-	<!-- Do initialization stuff -->
-	<property file="build.properties" override="true"/>
-
-	<property
-			name="extension"
-			value="${comp.name}"
-			override="true"/>
-
-    <!-- Folder where the redCORE repository is located  -->
-    <property
-            name="extpath"
-            value="."
-            override="true"/>
-
-    <xmlproperty file="${extpath}/${extension}.xml" prefix="extensionDetails" keepRoot="false" />
-
-    <property
-			name="version"
-			value="${extensionDetails.version}"
-			override="true"/>
-
-	<!-- Target dir where packages will be created  -->
-	<property
-			name="targetdir"
-			value="${package.dir}/package-${extension}-v${version}"
-			override="true"/>
-
+<project name="com_redcore" default="pack">
 	<!-- ============================================  -->
 	<!-- Create packages folder                        -->
 	<!-- ============================================  -->
 	<target name="prepare">
-	    <if>
-	    	<not>
-		        <available file="build.properties" type="file" />
-		    </not>
-	        <then>
-	        	<fail msg="File not found: build.properties" />
-	        </then>
-	    </if>
+	    <!-- Folder where the redCORE repository is located  -->
+	    <property
+	            name="extpath"
+	            value="."
+	            override="true"/>
 
-		<!-- Check if the target folder exists. If not, create it -->
+	    <xmlproperty file="${extpath}/${extension}.xml" prefix="extensionDetails" keepRoot="false" />
+
+	    <property
+				name="version"
+				value="${extensionDetails.version}"
+				override="true"/>
+
+		<!-- Temp dir to create packages -->
+		<property
+				name="tmpdir"
+				value=".tmp"
+				override="true"/>
+
+		<!-- Check if the temp folder exists. If not, create it -->
 		<if>
-			<available file="${targetdir}" type="dir"/>
+			<available file="${tmpdir}" type="dir"/>
 			<then>
-				<echo msg="Removing old ${targetdir}"/>
-				<delete dir="${targetdir}"/>
+				<echo msg="Removing old ${tmpdir}"/>
+				<delete dir="${tmpdir}"/>
 			</then>
 		</if>
-		<echo msg="Making directory to store the packages at ${targetdir}"/>
-		<mkdir dir="${targetdir}"/>
-
+		<echo msg="Making directory to store the temporary packages at ${tmpdir}"/>
+		<mkdir dir="${tmpdir}"/>
 	</target>
 
 	<!-- ============================================  -->
@@ -73,7 +55,7 @@
         <phing phingfile="redcore_copy_mandatory.xml"
                target="copyframework"
                haltonfailure="true">
-            <property name="redcoretargetdir" value="${targetdir}" />
+            <property name="redcoretargetdir" value="${tmpdir}/${extension}" />
             <property name="redcorepath" value="${project.basedir}" />
         </phing>
 
@@ -85,23 +67,59 @@
 	<target name="dist" depends="build">
 		<echo msg="Creating ZIP archive..."/>
 
-		<if>
-			<available file="${targetdir}/../${extension}-v${version}.zip" property="test_zip_exists" value="Yes"/>
-			<then>
-				<echo msg="Removing old ZIP"/>
-				<delete file="${targetdir}/../${extension}-v${version}.zip" />
-			</then>
-		</if>
-
-		<zip destfile="${targetdir}/../${extension}-v${version}.zip">
-			<fileset dir="${targetdir}">
+		<zip destfile="${tmpdir}/${extension}-v${version}.zip">
+			<fileset dir="${tmpdir}/${extension}">
 				<include name="**"/>
 				<exclude name=".*"/>
 			</fileset>
 		</zip>
 
+		<if>
+			<available file="${package.dir}/${extension}-v${version}.zip" property="test_zip_exists" value="Yes"/>
+			<then>
+				<echo msg="Removing old ZIP"/>
+				<delete file="${package.dir}/${extension}-v${version}.zip" />
+			</then>
+		</if>
+
+        <copy file="${tmpdir}/${extension}-v${version}.zip" tofile="${package.dir}/${extension}-v${version}.zip" />
+
 		<echo msg="Files copied and compressed in build directory OK!"/>
 
-        <delete dir="${targetdir}" />
+        <delete dir="${tmpdir}" />
+	</target>
+
+	<target name="pack">
+		<if>
+			<not>
+				<available file="build.properties" type="file" />
+			</not>
+			<then>
+				<fail msg="File not found: build.properties" />
+			</then>
+		</if>
+
+		<!-- Do initialization stuff -->
+		<property file="build.properties" override="true"/>
+
+		<property
+				name="extension"
+				value="${comp.name}"
+				override="true"/>
+
+		<phingcall target="dist" />
+	</target>
+
+	<target name="autopack">
+		<property
+				name="extension"
+				value="redcore"
+				override="true"/>
+		<property
+				name="package.dir"
+				value="${project.basedir}/.dist"
+				override="true"/>
+
+		<phingcall target="dist" />
 	</target>
 </project>
