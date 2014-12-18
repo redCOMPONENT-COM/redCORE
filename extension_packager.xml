@@ -30,10 +30,10 @@
 			value="${extensionDetails.version}"
 			override="true"/>
 
-	<!-- Target dir where packages will be created  -->
+	<!-- Temp dir to create packages -->
 	<property
-			name="targetdir"
-			value="${package.dir}/package-${extension}-v${version}"
+			name="tmpdir"
+			value=".tmp"
 			override="true"/>
 
 	<!-- ============================================  -->
@@ -49,17 +49,16 @@
 	        </then>
 	    </if>
 
-		<!-- Check if the target folder exists. If not, create it -->
+		<!-- Check if the temp folder exists. If not, create it -->
 		<if>
-			<available file="${targetdir}" type="dir"/>
+			<available file="${tmpdir}" type="dir"/>
 			<then>
-				<echo msg="Removing old ${targetdir}"/>
-				<delete dir="${targetdir}"/>
+				<echo msg="Removing old ${tmpdir}"/>
+				<delete dir="${tmpdir}"/>
 			</then>
 		</if>
-		<echo msg="Making directory to store the packages at ${targetdir}"/>
-		<mkdir dir="${targetdir}"/>
-
+		<echo msg="Making directory to store the temporary packages at ${tmpdir}"/>
+		<mkdir dir="${tmpdir}"/>
 	</target>
 
 	<!-- ============================================  -->
@@ -73,7 +72,7 @@
         <phing phingfile="redcore_copy_mandatory.xml"
                target="copyframework"
                haltonfailure="true">
-            <property name="redcoretargetdir" value="${targetdir}" />
+            <property name="redcoretargetdir" value="${tmpdir}/${extension}" />
             <property name="redcorepath" value="${project.basedir}" />
         </phing>
 
@@ -85,23 +84,25 @@
 	<target name="dist" depends="build">
 		<echo msg="Creating ZIP archive..."/>
 
-		<if>
-			<available file="${targetdir}/../${extension}-v${version}.zip" property="test_zip_exists" value="Yes"/>
-			<then>
-				<echo msg="Removing old ZIP"/>
-				<delete file="${targetdir}/../${extension}-v${version}.zip" />
-			</then>
-		</if>
-
-		<zip destfile="${targetdir}/../${extension}-v${version}.zip">
-			<fileset dir="${targetdir}">
+		<zip destfile="${tmpdir}/${extension}-v${version}.zip">
+			<fileset dir="${tmpdir}/${extension}">
 				<include name="**"/>
 				<exclude name=".*"/>
 			</fileset>
 		</zip>
 
+		<if>
+			<available file="${package.dir}/${extension}-v${version}.zip" property="test_zip_exists" value="Yes"/>
+			<then>
+				<echo msg="Removing old ZIP"/>
+				<delete file="${package.dir}/${extension}-v${version}.zip" />
+			</then>
+		</if>
+
+        <copy file="${tmpdir}/${extension}-v${version}.zip" tofile="${package.dir}/${extension}-v${version}.zip" />
+
 		<echo msg="Files copied and compressed in build directory OK!"/>
 
-        <delete dir="${targetdir}" />
+        <delete dir="${tmpdir}" />
 	</target>
 </project>
