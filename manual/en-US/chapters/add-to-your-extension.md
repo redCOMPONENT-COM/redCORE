@@ -1,4 +1,26 @@
-# Adding redCORE to your Joomla extension
+## Adding redCORE as a Submodule
+Add redCORE as a submodule in your repository using the following command:
+
+```
+git submodule add https://github.com/chaconinc/DbConnector
+# You can init the submodule using
+git submodule init
+# and then import the data using
+git submodule update
+```
+
+Note: read more about submodules at: [http://git-scm.com/book/en/v2/Git-Tools-Submodules](http://git-scm.com/book/en/v2/Git-Tools-Submodules)
+
+Your .gitmodules file will look like
+
+```
+[submodule "redCORE"]
+	path = redCORE
+	url = https://travisredweb:travisredweb2013github@github.com/redCOMPONENT-COM/redCORE
+```
+
+
+## Adding redCORE to your Joomla extension
 
 To integrate redCORE in your component:
 

@@ -35,6 +35,7 @@
 - **Extension Development**
     - [Installer](chapters/Installer.md)
     - [in your extension](chapters/add-to-your-extension.md)
+    - [The PHING packager](chapters/phing.md)
 - **MVC**
     - [Model](chapters/Model.md)
     - [View and CSV](chapters/View.md)
