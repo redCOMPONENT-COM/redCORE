@@ -238,7 +238,7 @@ class RedcoreModelConfig extends RModelAdmin
 			{
 				$table = JTable::getInstance('Extension');
 
-				if ($table->load(array('element' => $option)))
+				if ($table->load(array('element' => $option, 'type' => 'component')))
 				{
 					$data = $this->getItem($table->extension_id);
 
