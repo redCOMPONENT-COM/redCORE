@@ -646,7 +646,9 @@ class RApiHalHelper
 
 						if (!empty($webservice['scopes']))
 						{
-							foreach ($webservice['scopes'] as $scope)
+							$scopes = json_decode($webservice['scopes'], true);
+
+							foreach ($scopes as $scope)
 							{
 								$scopeParts = explode('.', $scope['scope']);
 

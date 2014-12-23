@@ -1332,8 +1332,11 @@ class RApiHalHal extends RApi
 
 			if (!empty($response->user_id))
 			{
+				$user = JFactory::getUser($response->user_id);
+
 				// Load the JUser class on application for this client
-				JFactory::getApplication()->loadIdentity(JFactory::getUser($response->user_id));
+				JFactory::getApplication()->loadIdentity($user);
+				JFactory::getSession()->set('user', $user);
 			}
 		}
 	}

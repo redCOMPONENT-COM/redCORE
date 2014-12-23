@@ -598,13 +598,14 @@ class RedcoreModelWebservice extends RModelAdmin
 			{
 				$resourceArray = $this->bindElementToArray($resource);
 				$displayName = (string) $resourceArray['displayName'];
+				$resourceSpecific = !empty($resourceArray['resourceSpecific']) ? (string) $resourceArray['resourceSpecific'] : 'rcwsGlobal';
 
-				if (!empty($this->resources['main'][$displayName]))
+				if (!empty($this->resources['main'][$resourceSpecific][$displayName]))
 				{
-					$resourceArray = array_merge($this->resources['main'][$displayName], $resourceArray);
+					$resourceArray = array_merge($this->resources['main'][$resourceSpecific][$displayName], $resourceArray);
 				}
 
-				$this->resources[$name][$displayName] = $resourceArray;
+				$this->resources[$name][$resourceSpecific][$displayName] = $resourceArray;
 			}
 		}
 	}

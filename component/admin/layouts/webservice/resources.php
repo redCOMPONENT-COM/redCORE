@@ -72,9 +72,11 @@ $headingDescription = !empty($displayData['options']['headingDescription']) ?
 			<div class="ws-row-list">
 				<?php
 					if (!empty($view->resources[$operation])) :
-						foreach ($view->resources[$operation] as $resource) :
-							$displayData['options']['form'] = $resource;
-							echo $this->sublayout('resource', $displayData);
+						foreach ($view->resources[$operation] as $resourceSpecific) :
+							foreach ($resourceSpecific as $resource) :
+								$displayData['options']['form'] = $resource;
+								echo $this->sublayout('resource', $displayData);
+							endforeach;
 						endforeach;
 					endif;
 				?>
