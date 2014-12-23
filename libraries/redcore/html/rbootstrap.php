@@ -51,11 +51,9 @@ abstract class JHtmlRbootstrap
 			if ($loadCss)
 			{
 				RHtmlMedia::loadFrameworkCss();
-				//RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
 			}
 
 			RHtmlMedia::loadFrameworkJs();
-			//RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
 		}
 		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
 		{
