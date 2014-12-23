@@ -343,8 +343,12 @@ class RApiHalHal extends RApi
 	public function apiDefaultPage()
 	{
 		// Add standard Joomla namespace as curie.
-		$documentationCurieAdmin = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=administrator', 'curies', 'Documentation Admin', 'documentationAdmin', null, true);
-		$documentationCurieSite = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=site', 'curies', 'Documentation Site', 'documentationSite', null, true);
+		$documentationCurieAdmin = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=administrator',
+			'curies', 'Documentation Admin', 'documentationAdmin', null, true
+		);
+		$documentationCurieSite = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=site',
+			'curies', 'Documentation Site', 'documentationSite', null, true
+		);
 
 		// Add basic hypermedia links.
 		$this->hal->setLink($documentationCurieAdmin, false, true);

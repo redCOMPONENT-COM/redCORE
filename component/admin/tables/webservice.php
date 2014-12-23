@@ -19,13 +19,6 @@ defined('_JEXEC') or die;
 class RedcoreTableWebservice extends RTable
 {
 	/**
-	 * The table name without the prefix.
-	 *
-	 * @var  string
-	 */
-	protected $_tableName = 'redcore_webservices';
-
-	/**
 	 * @var  int
 	 */
 	public $id;
@@ -74,6 +67,20 @@ class RedcoreTableWebservice extends RTable
 	 * @var int
 	 */
 	public $state;
+
+	/**
+	 * Constructor
+	 *
+	 * @param   JDatabase  &$db  A database connector object
+	 *
+	 * @throws  UnexpectedValueException
+	 */
+	public function __construct(&$db)
+	{
+		$this->_tableName = 'redcore_webservices';
+
+		parent::__construct($db);
+	}
 
 	/**
 	 * Checks that the object is valid and able to be stored.
