@@ -90,16 +90,17 @@ class RedcoreModelWebservices extends RModelList
 			$db->setQuery($query);
 			$webservices = $db->loadColumn();
 
-			if (!empty($webservices))
-			{
-				foreach ($xmlFiles as $client => $webserviceNames)
-				{
-					foreach ($webserviceNames as $name => $webserviceVersions)
-					{
-						foreach ($webserviceVersions as $version => $xmlWebservice)
-						{
-							$this->xmlFilesAvailable++;
 
+			foreach ($xmlFiles as $client => $webserviceNames)
+			{
+				foreach ($webserviceNames as $name => $webserviceVersions)
+				{
+					foreach ($webserviceVersions as $version => $xmlWebservice)
+					{
+						$this->xmlFilesAvailable++;
+
+						if (!empty($webservices))
+						{
 							foreach ($webservices as $webservice)
 							{
 								if ($webservice == $client . $name . $version)

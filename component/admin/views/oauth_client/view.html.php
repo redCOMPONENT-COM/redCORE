@@ -37,7 +37,7 @@ class RedcoreViewOauth_Client extends RedcoreHelpersView
 	 */
 	public function display($tpl = null)
 	{
-		$this->form	= $this->getForm();
+		$this->form	= $this->get('Form');
 		$this->item	= $this->get('Item');
 
 		parent::display($tpl);

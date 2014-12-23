@@ -84,7 +84,8 @@ class RedcoreModelWebservice extends RModelAdmin
 			$this->setState($this->getName() . '.id', $id);
 			$this->setState($this->getName() . '.new', empty($data['main']['id']));
 
-			return true;
+			// Update created, modified flags
+			return parent::save(array('id' => $id));
 		}
 
 		return false;

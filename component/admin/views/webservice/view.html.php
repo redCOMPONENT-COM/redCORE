@@ -52,8 +52,8 @@ class RedcoreViewWebservice extends RedcoreHelpersView
 	 */
 	public function display($tpl = null)
 	{
-		$model = $this->getModel();
-		$this->form	= $this->getForm();
+		$model = $this->getModel('webservice');
+		$this->form	= $this->get('Form');
 		$this->item	= $this->get('Item');
 		$this->fields = $model->fields;
 		$this->resources = $model->resources;

@@ -152,7 +152,7 @@ class RedcoreTableWebservice extends RTable
 	 *
 	 * @return  boolean  True on success.
 	 */
-	public function store($updateNulls = true)
+	public function store($updateNulls = false)
 	{
 		if (!parent::store($updateNulls))
 		{

@@ -179,13 +179,11 @@ class PlgSystemRedcore extends JPlugin
 				$doc->addScriptDeclaration("function do_nothing() { return; }");
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-more.js']);
-				//unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools.js']);
 				unset($doc->_scripts[JURI::root(true) . '/plugins/system/mtupgrade/mootools.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompressed.js']);
-				//unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-more-uncompressed.js']);
@@ -193,6 +191,12 @@ class PlgSystemRedcore extends JPlugin
 				if ($doc->_styleSheets)
 				{
 					unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
+				}
+
+				if (!$isAdmin)
+				{
+					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
+					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
 				}
 			}
 
