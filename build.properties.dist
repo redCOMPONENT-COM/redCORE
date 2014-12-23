@@ -1,5 +1,15 @@
-comp.name=redcore
-www.dir=/var/www/redCORE
-package.dir=/Workspace/RedComponent/packages/redCORE
+# Properties files are configuration files used by PHING scripts containing:
+# key=value
+# more info at: https://redweb.atlassian.net/wiki/display/RWEB/Using+PHING+for+packaging+and+testing+an+extension
 
-www.dirtest=/path/to/joomla/test/site
+# Extension details:
+comp.name=redcore
+
+# Folder to create the extension .zip build package used by extension_packager.xml
+package.dir=
+
+# Testing Joomla site at a localhost folder. Only needed when using build.xml
+www.dir=
+
+# For unit testing. Only needed when using build.xml
+www.dirtest=
