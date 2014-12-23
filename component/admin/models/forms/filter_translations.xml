@@ -21,6 +21,8 @@
         <field
                 name="component"
                 type="componentlist"
+                loadContentElements="true"
+                showFullName="true"
                 label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
                 description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
                 onchange="this.form.submit();"
