@@ -35,14 +35,14 @@
     src: url('lib/bootstrap3/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.woff') format('woff'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
   }
 
-  // fontawesome 4.2.0
-  @import "fontawesome420/font-awesome.less";
-
   // Custom redCORE
   @import "navbar.less";
   @import "sidebar.less";
   @import "footer.less";
   @import "forms.less";
+
+  // Additional css to override default joomla template
+  @import "joomla.bs3.less";
 }
 
 // Modal backdrop not namespaced
@@ -131,6 +131,7 @@
   .icon-stack:before {
     content: none;
   }
+
   fieldset label {
     float: inherit;
     clear: inherit;
@@ -203,5 +204,33 @@
   }
   .list-group{
     margin:0;
+  }
+
+  button.close{
+    right: 0;
+  }
+
+  .form-horizontal .input-group .radio{
+    padding-top: 0;
+  }
+  .form-inline .input-group .radio label, .redcore .form-inline .input-group .checkbox label{
+    padding-left: 20px;
+  }
+
+  /* Custom */
+  .row-stripped{
+    padding: 20px 0;
+  }
+  .row-stripped:nth-of-type(odd) {
+    background: #f9f9f9;
+  }
+  .form-inline .input-group .chzn-container-single .chzn-single,
+  .form-group .chzn-container-single .chzn-single,{
+    height: 34px;
+    line-height: 30px;
+  }
+  .input-group-sm .chzn-container-single .chzn-single{
+    height: 30px;
+    line-height: 30px;
   }
 }

@@ -44,7 +44,7 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 							<strong><?php echo JText::_('JVERSION'); ?>:</strong>
 						</td>
 						<td>
-							<strong><span class="badge badge-success"><?php echo !empty($component->xml->version) ? $component->xml->version : ''; ?></span></strong>
+							<strong><span class="label label-success"><?php echo !empty($component->xml->version) ? $component->xml->version : ''; ?></span></strong>
 						</td>
 					</tr>
 					<tr>
