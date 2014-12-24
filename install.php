@@ -323,6 +323,7 @@ class Com_RedcoreInstallerScript
 			{
 				$extName  = $node->attributes()->name;
 				$extGroup = $node->attributes()->group;
+				$disabled = !empty($node->attributes()->disabled) ? true : false;
 				$extPath  = $src . '/plugins/' . $extGroup . '/' . $extName;
 				$result   = 0;
 
@@ -341,7 +342,7 @@ class Com_RedcoreInstallerScript
 				$this->_storeStatus('plugins', array('name' => $extName, 'group' => $extGroup, 'result' => $result));
 
 				// Enable the installed plugin
-				if ($result)
+				if ($result && !$disabled)
 				{
 					$db = JFactory::getDBO();
 					$query = $db->getQuery(true);

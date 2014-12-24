@@ -81,7 +81,7 @@
     <plugins>
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
-        <plugin name="mvcoverride" group="system"/>
+        <plugin name="mvcoverride" group="system" disabled="1" />
     </plugins>
 
     <!-- Modules to install with the component -->
