@@ -91,6 +91,7 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 				<tr>
 					<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_NAME'); ?></th>
 					<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_TRANSFORM'); ?></th>
+					<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_DEFAULT_VALUE'); ?></th>
 					<?php if ($isOperationRead) : ?>
 						<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_FILTER'); ?></th>
 						<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_SEARCHABLE'); ?></th>
@@ -108,6 +109,7 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 						<tr>
 							<td><?php echo $field['name']; ?></td>
 							<td><?php echo !empty($field['transform']) ? $field['transform'] : 'string'; ?></td>
+							<td><?php echo !empty($field['defaultValue']) ? $field['defaultValue'] : ''; ?></td>
 							<?php if ($isOperationRead) : ?>
 								<td><?php echo RApiHalHelper::isAttributeTrue($field, 'isFilterField') ? JText::_('JYES') : JText::_('JNO'); ?></td>
 								<td><?php echo RApiHalHelper::isAttributeTrue($field, 'isSearchableField') ? JText::_('JYES') : JText::_('JNO'); ?></td>

@@ -174,8 +174,8 @@
                 <resource displayName="documentation" />
                 <resource displayName="base" />
                 <resource displayName="contact:list" />
-                <resource displayName="result" />
                 <resource displayName="contact:self" />
+                <resource displayName="result" />
             </resources>
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
@@ -193,8 +193,8 @@
                 <resource displayName="documentation" />
                 <resource displayName="base" />
                 <resource displayName="contact:list" />
-                <resource displayName="result" />
                 <resource displayName="contact:self" />
+                <resource displayName="result" />
             </resources>
             <description><![CDATA[ This operation updates Contact item. ]]></description>
         </update>

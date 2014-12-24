@@ -53,4 +53,4 @@ if (isset($data['filter_name']))
 			<i class="icon-remove"></i>
 		</button>
 	</div>
-</div>buga vuga
+</div>

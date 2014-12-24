@@ -162,6 +162,11 @@ class RApiHalHal extends RApi
 				throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_NOT_INSTALLED', $this->webserviceName, $this->webserviceVersion));
 			}
 
+			if (empty($this->webservice['state']))
+			{
+				throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_UNPUBLISHED', $this->webserviceName, $this->webserviceVersion));
+			}
+
 			$this->webservicePath = $this->webservice['path'];
 			$this->configuration = RApiHalHelper::loadWebserviceConfiguration(
 				$this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath, $this->client
@@ -338,10 +343,16 @@ class RApiHalHal extends RApi
 	public function apiDefaultPage()
 	{
 		// Add standard Joomla namespace as curie.
-		$documentationCurie = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc', 'curies', 'Documentation', 'documentation', null, true);
+		$documentationCurieAdmin = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=administrator',
+			'curies', 'Documentation Admin', 'documentationAdmin', null, true
+		);
+		$documentationCurieSite = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=site',
+			'curies', 'Documentation Site', 'documentationSite', null, true
+		);
 
 		// Add basic hypermedia links.
-		$this->hal->setLink($documentationCurie, false, true);
+		$this->hal->setLink($documentationCurieAdmin, false, true);
+		$this->hal->setLink($documentationCurieSite, false, true);
 		$this->hal->setLink(new RApiHalDocumentLink(JUri::base(), 'base', JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_DEFAULT_PAGE')));
 
 		$webservices = RApiHalHelper::getInstalledWebservices();
@@ -356,9 +367,15 @@ class RApiHalHal extends RApi
 					{
 						if ($webservice['state'] == 1)
 						{
+							$documentation = $webserviceClient == 'site' ? 'documentationSite' : 'documentationAdmin';
+
 							// We will fetch only top level webservice
 							$this->hal->setLink(
-								new RApiHalDocumentLink('/index.php?option=' . $webservice['name'], 'documentation:' . $webservice['name'], $webservice['displayName'])
+								new RApiHalDocumentLink(
+									'/index.php?option=' . $webservice['name'] . '&webserviceClient=' . $webserviceClient,
+									$documentation . ':' . $webservice['name'],
+									$webservice['title']
+								)
 							);
 
 							break;
@@ -1319,8 +1336,11 @@ class RApiHalHal extends RApi
 
 			if (!empty($response->user_id))
 			{
+				$user = JFactory::getUser($response->user_id);
+
 				// Load the JUser class on application for this client
-				JFactory::getApplication()->loadIdentity(JFactory::getUser($response->user_id));
+				JFactory::getApplication()->loadIdentity($user);
+				JFactory::getSession()->set('user', $user);
 			}
 		}
 	}

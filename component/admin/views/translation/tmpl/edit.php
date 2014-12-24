@@ -310,7 +310,7 @@ $predefinedOptions = array(
 					<?php echo JText::_('JSTATUS'); ?>
 				</div>
 				<div class="controls">
-					<span class="badge <?php echo $status['badge']; ?>">
+					<span class="<?php echo $status['badge']; ?>">
 						<?php echo JText::_($status['status']); ?>
 					</span>
 				</div>

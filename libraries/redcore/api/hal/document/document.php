@@ -231,7 +231,10 @@ class RApiHalDocumentDocument extends JDocument
 		{
 			foreach ($this->uriParams as $paramKey => $param)
 			{
-				$uri->setVar($paramKey, $param);
+				if (!$uri->hasVar($paramKey))
+				{
+					$uri->setVar($paramKey, $param);
+				}
 			}
 		}
 

@@ -50,10 +50,10 @@ abstract class JHtmlRbootstrap
 		{
 			if ($loadCss)
 			{
-				RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+				RHtmlMedia::loadFrameworkCss();
 			}
 
-			RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
+			RHtmlMedia::loadFrameworkJs();
 		}
 		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
 		{

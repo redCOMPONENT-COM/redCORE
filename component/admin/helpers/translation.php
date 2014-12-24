@@ -74,11 +74,11 @@ abstract class RedcoreHelpersTranslation extends JObject
 	{
 		if (empty($item->rctranslations_language))
 		{
-			return array('badge' => 'badge-important', 'status' => 'JNONE');
+			return array('badge' => 'label label-danger', 'status' => 'JNONE');
 		}
 		elseif ($item->rctranslations_state != 1)
 		{
-			return array('badge' => 'badge-important', 'status' => 'JUNPUBLISHED');
+			return array('badge' => 'label label-danger', 'status' => 'JUNPUBLISHED');
 		}
 		else
 		{
@@ -93,13 +93,13 @@ abstract class RedcoreHelpersTranslation extends JObject
 				$originalValues->loadString((string) $item->rctranslations_originals);
 			}
 
-			$translationStatus = array('badge' => 'badge-success', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_TRANSLATED');
+			$translationStatus = array('badge' => 'label label-success', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_TRANSLATED');
 
 			foreach ($columns as $column)
 			{
 				if (md5($item->$column) != $originalValues->get($column))
 				{
-					$translationStatus = array('badge' => 'badge-warning', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_CHANGED');
+					$translationStatus = array('badge' => 'label label-warning', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_CHANGED');
 					break;
 				}
 			}

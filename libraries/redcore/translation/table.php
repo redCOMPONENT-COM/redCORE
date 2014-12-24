@@ -134,6 +134,17 @@ final class RTranslationTable
 	}
 
 	/**
+	 * Reset loaded tables
+	 *
+	 * @return  void
+	 */
+	public static function resetLoadedTables()
+	{
+		self::$tablePrefix = '';
+		self::loadTables();
+	}
+
+	/**
 	 * Get table name with suffix
 	 *
 	 * @param   string  $originalTableName  Original table name
@@ -175,6 +186,8 @@ final class RTranslationTable
 		// Create table with fields
 		$db = JFactory::getDbo();
 
+		// We might be in installer and got new tables so we will get fresh list of the tables
+		self::resetLoadedTables();
 		$originalColumns = self::getTableColumns($contentElement->table);
 
 		// If original table is not present then we cannot create shadow table
@@ -262,7 +275,8 @@ final class RTranslationTable
 			{
 				$db->execute();
 
-				self::$tablePrefix = '';
+				// Since we have new table we will reset it
+				self::resetLoadedTables();
 				$columns = self::getTableColumns($newTable);
 
 				if (empty($columns))

@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  Controllers
  * @since       1.0
  */
-class RedcoreControllerWebservices extends RControllerForm
+class RedcoreControllerWebservices extends RControllerAdmin
 {
 	/**
 	 * Method to install Webservice.
@@ -27,7 +27,8 @@ class RedcoreControllerWebservices extends RControllerForm
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
+		$app = JFactory::getApplication();
+		$model = $this->getModel('webservices');
 
 		$webservice = $app->input->getString('webservice');
 		$version = $app->input->getString('version');
@@ -36,41 +37,14 @@ class RedcoreControllerWebservices extends RControllerForm
 
 		if ($webservice == 'all')
 		{
-			RApiHalHelper::batchWebservices('install');
+			$this->batchWebservices('install');
 		}
 		else
 		{
-			// Load all XMLs before save to get Paths
-			RApiHalHelper::getWebservices();
-			RApiHalHelper::installWebservice($client, $webservice, $version, true, $folder);
-		}
-
-		$this->redirectAfterAction();
-	}
-
-	/**
-	 * Method to uninstall Content Element.
-	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 */
-	public function uninstallWebservice()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
-
-		$webservice = $app->input->getString('webservice');
-		$version = $app->input->getString('version');
-		$folder = $app->input->getString('folder');
-		$client = $app->input->getString('client');
-
-		if ($webservice == 'all')
-		{
-			RApiHalHelper::batchWebservices('uninstall');
-		}
-		else
-		{
-			RApiHalHelper::uninstallWebservice($client, $webservice, $version, true, $folder);
+			if ($model->installWebservice($client, $webservice, $version, $folder))
+			{
+				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_INSTALLED'), 'message');
+			}
 		}
 
 		$this->redirectAfterAction();
@@ -86,6 +60,7 @@ class RedcoreControllerWebservices extends RControllerForm
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		$app   = JFactory::getApplication();
+		$model = $this->getModel('webservices');
 
 		$webservice = $app->input->getString('webservice');
 		$version = $app->input->getString('version');
@@ -94,11 +69,11 @@ class RedcoreControllerWebservices extends RControllerForm
 
 		if ($webservice == 'all')
 		{
-			RApiHalHelper::batchWebservices('delete');
+			$this->batchWebservices('delete');
 		}
 		else
 		{
-			RApiHalHelper::deleteWebservice($client, $webservice, $version, true, $folder);
+			$model->deleteWebservice($client, $webservice, $version, $folder);
 		}
 
 		$this->redirectAfterAction();
@@ -134,6 +109,56 @@ class RedcoreControllerWebservices extends RControllerForm
 	}
 
 	/**
+	 * Preforms Batch action against all Webservices
+	 *
+	 * @param   string  $action  Action to preform
+	 *
+	 * @return  boolean  Returns true if Action was successful
+	 */
+	public function batchWebservices($action = '')
+	{
+		$webservices = RApiHalHelper::getWebservices();
+
+		if (!empty($webservices))
+		{
+			$model = $this->getModel('webservices');
+			$installedWebservices = RApiHalHelper::getInstalledWebservices();
+
+			foreach ($webservices as $webserviceNames)
+			{
+				foreach ($webserviceNames as $webserviceVersions)
+				{
+					foreach ($webserviceVersions as $webservice)
+					{
+						$client = RApiHalHelper::getWebserviceClient($webservice);
+						$path = $webservice->webservicePath;
+						$name = (string) $webservice->config->name;
+						$version = (string) $webservice->config->version;
+
+						// If it is already install then we skip it
+						if (!empty($installedWebservices[$client][$name][$version]))
+						{
+							continue;
+						}
+
+						switch ($action)
+						{
+							case 'install':
+								$model->installWebservice($client, $name, $version, $path);
+								break;
+							case 'delete':
+								$model->deleteWebservice($client, $name, $version, $path);
+								break;
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
 	 * Method to redirect after action.
 	 *
 	 * @return  boolean  True if successful, false otherwise.
@@ -146,7 +171,7 @@ class RedcoreControllerWebservices extends RControllerForm
 		}
 		else
 		{
-			parent::edit();
+			parent::display();
 		}
 	}
 }
