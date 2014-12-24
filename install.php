@@ -352,7 +352,7 @@ class Com_RedcoreInstallerScript
 					$query->where("element=" . $db->quote($extName));
 					$query->where("folder=" . $db->quote($extGroup));
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}

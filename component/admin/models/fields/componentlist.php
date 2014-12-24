@@ -74,18 +74,28 @@ class JFormFieldComponentlist extends JFormFieldList
 					$source = JPATH_ADMINISTRATOR . '/components/' . $extension;
 					$lang->load($extension . '.sys', JPATH_ADMINISTRATOR, null, false, true)
 					||	$lang->load($extension . '.sys', $source, null, false, true);
-					$contentElements = RTranslationHelper::getContentElements($value->name);
+					$contentElements = '';
 
-					if (!empty($contentElements))
+					if ($this->getAttribute('loadContentElements', 'false') == 'true')
 					{
-						$contentElements = ' (' . count($contentElements) . ')';
+						$contentElementsArray = RTranslationHelper::getContentElements($value->name);
+
+						if (!empty($contentElementsArray))
+						{
+							$contentElements = ' (' . count($contentElementsArray) . ')';
+						}
+					}
+
+					if ($this->getAttribute('showFullName', 'false') == 'true')
+					{
+						$title = JText::_($value->name);
 					}
 					else
 					{
-						$contentElements = '';
+						$title = $value->name;
 					}
 
-					$options[] = JHtml::_('select.option', $value->name, JText::_($value->name) . $contentElements);
+					$options[] = JHtml::_('select.option', $value->name, $title . $contentElements);
 				}
 
 				static::$cache[$hash] = array_merge(static::$cache[$hash], $options);

@@ -29,7 +29,7 @@ JHtml::_('rbootstrap.tooltip');
 			<strong><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></strong>: <?php echo RText::getTranslationIfExists($xml->name, '', ''); ?>
 		</h3>
 		<h4>
-			<?php echo JText::_('JVERSION'); ?> : <span class="badge badge-success"><?php echo $xml->version; ?></span>
+			<?php echo JText::_('JVERSION'); ?> : <span class="label label-success"><?php echo $xml->version; ?></span>
 		</h4>
 		<p class="tab-description">
 			<strong><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?></strong>: <?php echo RText::getTranslationIfExists($xml->description, '', ''); ?>
@@ -55,13 +55,13 @@ JHtml::_('rbootstrap.tooltip');
 						<strong><?php echo $requirement['name']; ?>:</strong>
 					</td>
 					<td>
-						<span class="badge badge-success"><?php echo $requirement['required']; ?></span>
+						<span class="label label-success"><?php echo $requirement['required']; ?></span>
 					</td>
 					<td>
 						<?php if ($requirement['status']) : ?>
-						<span class="badge badge-success">
+						<span class="label label-success">
 							<?php else : ?>
-							<span class="badge badge-important">
+							<span class="label label-danger">
 							<?php endif; ?>
 
 							<?php echo $requirement['current']; ?>
@@ -76,13 +76,13 @@ JHtml::_('rbootstrap.tooltip');
 							<strong><?php echo $extension['name']; ?> <?php echo JText::_('COM_REDCORE_CONFIG_EXTENSION_SUPPORTED'); ?>:</strong>
 						</td>
 						<td>
-							<span class="badge badge-success"><?php echo JText::_('JYES'); ?></span>
+							<span class="label label-success"><?php echo JText::_('JYES'); ?></span>
 						</td>
 						<td>
 							<?php if ($extension['status']) : ?>
-								<span class="badge badge-success"><?php echo JText::_('JYES'); ?></span>
+								<span class="label label-success"><?php echo JText::_('JYES'); ?></span>
 							<?php else : ?>
-								<span class="badge badge-important"><?php echo JText::_('JNO'); ?></span>
+								<span class="label label-danger"><?php echo JText::_('JNO'); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -94,23 +94,23 @@ JHtml::_('rbootstrap.tooltip');
 						<strong><?php echo $xml->media['folder']; ?></strong><br/>
 					</td>
 					<td>
-						<span class="badge badge-success">
+						<span class="label label-success">
 							<?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?>
-						</span> / <span class="badge badge-success">
+						</span> / <span class="label label-success">
 							<?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?>
 						</span>
 					</td>
 					<td>
 						<?php if (@!is_dir(JPATH_SITE . '/' . $xml->media['folder'])) : ?>
-							<span class="badge badge-important"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JNO') . ')'; ?></span>
+							<span class="label label-danger"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JNO') . ')'; ?></span>
 						<?php else : ?>
-							<span class="badge badge-success"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?></span>
+							<span class="label label-success"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?></span>
 						<?php endif; ?>
 						/
 						<?php if (@!is_writeable(JPATH_SITE . '/' . $xml->media['folder'])) : ?>
-							<span class="badge badge-important"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JNO') . ')'; ?></span>
+							<span class="label label-danger"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JNO') . ')'; ?></span>
 						<?php else : ?>
-							<span class="badge badge-success"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?></span>
+							<span class="label label-success"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?></span>
 						<?php endif; ?>
 					</td>
 				</tr>
@@ -152,17 +152,17 @@ JHtml::_('rbootstrap.tooltip');
 						</td>
 						<td>
 							<?php if ($fromExtension) : ?>
-							<span class="badge badge-success"><?php echo JText::_('JYES'); ?>
+							<span class="label label-success"><?php echo JText::_('JYES'); ?>
 								<?php else : ?>
-								<span class="badge badge-warning"><?php echo JText::_('JNO'); ?>
+								<span class="label label-warning"><?php echo JText::_('JNO'); ?>
 									<?php endif; ?>
 							</span>
 						</td>
 						<td>
 							<?php if ($module->enabled == 1) : ?>
-								<span class="badge badge-success"><?php echo JText::_('JENABLED'); ?></span>
+								<span class="label label-success"><?php echo JText::_('JENABLED'); ?></span>
 							<?php else : ?>
-								<span class="badge badge-important"><?php echo JText::_('JDISABLED'); ?></span>
+								<span class="label label-danger"><?php echo JText::_('JDISABLED'); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>
@@ -207,17 +207,17 @@ JHtml::_('rbootstrap.tooltip');
 						</td>
 						<td>
 							<?php if ($fromExtension) : ?>
-							<span class="badge badge-success"><?php echo JText::_('JYES'); ?>
+							<span class="label label-success"><?php echo JText::_('JYES'); ?>
 								<?php else : ?>
-								<span class="badge badge-warning"><?php echo JText::_('JNO'); ?>
+								<span class="label label-warning"><?php echo JText::_('JNO'); ?>
 									<?php endif; ?>
 							</span>
 						</td>
 						<td>
 							<?php if ($plugin->enabled == 1) : ?>
-								<span class="badge badge-success"><?php echo JText::_('JENABLED'); ?></span>
+								<span class="label label-success"><?php echo JText::_('JENABLED'); ?></span>
 							<?php else : ?>
-								<span class="badge badge-important"><?php echo JText::_('JDISABLED'); ?></span>
+								<span class="label label-danger"><?php echo JText::_('JDISABLED'); ?></span>
 							<?php endif; ?>
 						</td>
 					</tr>

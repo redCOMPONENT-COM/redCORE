@@ -114,7 +114,7 @@ endif;
 							<?php echo JHtml::_('grid.id', $i, $item->rctranslations_id); ?>
 						</td>
 						<td>
-							<span class="badge <?php echo $item->translationStatus['badge']; ?>">
+							<span class="<?php echo $item->translationStatus['badge']; ?>">
 								<?php echo JText::_($item->translationStatus['status']); ?>
 							</span>
 						</td>

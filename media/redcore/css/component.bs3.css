@@ -22,7 +22,6 @@
  */
   /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
   /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
-  /*# sourceMappingURL=bootstrap.css.map */
   /*!
  *  Font Awesome 4.2.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
@@ -6473,6 +6472,810 @@
   src: url('lib/bootstrap3/fonts/glyphicons-halflings-regular.eot');
   src: url('lib/bootstrap3/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.woff') format('woff'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+.redcore .navbar a.brand,
+.redcore .navbar a {
+  color: #b7b7b7;
+}
+.redcore .navbar a.back2joomla {
+  float: left;
+  display: block;
+  line-height: 40px;
+  font-size: 85%;
+}
+.redcore .navbar a.brand,
+.redcore .navbar .brand {
+  margin-left: 0;
+  padding: 10px 5px;
+  font-weight: 200;
+  font-size: 1.5em;
+  text-shadow: none;
+  color: #FFFFFF;
+}
+.redcore .navbar a.navbar-brand,
+.redcore .navbar .navbar-brand {
+  margin-left: 0;
+  padding: 10px 5px;
+  font-weight: 200;
+  font-size: 1.5em;
+  text-shadow: none;
+  color: #FFFFFF;
+}
+.redcore .navbar .nav > .active > a,
+.redcore .navbar .nav > .active > a:hover,
+.redcore .navbar .nav > .active > a:focus {
+  background-color: #666;
+  color: #fff;
+}
+.redcore .navbar .nav > li > a {
+  color: #b7b7b7;
+}
+.redcore .navbar .nav li.dropdown > .dropdown-toggle .caret {
+  border-bottom-color: #b7b7b7;
+  border-top-color: #b7b7b7;
+}
+.redcore .navbar .nav li.dropdown.open > .dropdown-toggle,
+.redcore .navbar .nav li.dropdown.active > .dropdown-toggle,
+.redcore .navbar .nav li.dropdown.open.active > .dropdown-toggle {
+  background-color: #444;
+  color: #fff;
+}
+.redcore .navbar .dropdown-menu > li > a:hover,
+.redcore .navbar .dropdown-menu > li > a:focus,
+.redcore .navbar .dropdown-submenu:hover > a,
+.redcore .navbar .dropdown-submenu:focus > a {
+  background-color: #333;
+  background-image: none;
+  color: #fff;
+  text-decoration: none;
+}
+.redcore .navbar .navbar-search input {
+  background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
+  border: 0 none;
+  color: #0D0D0D;
+  height: 26px;
+  line-height: 26px;
+  margin-top: 2px;
+  padding: 0 10px;
+  transition: all 0.2s ease 0s;
+}
+.redcore .navbar .navbar-search input:focus {
+  background: #FFFFFF;
+}
+.redcore .navbar .divider-vertical {
+  border-left: 1px solid #242525;
+  border-right: 1px solid #191a1a;
+  margin: 0 5px;
+}
+.redcore .navbar ul a {
+  color: #333;
+}
+.redcore .navbar .nav-right,
+.redcore .navbar .nav-right a {
+  color: #b7b7b7;
+  line-height: 40px;
+}
+.redcore .sidebar {
+  margin-left: 0;
+  margin-top: 10px;
+}
+.redcore .sidebar .nav-tabs.nav-stacked > li > a:hover {
+  background: none repeat scroll 0 0 #EEEEEE;
+  padding-left: 20px;
+  transition: all 0.3s ease 0s;
+}
+.redcore .sidebar .nav-tabs.nav-stacked > li > a {
+  color: #000000;
+  font-weight: 600;
+}
+.redcore .sidebar .nav-tabs.nav-stacked > li > a:active,
+.redcore .sidebar .nav-tabs.nav-stacked > li > a.active {
+  box-shadow: 5px 0 0 #CC3333 inset, 0 0 0 1px #EEEEEE inset;
+  background: none repeat scroll 0 0 #EEEEEE;
+}
+.redcore .sidebar .subnav {
+  border-left: 1px solid #DDDDDD;
+  border-right: 1px solid #DDDDDD;
+  width: auto;
+  margin: 0;
+  padding: 0;
+}
+.redcore .sidebar .collapse {
+  transition: height 0.05s ease 0s;
+}
+.redcore .sidebar .subnav li {
+  list-style: none outside none;
+  width: auto;
+  line-height: 10px;
+}
+.redcore .sidebar .subnav li a {
+  color: #666666;
+  display: block;
+  padding: 10px 10px 10px 50px;
+  width: auto;
+}
+.redcore .sidebar .subnav li a:hover,
+.redcore .sidebar .subnav li a:active {
+  background: none;
+  text-decoration: none;
+  color: #CC3333;
+}
+.redcore .footer {
+  background: none repeat scroll 0 0 #999999;
+  box-shadow: 0 1px 0 #eeeeee inset, 0 -15px 15px rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  padding: 5px 10px;
+  font-size: 90%;
+}
+.redcore form {
+  /* Radio buttons */
+}
+.redcore form fieldset.radio.btn-group {
+  padding-left: 0;
+}
+.redcore form .radio.btn-group > label:first-of-type {
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
+  margin-left: 0;
+}
+.redcore form .radio.btn-group input[type=radio] {
+  display: none;
+}
+.redcore form .radio input[type="radio"],
+.redcore form .checkbox input[type="checkbox"] {
+  float: left;
+  margin-left: -20px;
+}
+.redcore form select,
+.redcore form textarea,
+.redcore form input[type="text"],
+.redcore form input[type="password"],
+.redcore form input[type="datetime"],
+.redcore form input[type="datetime-local"],
+.redcore form input[type="date"],
+.redcore form input[type="month"],
+.redcore form input[type="time"],
+.redcore form input[type="week"],
+.redcore form input[type="number"],
+.redcore form input[type="email"],
+.redcore form input[type="url"],
+.redcore form input[type="search"],
+.redcore form input[type="tel"],
+.redcore form input[type="color"],
+.redcore form .uneditable-input {
+  height: 34px;
+  font-size: 14px;
+  line-height: 20px;
+}
+.redcore .form-horizontal .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+  float: left;
+}
+.redcore .form-horizontal .col-xs-12 {
+  width: 100%;
+}
+.redcore .form-horizontal .col-xs-11 {
+  width: 91.66666667%;
+}
+.redcore .form-horizontal .col-xs-10 {
+  width: 83.33333333%;
+}
+.redcore .form-horizontal .col-xs-9 {
+  width: 75%;
+}
+.redcore .form-horizontal .col-xs-8 {
+  width: 66.66666667%;
+}
+.redcore .form-horizontal .col-xs-7 {
+  width: 58.33333333%;
+}
+.redcore .form-horizontal .col-xs-6 {
+  width: 50%;
+}
+.redcore .form-horizontal .col-xs-5 {
+  width: 41.66666667%;
+}
+.redcore .form-horizontal .col-xs-4 {
+  width: 33.33333333%;
+}
+.redcore .form-horizontal .col-xs-3 {
+  width: 25%;
+}
+.redcore .form-horizontal .col-xs-2 {
+  width: 16.66666667%;
+}
+.redcore .form-horizontal .col-xs-1 {
+  width: 8.33333333%;
+}
+.redcore .form-horizontal .col-xs-pull-12 {
+  right: 100%;
+}
+.redcore .form-horizontal .col-xs-pull-11 {
+  right: 91.66666667%;
+}
+.redcore .form-horizontal .col-xs-pull-10 {
+  right: 83.33333333%;
+}
+.redcore .form-horizontal .col-xs-pull-9 {
+  right: 75%;
+}
+.redcore .form-horizontal .col-xs-pull-8 {
+  right: 66.66666667%;
+}
+.redcore .form-horizontal .col-xs-pull-7 {
+  right: 58.33333333%;
+}
+.redcore .form-horizontal .col-xs-pull-6 {
+  right: 50%;
+}
+.redcore .form-horizontal .col-xs-pull-5 {
+  right: 41.66666667%;
+}
+.redcore .form-horizontal .col-xs-pull-4 {
+  right: 33.33333333%;
+}
+.redcore .form-horizontal .col-xs-pull-3 {
+  right: 25%;
+}
+.redcore .form-horizontal .col-xs-pull-2 {
+  right: 16.66666667%;
+}
+.redcore .form-horizontal .col-xs-pull-1 {
+  right: 8.33333333%;
+}
+.redcore .form-horizontal .col-xs-pull-0 {
+  right: auto;
+}
+.redcore .form-horizontal .col-xs-push-12 {
+  left: 100%;
+}
+.redcore .form-horizontal .col-xs-push-11 {
+  left: 91.66666667%;
+}
+.redcore .form-horizontal .col-xs-push-10 {
+  left: 83.33333333%;
+}
+.redcore .form-horizontal .col-xs-push-9 {
+  left: 75%;
+}
+.redcore .form-horizontal .col-xs-push-8 {
+  left: 66.66666667%;
+}
+.redcore .form-horizontal .col-xs-push-7 {
+  left: 58.33333333%;
+}
+.redcore .form-horizontal .col-xs-push-6 {
+  left: 50%;
+}
+.redcore .form-horizontal .col-xs-push-5 {
+  left: 41.66666667%;
+}
+.redcore .form-horizontal .col-xs-push-4 {
+  left: 33.33333333%;
+}
+.redcore .form-horizontal .col-xs-push-3 {
+  left: 25%;
+}
+.redcore .form-horizontal .col-xs-push-2 {
+  left: 16.66666667%;
+}
+.redcore .form-horizontal .col-xs-push-1 {
+  left: 8.33333333%;
+}
+.redcore .form-horizontal .col-xs-push-0 {
+  left: auto;
+}
+.redcore .form-horizontal .col-xs-offset-12 {
+  margin-left: 100%;
+}
+.redcore .form-horizontal .col-xs-offset-11 {
+  margin-left: 91.66666667%;
+}
+.redcore .form-horizontal .col-xs-offset-10 {
+  margin-left: 83.33333333%;
+}
+.redcore .form-horizontal .col-xs-offset-9 {
+  margin-left: 75%;
+}
+.redcore .form-horizontal .col-xs-offset-8 {
+  margin-left: 66.66666667%;
+}
+.redcore .form-horizontal .col-xs-offset-7 {
+  margin-left: 58.33333333%;
+}
+.redcore .form-horizontal .col-xs-offset-6 {
+  margin-left: 50%;
+}
+.redcore .form-horizontal .col-xs-offset-5 {
+  margin-left: 41.66666667%;
+}
+.redcore .form-horizontal .col-xs-offset-4 {
+  margin-left: 33.33333333%;
+}
+.redcore .form-horizontal .col-xs-offset-3 {
+  margin-left: 25%;
+}
+.redcore .form-horizontal .col-xs-offset-2 {
+  margin-left: 16.66666667%;
+}
+.redcore .form-horizontal .col-xs-offset-1 {
+  margin-left: 8.33333333%;
+}
+.redcore .form-horizontal .col-xs-offset-0 {
+  margin-left: 0%;
+}
+@media (min-width: 768px) {
+  .redcore .form-horizontal .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
+    float: left;
+  }
+  .redcore .form-horizontal .col-sm-12 {
+    width: 100%;
+  }
+  .redcore .form-horizontal .col-sm-11 {
+    width: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-10 {
+    width: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-9 {
+    width: 75%;
+  }
+  .redcore .form-horizontal .col-sm-8 {
+    width: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-7 {
+    width: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-6 {
+    width: 50%;
+  }
+  .redcore .form-horizontal .col-sm-5 {
+    width: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-4 {
+    width: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-3 {
+    width: 25%;
+  }
+  .redcore .form-horizontal .col-sm-2 {
+    width: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-1 {
+    width: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-pull-12 {
+    right: 100%;
+  }
+  .redcore .form-horizontal .col-sm-pull-11 {
+    right: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-pull-10 {
+    right: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-pull-9 {
+    right: 75%;
+  }
+  .redcore .form-horizontal .col-sm-pull-8 {
+    right: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-pull-7 {
+    right: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-pull-6 {
+    right: 50%;
+  }
+  .redcore .form-horizontal .col-sm-pull-5 {
+    right: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-pull-4 {
+    right: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-pull-3 {
+    right: 25%;
+  }
+  .redcore .form-horizontal .col-sm-pull-2 {
+    right: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-pull-1 {
+    right: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-pull-0 {
+    right: auto;
+  }
+  .redcore .form-horizontal .col-sm-push-12 {
+    left: 100%;
+  }
+  .redcore .form-horizontal .col-sm-push-11 {
+    left: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-push-10 {
+    left: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-push-9 {
+    left: 75%;
+  }
+  .redcore .form-horizontal .col-sm-push-8 {
+    left: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-push-7 {
+    left: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-push-6 {
+    left: 50%;
+  }
+  .redcore .form-horizontal .col-sm-push-5 {
+    left: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-push-4 {
+    left: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-push-3 {
+    left: 25%;
+  }
+  .redcore .form-horizontal .col-sm-push-2 {
+    left: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-push-1 {
+    left: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-push-0 {
+    left: auto;
+  }
+  .redcore .form-horizontal .col-sm-offset-12 {
+    margin-left: 100%;
+  }
+  .redcore .form-horizontal .col-sm-offset-11 {
+    margin-left: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-offset-10 {
+    margin-left: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-offset-9 {
+    margin-left: 75%;
+  }
+  .redcore .form-horizontal .col-sm-offset-8 {
+    margin-left: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-offset-7 {
+    margin-left: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-offset-6 {
+    margin-left: 50%;
+  }
+  .redcore .form-horizontal .col-sm-offset-5 {
+    margin-left: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-offset-4 {
+    margin-left: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-offset-3 {
+    margin-left: 25%;
+  }
+  .redcore .form-horizontal .col-sm-offset-2 {
+    margin-left: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-sm-offset-1 {
+    margin-left: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-sm-offset-0 {
+    margin-left: 0%;
+  }
+}
+@media (min-width: 992px) {
+  .redcore .form-horizontal .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+    float: left;
+  }
+  .redcore .form-horizontal .col-md-12 {
+    width: 100%;
+  }
+  .redcore .form-horizontal .col-md-11 {
+    width: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-md-10 {
+    width: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-md-9 {
+    width: 75%;
+  }
+  .redcore .form-horizontal .col-md-8 {
+    width: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-md-7 {
+    width: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-md-6 {
+    width: 50%;
+  }
+  .redcore .form-horizontal .col-md-5 {
+    width: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-md-4 {
+    width: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-md-3 {
+    width: 25%;
+  }
+  .redcore .form-horizontal .col-md-2 {
+    width: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-md-1 {
+    width: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-md-pull-12 {
+    right: 100%;
+  }
+  .redcore .form-horizontal .col-md-pull-11 {
+    right: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-md-pull-10 {
+    right: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-md-pull-9 {
+    right: 75%;
+  }
+  .redcore .form-horizontal .col-md-pull-8 {
+    right: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-md-pull-7 {
+    right: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-md-pull-6 {
+    right: 50%;
+  }
+  .redcore .form-horizontal .col-md-pull-5 {
+    right: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-md-pull-4 {
+    right: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-md-pull-3 {
+    right: 25%;
+  }
+  .redcore .form-horizontal .col-md-pull-2 {
+    right: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-md-pull-1 {
+    right: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-md-pull-0 {
+    right: auto;
+  }
+  .redcore .form-horizontal .col-md-push-12 {
+    left: 100%;
+  }
+  .redcore .form-horizontal .col-md-push-11 {
+    left: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-md-push-10 {
+    left: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-md-push-9 {
+    left: 75%;
+  }
+  .redcore .form-horizontal .col-md-push-8 {
+    left: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-md-push-7 {
+    left: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-md-push-6 {
+    left: 50%;
+  }
+  .redcore .form-horizontal .col-md-push-5 {
+    left: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-md-push-4 {
+    left: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-md-push-3 {
+    left: 25%;
+  }
+  .redcore .form-horizontal .col-md-push-2 {
+    left: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-md-push-1 {
+    left: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-md-push-0 {
+    left: auto;
+  }
+  .redcore .form-horizontal .col-md-offset-12 {
+    margin-left: 100%;
+  }
+  .redcore .form-horizontal .col-md-offset-11 {
+    margin-left: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-md-offset-10 {
+    margin-left: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-md-offset-9 {
+    margin-left: 75%;
+  }
+  .redcore .form-horizontal .col-md-offset-8 {
+    margin-left: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-md-offset-7 {
+    margin-left: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-md-offset-6 {
+    margin-left: 50%;
+  }
+  .redcore .form-horizontal .col-md-offset-5 {
+    margin-left: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-md-offset-4 {
+    margin-left: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-md-offset-3 {
+    margin-left: 25%;
+  }
+  .redcore .form-horizontal .col-md-offset-2 {
+    margin-left: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-md-offset-1 {
+    margin-left: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-md-offset-0 {
+    margin-left: 0%;
+  }
+}
+@media (min-width: 1200px) {
+  .redcore .form-horizontal .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12 {
+    float: left;
+  }
+  .redcore .form-horizontal .col-lg-12 {
+    width: 100%;
+  }
+  .redcore .form-horizontal .col-lg-11 {
+    width: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-10 {
+    width: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-9 {
+    width: 75%;
+  }
+  .redcore .form-horizontal .col-lg-8 {
+    width: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-7 {
+    width: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-6 {
+    width: 50%;
+  }
+  .redcore .form-horizontal .col-lg-5 {
+    width: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-4 {
+    width: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-3 {
+    width: 25%;
+  }
+  .redcore .form-horizontal .col-lg-2 {
+    width: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-1 {
+    width: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-pull-12 {
+    right: 100%;
+  }
+  .redcore .form-horizontal .col-lg-pull-11 {
+    right: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-pull-10 {
+    right: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-pull-9 {
+    right: 75%;
+  }
+  .redcore .form-horizontal .col-lg-pull-8 {
+    right: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-pull-7 {
+    right: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-pull-6 {
+    right: 50%;
+  }
+  .redcore .form-horizontal .col-lg-pull-5 {
+    right: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-pull-4 {
+    right: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-pull-3 {
+    right: 25%;
+  }
+  .redcore .form-horizontal .col-lg-pull-2 {
+    right: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-pull-1 {
+    right: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-pull-0 {
+    right: auto;
+  }
+  .redcore .form-horizontal .col-lg-push-12 {
+    left: 100%;
+  }
+  .redcore .form-horizontal .col-lg-push-11 {
+    left: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-push-10 {
+    left: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-push-9 {
+    left: 75%;
+  }
+  .redcore .form-horizontal .col-lg-push-8 {
+    left: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-push-7 {
+    left: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-push-6 {
+    left: 50%;
+  }
+  .redcore .form-horizontal .col-lg-push-5 {
+    left: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-push-4 {
+    left: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-push-3 {
+    left: 25%;
+  }
+  .redcore .form-horizontal .col-lg-push-2 {
+    left: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-push-1 {
+    left: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-push-0 {
+    left: auto;
+  }
+  .redcore .form-horizontal .col-lg-offset-12 {
+    margin-left: 100%;
+  }
+  .redcore .form-horizontal .col-lg-offset-11 {
+    margin-left: 91.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-offset-10 {
+    margin-left: 83.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-offset-9 {
+    margin-left: 75%;
+  }
+  .redcore .form-horizontal .col-lg-offset-8 {
+    margin-left: 66.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-offset-7 {
+    margin-left: 58.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-offset-6 {
+    margin-left: 50%;
+  }
+  .redcore .form-horizontal .col-lg-offset-5 {
+    margin-left: 41.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-offset-4 {
+    margin-left: 33.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-offset-3 {
+    margin-left: 25%;
+  }
+  .redcore .form-horizontal .col-lg-offset-2 {
+    margin-left: 16.66666667%;
+  }
+  .redcore .form-horizontal .col-lg-offset-1 {
+    margin-left: 8.33333333%;
+  }
+  .redcore .form-horizontal .col-lg-offset-0 {
+    margin-left: 0%;
+  }
+}
 @font-face {
   font-family: 'FontAwesome';
   src: url('lib/fontawesome420/fonts/fontawesome-webfont.eot?v=4.2.0');
@@ -8136,183 +8939,16 @@
 .redcore .icon-meanpath:before {
   content: "\f20c";
 }
-.redcore .navbar a.brand,
-.redcore .navbar a {
-  color: #b7b7b7;
+.redcore .icon-ok-sign:before {
+  content: "\f058";
 }
-.redcore .navbar a.back2joomla {
-  float: left;
-  display: block;
-  line-height: 40px;
-  font-size: 85%;
-}
-.redcore .navbar a.brand,
-.redcore .navbar .brand {
-  margin-left: 0;
-  padding: 10px 5px;
-  font-weight: 200;
-  font-size: 1.5em;
-  text-shadow: none;
-  color: #FFFFFF;
-}
-.redcore .navbar a.navbar-brand,
-.redcore .navbar .navbar-brand {
-  margin-left: 0;
-  padding: 10px 5px;
-  font-weight: 200;
-  font-size: 1.5em;
-  text-shadow: none;
-  color: #FFFFFF;
-}
-.redcore .navbar .nav > .active > a,
-.redcore .navbar .nav > .active > a:hover,
-.redcore .navbar .nav > .active > a:focus {
-  background-color: #666;
-  color: #fff;
-}
-.redcore .navbar .nav > li > a {
-  color: #b7b7b7;
-}
-.redcore .navbar .nav li.dropdown > .dropdown-toggle .caret {
-  border-bottom-color: #b7b7b7;
-  border-top-color: #b7b7b7;
-}
-.redcore .navbar .nav li.dropdown.open > .dropdown-toggle,
-.redcore .navbar .nav li.dropdown.active > .dropdown-toggle,
-.redcore .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-  background-color: #444;
-  color: #fff;
-}
-.redcore .navbar .dropdown-menu > li > a:hover,
-.redcore .navbar .dropdown-menu > li > a:focus,
-.redcore .navbar .dropdown-submenu:hover > a,
-.redcore .navbar .dropdown-submenu:focus > a {
-  background-color: #333;
-  background-image: none;
-  color: #fff;
-  text-decoration: none;
-}
-.redcore .navbar .navbar-search input {
-  background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
-  border: 0 none;
-  color: #0D0D0D;
-  height: 26px;
-  line-height: 26px;
-  margin-top: 2px;
-  padding: 0 10px;
-  transition: all 0.2s ease 0s;
-}
-.redcore .navbar .navbar-search input:focus {
-  background: #FFFFFF;
-}
-.redcore .navbar .divider-vertical {
-  border-left: 1px solid #242525;
-  border-right: 1px solid #191a1a;
-  margin: 0 5px;
-}
-.redcore .navbar ul a {
-  color: #333;
-}
-.redcore .navbar .nav-right,
-.redcore .navbar .nav-right a {
-  color: #b7b7b7;
-  line-height: 40px;
-}
-.redcore .sidebar {
-  margin-left: 0;
-  margin-top: 10px;
-}
-.redcore .sidebar .nav-tabs.nav-stacked > li > a:hover {
-  background: none repeat scroll 0 0 #EEEEEE;
-  padding-left: 20px;
-  transition: all 0.3s ease 0s;
-}
-.redcore .sidebar .nav-tabs.nav-stacked > li > a {
-  color: #000000;
-  font-weight: 600;
-}
-.redcore .sidebar .nav-tabs.nav-stacked > li > a:active,
-.redcore .sidebar .nav-tabs.nav-stacked > li > a.active {
-  box-shadow: 5px 0 0 #CC3333 inset, 0 0 0 1px #EEEEEE inset;
-  background: none repeat scroll 0 0 #EEEEEE;
-}
-.redcore .sidebar .subnav {
-  border-left: 1px solid #DDDDDD;
-  border-right: 1px solid #DDDDDD;
-  width: auto;
-  margin: 0;
-  padding: 0;
-}
-.redcore .sidebar .collapse {
-  transition: height 0.05s ease 0s;
-}
-.redcore .sidebar .subnav li {
-  list-style: none outside none;
-  width: auto;
-  line-height: 10px;
-}
-.redcore .sidebar .subnav li a {
-  color: #666666;
-  display: block;
-  padding: 10px 10px 10px 50px;
-  width: auto;
-}
-.redcore .sidebar .subnav li a:hover,
-.redcore .sidebar .subnav li a:active {
-  background: none;
-  text-decoration: none;
-  color: #CC3333;
-}
-.redcore .footer {
-  background: none repeat scroll 0 0 #999999;
-  box-shadow: 0 1px 0 #eeeeee inset, 0 -15px 15px rgba(255, 255, 255, 0.6);
-  color: #ffffff;
-  padding: 5px 10px;
-  font-size: 90%;
-}
-.redcore form {
-  /* Radio buttons */
-}
-.redcore form fieldset.radio.btn-group {
-  padding-left: 0;
-}
-.redcore form .radio.btn-group > label:first-of-type {
-  border-bottom-left-radius: 4px;
-  border-top-left-radius: 4px;
-  margin-left: 0;
-}
-.redcore form .radio.btn-group input[type=radio] {
-  display: none;
-}
-.redcore form .radio input[type="radio"],
-.redcore form .checkbox input[type="checkbox"] {
-  float: left;
-  margin-left: -20px;
-}
-.redcore form select,
-.redcore form textarea,
-.redcore form input[type="text"],
-.redcore form input[type="password"],
-.redcore form input[type="datetime"],
-.redcore form input[type="datetime-local"],
-.redcore form input[type="date"],
-.redcore form input[type="month"],
-.redcore form input[type="time"],
-.redcore form input[type="week"],
-.redcore form input[type="number"],
-.redcore form input[type="email"],
-.redcore form input[type="url"],
-.redcore form input[type="search"],
-.redcore form input[type="tel"],
-.redcore form input[type="color"],
-.redcore form .uneditable-input {
-  height: 34px;
-  font-size: 14px;
-  line-height: 20px;
+.redcore .modal-backdrop {
+  z-index: 0;
 }
 .redcore {
   padding-top: 40px;
   /* Force tabs to overflow visible */
+  /* Custom */
 }
 .redcore .content {
   margin-top: 10px;
@@ -8457,4 +9093,29 @@
 }
 .redcore .list-group {
   margin: 0;
+}
+.redcore button.close {
+  right: 0;
+}
+.redcore .form-horizontal .input-group .radio {
+  padding-top: 0;
+}
+.redcore .form-inline .input-group .radio label,
+.redcore .redcore .form-inline .input-group .checkbox label {
+  padding-left: 20px;
+}
+.redcore .row-stripped {
+  padding: 20px 0;
+}
+.redcore .row-stripped:nth-of-type(odd) {
+  background: #f9f9f9;
+}
+.redcore .form-inline .input-group .chzn-container-single .chzn-single,
+.redcore .form-group .chzn-container-single .chzn-single {
+  height: 34px;
+  line-height: 30px;
+}
+.redcore .input-group-sm .chzn-container-single .chzn-single {
+  height: 30px;
+  line-height: 30px;
 }

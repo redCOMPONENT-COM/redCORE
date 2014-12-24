@@ -31,6 +31,12 @@ abstract class RHtmlMedia
 	public static $frameworkSuffix = '';
 
 	/**
+	 * @var    array  Framework settings
+	 * @since  1.4
+	 */
+	public static $frameworkOptions = '';
+
+	/**
 	 * Get selected framework
 	 *
 	 * @return  string  Framework name
@@ -46,26 +52,41 @@ abstract class RHtmlMedia
 	 * Set the framework
 	 *
 	 * @param   string  $framework  Framework name
+	 * @param   array   $options    Framework options
 	 *
 	 * @return  void
 	 *
 	 * @since   1.4
 	 */
-	public static function setFramework($framework = 'bootstrap2')
+	public static function setFramework($framework = 'bootstrap2', $options = array())
 	{
 		self::$framework = $framework;
 
 		if ($framework = 'bootstrap3')
 		{
 			self::$frameworkSuffix = 'bs3';
+			self::$frameworkOptions = array(
+				'disableMootools' => true,
+			);
 		}
 		elseif ($framework = 'foundation5')
 		{
 			self::$frameworkSuffix = 'fd5';
+			self::$frameworkOptions = array(
+				'disableMootools' => false,
+			);
 		}
 		else
 		{
 			self::$frameworkSuffix = '';
+			self::$frameworkOptions = array(
+				'disableMootools' => false,
+			);
+		}
+
+		if (!empty($options))
+		{
+			self::$frameworkOptions = array_merge(self::$frameworkOptions, $options);
 		}
 	}
 
@@ -123,5 +144,27 @@ abstract class RHtmlMedia
 		elseif (self::$framework == 'foundation5')
 		{
 		}
+	}
+
+	/**
+	 * Returns true if mootools should be disabled for current framework
+	 *
+	 * @param   string  $defaultFramework  Set as default framework
+	 *
+	 * @return  boolean
+	 */
+	public static function isMootoolsDisabled($defaultFramework = '')
+	{
+		if (!empty($defaultFramework))
+		{
+			self::setFramework($defaultFramework);
+		}
+
+		if (!empty(self::$frameworkOptions['disableMootools']))
+		{
+			return true;
+		}
+
+		return false;
 	}
 }
