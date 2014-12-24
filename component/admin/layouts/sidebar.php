@@ -105,4 +105,14 @@ if (empty($return))
 			</h4>
 		</div>
 	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a href="http://redcomponent-com.github.io/redCORE/" target="_blank">
+					<i class="icon-book"></i>
+					<?php echo JText::_('COM_REDCORE_DOCUMENTATION_LINK_TITLE') ?>
+				</a>
+			</h4>
+		</div>
+	</div>
 </div>
