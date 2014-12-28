@@ -113,6 +113,17 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 			}
 		}
 
+		// Check if option is enabled
+		if (RTranslationHelper::$pluginParams->get('enable_translations', 0) == 0)
+		{
+			JFactory::getApplication()->enqueueMessage(
+				JText::sprintf(
+					'COM_REDCORE_CONFIG_TRANSLATIONS_PLUGIN_LABEL_WARNING',
+					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+				),
+				'error');
+		}
+
 		parent::display($tpl);
 	}
 
