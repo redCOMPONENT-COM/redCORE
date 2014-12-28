@@ -73,13 +73,6 @@ $column = 0;
 <div class="tab-pane" id="mainComponentTranslations">
 	<p class="tab-description"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_DESC'); ?></p>
 	<p class="tab-description">
-		<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_PLUGIN_LABEL'); ?>
-		<?php if (RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1) : ?>
-			<span class="label label-success"><?php echo JText::_('JENABLED'); ?></span>
-		<?php else : ?>
-			<span class="label label-danger"><?php echo JText::_('JDISABLED'); ?></span>
-		<?php endif; ?>
-
 		<?php echo JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_LANGUAGE_FILTER'); ?>
 		<?php if (JPluginHelper::isEnabled('system', 'languagefilter')) : ?>
 			<span class="label label-success"><?php echo JText::_('JENABLED'); ?></span>

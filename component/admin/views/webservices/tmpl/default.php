@@ -176,14 +176,6 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 	<div class="tab-content">
 		<div class="tab-pane active in" id="mainComponentWebservices">
 			<p class="tab-description"><?php echo JText::_('COM_REDCORE_WEBSERVICES_DESC'); ?></p>
-			<p class="tab-description">
-				<?php echo JText::_('COM_REDCORE_WEBSERVICES_PLUGIN_LABEL'); ?>
-				<?php if (RTranslationHelper::$pluginParams->get('enable_webservices', 0) == 1) : ?>
-					<span class="label label-success"><?php echo JText::_('JENABLED'); ?></span>
-				<?php else : ?>
-					<span class="label label-danger"><?php echo JText::_('JDISABLED'); ?></span>
-				<?php endif; ?>
-			</p>
 
 			<div class="row">
 				<table class="table table-striped table-hover" id="oauthClientsList">
