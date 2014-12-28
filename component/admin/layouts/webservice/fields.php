@@ -29,7 +29,7 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 		<button type="button" class="btn btn-default btn-primary fields-add-new-row">
 			<input type="hidden" name="addNewRowType" value="Field" />
 			<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
-			<input type="hidden" name="addNewRowList" value="defaultValue,isRequiredField" />
+			<input type="hidden" name="addNewRowList" value="defaultValue,isRequiredField,isPrimaryField" />
 			<i class="icon-plus"></i>
 			<?php echo JText::_('COM_REDCORE_WEBSERVICE_FIELD_ADD_NEW_LABEL'); ?>
 		</button>
