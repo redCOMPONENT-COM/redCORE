@@ -25,6 +25,9 @@
   color: @text-color;
   background-color: @body-bg;
 
+  // Import modal classes
+  @import "modal.bs3.less";
+
   // complete bootstrap
   @import (less) "../css/lib/bootstrap3/css/bootstrap.css";
 
@@ -45,8 +48,11 @@
   @import "joomla.bs3.less";
 }
 
-// Modal backdrop not namespaced
-//@import "modal.less";
+// Modal not namespaced
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 
 .redcore {
   padding-top: 40px;
@@ -71,7 +77,7 @@
     background: transparent;
     border: 0;
     float: none;
-    max-width: auto;
+    max-width: unset;
   }
   h1 {
     margin-top: 0;
@@ -138,31 +144,6 @@
   }
   .controls .btn-group > .btn {
     min-width: 50px;
-  }
-
-  .modal {
-    position: fixed;
-    top: 5%;
-    bottom: 5%;
-    left: 50%;
-    z-index: 1050;
-    margin-left: -280px;
-    background-color: #ffffff;
-    border: 1px solid #999;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    *border: 1px solid #999;
-    /* IE6-7 */
-
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-    -webkit-background-clip: padding-box;
-    -moz-background-clip: padding-box;
-    background-clip: padding-box;
-    outline: none;
   }
 
   .navbar-inverse .navbar-inner {
