@@ -40,6 +40,7 @@ script:
   - php .travis/phpcs.php # Code Style error checker
   - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/ # Missed debug code checker
   - php .travis/phpmd.php # PHP mess detector code checker
+  - phing -f tests/.travis.xml # Get Joomla CMS for System Tests
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms2/installation/index.php # Test apache
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
   - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file

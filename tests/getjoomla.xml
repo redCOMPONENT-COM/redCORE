@@ -5,11 +5,11 @@
 <!-- ==================================================================         -->
 <project name="com_redcore" default="getjoomla">
 
-    <property name="repo.dir.joomla2" value="${project.basedir}/tests/system/joomla-cms2/" />
+    <property name="repo.dir.joomla2" value="${project.basedir}/system/joomla-cms2/" />
     <!-- convert into absolute path -->
     <resolvepath propertyName="repo.dir.joomla2.resolved" file="${repo.dir.joomla2}" />
 
-    <property name="repo.dir.joomla3" value="${project.basedir}/tests/system/joomla-cms3/" />
+    <property name="repo.dir.joomla3" value="${project.basedir}/system/joomla-cms3/" />
     <!-- convert into absolute path -->
     <resolvepath propertyName="repo.dir.joomla3.resolved" file="${repo.dir.joomla3}" />
 
