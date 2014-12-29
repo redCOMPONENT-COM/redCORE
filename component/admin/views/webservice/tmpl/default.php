@@ -123,17 +123,18 @@ JHtml::_('rjquery.chosen', 'select');
 			var rowValues = {};
 
 			$parent.find('.ws-row-edit :input').each(function(){
-				if (!jQuery(this).is(':radio') || jQuery(this).prop('checked'))
-				{
-					var name = jQuery(this).attr('name');
+				var $input = jQuery(this);
+				var name = $input.attr('name');
 
-					if (jQuery(this).is(':radio')){
+				if ((!$input.is(':radio') || $input.prop('checked')) && typeof name !== typeof undefined && name !== false)
+				{
+					if ($input.is(':radio')){
 						name = name.split('_');
 						name = name[1];
 					}
 
-					$parent.find('.ws-row-display-cell-' + name).html(jQuery(this).val()).parent().show();
-					rowValues[name] = jQuery(this).val();
+					$parent.find('.ws-row-display-cell-' + name).html($input.val()).parent().show();
+					rowValues[name] = $input.val();
 				}
 			});
 
