@@ -25,6 +25,8 @@
     </target>
 
     <target name="clonerepository">
+        <!-- Leaving here this script for all platforms but using a more performant one at the bottom. See 'exec' !-->
+        <!--
         <gitclone
                 repository="${repository.url}"
                 targetPath="${repository.path}"
@@ -36,6 +38,9 @@
                 quiet="false"
                 create="false"
                 />
+        !-->
+        <exec
+                command="git clone -b ${branch} --single-branch --depth 1 ${repository.url} ${repository.path}" />
     </target>
 
 
