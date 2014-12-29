@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ==================================================================         -->
+<!-- redCORE copier (adding redCORE to your extension package)                  -->
+<!-- Use PHING script to copy redCORE submodule into your extension             -->
+<!-- To use in your environment do the following steps:                         -->
+<!--    Call this script from your extension packager using:                    -->
+<!--                                                                            -->
+<!--    [...]                                                                   -->
+<!--    <target name="copyredcore">                                             -->
+<!--     <phing phingfile="redCORE/add_to_extension.xml"                        -->
+<!--            target="copyframework"                                          -->
+<!--            haltonfailure="true">                                           -->
+<!--         <property name="redcoretargetdir" value="${targetdir}/redCORE" />  -->
+<!--         <property name="redcorepath" value="${project.basedir}/redCORE" /> -->
+<!--        </phing>                                                            -->
+<!--    </target>                                                               -->
+<!--                                                                            -->
+<!--    ============================================                            -->
+<!--    (DEFAULT)  Target: dist                                                 -->
+<!--    ============================================                            -->
+<!--    <target name="dist" depends="build, copyredcore">                       -->
+<!--    [...]                                                                   -->
+<!--                                                                            -->
+<!--  See the example of this code in use at redSLIDER2 project:                -->
+<!--  https://github.com/redCOMPONENT-COM/redSLIDER2                            -->
+<!-- ==================================================================         -->
+<project name="com_redcore" default="getjoomla2">
+    <property name="repo.dir" value="${project.basedir}/tests/system/joomla-cms2/" />
+
+    <resolvepath propertyName="repo.dir.resolved" file="${repo.dir}" />
+
+        <target name="getjoomla2">
+        <gitclone
+        repository="https://github.com/joomla/joomla-cms.git"
+        targetPath="${repo.dir.resolved}"
+        bare="false"
+                />
+
+        <!-- create and switch to "develop" branch -->
+        <gitcheckout
+        repository="${repo.dir.resolved}"
+        branchname="2.5.x" quiet="true" create="false" />
+    </target>
+</project>
