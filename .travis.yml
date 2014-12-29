@@ -10,8 +10,6 @@ before_script:
   - sudo apt-get update -qq
   - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl > /dev/null
   - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
-  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms2/ /var/www/joomla-cms2 #Add joomla 2 to apache htdocs
-  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla 3 to apache htdocs
   - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
   - sudo /etc/init.d/apache2 restart
   #- composer install --dev --prefer-dist
@@ -41,6 +39,8 @@ script:
   - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/ # Missed debug code checker
   #- php .travis/phpmd.php # PHP mess detector code checker
   - php vendor/phing/phing/bin/phing -f tests/getjoomla.xml # Get Joomla CMS for System Tests
+  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms2/ /var/www/joomla-cms2 #Add joomla 2 to apache htdocs
+  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla 3 to apache htdocs
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms2/installation/index.php # Test apache
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
   - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
