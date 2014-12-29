@@ -143,7 +143,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 	);
 	?>
 	<hr/>
-	<div class="modal large fade"
+	<div class="modal fade"
 	     id="webservicePreview"
 	     tabindex="-1"
 	     role="dialog"

@@ -32,6 +32,55 @@
   /* Font Awesome uses the Unicode Private Use Area (PUA) to ensure screen
    readers do not read off random characters that represent icons */
 }
+.redcore .modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  margin-left: 0;
+  background-color: transparent;
+  width: inherit;
+  border: 0 solid rgba(0, 0, 0, 0.3);
+  *border: 0 solid #999;
+  /* IE6-7 */
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  outline: 0;
+}
+.redcore .modal-dialog {
+  width: 600px;
+  margin: 30px auto;
+}
+.redcore .modal-content {
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+.redcore .modal-body iframe {
+  max-height: inherit;
+}
+.redcore .modal-iframe-external-container .modal-dialog {
+  width: 95%;
+  height: 85%;
+  padding: 0;
+}
+.redcore .modal-iframe-external-container .modal-content {
+  padding: 0;
+  height: 100%;
+}
+.redcore .modal-iframe-external-container .modal-body {
+  width: inherit;
+  max-height: inherit;
+  height: 85%;
+}
 .redcore html {
   font-family: sans-serif;
   -webkit-text-size-adjust: 100%;
@@ -8945,6 +8994,10 @@
 .redcore .modal-backdrop {
   z-index: 0;
 }
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 .redcore {
   padding-top: 40px;
   /* Force tabs to overflow visible */
@@ -8970,7 +9023,7 @@
   background: transparent;
   border: 0;
   float: none;
-  max-width: auto;
+  max-width: unset;
 }
 .redcore h1 {
   margin-top: 0;
@@ -9032,29 +9085,6 @@
 }
 .redcore .controls .btn-group > .btn {
   min-width: 50px;
-}
-.redcore .modal {
-  position: fixed;
-  top: 5%;
-  bottom: 5%;
-  left: 50%;
-  z-index: 1050;
-  margin-left: -280px;
-  background-color: #ffffff;
-  border: 1px solid #999;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  *border: 1px solid #999;
-  /* IE6-7 */
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding-box;
-  background-clip: padding-box;
-  outline: none;
 }
 .redcore .navbar-inverse .navbar-inner {
   background-color: #1b1b1b;

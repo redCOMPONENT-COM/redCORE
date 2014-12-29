@@ -17,8 +17,8 @@ JHtml::_('rjquery.chosen', 'select');
 ?>
 <form action="<?php echo $action; ?>" method="post" name="adminForm" id="adminForm"
       class="form-validate form-horizontal">
-	<div class="row">
-		<div id="main-params" class="row">
+	<div class="container-fluid">
+		<div id="main-params">
 			<div class="form-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('client_id'); ?>
