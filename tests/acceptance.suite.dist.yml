@@ -60,11 +60,11 @@ env:
                     db_host: 'localhost'                   # place where the Application is Hosted #server Address
                     db_user: 'root'                        # MySQL Server user ID, usually root
                     db_pass: ''                            # MySQL Server password, usually empty
-                    db_name: 'testredcore3'              # DB Name, at the Server
+                    db_name: 'testredcore3'                # DB Name, at the Server
                     db_type: 'MySQLi'                      # DB Type, Mostly MySQLi
                     db_prefix: 'jos_'                      # DB Prefix for tables
                     sample_data: 'yes'                     # Do you want to Download the Sample Data Along with Joomla Installation, then keep it Yes
-                    sample_data_file: 'Default English'    # Default Sample Data
+                    sample_data_file: 'none'               # Default Sample Data
                     site_name: 'Joomla'                    # Name of the Site
                     admin_email: 'admin@mydomain.com'      # email Id of the Admin
                     language: 'English (United Kingdom)'   # Language in which you want the Application to be Installed
