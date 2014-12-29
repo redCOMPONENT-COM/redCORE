@@ -3,6 +3,10 @@ language: php
 php:
   - 5.4
 
+env:
+ - GROUP=Joomla2 ENV=joomla2
+ - GROUP=Joomla3 ENV=joomla3
+
 before_script:
   - phpenv rehash
 
@@ -46,8 +50,7 @@ script:
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
   - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
   - php vendor/bin/codecept build
-  - php vendor/bin/codecept run acceptance -g Joomla3 --env joomla3
-  - php vendor/bin/codecept run acceptance -g Joomla2 --env joomla2
+  - php vendor/bin/codecept run acceptance -g $GROUP --env $ENV
   - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
