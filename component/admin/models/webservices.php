@@ -63,7 +63,10 @@ class RedcoreModelWebservices extends RModelList
 		if (empty($config['filter_fields']))
 		{
 			$config['filter_fields'] = array(
-				'published', 'w.published'
+				'published', 'w.published',
+				'client', 'w.client',
+				'state', 'w.state',
+				'path', 'w.path',
 			);
 		}
 
@@ -134,6 +137,26 @@ class RedcoreModelWebservices extends RModelList
 		$query = $db->getQuery(true)
 			->select('w.*')
 			->from($db->qn('#__redcore_webservices', 'w'));
+
+		// Filter by client.
+		if ($client = $this->getState('filter.client'))
+		{
+			$query->where('w.client = ' . $db->quote($db->escape($client, true)));
+		}
+
+		// Filter by path.
+		if ($path = $this->getState('filter.path'))
+		{
+			$query->where('w.path = ' . $db->quote($db->escape($path, true)));
+		}
+
+		// Filter by state.
+		$state = $this->getState('filter.state');
+
+		if (is_numeric($state))
+		{
+			$query->where('w.state = ' . $db->quote($db->escape((int) $state, true)));
+		}
 
 		// Filter search
 		$search = $this->getState('filter.search_webservices');
