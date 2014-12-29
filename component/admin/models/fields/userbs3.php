@@ -11,7 +11,7 @@ defined('JPATH_PLATFORM') or die;
 
 /**
  * Field to select a user ID from a modal list.
- * Note: This can be removed when Joomla kicks out SqueezeBox out of modal popup
+ * Note: This can be removed when Joomla kicks out SqueezeBox out of modal popup which uses classes from mootools
  *
  * @package     Joomla.Libraries
  * @subpackage  Form
