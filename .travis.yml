@@ -36,8 +36,8 @@ script:
   #- php .travis/phpmd.php # PHP mess detector code checker
 
   # Prepare system tests environment
-  - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
   - php vendor/phing/phing/bin/phing -f tests/getjoomla.xml # Get Joomla CMS for System Tests
+  - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
   - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms2/ /var/www/joomla-cms2 #Add joomla 2 to apache htdocs
   - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla 3 to apache htdocs
   - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
