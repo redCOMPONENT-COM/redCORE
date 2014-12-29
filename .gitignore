@@ -50,6 +50,8 @@ npm-debug.log
 /tests/system/webdriver/tests/logs/
 /tests/acceptance.suite.yml
 codecept.phar
+tests/*/*Tester.php
+
 
 # Never ignore
 !.gitignore
