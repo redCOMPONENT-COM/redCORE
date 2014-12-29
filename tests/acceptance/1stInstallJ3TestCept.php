@@ -17,8 +17,10 @@ $I->wantTo('Execute Joomla Installation');
 $I->setupConfiguration();
 
 $I = new AcceptanceTester\InstallJoomla3DatabaseSteps($scenario);
+$I->wantTo('add database connection details');
 $I->setupDatabaseConnection();
 $I = new AcceptanceTester\InstallJoomla3FinalisationSteps($scenario);
+$I->wantTo('Install joomla without sample data');
 $I->setupSampleData();
 $I = new AcceptanceTester\LoginSteps($scenario);
 

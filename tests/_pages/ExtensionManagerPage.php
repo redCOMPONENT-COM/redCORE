@@ -38,7 +38,7 @@ class ExtensionManagerPage
 
 	public static $extensionNameLink = "//a[contains(text(),'Name')]";
 
-	public static $extensionTable = "//form[@id='adminForm']/div/table/tbody/tr[1]/td[2]/span";
+	public static $extensionTable = "//form[@id='adminForm']/div/table/tbody/tr[1]/td[2]/label/span";
 
 	public static $extensionTableJ2 = "//form[@id='adminForm']/table/tbody/tr[1]/td[2]/span";
 

@@ -9,11 +9,6 @@ before_script:
   # Install Apache
   - sudo apt-get update -qq
   - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl > /dev/null
-  - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
-  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms2/ /var/www/joomla-cms2 #Add joomla 2 to apache htdocs
-  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla 3 to apache htdocs
-  - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-  - sudo /etc/init.d/apache2 restart
   #- composer install --dev --prefer-dist
 
   # XVFB
@@ -34,18 +29,25 @@ before_script:
   # Composer
   - composer update
 
-
 script:
   - php .travis/phppec.php component/ libraries/ modules/ plugins/ #parse error checker
   - php .travis/phpcs.php # Code Style error checker
   - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/ # Missed debug code checker
-  - php .travis/phpmd.php # PHP mess detector code checker
+  #- php .travis/phpmd.php # PHP mess detector code checker
+
+  # Prepare system tests environment
+  - php vendor/phing/phing/bin/phing -f tests/getjoomla.xml # Get Joomla CMS for System Tests
+  - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
+  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms2/ /var/www/joomla-cms2 #Add joomla 2 to apache htdocs
+  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla 3 to apache htdocs
+  - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
+  - sudo /etc/init.d/apache2 restart
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms2/installation/index.php # Test apache
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
   - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
   - php vendor/bin/codecept build
-  - php vendor/bin/codecept run acceptance -g Joomla2 --env joomla2
   - php vendor/bin/codecept run acceptance -g Joomla3 --env joomla3
+  - php vendor/bin/codecept run acceptance -g Joomla2 --env joomla2
   - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"

@@ -26,8 +26,9 @@ Desktop.ini
 *~.nib
 *~
 
-# Build config
+# Phing
 build.properties
+phing-latest.phar
 
 # Github pages and Jekyll files
 /_site/
