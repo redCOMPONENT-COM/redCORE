@@ -24,6 +24,11 @@ class RedcoreModelWebservice extends RModelAdmin
 	public $xmlFile;
 
 	/**
+	 * @var SimpleXMLElement
+	 */
+	public $defaultXmlFile;
+
+	/**
 	 * @var string
 	 */
 	public $operationXml;
@@ -42,6 +47,20 @@ class RedcoreModelWebservice extends RModelAdmin
 	 * @var array
 	 */
 	public $resources;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param   array  $config  Configuration array
+	 *
+	 * @throws  RuntimeException
+	 */
+	public function __construct($config = array())
+	{
+		parent::__construct($config);
+
+		$this->defaultXmlFile = new SimpleXMLElement(file_get_contents(JPATH_COMPONENT_ADMINISTRATOR . '/models/forms/webservice_defaults.xml'));
+	}
 
 	/**
 	 * Method to save the form data.
@@ -420,6 +439,12 @@ class RedcoreModelWebservice extends RModelAdmin
 			}
 		}
 
+		// Add default webservice parameters since this is new webservice
+		if (empty($this->xmlFile))
+		{
+			$this->xmlFile = $this->defaultXmlFile;
+		}
+
 		return $item;
 	}
 
@@ -440,7 +465,7 @@ class RedcoreModelWebservice extends RModelAdmin
 			return $this->formData;
 		}
 
-		$this->setFieldsAndResources('main', '.');
+		$this->setFieldsAndResources('main', '.', $this->xmlFile);
 
 		$this->formData['main'] = array(
 			'author' => (string) $this->xmlFile->author,
@@ -458,19 +483,19 @@ class RedcoreModelWebservice extends RModelAdmin
 			{
 				if ($name == 'read')
 				{
-					$this->formData[$name . '-list'] = $this->bindPathToArray('//operations/' . $name . '/list');
-					$this->formData[$name . '-item'] = $this->bindPathToArray('//operations/' . $name . '/item');
+					$this->formData[$name . '-list'] = $this->bindPathToArray('//operations/' . $name . '/list', $this->xmlFile);
+					$this->formData[$name . '-item'] = $this->bindPathToArray('//operations/' . $name . '/item', $this->xmlFile);
 
-					$this->setFieldsAndResources($name . '-list', '//operations/' . $name . '/list');
-					$this->setFieldsAndResources($name . '-item', '//operations/' . $name . '/item');
+					$this->setFieldsAndResources($name . '-list', '//operations/' . $name . '/list', $this->xmlFile);
+					$this->setFieldsAndResources($name . '-item', '//operations/' . $name . '/item', $this->xmlFile);
 
-					if (!empty($this->formData[$name . '-list']))
+					if (!empty($this->formData[$name . '-list']) && !isset($this->formData[$name . '-list']['isEnabled']))
 					{
 						// Since this operation exists in XML file we are enabling it by default
 						$this->formData[$name . '-list']['isEnabled'] = 1;
 					}
 
-					if (!empty($this->formData[$name . '-item']))
+					if (!empty($this->formData[$name . '-item']) && !isset($this->formData[$name . '-item']['isEnabled']))
 					{
 						// Since this operation exists in XML file we are enabling it by default
 						$this->formData[$name . '-item']['isEnabled'] = 1;
@@ -484,10 +509,10 @@ class RedcoreModelWebservice extends RModelAdmin
 
 						foreach ($tasks as $taskName => $task)
 						{
-							$this->formData['task-' . $taskName] = $this->bindPathToArray('//operations/task/' . $taskName);
-							$this->setFieldsAndResources('task-' . $taskName, '//operations/task/' . $taskName);
+							$this->formData['task-' . $taskName] = $this->bindPathToArray('//operations/task/' . $taskName, $this->xmlFile);
+							$this->setFieldsAndResources('task-' . $taskName, '//operations/task/' . $taskName, $this->xmlFile);
 
-							if (!empty($this->formData['task-' . $taskName]))
+							if (!empty($this->formData['task-' . $taskName]) && !isset($this->formData['task-' . $taskName]['isEnabled']))
 							{
 								// Since this operation exists in XML file we are enabling it by default
 								$this->formData['task-' . $taskName]['isEnabled'] = 1;
@@ -497,13 +522,45 @@ class RedcoreModelWebservice extends RModelAdmin
 				}
 				else
 				{
-					$this->formData[$name] = $this->bindPathToArray('//operations/' . $name);
-					$this->setFieldsAndResources($name, '//operations/' . $name);
+					$this->formData[$name] = $this->bindPathToArray('//operations/' . $name, $this->xmlFile);
+					$this->setFieldsAndResources($name, '//operations/' . $name, $this->xmlFile);
 
-					if (!empty($this->formData[$name]))
+					if (!empty($this->formData[$name]) && !isset($this->formData[$name]['isEnabled']))
 					{
 						// Since this operation exists in XML file we are enabling it by default
 						$this->formData[$name]['isEnabled'] = 1;
+					}
+				}
+			}
+		}
+
+		// Set default operations if not present in loaded XML file
+		if ($operations = $this->defaultXmlFile->xpath('//operations'))
+		{
+			$operations = $operations[0];
+
+			foreach ($operations as $name => $operation)
+			{
+				if (empty($this->formData[$name]))
+				{
+					if ($name == 'read')
+					{
+						if (empty($this->formData[$name . '-list']))
+						{
+							$this->formData[$name . '-list'] = $this->bindPathToArray('//operations/' . $name . '/list', $this->defaultXmlFile);
+							$this->setFieldsAndResources($name . '-list', '//operations/' . $name . '/list', $this->defaultXmlFile);
+						}
+
+						if (empty($this->formData[$name . '-item']))
+						{
+							$this->formData[$name . '-item'] = $this->bindPathToArray('//operations/' . $name . '/item', $this->defaultXmlFile);
+							$this->setFieldsAndResources($name . '-item', '//operations/' . $name . '/item', $this->defaultXmlFile);
+						}
+					}
+					else
+					{
+						$this->formData[$name] = $this->bindPathToArray('//operations/' . $name, $this->defaultXmlFile);
+						$this->setFieldsAndResources($name, '//operations/' . $name, $this->defaultXmlFile);
 					}
 				}
 			}
@@ -515,15 +572,16 @@ class RedcoreModelWebservice extends RModelAdmin
 	/**
 	 * Return mapped array for the form data
 	 *
-	 * @param   string  $path  Path to the XML element
+	 * @param   string            $path  Path to the XML element
+	 * @param   SimpleXMLElement  $xml   XML file
 	 *
 	 * @return  array
 	 *
 	 * @since   1.4
 	 */
-	public function bindPathToArray($path)
+	public function bindPathToArray($path, $xml)
 	{
-		if ($element = $this->xmlFile->xpath($path))
+		if ($element = $xml->xpath($path))
 		{
 			$element = $element[0];
 
@@ -572,17 +630,18 @@ class RedcoreModelWebservice extends RModelAdmin
 	/**
 	 * Gets Fields and Resources from given path
 	 *
-	 * @param   string  $name  Operation or task name
-	 * @param   string  $path  Path to the operation or the task
+	 * @param   string            $name  Operation or task name
+	 * @param   string            $path  Path to the operation or the task
+	 * @param   SimpleXMLElement  $xml   XML file
 	 *
 	 * @return  void
 	 *
 	 * @since   1.4
 	 */
-	public function setFieldsAndResources($name, $path)
+	public function setFieldsAndResources($name, $path, $xml)
 	{
 		// Get fields
-		if ($fields = $this->xmlFile->xpath($path . '/fields/field'))
+		if ($fields = $xml->xpath($path . '/fields/field'))
 		{
 			foreach ($fields as $field)
 			{
@@ -593,7 +652,7 @@ class RedcoreModelWebservice extends RModelAdmin
 		}
 
 		// Get resources
-		if ($resources = $this->xmlFile->xpath($path . '/resources/resource'))
+		if ($resources = $xml->xpath($path . '/resources/resource'))
 		{
 			foreach ($resources as $resource)
 			{

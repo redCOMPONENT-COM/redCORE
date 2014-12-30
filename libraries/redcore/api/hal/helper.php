@@ -591,7 +591,7 @@ class RApiHalHelper
 	{
 		$installedWebservices = self::getInstalledWebservices();
 
-		if (!empty($installedWebservices))
+		if (!empty($installedWebservices[$client][$webserviceName]))
 		{
 			// First element is always newest
 			foreach ($installedWebservices[$client][$webserviceName] as $version => $webservice)

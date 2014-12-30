@@ -37,4 +37,6 @@ defined('_JEXEC') or die;
 			<?php echo $this->form->getInput('description', 'documentation'); ?>
 		</div>
 	</div>
+
+	<?php echo $this->form->getInput('isEnabled', 'documentation'); ?>
 </div>
