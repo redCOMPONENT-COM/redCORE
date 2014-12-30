@@ -125,6 +125,14 @@
     <fields name="documentation">
         <fieldset addfieldpath="/libraries/redcore/form/fields">
             <field
+                    name="isEnabled"
+                    type="hidden"
+                    label="COM_REDCORE_WEBSERVICE_IS_ENABLED_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_IS_ENABLED_DESCRIPTION"
+                    default="1"
+                    readonly="true"
+                    />
+            <field
                     name="authorizationNeeded"
                     labelclass="col-sm-2 control-label"
                     type="radio"

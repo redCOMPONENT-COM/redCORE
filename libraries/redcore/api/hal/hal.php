@@ -1597,7 +1597,7 @@ class RApiHalHal extends RApi
 		$isAdmin = RApiHalHelper::isAttributeTrue($configuration, 'isAdminClass');
 		$this->addModelIncludePaths($isAdmin, $this->optionName);
 		$this->loadExtensionLanguage($this->optionName, $isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
-		$this->triggerFunction('loadExtensionLibrary', $elementName);
+		$this->triggerFunction('loadExtensionLibrary', $this->optionName);
 		$dataMode = strtolower(RApiHalHelper::attributeToString($configuration, 'dataMode', 'model'));
 
 		if ($dataMode == 'helper')
@@ -1694,6 +1694,7 @@ class RApiHalHal extends RApi
 	 */
 	public function loadExtensionLibrary($element)
 	{
+		$element = strpos($element, 'com_') === 0 ? substr($element, 4) : $element;
 		JLoader::import(strtolower($element) . '.library');
 	}
 

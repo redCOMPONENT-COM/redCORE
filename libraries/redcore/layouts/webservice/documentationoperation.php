@@ -18,11 +18,17 @@ $operationName = !empty($displayData['options']['operationName']) ? $displayData
 $isOperationRead = $operationName == 'read list' || $operationName == 'read item';
 $view->resetDocumentResources();
 $resources = $view->loadResourceFromConfiguration($operationXml);
-
+$authorizationNeeded = (isset($operationXml['authorizationNeeded']) && strtolower($operationXml['authorizationNeeded']) == 'false');
 ?>
 <div class="container-fluid">
 	<div class="page-header">
-		<h3><span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span> <?php echo ucfirst($operationName); ?></h3>		
+		<h3>
+			<span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span>
+			<?php if ($authorizationNeeded) : ?>
+				<span class="label label-warning"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_AUTHORIZATION_NEEDED') ?></span>
+			<?php endif; ?>
+			<?php echo ucfirst($operationName); ?>
+		</h3>
 		<?php if (!empty($operationXml->description)) : ?>
 			<p><?php echo $operationXml->description ?></p>
 		<?php endif; ?>
@@ -75,14 +81,14 @@ $resources = $view->loadResourceFromConfiguration($operationXml);
 								</thead>
 						<?php endif; ?>
 						<tr>
-							<td><?php echo $resource['displayName']; ?></td>
-							<td><?php echo $resource['fieldFormat']; ?></td>
+							<td><?php echo $view->assignGlobalValueToResource($resource['displayName']); ?></td>
+							<td><?php echo $view->assignGlobalValueToResource($resource['fieldFormat']); ?></td>
 							<td><?php echo !empty($resource['transform']) ? $resource['transform'] : 'string'; ?></td>
 							<td>
 								<?php foreach ($resource as $resourceKey => $resourceValue) : ?>
 									<?php if (!empty($resourceValue)
 										&& !in_array($resourceKey, array('displayName', 'fieldFormat', 'transform', 'resourceSpecific', 'displayGroup', 'description'))) : ?>
-										<strong><?php echo $resourceKey; ?>: </strong> <?php echo $resourceValue; ?>
+										<strong><?php echo $resourceKey; ?>: </strong> <?php echo $view->assignGlobalValueToResource($resourceValue); ?>
 										<br />
 									<?php endif; ?>
 								<?php endforeach; ?>
