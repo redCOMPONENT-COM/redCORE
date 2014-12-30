@@ -117,8 +117,16 @@
 				override="true"/>
 		<property
 				name="package.dir"
-				value="${project.basedir}/.dist"
+				value=".dist"
 				override="true"/>
+
+		<if>
+			<available file="${package.dir}" type="dir"/>
+			<then>
+				<echo msg="Removing old autopack folder"/>
+				<delete dir="${package.dir}"/>
+			</then>
+		</if>
 
 		<phingcall target="dist" />
 	</target>
