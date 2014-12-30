@@ -26,7 +26,4 @@ $I = new AcceptanceTester\LoginSteps($scenario);
 
 $I->wantTo('Execute Log in at Joomla Administrator');
 $I->doAdminLogin();
-$I = new AcceptanceTester\InstallExtensionJ3Steps($scenario);
 
-$I->wantTo('Install redCORE extension');
-$I->installExtension('redCORE');

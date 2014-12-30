@@ -46,8 +46,16 @@ script:
   - php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
   - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
   - php vendor/bin/codecept build
-  - php vendor/bin/codecept run acceptance -g Joomla3 --env joomla3
   - php vendor/bin/codecept run acceptance -g Joomla2 --env joomla2
+  - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
+  # Test Joomla3 and prepare for Webservices tests
+  - php vendor/codeception/codeception/codecept run tests/acceptance/1stInstallJ3TestCept.php -g Joomla3 --env joomla3 # install once again redCORE
+  - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
+  - php vendor/codeception/codeception/codecept run tests/acceptance/2ndInstallJoomla3ExtensionCept.php -g Joomla3 --env joomla3 # install once again redCORE
+  - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
+  - php vendor/codeception/codeception/codecept run tests/acceptance/ZZUninstallJ3ExtensionCept.php -g Joomla3 --env joomla3 # install once again redCORE
+  - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
+  - php vendor/codeception/codeception/codecept run tests/acceptance/2ndInstallJoomla3ExtensionCept.php -g Joomla3 --env joomla3 # install once again redCORE
   - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
