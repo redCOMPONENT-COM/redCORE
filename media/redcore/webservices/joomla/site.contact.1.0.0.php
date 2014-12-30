@@ -153,4 +153,15 @@ class RApiHalHelperSiteContact
 	 * @since   1.2
 	 */
 	/* public function setApiOperation(RApiHalHal $apiHal){} */
+
+	/**
+	 * Include library classes
+	 *
+	 * @param   string  $element  Option name
+	 *
+	 * @return  void
+	 *
+	 * @since   1.4
+	 */
+	/*public function loadExtensionLibrary($element, RApiHalHal $apiHal){} */
 }

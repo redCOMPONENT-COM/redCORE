@@ -30,16 +30,20 @@ class RedcoreControllerWebservice extends RControllerForm
 
 		$taskName = $input->getString('taskName', '');
 		$model = $this->getModel();
+		$model->formData['task-' . $taskName] = $model->bindPathToArray('//operations/taskResources', $model->defaultXmlFile);
+		$model->setFieldsAndResources('task-' . $taskName, '//operations/taskResources', $model->defaultXmlFile);
 
 		if (!empty($taskName))
 		{
 			echo RLayoutHelper::render(
 				'webservice.operation',
 				array(
-					'view' => $this,
+					'view' => $model,
 					'options' => array(
 						'operation' => 'task-' . $taskName,
-						'form'      => $model->getForm(array('task-' . $taskName => true), false),
+						'form'      => $model->getForm($model->formData, false),
+						'tabActive' => ' active in ',
+						'fieldList' => array('defaultValue', 'isRequiredField', 'isPrimaryField'),
 					)
 				)
 			);
