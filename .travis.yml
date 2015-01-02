@@ -51,6 +51,5 @@ script:
   - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
   - php vendor/bin/codecept build
   - php vendor/bin/codecept run acceptance -g $GROUP --env $ENV
-  - php .travis/codeceptionerror2slack.php # Send found errors into #Travis-errors slack chat
 notifications:
   slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
