@@ -9002,6 +9002,7 @@
   padding-top: 40px;
   /* Force tabs to overflow visible */
   /* Custom */
+  /* Fixing chosen bug when form is inline */
 }
 .redcore .content {
   margin-top: 10px;
@@ -9140,7 +9141,6 @@
 .redcore .row-stripped:nth-of-type(odd) {
   background: #f9f9f9;
 }
-.redcore .form-inline .input-group .chzn-container-single .chzn-single,
 .redcore .form-group .chzn-container-single .chzn-single {
   height: 34px;
   line-height: 30px;
@@ -9148,4 +9148,7 @@
 .redcore .input-group-sm .chzn-container-single .chzn-single {
   height: 30px;
   line-height: 30px;
+}
+.redcore .form-inline .input-group .chzn-container {
+  width: 100% !important;
 }

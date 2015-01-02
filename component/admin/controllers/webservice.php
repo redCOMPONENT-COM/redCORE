@@ -81,6 +81,106 @@ class RedcoreControllerWebservice extends RControllerForm
 	}
 
 	/**
+	 * Method to get new Fields from Database Table in HTML
+	 *
+	 * @return  void
+	 */
+	public function ajaxGetFieldFromDatabase()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$operation = $input->getString('operation', 'read');
+		$fieldList = $input->getString('fieldList', '');
+		$fieldList = explode(',', $fieldList);
+		$tableName = $input->getCmd('tableName', '');
+
+		if (!empty($tableName))
+		{
+			$db = JFactory::getDbo();
+			$columns = $db->getTableColumns('#__' . $tableName, false);
+
+			if ($columns)
+			{
+				foreach ($columns as $columnKey => $column)
+				{
+					$form = array(
+						'name' => $column->Field,
+						'transform' => RApiHalHelper::getTransformElementByDbType($column->Type),
+						'defaultValue' => $column->Default,
+						'isPrimaryField' => $column->Key == 'PRI' ? 'true' : 'false',
+						'description' => $column->Comment,
+					);
+
+					echo RLayoutHelper::render(
+						'webservice.fields.field',
+						array(
+							'view' => $this,
+							'options' => array(
+								'operation' => $operation,
+								'fieldList' => $fieldList,
+								'form' => $form,
+							)
+						)
+					);
+				}
+			}
+		}
+
+		$app->close();
+	}
+
+	/**
+	 * Method to get new Resources from Database Table in HTML
+	 *
+	 * @return  void
+	 */
+	public function ajaxGetResourceFromDatabase()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$operation = $input->getString('operation', 'read');
+		$fieldList = $input->getString('fieldList', '');
+		$fieldList = explode(',', $fieldList);
+		$tableName = $input->getCmd('tableName', '');
+
+		if (!empty($tableName))
+		{
+			$db = JFactory::getDbo();
+			$columns = $db->getTableColumns('#__' . $tableName, false);
+
+			if ($columns)
+			{
+				foreach ($columns as $columnKey => $column)
+				{
+					$form = array(
+						'displayName' => $column->Field,
+						'transform' => RApiHalHelper::getTransformElementByDbType($column->Type),
+						'resourceSpecific' => 'rcwsGlobal',
+						'fieldFormat' => '{' . $column->Field . '}',
+						'description' => $column->Comment,
+					);
+
+					echo RLayoutHelper::render(
+						'webservice.resources.resource',
+						array(
+							'view' => $this,
+							'options' => array(
+								'operation' => $operation,
+								'fieldList' => $fieldList,
+								'form' => $form,
+							)
+						)
+					);
+				}
+			}
+		}
+
+		$app->close();
+	}
+
+	/**
 	 * Method to get new Field HTML
 	 *
 	 * @return  void

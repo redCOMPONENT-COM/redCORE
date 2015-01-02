@@ -22,19 +22,24 @@ JHtml::_('rjquery.chosen', 'select');
 			var $button = jQuery(this);
 
 			var getData = {};
-			getData['operation'] = jQuery(this).find('[name="addNewRowOperation"]').val();
-			getData['fieldList'] = jQuery(this).find('[name="addNewRowList"]').val();
-			var rowType = jQuery(this).find('[name="addNewRowType"]').val();
+			getData['operation'] = $button.find('[name="addNewRowOperation"]').val();
+			getData['fieldList'] = $button.find('[name="addNewRowList"]').val();
+			var rowType = $button.find('[name="addNewRowType"]').val();
+
+			if (rowType == 'FieldFromDatabase' || rowType == 'ResourceFromDatabase')
+			{
+				getData['tableName'] = $button.parents('.form-inline:first').find('[name="jform[main][addFromDatabase]"]').val();
+			}
 
 			jQuery.ajax({
 				url: 'index.php?option=com_redcore&task=webservice.ajaxGet' + rowType,
 				data: getData,
 				dataType: 'text',
 				beforeSend: function () {
-					$button.parent().addClass('opacity-40');
+					$button.parents('fieldset:first').addClass('opacity-40');
 				}
 			}).done(function (data) {
-				$button.parent().removeClass('opacity-40')
+				$button.parents('fieldset:first').removeClass('opacity-40')
 					.find('.ws-row-list').prepend(data)
 					.find('.fields-edit-row:first').click();
 				jQuery('select').chosen();

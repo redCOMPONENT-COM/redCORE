@@ -205,8 +205,7 @@
   .row-stripped:nth-of-type(odd) {
     background: #f9f9f9;
   }
-  .form-inline .input-group .chzn-container-single .chzn-single,
-  .form-group .chzn-container-single .chzn-single,{
+  .form-group .chzn-container-single .chzn-single{
     height: 34px;
     line-height: 30px;
   }
@@ -214,4 +213,9 @@
     height: 30px;
     line-height: 30px;
   }
+  /* Fixing chosen bug when form is inline */
+  .form-inline .input-group .chzn-container{
+    width: 100% !important;
+  }
+
 }

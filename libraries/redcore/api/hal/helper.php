@@ -743,4 +743,39 @@ class RApiHalHelper
 
 		return $transformElements;
 	}
+
+	/**
+	 * Returns transform element that is appropriate to db type
+	 *
+	 * @param   string  $type  Database type
+	 *
+	 * @return  string
+	 */
+	public static function getTransformElementByDbType($type)
+	{
+		$type = explode('(', $type);
+		$type = strtoupper(trim($type[0]));
+
+		// We do not test for Varchar because fallback Transform Element String
+		switch ($type)
+		{
+			case 'TINYINT':
+			case 'SMALLINT':
+			case 'MEDIUMINT':
+			case 'INT':
+			case 'BIGINT':
+				return 'int';
+			case 'FLOAT':
+			case 'DOUBLE':
+			case 'DECIMAL':
+				return 'float';
+			case 'DATE':
+			case 'DATETIME':
+			case 'TIMESTAMP':
+			case 'TIME':
+				return 'datetime';
+		}
+
+		return 'string';
+	}
 }

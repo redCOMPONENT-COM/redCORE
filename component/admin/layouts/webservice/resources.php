@@ -33,20 +33,35 @@ $headingDescription = !empty($displayData['options']['headingDescription']) ?
 				<?php echo $form->getInput('description', $operation . '.resources'); ?>
 			</div>
 		</div>
-		<button type="button" class="btn btn-default btn-primary fields-add-new-row">
-			<input type="hidden" name="addNewRowType" value="Resource" />
-			<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
-			<input type="hidden" name="addNewRowList" value="" />
-			<i class="icon-plus"></i>
-			<?php echo JText::_('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_NEW_LABEL'); ?>
-		</button>
-		<button type="button" class="btn btn-default btn-primary fields-add-new-row">
-			<input type="hidden" name="addNewRowType" value="Resource" />
-			<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
-			<input type="hidden" name="addNewRowList" value="link" />
-			<i class="icon-plus"></i>
-			<?php echo JText::_('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_NEW_LINK_LABEL'); ?>
-		</button>
+		<div class="form-inline">
+			<button type="button" class="btn btn-default btn-primary fields-add-new-row">
+				<input type="hidden" name="addNewRowType" value="Resource" />
+				<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
+				<input type="hidden" name="addNewRowList" value="" />
+				<i class="icon-plus"></i>
+				<?php echo JText::_('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_NEW_LABEL'); ?>
+			</button>
+			<button type="button" class="btn btn-default btn-primary fields-add-new-row">
+				<input type="hidden" name="addNewRowType" value="Resource" />
+				<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
+				<input type="hidden" name="addNewRowList" value="link" />
+				<i class="icon-plus"></i>
+				<?php echo JText::_('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_NEW_LINK_LABEL'); ?>
+			</button>
+			<div class="input-group">
+					<span class="input-group-btn">
+						<button class="btn btn-primary fields-add-new-row" type="button"><i class="icon-plus"></i>
+							<input type="hidden" name="addNewRowType" value="ResourceFromDatabase" />
+							<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
+							<input type="hidden" name="addNewRowList" value="" />
+							<?php echo JText::_('COM_REDCORE_WEBSERVICE_FIELD_ADD_NEW_FROM_DATABASE_LABEL'); ?>
+						</button>
+					</span>
+					<span class="input-group-addon">
+						<?php echo $form->getInput('addFromDatabase', 'main'); ?>
+					</span>
+			</div>
+		</div>
 		<hr/>
 		<div class="container-fluid">
 			<div class="row">
