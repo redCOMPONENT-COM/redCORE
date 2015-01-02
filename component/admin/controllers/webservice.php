@@ -206,7 +206,7 @@ class RedcoreControllerWebservice extends RControllerForm
 
 			$form = array(
 				'displayName' => $item->name,
-				'linkTitle' => $item->name,
+				'linkTitle' => $item->title,
 				'transform' => 'string',
 				'resourceSpecific' => 'rcwsGlobal',
 				'displayGroup' => '_links',
