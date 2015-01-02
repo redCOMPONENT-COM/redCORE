@@ -9149,6 +9149,9 @@
   height: 30px;
   line-height: 30px;
 }
+.redcore .input-group-addon .chzn-results {
+  text-align: left;
+}
 .redcore .form-inline .input-group .chzn-container {
   width: 100% !important;
 }

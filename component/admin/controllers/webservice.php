@@ -185,6 +185,57 @@ class RedcoreControllerWebservice extends RControllerForm
 	 *
 	 * @return  void
 	 */
+	public function ajaxGetConnectWebservice()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$operation = $input->getString('operation', 'read');
+		$fieldList = $input->getString('fieldList', '');
+		$webserviceId = $input->getString('webserviceId', '');
+
+		if (!empty($webserviceId))
+		{
+			$model = $this->getModel();
+			$item = $model->getItem($webserviceId);
+
+			$link = '/index.php?option=' . $item->name;
+			$link .= '&amp;webserviceVersion=' . $item->version;
+			$link .= '&amp;webserviceClient=' . $item->client;
+			$link .= '&amp;id={' . $item->name . '_id}';
+
+			$form = array(
+				'displayName' => $item->name,
+				'linkTitle' => $item->name,
+				'transform' => 'string',
+				'resourceSpecific' => 'rcwsGlobal',
+				'displayGroup' => '_links',
+				'linkTemplated' => 'true',
+				'fieldFormat' => $link,
+				'description' => JText::sprintf('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_CONNECTION_DESCRIPTION_LABEL', $item->name, '{' . $item->name . '_id}'),
+			);
+
+			echo RLayoutHelper::render(
+				'webservice.resources.resource',
+				array(
+					'view' => $this,
+					'options' => array(
+						'operation' => $operation,
+						'fieldList' => $fieldList,
+						'form' => $form,
+					)
+				)
+			);
+		}
+
+		$app->close();
+	}
+
+	/**
+	 * Method to get new Field HTML
+	 *
+	 * @return  void
+	 */
 	public function ajaxGetResource()
 	{
 		$app = JFactory::getApplication();

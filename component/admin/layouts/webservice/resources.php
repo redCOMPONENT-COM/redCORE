@@ -49,17 +49,34 @@ $headingDescription = !empty($displayData['options']['headingDescription']) ?
 				<?php echo JText::_('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_NEW_LINK_LABEL'); ?>
 			</button>
 			<div class="input-group">
-					<span class="input-group-btn">
-						<button class="btn btn-primary fields-add-new-row" type="button"><i class="icon-plus"></i>
-							<input type="hidden" name="addNewRowType" value="ResourceFromDatabase" />
-							<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
-							<input type="hidden" name="addNewRowList" value="" />
-							<?php echo JText::_('COM_REDCORE_WEBSERVICE_FIELD_ADD_NEW_FROM_DATABASE_LABEL'); ?>
-						</button>
-					</span>
-					<span class="input-group-addon">
-						<?php echo $form->getInput('addFromDatabase', 'main'); ?>
-					</span>
+				<span class="input-group-btn">
+					<button class="btn btn-primary fields-add-new-row" type="button"><i class="icon-plus"></i>
+						<input type="hidden" name="addNewRowType" value="Resource" />
+						<input type="hidden" name="addNewOptionType" value="ResourceFromDatabase" />
+						<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
+						<input type="hidden" name="addNewRowList" value="" />
+						<?php echo JText::_('COM_REDCORE_WEBSERVICE_FIELD_ADD_NEW_FROM_DATABASE_LABEL'); ?>
+					</button>
+				</span>
+				<span class="input-group-addon">
+					<?php echo $form->getInput('addFromDatabase', 'main'); ?>
+				</span>
+			</div>
+			<div class="input-group">
+				<span class="input-group-btn">
+					<button class="btn btn-primary fields-add-new-row hasTooltip" type="button"
+					        data-original-title="<?php echo JText::_('COM_REDCORE_WEBSERVICE_LIST_DESCRIPTION'); ?>">
+						<i class="icon-plus"></i>
+						<input type="hidden" name="addNewRowType" value="Resource" />
+						<input type="hidden" name="addNewOptionType" value="ConnectWebservice" />
+						<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
+						<input type="hidden" name="addNewRowList" value="" />
+						<?php echo JText::_('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_CONNECTION_LABEL'); ?>
+					</button>
+				</span>
+				<span class="input-group-addon">
+					<?php echo $form->getInput('connectWebservice', 'main'); ?>
+				</span>
 			</div>
 		</div>
 		<hr/>

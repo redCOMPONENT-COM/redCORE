@@ -71,7 +71,7 @@ class PlgSystemRedcore extends JPlugin
 						$optionName = $input->get->getString('option', '');
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
 						$viewName = $input->getString('view', '');
-						$version = $input->getString('version', '');
+						$version = $input->getString('webserviceVersion', '');
 						$token = $input->getString(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), '');
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
