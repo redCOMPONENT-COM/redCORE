@@ -25,14 +25,24 @@ JHtml::_('rjquery.chosen', 'select');
 			getData['operation'] = $button.find('[name="addNewRowOperation"]').val();
 			getData['fieldList'] = $button.find('[name="addNewRowList"]').val();
 			var rowType = $button.find('[name="addNewRowType"]').val();
+			var optionType = $button.find('[name="addNewOptionType"]').val();
 
-			if (rowType == 'FieldFromDatabase' || rowType == 'ResourceFromDatabase')
+			if (typeof optionType == 'undefined')
+			{
+				optionType = rowType;
+			}
+
+			if (optionType == 'FieldFromDatabase' || optionType == 'ResourceFromDatabase')
 			{
 				getData['tableName'] = $button.parents('.form-inline:first').find('[name="jform[main][addFromDatabase]"]').val();
 			}
+			else if (optionType == 'ConnectWebservice')
+			{
+				getData['webserviceId'] = $button.parents('.form-inline:first').find('[name="jform[main][connectWebservice]"]').val();
+			}
 
 			jQuery.ajax({
-				url: 'index.php?option=com_redcore&task=webservice.ajaxGet' + rowType,
+				url: 'index.php?option=com_redcore&task=webservice.ajaxGet' + optionType,
 				data: getData,
 				dataType: 'text',
 				beforeSend: function () {

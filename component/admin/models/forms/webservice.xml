@@ -128,6 +128,15 @@
                     class="form-control">
                 <option value="">COM_REDCORE_WEBSERVICE_SELECT_TABLE</option>
             </field>
+            <field
+                    name="connectWebservice"
+                    type="webservicelist"
+                    label="COM_REDCORE_WEBSERVICES"
+                    description="COM_REDCORE_WEBSERVICE_LIST_DESCRIPTION"
+                    default=""
+                    class="form-control">
+                <option value="">COM_REDCORE_WEBSERVICE_SELECT_WEBSERVICE</option>
+            </field>
         </fieldset>
 
     </fields>

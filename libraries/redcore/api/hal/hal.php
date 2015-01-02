@@ -172,6 +172,12 @@ class RApiHalHal extends RApi
 				$this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath, $this->client
 			);
 			$this->triggerFunction('setResources');
+
+			// Set option and view name
+			$this->setOptionViewName($this->webserviceName, $this->configuration);
+
+			// Set base data
+			$this->setBaseDataValues();
 		}
 
 		// Init Environment
@@ -179,12 +185,6 @@ class RApiHalHal extends RApi
 
 		// Set initial status code
 		$this->setStatusCode($this->statusCode);
-
-		// Set option and view name
-		$this->setOptionViewName($this->webserviceName, $this->configuration);
-
-		// Set base data
-		$this->setBaseDataValues();
 	}
 
 	/**
@@ -201,6 +201,11 @@ class RApiHalHal extends RApi
 		if (!empty($this->viewName))
 		{
 			$webserviceUrlPath .= '&amp;view=' . $this->viewName;
+		}
+
+		if (!empty($this->webserviceVersion))
+		{
+			$webserviceUrlPath .= '&amp;webserviceVersion=' . $this->webserviceVersion;
 		}
 
 		$this->data['webserviceUrlPath'] = $webserviceUrlPath;
@@ -400,7 +405,8 @@ class RApiHalHal extends RApi
 
 							// Set option and view name
 							$this->setOptionViewName($webservice['name'], $this->configuration);
-							$webserviceUrlPath = '/index.php?option=' . $this->optionName;
+							$webserviceUrlPath = '/index.php?option=' . $this->optionName
+								. '&amp;webserviceVersion=' . $webserviceVersion;
 
 							if (!empty($this->viewName))
 							{

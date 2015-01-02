@@ -37,7 +37,8 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 			<div class="input-group">
 				<span class="input-group-btn">
 					<button class="btn btn-primary fields-add-new-row" type="button"><i class="icon-plus"></i>
-						<input type="hidden" name="addNewRowType" value="FieldFromDatabase" />
+						<input type="hidden" name="addNewRowType" value="Field" />
+						<input type="hidden" name="addNewOptionType" value="FieldFromDatabase" />
 						<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
 						<input type="hidden" name="addNewRowList" value="defaultValue,isRequiredField,isPrimaryField" />
 						<?php echo JText::_('COM_REDCORE_WEBSERVICE_FIELD_ADD_NEW_FROM_DATABASE_LABEL'); ?>
