@@ -151,16 +151,6 @@
                     class="form-control">
                 <option value="">COM_REDCORE_WEBSERVICE_SELECT_TABLE</option>
             </field>
-            <!--<field
-                    name="tableName"
-                    labelclass="col-sm-2 control-label"
-                    type="text"
-                    label="COM_REDCORE_WEBSERVICE_TABLE_NAME_LABEL"
-                    description="COM_REDCORE_WEBSERVICE_TABLE_NAME_DESCRIPTION"
-                    class="form-control"
-                    default=""
-                    />
-                    -->
             <field
                     name="description"
                     labelclass="col-sm-2 control-label"

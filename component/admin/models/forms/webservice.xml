@@ -119,6 +119,15 @@
                         type="checkbox"
                         />
             </fields>
+            <field
+                    name="addFromDatabase"
+                    type="tablelist"
+                    label="COM_REDCORE_WEBSERVICE_TABLE_NAME_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_TABLE_NAME_DESCRIPTION"
+                    default=""
+                    class="form-control">
+                <option value="">COM_REDCORE_WEBSERVICE_SELECT_TABLE</option>
+            </field>
         </fieldset>
 
     </fields>
