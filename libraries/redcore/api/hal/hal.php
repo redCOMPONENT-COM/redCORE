@@ -2055,7 +2055,7 @@ class RApiHalHal extends RApi
 					if (isset($data[$parameter[0]]))
 					{
 						$parameterValue = $this->transformField($parameter[1], $data[$parameter[0]]);
-						$args[] = &$parameterValue;
+						$args[] = $parameterValue;
 					}
 					else
 					{
