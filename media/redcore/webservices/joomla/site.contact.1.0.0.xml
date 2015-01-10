@@ -11,21 +11,11 @@
         <version>1.0.0</version>
         <authorizationAssetName>com_contact</authorizationAssetName>
     </config>
-
-    <resources>
-        <resource displayGroup="_links" displayName="documentation" fieldFormat="/index.php?option=contact&amp;format=doc#{rel}" linkTitle="Documentation" linkName="contact" hrefLang="" linkTemplated="true" linkRel="curies" />
-        <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
-        <resource displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}" />
-        <resource displayGroup="_links" displayName="contact:list" fieldFormat="/index.php?option=contact" />
-        <resource displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
-
-        <resource displayName="result" fieldFormat="{result}" transform="boolean" />
-    </resources>
     <operations>
         <read authorizationNeeded="false">
             <list optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="">
                 <resources>
-                    <resource displayName="documentation" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
 
                     <!-- meta data -->
                     <resource displayName="page" fieldFormat="{pagination.page}" transform="int" />
@@ -41,14 +31,13 @@
                     <resource resourceSpecific="listItem" displayName="language" fieldFormat="{language}" />
                     <resource resourceSpecific="listItem" displayName="name" fieldFormat="{name}" />
                     <resource resourceSpecific="listItem" displayName="ordering" fieldFormat="{ordering}" transform="int" />
-                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}">
+                    <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="listItem">
                         <description>Link to contact item</description>
                     </resource>
-                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
 
                     <!-- _links -->
-                    <resource displayName="base" />
-                    <resource displayName="contact:self" fieldFormat="/index.php?option=contact" />
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                     <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;limitstart=0" linkTitle="Pagination first" />
                     <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.previous}" linkTitle="Pagination previous" />
                     <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.next}" linkTitle="Pagination next" />
@@ -107,11 +96,10 @@
                     <resource displayName="hits" fieldFormat="{hits}" transform="int" />
 
                     <!-- _links -->
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:self" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="categories" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                 </resources>
                 <description><![CDATA[ This operation displays one Contact item. ]]></description>
             </item>
@@ -121,10 +109,10 @@
             <hit optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
                 <description><![CDATA[ This task enables you to Increase the hit counter for the contact. ]]></description>
                 <resources>
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="result" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
                 </resources>
             </hit>
         </task>

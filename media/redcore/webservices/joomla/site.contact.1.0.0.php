@@ -28,15 +28,6 @@ class RApiHalHelperSiteContact
 	/* public function isOperationAllowed(RApiHalHal $apiHal){} */
 
 	/**
-	 * Set resources from configuration if available
-	 *
-	 * @return  void
-	 *
-	 * @since   1.2
-	 */
-	/* public function setResources(RApiHalHal $apiHal){} */
-
-	/**
 	 * Execute the Api Default Page operation.
 	 *
 	 * @return  mixed  RApi object with information on success, boolean false on failure.
