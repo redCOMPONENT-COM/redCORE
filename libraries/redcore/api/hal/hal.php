@@ -106,12 +106,6 @@ class RApiHalHal extends RApi
 	public $apiDynamicModelClassName = 'RApiHalModelItem';
 
 	/**
-	 * @var    array  Loaded resources from configuration file
-	 * @since  1.2
-	 */
-	public $apiResources = null;
-
-	/**
 	 * @var    string  Rendered Documentation
 	 * @since  1.2
 	 */
@@ -171,7 +165,6 @@ class RApiHalHal extends RApi
 			$this->configuration = RApiHalHelper::loadWebserviceConfiguration(
 				$this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath, $this->client
 			);
-			$this->triggerFunction('setResources');
 
 			// Set option and view name
 			$this->setOptionViewName($this->webserviceName, $this->configuration);
@@ -401,7 +394,7 @@ class RApiHalHal extends RApi
 					{
 						if ($webservice['state'] == 1)
 						{
-							$documentation = $webserviceClient == 'site' ? 'documentationSite' : 'documentationAdmin';
+							$documentation = $webserviceClient == 'site' ? 'Site' : 'Admin';
 
 							// Set option and view name
 							$this->setOptionViewName($webservice['name'], $this->configuration);
@@ -834,7 +827,7 @@ class RApiHalHal extends RApi
 								$this->assignValueToResource($resource, $data),
 								$linkRel,
 								$resource['linkTitle'],
-								$this->assignGlobalValueToResource($resource['linkTitle']),
+								$this->assignGlobalValueToResource($resource['linkName']),
 								$resource['hrefLang'],
 								RApiHalHelper::isAttributeTrue($resource, 'linkTemplated')
 							), $linkSingular = false, $linkPlural
@@ -880,18 +873,7 @@ class RApiHalHal extends RApi
 				$resource = RApiHalDocumentResource::defaultResourceField($resource);
 				$resourceName = $resource['displayName'];
 				$resourceSpecific = $resource['resourceSpecific'];
-
-				if (isset($this->apiResources[$resourceSpecific][$resourceName]))
-				{
-					$this->resources[$resourceSpecific][$resourceName] = $this->apiResources[$resourceSpecific][$resourceName];
-					$this->resources[$resourceSpecific][$resourceName] = RApiHalDocumentResource::mergeResourceFields(
-						$this->apiResources[$resourceSpecific][$resourceName], $resource
-					);
-				}
-				else
-				{
-					$this->resources[$resourceSpecific][$resourceName] = $resource;
-				}
+				$this->resources[$resourceSpecific][$resourceName] = $resource;
 			}
 		}
 
@@ -1787,32 +1769,6 @@ class RApiHalHal extends RApi
 				}
 			}
 		}
-	}
-
-	/**
-	 * Set resources from configuration if available
-	 *
-	 * @return  void
-	 *
-	 * @since   1.2
-	 */
-	public function setResources()
-	{
-		$resourcesBase = $this->getConfig('resources');
-		$resources = array();
-
-		if (isset($resourcesBase->resource))
-		{
-			foreach ($resourcesBase->resource as $resourcesXml)
-			{
-				$resource = RApiHalHelper::getXMLElementAttributes($resourcesXml);
-				$resource = RApiHalDocumentResource::defaultResourceField($resource);
-
-				$resources[$resource['resourceSpecific']][$resource['displayName']] = $resource;
-			}
-		}
-
-		$this->apiResources = $resources;
 	}
 
 	/**

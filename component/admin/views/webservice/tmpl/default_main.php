@@ -89,18 +89,4 @@ defined('_JEXEC') or die;
 			<?php echo $this->form->getInput('description', 'main'); ?>
 		</div>
 	</div>
-
-	<?php echo RLayoutHelper::render(
-		'webservice.resources',
-		array(
-			'view' => $this,
-			'options' => array(
-				'operation' => 'main',
-				'fieldList' => '',
-				'form'      => $this->form,
-				'heading'   => JText::_('COM_REDCORE_WEBSERVICE_RESOURCES_MAIN_LABEL'),
-				'headingDescription'   => JText::_('COM_REDCORE_WEBSERVICE_RESOURCES_MAIN_DESCRIPTION'),
-			)
-		)
-	); ?>
 </div>

@@ -163,8 +163,6 @@ class RedcoreModelWebservice extends RModelAdmin
 		$configXml->addChild('version', $version);
 		$configXml->addChild('authorizationAssetName', $dataRegistry->get('main.authorizationAssetName', ''));
 
-		$this->getResourcesFromPost($xml, $data, 'main');
-
 		$operationsXml = $xml->addChild('operations');
 		$readXml = null;
 		$taskXml = null;
@@ -239,7 +237,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	/**
 	 * Method to get operation attributes from Post
 	 *
-	 * @param   SimpleXMLElement  &$xml  Xml element to add resources
+	 * @param   SimpleXMLElement  &$xml  Xml element
 	 * @param   array             $data  The form data.
 	 * @param   string            $name  Name to fetch
 	 *
@@ -279,7 +277,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	/**
 	 * Method to get fields from Post
 	 *
-	 * @param   SimpleXMLElement  &$xml  Xml element to add resources
+	 * @param   SimpleXMLElement  &$xml  Xml element
 	 * @param   array             $data  The form data.
 	 * @param   string            $name  Name to fetch
 	 *
@@ -387,7 +385,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	/**
 	 * Method to add child with text inside CDATA
 	 *
-	 * @param   SimpleXMLElement  &$xml   Xml element to add resources
+	 * @param   SimpleXMLElement  &$xml   Xml element
 	 * @param   string            $name   Name of the child
 	 * @param   string            $value  Value of the child
 	 *
@@ -464,8 +462,6 @@ class RedcoreModelWebservice extends RModelAdmin
 		{
 			return $this->formData;
 		}
-
-		$this->setFieldsAndResources('main', '.', $this->xmlFile);
 
 		$this->formData['main'] = array(
 			'author' => (string) $this->xmlFile->author,
@@ -659,11 +655,6 @@ class RedcoreModelWebservice extends RModelAdmin
 				$resourceArray = $this->bindElementToArray($resource);
 				$displayName = (string) $resourceArray['displayName'];
 				$resourceSpecific = !empty($resourceArray['resourceSpecific']) ? (string) $resourceArray['resourceSpecific'] : 'rcwsGlobal';
-
-				if (!empty($this->resources['main'][$resourceSpecific][$displayName]))
-				{
-					$resourceArray = array_merge($this->resources['main'][$resourceSpecific][$displayName], $resourceArray);
-				}
 
 				$this->resources[$name][$resourceSpecific][$displayName] = $resourceArray;
 			}

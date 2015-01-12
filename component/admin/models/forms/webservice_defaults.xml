@@ -9,14 +9,6 @@
         <version>1.0.0</version>
         <authorizationAssetName>com_{webserviceName}</authorizationAssetName>
     </config>
-    <resources>
-        <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" />
-        <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
-        <resource displayGroup="_links" displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}&amp;id={id}" />
-        <resource displayGroup="_links" displayName="{webserviceName}:list" fieldFormat="{webserviceUrlPath}" />
-
-        <resource displayName="result" fieldFormat="{result}" transform="boolean" />
-    </resources>
     <operations>
         <read>
             <list isEnabled="0">
@@ -24,7 +16,7 @@
                     <field name="id" transform="int" isFilterField="false" isPrimaryField="true" />
                 </fields>
                 <resources>
-                    <resource displayName="documentation" />
+                    <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" />
 
                     <resource displayName="page" fieldFormat="{pagination.page}" transform="int" />
                     <resource displayName="pageLimit" fieldFormat="{pagination.limit}" transform="int" />
@@ -35,8 +27,8 @@
                     <resource resourceSpecific="listItem" displayName="id" fieldFormat="{id}" transform="int" />
                     <resource resourceSpecific="listItem" displayGroup="_links" displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}&amp;id={id}" />
 
-                    <resource displayName="base" />
-                    <resource displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}" />
+                    <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}" />
                     <resource displayGroup="_links" displayName="{webserviceName}:first" fieldFormat="{webserviceUrlPath}&amp;list[limitstart]=0" linkTitle="Pagination first" />
                     <resource displayGroup="_links" displayName="{webserviceName}:previous" fieldFormat="{webserviceUrlPath}&amp;list[limitstart]={pagination.previous}" linkTitle="Pagination previous" />
                     <resource displayGroup="_links" displayName="{webserviceName}:next" fieldFormat="{webserviceUrlPath}&amp;list[limitstart]={pagination.next}" linkTitle="Pagination next" />
@@ -51,29 +43,29 @@
                 <resources>
                     <resource displayName="id" fieldFormat="{id}" transform="int" />
 
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="{webserviceName}:self" />
-                    <resource displayName="{webserviceName}:list" />
+                    <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" />
+                    <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:list" fieldFormat="{webserviceUrlPath}" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}&amp;id={id}" />
                 </resources>
             </item>
         </read>
         <create isEnabled="0" functionName="save">
             <resources>
-                <resource displayName="documentation" />
-                <resource displayName="base" />
-                <resource displayName="{webserviceName}:list" />
-                <resource displayName="{webserviceName}:self" />
-                <resource displayName="result" />
+                <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" />
+                <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+                <resource displayGroup="_links" displayName="{webserviceName}:list" fieldFormat="{webserviceUrlPath}" />
+                <resource displayGroup="_links" displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}&amp;id={id}" />
+                <resource displayName="result" fieldFormat="{result}" transform="boolean" />
             </resources>
         </create>
         <update isEnabled="0" functionName="save">
             <resources>
-                <resource displayName="documentation" />
-                <resource displayName="base" />
-                <resource displayName="{webserviceName}:list" />
-                <resource displayName="{webserviceName}:self" />
-                <resource displayName="result" />
+                <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" />
+                <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+                <resource displayGroup="_links" displayName="{webserviceName}:list" fieldFormat="{webserviceUrlPath}" />
+                <resource displayGroup="_links" displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}&amp;id={id}" />
+                <resource displayName="result" fieldFormat="{result}" transform="boolean" />
             </resources>
         </update>
         <delete isEnabled="0" functionArgs="id{int}">
@@ -81,18 +73,18 @@
                 <field name="id" transform="int" isRequiredField="true" />
             </fields>
             <resources>
-                <resource displayName="documentation" />
-                <resource displayName="base" />
-                <resource displayName="{webserviceName}:list" />
-                <resource displayName="result" />
+                <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" />
+                <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+                <resource displayGroup="_links" displayName="{webserviceName}:list" fieldFormat="{webserviceUrlPath}" />
+                <resource displayName="result" fieldFormat="{result}" transform="boolean" />
             </resources>
         </delete>
         <taskResources>
             <resources>
-                <resource displayName="documentation" />
-                <resource displayName="base" />
-                <resource displayName="{webserviceName}:list" />
-                <resource displayName="result" />
+                <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" />
+                <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
+                <resource displayGroup="_links" displayName="{webserviceName}:list" fieldFormat="{webserviceUrlPath}" />
+                <resource displayName="result" fieldFormat="{result}" transform="boolean" />
             </resources>
         </taskResources>
     </operations>
