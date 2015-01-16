@@ -18,13 +18,13 @@ $operationName = !empty($displayData['options']['operationName']) ? $displayData
 $isOperationRead = $operationName == 'read list' || $operationName == 'read item';
 $view->resetDocumentResources();
 $resources = $view->loadResourceFromConfiguration($operationXml);
-$authorizationNeeded = (isset($operationXml['authorizationNeeded']) && strtolower($operationXml['authorizationNeeded']) == 'false');
+$authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtolower($operationXml['authorizationNeeded']) == 'false');
 ?>
 <div class="container-fluid">
 	<div class="page-header">
 		<h3>
 			<span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span>
-			<?php if ($authorizationNeeded) : ?>
+			<?php if (!$authorizationNotNeeded) : ?>
 				<span class="label label-warning"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_AUTHORIZATION_NEEDED') ?></span>
 			<?php endif; ?>
 			<?php echo ucfirst($operationName); ?>
