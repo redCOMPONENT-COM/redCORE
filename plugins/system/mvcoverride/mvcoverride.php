@@ -152,14 +152,14 @@ class PlgSystemMVCOverride extends JPlugin
 								);
 							}
 
-							// Finally we can load the base class
-							MVCOverrideHelperOverride::load($bufferContent);
-
 							// Load helpers
 							if (!is_int($key))
 							{
 								JLoader::register($key, $filePath);
 							}
+
+							// Finally we can load the base class
+							MVCOverrideHelperOverride::load($bufferContent);
 
 							require_once $filePath;
 						}
@@ -237,17 +237,17 @@ class PlgSystemMVCOverride extends JPlugin
 		{
 			$menuDefault = JFactory::getApplication()->getMenu()->getDefault();
 
-			if ($menuDefault == 0)
+			if (!$menuDefault)
 			{
 				return false;
 			}
 
-			$componentID = $menuDefault->componentid;
+			$componentID = $menuDefault->component_id;
 			$db = JFactory::getDBO();
 			$query = $db->getQuery(true)
 				->select('element')
 				->from($db->qn('#__extensions'))
-				->where('id = ' . $db->quote($componentID));
+				->where('extension_id = ' . $db->quote($componentID));
 			$db->setQuery($query);
 			self::$option = $db->loadResult();
 		}
