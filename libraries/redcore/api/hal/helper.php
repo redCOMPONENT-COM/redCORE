@@ -9,6 +9,8 @@
 
 defined('JPATH_BASE') or die;
 
+jimport('joomla.filesystem.folder');
+
 /**
  * Interface to handle api calls
  *
@@ -253,8 +255,6 @@ class RApiHalHelper
 	 */
 	public static function loadWebservices($client = '', $webserviceName = '', $version = '1.0.0', $path = '', $showNotifications = false)
 	{
-		jimport('joomla.filesystem.folder');
-
 		if (empty($webserviceName))
 		{
 			$folders = JFolder::folders(self::getWebservicesPath(), '.', true);
