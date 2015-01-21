@@ -152,14 +152,14 @@ class PlgSystemMVCOverride extends JPlugin
 								);
 							}
 
-							// Finally we can load the base class
-							MVCOverrideHelperOverride::load($bufferContent);
-
 							// Load helpers
 							if (!is_int($key))
 							{
 								JLoader::register($key, $filePath);
 							}
+
+							// Finally we can load the base class
+							MVCOverrideHelperOverride::load($bufferContent);
 
 							require_once $filePath;
 						}
