@@ -12,8 +12,8 @@ defined('_JEXEC') or die;
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.folder');
 
-require_once 'helper/override.php';
-require_once 'helper/codepool.php';
+JLoader::import('system.mvcoverride.helper.override', JPATH_PLUGINS);
+JLoader::import('system.mvcoverride.helper.codepool', JPATH_PLUGINS);
 
 /**
  * PlgSystemMVCOverride class.
@@ -34,6 +34,8 @@ class PlgSystemMVCOverride extends JPlugin
 
 	protected $files = array();
 
+	protected static $loadClass = array();
+
 	/**
 	 * Constructor
 	 *
@@ -44,27 +46,27 @@ class PlgSystemMVCOverride extends JPlugin
 	 */
 	public function __construct(&$subject, $config = array())
 	{
-		JPlugin::loadLanguage('plg_system_mvcoverride');
 		parent::__construct($subject, $config);
-	}
-
-	/**
-	 * onAfterRoute function.
-	 *
-	 * @access public
-	 * @return void
-	 */
-	public function onAfterRoute()
-	{
-		JPluginHelper::importPlugin('redcore');
-		MVCOverrideHelperCodepool::initialize();
 		$option = $this->getOption();
-		$app = JFactory::getApplication();
 
 		if ($option === false)
 		{
 			return;
 		}
+
+		// Constants to replace JPATH_COMPONENT, JPATH_COMPONENT_SITE and JPATH_COMPONENT_ADMINISTRATOR
+		// Constants is deprecated and not using in new changes
+		define('JPATH_SOURCE_COMPONENT', JPATH_BASE . '/components/' . $option);
+		define('JPATH_SOURCE_COMPONENT_SITE', JPATH_SITE . '/components/' . $option);
+		define('JPATH_SOURCE_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/' . $option);
+
+		JPlugin::loadLanguage('plg_system_mvcoverride');
+		spl_autoload_register(array('PlgSystemMVCOverride', '_autoload'), false, true);
+		MVCOverrideHelperCodepool::initialize();
+
+		JPluginHelper::importPlugin('redcore');
+
+		$app = JFactory::getApplication();
 
 		// Get files that can be overrided
 		$componentOverrideFiles = $this->loadComponentFiles($option);
@@ -90,13 +92,11 @@ class PlgSystemMVCOverride extends JPlugin
 		{
 			if (version_compare(JVERSION, '3.0', '>='))
 			{
-				JModelLegacy::addIncludePath($codePool . '/' . $option . '/models');
 				JViewLegacy::addViewHelperPath($codePool . '/' . $option);
 				JViewLegacy::addViewTemplatePath($codePool . '/' . $option);
 			}
 			else
 			{
-				JModel::addIncludePath($codePool . '/' . $option . '/models');
 				JView::addViewHelperPath($codePool . '/' . $option);
 				JView::addViewTemplatePath($codePool . '/' . $option);
 			}
@@ -107,11 +107,6 @@ class PlgSystemMVCOverride extends JPlugin
 			JModelForm::addComponentFormPath($codePool . '/' . $option . '/models/forms');
 			JModelForm::addComponentFieldPath($codePool . '/' . $option . '/models/fields');
 		}
-
-		// Constants to replace JPATH_COMPONENT, JPATH_COMPONENT_SITE and JPATH_COMPONENT_ADMINISTRATOR
-		define('JPATH_SOURCE_COMPONENT', JPATH_BASE . '/components/' . $option);
-		define('JPATH_SOURCE_COMPONENT_SITE', JPATH_SITE . '/components/' . $option);
-		define('JPATH_SOURCE_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/' . $option);
 
 		// Loading override files
 		if (!empty($componentOverrideFiles))
@@ -125,43 +120,26 @@ class PlgSystemMVCOverride extends JPlugin
 					// Include the original code and replace class name add a Default on
 					if ($this->params->get('extendDefault', 1))
 					{
-						$bufferOverrideFile = file_get_contents($filePath);
+						$forOverrideFile = file_get_contents($componentFile->root . $componentFile->path);
+						$originalClass = MVCOverrideHelperOverride::getOriginalClass($forOverrideFile);
+						unset($forOverrideFile);
+						self::register(
+							$originalClass,
+							$componentFile->root . $componentFile->path,
+							true,
+							MVCOverrideHelperOverride::PREFIX,
+							MVCOverrideHelperOverride::SUFFIX,
+							$this->params->get('changePrivate', 0)
+						);
 
-						// Detect if override file use some constants
-						preg_match_all('/JPATH_COMPONENT(_SITE|_ADMINISTRATOR)|JPATH_COMPONENT/i', $bufferOverrideFile, $definesSourceOverride);
-
-						if (count($definesSourceOverride[0]))
+						// Load helpers
+						if (!is_int($key))
 						{
-							JError::raiseError(
-								JText::_('PLG_SYSTEM_MVC_OVERRIDE_PLUGIN'),
-								JText::_('PLG_SYSTEM_MVC_OVERRIDE_ERROR')
-							);
+							JLoader::register($key, $filePath);
 						}
 						else
 						{
-							$bufferContent = MVCOverrideHelperOverride::createDefaultClass($componentFile->root . $componentFile->path);
-							$bufferContent = MVCOverrideHelperOverride::fixDefines($bufferContent);
-
-							// Change private methods to protected methods
-							if ($this->params->get('changePrivate', 0))
-							{
-								$bufferContent = preg_replace(
-									'/private *function/i',
-									'protected function',
-									$bufferContent
-								);
-							}
-
-							// Load helpers
-							if (!is_int($key))
-							{
-								JLoader::register($key, $filePath);
-							}
-
-							// Finally we can load the base class
-							MVCOverrideHelperOverride::load($bufferContent);
-
-							require_once $filePath;
+							self::register($originalClass, $filePath, true, '', '');
 						}
 					}
 					else
@@ -171,6 +149,82 @@ class PlgSystemMVCOverride extends JPlugin
 				}
 			}
 		}
+	}
+
+	/**
+	 * Directly register a class to the autoload list.
+	 *
+	 * @param   string       $class          The class name to register.
+	 * @param   string       $path           Full path to the file that holds the class to register.
+	 * @param   boolean      $force          True to overwrite the autoload path value for the class if it already exists.
+	 * @param   string|null  $prefix         Prefix class
+	 * @param   string|null  $suffix         Suffix class
+	 * @param   int          $changePrivate  Flag for change private to public or not
+	 *
+	 * @return  void
+	 */
+	public static function register($class, $path, $force = true, $prefix = null, $suffix = null, $changePrivate = 0)
+	{
+		// Sanitize class name.
+		$class = strtolower($prefix . $class . $suffix);
+
+		// Only attempt to register the class if the name and file exist.
+		if (!empty($class) && is_file($path))
+		{
+			// Register the class with the autoloader if not already registered or the force flag is set.
+			if (empty(self::$loadClass[$class]) || $force)
+			{
+				self::$loadClass[$class] = array('path' => $path, 'prefix' => $prefix, 'suffix' => $suffix, 'changePrivate' => $changePrivate);
+			}
+		}
+	}
+
+
+	/**
+	 * Autoload a class based on name.
+	 *
+	 * @param   string  $class  The class to be loaded.
+	 *
+	 * @return  boolean  True if the class was loaded, false otherwise.
+	 */
+	private static function _autoload($class)
+	{
+		// Sanitize class name.
+		$class = strtolower($class);
+
+		if (isset(self::$loadClass[$class]) && file_exists(self::$loadClass[$class]['path']))
+		{
+			$data = self::$loadClass[$class];
+
+			if (file_exists($data['path']))
+			{
+				if ($data['prefix'] === '' && $data['suffix'] === '')
+				{
+					return include $data['path'];
+				}
+				else
+				{
+					$bufferContent = MVCOverrideHelperOverride::createDefaultClass($data['path'], $data['prefix'], $data['suffix']);
+
+					// Change private methods to protected methods
+					if (isset($data['changePrivate']) && $data['changePrivate'])
+					{
+						$bufferContent = preg_replace(
+							'/private *function/i',
+							'protected function',
+							$bufferContent
+						);
+					}
+
+					// Finally we can load the base class
+					MVCOverrideHelperOverride::load($bufferContent);
+
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
