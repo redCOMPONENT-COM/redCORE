@@ -179,7 +179,6 @@ class PlgSystemMVCOverride extends JPlugin
 		}
 	}
 
-
 	/**
 	 * Autoload a class based on name.
 	 *
