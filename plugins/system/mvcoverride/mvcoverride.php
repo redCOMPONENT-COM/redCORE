@@ -169,7 +169,7 @@ class PlgSystemMVCOverride extends JPlugin
 		$class = strtolower($prefix . $class . $suffix);
 
 		// Only attempt to register the class if the name and file exist.
-		if (!empty($class) && is_file($path))
+		if (!empty($class) && file_exists($path))
 		{
 			// Register the class with the autoloader if not already registered or the force flag is set.
 			if (empty(self::$loadClass[$class]) || $force)
@@ -196,31 +196,28 @@ class PlgSystemMVCOverride extends JPlugin
 		{
 			$data = self::$loadClass[$class];
 
-			if (file_exists($data['path']))
+			if ($data['prefix'] === '' && $data['suffix'] === '')
 			{
-				if ($data['prefix'] === '' && $data['suffix'] === '')
+				return include $data['path'];
+			}
+			else
+			{
+				$bufferContent = MVCOverrideHelperOverride::createDefaultClass($data['path'], $data['prefix'], $data['suffix']);
+
+				// Change private methods to protected methods
+				if (isset($data['changePrivate']) && $data['changePrivate'])
 				{
-					return include $data['path'];
+					$bufferContent = preg_replace(
+						'/private *function/i',
+						'protected function',
+						$bufferContent
+					);
 				}
-				else
-				{
-					$bufferContent = MVCOverrideHelperOverride::createDefaultClass($data['path'], $data['prefix'], $data['suffix']);
 
-					// Change private methods to protected methods
-					if (isset($data['changePrivate']) && $data['changePrivate'])
-					{
-						$bufferContent = preg_replace(
-							'/private *function/i',
-							'protected function',
-							$bufferContent
-						);
-					}
+				// Finally we can load the base class
+				MVCOverrideHelperOverride::load($bufferContent);
 
-					// Finally we can load the base class
-					MVCOverrideHelperOverride::load($bufferContent);
-
-					return true;
-				}
+				return true;
 			}
 		}
 
