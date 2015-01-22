@@ -47,6 +47,17 @@ class PlgSystemMVCOverride extends JPlugin
 	public function __construct(&$subject, $config = array())
 	{
 		parent::__construct($subject, $config);
+		JPlugin::loadLanguage('plg_system_mvcoverride');
+	}
+
+	/**
+	 * onAfterRoute function.
+	 *
+	 * @access public
+	 * @return void
+	 */
+	public function onAfterRoute()
+	{
 		$option = $this->getOption();
 
 		if ($option === false)
@@ -60,7 +71,6 @@ class PlgSystemMVCOverride extends JPlugin
 		define('JPATH_SOURCE_COMPONENT_SITE', JPATH_SITE . '/components/' . $option);
 		define('JPATH_SOURCE_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/' . $option);
 
-		JPlugin::loadLanguage('plg_system_mvcoverride');
 		spl_autoload_register(array('PlgSystemMVCOverride', '_autoload'), false, true);
 		MVCOverrideHelperCodepool::initialize();
 
