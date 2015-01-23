@@ -104,15 +104,13 @@ class MVCOverrideHelperCodepool
 			return;
 		}
 
-		MVCOverrideHelperOverride::load(MVCOverrideHelperOverride::createDefaultClass($sourcePath, 'LIB_'));
-
 		if (!empty($jimport))
 		{
 			jimport($jimport);
 		}
 
-		JLoader::register($class, $replacePath, true);
-		JLoader::load($class);
+		PlgSystemMVCOverride::register($class, $sourcePath, true, 'LIB_', 'Default');
+		PlgSystemMVCOverride::register($class, $replacePath, true, '', '');
 	}
 
 	/**

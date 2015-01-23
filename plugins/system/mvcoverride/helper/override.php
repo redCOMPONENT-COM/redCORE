@@ -97,39 +97,6 @@ abstract class MVCOverrideHelperOverride
 	}
 
 	/**
-	 * Will search for defined JPATH_COMPONENT, JPATH_SITE, JPATH_ADMINISTRATOR and replace by right values
-	 *
-	 * @param   string  $bufferContent  Buffer File
-	 *
-	 * @return  string
-	 */
-	static public function fixDefines($bufferContent)
-	{
-		// Detect if source file use some constants
-		preg_match_all('/JPATH_COMPONENT(_SITE|_ADMINISTRATOR)|JPATH_COMPONENT/i', $bufferContent, $definesSource);
-
-		// Replace JPATH_COMPONENT constants if found, because we are loading before define these constants
-		if (count($definesSource[0]))
-		{
-			$bufferContent = preg_replace(
-				array(
-					'/JPATH_COMPONENT/',
-					'/JPATH_COMPONENT_SITE/',
-					'/JPATH_COMPONENT_ADMINISTRATOR/'
-				),
-				array(
-					'JPATH_SOURCE_COMPONENT',
-					'JPATH_SOURCE_COMPONENT_SITE',
-					'JPATH_SOURCE_COMPONENT_ADMINISTRATOR'
-				),
-				$bufferContent
-			);
-		}
-
-		return $bufferContent;
-	}
-
-	/**
 	 * Load buffer content
 	 *
 	 * @param   string  $bufferContent  Buffer Content
