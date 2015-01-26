@@ -35,7 +35,7 @@ class RApiHalTransformFile extends RApiHalTransformBase
 	 *
 	 * @param   mixed  $definition  Field definition.
 	 *
-	 * @return array Transformed value.
+	 * @return mixed Transformed value.
 	 */
 	public static function toInternal($definition)
 	{
