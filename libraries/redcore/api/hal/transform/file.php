@@ -39,6 +39,6 @@ class RApiHalTransformFile extends RApiHalTransformBase
 	 */
 	public static function toInternal($definition)
 	{
-		return $_FILES[$definition];
+		return !empty($_FILES[$definition]) ? $_FILES[$definition] : false;
 	}
 }
