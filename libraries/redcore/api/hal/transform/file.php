@@ -39,6 +39,6 @@ class RApiHalTransformFile extends RApiHalTransformBase
 	 */
 	public static function toInternal($definition)
 	{
-		return JFactory::getApplication()->input->files->get($definition, array(), 'array');
+		return $_FILES[$definition];
 	}
 }
