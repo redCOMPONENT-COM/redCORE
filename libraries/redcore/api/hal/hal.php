@@ -512,7 +512,7 @@ class RApiHalHal extends RApi
 		}
 
 		// Getting single item
-		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'getDataFunction', 'getItem');
+		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItem');
 
 		$itemObject = method_exists($model, $functionName) ? $model->{$functionName}($id) : array();
 
