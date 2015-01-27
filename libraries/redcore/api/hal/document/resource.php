@@ -358,10 +358,10 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	{
 		if (defined(JSON_NUMERIC_CHECK) && $this->jsonNumericCheck)
 		{
-			return json_encode($this->toArray(), JSON_NUMERIC_CHECK);
+			return json_encode($this->toArray(), JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 		}
 
-		return json_encode($this->toArray());
+		return json_encode($this->toArray(), JSON_UNESCAPED_SLASHES);
 	}
 
 	/**

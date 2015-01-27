@@ -1800,10 +1800,19 @@ class RApiHalHal extends RApi
 					{
 						if (is_array($value->{$replacementKey}))
 						{
-							$value->{$replacementKey} = json_encode($value->{$replacementKey});
+							$value->{$replacementKey} = json_encode($value->{$replacementKey}, JSON_UNESCAPED_SLASHES);
 						}
 
-						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value->{$replacementKey}), $format);
+						// We are transforming only value
+						if ($format == '{' . $replacementKey . '}')
+						{
+							$format = $this->transformField($transform, $value->{$replacementKey});
+						}
+						// We are transforming only part of the string
+						else
+						{
+							$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value->{$replacementKey}), $format);
+						}
 					}
 				}
 				elseif (is_array($value))
@@ -1812,15 +1821,33 @@ class RApiHalHal extends RApi
 					{
 						if (is_array($value[$replacementKey]))
 						{
-							$value[$replacementKey] = json_encode($value[$replacementKey]);
+							$value[$replacementKey] = json_encode($value[$replacementKey], JSON_UNESCAPED_SLASHES);
 						}
 
-						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value[$replacementKey]), $format);
+						// We are transforming only value
+						if ($format == '{' . $replacementKey . '}')
+						{
+							$format = $this->transformField($transform, $value[$replacementKey]);
+						}
+						// We are transforming only part of the string
+						else
+						{
+							$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value[$replacementKey]), $format);
+						}
 					}
 				}
 				else
 				{
-					$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value), $format);
+					// We are transforming only value
+					if ($format == '{' . $replacementKey . '}')
+					{
+						$format = $this->transformField($transform, $value);
+					}
+					// We are transforming only part of the string
+					else
+					{
+						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value), $format);
+					}
 				}
 			}
 		}
@@ -1856,10 +1883,19 @@ class RApiHalHal extends RApi
 				{
 					if (is_array($this->data[$replacementKey]))
 					{
-						$this->data[$replacementKey] = json_encode($this->data[$replacementKey]);
+						$this->data[$replacementKey] = json_encode($this->data[$replacementKey], JSON_UNESCAPED_SLASHES);
 					}
 
-					$format = str_replace('{' . $replacementKey . '}', $this->data[$replacementKey], $format);
+					// We are transforming only value
+					if ($format == '{' . $replacementKey . '}')
+					{
+						$format = $this->data[$replacementKey];
+					}
+					// We are transforming only part of the string
+					else
+					{
+						$format = str_replace('{' . $replacementKey . '}', $this->data[$replacementKey], $format);
+					}
 				}
 			}
 		}
