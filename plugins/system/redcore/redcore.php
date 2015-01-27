@@ -111,7 +111,7 @@ class PlgSystemRedcore extends JPlugin
 						header('Status: 500', true, 500);
 
 						// An exception has been caught, echo the message and exit.
-						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)));
+						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
 					}
 
 					JFactory::getApplication()->close();
