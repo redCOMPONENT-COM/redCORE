@@ -110,6 +110,12 @@ class PlgSystemRedcore extends JPlugin
 						// Set the server response code.
 						header('Status: 500', true, 500);
 
+						// Check for defined constants
+						if (!defined('JSON_UNESCAPED_SLASHES'))
+						{
+							define('JSON_UNESCAPED_SLASHES', 64);
+						}
+
 						// An exception has been caught, echo the message and exit.
 						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
 					}
