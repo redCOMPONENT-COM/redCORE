@@ -933,7 +933,7 @@ class RApiHalHal extends RApi
 	/**
 	 * Set document content for Item view
 	 *
-	 * @param   object            $item           List of items
+	 * @param   object|array      $item           Item content
 	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
 	 *
 	 * @return void
@@ -943,7 +943,7 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($configuration);
 
-		if (!empty($item) && !empty($item->id))
+		if (!empty($item) && (is_array($item) || is_object($item)))
 		{
 			// Filter out all fields that are not in resource list and apply appropriate transform rules
 			foreach ($item as $key => $value)
