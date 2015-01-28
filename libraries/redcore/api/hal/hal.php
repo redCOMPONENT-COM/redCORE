@@ -178,6 +178,12 @@ class RApiHalHal extends RApi
 
 		// Set initial status code
 		$this->setStatusCode($this->statusCode);
+
+		// Check for defined constants
+		if (!defined('JSON_UNESCAPED_SLASHES'))
+		{
+			define('JSON_UNESCAPED_SLASHES', 64);
+		}
 	}
 
 	/**
