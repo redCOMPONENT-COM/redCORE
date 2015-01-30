@@ -271,7 +271,6 @@ class PlgSystemMVCOverride extends JPlugin
 		);
 	}
 
-
 	/**
 	 * Get option
 	 *

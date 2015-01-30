@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     MVC Override.Plugin
+ * @package     RedCORE.Plugin
  * @subpackage  System.MVCOverride
  *
  * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
