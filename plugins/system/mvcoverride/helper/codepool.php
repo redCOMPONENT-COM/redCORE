@@ -104,13 +104,14 @@ class MVCOverrideHelperCodepool
 			return;
 		}
 
+		MVCLoader::setOverrideFile($class, $sourcePath, true, 'LIB_', 'Default');
+
 		if (!empty($jimport))
 		{
 			jimport($jimport);
 		}
 
-		PlgSystemMVCOverride::register($class, $sourcePath, true, 'LIB_', 'Default');
-		PlgSystemMVCOverride::register($class, $replacePath, true, '', '');
+		MVCLoader::setOverrideFile($class, $replacePath);
 	}
 
 	/**
@@ -127,11 +128,11 @@ class MVCOverrideHelperCodepool
 		{
 			if ($reverse)
 			{
-				return array_reverse(self::$paths);
+				return self::$paths;
 			}
 			else
 			{
-				return self::$paths;
+				return array_reverse(self::$paths);
 			}
 		}
 
@@ -140,7 +141,11 @@ class MVCOverrideHelperCodepool
 		foreach ($path as $codePool)
 		{
 			$codePool = JPath::clean($codePool);
-			array_push(self::$paths, $codePool);
+
+			if (is_dir($codePool))
+			{
+				array_unshift(self::$paths, $codePool);
+			}
 		}
 
 		return self::$paths;

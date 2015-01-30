@@ -14,6 +14,7 @@ jimport('joomla.filesystem.folder');
 
 JLoader::import('system.mvcoverride.helper.override', JPATH_PLUGINS);
 JLoader::import('system.mvcoverride.helper.codepool', JPATH_PLUGINS);
+JLoader::import('system.mvcoverride.helper.mvcloader', JPATH_PLUGINS);
 
 /**
  * PlgSystemMVCOverride class.
@@ -30,11 +31,9 @@ class PlgSystemMVCOverride extends JPlugin
 	 */
 	protected $autoloadLanguage = true;
 
+	protected static $componentList = array();
+
 	protected static $option;
-
-	protected $files = array();
-
-	protected static $loadClass = array();
 
 	/**
 	 * Constructor
@@ -46,8 +45,36 @@ class PlgSystemMVCOverride extends JPlugin
 	 */
 	public function __construct(&$subject, $config = array())
 	{
-		parent::__construct($subject, $config);
 		JPlugin::loadLanguage('plg_system_mvcoverride');
+
+		parent::__construct($subject, $config);
+
+		JPluginHelper::importPlugin('redcore');
+
+		$app = JFactory::getApplication();
+
+		$includePath = $this->params->get('includePath', '{JPATH_BASE}/code,{JPATH_THEMES}/{template}/code');
+
+		$includePath = str_replace(
+			array('{JPATH_BASE}', '{JPATH_THEMES}', '{template}'),
+			array(JPATH_BASE, JPATH_THEMES, $app->getTemplate()),
+			$includePath
+		);
+
+		$includePath = explode(',', $includePath);
+
+		// Register additional include paths for code replacements from plugins
+		$app->triggerEvent('onMVCOverrideIncludePaths', array(&$includePath));
+
+		MVCOverrideHelperCodepool::addCodePath($includePath);
+
+		MVCLoader::setupOverrideLoader(
+			$this->params->get('changePrivate', 0),
+			$this->params->get('extendPrefix', ''),
+			$this->params->get('extendSuffix', 'Default')
+		);
+
+		$this->setOverrideFiles();
 	}
 
 	/**
@@ -60,44 +87,14 @@ class PlgSystemMVCOverride extends JPlugin
 	{
 		$option = $this->getOption();
 
-		if ($option === false)
+		if ($option === false || !isset(self::$componentList[$option]))
 		{
 			return;
 		}
 
-		// Constants to replace JPATH_COMPONENT, JPATH_COMPONENT_SITE and JPATH_COMPONENT_ADMINISTRATOR
-		// Constants is deprecated and not using in new changes
-		define('JPATH_SOURCE_COMPONENT', JPATH_BASE . '/components/' . $option);
-		define('JPATH_SOURCE_COMPONENT_SITE', JPATH_SITE . '/components/' . $option);
-		define('JPATH_SOURCE_COMPONENT_ADMINISTRATOR', JPATH_ADMINISTRATOR . '/components/' . $option);
-
-		spl_autoload_register(array('PlgSystemMVCOverride', '_autoload'), false, true);
 		MVCOverrideHelperCodepool::initialize();
 
-		JPluginHelper::importPlugin('redcore');
-
-		$app = JFactory::getApplication();
-
-		// Get files that can be overrided
-		$componentOverrideFiles = $this->loadComponentFiles($option);
-
-		// Template name
-		$template = $app->getTemplate();
-
-		// Code paths
-		$includePath = array();
-
-		// Base extensions path
-		$includePath[] = JPATH_BASE . '/code';
-
-		// Template code path
-		$includePath[] = JPATH_THEMES . '/' . $template . '/code';
-
-		// Register additional include paths for code replacements from plugins
-		$app->triggerEvent('onMVCOverrideIncludePaths', array(&$includePath));
-
-		MVCOverrideHelperCodepool::addCodePath($includePath);
-
+		// Add pathes relate files for current component
 		foreach (MVCOverrideHelperCodepool::addCodePath() as $codePool)
 		{
 			if (version_compare(JVERSION, '3.0', '>='))
@@ -113,170 +110,167 @@ class PlgSystemMVCOverride extends JPlugin
 
 			JModuleHelper::addIncludePath($codePool . '/modules');
 			JTable::addIncludePath($codePool . '/' . $option . '/tables');
-
 			JModelForm::addComponentFormPath($codePool . '/' . $option . '/models/forms');
 			JModelForm::addComponentFieldPath($codePool . '/' . $option . '/models/fields');
 		}
-
-		// Loading override files
-		if (!empty($componentOverrideFiles))
-		{
-			$includePaths = MVCOverrideHelperCodepool::addCodePath(null, true);
-
-			foreach ($componentOverrideFiles as $key => $componentFile)
-			{
-				if ($filePath = JPath::find($includePaths, $componentFile->newPath))
-				{
-					// Include the original code and replace class name add a Default on
-					if ($this->params->get('extendDefault', 1))
-					{
-						$forOverrideFile = file_get_contents($componentFile->root . $componentFile->path);
-						$originalClass = MVCOverrideHelperOverride::getOriginalClass($forOverrideFile);
-						unset($forOverrideFile);
-						self::register(
-							$originalClass,
-							$componentFile->root . $componentFile->path,
-							true,
-							MVCOverrideHelperOverride::PREFIX,
-							MVCOverrideHelperOverride::SUFFIX,
-							$this->params->get('changePrivate', 0)
-						);
-
-						// Load helpers
-						if (!is_int($key))
-						{
-							JLoader::register($key, $filePath);
-						}
-						else
-						{
-							self::register($originalClass, $filePath, true, '', '');
-						}
-					}
-					else
-					{
-						require_once $filePath;
-					}
-				}
-			}
-		}
 	}
 
 	/**
-	 * Directly register a class to the autoload list.
-	 *
-	 * @param   string       $class          The class name to register.
-	 * @param   string       $path           Full path to the file that holds the class to register.
-	 * @param   boolean      $force          True to overwrite the autoload path value for the class if it already exists.
-	 * @param   string|null  $prefix         Prefix class
-	 * @param   string|null  $suffix         Suffix class
-	 * @param   int          $changePrivate  Flag for change private to public or not
+	 * Set Override Files
 	 *
 	 * @return  void
 	 */
-	public static function register($class, $path, $force = true, $prefix = null, $suffix = null, $changePrivate = 0)
+	public function setOverrideFiles()
 	{
-		// Sanitize class name.
-		$class = strtolower($prefix . $class . $suffix);
+		$includePaths = MVCOverrideHelperCodepool::addCodePath(null);
 
-		// Only attempt to register the class if the name and file exist.
-		if (!empty($class) && file_exists($path))
+		foreach ($includePaths as $includePath)
 		{
-			// Register the class with the autoloader if not already registered or the force flag is set.
-			if (empty(self::$loadClass[$class]) || $force)
+			if ($components = JFolder::folders($includePath))
 			{
-				self::$loadClass[$class] = array('path' => $path, 'prefix' => $prefix, 'suffix' => $suffix, 'changePrivate' => $changePrivate);
+				foreach ($components as $component)
+				{
+					self::$componentList[$component] = $component;
+					$this->addOverrideFiles($includePath, $component);
+				}
 			}
 		}
 	}
 
 	/**
-	 * Autoload a class based on name.
+	 * Add new files
 	 *
-	 * @param   string  $class  The class to be loaded.
+	 * @param   string  $includePath  Path for check inner files
+	 * @param   string  $component    Component name folder
 	 *
-	 * @return  boolean  True if the class was loaded, false otherwise.
+	 * @return void
 	 */
-	private static function _autoload($class)
+	private function addOverrideFiles($includePath, $component)
 	{
-		// Sanitize class name.
-		$class = strtolower($class);
+		$types = array('controllers', 'models', 'helpers', 'views');
 
-		if (isset(self::$loadClass[$class]) && file_exists(self::$loadClass[$class]['path']))
+		foreach ($types as $type)
 		{
-			$data = self::$loadClass[$class];
+			$searchFolder = $includePath . '/' . $component . '/' . $type;
 
-			if ($data['prefix'] === '' && $data['suffix'] === '')
+			if (!JFolder::exists($searchFolder))
 			{
-				return include $data['path'];
+				continue;
 			}
-			else
+
+			$componentName = str_replace('com_', '', $component);
+
+			switch ($type)
 			{
-				$bufferContent = MVCOverrideHelperOverride::createDefaultClass($data['path'], $data['prefix'], $data['suffix']);
-
-				// Change private methods to protected methods
-				if (isset($data['changePrivate']) && $data['changePrivate'])
+				case 'helpers':
+				if ($listFiles = JFolder::files($searchFolder, '.php', false, true))
 				{
-					$bufferContent = preg_replace(
-						'/private *function/i',
-						'protected function',
-						$bufferContent
-					);
+					foreach ($listFiles as $file)
+					{
+						$fileName = JFile::stripExt(basename($file));
+						$indexName = $componentName . 'helper' . $fileName;
+						$this->getOverrideFileInfo($includePath, $component, $file, $type, $indexName);
+					}
 				}
+					break;
 
-				// Finally we can load the base class
-				MVCOverrideHelperOverride::load($bufferContent);
+				case 'views':
+				// Reading view folders
+				if ($views = JFolder::folders($searchFolder))
+				{
+					foreach ($views as $view)
+					{
+						// Get view formats files
+						if ($listFiles = JFolder::files($searchFolder . '/' . $view, '.php', false, true))
+						{
+							foreach ($listFiles as $file)
+							{
+								$this->getOverrideFileInfo($includePath, $component, $file, $type);
+							}
+						}
+					}
+				}
+					break;
 
-				return true;
+				default:
+				if ($listFiles = JFolder::files($searchFolder, '.php', false, true))
+				{
+					foreach ($listFiles as $file)
+					{
+						$this->getOverrideFileInfo($includePath, $component, $file, $type);
+					}
+				}
 			}
 		}
-
-		return false;
 	}
 
 	/**
 	 * Get file info
 	 *
-	 * @param   string  $path  Path
-	 * @param   string  $side  Side execute
-	 * @param   string  $type  Type files
+	 * @param   string  $includePath  Path for check inner files
+	 * @param   string  $component    Component name folder
+	 * @param   string  $filePath     Checking file path
+	 * @param   string  $type         Type file
+	 * @param   string  $indexName    Name usage for helper index
 	 *
 	 * @return stdClass
 	 */
-	private function getFileInfo($path, $side = 'component', $type = '')
+	private function getOverrideFileInfo($includePath, $component, $filePath, $type = '', $indexName = '')
 	{
-		$object = new stdClass;
-		$object->path = JPath::clean($path);
-		$object->side = $side;
-		$app = JFactory::getApplication();
+		$filePath = JPath::clean($filePath);
+		$sameFolderPrefix = $component . '/' . $type;
 
-		// Cleaning files
-		switch ($side)
+		if ($type == 'helpers')
 		{
-			case 'component':
-				$object->path = substr($object->path, strlen(JPATH_BASE . '/components/'));
-				$object->root = JPATH_BASE . '/components/';
-				break;
-			case 'site':
-				$object->path = substr($object->path, strlen(JPATH_SITE . '/components/'));
-				$object->root = JPATH_SITE . '/components/';
-				break;
-			case 'admin':
-				$object->path = substr($object->path, strlen(JPATH_ADMINISTRATOR . '/components/'));
-				$object->root = JPATH_ADMINISTRATOR . '/components/';
-				break;
-		}
+			$app = JFactory::getApplication();
+			$baseName = basename($filePath);
+			$prefix = substr($baseName, 0, 5);
 
-		if ((($app->isAdmin() && $side == 'component') || $side == 'admin') && $type == 'helper')
-		{
-			$object->newPath = str_replace(JFile::getName($object->path), 'admin' . JFile::getName($object->path), $object->path);
+			if (($app->isAdmin() && $prefix == 'admin') || (!$app->isAdmin() && $prefix != 'admin') )
+			{
+				$realPath = JPATH_SITE . '/components' . substr($filePath, strlen($includePath));
+			}
+			else
+			{
+				$realPath = JPATH_ADMINISTRATOR . '/components/' . $sameFolderPrefix . '/' . substr($baseName, 5);
+			}
 		}
 		else
 		{
-			$object->newPath = $object->path;
+			$realPath = JPATH_BASE . '/components/' . substr($filePath, strlen($includePath));
 		}
 
-		return $object;
+		$realPath = JPath::clean($realPath);
+
+		if (!JFile::exists($realPath))
+		{
+			return;
+		}
+
+		$forOverrideFile = file_get_contents($realPath);
+		$originalClass = MVCOverrideHelperOverride::getOriginalClass($forOverrideFile);
+		unset($forOverrideFile);
+
+		if ($type == 'helpers')
+		{
+			JLoader::register($indexName, $filePath);
+		}
+		else
+		{
+			// Set path for new file
+			MVCLoader::setOverrideFile($originalClass, $filePath);
+		}
+
+		// Set path for override file
+		MVCLoader::setOverrideFile(
+			$originalClass,
+			$realPath,
+			true,
+			$this->params->get('extendPrefix', ''),
+			$this->params->get('extendSuffix', 'Default')
+		);
 	}
+
 
 	/**
 	 * Get option
@@ -313,100 +307,5 @@ class PlgSystemMVCOverride extends JPlugin
 		}
 
 		return self::$option;
-	}
-
-	/**
-	 * Add new files
-	 *
-	 * @param   string  $folder  Name folder
-	 * @param   string  $type    Type files
-	 * @param   string  $side    Side execute
-	 *
-	 * @return void
-	 */
-	private function addNewFiles($folder, $type, $side = 'component')
-	{
-		if (!JFolder::exists($folder))
-		{
-			return;
-		}
-
-		$app = JFactory::getApplication();
-		$componentName = str_replace('com_', '', $this->getOption());
-
-		switch ($type)
-		{
-			case 'helper':
-				if ($listFiles = JFolder::files($folder, '.php', false, true))
-				{
-					foreach ($listFiles as $file)
-					{
-						if (($app->isAdmin() && $side == 'component') || $side == 'admin')
-						{
-							$indexName = $componentName . 'helperadmin' . JFile::stripExt(JFile::getName($file));
-						}
-						else
-						{
-							$indexName = $componentName . 'helper' . JFile::stripExt(JFile::getName($file));
-						}
-
-						$this->files[$indexName] = $this->getFileInfo($file, $side, $type);
-					}
-				}
-				break;
-			case 'view':
-				// Reading view folders
-				if ($views = JFolder::folders($folder))
-				{
-					foreach ($views as $view)
-					{
-						// Get view formats files
-						if ($listFiles = JFolder::files($folder . '/' . $view, '.php', false, true))
-						{
-							foreach ($listFiles as $file)
-							{
-								$this->files[] = $this->getFileInfo($file, $side);
-							}
-						}
-					}
-				}
-				break;
-			default:
-				if ($listFiles = JFolder::files($folder, '.php', false, true))
-				{
-					foreach ($listFiles as $file)
-					{
-						$this->files[] = $this->getFileInfo($file, $side);
-					}
-				}
-		}
-	}
-
-	/**
-	 * loadComponentFiles function.
-	 *
-	 * @param   mixed  $option  Component name
-	 *
-	 * @access private
-	 *
-	 * @return array
-	 */
-	private function loadComponentFiles($option)
-	{
-		$JPATH_COMPONENT = JPATH_BASE . '/components/' . $option;
-
-		// Check if default controller exists
-		if (JFile::exists($JPATH_COMPONENT . '/controller.php'))
-		{
-			$this->files[] = $this->getFileInfo($JPATH_COMPONENT . '/controller.php');
-		}
-
-		$this->addNewFiles($JPATH_COMPONENT . '/controllers', 'controller');
-		$this->addNewFiles($JPATH_COMPONENT . '/models', 'model');
-		$this->addNewFiles(JPATH_SITE . '/components/' . $option . '/helpers', 'helper', 'site');
-		$this->addNewFiles(JPATH_ADMINISTRATOR . '/components/' . $option . '/helpers', 'helper', 'admin');
-		$this->addNewFiles($JPATH_COMPONENT . '/views', 'view');
-
-		return $this->files;
 	}
 }
