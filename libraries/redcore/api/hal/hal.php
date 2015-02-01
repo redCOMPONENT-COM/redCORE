@@ -1804,11 +1804,6 @@ class RApiHalHal extends RApi
 				{
 					if (property_exists($value, $replacementKey))
 					{
-						if (is_array($value->{$replacementKey}))
-						{
-							$value->{$replacementKey} = json_encode($value->{$replacementKey}, JSON_UNESCAPED_SLASHES);
-						}
-
 						// We are transforming only value
 						if ($format == '{' . $replacementKey . '}')
 						{
@@ -1825,11 +1820,6 @@ class RApiHalHal extends RApi
 				{
 					if (isset($value[$replacementKey]))
 					{
-						if (is_array($value[$replacementKey]))
-						{
-							$value[$replacementKey] = json_encode($value[$replacementKey], JSON_UNESCAPED_SLASHES);
-						}
-
 						// We are transforming only value
 						if ($format == '{' . $replacementKey . '}')
 						{
@@ -1872,7 +1862,7 @@ class RApiHalHal extends RApi
 	 */
 	public function assignGlobalValueToResource($format)
 	{
-		if (empty($format))
+		if (empty($format) || !is_string($format))
 		{
 			return $format;
 		}
@@ -1887,11 +1877,6 @@ class RApiHalHal extends RApi
 				// Replace from global variables if present
 				if (isset($this->data[$replacementKey]))
 				{
-					if (is_array($this->data[$replacementKey]))
-					{
-						$this->data[$replacementKey] = json_encode($this->data[$replacementKey], JSON_UNESCAPED_SLASHES);
-					}
-
 					// We are transforming only value
 					if ($format == '{' . $replacementKey . '}')
 					{
