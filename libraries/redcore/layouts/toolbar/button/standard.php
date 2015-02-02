@@ -41,7 +41,14 @@ else
 }
 
 // Get the button class.
-$btnClass = 'btn btn-default';
+if ($isOption)
+{
+	$btnClass = '';
+}
+else
+{
+	$btnClass = 'btn btn-default';
+}
 
 if (!empty($class))
 {
