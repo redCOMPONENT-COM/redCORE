@@ -56,7 +56,7 @@ $groups = $toolbar->getGroups();
 			<div class="<?php echo $groupClass;?>">
 				<a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
 					<?php if (!empty($iconClass)):?>
-						<i class="icon <?php echo $iconClass;?>"></i>
+						<i class="<?php echo $iconClass;?>"></i>
 					<?php endif;?>
 					<?php echo $group->getTitle();?>
 				</a>
