@@ -101,7 +101,7 @@
                     <resource displayName="checked_out" fieldFormat="{checked_out}" transform="int" />
                     <resource displayName="checked_out_time" fieldFormat="{checked_out_time}" transform="datetime" />
                     <resource displayName="ordering" fieldFormat="{ordering}" transform="int" />
-                    <resource displayName="params" fieldFormat="{params}" />
+                    <resource displayName="params" fieldFormat="{params}" transform="json" />
                     <resource displayName="user_id" fieldFormat="{user_id}" transform="int" />
                     <resource displayName="catid" fieldFormat="{catid}" transform="int" />
                     <resource displayName="access" fieldFormat="{access}" transform="int" />

@@ -27,7 +27,14 @@ class RApiHalTransformJson extends RApiHalTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		return json_encode($definition);
+		// Check for defined constants
+		if (!defined('JSON_UNESCAPED_SLASHES'))
+		{
+			define('JSON_UNESCAPED_SLASHES', 64);
+		}
+
+		return ((is_string($definition) || is_object($definition)) && self::isJson($definition)) ?
+			$definition : json_encode($definition, JSON_UNESCAPED_SLASHES);
 	}
 
 	/**
@@ -40,5 +47,19 @@ class RApiHalTransformJson extends RApiHalTransformBase
 	public static function toInternal($definition)
 	{
 		return json_decode($definition);
+	}
+
+	/**
+	 * Checks string to see if it is already a json
+	 *
+	 * @param   mixed  $string  String value
+	 *
+	 * @return boolean True if the string is already json
+	 */
+	public static function isJson($string)
+	{
+		json_decode($string);
+
+		return (json_last_error() == JSON_ERROR_NONE);
 	}
 }
