@@ -18,6 +18,7 @@ if (!isset($data['button']))
 
 /** @var RToolbarButtonStandard $button */
 $button = $data['button'];
+$isOption = $data['isOption'];
 
 $text = $button->getText();
 $iconClass = $button->getIconClass();
@@ -48,9 +49,20 @@ if (!empty($class))
 }
 ?>
 
-<button href="#" onclick="<?php echo $cmd ?>" class="<?php echo $btnClass ?>">
-	<?php if (!empty($iconClass)) : ?>
-		<i class="<?php echo $iconClass ?>"></i>
-	<?php endif; ?>
-	<?php echo $text ?>
-</button>
+<?php if ($isOption) :?>
+	<li>
+		<a href="$" class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+			<?php if (!empty($iconClass)) : ?>
+				<i class="<?php echo $iconClass ?>"></i>
+			<?php endif; ?>
+			<?php echo $text ?>
+		</a>
+	</li>
+<?php else:?>
+	<button onclick="<?php echo $cmd ?>" class="<?php echo $btnClass ?>">
+		<?php if (!empty($iconClass)) : ?>
+			<i class="<?php echo $iconClass ?>"></i>
+		<?php endif; ?>
+		<?php echo $text ?>
+	</button>
+<?php endif;?>

@@ -90,7 +90,9 @@ abstract class RToolbarButton
 	/**
 	 * Render the button.
 	 *
+	 * @param   boolean  $isOption  Is menu option?
+	 *
 	 * @return  string  The rendered button.
 	 */
-	abstract public function render();
+	abstract public function render($isOption = false);
 }
