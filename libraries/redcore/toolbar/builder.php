@@ -55,16 +55,13 @@ final class RToolbarBuilder
 	 */
 	public static function createNewButton($task, $class = '', $isOption = false)
 	{
-		if (!$isOption)
+		if (empty($class) && !$isOption)
 		{
-			if (empty($class))
-			{
-				$class = 'btn-success';
-			}
-			else
-			{
-				$class .= ' btn-success';
-			}
+			$class = 'btn-success';
+		}
+		else
+		{
+			$class .= ' btn-success';
 		}
 
 		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-file-text', '', false);
@@ -146,17 +143,13 @@ final class RToolbarBuilder
 	 */
 	public static function createDeleteButton($task, $class = '', $isOption = false)
 	{
-		if (!$isOption)
+		if (empty($class) && !$isOption)
 		{
-			if (empty($class))
-			{
-				$class = 'btn-danger';
-			}
-
-			else
-			{
-				$class .= ' btn-danger';
-			}
+			$class = 'btn-danger';
+		}
+		else
+		{
+			$class .= ' btn-danger';
 		}
 
 		return new RToolbarButtonStandard('JTOOLBAR_DELETE', $task, $class, 'icon-remove');
@@ -186,17 +179,13 @@ final class RToolbarBuilder
 	 */
 	public static function createCancelButton($task, $class = '', $isOption = false)
 	{
-		if (!$isOption)
+		if (empty($class) && !$isOption)
 		{
-			if (empty($class))
-			{
-				$class = 'btn-danger';
-			}
-
-			else
-			{
-				$class .= ' btn-danger';
-			}
+			$class = 'btn-danger';
+		}
+		else
+		{
+			$class .= ' btn-danger';
 		}
 
 		return new RToolbarButtonStandard('JTOOLBAR_CANCEL', $task, $class, 'icon-remove', false);
@@ -213,17 +202,13 @@ final class RToolbarBuilder
 	 */
 	public static function createCloseButton($task, $class = '', $isOption = false)
 	{
-		if (!$isOption)
+		if (empty($class) && !$isOption)
 		{
-			if (empty($class))
-			{
-				$class = 'btn-danger';
-			}
-
-			else
-			{
-				$class .= ' btn-danger';
-			}
+			$class = 'btn-danger';
+		}
+		else
+		{
+			$class .= ' btn-danger';
 		}
 
 		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-remove', false);
@@ -240,17 +225,13 @@ final class RToolbarBuilder
 	 */
 	public static function createSaveButton($task, $class = '', $isOption = false)
 	{
-		if (!$isOption)
+		if (empty($class) && !$isOption)
 		{
-			if (empty($class))
-			{
-				$class = 'btn-success';
-			}
-
-			else
-			{
-				$class .= ' btn-success';
-			}
+			$class = 'btn-success';
+		}
+		else
+		{
+			$class .= ' btn-success';
 		}
 
 		return new RToolbarButtonStandard('JTOOLBAR_APPLY', $task, $class, 'icon-save', false);
