@@ -47,22 +47,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a new button.
 	 *
-	 * @param   string  $task   The task name.
-	 * @param   string  $class  A css class to add to the button.
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createNewButton($task, $class = '')
+	public static function createNewButton($task, $class = '', $classAddOn = 'btn-success')
 	{
-		if (empty($class))
-		{
-			$class = 'btn-success';
-		}
-
-		else
-		{
-			$class .= ' btn-success';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-file-text', '', false);
 	}
@@ -135,22 +128,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a delete button.
 	 *
-	 * @param   string  $task   The task name.
-	 * @param   string  $class  A css class to add to the button.
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createDeleteButton($task, $class = '')
+	public static function createDeleteButton($task, $class = '', $classAddOn = 'btn-danger')
 	{
-		if (empty($class))
-		{
-			$class = 'btn-danger';
-		}
-
-		else
-		{
-			$class .= ' btn-danger';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_DELETE', $task, $class, 'icon-remove');
 	}
@@ -171,22 +157,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a cancel button.
 	 *
-	 * @param   string  $task   The task name.
-	 * @param   string  $class  A css class to add to the button.
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createCancelButton($task, $class = '')
+	public static function createCancelButton($task, $class = '', $classAddOn = 'btn-danger')
 	{
-		if (empty($class))
-		{
-			$class = 'btn-danger';
-		}
-
-		else
-		{
-			$class .= ' btn-danger';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_CANCEL', $task, $class, 'icon-remove', false);
 	}
@@ -194,22 +173,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a close button.
 	 *
-	 * @param   string  $task   The task name.
-	 * @param   string  $class  A css class to add to the button.
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createCloseButton($task, $class = '')
+	public static function createCloseButton($task, $class = '', $classAddOn = 'btn-danger')
 	{
-		if (empty($class))
-		{
-			$class = 'btn-danger';
-		}
-
-		else
-		{
-			$class .= ' btn-danger';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-remove', false);
 	}
@@ -217,22 +189,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a save button.
 	 *
-	 * @param   string  $task   The task name.
-	 * @param   string  $class  A css class to add to the button.
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createSaveButton($task, $class = '')
+	public static function createSaveButton($task, $class = '', $classAddOn = 'btn-success')
 	{
-		if (empty($class))
-		{
-			$class = 'btn-success';
-		}
-
-		else
-		{
-			$class .= ' btn-success';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_APPLY', $task, $class, 'icon-save', false);
 	}

@@ -28,7 +28,7 @@ $isList = $button->isList();
 $dataTarget = $button->getDataTarget();
 
 // Get the button class.
-$btnClass = 'btn btn-default';
+$btnClass = $isOption ? '' : 'btn btn-default';
 
 if (!empty($class))
 {
