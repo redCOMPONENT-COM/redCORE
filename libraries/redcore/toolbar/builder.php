@@ -47,22 +47,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a new button.
 	 *
-	 * @param   string  $task      The task name.
-	 * @param   string  $class     A css class to add to the button.
-	 * @param   bool    $isOption  Is button a menu option?
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createNewButton($task, $class = '', $isOption = false)
+	public static function createNewButton($task, $class = '', $classAddOn = 'btn-success')
 	{
-		if (empty($class) && !$isOption)
-		{
-			$class = 'btn-success';
-		}
-		else
-		{
-			$class .= ' btn-success';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_NEW', $task, $class, 'icon-file-text', '', false);
 	}
