@@ -16,15 +16,33 @@ defined('_JEXEC') or die;
  */
 class MVCLoader extends JLoader
 {
+	/**
+	 * Flag for change values and functions to protected instead private in extends files
+	 *
+	 * @var int
+	 */
 	protected static $changePrivate = 0;
 
+	/**
+	 * Prefix for extend files
+	 *
+	 * @var string
+	 */
 	protected static $prefix = '';
 
+	/**
+	 * Suffix for extend files
+	 *
+	 * @var string
+	 */
 	protected static $suffix = 'Default';
 
+	/**
+	 * Container for extend files information.
+	 *
+	 * @var    array
+	 */
 	protected static $overrideFiles = array();
-
-	protected static $extendsClasses = array();
 
 	/**
 	 * Set in static array name class and relate data
@@ -58,7 +76,7 @@ class MVCLoader extends JLoader
 	/**
 	 * Method to setup the autoloaders for the Joomla Platform.
 	 *
-	 * @param   int     $changePrivate  Flag change values and functions in extends call to private instead protected
+	 * @param   int     $changePrivate  Flag for change values and functions to protected instead private in extends files
 	 * @param   string  $prefix         Prefix for extend files
 	 * @param   string  $suffix         Suffix for extend files
 	 *
@@ -71,7 +89,7 @@ class MVCLoader extends JLoader
 		self::$suffix = $suffix;
 
 		// Register the prefix autoloader.
-		spl_autoload_register(array('MVCLoader', '_override_load'), false, true);
+		spl_autoload_register(array('MVCLoader', '_load_override'), false, true);
 	}
 
 	/**
@@ -79,9 +97,9 @@ class MVCLoader extends JLoader
 	 *
 	 * @param   string  $class  Name class search
 	 *
-	 * @return bool|mixed
+	 * @return bool
 	 */
-	public static function _override_load($class)
+	public static function _load_override($class)
 	{
 		// Sanitize class name.
 		$lowerClass = strtolower($class);
@@ -90,15 +108,6 @@ class MVCLoader extends JLoader
 		if (class_exists($lowerClass, false))
 		{
 			return true;
-		}
-
-		// If the class is registered include the file.
-		if (isset(self::$extendsClasses[$lowerClass]))
-		{
-			if (self::loadOverrideFile(self::$extendsClasses[$lowerClass], self::$prefix, self::$suffix))
-			{
-				return true;
-			}
 		}
 
 		// If the class is registered include the file.
@@ -192,9 +201,7 @@ class MVCLoader extends JLoader
 
 		if ($filePath = JPath::find(MVCOverrideHelperCodepool::addCodePath(null, true), $newPath))
 		{
-			// Set in autoload path for extends file
-			$fullNameClass = strtolower(self::$prefix . $class . self::$suffix);
-			self::$extendsClasses[$fullNameClass] = $oldPath;
+			self::setOverrideFile($class, $oldPath, true, self::$prefix, self::$suffix);
 
 			return include $filePath;
 		}
