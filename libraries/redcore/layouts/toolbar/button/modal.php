@@ -50,7 +50,7 @@ if ($isList)
 
 <?php if ($isOption) :?>
 	<li>
-		<a href="$" class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+		<a href="#" class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
 			<?php if (!empty($iconClass)) : ?>
 				<i class="<?php echo $iconClass ?>"></i>
 			<?php endif; ?>
