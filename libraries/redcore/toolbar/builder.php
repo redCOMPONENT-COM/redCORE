@@ -135,22 +135,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a delete button.
 	 *
-	 * @param   string  $task      The task name.
-	 * @param   string  $class     A css class to add to the button.
-	 * @param   bool    $isOption  Is button a menu option?
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createDeleteButton($task, $class = '', $isOption = false)
+	public static function createDeleteButton($task, $class = '', $classAddOn = 'btn-danger')
 	{
-		if (empty($class) && !$isOption)
-		{
-			$class = 'btn-danger';
-		}
-		else
-		{
-			$class .= ' btn-danger';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_DELETE', $task, $class, 'icon-remove');
 	}
@@ -171,22 +164,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a cancel button.
 	 *
-	 * @param   string  $task      The task name.
-	 * @param   string  $class     A css class to add to the button.
-	 * @param   bool    $isOption  Is button a menu option?
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createCancelButton($task, $class = '', $isOption = false)
+	public static function createCancelButton($task, $class = '', $classAddOn = 'btn-danger')
 	{
-		if (empty($class) && !$isOption)
-		{
-			$class = 'btn-danger';
-		}
-		else
-		{
-			$class .= ' btn-danger';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_CANCEL', $task, $class, 'icon-remove', false);
 	}
@@ -194,22 +180,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a close button.
 	 *
-	 * @param   string  $task      The task name.
-	 * @param   string  $class     A css class to add to the button.
-	 * @param   bool    $isOption  Is button a menu option?
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createCloseButton($task, $class = '', $isOption = false)
+	public static function createCloseButton($task, $class = '', $classAddOn = 'btn-danger')
 	{
-		if (empty($class) && !$isOption)
-		{
-			$class = 'btn-danger';
-		}
-		else
-		{
-			$class .= ' btn-danger';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_CLOSE', $task, $class, 'icon-remove', false);
 	}
@@ -217,22 +196,15 @@ final class RToolbarBuilder
 	/**
 	 * Create a save button.
 	 *
-	 * @param   string  $task   The task name.
-	 * @param   string  $class  A css class to add to the button.
-	 * @param   bool    $isOption  Is button a menu option?
+	 * @param   string  $task        The task name.
+	 * @param   string  $class       A css class to add to the button.
+	 * @param   string  $classAddOn  A css class add on.
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createSaveButton($task, $class = '', $isOption = false)
+	public static function createSaveButton($task, $class = '', $classAddOn = 'btn-success')
 	{
-		if (empty($class) && !$isOption)
-		{
-			$class = 'btn-success';
-		}
-		else
-		{
-			$class .= ' btn-success';
-		}
+		$class = !empty($class) ? $class . ' ' . $classAddOn : $classAddOn;
 
 		return new RToolbarButtonStandard('JTOOLBAR_APPLY', $task, $class, 'icon-save', false);
 	}
