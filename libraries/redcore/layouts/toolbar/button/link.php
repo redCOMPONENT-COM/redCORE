@@ -18,6 +18,7 @@ if (!isset($data['button']))
 
 /** @var RToolbarButtonLink $button */
 $button = $data['button'];
+$isOption = $data['isOption'];
 
 $class = $button->getClass();
 $iconClass = $button->getIconClass();
@@ -34,9 +35,20 @@ if (!empty($class))
 
 ?>
 
-<button class="<?php echo $btnClass ?>" onclick="location.href='<?php echo $url ?>';">
-	<?php if (!empty($iconClass)) : ?>
-		<i class="<?php echo $iconClass ?>"></i>
-	<?php endif; ?>
-	<?php echo $text ?>
-</button>
+<?php if ($isOption) :?>
+	<li>
+		<a class="<?php echo $btnClass ?>" href="<?php echo $url ?>">
+			<?php if (!empty($iconClass)) : ?>
+				<i class="<?php echo $iconClass ?>"></i>
+			<?php endif; ?>
+			<?php echo $text ?>
+		</a>
+	</li>
+<?php else:?>
+	<button class="<?php echo $btnClass ?>" onclick="location.href='<?php echo $url ?>';">
+		<?php if (!empty($iconClass)) : ?>
+			<i class="<?php echo $iconClass ?>"></i>
+		<?php endif; ?>
+		<?php echo $text ?>
+	</button>
+<?php endif;?>

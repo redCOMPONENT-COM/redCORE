@@ -53,10 +53,18 @@ class RToolbarButtonLink extends RToolbarButton
 	/**
 	 * Render the button.
 	 *
+	 * @param   boolean  $isOption  Is menu option?
+	 *
 	 * @return  string  The rendered button.
 	 */
-	public function render()
+	public function render($isOption = false)
 	{
-		return RLayoutHelper::render('toolbar.button.link', array('button' => $this));
+		return RLayoutHelper::render(
+			'toolbar.button.link',
+			array(
+				'button' => $this,
+				'isOption' => $isOption
+			)
+		);
 	}
 }

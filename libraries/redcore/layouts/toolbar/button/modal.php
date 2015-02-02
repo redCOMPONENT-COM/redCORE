@@ -18,6 +18,7 @@ if (!isset($data['button']))
 
 /** @var RToolbarButtonModal $button */
 $button = $data['button'];
+$isOption = $data['isOption'];
 
 $class = $button->getClass();
 $iconClass = $button->getIconClass();
@@ -46,9 +47,21 @@ if ($isList)
 	else {jQuery('" . $dataTarget  . "').modal('toggle');}";
 }
 ?>
-<button class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
-	<?php if (!empty($iconClass)) : ?>
-		<i class="<?php echo $iconClass ?>"></i>
-	<?php endif; ?>
-	<?php echo $text ?>
-</button>
+
+<?php if ($isOption) :?>
+	<li>
+		<a href="#" class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+			<?php if (!empty($iconClass)) : ?>
+				<i class="<?php echo $iconClass ?>"></i>
+			<?php endif; ?>
+			<?php echo $text ?>
+		</a>
+	</li>
+<?php else:?>
+	<button class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+		<?php if (!empty($iconClass)) : ?>
+			<i class="<?php echo $iconClass ?>"></i>
+		<?php endif; ?>
+		<?php echo $text ?>
+	</button>
+<?php endif;?>

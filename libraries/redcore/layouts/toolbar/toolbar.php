@@ -40,6 +40,7 @@ $groups = $toolbar->getGroups();
 		foreach ($groups as $group) :
 
 			$groupClass = $group->getClass();
+			$iconClass  = $group->getIconClass();
 
 			if (empty($groupClass))
 			{
@@ -51,14 +52,33 @@ $groups = $toolbar->getGroups();
 				$groupClass = 'btn-group ' . $groupClass;
 			}
 		?>
-		<div class="<?php echo $groupClass ?>">
-			<?php
-			foreach ($group->getButtons() as $button)
-			{
-				echo $button->render();
-			}
-			?>
-		</div>
+		<?php if ($group->isMenu()):?>
+			<div class="<?php echo $groupClass;?>">
+				<a class="btn dropdown-toggle btn-primary" data-toggle="dropdown" href="#">
+					<?php if (!empty($iconClass)):?>
+						<i class="<?php echo $iconClass;?>"></i>
+					<?php endif;?>
+					<?php echo $group->getTitle();?>
+				</a>
+				<ul class="dropdown-menu">
+					<?php
+					foreach ($group->getButtons() as $button)
+					{
+						echo $button->render(true);
+					}
+					?>
+				</ul>
+			</div>
+		<?php else: ?>
+			<div class="<?php echo $groupClass ?>">
+				<?php
+				foreach ($group->getButtons() as $button)
+				{
+					echo $button->render();
+				}
+				?>
+			</div>
+		<?php endif;?>
 		<?php endforeach; ?>
 	</div>
 <?php endif;
