@@ -49,7 +49,6 @@ class RApiHalTransformJson extends RApiHalTransformBase
 		return json_decode($definition);
 	}
 
-
 	/**
 	 * Checks string to see if it is already a json
 	 *
