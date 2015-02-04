@@ -347,4 +347,20 @@ final class RToolbarBuilder
 
 		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table');
 	}
+
+	/**
+	 * Writes a version history
+	 *
+	 * @param   string   $typeAlias  The component and type, for example 'com_content.article'
+	 * @param   integer  $itemId     The id of the item, for example the article id.
+	 * @param   integer  $height     The height of the popup.
+	 * @param   integer  $width      The width of the popup.
+	 * @param   string   $alt        The name of the button.
+	 *
+	 * @return  RToolbarButtonVersion  The button
+	 */
+	public static function createVersionButton($typeAlias, $itemId, $height = 800, $width = 500, $alt = 'JTOOLBAR_VERSIONS')
+	{
+		return new RToolbarButtonVersion($typeAlias, $itemId, $height, $width, $alt);
+	}
 }
