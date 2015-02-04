@@ -9,12 +9,12 @@
 
 defined('JPATH_REDCORE') or die;
 
-$height = $displayData['height'];
-$width = $displayData['width'];
-$itemId = (int) $displayData['itemId'];
-$typeId = (int) $displayData['typeId'];
+$height    = $displayData['height'];
+$width     = $displayData['width'];
+$itemId    = (int) $displayData['itemId'];
+$typeId    = (int) $displayData['typeId'];
 $typeAlias = $displayData['typeAlias'];
-$title = $displayData['title'];
+$title     = $displayData['title'];
 
 $link = 'index.php?option=com_contenthistory&amp;view=history&amp;layout=modal&amp;tmpl=component&amp;item_id=' . $itemId .
 	'&amp;type_id=' . $typeId . '&amp;type_alias=' . $typeAlias . '&amp;' . JSession::getFormToken() . '=1';
