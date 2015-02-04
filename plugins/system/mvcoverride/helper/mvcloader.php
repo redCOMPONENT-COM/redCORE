@@ -89,7 +89,7 @@ class MVCLoader extends JLoader
 		self::$suffix = $suffix;
 
 		// Register the prefix autoloader.
-		spl_autoload_register(array('MVCLoader', '_load_override'), false, true);
+		spl_autoload_register(array('MVCLoader', 'registerOverrideAutoLoader'), false, true);
 	}
 
 	/**
@@ -99,7 +99,7 @@ class MVCLoader extends JLoader
 	 *
 	 * @return bool
 	 */
-	public static function _load_override($class)
+	public static function registerOverrideAutoLoader($class)
 	{
 		// Sanitize class name.
 		$lowerClass = strtolower($class);
@@ -125,7 +125,7 @@ class MVCLoader extends JLoader
 
 			if (strpos($class, $prefix) === 0 && ($chr === strtoupper($chr)))
 			{
-				if (self::_load(substr($class, strlen($prefix)), $lookup, $prefix))
+				if (self::loadClass(substr($class, strlen($prefix)), $lookup, $prefix))
 				{
 					return true;
 				}
@@ -161,7 +161,7 @@ class MVCLoader extends JLoader
 	 *
 	 * @return  boolean  True if the class was loaded, false otherwise.
 	 */
-	private static function _load($class, $lookup, $prefix)
+	private static function loadClass($class, $lookup, $prefix)
 	{
 		// Split the class name into parts separated by camelCase.
 		$parts = preg_split('/(?<=[a-z0-9])(?=[A-Z])/x', $class);
@@ -188,7 +188,7 @@ class MVCLoader extends JLoader
 	}
 
 	/**
-	 * Check exists file in override folder with the same path and class name
+	 * Check if a file with the same path and class name exists in the override folder
 	 *
 	 * @param   string  $oldPath  Real file path
 	 * @param   string  $class    Name class

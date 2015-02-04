@@ -94,7 +94,7 @@ class PlgSystemMVCOverride extends JPlugin
 
 		MVCOverrideHelperCodepool::initialize();
 
-		// Add pathes relate files for current component
+		// Add override paths for the current component files
 		foreach (MVCOverrideHelperCodepool::addCodePath() as $codePool)
 		{
 			if (version_compare(JVERSION, '3.0', '>='))
