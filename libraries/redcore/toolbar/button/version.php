@@ -54,6 +54,20 @@ class RToolbarButtonVersion extends RToolbarButton
 	protected $text;
 
 	/**
+	 * The class of button.
+	 *
+	 * @var  string
+	 */
+	protected $class;
+
+	/**
+	 * The class of icon.
+	 *
+	 * @var  string
+	 */
+	protected $iconClass;
+
+	/**
 	 * Construction
 	 *
 	 * @param   string  $typeAlias  Type alias
@@ -61,16 +75,30 @@ class RToolbarButtonVersion extends RToolbarButton
 	 * @param   int     $height     Height of modal
 	 * @param   int     $width      Width of modal
 	 * @param   string  $text       Text of button
+	 * @param   string  $class      Class of button
+	 * @param   string  $iconClass  Class of icon
 	 */
-	public function __construct($typeAlias, $itemId, $height = 800, $width = 500, $text = 'JTOOLBAR_VERSIONS')
+	public function __construct($typeAlias, $itemId, $height = 800, $width = 500, $text = '', $class = '', $iconClass = '')
 	{
 		parent::__construct($text, '', '');
 
 		$this->typeAlias = $typeAlias;
-		$this->itemId    = $itemId;
-		$this->height    = $height;
-		$this->width     = $width;
-		$this->text      = $text;
+		$this->itemId    = (int) $itemId;
+		$this->height    = (int) $height;
+		$this->width     = (int) $width;
+		$this->text      = JText::_('JTOOLBAR_VERSION');
+		$this->class     = $class;
+		$this->iconClass = 'icon-archive';
+
+		if (!empty($iconClass))
+		{
+			$this->iconClass = $iconClass;
+		}
+
+		if (!empty($text))
+		{
+			$this->text = JText::_($text);
+		}
 	}
 
 	/**
@@ -82,19 +110,19 @@ class RToolbarButtonVersion extends RToolbarButton
 	 */
 	public function render($isOption = false)
 	{
-		JHtml::_('behavior.modal', 'a.modal_jform_contenthistory');
-
 		$contentTypeTable = JTable::getInstance('Contenttype');
 		$typeId = $contentTypeTable->getTypeId($this->typeAlias);
 
 		// Options array for JLayout
 		$options = array(
-			'title'     => JText::_($this->title),
+			'title'     => $this->title,
 			'height'    => $this->height,
 			'width'     => $this->width,
 			'itemId'    => $this->itemId,
 			'typeId'    => $typeId,
 			'typeAlias' => $this->typeAlias,
+			'class'     => $this->class,
+			'iconClass' => $this->iconClass
 		);
 
 		return RLayoutHelper::render('toolbar.button.versions', $options);
