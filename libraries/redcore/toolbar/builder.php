@@ -347,22 +347,4 @@ final class RToolbarBuilder
 
 		return self::createLinkButton($link, 'LIB_REDCORE_CSV', 'icon-table');
 	}
-
-	/**
-	 * Create a version button to open modal pop-up of Content History
-	 *
-	 * @param   string   $typeAlias  The component and type, for example 'com_content.article'
-	 * @param   integer  $itemId     The id of the item, for example the article id.
-	 * @param   integer  $height     The height of the popup.
-	 * @param   integer  $width      The width of the popup.
-	 * @param   string   $text       The name of the button.
-	 * @param   string   $class      Class of button.
-	 * @param   string   $iconClass  Class of icon
-	 *
-	 * @return  RToolbarButtonVersion  The button
-	 */
-	public static function createVersionButton($typeAlias, $itemId, $height = 800, $width = 500, $text = '', $class = '', $iconClass = '')
-	{
-		return new RToolbarButtonVersion($typeAlias, $itemId, $height, $width, $text, $class, $iconClass);
-	}
 }
