@@ -60,6 +60,11 @@ class RToolbarButtonVersion extends RToolbarButton
 	 */
 	public function __construct($typeAlias, $itemId, $height = 800, $width = 500, $text = '', $class = '', $iconClass = '', $list = true)
 	{
+		if (empty($text))
+		{
+			$text = JText::_('JTOOLBAR_VERSIONS');
+		}
+
 		parent::__construct($text, $iconClass, $class);
 
 		$this->typeAlias = $typeAlias;
