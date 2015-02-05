@@ -7,8 +7,9 @@
  */
 
 namespace AcceptanceTester;
+
 /**
- * Class InstallExtensionJ2Steps
+ * Class InstallExtensionJoomla2Steps
  *
  * @package  AcceptanceTester
  *
@@ -16,10 +17,10 @@ namespace AcceptanceTester;
  *
  * @link     http://codeception.com/docs/07-AdvancedUsage#StepObjects
  */
-class InstallExtensionJ2Steps extends \AcceptanceTester
+class InstallExtensionJoomla2Steps extends \AcceptanceTester
 {
 	/**
-	 * Function to Install redCORE, inside Joomla 2.5
+	 * Function to Install RedShop1, inside Joomla 2.5
 	 *
 	 * @return void
 	 */
@@ -27,13 +28,11 @@ class InstallExtensionJ2Steps extends \AcceptanceTester
 	{
 		$I = $this;
 		$this->acceptanceTester = $I;
-		$I->amOnPage(\ExtensionManagerPage::$URL);
+		$I->amOnPage(\ExtensionManagerJoomla2Page::$URL);
 		$config = $I->getConfig();
-		$I->wantTo('Install redCORE framework before installing the extension');
-		$I->fillField(\ExtensionManagerPage::$extensionDirectoryPath, $config['folder']);
-		$I->click(\ExtensionManagerPage::$installButton);
-		$I->waitForText('Installing component was successful.');
-		$I->waitForText(\ExtensionManagerPage::$installSuccessMessage, 60);
+		$I->fillField(\ExtensionManagerJoomla2Page::$extensionDirectoryPath, $config['folder']);
+		$I->click(\ExtensionManagerJoomla2Page::$installButton);
+		$I->waitForText(\ExtensionManagerJoomla2Page::$installSuccessMessage, 60);
 	}
 
 	/**
@@ -44,7 +43,12 @@ class InstallExtensionJ2Steps extends \AcceptanceTester
 	public function installSampleData()
 	{
 		$I = $this;
-		$I->click(\ExtensionManagerPage::$installDemoContent);
-		$I->waitForText(\ExtensionManagerPage::$demoDataInstallSuccessMessage, 30);
+		$config = $I->getConfig();
+
+		if ($config['install_extension_demo_data'] == 'yes')
+		{
+			$I->click(\ExtensionManagerJoomla2Page::$installDemoContent);
+			$I->waitForText(\ExtensionManagerJoomla2Page::$demoDataInstallSuccessMessage, 30);
+		}
 	}
 }

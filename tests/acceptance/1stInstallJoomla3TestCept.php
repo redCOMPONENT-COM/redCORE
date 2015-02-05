@@ -17,16 +17,19 @@ $I->wantTo('Execute Joomla Installation');
 $I->setupConfiguration();
 
 $I = new AcceptanceTester\InstallJoomla3DatabaseSteps($scenario);
-$I->wantTo('add database connection details');
 $I->setupDatabaseConnection();
 $I = new AcceptanceTester\InstallJoomla3FinalisationSteps($scenario);
-$I->wantTo('Install joomla without sample data');
 $I->setupSampleData();
-$I = new AcceptanceTester\LoginSteps($scenario);
+
+$I = new AcceptanceTester($scenario);
+$config = $I->getConfig();
+$className = 'AcceptanceTester\Login' . $config['env'] . 'Steps';
+$I = new $className($scenario);
 
 $I->wantTo('Execute Log in at Joomla Administrator');
 $I->doAdminLogin();
-$I = new AcceptanceTester\InstallExtensionJ3Steps($scenario);
 
-$I->wantTo('Install redCORE extension');
-$I->installExtension('redCORE');
+$I = new AcceptanceTester\GlobalConfigurationManagerJoomla3Steps($scenario);
+$I->wantTo('Set Error Reporting Level');
+$I->setErrorReportingLevel();
+

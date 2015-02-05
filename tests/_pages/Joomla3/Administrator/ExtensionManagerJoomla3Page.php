@@ -1,19 +1,19 @@
 <?php
 /**
- * @package     RedShop
+ * @package     RedCORE
  * @subpackage  Page Class
  * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 /**
- * Class ExtensionManagerPage
+ * Class ExtensionManagerJoomla3Page
  *
  * @since  1.4
  *
  * @link   http://codeception.com/docs/07-AdvancedUsage#PageObjects
  */
-class ExtensionManagerPage
+class ExtensionManagerJoomla3Page
 {
 	// Include url of current page
 	public static $URL = '/administrator/index.php?option=com_installer';
@@ -24,9 +24,9 @@ class ExtensionManagerPage
 
 	public static $installSuccessMessage = "Installing component was successful.";
 
-	public static $installDemoContent = "#install-demo-content";
+	public static $installDemoContent = "//input[@value='Install Demo Content']";
 
-	public static $demoDataInstallSuccessMessage = "Sample data successfully installed";
+	public static $demoDataInstallSuccessMessage = "Sample Data Installed Successfully";
 
 	public static $extensionSearchJ3 = "//input[@id='filter_search']";
 
