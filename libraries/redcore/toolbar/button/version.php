@@ -47,58 +47,78 @@ class RToolbarButtonVersion extends RToolbarButton
 	protected $width;
 
 	/**
-	 * The text of button.
-	 *
-	 * @var  string
-	 */
-	protected $text;
-
-	/**
-	 * The class of button.
-	 *
-	 * @var  string
-	 */
-	protected $class;
-
-	/**
-	 * The class of icon.
-	 *
-	 * @var  string
-	 */
-	protected $iconClass;
-
-	/**
 	 * Construction
 	 *
-	 * @param   string  $typeAlias  Type alias
-	 * @param   int     $itemId     item ID
-	 * @param   int     $height     Height of modal
-	 * @param   int     $width      Width of modal
-	 * @param   string  $text       Text of button
-	 * @param   string  $class      Class of button
-	 * @param   string  $iconClass  Class of icon
+	 * @param   string   $typeAlias  Type alias
+	 * @param   int      $itemId     item ID
+	 * @param   int      $height     Height of modal
+	 * @param   int      $width      Width of modal
+	 * @param   string   $text       The button text
+	 * @param   string   $class      The button class
+	 * @param   string   $iconClass  The icon class
+	 * @param   boolean  $list       Is the button applying on a list ?
 	 */
-	public function __construct($typeAlias, $itemId, $height = 800, $width = 500, $text = '', $class = '', $iconClass = '')
+	public function __construct($typeAlias, $itemId, $height = 800, $width = 500, $text = '', $class = '', $iconClass = '', $list = true)
 	{
-		parent::__construct($text, '', '');
+		parent::__construct($text, $iconClass, $class);
 
 		$this->typeAlias = $typeAlias;
 		$this->itemId    = (int) $itemId;
 		$this->height    = (int) $height;
 		$this->width     = (int) $width;
-		$this->text      = JText::_('JTOOLBAR_VERSION');
-		$this->class     = $class;
-		$this->iconClass = 'icon-archive';
+	}
 
-		if (!empty($iconClass))
-		{
-			$this->iconClass = $iconClass;
-		}
+	/**
+	 * Get the item ID.
+	 *
+	 * @return  int  The item ID.
+	 */
+	public function getItemId()
+	{
+		return (int) $this->itemId;
+	}
 
-		if (!empty($text))
-		{
-			$this->text = JText::_($text);
-		}
+	/**
+	 * Get the type alias.
+	 *
+	 * @return  int  The type alias.
+	 */
+	public function getTypeAlias()
+	{
+		return $this->typeAlias;
+	}
+
+	/**
+	 * Get the width of modal.
+	 *
+	 * @return  int  The modal width.
+	 */
+	public function getModalWidth()
+	{
+		return (int) $this->width;
+	}
+
+	/**
+	 * Get the height of modal.
+	 *
+	 * @return  int  The modal height.
+	 */
+	public function getModalHeight()
+	{
+		return (int) $this->height;
+	}
+
+	/**
+	 * Get the type Id from content history.
+	 *
+	 * @return  int  The type Id.
+	 */
+	public function getTypeId()
+	{
+		$contentTypeTable = JTable::getInstance('Contenttype');
+		$typeId = $contentTypeTable->getTypeId($this->typeAlias);
+
+		return (int) $typeId;
 	}
 
 	/**
@@ -110,21 +130,12 @@ class RToolbarButtonVersion extends RToolbarButton
 	 */
 	public function render($isOption = false)
 	{
-		$contentTypeTable = JTable::getInstance('Contenttype');
-		$typeId = $contentTypeTable->getTypeId($this->typeAlias);
-
-		// Options array for JLayout
-		$options = array(
-			'title'     => $this->title,
-			'height'    => $this->height,
-			'width'     => $this->width,
-			'itemId'    => $this->itemId,
-			'typeId'    => $typeId,
-			'typeAlias' => $this->typeAlias,
-			'class'     => $this->class,
-			'iconClass' => $this->iconClass
+		return RLayoutHelper::render(
+			'toolbar.button.version',
+			array(
+				'button' => $this,
+				'isOption' => $isOption
+			)
 		);
-
-		return RLayoutHelper::render('toolbar.button.versions', $options);
 	}
 }
