@@ -13,7 +13,7 @@ $data = $displayData;
 
 if (!isset($data['button']))
 {
-	throw new InvalidArgumentException('The button is not passed to the layout "button.link".');
+	throw new InvalidArgumentException(JText::sprintf('LIB_REDCORE_LAYOUTS_TOOLBAR_BUTTON_ERROR_MISSING_BUTTON', 'button.link'));
 }
 
 /** @var RToolbarButtonLink $button */
