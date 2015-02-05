@@ -38,9 +38,26 @@ $link = 'index.php?option=com_contenthistory&amp;view=history&amp;layout=modal&a
 $btnClass = 'btn btn-default modal_jform_contenthistory ' . $class;
 ?>
 
-<a rel="{handler: 'iframe', size: {x: <?php echo $height ?>, y: <?php echo $width ?>}}"
-	href="<?php echo $link ?>"
-	title="<?php echo $text ?>"
-	class="<?php echo $btnClass ?>">
-	<i class="<?php echo $iconClass ?>"></i> <?php echo $text; ?>
-</a>
+<?php if ($isOption): ?>
+	<li>
+		<a rel="{handler: 'iframe', size: {x: <?php echo $height ?>, y: <?php echo $width ?>}}"
+			href="<?php echo $link ?>"
+			title="<?php echo $text ?>"
+			class="<?php echo $btnClass ?>">
+			<?php if (!empty($iconClass)): ?>
+				<i class="<?php echo $iconClass ?>"></i>
+			<?php endif; ?>
+			<?php echo $text; ?>
+		</a>
+	</li>
+<?php else: ?>
+	<a rel="{handler: 'iframe', size: {x: <?php echo $height ?>, y: <?php echo $width ?>}}"
+		href="<?php echo $link ?>"
+		title="<?php echo $text ?>"
+		class="<?php echo $btnClass ?>">
+		<?php if (!empty($iconClass)): ?>
+			<i class="<?php echo $iconClass ?>"></i>
+		<?php endif; ?>
+		<?php echo $text; ?>
+	</a>
+<?php endif; ?>
