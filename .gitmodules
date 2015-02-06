@@ -3,4 +3,4 @@
 	url = https://github.com/joomla/coding-standards.git
 [submodule "plugins/system/mvcoverride"]
 	path = plugins/system/mvcoverride
-	url = git@github.com:redCOMPONENT-COM/mvcOverride.git
+	url = https://github.com/redCOMPONENT-COM/mvcOverride.git
