@@ -184,21 +184,27 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			{
 				if ($model->publish($cid, $value))
 				{
-					if ($value == 1)
+					switch ($this->getTask())
 					{
-						$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
-					}
-					elseif ($value == 0)
-					{
-						$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
-					}
-					elseif ($value == 2)
-					{
-						$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
-					}
-					else
-					{
-						$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+						case 'publish':
+							$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
+							break;
+
+						case 'unpublish':
+							$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
+							break;
+
+						case 'archive':
+							$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
+							break;
+
+						case 'trash':
+							$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+							break;
+
+						case 'report':
+							$ntext = $this->text_prefix . '_N_ITEMS_REPORTED';
+							break;
 					}
 
 					$this->setMessage(JText::plural($ntext, count($cid)));
