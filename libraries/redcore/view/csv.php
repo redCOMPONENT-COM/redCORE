@@ -89,7 +89,7 @@ abstract class RViewCsv extends JViewLegacy
 			{
 				if (property_exists($item, $name))
 				{
-					$csvLines[$i][$name] = $item->$name;
+					$csvLines[$i][$name] = $this->preprocess($item->$name);
 				}
 			}
 
@@ -125,6 +125,19 @@ abstract class RViewCsv extends JViewLegacy
 		fclose($stream);
 
 		JFactory::getApplication()->close();
+	}
+
+	/**
+	 * Preprocesses fields to be added
+	 *
+	 * @param   string  $field  The field value to be processed
+	 *
+	 * @return	string	The processed field value
+	 */
+	protected function preprocess($field)
+	{
+		// Function is meant to be overridden in other views.
+		return $field;
 	}
 
 	/**
