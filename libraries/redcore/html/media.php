@@ -22,7 +22,7 @@ abstract class RHtmlMedia
 	 * @var    string  Framework name to use
 	 * @since  1.4
 	 */
-	public static $framework = 'bootstrap2';
+	public static $framework = '';
 
 	/**
 	 * @var    string  Framework suffix to use
@@ -45,7 +45,7 @@ abstract class RHtmlMedia
 	 */
 	public static function getFramework()
 	{
-		return self::$framework;
+		return !empty(self::$framework) ? self::$framework : 'bootstrap2';
 	}
 
 	/**
@@ -62,14 +62,14 @@ abstract class RHtmlMedia
 	{
 		self::$framework = $framework;
 
-		if ($framework = 'bootstrap3')
+		if ($framework == 'bootstrap3')
 		{
 			self::$frameworkSuffix = 'bs3';
 			self::$frameworkOptions = array(
 				'disableMootools' => true,
 			);
 		}
-		elseif ($framework = 'foundation5')
+		elseif ($framework == 'foundation5')
 		{
 			self::$frameworkSuffix = 'fd5';
 			self::$frameworkOptions = array(
