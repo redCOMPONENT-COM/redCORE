@@ -14,6 +14,7 @@ $view = $displayData['view'];
 $operation = !empty($displayData['options']['operation']) ? $displayData['options']['operation'] : 'read-list';
 $fieldList = !empty($displayData['options']['fieldList']) ? $displayData['options']['fieldList'] : array();
 $form = !empty($displayData['options']['form']) ? $displayData['options']['form'] : null;
+$readListValues = $operation == 'read-list' ? ',isFilterField,isSearchableField' : '';
 
 ?>
 <div class="ws-rows ws-Field-<?php echo $operation; ?>">
@@ -30,7 +31,7 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 			<button type="button" class="btn btn-default btn-primary fields-add-new-row">
 				<input type="hidden" name="addNewRowType" value="Field" />
 				<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
-				<input type="hidden" name="addNewRowList" value="defaultValue,isRequiredField,isPrimaryField" />
+				<input type="hidden" name="addNewRowList" value="defaultValue,isRequiredField,isPrimaryField<?php echo $readListValues; ?>" />
 				<i class="icon-plus"></i>
 				<?php echo JText::_('COM_REDCORE_WEBSERVICE_FIELD_ADD_NEW_LABEL'); ?>
 			</button>
@@ -40,7 +41,7 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 						<input type="hidden" name="addNewRowType" value="Field" />
 						<input type="hidden" name="addNewOptionType" value="FieldFromDatabase" />
 						<input type="hidden" name="addNewRowOperation" value="<?php echo $operation; ?>" />
-						<input type="hidden" name="addNewRowList" value="defaultValue,isRequiredField,isPrimaryField" />
+						<input type="hidden" name="addNewRowList" value="defaultValue,isRequiredField,isPrimaryField<?php echo $readListValues; ?>" />
 						<?php echo JText::_('COM_REDCORE_WEBSERVICE_FIELD_ADD_NEW_FROM_DATABASE_LABEL'); ?>
 					</button>
 				</span>
