@@ -83,6 +83,20 @@ class RPagination
 	protected $additionalUrlParams = array();
 
 	/**
+	 * @var    JApplicationCms  The application object
+	 * @since  3.4
+	 */
+	protected $app = null;
+
+	/**
+	 * Pagination data object
+	 *
+	 * @var    object
+	 * @since  3.4
+	 */
+	protected $data;
+
+	/**
 	 * Associated form name
 	 *
 	 * @var  string
@@ -92,20 +106,22 @@ class RPagination
 	/**
 	 * Constructor.
 	 *
-	 * @param   integer  $total       The total number of items.
-	 * @param   integer  $limitstart  The offset of the item to start at.
-	 * @param   integer  $limit       The number of items to display per page.
-	 * @param   string   $prefix      The prefix used for request variables.
+	 * @param   integer          $total       The total number of items.
+	 * @param   integer          $limitstart  The offset of the item to start at.
+	 * @param   integer          $limit       The number of items to display per page.
+	 * @param   string           $prefix      The prefix used for request variables.
+	 * @param   JApplicationCms  $app         The application object
 	 *
 	 * @since   1.0
 	 */
-	public function __construct($total, $limitstart, $limit, $prefix = '')
+	public function __construct($total, $limitstart, $limit, $prefix = '', JApplicationCms $app = null)
 	{
 		// Value/type checking.
 		$this->total = (int) $total;
 		$this->limitstart = (int) max($limitstart, 0);
 		$this->limit = (int) max($limit, 0);
 		$this->prefix = $prefix;
+		$this->app = $app ? $app : JFactory::getApplication();
 
 		if ($this->limit > $this->total)
 		{
@@ -237,14 +253,12 @@ class RPagination
 	 */
 	public function getData()
 	{
-		static $data;
-
-		if (!is_object($data))
+		if (!$this->data)
 		{
-			$data = $this->_buildDataObject();
+			$this->data = $this->_buildDataObject();
 		}
 
-		return $data;
+		return $this->data;
 	}
 
 	/**
@@ -440,8 +454,6 @@ class RPagination
 		// Allow to receive a null layout
 		$layoutId = (null === $layoutId) ? 'pagination.links' : $layoutId;
 
-		$app = JFactory::getApplication();
-
 		$list = array(
 			'prefix'       => $this->prefix,
 			'limit'        => $this->limit,
@@ -450,7 +462,7 @@ class RPagination
 			'limitfield'   => $this->getLimitBox(),
 			'pagescounter' => $this->getPagesCounter(),
 			'pages'        => $this->getPaginationPages(),
-			'formName'     => $this->get('formName')
+			'formName'     => $this->formName
 		);
 
 		return RLayoutHelper::render($layoutId, array('list' => $list, 'options' => $options));

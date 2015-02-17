@@ -378,9 +378,17 @@ class Com_RedcoreInstallerScript
 				foreach ($nodes as $node)
 				{
 					$extName   = (string) $node->attributes()->name;
-					$result = RTranslationTable::batchContentElements($extName, 'install', false);
 
-					$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
+					try
+					{
+						RTranslationTable::batchContentElements($extName, 'install', false);
+					}
+					catch (Exception $e)
+					{
+						// We are already setting message queue so we don't need to set it here as well
+					}
+
+					$this->_storeStatus('translations', array('name' => $extName, 'result' => true));
 				}
 			}
 		}
