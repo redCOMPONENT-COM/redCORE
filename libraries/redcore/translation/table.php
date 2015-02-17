@@ -178,7 +178,10 @@ final class RTranslationTable
 
 		if (empty($contentElement) || empty($contentElement->table))
 		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
+			if ($showNotifications)
+			{
+				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
+			}
 
 			return false;
 		}
@@ -193,10 +196,13 @@ final class RTranslationTable
 		// If original table is not present then we cannot create shadow table
 		if (empty($originalColumns))
 		{
-			JFactory::getApplication()->enqueueMessage(
-				JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_TABLE', $xmlFile, (string) $contentElement->table),
-				'error'
-			);
+			if ($showNotifications)
+			{
+				JFactory::getApplication()->enqueueMessage(
+					JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_TABLE', $xmlFile, (string) $contentElement->table),
+					'error'
+				);
+			}
 
 			return false;
 		}
@@ -214,10 +220,13 @@ final class RTranslationTable
 			// If not in original table then do not create it
 			if (empty($originalColumns[(string) $field['name']]))
 			{
-				JFactory::getApplication()->enqueueMessage(
-					JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_COLUMNS', $xmlFile, (string) $field['name']),
-					'error'
-				);
+				if ($showNotifications)
+				{
+					JFactory::getApplication()->enqueueMessage(
+						JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_COLUMNS', $xmlFile, (string) $field['name']),
+						'error'
+					);
+				}
 
 				return false;
 			}
@@ -240,10 +249,13 @@ final class RTranslationTable
 
 		if (empty($fields))
 		{
-			JFactory::getApplication()->enqueueMessage(
-				JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_NO_FIELDS', $xmlFile),
-				'error'
-			);
+			if ($showNotifications)
+			{
+				JFactory::getApplication()->enqueueMessage(
+					JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_NO_FIELDS', $xmlFile),
+					'error'
+				);
+			}
 
 			return false;
 		}
@@ -286,7 +298,10 @@ final class RTranslationTable
 			}
 			catch (RuntimeException $e)
 			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+				if ($showNotifications)
+				{
+					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+				}
 
 				return false;
 			}
@@ -336,7 +351,10 @@ final class RTranslationTable
 				}
 				catch (RuntimeException $e)
 				{
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+					if ($showNotifications)
+					{
+						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+					}
 
 					return false;
 				}
@@ -363,7 +381,10 @@ final class RTranslationTable
 				}
 				catch (RuntimeException $e)
 				{
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+					if ($showNotifications)
+					{
+						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+					}
 
 					return false;
 				}
@@ -396,7 +417,10 @@ final class RTranslationTable
 				}
 				else
 				{
-					JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INNODB_MISSING'), 'message');
+					if ($showNotifications)
+					{
+						JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INNODB_MISSING'), 'message');
+					}
 				}
 			}
 			elseif (RTranslationHelper::$pluginParams->get('translations_constraint_type', 'foreign_keys') == 'triggers')

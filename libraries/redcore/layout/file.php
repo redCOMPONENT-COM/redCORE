@@ -149,7 +149,7 @@ class RLayoutFile extends RLayoutBase
 
 			$this->fullPath = JPath::find($this->includePaths, $rawPath);
 
-			if ($this->fullPath = JPath::find($this->includePaths, $rawPath))
+			if ($this->fullPath)
 			{
 				$this->addDebugMessage('<strong>Found layout:</strong> ' . $this->fullPath);
 			}

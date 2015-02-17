@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <version>1.4.10</version>
+    <version>1.4.11</version>
     <description>PLG_SYSTEM_REDCORE_XML_DESCRIPTION</description>
 
     <files>
@@ -58,7 +58,7 @@
                 <field
                         name="translations_constraint_type"
                         type="list"
-                        default="foreign_keys"
+                        default="none"
                         label="PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE"
                         description="PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_DESC">
                     <option value="foreign_keys">PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_FOREIGN_KEYS</option>

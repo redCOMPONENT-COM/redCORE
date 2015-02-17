@@ -142,7 +142,15 @@ class JHttpTransportSocket implements JHttpTransport
 			$content .= fgets($connection, 4096);
 		}
 
-		return $this->getResponse($content);
+		$content = $this->getResponse($content);
+
+		// Follow Http redirects
+		if ($content->code >= 301 && $content->code < 400 && isset($content->headers['Location']))
+		{
+			return $this->request($method, new JUri($content->headers['Location']), $data, $headers, $timeout, $userAgent);
+		}
+
+		return $content;
 	}
 
 	/**
