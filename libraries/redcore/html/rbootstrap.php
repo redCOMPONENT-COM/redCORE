@@ -334,7 +334,7 @@ abstract class JHtmlRbootstrap
 	 *
 	 * @return  string  HTML markup for a modal
 	 *
-	 * @since   3.0
+	 * @since   1.4
 	 */
 	public static function renderModal($selector = 'modal', $params = array(), $body = '')
 	{
