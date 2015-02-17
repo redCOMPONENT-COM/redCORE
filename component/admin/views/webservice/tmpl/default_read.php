@@ -28,6 +28,13 @@ $firstContentActive = true;
 	<?php foreach ($this->formData as $operation => $operationData): ?>
 		<?php
 		if (substr($operation, 0, strlen('read-')) === 'read-') :
+			$fieldList = array('isRequiredField', 'isPrimaryField');
+
+			if ($operation == 'read-list')
+			{
+				$fieldList = array_merge($fieldList, array('isFilterField', 'isSearchableField'));
+			}
+
 			echo RLayoutHelper::render(
 				'webservice.operation',
 				array(
@@ -36,7 +43,7 @@ $firstContentActive = true;
 						'operation' => $operation,
 						'form'      => $this->form,
 						'tabActive' => $firstContentActive ? ' active in ' : '',
-						'fieldList' => array('isRequiredField', 'isFilterField', 'isSearchableField', 'isPrimaryField'),
+						'fieldList' => $fieldList,
 					)
 				)
 			);
