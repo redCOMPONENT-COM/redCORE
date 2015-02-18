@@ -104,15 +104,15 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		if (self::$framework == 'bootstrap2')
+		if (self::getFramework() == 'bootstrap2')
 		{
 			RHelperAsset::load('component.min.css', 'redcore');
 		}
-		elseif (self::$framework == 'bootstrap3')
+		elseif (self::getFramework() == 'bootstrap3')
 		{
 			RHelperAsset::load('component.bs3.min.css', 'redcore');
 		}
-		elseif (self::$framework == 'foundation5')
+		elseif (self::getFramework() == 'foundation5')
 		{
 		}
 	}
@@ -133,15 +133,15 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		if (self::$framework == 'bootstrap2')
+		if (self::getFramework() == 'bootstrap2')
 		{
 			RHelperAsset::load('lib/bootstrap.min.js', 'redcore');
 		}
-		elseif (self::$framework == 'bootstrap3')
+		elseif (self::getFramework() == 'bootstrap3')
 		{
 			RHelperAsset::load('lib/bootstrap3/bootstrap.min.js', 'redcore');
 		}
-		elseif (self::$framework == 'foundation5')
+		elseif (self::getFramework() == 'foundation5')
 		{
 		}
 	}
