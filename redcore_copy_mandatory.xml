@@ -117,7 +117,7 @@
                         <available file="${redcorepath}/plugins/system/mvcoverride/mvcoverride.xml" type="file"/>
                     </not>
                     <then>
-                        <fail msg="Submodule not found: ${redcorepath}/plugins/system/mvcoverride. Please update submodule first with: git submodule update --init --recursive" />
+                        <fail msg="Submodule not found: ${redcorepath}/plugins/system/mvcoverride. Please update submodule with: git submodule update --init --recursive" />
                     </then>
                 </if>
             </then>
