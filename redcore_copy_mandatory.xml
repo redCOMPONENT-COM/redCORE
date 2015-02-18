@@ -114,15 +114,6 @@
             </fileset>
         </copy>
 
-        <echo msg="Copying system MVC override plugin to build directory..."/>
-        <copy todir="${redcoretargetdir}/plugins/system/mvcoverride">
-            <fileset dir="${redcorepath}/plugins/system/mvcoverride">
-                <include name="**"/>
-                <exclude name=".*"/>
-                <exclude name="*.md"/>
-            </fileset>
-        </copy>
-
         <echo msg="Copying language switcher redCORE module to build directory..."/>
         <copy todir="${redcoretargetdir}/modules/site/mod_redcore_language_switcher">
             <fileset dir="${redcorepath}/modules/site/mod_redcore_language_switcher">
