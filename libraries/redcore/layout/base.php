@@ -3,7 +3,7 @@
  * @package     Joomla.Libraries
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -57,6 +57,20 @@ class RLayoutBase implements RLayout
 		else
 		{
 			$this->options = new JRegistry;
+		}
+
+		if (!empty(RHtmlMedia::$frameworkSuffix))
+		{
+			$suffixes = $this->options->get('suffixes', array());
+
+			foreach ($suffixes as &$suffix)
+			{
+				$suffix .= '.' . RHtmlMedia::$frameworkSuffix;
+			}
+
+			$suffixes[] = RHtmlMedia::$frameworkSuffix;
+
+			$this->options->set('suffixes', $suffixes);
 		}
 
 		return $this;

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  HTML
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -967,10 +967,26 @@ abstract class RHtml
 
 		if (is_array($attribs))
 		{
+			$attribs['class'] = isset($attribs['class']) ? $attribs['class'] : 'input-medium';
+			$attribs['class'] = trim($attribs['class'] . ' hasTooltip');
+
 			$attribs = JArrayHelper::toString($attribs);
 		}
 
 		static::_('rbootstrap.tooltip');
+
+		// Format value when not nulldate ('0000-00-00 00:00:00'), otherwise blank it as it would result in 1970-01-01.
+		if ((int) $value && $value != JFactory::getDbo()->getNullDate())
+		{
+			$tz = date_default_timezone_get();
+			date_default_timezone_set('UTC');
+			$inputvalue = strftime($format, strtotime($value));
+			date_default_timezone_set($tz);
+		}
+		else
+		{
+			$inputvalue = '';
+		}
 
 		if (!$readonly && !$disabled)
 		{
@@ -983,7 +999,7 @@ abstract class RHtml
 				$document = JFactory::getDocument();
 				$document
 					->addScriptDeclaration(
-					'window.addEvent(\'domready\', function() {Calendar.setup({
+				'jQuery(document).ready(function($) {Calendar.setup({
 				// Id of the input field
 				inputField: "' . $id . '",
 				// Format of the input field
@@ -999,16 +1015,16 @@ abstract class RHtml
 				$done[] = $id;
 			}
 
-			return '<div class="input-append"><input type="text" class="hasTooltip" title="'
-			. (0 !== (int) $value ? static::_('date', $value, null, null) : '')
-			. '" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '" ' . $attribs . ' />'
-			. '<button type="button" class="btn" id="' . $id . '_img"><i class="icon-calendar"></i></button></div>';
+			return '<div class="input-append">'
+			. '<input type="text" title="' . ($inputvalue ? static::_('date', $value, null, null) : '')
+			. '" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($inputvalue, ENT_COMPAT, 'UTF-8') . '" ' . $attribs . ' />'
+			. '<button type="button" class="btn btn-default" id="' . $id . '_img"><i class="icon-calendar"></i></button></div>';
 		}
 		else
 		{
-			return '<input type="text" class="hasTooltip" title="' . (0 !== (int) $value ? static::_('date', $value, null, null) : '')
-				. '" value="' . (0 !== (int) $value ? static::_('date', $value, 'Y-m-d H:i:s', null) : '') . '" ' . $attribs
-				. ' /><input type="hidden" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($value, ENT_COMPAT, 'UTF-8') . '" />';
+			return '<input type="text" class="hasTooltip" title="' . ($inputvalue ? static::_('date', $value, null, null) : '')
+				. '" value="' . ($inputvalue ? static::_('date', $value, 'Y-m-d H:i:s', null) : '') . '" ' . $attribs
+				. ' /><input type="hidden" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($inputvalue, ENT_COMPAT, 'UTF-8') . '" />';
 		}
 	}
 

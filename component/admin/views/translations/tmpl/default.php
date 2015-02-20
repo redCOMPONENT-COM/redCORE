@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -68,21 +68,21 @@ endif;
 		<table class="table table-striped table-hover" id="translationList">
 			<thead>
 			<tr>
-				<th style="width:1%" class="hidden-phone">
+				<th style="width:1%" class="hidden-xs">
 					<input type="checkbox" name="checkall-toggle" value=""
 					       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JText::_('JSTATUS'); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JText::_('JGLOBAL_FIELD_MODIFIED_LABEL'); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JHtml::_('rsearchtools.sort', 'JGRID_HEADING_LANGUAGE', 't.rctranslations_language', $listDirn, $listOrder); ?>
 				</th>
 				<?php foreach ($columns as $column) : ?>
-					<th style="width:20%" class="nowrap hidden-phone">
+					<th style="width:20%" class="nowrap hidden-xs">
 						<?php echo JHtml::_('rsearchtools.sort', $column, 't.' . $column, $listDirn, $listOrder); ?>
 					</th>
 				<?php endforeach; ?>
@@ -114,7 +114,7 @@ endif;
 							<?php echo JHtml::_('grid.id', $i, $item->rctranslations_id); ?>
 						</td>
 						<td>
-							<span class="badge <?php echo $item->translationStatus['badge']; ?>">
+							<span class="<?php echo $item->translationStatus['badge']; ?>">
 								<?php echo JText::_($item->translationStatus['status']); ?>
 							</span>
 						</td>

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 defined('JPATH_BASE') or die;
@@ -106,12 +106,6 @@ class RApiHalHal extends RApi
 	public $apiDynamicModelClassName = 'RApiHalModelItem';
 
 	/**
-	 * @var    array  Loaded resources from configuration file
-	 * @since  1.2
-	 */
-	public $apiResources = null;
-
-	/**
 	 * @var    string  Rendered Documentation
 	 * @since  1.2
 	 */
@@ -162,11 +156,21 @@ class RApiHalHal extends RApi
 				throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_NOT_INSTALLED', $this->webserviceName, $this->webserviceVersion));
 			}
 
+			if (empty($this->webservice['state']))
+			{
+				throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_UNPUBLISHED', $this->webserviceName, $this->webserviceVersion));
+			}
+
 			$this->webservicePath = $this->webservice['path'];
 			$this->configuration = RApiHalHelper::loadWebserviceConfiguration(
 				$this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath, $this->client
 			);
-			$this->triggerFunction('setResources');
+
+			// Set option and view name
+			$this->setOptionViewName($this->webserviceName, $this->configuration);
+
+			// Set base data
+			$this->setBaseDataValues();
 		}
 
 		// Init Environment
@@ -174,6 +178,40 @@ class RApiHalHal extends RApi
 
 		// Set initial status code
 		$this->setStatusCode($this->statusCode);
+
+		// Check for defined constants
+		if (!defined('JSON_UNESCAPED_SLASHES'))
+		{
+			define('JSON_UNESCAPED_SLASHES', 64);
+		}
+	}
+
+	/**
+	 * Sets default Base Data Values for resource binding
+	 *
+	 * @return  RApi
+	 *
+	 * @since   1.4
+	 */
+	public function setBaseDataValues()
+	{
+		$webserviceUrlPath = '/index.php?option=' . $this->optionName;
+
+		if (!empty($this->viewName))
+		{
+			$webserviceUrlPath .= '&amp;view=' . $this->viewName;
+		}
+
+		if (!empty($this->webserviceVersion))
+		{
+			$webserviceUrlPath .= '&amp;webserviceVersion=' . $this->webserviceVersion;
+		}
+
+		$this->data['webserviceUrlPath'] = $webserviceUrlPath;
+		$this->data['webserviceName'] = $this->webserviceName;
+		$this->data['webserviceVersion'] = $this->webserviceVersion;
+
+		return $this;
 	}
 
 	/**
@@ -338,10 +376,16 @@ class RApiHalHal extends RApi
 	public function apiDefaultPage()
 	{
 		// Add standard Joomla namespace as curie.
-		$documentationCurie = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc', 'curies', 'Documentation', 'documentation', null, true);
+		$documentationCurieAdmin = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=administrator',
+			'curies', 'Documentation Admin', 'Admin', null, true
+		);
+		$documentationCurieSite = new RApiHalDocumentLink('/index.php?option={rel}&amp;format=doc&amp;webserviceClient=site',
+			'curies', 'Documentation Site', 'Site', null, true
+		);
 
 		// Add basic hypermedia links.
-		$this->hal->setLink($documentationCurie, false, true);
+		$this->hal->setLink($documentationCurieAdmin, false, true);
+		$this->hal->setLink($documentationCurieSite, false, true);
 		$this->hal->setLink(new RApiHalDocumentLink(JUri::base(), 'base', JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_DEFAULT_PAGE')));
 
 		$webservices = RApiHalHelper::getInstalledWebservices();
@@ -356,9 +400,25 @@ class RApiHalHal extends RApi
 					{
 						if ($webservice['state'] == 1)
 						{
+							$documentation = $webserviceClient == 'site' ? 'Site' : 'Admin';
+
+							// Set option and view name
+							$this->setOptionViewName($webservice['name'], $this->configuration);
+							$webserviceUrlPath = '/index.php?option=' . $this->optionName
+								. '&amp;webserviceVersion=' . $webserviceVersion;
+
+							if (!empty($this->viewName))
+							{
+								$webserviceUrlPath .= '&view=' . $this->viewName;
+							}
+
 							// We will fetch only top level webservice
 							$this->hal->setLink(
-								new RApiHalDocumentLink('/index.php?option=' . $webservice['name'], 'documentation:' . $webservice['name'], $webservice['displayName'])
+								new RApiHalDocumentLink(
+									$webserviceUrlPath . '&webserviceClient=' . $webserviceClient,
+									$documentation . ':' . $webservice['name'],
+									$webservice['title']
+								)
 							);
 
 							break;
@@ -458,7 +518,7 @@ class RApiHalHal extends RApi
 		}
 
 		// Getting single item
-		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'getDataFunction', 'getItem');
+		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItem');
 
 		$itemObject = method_exists($model, $functionName) ? $model->{$functionName}($id) : array();
 
@@ -729,7 +789,9 @@ class RApiHalHal extends RApi
 					}
 					else
 					{
-						$item[$key] = $this->assignValueToResource($this->resources['listItem'][$key], $item);
+						$item[$this->assignGlobalValueToResource($key)] = $this->assignValueToResource(
+							$this->resources['listItem'][$key], $item
+						);
 					}
 				}
 
@@ -761,7 +823,7 @@ class RApiHalHal extends RApi
 				{
 					if ($resource['displayGroup'] == '_links')
 					{
-						$linkRel = !empty($resource['linkRel']) ? $resource['linkRel'] : $resource['displayName'];
+						$linkRel = !empty($resource['linkRel']) ? $resource['linkRel'] : $this->assignGlobalValueToResource($resource['displayName']);
 
 						// We will force curries as link array
 						$linkPlural = $linkRel == 'curies';
@@ -771,7 +833,7 @@ class RApiHalHal extends RApi
 								$this->assignValueToResource($resource, $data),
 								$linkRel,
 								$resource['linkTitle'],
-								$resource['linkName'],
+								$this->assignGlobalValueToResource($resource['linkName']),
 								$resource['hrefLang'],
 								RApiHalHelper::isAttributeTrue($resource, 'linkTemplated')
 							), $linkSingular = false, $linkPlural
@@ -779,12 +841,14 @@ class RApiHalHal extends RApi
 					}
 					else
 					{
-						$resourceDocument->setDataGrouped($resource['displayGroup'], $resource['displayName'], $this->assignValueToResource($resource, $data));
+						$resourceDocument->setDataGrouped(
+							$resource['displayGroup'], $this->assignGlobalValueToResource($resource['displayName']), $this->assignValueToResource($resource, $data)
+						);
 					}
 				}
 				else
 				{
-					$resourceDocument->setData($resource['displayName'], $this->assignValueToResource($resource, $data));
+					$resourceDocument->setData($this->assignGlobalValueToResource($resource['displayName']), $this->assignValueToResource($resource, $data));
 				}
 			}
 		}
@@ -815,18 +879,7 @@ class RApiHalHal extends RApi
 				$resource = RApiHalDocumentResource::defaultResourceField($resource);
 				$resourceName = $resource['displayName'];
 				$resourceSpecific = $resource['resourceSpecific'];
-
-				if (isset($this->apiResources[$resourceSpecific][$resourceName]))
-				{
-					$this->resources[$resourceSpecific][$resourceName] = $this->apiResources[$resourceSpecific][$resourceName];
-					$this->resources[$resourceSpecific][$resourceName] = RApiHalDocumentResource::mergeResourceFields(
-						$this->apiResources[$resourceSpecific][$resourceName], $resource
-					);
-				}
-				else
-				{
-					$this->resources[$resourceSpecific][$resourceName] = $resource;
-				}
+				$this->resources[$resourceSpecific][$resourceName] = $resource;
 			}
 		}
 
@@ -867,13 +920,20 @@ class RApiHalHal extends RApi
 	 */
 	public function sortResourcesByDisplayGroup($a, $b)
 	{
-		return strcmp($a["displayGroup"], $b["displayGroup"]);
+		$sort = strcmp($a["displayGroup"], $b["displayGroup"]);
+
+		if (!$sort)
+		{
+			return ($a['original_order'] < $b['original_order'] ? -1 : 1);
+		}
+
+		return $sort;
 	}
 
 	/**
 	 * Set document content for Item view
 	 *
-	 * @param   object            $item           List of items
+	 * @param   object|array      $item           Item content
 	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
 	 *
 	 * @return void
@@ -883,13 +943,13 @@ class RApiHalHal extends RApi
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($configuration);
 
-		if (!empty($item) && !empty($item->id))
+		if (!empty($item) && (is_array($item) || is_object($item)))
 		{
 			// Filter out all fields that are not in resource list and apply appropriate transform rules
 			foreach ($item as $key => $value)
 			{
 				$value = !empty($this->resources['rcwsGlobal'][$key]) ? $this->assignValueToResource($this->resources['rcwsGlobal'][$key], $item) : $value;
-				$this->setData($key, $value);
+				$this->setData($this->assignGlobalValueToResource($key), $value);
 			}
 		}
 		else
@@ -1231,6 +1291,26 @@ class RApiHalHal extends RApi
 				$terminateIfNotAuthorized = false;
 			}
 		}
+		elseif ($this->operation == 'read')
+		{
+			// Disable authorization on operation read level
+			if (isset($allowedOperations->{$this->operation}['authorizationNeeded'])
+				&& strtolower($allowedOperations->{$this->operation}['authorizationNeeded']) == 'false')
+			{
+				$terminateIfNotAuthorized = false;
+			}
+			else
+			{
+				$id = $this->options->get('id', '');
+				$readType = empty($id) ? 'list' : 'item';
+
+				if (isset($allowedOperations->read->{$readType}['authorizationNeeded'])
+					&& strtolower($allowedOperations->read->{$readType}['authorizationNeeded']) == 'false')
+				{
+					$terminateIfNotAuthorized = false;
+				}
+			}
+		}
 		elseif (isset($allowedOperations->{$this->operation}['authorizationNeeded'])
 			&& strtolower($allowedOperations->{$this->operation}['authorizationNeeded']) == 'false')
 		{
@@ -1319,8 +1399,11 @@ class RApiHalHal extends RApi
 
 			if (!empty($response->user_id))
 			{
+				$user = JFactory::getUser($response->user_id);
+
 				// Load the JUser class on application for this client
-				JFactory::getApplication()->loadIdentity(JFactory::getUser($response->user_id));
+				JFactory::getApplication()->loadIdentity($user);
+				JFactory::getSession()->set('user', $user);
 			}
 		}
 	}
@@ -1347,7 +1430,7 @@ class RApiHalHal extends RApi
 			require_once $helperFile;
 		}
 
-		$webserviceName = preg_replace('/[^A-Z0-9_\.-]/i', '', $this->webserviceName);
+		$webserviceName = preg_replace('/[^A-Z0-9_\.]/i', '', $this->webserviceName);
 		$helperClassName = 'RApiHalHelper' . ucfirst($this->client) . ucfirst(strtolower($webserviceName));
 
 		if (class_exists($helperClassName))
@@ -1507,6 +1590,8 @@ class RApiHalHal extends RApi
 		$this->setOptionViewName($elementName, $configuration);
 		$isAdmin = RApiHalHelper::isAttributeTrue($configuration, 'isAdminClass');
 		$this->addModelIncludePaths($isAdmin, $this->optionName);
+		$this->loadExtensionLanguage($this->optionName, $isAdmin ? JPATH_ADMINISTRATOR : JPATH_SITE);
+		$this->triggerFunction('loadExtensionLibrary', $this->optionName);
 		$dataMode = strtolower(RApiHalHelper::attributeToString($configuration, 'dataMode', 'model'));
 
 		if ($dataMode == 'helper')
@@ -1593,6 +1678,21 @@ class RApiHalHal extends RApi
 	}
 
 	/**
+	 * Include library classes
+	 *
+	 * @param   string  $element  Option name
+	 *
+	 * @return  void
+	 *
+	 * @since   1.4
+	 */
+	public function loadExtensionLibrary($element)
+	{
+		$element = strpos($element, 'com_') === 0 ? substr($element, 4) : $element;
+		JLoader::import(strtolower($element) . '.library');
+	}
+
+	/**
 	 * Sets option and view name
 	 *
 	 * @param   string            $elementName    Element name
@@ -1607,7 +1707,7 @@ class RApiHalHal extends RApi
 		// Views are separated by dash
 		$view = explode('-', $elementName);
 		$elementName = $view[0];
-		$viewName = $elementName;
+		$viewName = '';
 
 		if (!empty($view[1]))
 		{
@@ -1678,50 +1778,25 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Set resources from configuration if available
-	 *
-	 * @return  void
-	 *
-	 * @since   1.2
-	 */
-	public function setResources()
-	{
-		$resourcesBase = $this->getConfig('resources');
-		$resources = array();
-
-		if (isset($resourcesBase->resource))
-		{
-			foreach ($resourcesBase->resource as $resourcesXml)
-			{
-				$resource = RApiHalHelper::getXMLElementAttributes($resourcesXml);
-				$resource = RApiHalDocumentResource::defaultResourceField($resource);
-
-				$resources[$resource['resourceSpecific']][$resource['displayName']] = $resource;
-			}
-		}
-
-		$this->apiResources = $resources;
-	}
-
-	/**
 	 * Assign value to Resource
 	 *
-	 * @param   array  $resource  Resource list with options
-	 * @param   mixed  $value     Data values to set to resource format
+	 * @param   array   $resource   Resource list with options
+	 * @param   mixed   $value      Data values to set to resource format
+	 * @param   string  $attribute  Attribute from array to replace the data
 	 *
 	 * @return  string
 	 *
 	 * @since   1.2
 	 */
-	public function assignValueToResource($resource, $value)
+	public function assignValueToResource($resource, $value, $attribute = 'fieldFormat')
 	{
-		$format = $resource['fieldFormat'];
+		$format = $resource[$attribute];
 		$transform = RApiHalHelper::attributeToString($resource, 'transform', '');
 
 		$stringsToReplace = array();
 		preg_match_all('/\{([^}]+)\}/', $format, $stringsToReplace);
 
-		if (!empty($stringsToReplace[1]) && !RApiHalHelper::isAttributeTrue($resource, 'linkTemplated'))
+		if (!empty($stringsToReplace[1]))
 		{
 			foreach ($stringsToReplace[1] as $replacementKey)
 			{
@@ -1729,29 +1804,89 @@ class RApiHalHal extends RApi
 				{
 					if (property_exists($value, $replacementKey))
 					{
-						if (is_array($value->{$replacementKey}))
+						// We are transforming only value
+						if ($format == '{' . $replacementKey . '}')
 						{
-							$value->{$replacementKey} = json_encode($value->{$replacementKey});
+							$format = $this->transformField($transform, $value->{$replacementKey});
 						}
-
-						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value->{$replacementKey}), $format);
+						// We are transforming only part of the string
+						else
+						{
+							$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value->{$replacementKey}), $format);
+						}
 					}
 				}
 				elseif (is_array($value))
 				{
 					if (isset($value[$replacementKey]))
 					{
-						if (is_array($value[$replacementKey]))
+						// We are transforming only value
+						if ($format == '{' . $replacementKey . '}')
 						{
-							$value[$replacementKey] = json_encode($value[$replacementKey]);
+							$format = $this->transformField($transform, $value[$replacementKey]);
 						}
-
-						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value[$replacementKey]), $format);
+						// We are transforming only part of the string
+						else
+						{
+							$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value[$replacementKey]), $format);
+						}
 					}
 				}
 				else
 				{
-					$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value), $format);
+					// We are transforming only value
+					if ($format == '{' . $replacementKey . '}')
+					{
+						$format = $this->transformField($transform, $value);
+					}
+					// We are transforming only part of the string
+					else
+					{
+						$format = str_replace('{' . $replacementKey . '}', $this->transformField($transform, $value), $format);
+					}
+				}
+			}
+		}
+
+		return $this->assignGlobalValueToResource($format);
+	}
+
+	/**
+	 * Assign value to Resource
+	 *
+	 * @param   string  $format  String to parse
+	 *
+	 * @return  string
+	 *
+	 * @since   1.2
+	 */
+	public function assignGlobalValueToResource($format)
+	{
+		if (empty($format) || !is_string($format))
+		{
+			return $format;
+		}
+
+		$stringsToReplace = array();
+		preg_match_all('/\{([^}]+)\}/', $format, $stringsToReplace);
+
+		if (!empty($stringsToReplace[1]))
+		{
+			foreach ($stringsToReplace[1] as $replacementKey)
+			{
+				// Replace from global variables if present
+				if (isset($this->data[$replacementKey]))
+				{
+					// We are transforming only value
+					if ($format == '{' . $replacementKey . '}')
+					{
+						$format = $this->data[$replacementKey];
+					}
+					// We are transforming only part of the string
+					else
+					{
+						$format = str_replace('{' . $replacementKey . '}', $this->data[$replacementKey], $format);
+					}
 				}
 			}
 		}
@@ -1903,7 +2038,7 @@ class RApiHalHal extends RApi
 					if (isset($data[$parameter[0]]))
 					{
 						$parameterValue = $this->transformField($parameter[1], $data[$parameter[0]]);
-						$args[] = &$parameterValue;
+						$args[] = $parameterValue;
 					}
 					else
 					{

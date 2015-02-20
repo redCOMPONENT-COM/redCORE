@@ -2,7 +2,7 @@
 /**
  * @package     RedShop
  * @subpackage  Helper Class
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 namespace Codeception\Module;
@@ -40,7 +40,11 @@ class AcceptanceHelper extends \Codeception\Module
 		"site_name" => $this->config['site_name'],
 		"admin_email" => $this->config['admin_email'],
 		"language" => $this->config['language'],
-		"sample_data" => $this->config['sample_data']
+		"sample_data" => $this->config['sample_data'],
+		"host" => $this->config['host'],
+		"extension_name" => $this->config['extension_name'],
+		"install_extension_demo_data" => $this->config['install_extension_demo_data'],
+		"env" => $this->config['env']
 		];
 
 		return $configuration;

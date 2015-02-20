@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -50,10 +50,10 @@ abstract class JHtmlRbootstrap
 		{
 			if ($loadCss)
 			{
-				RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
+				RHtmlMedia::loadFrameworkCss();
 			}
 
-			RHelperAsset::load('lib/bootstrap.min.js', static::EXTENSION);
+			RHtmlMedia::loadFrameworkJs();
 		}
 		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
 		{
@@ -122,9 +122,9 @@ abstract class JHtmlRbootstrap
 			// Setup options object
 			$opt['offset'] = (isset($params['offset']) && ($params['offset'])) ? $params['offset'] : 10;
 
-			$options = json_encode($opt);
+			$options = RHtml::getJSObject($opt);
 
-			// Attach the carousel to document
+			// Attach affix to document
 			JFactory::getDocument()->addScriptDeclaration(
 				"(function($){
 					$('#$selector').affix($options);
@@ -186,7 +186,7 @@ abstract class JHtmlRbootstrap
 		// Include Bootstrap framework
 		static::framework();
 
-		// Attach the alerts to the document
+		// Attach the button to the document
 		JFactory::getDocument()->addScriptDeclaration(
 			"(function($){
 				$('.$selector').button();
@@ -202,8 +202,8 @@ abstract class JHtmlRbootstrap
 	 * Add javascript support for Bootstrap carousels
 	 *
 	 * @param   string  $selector  Common class for the carousels.
-	 * @param   array   $params    An array of options for the modal.
-	 *                             Options for the modal can be:
+	 * @param   array   $params    An array of options for the carousel.
+	 *                             Options for the carousel can be:
 	 *                             - interval  number  The amount of time to delay between automatically cycling an item.
 	 *                                                 If false, carousel will not automatically cycle.
 	 *                             - pause     string  Pauses the cycling of the carousel on mouseenter and resumes the cycling
@@ -224,7 +224,7 @@ abstract class JHtmlRbootstrap
 			$opt['interval'] = (isset($params['interval']) && ($params['interval'])) ? (int) $params['interval'] : 5000;
 			$opt['pause']    = (isset($params['pause']) && ($params['pause'])) ? $params['pause'] : 'hover';
 
-			$options = json_encode($opt);
+			$options = RHtml::getJSObject($opt);
 
 			// Attach the carousel to document
 			JFactory::getDocument()->addScriptDeclaration(
@@ -319,32 +319,35 @@ abstract class JHtmlRbootstrap
 	 *
 	 * @param   string  $selector  The ID selector for the modal.
 	 * @param   array   $params    An array of options for the modal.
-	 * @param   string  $footer    Optional markup for the modal footer
+	 *                             Options for the modal can be:
+	 *                             - title     string   The modal title
+	 *                             - backdrop  mixed    A boolean select if a modal-backdrop element should be included (default = true)
+	 *                                                  The string 'static' includes a backdrop which doesn't close the modal on click.
+	 *                             - keyboard  boolean  Closes the modal when escape key is pressed (default = true)
+	 *                             - closeButton  boolean  Display modal close button (default = true)
+	 *                             - animation boolean  Fade in from the top of the page (default = true)
+	 *                             - footer    string   Optional markup for the modal footer
+	 *                             - url       string   URL of a resource to be inserted as an <iframe> inside the modal body
+	 *                             - height    string   height of the <iframe> containing the remote resource
+	 *                             - width     string   width of the <iframe> containing the remote resource
+	 * @param   string  $body      Markup for the modal body. Appended after the <iframe> if the url option is set
 	 *
 	 * @return  string  HTML markup for a modal
+	 *
+	 * @since   1.4
 	 */
-	public static function renderModal($selector = 'modal', $params = array(), $footer = '')
+	public static function renderModal($selector = 'modal', $params = array(), $body = '')
 	{
-		// Ensure the behavior is loaded
-		static::modal($selector, $params);
+		// Include Bootstrap framework
+		static::framework();
 
-		$html = "<div class=\"modal hide fade\" id=\"" . $selector . "\">\n";
-		$html .= "<div class=\"modal-header\">\n";
-		$html .= "<button type=\"button\" class=\"close\" data-dismiss=\"modal\">×</button>\n";
-		$html .= "<h3>" . $params['title'] . "</h3>\n";
-		$html .= "</div>\n";
-		$html .= "<div id=\"" . $selector . "-container\">\n";
-		$html .= "</div>\n";
-		$html .= "</div>\n";
+		$layoutData = array(
+			'selector' => $selector,
+			'params'   => $params,
+			'body'     => $body
+		);
 
-		$html .= "<script>";
-		$html .= "jQuery('#" . $selector . "').on('show', function () {\n";
-		$html .= "document.getElementById('" . $selector . "-container').innerHTML = '<div class=\"modal-body\"><iframe class=\"iframe\" src=\""
-			. $params['url'] . "\" height=\"" . $params['height'] . "\" width=\"" . $params['width'] . "\"></iframe></div>" . $footer . "';\n";
-		$html .= "});\n";
-		$html .= "</script>";
-
-		return $html;
+		return JLayoutHelper::render('joomla.modal.main', $layoutData);
 	}
 
 	/**
@@ -352,18 +355,18 @@ abstract class JHtmlRbootstrap
 	 *
 	 * Use element's Title as popover content
 	 *
-	 * @param   string  $selector  Selector for the tooltip
-	 * @param   array   $params    An array of options for the tooltip.
-	 *                  Options for the tooltip can be:
-	 *                      animation  boolean          apply a css fade transition to the tooltip
-	 *                      html       boolean          Insert HTML into the tooltip. If false, jQuery's text method will be used to insert
+	 * @param   string  $selector  Selector for the popover
+	 * @param   array   $params    An array of options for the popover.
+	 *                  Options for the popover can be:
+	 *                      animation  boolean          apply a css fade transition to the popover
+	 *                      html       boolean          Insert HTML into the popover. If false, jQuery's text method will be used to insert
 	 *                                                  content into the dom.
-	 *                      placement  string|function  how to position the tooltip - top | bottom | left | right
-	 *                      selector   string           If a selector is provided, tooltip objects will be delegated to the specified targets.
-	 *                      trigger    string           how tooltip is triggered - hover | focus | manual
+	 *                      placement  string|function  how to position the popover - top | bottom | left | right
+	 *                      selector   string           If a selector is provided, popover objects will be delegated to the specified targets.
+	 *                      trigger    string           how popover is triggered - hover | focus | manual
 	 *                      title      string|function  default title value if `title` tag isn't present
 	 *                      content    string|function  default content value if `data-content` attribute isn't present
-	 *                      delay      number|object    delay showing and hiding the tooltip (ms) - does not apply to manual trigger type
+	 *                      delay      number|object    delay showing and hiding the popover (ms) - does not apply to manual trigger type
 	 *                                                  If a number is supplied, delay is applied to both hide/show
 	 *                                                  Object structure is: delay: { show: 500, hide: 100 }
 	 *                      container  string|boolean   Appends the popover to a specific element: { container: 'body' }
@@ -382,14 +385,14 @@ abstract class JHtmlRbootstrap
 		static::framework();
 
 		$opt['animation'] = isset($params['animation']) ? $params['animation'] : null;
-		$opt['html'] = isset($params['html']) ? $params['html'] : null;
+		$opt['html'] = isset($params['html']) ? $params['html'] : true;
 		$opt['placement'] = isset($params['placement']) ? $params['placement'] : null;
 		$opt['selector'] = isset($params['selector']) ? $params['selector'] : null;
 		$opt['title'] = isset($params['title']) ? $params['title'] : null;
-		$opt['trigger'] = isset($params['trigger']) ? $params['trigger'] : 'hover';
+		$opt['trigger'] = isset($params['trigger']) ? $params['trigger'] : 'hover focus';
 		$opt['content'] = isset($params['content']) ? $params['content'] : null;
 		$opt['delay'] = isset($params['delay']) ? $params['delay'] : null;
-		$opt['container'] = isset($params['container']) ? $params['container'] : false;
+		$opt['container'] = isset($params['container']) ? $params['container'] : 'body';
 
 		$options = RHtml::getJSObject($opt);
 
@@ -411,7 +414,7 @@ abstract class JHtmlRbootstrap
 	 *
 	 * @param   string  $selector  The ID selector for the ScrollSpy element.
 	 * @param   array   $params    An array of options for the ScrollSpy.
-	 *                             Options for the modal can be:
+	 *                             Options for the ScrollSpy can be:
 	 *                             - offset  number  Pixels to offset from top when calculating position of scroll.
 	 *
 	 * @return  void
@@ -460,7 +463,7 @@ abstract class JHtmlRbootstrap
 	 *                             - selector   string           If a selector is provided, tooltip objects will be delegated to the specified targets.
 	 *                             - title      string|function  Default title value if `title` tag isn't present
 	 *                             - trigger    string           How tooltip is triggered - hover | focus | manual
-	 *                             - delay      number           Delay showing and hiding the tooltip (ms) - does not apply to manual trigger type
+	 *                             - delay      integer          Delay showing and hiding the tooltip (ms) - does not apply to manual trigger type
 	 *                                                           If a number is supplied, delay is applied to both hide/show
 	 *                                                           Object structure is: delay: { show: 500, hide: 100 }
 	 *                             - container  string|boolean   Appends the popover to a specific element: { container: 'body' }
@@ -475,24 +478,51 @@ abstract class JHtmlRbootstrap
 			static::framework();
 
 			// Setup options object
-			$opt['animation'] = (isset($params['animation']) && ($params['animation'])) ? (boolean) $params['animation'] : true;
+			$opt['animation'] = (isset($params['animation']) && ($params['animation'])) ? (boolean) $params['animation'] : null;
 			$opt['html']      = (isset($params['html']) && ($params['html'])) ? (boolean) $params['html'] : true;
-			$opt['placement'] = (isset($params['placement']) && ($params['placement'])) ? (string) $params['placement'] : 'top';
-			$opt['selector']  = (isset($params['selector']) && ($params['selector'])) ? (string) $params['selector'] : false;
-			$opt['title']     = (isset($params['title']) && ($params['title'])) ? (string) $params['title'] : '';
-			$opt['trigger']   = (isset($params['trigger']) && ($params['trigger'])) ? (string) $params['trigger'] : 'hover focus';
-			$opt['delay']     = (isset($params['delay']) && ($params['delay'])) ? (int) $params['delay'] : 0;
-			$opt['container'] = (isset($params['container']) && ($params['container'])) ? (int) $params['container'] : false;
+			$opt['placement'] = (isset($params['placement']) && ($params['placement'])) ? (string) $params['placement'] : null;
+			$opt['selector']  = (isset($params['selector']) && ($params['selector'])) ? (string) $params['selector'] : null;
+			$opt['title']     = (isset($params['title']) && ($params['title'])) ? (string) $params['title'] : null;
+			$opt['trigger']   = (isset($params['trigger']) && ($params['trigger'])) ? (string) $params['trigger'] : null;
+			$opt['delay']     = (isset($params['delay']) && ($params['delay'])) ? (int) $params['delay'] : null;
+			$opt['container'] = (isset($params['container']) && ($params['container'])) ? (int) $params['container'] : 'body';
+			$opt['template']  = isset($params['template']) ? (string) $params['template'] : null;
+			$onShow = isset($params['onShow']) ? (string) $params['onShow'] : null;
+			$onShown = isset($params['onShown']) ? (string) $params['onShown'] : null;
+			$onHide = isset($params['onHide']) ? (string) $params['onHide'] : null;
+			$onHidden = isset($params['onHidden']) ? (string) $params['onHidden'] : null;
 
-			$options = json_encode($opt);
+			$options = RHtml::getJSObject($opt);
+
+			// Build the script.
+			$script = array();
+			$script[] = "jQuery(document).ready(function(){";
+			$script[] = "\tjQuery('" . $selector . "').tooltip(" . $options . ");";
+
+			if ($onShow)
+			{
+				$script[] = "\tjQuery('" . $selector . "').on('show.bs.tooltip', " . $onShow . ");";
+			}
+
+			if ($onShown)
+			{
+				$script[] = "\tjQuery('" . $selector . "').on('shown.bs.tooltip', " . $onShown . ");";
+			}
+
+			if ($onHide)
+			{
+				$script[] = "\tjQuery('" . $selector . "').on('hide.bs.tooltip', " . $onHide . ");";
+			}
+
+			if ($onHidden)
+			{
+				$script[] = "\tjQuery('" . $selector . "').on('hidden.bs.tooltip', " . $onHidden . ");";
+			}
+
+			$script[] = "});";
 
 			// Attach tooltips to document
-			JFactory::getDocument()->addScriptDeclaration(
-				"jQuery(document).ready(function()
-				{
-					jQuery('" . $selector . "').tooltip(" . $options . ");
-				});"
-			);
+			JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
 
 			// Set static array
 			static::$loaded[__METHOD__][$selector] = true;
@@ -543,7 +573,7 @@ abstract class JHtmlRbootstrap
 
 			$options = RHtml::getJSObject($opt);
 
-			// Attach tooltips to document
+			// Attach typehead to document
 			JFactory::getDocument()->addScriptDeclaration(
 				"jQuery(document).ready(function()
 				{
@@ -627,14 +657,14 @@ abstract class JHtmlRbootstrap
 		$in = (static::$loaded['JHtmlRbootstrap::startAccordion']['active'] == $id) ? ' in' : '';
 		$class = (!empty($class)) ? ' ' . $class : '';
 
-		$html = '<div class="accordion-group' . $class . '">'
-			. '<div class="accordion-heading">'
+		$html = '<div class="panel panel-default accordion-group' . $class . '">'
+			. '<div class="panel-heading accordion-heading">'
 			. '<strong><a href="#' . $id . '" data-parent="#' . $selector . '" data-toggle="collapse" class="accordion-toggle">'
 			. $text
 			. '</a></strong>'
 			. '</div>'
-			. '<div class="accordion-body collapse' . $in . '" id="' . $id . '">'
-			. '<div class="accordion-inner">';
+			. '<div class="panel-collapse accordion-body collapse' . $in . '" id="' . $id . '">'
+			. '<div class="panel-body accordion-inner">';
 
 		return $html;
 	}
@@ -668,8 +698,6 @@ abstract class JHtmlRbootstrap
 
 			// Setup options object
 			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
-
-			$options = RHtml::getJSObject($opt);
 
 			// Attach tabs to document
 			JFactory::getDocument()
@@ -743,6 +771,91 @@ abstract class JHtmlRbootstrap
 		$html = RLayoutHelper::render('libraries.cms.html.bootstrap.endtab');
 
 		return $html;
+	}
+
+	/**
+	 * Creates a tab pane
+	 *
+	 * @param   string  $selector  The pane identifier.
+	 * @param   array   $params    The parameters for the pane
+	 *
+	 * @return  string
+	 *
+	 * @since   3.0
+	 * @deprecated  4.0	Use JHtml::_('bootstrap.startTabSet') instead.
+	 */
+	public static function startPane($selector = 'myTab', $params = array())
+	{
+		$sig = md5(serialize(array($selector, $params)));
+
+		if (!isset(static::$loaded['JHtmlRBootstrap::startTabSet'][$sig]))
+		{
+			// Include Bootstrap framework
+			static::framework();
+
+			// Setup options object
+			$opt['active'] = isset($params['active']) ? (string) $params['active'] : '';
+
+			// Attach tab to document
+			JFactory::getDocument()->addScriptDeclaration(
+				"(function($){
+					$('#$selector a').click(function (e) {
+						e.preventDefault();
+						$(this).tab('show');
+					});
+				})(jQuery);"
+			);
+
+			// Set static array
+			static::$loaded['JHtmlRBootstrap::startTabSet'][$sig] = true;
+			static::$loaded['JHtmlRBootstrap::startTabSet'][$selector]['active'] = $opt['active'];
+		}
+
+		return '<div class="tab-content" id="' . $selector . 'Content">';
+	}
+
+	/**
+	 * Close the current tab pane
+	 *
+	 * @return  string  HTML to close the pane
+	 *
+	 * @since   3.0
+	 * @deprecated  4.0	Use JHtml::_('bootstrap.endTabSet') instead.
+	 */
+	public static function endPane()
+	{
+		return '</div>';
+	}
+
+	/**
+	 * Begins the display of a new tab content panel.
+	 *
+	 * @param   string  $selector  Identifier of the panel.
+	 * @param   string  $id        The ID of the div element
+	 *
+	 * @return  string  HTML to start a new panel
+	 *
+	 * @since   3.0
+	 * @deprecated  4.0 Use JHtml::_('bootstrap.addTab') instead.
+	 */
+	public static function addPanel($selector, $id)
+	{
+		$active = (static::$loaded['JHtmlRBootstrap::startTabSet'][$selector]['active'] == $id) ? ' active' : '';
+
+		return '<div id="' . $id . '" class="tab-pane' . $active . '">';
+	}
+
+	/**
+	 * Close the current tab content panel
+	 *
+	 * @return  string  HTML to close the pane
+	 *
+	 * @since   3.0
+	 * @deprecated  4.0 Use JHtml::_('bootstrap.endTab') instead.
+	 */
+	public static function endPanel()
+	{
+		return '</div>';
 	}
 
 	/**

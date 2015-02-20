@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -90,7 +90,9 @@ abstract class RToolbarButton
 	/**
 	 * Render the button.
 	 *
+	 * @param   boolean  $isOption  Is menu option?
+	 *
 	 * @return  string  The rendered button.
 	 */
-	abstract public function render();
+	abstract public function render($isOption = false);
 }

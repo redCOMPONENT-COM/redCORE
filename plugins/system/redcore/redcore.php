@@ -3,7 +3,7 @@
  * @package     Joomla.Plugin
  * @subpackage  System.Redcore
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -71,7 +71,7 @@ class PlgSystemRedcore extends JPlugin
 						$optionName = $input->get->getString('option', '');
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
 						$viewName = $input->getString('view', '');
-						$version = $input->getString('version', '');
+						$version = $input->getString('webserviceVersion', '');
 						$token = $input->getString(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), '');
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
@@ -110,8 +110,14 @@ class PlgSystemRedcore extends JPlugin
 						// Set the server response code.
 						header('Status: 500', true, 500);
 
+						// Check for defined constants
+						if (!defined('JSON_UNESCAPED_SLASHES'))
+						{
+							define('JSON_UNESCAPED_SLASHES', 64);
+						}
+
 						// An exception has been caught, echo the message and exit.
-						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)));
+						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
 					}
 
 					JFactory::getApplication()->close();
@@ -167,7 +173,7 @@ class PlgSystemRedcore extends JPlugin
 		$doc = JFactory::getDocument();
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		RHtml::_('rbootstrap.framework');
+		RHtmlMedia::loadFrameworkJs();
 
 		if ($doc->_scripts)
 		{
@@ -179,18 +185,24 @@ class PlgSystemRedcore extends JPlugin
 				$doc->addScriptDeclaration("function do_nothing() { return; }");
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-more.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools.js']);
 				unset($doc->_scripts[JURI::root(true) . '/plugins/system/mtupgrade/mootools.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-core-uncompressed.js']);
-				unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/system/js/caption-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/modal-uncompressed.js']);
+				unset($doc->_scripts[JURI::root(true) . '/media/system/js/mootools-more-uncompressed.js']);
 
 				if ($doc->_styleSheets)
 				{
 					unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
+				}
+
+				if (!$isAdmin)
+				{
+					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
+					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
 				}
 			}
 
@@ -293,6 +305,13 @@ class PlgSystemRedcore extends JPlugin
 	{
 		$app = JFactory::getApplication();
 
-		return $app->input->get('disable_mootools', false);
+		$disable = $app->input->get('disable_mootools', false);
+
+		if (!$disable)
+		{
+			$disable = RHtmlMedia::isMootoolsDisabled();
+		}
+
+		return $disable;
 	}
 }

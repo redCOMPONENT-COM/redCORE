@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -100,4 +100,10 @@ if (empty($return))
 			</a>
 		</li>
 	<?php endif; ?>
+	<li>
+		<a href="http://redcomponent-com.github.io/redCORE/" target="_blank">
+			<i class="icon-book"></i>
+			<?php echo JText::_('COM_REDCORE_DOCUMENTATION_LINK_TITLE') ?>
+		</a>
+	</li>
 </ul>

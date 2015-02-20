@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -17,7 +17,7 @@ JHtml::_('rjquery.chosen', 'select');
 <div class="tab-pane" id="mainComponentConfiguration">
 	<p class="tab-description"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_CONFIGURATION_DESC'); ?></p>
 	<?php if (!empty($this->form)) : ?>
-		<div class="span12">
+		<div class="col-md-12">
 			<ul class="nav nav-tabs" id="configTabs">
 				<?php $fieldSets = $this->form->getFieldsets(); ?>
 				<?php foreach ($fieldSets as $name => $fieldSet) : ?>
@@ -39,7 +39,7 @@ JHtml::_('rjquery.chosen', 'select');
 							<p class="tab-description"><?php echo JText::_($fieldSet->description); ?></p>
 						<?php endif; ?>
 						<?php foreach ($this->form->getFieldset($name) as $field): ?>
-							<div class="control-group">
+							<div class="form-group">
 								<?php if (!$field->hidden && $name != "permissions") : ?>
 									<div class="control-label">
 										<?php echo $field->label; ?>

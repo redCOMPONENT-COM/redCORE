@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -231,7 +231,10 @@ class RApiHalDocumentDocument extends JDocument
 		{
 			foreach ($this->uriParams as $paramKey => $param)
 			{
-				$uri->setVar($paramKey, $param);
+				if (!$uri->hasVar($paramKey))
+				{
+					$uri->setVar($paramKey, $param);
+				}
 			}
 		}
 

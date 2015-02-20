@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -238,7 +238,7 @@ class RedcoreModelConfig extends RModelAdmin
 			{
 				$table = JTable::getInstance('Extension');
 
-				if ($table->load(array('element' => $option)))
+				if ($table->load(array('element' => $option, 'type' => 'component')))
 				{
 					$data = $this->getItem($table->extension_id);
 

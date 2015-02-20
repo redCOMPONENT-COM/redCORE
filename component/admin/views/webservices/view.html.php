@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -49,9 +49,14 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 	public $stoolsOptions = array();
 
 	/**
-	 * @var  string
+	 * @var  array
 	 */
-	public $webservice;
+	public $xmlFiles;
+
+	/**
+	 * @var  int
+	 */
+	public $xmlFilesAvailable;
 
 	/**
 	 * Display method
@@ -70,9 +75,21 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 		$this->pagination = $model->getPagination();
 
 		$this->items = $model->getItems();
-		$this->missingWebservices = null;
+		$this->xmlFiles = $model->getXmlFiles();
+		$this->xmlFilesAvailable = $model->xmlFilesAvailable;
 
-		$this->return = base64_encode('index.php?option=com_redcore&view=webservices&webservice=');
+		$this->return = base64_encode('index.php?option=com_redcore&view=webservices');
+
+		// Check if option is enabled
+		if (RTranslationHelper::$pluginParams->get('enable_webservices', 0) == 0)
+		{
+			JFactory::getApplication()->enqueueMessage(
+				JText::sprintf(
+					'COM_REDCORE_WEBSERVICES_PLUGIN_LABEL_WARNING',
+					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+				),
+				'error');
+		}
 
 		parent::display($tpl);
 	}
@@ -85,5 +102,76 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 	public function getTitle()
 	{
 		return JText::_('COM_REDCORE_WEBSERVICES_MANAGE');
+	}
+
+	/**
+	 * Get the toolbar to render.
+	 *
+	 * @return RToolbar
+	 */
+	public function getToolbar()
+	{
+		$canDo = $this->getActions();
+		$group = new RToolbarButtonGroup;
+		$secondGroup = new RToolbarButtonGroup;
+		$thirdGroup = new RToolbarButtonGroup;
+		$user = JFactory::getUser();
+
+		if ($user->authorise('core.admin', 'com_redcore'))
+		{
+			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
+			{
+				$new = RToolbarBuilder::createNewButton('webservice.add');
+				$group->addButton($new);
+			}
+
+			if ($canDo->get('core.edit'))
+			{
+				$edit = RToolbarBuilder::createEditButton('webservice.edit');
+				$group->addButton($edit);
+
+				$publish = RToolbarBuilder::createPublishButton('webservices.publish');
+				$unPublish = RToolbarBuilder::createUnpublishButton('webservices.unpublish');
+
+				$secondGroup->addButton($publish)
+					->addButton($unPublish);
+			}
+
+			if ($canDo->get('core.delete'))
+			{
+				$delete = RToolbarBuilder::createDeleteButton('webservices.delete');
+
+				$thirdGroup->addButton($delete);
+			}
+		}
+
+		$toolbar = new RToolbar;
+		$toolbar->addGroup($group)
+			->addGroup($secondGroup)
+			->addGroup($thirdGroup);
+
+		return $toolbar;
+	}
+
+	/**
+	 * Gets a list of the actions that can be performed.
+	 *
+	 * @param   string  $section    The section.
+	 * @param   mixed   $assetName  The asset name.
+	 *
+	 * @return  JObject
+	 */
+	public function getActions($section = 'component', $assetName = 'com_redcore')
+	{
+		$user = JFactory::getUser();
+		$result	= new JObject;
+		$actions = JAccess::getActions('com_redcore', $section);
+
+		foreach ($actions as $action)
+		{
+			$result->set($action->name,	$user->authorise($action->name, $assetName));
+		}
+
+		return $result;
 	}
 }

@@ -3,7 +3,7 @@
  * @package     Redcore.Translation
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -15,7 +15,7 @@ $components = !empty($displayData['components']) ? $displayData['components'] : 
 $configurationLink = !empty($displayData['configurationLink']) ? true : false;
 $translationLink = !empty($displayData['translationLink']) ? true : false;
 ?>
-<div class="row-fluid">
+<div class="row">
 	<?php if (empty($components)): ?>
 		<div class="alert alert-info">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -25,7 +25,7 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 		</div>
 	<?php else : ?>
 		<?php foreach ($components as $component): ?>
-			<div class="span4 well">
+			<div class="col-md-4 well">
 				<h4>
 					<?php echo !empty($component->xml->name) ? RText::getTranslationIfExists($component->xml->name, '', '') : $component->option; ?>
 				</h4>
@@ -44,7 +44,7 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 							<strong><?php echo JText::_('JVERSION'); ?>:</strong>
 						</td>
 						<td>
-							<strong><span class="badge badge-success"><?php echo !empty($component->xml->version) ? $component->xml->version : ''; ?></span></strong>
+							<strong><span class="label label-success"><?php echo !empty($component->xml->version) ? $component->xml->version : ''; ?></span></strong>
 						</td>
 					</tr>
 					<tr>
@@ -75,7 +75,7 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 			</div>
 			<?php if ((++$column) % 3 == 0 ) : ?>
 				</div>
-				<div class="row-fluid">
+				<div class="row">
 			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php endif; ?>

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -18,6 +18,27 @@ defined('JPATH_REDCORE') or die;
  */
 class RToolbarButtonGroup
 {
+	/**
+	 * Determinate if button group should be shown as a menu.
+	 *
+	 * @var  bool
+	 */
+	protected $menu = false;
+
+	/**
+	 * Used for button group title for a drop down.
+	 *
+	 * @var  string
+	 */
+	protected $title = '';
+
+	/**
+	 * Determinate icon class for drop down button.
+	 *
+	 * @var  string
+	 */
+	protected $iconClass = '';
+
 	/**
 	 * The buttons in the group.
 	 *
@@ -35,11 +56,17 @@ class RToolbarButtonGroup
 	/**
 	 * Constructor.
 	 *
-	 * @param   string  $class  The css class attribute.
+	 * @param   string  $class      The css class attribute.
+	 * @param   bool    $isMenu     Display btn group as a menu?
+	 * @param   string  $iconClass  Collapse button icon class.
+	 * @param   string  $title      Collapse button title.
 	 */
-	public function __construct($class = '')
+	public function __construct($class = '', $isMenu = false, $iconClass = '', $title = '')
 	{
-		$this->class = $class;
+		$this->class     = $class;
+		$this->menu      = $isMenu;
+		$this->iconClass = $iconClass;
+		$this->title     = $title;
 	}
 
 	/**
@@ -84,5 +111,35 @@ class RToolbarButtonGroup
 	public function isEmpty()
 	{
 		return 0 === count($this->buttons);
+	}
+
+	/**
+	 * Get the icon group css class attribute.
+	 *
+	 * @return  string  The css class attribute.
+	 */
+	public function getIconClass()
+	{
+		return $this->iconClass;
+	}
+
+	/**
+	 * Get the group title.
+	 *
+	 * @return  string  Group title.
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * Checks if group is a menu with options.
+	 *
+	 * @return  bool
+	 */
+	public function isMenu()
+	{
+		return $this->menu;
 	}
 }

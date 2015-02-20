@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -46,7 +46,7 @@ abstract class JHtmlRdropdown
 		}
 
 		// Depends on Bootstrap
-		JHtml::_('rbootstrap.framework');
+		RHtmlMedia::loadFrameworkJs();
 
 		JFactory::getDocument()->addScriptDeclaration("
 			(function($){
@@ -91,7 +91,7 @@ abstract class JHtmlRdropdown
 		}
 
 		$dropDownList = '<div class="btn-group" style="margin-left:6px;display:none">
-							<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-mini">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle btn btn-mini btn-xs">
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu">';

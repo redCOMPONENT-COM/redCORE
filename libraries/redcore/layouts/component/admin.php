@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -48,10 +48,9 @@ $input->set('tmpl', 'component');
 $input->set('redcore', true);
 
 // Load bootstrap + fontawesome
-JHtml::_('rbootstrap.framework');
-
+RHtmlMedia::loadFrameworkCss();
+RHtmlMedia::loadFrameworkJs();
 RHelperAsset::load('component.min.js', 'redcore');
-RHelperAsset::load('component.min.css', 'redcore');
 
 // Load a custom CSS option for this component if exists
 if ($comOption = $input->get('option', null))
@@ -234,7 +233,7 @@ else : ?>
 			</div>
 		</div>
 		<footer class="footer pagination-centered navbar navbar-fixed-bottom hidden-phone">
-			Copyright 2014 redcomponent.com. All rights reserved.
+			Copyright 2015 redcomponent.com. All rights reserved.
 		</footer>
 	</div>
 <?php endif;

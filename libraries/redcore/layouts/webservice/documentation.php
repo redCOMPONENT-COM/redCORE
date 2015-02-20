@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -41,6 +41,10 @@ $date   = new JDate;
 				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_OPTION'); ?>:
 			</strong>
 			<?php echo $xml->config->name; ?> (com_<?php echo $xml->config->name; ?>)<br />
+			<strong>
+				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_CLIENT'); ?>:
+			</strong>
+			<?php echo ucfirst($view->client); ?><br />
 			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SUPPORTED_FORMATS'); ?></strong>
 			: json (<?php echo JText::_('JDEFAULT'); ?>), xml<br />
 		</div>
@@ -73,7 +77,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-							<hr />
+							<br />
 						<?php endif;
 
 						if (isset($xml->operations->read->item)) : ?>
@@ -89,7 +93,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-							<hr />
+							<br />
 						<?php endif;
 					elseif ($operationName == 'task') :
 						foreach ($operation as $taskName => $task) : ?>
@@ -105,7 +109,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-							<hr />
+							<br />
 						<?php endforeach;
 					else : ?>
 						<a name="<?php echo $operationName; ?>"></a>
@@ -120,7 +124,7 @@ $date   = new JDate;
 									)
 								)
 							);?>
-						<hr />
+						<br />
 					<?php endif; ?>
 			<?php endforeach; ?>
 		<?php endforeach; ?>

@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -59,7 +59,13 @@ class RedcoreViewConfig extends RedcoreHelpersView
 	{
 		/** @var RedcoreModelConfig $model */
 		$model = $this->getModel('Config');
-		$option = JFactory::getApplication()->input->getString('component', '');
+		$option = JFactory::getApplication()->input->getString('component', 'com_redcore');
+
+		$lang = JFactory::getLanguage();
+
+		// Load component language files
+		$lang->load($option, JPATH_ADMINISTRATOR, 'en-GB', false, false)
+		|| $lang->load($option, JPATH_ADMINISTRATOR . '/components/' . $option, 'en-GB', false, false);
 
 		$this->form	= $model->getForm();
 		$this->component = $model->getComponent($option);
@@ -69,6 +75,18 @@ class RedcoreViewConfig extends RedcoreHelpersView
 		$this->missingContentElements = $model->loadMissingContentElements($option, $this->contentElements);
 
 		RLayoutHelper::$defaultBasePath = JPATH_ADMINISTRATOR . '/components/' . $option . '/layouts';
+
+		$extensionXml = RComponentHelper::getComponentManifestFile($option);
+
+		if (isset($extensionXml->redcore))
+		{
+			$attributes = $extensionXml->redcore->attributes();
+
+			if (!empty($attributes['defaultFramework']))
+			{
+				RHtmlMedia::setFramework((string) $attributes['defaultFramework']);
+			}
+		}
 
 		parent::display($tpl);
 	}

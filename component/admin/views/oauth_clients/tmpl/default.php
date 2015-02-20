@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('_JEXEC') or die;
@@ -35,11 +35,11 @@ $listDirn = $this->state->get('list.direction');
 	);
 	?>
 	<hr/>
-	<div class="row-fluid">
+	<div class="row">
 		<table class="table table-striped table-hover" id="oauthClientsList">
 			<thead>
 			<tr>
-				<th class="hidden-phone">
+				<th class="hidden-xs">
 					<input type="checkbox" name="checkall-toggle" value=""
 					       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 				</th>
@@ -52,10 +52,10 @@ $listDirn = $this->state->get('list.direction');
 				<th>
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_REDIRECT_URI', 'oc.redirect_uri', $listDirn, $listOrder); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPES', 'oc.grant_types', $listDirn, $listOrder); ?>
 				</th>
-				<th class="nowrap hidden-phone">
+				<th class="nowrap hidden-xs">
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_SCOPE', 'oc.scope', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap">
@@ -89,14 +89,14 @@ $listDirn = $this->state->get('list.direction');
 							<?php echo $item->redirect_uri; ?>
 						</td>
 						<td>
-							<ul class="unstyled ctypes">
+							<ul class="list-unstyled ctypes">
 								<?php foreach ($grantTypes as $grantType): ?>
 									<li><?php echo $grantType; ?></li>
 								<?php endforeach; ?>
 							</ul>
 						</td>
 						<td>
-							<ul class="unstyled ctypes">
+							<ul class="list-unstyled ctypes">
 								<?php foreach ($scopes as $key => $scope): ?>
 									<?php if ($key < 5): ?>
 										<li><?php echo $scope; ?></li>

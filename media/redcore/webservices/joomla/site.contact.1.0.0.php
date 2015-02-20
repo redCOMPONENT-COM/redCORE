@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -26,15 +26,6 @@ class RApiHalHelperSiteContact
 	 * @throws  RuntimeException
 	 */
 	/* public function isOperationAllowed(RApiHalHal $apiHal){} */
-
-	/**
-	 * Set resources from configuration if available
-	 *
-	 * @return  void
-	 *
-	 * @since   1.2
-	 */
-	/* public function setResources(RApiHalHal $apiHal){} */
 
 	/**
 	 * Execute the Api Default Page operation.
@@ -153,4 +144,15 @@ class RApiHalHelperSiteContact
 	 * @since   1.2
 	 */
 	/* public function setApiOperation(RApiHalHal $apiHal){} */
+
+	/**
+	 * Include library classes
+	 *
+	 * @param   string  $element  Option name
+	 *
+	 * @return  void
+	 *
+	 * @since   1.4
+	 */
+	/*public function loadExtensionLibrary($element, RApiHalHal $apiHal){} */
 }

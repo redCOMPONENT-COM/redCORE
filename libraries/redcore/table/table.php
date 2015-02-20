@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Base
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -730,14 +730,19 @@ class RTable extends JTable
 	 * @param   string  $name    The table name
 	 * @param   mixed   $client  The client. null = auto, 1 = admin, 0 = frontend
 	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call table from another extension
 	 *
 	 * @return  RTable  The table
 	 *
 	 * @throws  InvalidArgumentException
 	 */
-	public static function getAutoInstance($name, $client = null, array $config = array())
+	public static function getAutoInstance($name, $client = null, array $config = array(), $option = 'auto')
 	{
-		$option = JFactory::getApplication()->input->getString('option', '');
+		if ($option === 'auto')
+		{
+			$option = JFactory::getApplication()->input->getString('option', '');
+		}
+
 		$componentName = ucfirst(strtolower(substr($option, 4)));
 		$prefix = $componentName . 'Table';
 
@@ -782,12 +787,13 @@ class RTable extends JTable
 	 *
 	 * @param   string  $name    The table name
 	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call table from another extension
 	 *
 	 * @return  RTable  The table
 	 */
-	public static function getAdminInstance($name, array $config = array())
+	public static function getAdminInstance($name, array $config = array(), $option = 'auto')
 	{
-		return self::getAutoInstance($name, 1, $config);
+		return self::getAutoInstance($name, 1, $config, $option);
 	}
 
 	/**
@@ -795,12 +801,13 @@ class RTable extends JTable
 	 *
 	 * @param   string  $name    The table name
 	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call table from another extension
 	 *
 	 * @return  RTable  The table
 	 */
-	public static function getFrontInstance($name, array $config = array())
+	public static function getFrontInstance($name, array $config = array(), $option = 'auto')
 	{
-		return self::getAutoInstance($name, 0, $config);
+		return self::getAutoInstance($name, 0, $config, $option);
 	}
 
 	/**

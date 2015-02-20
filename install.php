@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Model
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -323,6 +323,7 @@ class Com_RedcoreInstallerScript
 			{
 				$extName  = $node->attributes()->name;
 				$extGroup = $node->attributes()->group;
+				$disabled = !empty($node->attributes()->disabled) ? true : false;
 				$extPath  = $src . '/plugins/' . $extGroup . '/' . $extName;
 				$result   = 0;
 
@@ -341,7 +342,7 @@ class Com_RedcoreInstallerScript
 				$this->_storeStatus('plugins', array('name' => $extName, 'group' => $extGroup, 'result' => $result));
 
 				// Enable the installed plugin
-				if ($result)
+				if ($result && !$disabled)
 				{
 					$db = JFactory::getDBO();
 					$query = $db->getQuery(true);
@@ -352,7 +353,7 @@ class Com_RedcoreInstallerScript
 					$query->where("element=" . $db->quote($extName));
 					$query->where("folder=" . $db->quote($extGroup));
 					$db->setQuery($query);
-					$db->query();
+					$db->execute();
 				}
 			}
 		}
@@ -370,14 +371,25 @@ class Com_RedcoreInstallerScript
 		// Required objects
 		$manifest  = $parent->get('manifest');
 
-		if ($nodes = $manifest->translations->translation)
+		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
-			foreach ($nodes as $node)
+			if ($nodes = $manifest->translations->translation)
 			{
-				$extName   = (string) $node->attributes()->name;
-				$result = RTranslationTable::batchContentElements($extName, 'install', false);
+				foreach ($nodes as $node)
+				{
+					$extName   = (string) $node->attributes()->name;
 
-				$this->_storeStatus('translations', array('name' => $extName, 'result' => $result));
+					try
+					{
+						RTranslationTable::batchContentElements($extName, 'install', false);
+					}
+					catch (Exception $e)
+					{
+						// We are already setting message queue so we don't need to set it here as well
+					}
+
+					$this->_storeStatus('translations', array('name' => $extName, 'result' => true));
+				}
 			}
 		}
 	}
@@ -543,8 +555,6 @@ class Com_RedcoreInstallerScript
 			return false;
 		}
 
-		$copyfiles = array();
-
 		// Here we set the folder we are going to copy the files to.
 		$destination = JPath::clean(RApiHalHelper::getWebservicesPath());
 
@@ -559,6 +569,26 @@ class Com_RedcoreInstallerScript
 		{
 			$source = $src;
 		}
+
+		$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
+
+		return $installer->copyFiles($copyFiles);
+	}
+
+	/**
+	 * Method to parse through a xml element of the installation manifest and take appropriate action.
+	 *
+	 * @param   SimpleXMLElement  $element      Element to iterate
+	 * @param   string            $source       Source location of the files
+	 * @param   string            $destination  Destination location of the files
+	 *
+	 * @return  array
+	 *
+	 * @since   1.4
+	 */
+	public function prepareFilesForCopy($element, $source, $destination)
+	{
+		$copyFiles = array();
 
 		// Process each file in the $files array (children of $tagName).
 		foreach ($element->children() as $file)
@@ -583,10 +613,10 @@ class Com_RedcoreInstallerScript
 			}
 
 			// Add the file to the copyfiles array
-			$copyfiles[] = $path;
+			$copyFiles[] = $path;
 		}
 
-		return $installer->copyFiles($copyfiles);
+		return $copyFiles;
 	}
 
 	/**
@@ -794,7 +824,7 @@ class Com_RedcoreInstallerScript
 
 		if ($isRedcore)
 		{
-			if ($components = RComponentHelper::getRedcoreComponents())
+			if ((method_exists('RComponentHelper', 'getRedcoreComponents')) && $components = RComponentHelper::getRedcoreComponents())
 			{
 				$app = JFactory::getApplication();
 
@@ -851,7 +881,8 @@ class Com_RedcoreInstallerScript
 
 			foreach ($translationTables as $translationTable => $translationTableParams)
 			{
-				if ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option)
+				if ((method_exists('RTranslationTable', 'getTranslationsTableName'))
+					&& ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option))
 				{
 					$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
 
@@ -1109,6 +1140,8 @@ class Com_RedcoreInstallerScript
 	 */
 	public function displayComponentInfo($parent, $message = '')
 	{
+		$this->loadRedcoreLibrary();
+
 		if ($this->showComponentInfo)
 		{
 			if (method_exists('RComponentHelper', 'displayComponentInfo'))

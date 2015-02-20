@@ -26,8 +26,9 @@ Desktop.ini
 *~.nib
 *~
 
-# Build config
+# Phing
 build.properties
+phing-latest.phar
 
 # Github pages and Jekyll files
 /_site/
@@ -50,6 +51,8 @@ npm-debug.log
 /tests/system/webdriver/tests/logs/
 /tests/acceptance.suite.yml
 codecept.phar
+tests/*/*Tester.php
+
 
 # Never ignore
 !.gitignore

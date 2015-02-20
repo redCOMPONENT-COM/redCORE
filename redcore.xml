@@ -5,12 +5,12 @@
     <author>redCOMPONENT</author>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.4.0</version>
+    <version>1.4.13</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.4.0" />
+    <redcore version="1.4.13" defaultFramework="bootstrap3" />
 
     <install folder="component/admin">
         <sql>
@@ -81,12 +81,12 @@
     <plugins>
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
-        <plugin name="mvcoverride" group="system"/>
+        <plugin name="mvcoverride" group="system" disabled="1" />
     </plugins>
 
     <!-- Modules to install with the component -->
     <modules>
-        <module name="mod_redcore_language_switcher"/>
+        <module name="mod_redcore_language_switcher" client="site"/>
     </modules>
 
     <!-- Translations to install with the component -->

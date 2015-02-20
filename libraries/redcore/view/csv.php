@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  View
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -81,6 +81,9 @@ abstract class RViewCsv extends JViewLegacy
 		$csvLines[0] = $columns;
 		$i = 1;
 
+		// Check if the preprocessing method exists
+		$preprocessExists = method_exists($this, 'preprocess');
+
 		foreach ($items as $item)
 		{
 			$csvLines[$i] = array();
@@ -89,7 +92,7 @@ abstract class RViewCsv extends JViewLegacy
 			{
 				if (property_exists($item, $name))
 				{
-					$csvLines[$i][$name] = $item->$name;
+					$csvLines[$i][$name] = $preprocessExists ? $this->preprocess($name, $item->$name) : $item->$name;
 				}
 			}
 

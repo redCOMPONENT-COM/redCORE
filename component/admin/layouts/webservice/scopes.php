@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -23,10 +23,10 @@ $hiddenLabel = isset($displayData['options']['hiddenLabel']) ? (bool) $displayDa
 $column = 0;
 ?>
 
-<div class="control-group <?php echo $class; ?>">
-	<div class="row-fluid">
+<div class="form-group <?php echo $class; ?>">
+	<div class="row">
 		<?php foreach ($options as $webServiceName => $scopes) :?>
-			<div class="span4 well">
+			<div class="col-md-4 well">
 				<h4>
 					<?php echo $webServiceName; ?>
 				</h4>
@@ -42,7 +42,7 @@ $column = 0;
 			</div>
 			<?php if ((++$column) % 3 == 0 ) : ?>
 				</div>
-				<div class="row-fluid">
+				<div class="row">
 			<?php endif; ?>
 		<?php endforeach;?>
 	</div>

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -46,13 +46,12 @@ if ('raw' === $format)
 $input->set('redcore', true);
 
 // Load bootstrap + fontawesome
-JHtml::_('rbootstrap.framework');
-
+RHtmlMedia::loadFrameworkJs();
 RHelperAsset::load('component.min.js', 'redcore');
 
 if (RBootstrap::$loadFrontendCSS)
 {
-	RHelperAsset::load('component.min.css', 'redcore');
+	RHtmlMedia::loadFrameworkCss();
 }
 
 // Load a custom CSS option for this component if exists

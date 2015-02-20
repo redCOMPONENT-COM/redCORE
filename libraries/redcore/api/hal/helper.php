@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
 defined('JPATH_BASE') or die;
+
+jimport('joomla.filesystem.folder');
 
 /**
  * Interface to handle api calls
@@ -60,7 +62,19 @@ class RApiHalHelper
 	 */
 	public static function getWebservicesPath()
 	{
-		return JPATH_ROOT . '/media/redcore/webservices';
+		return JPATH_ROOT . '/' . self::getWebservicesRelativePath();
+	}
+
+	/**
+	 * Get Webservices path
+	 *
+	 * @return  string
+	 *
+	 * @since   1.2
+	 */
+	public static function getWebservicesRelativePath()
+	{
+		return 'media/redcore/webservices';
 	}
 
 	/**
@@ -190,13 +204,28 @@ class RApiHalHelper
 	 * @param   string  $path               Path to webservice files
 	 * @param   bool    $showNotifications  Show notifications
 	 *
+	 * @throws Exception
 	 * @return  array  List of objects
 	 */
 	public static function getWebservices($client = '', $webserviceName = '', $version = '1.0.0', $path = '', $showNotifications = false)
 	{
 		if (empty(self::$webservices) || (!empty($webserviceName) && empty(self::$webservices[$client][$webserviceName][$version])))
 		{
-			self::loadWebservices($client, $webserviceName, $version, $path);
+			try
+			{
+				self::loadWebservices($client, $webserviceName, $version, $path);
+			}
+			catch (Exception $e)
+			{
+				if ($showNotifications)
+				{
+					JFactory::getApplication()->enqueueMessage($e->getMessage(), 'message');
+				}
+				else
+				{
+					throw $e;
+				}
+			}
 		}
 
 		if (empty($webserviceName))
@@ -226,8 +255,6 @@ class RApiHalHelper
 	 */
 	public static function loadWebservices($client = '', $webserviceName = '', $version = '1.0.0', $path = '', $showNotifications = false)
 	{
-		jimport('joomla.filesystem.folder');
-
 		if (empty($webserviceName))
 		{
 			$folders = JFolder::folders(self::getWebservicesPath(), '.', true);
@@ -271,7 +298,29 @@ class RApiHalHelper
 		}
 		else
 		{
-			self::$webservices[$client][$webserviceName][$version] = self::loadWebserviceConfiguration($webserviceName, $version, 'xml', $path, $client);
+			try
+			{
+				$xml = self::loadWebserviceConfiguration($webserviceName, $version, 'xml', $path, $client);
+
+				if (!empty($xml))
+				{
+					$client = self::getWebserviceClient($xml);
+					$version = !empty($xml->config->version) ? (string) $xml->config->version : $version;
+					$xml->webservicePath = trim($path);
+					self::$webservices[$client][(string) $xml->config->name][$version] = $xml;
+				}
+			}
+			catch (Exception $e)
+			{
+				if ($showNotifications)
+				{
+					JFactory::getApplication()->enqueueMessage($e->getMessage(), 'message');
+				}
+				else
+				{
+					throw $e;
+				}
+			}
 		}
 	}
 
@@ -297,7 +346,7 @@ class RApiHalHelper
 			$version = !empty($version) ? array(JPath::clean($version)) : array('1.0.0');
 			$webservicePath = !empty($path) ? self::getWebservicesPath() . '/' . $path : self::getWebservicesPath();
 
-			// Search for suffixed versions. Example: content.v1.xml
+			// Search for suffixed versions. Example: content.1.0.0.xml
 			if (!empty($version))
 			{
 				foreach ($version as $suffix)
@@ -358,182 +407,6 @@ class RApiHalHelper
 	}
 
 	/**
-	 * Returns string status of a given webservice
-	 *
-	 * @param   string  $client          Client
-	 * @param   string  $webserviceName  Webservice name
-	 * @param   string  $version         Version of the webservice
-	 *
-	 * @return  string  Status string
-	 *
-	 * @since   1.2
-	 * @throws  RuntimeException
-	 */
-	public static function getStatus($client, $webserviceName, $version)
-	{
-		$installedWebservices = self::getInstalledWebservices();
-
-		if (empty($installedWebservices[$client][$webserviceName][$version]))
-		{
-			return JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NOT_INSTALLED');
-		}
-
-		if ($installedWebservices[$client][$webserviceName][$version]['state'] == 0)
-		{
-			return JText::_('JUNPUBLISHED');
-		}
-
-		if ($installedWebservices[$client][$webserviceName][$version]['state'] == 1)
-		{
-			return JText::_('JPUBLISHED');
-		}
-
-		return '';
-	}
-
-	/**
-	 * Returns allowed methods of a given webservice
-	 *
-	 * @param   string  $client          Client
-	 * @param   string  $webserviceName  Webservice name
-	 * @param   string  $version         Version of the webservice
-	 *
-	 * @return  string  Status string
-	 *
-	 * @since   1.2
-	 * @throws  RuntimeException
-	 */
-	public static function getMethods($client, $webserviceName, $version)
-	{
-		$installedWebservices = self::getInstalledWebservices();
-
-		if (empty($installedWebservices[$client][$webserviceName][$version]['operations']))
-		{
-			return '--';
-		}
-
-		return $installedWebservices[$client][$webserviceName][$version]['operations'];
-	}
-
-	/**
-	 * Returns allowed scopes of a given webservice
-	 *
-	 * @param   string  $client                Client
-	 * @param   string  $webserviceName        Webservice name
-	 * @param   string  $version               Version of the webservice
-	 * @param   bool    $getScopeDisplayNames  Return Display name or scope name
-	 *
-	 * @return  string  Status string
-	 *
-	 * @since   1.2
-	 * @throws  RuntimeException
-	 */
-	public static function getScopes($client, $webserviceName, $version, $getScopeDisplayNames = false)
-	{
-		$installedWebservices = self::getInstalledWebservices();
-		$scopes = array();
-
-		if (empty($installedWebservices[$client][$webserviceName][$version]['scopes']))
-		{
-			return '--';
-		}
-
-		foreach ($installedWebservices[$client][$webserviceName][$version]['scopes'] as $scope)
-		{
-			$scopes[] = $getScopeDisplayNames ? $scope['scopeDisplayName'] : $scope['scope'];
-		}
-
-		return implode(',', $scopes);
-	}
-
-	/**
-	 * Uninstall Webservice from site
-	 *
-	 * @param   string  $client             Client
-	 * @param   string  $webservice         Webservice name
-	 * @param   string  $version            Webservice version
-	 * @param   bool    $showNotifications  Show notifications
-	 * @param   string  $path               Path to webservice files
-	 *
-	 * @return  boolean  Returns true if Webservice was successfully uninstalled
-	 */
-	public static function uninstallWebservice($client = '', $webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
-	{
-		self::getInstalledWebservices();
-
-		if (!empty($webservice))
-		{
-			if (!empty(self::$installedWebservices[$client][$webservice][$version]))
-			{
-				if (count(self::$installedWebservices[$client][$webservice]) == 1)
-				{
-					unset(self::$installedWebservices[$client][$webservice]);
-				}
-				else
-				{
-					unset(self::$installedWebservices[$client][$webservice][$version]);
-				}
-			}
-		}
-		else
-		{
-			self::$installedWebservices = array();
-		}
-
-		self::saveRedcoreWebserviceConfig();
-		self::saveOAuth2Scopes($client, $webservice, array(), $showNotifications);
-
-		if ($showNotifications)
-		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_UNINSTALLED'), 'message');
-		}
-
-		return true;
-	}
-
-	/**
-	 * Uninstalls Webservice access and deletes XML file
-	 *
-	 * @param   string  $client             Client
-	 * @param   string  $webservice         Webservice name
-	 * @param   string  $version            Webservice version
-	 * @param   bool    $showNotifications  Show notifications
-	 * @param   string  $path               Path to webservice files
-	 *
-	 * @return  boolean  Returns true if Content element was successfully purged
-	 */
-	public static function deleteWebservice($client, $webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
-	{
-		if (self::uninstallWebservice($client, $webservice, $version, $showNotifications))
-		{
-			$xmlFilePath = self::getWebserviceFile($client, strtolower($webservice), $version, 'xml', $path);
-			$helperFilePath = self::getWebserviceFile($client, strtolower($webservice), $version, 'php', $path);
-
-			try
-			{
-				JFile::delete($xmlFilePath);
-
-				if (!empty($helperFilePath))
-				{
-					JFile::delete($helperFilePath);
-				}
-			}
-			catch (Exception $e)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('COM_REDCORE_WEBSERVICES_WEBSERVICE_DELETE_ERROR', $e->getMessage()), 'error');
-
-				return false;
-			}
-
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DELETED'), 'message');
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Upload Webservices config files to redcore media location
 	 *
 	 * @param   array  $files  The array of Files (file descriptor returned by PHP)
@@ -577,143 +450,6 @@ class RApiHalHelper
 		}
 
 		return RFilesystemFile::uploadFiles($files, self::getWebservicesPath() . '/upload', $uploadOptions);
-	}
-
-	/**
-	 * Install Webservice from site
-	 *
-	 * @param   string  $client             Client
-	 * @param   string  $webservice         Webservice Name
-	 * @param   string  $version            Webservice version
-	 * @param   bool    $showNotifications  Show notifications
-	 * @param   string  $path               Path to webservice files
-	 *
-	 * @return  boolean  Returns true if Webservice was successfully installed
-	 */
-	public static function installWebservice($client = '', $webservice = '', $version = '1.0.0', $showNotifications = true, $path = '')
-	{
-		self::getInstalledWebservices();
-
-		$webserviceXml = self::getWebservices($client, $webservice, $version, $path);
-
-		if (!empty($webserviceXml))
-		{
-			$operations = array();
-			$scopes = array();
-			$client = self::getWebserviceClient($webserviceXml);
-			$version = !empty($webserviceXml->config->version) ? (string) $webserviceXml->config->version : $version;
-
-			if (!empty($webserviceXml->operations))
-			{
-				foreach ($webserviceXml->operations as $operation)
-				{
-					foreach ($operation as $key => $method)
-					{
-						if ($key == 'task')
-						{
-							foreach ($method as $taskKey => $task)
-							{
-								$displayName = !empty($task['displayName']) ? (string) $task['displayName'] : $key . ' ' . $taskKey;
-								$scopes[] = array(
-									'scope' => strtolower($client . '.' . $webservice . '.' . $key . '.' . $taskKey),
-									'scopeDisplayName' => ucfirst($displayName)
-								);
-							}
-						}
-						else
-						{
-							$operations[] = strtoupper(str_replace(array('read', 'create', 'update'), array('GET', 'PUT', 'POST'), $key));
-							$displayName = !empty($method['displayName']) ? (string) $method['displayName'] : $key;
-							$scopes[] = array(
-								'scope' => strtolower($client . '.' . $webservice . '.' . $key),
-								'scopeDisplayName' => ucfirst($displayName)
-							);
-						}
-					}
-				}
-			}
-
-			self::$installedWebservices[$client][$webservice][$version] = array(
-				'name' => $webservice,
-				'version' => $version,
-				'displayName' => (string) $webserviceXml->name,
-				'path' => (string) $webserviceXml->webservicePath,
-				'xml' => $webservice . '.' . $version . '.xml',
-				'operations' => implode(',', $operations),
-				'scopes' => $scopes,
-				'client' => $client,
-				'state' => 1,
-			);
-
-			self::saveRedcoreWebserviceConfig();
-			self::saveOAuth2Scopes($client, $webservice, $scopes, $showNotifications);
-
-			if ($showNotifications)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_UNINSTALLED'), 'message');
-			}
-
-			return true;
-		}
-
-		if ($showNotifications)
-		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_FILE_NOT_FOUND'), 'message');
-		}
-
-		return false;
-	}
-
-	/**
-	 * Preforms Batch action against all Webservices
-	 *
-	 * @param   string  $action             Action to preform
-	 * @param   bool    $showNotifications  Show notification after each Action
-	 *
-	 * @return  boolean  Returns true if Action was successful
-	 */
-	public static function batchWebservices($action = '', $showNotifications = true)
-	{
-		$webservices = self::getWebservices();
-
-		if (!empty($webservices))
-		{
-			foreach ($webservices as $webserviceNames)
-			{
-				foreach ($webserviceNames as $webserviceVersions)
-				{
-					foreach ($webserviceVersions as $webservice)
-					{
-						$client = self::getWebserviceClient($webservice);
-						$path = $webservice->webservicePath;
-						$name = (string) $webservice->config->name;
-						$version = (string) $webservice->config->version;
-
-						switch ($action)
-						{
-							case 'install':
-								self::installWebservice($client, $name, $version, $showNotifications, $path);
-								break;
-							case 'uninstall':
-								self::uninstallWebservice($client, $name, $version, $showNotifications, $path);
-								break;
-								break;
-							case 'delete':
-								self::deleteWebservice($client, $name, $version, $showNotifications, $path);
-								break;
-						}
-					}
-				}
-			}
-		}
-
-		// Delete missing tables as well
-		if ($action == 'uninstall')
-		{
-			self::uninstallWebservice();
-		}
-
-		return true;
 	}
 
 	/**
@@ -762,75 +498,6 @@ class RApiHalHelper
 	}
 
 	/**
-	 * Method to save the configuration data.
-	 *
-	 * @return  bool   True on success, false on failure.
-	 */
-	public static function saveRedcoreWebserviceConfig()
-	{
-		$data = array();
-		$component = JComponentHelper::getComponent('com_redcore');
-
-		$installedWebservices = self::getInstalledWebservices();
-
-		if (!empty($installedWebservices))
-		{
-			foreach ($installedWebservices as $webserviceClient => $webserviceNames)
-			{
-				foreach ($webserviceNames as $webserviceName => $webserviceVersions)
-				{
-					uasort($installedWebservices[$webserviceClient][$webserviceName], 'version_compare');
-				}
-			}
-		}
-
-		$component->params->set('webservices', $installedWebservices);
-
-		$data['params'] = $component->params->toString('JSON');
-
-		$dispatcher = RFactory::getDispatcher();
-		$table = JTable::getInstance('Extension');
-		$isNew = true;
-
-		// Load the previous Data
-		if (!$table->load($component->id))
-		{
-			return false;
-		}
-
-		// Bind the data.
-		if (!$table->bind($data))
-		{
-			return false;
-		}
-
-		// Check the data.
-		if (!$table->check())
-		{
-			return false;
-		}
-
-		// Trigger the onConfigurationBeforeSave event.
-		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', &$table, $isNew));
-
-		if (in_array(false, $result, true))
-		{
-			return false;
-		}
-
-		// Store the data.
-		if (!$table->store())
-		{
-			return false;
-		}
-
-		// Trigger the onConfigurationAfterSave event.
-		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', &$table, $isNew));
-
-		return true;
-	}
-
-	/**
 	 * Get list of all webservices from Redcore parameters
 	 *
 	 * @return  array  Array or table with columns columns
@@ -839,17 +506,24 @@ class RApiHalHelper
 	{
 		if (!isset(self::$installedWebservices))
 		{
+			self::$installedWebservices = array();
 			$db = JFactory::getDbo();
 
-			// We do not want to translate this value
-			$db->translate = false;
+			$query = $db->getQuery(true)
+				->select('*')
+				->from('#__redcore_webservices')
+				->order('created_date ASC');
 
-			$component = JComponentHelper::getComponent('com_redcore');
+			$db->setQuery($query);
+			$webservices = $db->loadObjectList();
 
-			// We put translation check back on
-			$db->translate = true;
-			$parameters = $component->params->toArray();
-			self::$installedWebservices = !empty($parameters['webservices']) ? $parameters['webservices'] : array();
+			if (!empty($webservices))
+			{
+				foreach ($webservices as $webservice)
+				{
+					self::$installedWebservices[$webservice->client][$webservice->name][$webservice->version] = JArrayHelper::fromObject($webservice);
+				}
+			}
 		}
 
 		return self::$installedWebservices;
@@ -968,11 +642,13 @@ class RApiHalHelper
 					foreach ($webserviceVersions as $version => $webservice)
 					{
 						$webserviceDisplayName = JText::_('J' . $webserviceClient) . ' '
-							. (!empty($webservice['displayName']) ? $webservice['displayName'] : $webserviceName);
+							. (!empty($webservice['title']) ? $webservice['title'] : $webserviceName);
 
 						if (!empty($webservice['scopes']))
 						{
-							foreach ($webservice['scopes'] as $scope)
+							$scopes = json_decode($webservice['scopes'], true);
+
+							foreach ($scopes as $scope)
 							{
 								$scopeParts = explode('.', $scope['scope']);
 
@@ -1034,5 +710,72 @@ class RApiHalHelper
 		$jwtUtil = new \OAuth2\Encryption\Jwt;
 
 		return $jwtUtil->encode($params, $privateKey, 'RS256');
+	}
+
+	/**
+	 * Returns list of transform elements
+	 *
+	 * @return  array
+	 */
+	public static function getTransformElements()
+	{
+		static $transformElements = null;
+
+		if (!is_null($transformElements))
+		{
+			return $transformElements;
+		}
+
+		$transformElementsFiles = JFolder::files(JPATH_LIBRARIES . '/redcore/api/hal/transform', '.php');
+		$transformElements = array();
+
+		foreach ($transformElementsFiles as $transformElement)
+		{
+			if (!in_array($transformElement, array('interface.php', 'base.php')))
+			{
+				$name = str_replace('.php', '', $transformElement);
+				$transformElements[] = array(
+					'value' => $name,
+					'text' => $name,
+				);
+			}
+		}
+
+		return $transformElements;
+	}
+
+	/**
+	 * Returns transform element that is appropriate to db type
+	 *
+	 * @param   string  $type  Database type
+	 *
+	 * @return  string
+	 */
+	public static function getTransformElementByDbType($type)
+	{
+		$type = explode('(', $type);
+		$type = strtoupper(trim($type[0]));
+
+		// We do not test for Varchar because fallback Transform Element String
+		switch ($type)
+		{
+			case 'TINYINT':
+			case 'SMALLINT':
+			case 'MEDIUMINT':
+			case 'INT':
+			case 'BIGINT':
+				return 'int';
+			case 'FLOAT':
+			case 'DOUBLE':
+			case 'DECIMAL':
+				return 'float';
+			case 'DATE':
+			case 'DATETIME':
+			case 'TIMESTAMP':
+			case 'TIME':
+				return 'datetime';
+		}
+
+		return 'string';
 	}
 }

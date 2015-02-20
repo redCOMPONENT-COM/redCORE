@@ -1,7 +1,7 @@
 /*!
  * redCORE v1.3.x
  *
- * Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved
+ * Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved
  * Licensed under the GNU General Public License version 2 or later.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -7619,6 +7619,15 @@
   text-shadow: none;
   color: #FFFFFF;
 }
+.redcore .navbar a.navbar-brand,
+.redcore .navbar .navbar-brand {
+  margin-left: 0;
+  padding: 10px 5px;
+  font-weight: 200;
+  font-size: 1.5em;
+  text-shadow: none;
+  color: #FFFFFF;
+}
 .redcore .navbar .nav > .active > a,
 .redcore .navbar .nav > .active > a:hover,
 .redcore .navbar .nav > .active > a:focus {
@@ -7743,6 +7752,27 @@
 .redcore form .checkbox input[type="checkbox"] {
   float: left;
   margin-left: -20px;
+}
+.redcore form select,
+.redcore form textarea,
+.redcore form input[type="text"],
+.redcore form input[type="password"],
+.redcore form input[type="datetime"],
+.redcore form input[type="datetime-local"],
+.redcore form input[type="date"],
+.redcore form input[type="month"],
+.redcore form input[type="time"],
+.redcore form input[type="week"],
+.redcore form input[type="number"],
+.redcore form input[type="email"],
+.redcore form input[type="url"],
+.redcore form input[type="search"],
+.redcore form input[type="tel"],
+.redcore form input[type="color"],
+.redcore form .uneditable-input {
+  height: 34px;
+  font-size: 14px;
+  line-height: 20px;
 }
 @media (min-width: 767px) and (max-width: 1280px) {
   .redcore .row-fluid .span2.sidebar {

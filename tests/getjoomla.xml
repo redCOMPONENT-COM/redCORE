@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ==================================================================         -->
+<!-- This script clones joomla2 and joomla3 at test/system/ to be used          -->
+<!-- by the system tests                                                        -->
+<!-- ==================================================================         -->
+<project name="com_redcore" default="getjoomla">
+
+    <property name="repo.dir.joomla2" value="${project.basedir}/system/joomla-cms2/" />
+    <!-- convert into absolute path -->
+    <resolvepath propertyName="repo.dir.joomla2.resolved" file="${repo.dir.joomla2}" />
+
+    <property name="repo.dir.joomla3" value="${project.basedir}/system/joomla-cms3/" />
+    <!-- convert into absolute path -->
+    <resolvepath propertyName="repo.dir.joomla3.resolved" file="${repo.dir.joomla3}" />
+
+    <target name="removefolder">
+        <available file="${folder.to.remove}" type="dir" property="dir.Exists"/>
+        <if>
+            <isset property="dir.Exists" />
+            <then>
+                <echo msg="Removing old ${folder.to.remove}"/>
+                <delete dir="${folder.to.remove}"/>
+            </then>
+        </if>
+    </target>
+
+    <target name="clonerepository">
+        <!-- Leaving here this script for all platforms but using a more performant one at the bottom. See 'exec' !-->
+        <!--
+        <gitclone
+                repository="${repository.url}"
+                targetPath="${repository.path}"
+                bare="false"
+                />
+        <gitcheckout
+                repository="${repository.path}"
+                branchname="${branch}"
+                quiet="false"
+                create="false"
+                />
+        !-->
+        <exec
+                command="git clone -b ${branch} --single-branch --depth 1 ${repository.url} ${repository.path}" />
+    </target>
+
+
+
+    <target name="getjoomla2">
+        <phingcall target="removefolder">
+            <property name="folder.to.remove" value="${repo.dir.joomla2.resolved}" />
+        </phingcall>
+        <phingcall target="clonerepository">
+            <property name="repository.url" value="https://github.com/joomla/joomla-cms.git" />
+            <property name="repository.path" value="${repo.dir.joomla2.resolved}" />
+            <property name="branch" value="2.5.x" />
+        </phingcall>
+    </target>
+    <target name="getjoomla3">
+        <phingcall target="removefolder">
+            <property name="folder.to.remove" value="${repo.dir.joomla3.resolved}" />
+        </phingcall>
+        <phingcall target="clonerepository">
+            <property name="repository.url" value="https://github.com/joomla/joomla-cms.git" />
+            <property name="repository.path" value="${repo.dir.joomla3.resolved}" />
+            <property name="branch" value="staging" />
+        </phingcall>
+    </target>
+
+    <target name="getjoomla" depends="getjoomla2, getjoomla3">
+        <echo msg="Joomla testing sites are ready for executing tests" />
+    </target>
+</project>

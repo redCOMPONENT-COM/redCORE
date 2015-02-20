@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2014 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -356,12 +356,18 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	 */
 	public function toJson()
 	{
-		if (defined(JSON_NUMERIC_CHECK) && $this->jsonNumericCheck)
+		// Check for defined constants
+		if (!defined('JSON_UNESCAPED_SLASHES'))
 		{
-			return json_encode($this->toArray(), JSON_NUMERIC_CHECK);
+			define('JSON_UNESCAPED_SLASHES', 64);
 		}
 
-		return json_encode($this->toArray());
+		if (defined(JSON_NUMERIC_CHECK) && $this->jsonNumericCheck)
+		{
+			return json_encode($this->toArray(), JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+		}
+
+		return json_encode($this->toArray(), JSON_UNESCAPED_SLASHES);
 	}
 
 	/**

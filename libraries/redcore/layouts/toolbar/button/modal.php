@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2012 - 2014 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -13,11 +13,12 @@ $data = $displayData;
 
 if (!isset($data['button']))
 {
-	throw new InvalidArgumentException('The button is not passed to the layout "button.link".');
+	throw new InvalidArgumentException(JText::sprintf('LIB_REDCORE_LAYOUTS_TOOLBAR_BUTTON_ERROR_MISSING_BUTTON', 'button.modal'));
 }
 
 /** @var RToolbarButtonModal $button */
 $button = $data['button'];
+$isOption = $data['isOption'];
 
 $class = $button->getClass();
 $iconClass = $button->getIconClass();
@@ -27,7 +28,7 @@ $isList = $button->isList();
 $dataTarget = $button->getDataTarget();
 
 // Get the button class.
-$btnClass = 'btn';
+$btnClass = $isOption ? '' : 'btn btn-default';
 
 if (!empty($class))
 {
@@ -46,9 +47,21 @@ if ($isList)
 	else {jQuery('" . $dataTarget  . "').modal('toggle');}";
 }
 ?>
-<button class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
-	<?php if (!empty($iconClass)) : ?>
-		<i class="<?php echo $iconClass ?>"></i>
-	<?php endif; ?>
-	<?php echo $text ?>
-</button>
+
+<?php if ($isOption) :?>
+	<li>
+		<a href="#" class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+			<?php if (!empty($iconClass)) : ?>
+				<i class="<?php echo $iconClass ?>"></i>
+			<?php endif; ?>
+			<?php echo $text ?>
+		</a>
+	</li>
+<?php else:?>
+	<button class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+		<?php if (!empty($iconClass)) : ?>
+			<i class="<?php echo $iconClass ?>"></i>
+		<?php endif; ?>
+		<?php echo $text ?>
+	</button>
+<?php endif;?>

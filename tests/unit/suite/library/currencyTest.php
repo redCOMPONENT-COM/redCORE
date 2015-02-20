@@ -3,7 +3,7 @@
  * redCORE lib currency helper test
  *
  * @package    Redcore.UnitTest
- * @copyright  Copyright (C) 2014 redCOMPONENT.com
+ * @copyright  Copyright (C) 2008 - 2015 redCOMPONENT.com
  * @license    GNU General Public License version 2 or later
  */
 

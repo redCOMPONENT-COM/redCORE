@@ -3,7 +3,7 @@
 <apiservice client="administrator">
     <name>Contact Webservice</name>
     <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
     <description>Api HAL configuration for Joomla Administrator Contact component</description>
     <config>
         <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
@@ -12,26 +12,6 @@
         <!-- authorizationAssetName is used with Joomla authorization when preforming checks against ACL (if not authorized by scope) -->
         <authorizationAssetName>com_contact</authorizationAssetName>
     </config>
-
-    <!-- Resource definition -->
-    <!-- Resources can be grouped with "resourceSpecific" attribute, default value is "rcwsGlobal" -->
-    <resources>
-        <resource displayGroup="_links" displayName="documentation" fieldFormat="/index.php?option=contact&amp;format=doc#{rel}" linkTitle="Documentation" linkName="contact" hrefLang="" linkTemplated="true" linkRel="curies" />
-        <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page" />
-        <resource displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}" />
-        <resource displayGroup="_links" displayName="contact:list" fieldFormat="/index.php?option=contact" />
-        <resource displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
-        <resource displayGroup="_links" displayName="contact:checkin" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" />
-        <resource displayGroup="_links" displayName="contact:checkout" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" />
-        <resource displayGroup="_links" displayName="contact:featured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=featured" />
-        <resource displayGroup="_links" displayName="contact:unfeatured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unfeatured" />
-        <resource displayGroup="_links" displayName="contact:publish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=publish" />
-        <resource displayGroup="_links" displayName="contact:unpublish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unpublish" />
-        <resource displayGroup="_links" displayName="contact:createdBy" fieldFormat="/index.php?option=users&amp;id={created_by}" />
-        <resource displayGroup="_links" displayName="contact:modifiedBy" fieldFormat="/index.php?option=users&amp;id={modified_by}" />
-
-        <resource displayName="result" fieldFormat="{result}" transform="boolean" />
-    </resources>
     <operations>
         <!-- If operation is commented out or missing, it will not be possible to use it -->
         <!-- authorizationNeeded tag is optional and default value is true. If set to false, No OAuth2 authorization will be required -->
@@ -58,8 +38,11 @@
                     <!-- Disable specific fields from showing -->
                     <field name="checked_out" isHiddenField="true" />
                 </fields>
+
+                <!-- Resource definition -->
+                <!-- Resources can be grouped with "resourceSpecific" attribute, default value is "rcwsGlobal" -->
                 <resources>
-                    <resource displayName="documentation" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
 
                     <!-- meta data -->
                     <resource displayName="page" fieldFormat="{pagination.page}" transform="int" />
@@ -75,14 +58,13 @@
                     <resource resourceSpecific="listItem" displayName="language" fieldFormat="{language}" />
                     <resource resourceSpecific="listItem" displayName="name" fieldFormat="{name}" />
                     <resource resourceSpecific="listItem" displayName="ordering" fieldFormat="{ordering}" transform="int" />
-                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="contact:self" fieldFormat="/index.php?option=contact&amp;id={id}">
+                    <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="listItem">
                         <description>Link to contact item</description>
                     </resource>
-                    <resource resourceSpecific="listItem" displayGroup="_links" displayName="categories" fieldFormat="/index.php?option=categories&amp;id={catid}" />
 
                     <!-- _links -->
-                    <resource displayName="base" />
-                    <resource displayName="contact:self" fieldFormat="/index.php?option=contact" />
+                    <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                     <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;list[limitstart]=0" linkTitle="Pagination first" />
                     <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.previous}" linkTitle="Pagination previous" />
                     <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.next}" linkTitle="Pagination next" />
@@ -119,7 +101,7 @@
                     <resource displayName="checked_out" fieldFormat="{checked_out}" transform="int" />
                     <resource displayName="checked_out_time" fieldFormat="{checked_out_time}" transform="datetime" />
                     <resource displayName="ordering" fieldFormat="{ordering}" transform="int" />
-                    <resource displayName="params" fieldFormat="{params}" />
+                    <resource displayName="params" fieldFormat="{params}" transform="json" />
                     <resource displayName="user_id" fieldFormat="{user_id}" transform="int" />
                     <resource displayName="catid" fieldFormat="{catid}" transform="int" />
                     <resource displayName="access" fieldFormat="{access}" transform="int" />
@@ -143,17 +125,16 @@
                     <resource displayName="hits" fieldFormat="{hits}" transform="int" />
 
                     <!-- _links -->
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:self" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="categories" />
-                    <resource displayName="contact:checkout" />
-                    <resource displayName="contact:checkin" />
-                    <resource displayName="contact:featured" />
-                    <resource displayName="contact:unfeatured" />
-                    <resource displayName="contact:publish" />
-                    <resource displayName="contact:unpublish" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayGroup="_links" displayName="contact:checkout" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" />
+                    <resource displayGroup="_links" displayName="contact:checkin" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" />
+                    <resource displayGroup="_links" displayName="contact:featured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=featured" />
+                    <resource displayGroup="_links" displayName="contact:unfeatured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unfeatured" />
+                    <resource displayGroup="_links" displayName="contact:publish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=publish" />
+                    <resource displayGroup="_links" displayName="contact:unpublish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unpublish" />
                 </resources>
                 <description><![CDATA[ This operation displays one Contact item. ]]></description>
             </item>
@@ -171,11 +152,11 @@
             </fields>
 
             <resources>
-                <resource displayName="documentation" />
-                <resource displayName="base" />
-                <resource displayName="contact:list" />
-                <resource displayName="result" />
-                <resource displayName="contact:self" />
+                <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
             </resources>
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
@@ -190,11 +171,11 @@
                 <description><![CDATA[ Fields listed will be transformed before saving or default value can be assigned. ]]></description>
             </fields>
             <resources>
-                <resource displayName="documentation" />
-                <resource displayName="base" />
-                <resource displayName="contact:list" />
-                <resource displayName="result" />
-                <resource displayName="contact:self" />
+                <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
             </resources>
             <description><![CDATA[ This operation updates Contact item. ]]></description>
         </update>
@@ -206,10 +187,10 @@
                 <description><![CDATA[ Fields needed for Delete operation. ]]></description>
             </fields>
             <resources>
-                <resource displayName="documentation" />
-                <resource displayName="base" />
-                <resource displayName="contact:list" />
-                <resource displayName="result" />
+                <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
             </resources>
             <description><![CDATA[ This operation deletes Contact item(s). Expected data: id of the contact(s). ]]></description>
         </delete>
@@ -225,10 +206,10 @@
                     <description><![CDATA[ Fields needed for Featured task operation. ]]></description>
                 </fields>
                 <resources>
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="result" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
                 </resources>
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. Expected data: id of the contact. ]]></description>
             </featured>
@@ -238,10 +219,10 @@
                     <field name="id" transform="int" isRequiredField="true" />
                 </fields>
                 <resources>
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="result" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
                 </resources>
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. Expected data: id of the contact. ]]></description>
             </unfeatured>
@@ -249,11 +230,12 @@
             <publish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
-                </fields><resources>
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="result" />
+                </fields>
+                <resources>
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
                 </resources>
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. Expected data: id of the contact. ]]></description>
             </publish>
@@ -261,11 +243,12 @@
             <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="publish" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
-                </fields><resources>
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="result" />
+                </fields>
+                <resources>
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
                 </resources>
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. Expected data: id of the contact. ]]></description>
             </unpublish>
@@ -273,11 +256,12 @@
             <checkin authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
-                </fields><resources>
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="result" />
+                </fields>
+                <resources>
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
                 </resources>
                 <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. Expected data: id of the contact. ]]></description>
             </checkin>
@@ -287,10 +271,10 @@
                     <field name="id" transform="int" isRequiredField="true" />
                 </fields>
                 <resources>
-                    <resource displayName="documentation" />
-                    <resource displayName="base" />
-                    <resource displayName="contact:list" />
-                    <resource displayName="result" />
+                    <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                    <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
                 </resources>
                 <description><![CDATA[ This task enables you to check-out Contact item. Expected data: id of the contact. ]]></description>
             </checkout>
