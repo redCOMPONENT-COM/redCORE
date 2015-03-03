@@ -12,7 +12,7 @@
   <operations>
     <documentation authorizationNeeded="false" source="auto" url=""/>
     <task>
-      <remindUsername useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="">
+      <forgotUsername useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="">
         <description><![CDATA[This task for user can retrieve username.]]></description>
         <fields>
           <field name="email" transform="string" defaultValue="" isRequiredField="true" isPrimaryField="false">
@@ -25,7 +25,7 @@
           <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
           <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
         </resources>
-      </remindUsername>
+      </forgotUsername>
       <forgotPassword useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="">
         <description><![CDATA[This task for user can retrieve password.]]></description>
         <fields>

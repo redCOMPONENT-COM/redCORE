@@ -19,7 +19,7 @@ defined('JPATH_BASE') or die;
 class RApiHalHelperSiteUsers
 {
 	/**
-	 * Service for reset password of user
+	 * Service for reset password of user when they forgot password.
 	 *
 	 * @param   string  $email  Email of user account
 	 *
@@ -48,13 +48,13 @@ class RApiHalHelperSiteUsers
 	}
 
 	/**
-	 * Service for remind username of user
+	 * Service for get username when they forgot username.
 	 *
 	 * @param   string  $email  Email of user account
 	 *
 	 * @return  boolean         True on success. False otherwise.
 	 */
-	public function remindUsername($email)
+	public function forgotUsername($email)
 	{
 		// Load language from com_users
 		$language = JFactory::getLanguage();
