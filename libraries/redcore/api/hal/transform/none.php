@@ -14,16 +14,16 @@ defined('JPATH_BASE') or die;
  *
  * @package     Redcore
  * @subpackage  Api
- * @since       1.4
+ * @since       1.2
  */
-class RApiHalTransformFile extends RApiHalTransformBase
+class RApiHalTransformNone extends RApiHalTransformBase
 {
 	/**
 	 * Method to transform an internal representation to an external one.
 	 *
-	 * @param   mixed  $definition  Field definition.
+	 * @param   string  $definition  Field definition.
 	 *
-	 * @return mixed Transformed value.
+	 * @return int Transformed value.
 	 */
 	public static function toExternal($definition)
 	{
@@ -39,12 +39,6 @@ class RApiHalTransformFile extends RApiHalTransformBase
 	 */
 	public static function toInternal($definition)
 	{
-		// This is already converted to file type so we are returning it as is
-		if (is_array($definition))
-		{
-			return $definition;
-		}
-
-		return !empty($_FILES[$definition]) ? $_FILES[$definition] : false;
+		return $definition;
 	}
 }

@@ -66,6 +66,7 @@ class PlgSystemRedcore extends JPlugin
 				{
 					try
 					{
+						JError::setErrorHandling(E_ERROR, 'message');
 						JFactory::getApplication()->clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
 						$optionName = $input->get->getString('option', '');
@@ -77,6 +78,7 @@ class PlgSystemRedcore extends JPlugin
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
 						$data = RApi::getPostedData();
+						$dataGet = $input->get->getArray();
 
 						if (empty($webserviceClient))
 						{
@@ -92,6 +94,7 @@ class PlgSystemRedcore extends JPlugin
 							'method'            => $method,
 							'task'              => $task,
 							'data'              => $data,
+							'dataGet'           => $dataGet,
 							'accessToken'       => $token,
 							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
 							'id'                => $input->getString('id', ''),
@@ -107,8 +110,10 @@ class PlgSystemRedcore extends JPlugin
 					}
 					catch (Exception $e)
 					{
+						$code = $e->getCode() > 0 ? $e->getCode() : 500;
+
 						// Set the server response code.
-						header('Status: 500', true, 500);
+						header('Status: ' . $code, true, $code);
 
 						// Check for defined constants
 						if (!defined('JSON_UNESCAPED_SLASHES'))
