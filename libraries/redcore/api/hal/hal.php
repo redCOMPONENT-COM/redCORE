@@ -321,7 +321,7 @@ class RApiHalHal extends RApi
 			{
 				if (!$this->triggerFunction('isOperationAllowed'))
 				{
-					throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
+					throw new Exception(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
 				}
 
 				$this->elementName = ucfirst(strtolower((string) $this->getConfig('config.name')));
@@ -1312,14 +1312,14 @@ class RApiHalHal extends RApi
 	 *
 	 * @return object This method may be chained.
 	 *
-	 * @throws  RuntimeException
+	 * @throws  Exception
 	 */
 	public function isOperationAllowed()
 	{
 		// Check if webservice is published
 		if (!RApiHalHelper::isPublishedWebservice($this->client, $this->webserviceName, $this->webserviceVersion) && !empty($this->webserviceName))
 		{
-			throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_IS_UNPUBLISHED', $this->webserviceName));
+			throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_IS_UNPUBLISHED', $this->webserviceName));
 		}
 
 		// Check for allowed operations
@@ -1432,7 +1432,7 @@ class RApiHalHal extends RApi
 	 * @param   string  $scope                     Name of the scope to test against
 	 * @param   bool    $terminateIfNotAuthorized  Terminate api if client is not authorized
 	 *
-	 * @throws RuntimeException
+	 * @throws Exception
 	 * @return  void
 	 *
 	 * @since   1.2
@@ -1454,7 +1454,7 @@ class RApiHalHal extends RApi
 		}
 		elseif ($response === false && $terminateIfNotAuthorized)
 		{
-			throw new RuntimeException('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE');
+			throw new Exception('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE');
 		}
 		else
 		{
@@ -1524,7 +1524,7 @@ class RApiHalHal extends RApi
 
 		if (empty($tableName))
 		{
-			throw new RuntimeException('LIB_REDCORE_API_HAL_WEBSERVICE_TABLE_NAME_NOT_SET');
+			throw new Exception('LIB_REDCORE_API_HAL_WEBSERVICE_TABLE_NAME_NOT_SET');
 		}
 
 		$context = $this->webserviceName . '.' . $this->webserviceVersion;
