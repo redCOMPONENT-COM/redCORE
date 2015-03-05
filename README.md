@@ -23,7 +23,7 @@ redCORE based extensions works for Joomla 2.5 and 3.x.
 
 It is our hope that redCORE will be interesting for other Joomla developers or even the Joomla Core.
 
-Regards
+Regards,
 
 Ronni K. Gothard Christiansen
 
