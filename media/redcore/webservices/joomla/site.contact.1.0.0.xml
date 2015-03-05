@@ -9,11 +9,11 @@
         <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->
         <name>contact</name>
         <version>1.0.0</version>
-        <authorizationAssetName>com_contact</authorizationAssetName>
+        <authorizationAssetName>com_{webserviceName}</authorizationAssetName>
     </config>
     <operations>
-        <read authorizationNeeded="false">
-            <list optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="">
+        <read>
+            <list authorizationNeeded="false" optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="">
                 <resources>
                     <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
 
@@ -38,19 +38,22 @@
                     <!-- _links -->
                     <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                     <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
-                    <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;limitstart=0" linkTitle="Pagination first" />
-                    <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.previous}" linkTitle="Pagination previous" />
-                    <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.next}" linkTitle="Pagination next" />
-                    <resource displayGroup="_links" displayName="contact:last" fieldFormat="/index.php?option=contact&amp;limitstart={pagination.last}" linkTitle="Pagination last" />
-                    <resource displayGroup="_links" displayName="contact:all" fieldFormat="/index.php?option=contact&amp;limit=0" linkTitle="Show all items" />
-                    <resource displayGroup="_links" displayName="contact:limit" fieldFormat="/index.php?option=contact&amp;limit={limit}&amp;limitstart={limitstart}" linkTemplated="true" linkTitle="List limit" />
-                    <resource displayGroup="_links" displayName="contact:filter" fieldFormat="/index.php?option=contact&amp;filter_search={filter_search}" linkTemplated="true" linkTitle="Filter list" />
-                    <resource displayGroup="_links" displayName="contact:sort" fieldFormat="/index.php?option=contact&amp;filter_order={filter_order}&amp;filter_order_Dir={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:first" fieldFormat="{webserviceUrlPath}&amp;limitstart=0" linkTitle="Pagination first" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:previous" fieldFormat="{webserviceUrlPath}&amp;limitstart={pagination.previous}" linkTitle="Pagination previous" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:next" fieldFormat="{webserviceUrlPath}&amp;limitstart={pagination.next}" linkTitle="Pagination next" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:last" fieldFormat="{webserviceUrlPath}&amp;limitstart={pagination.last}" linkTitle="Pagination last" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:all" fieldFormat="{webserviceUrlPath}&amp;limit=0" linkTitle="Show all items" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:limit" fieldFormat="{webserviceUrlPath}&amp;limit={limit}&amp;limitstart={limitstart}" linkTemplated="true" linkTitle="List limit" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:filter" fieldFormat="{webserviceUrlPath}&amp;filter_search={filter_search}" linkTemplated="true" linkTitle="Filter list" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:sort" fieldFormat="{webserviceUrlPath}&amp;filter_order={filter_order}&amp;filter_order_Dir={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
                 </resources>
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
 
-            <item optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
+            <item authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
+                <fields>
+                    <field name="id" transform="int" isFilterField="true" isPrimaryField="true" />
+                </fields>
                 <resources>
                     <!-- standard -->
                     <resource displayName="id" fieldFormat="{id}" transform="int" />

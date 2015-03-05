@@ -308,60 +308,80 @@ class RApiHalHal extends RApi
 	 * @return  mixed  RApi object with information on success, boolean false on failure.
 	 *
 	 * @since   1.2
-	 * @throws  RuntimeException
+	 * @throws  Exception
 	 */
 	public function execute()
 	{
-		if (!empty($this->webserviceName))
+		// We do not want some unwanted text to appear before output
+		ob_start();
+
+		try
 		{
-			if (!$this->triggerFunction('isOperationAllowed'))
+			if (!empty($this->webserviceName))
 			{
-				throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
+				if (!$this->triggerFunction('isOperationAllowed'))
+				{
+					throw new RuntimeException(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
+				}
+
+				$this->elementName = ucfirst(strtolower((string) $this->getConfig('config.name')));
+				$this->operationConfiguration = $this->getConfig('operations.' . strtolower($this->operation));
+
+				switch ($this->operation)
+				{
+					case 'create':
+						$this->triggerFunction('apiCreate');
+						break;
+					case 'read':
+						$this->triggerFunction('apiRead');
+						break;
+					case 'update':
+						$this->triggerFunction('apiUpdate');
+						break;
+					case 'delete':
+						$this->triggerFunction('apiDelete');
+						break;
+					case 'task':
+						$this->triggerFunction('apiTask');
+						break;
+					case 'documentation':
+						$this->triggerFunction('apiDocumentation');
+						break;
+				}
+			}
+			else
+			{
+				// If default page needs authorization to access it
+				$this->isAuthorized('', RTranslationHelper::$pluginParams->get('webservices_default_page_authorization', 0));
+
+				// No webservice name. We display all webservices available
+				$this->triggerFunction('apiDefaultPage');
 			}
 
-			$this->elementName = ucfirst(strtolower((string) $this->getConfig('config.name')));
-			$this->operationConfiguration = $this->getConfig('operations.' . strtolower($this->operation));
+			// Set links from resources to the main document
+			$this->setDataValueToResource($this->hal, $this->resources, $this->data);
+			$messages = JFactory::getApplication()->getMessageQueue();
 
-			switch ($this->operation)
-			{
-				case 'create':
-					$this->triggerFunction('apiCreate');
-					break;
-				case 'read':
-					$this->triggerFunction('apiRead');
-					break;
-				case 'update':
-					$this->triggerFunction('apiUpdate');
-					break;
-				case 'delete':
-					$this->triggerFunction('apiDelete');
-					break;
-				case 'task':
-					$this->triggerFunction('apiTask');
-					break;
-				case 'documentation':
-					$this->triggerFunction('apiDocumentation');
-					break;
-			}
+			$executionErrors = ob_get_contents();
+			ob_end_clean();
 		}
-		else
+		catch (Exception $e)
 		{
-			// If default page needs authorization to access it
-			$this->isAuthorized('', RTranslationHelper::$pluginParams->get('webservices_default_page_authorization', 0));
+			$executionErrors = ob_get_contents();
+			ob_end_clean();
 
-			// No webservice name. We display all webservices available
-			$this->triggerFunction('apiDefaultPage');
+			throw $e;
 		}
 
-		$messages = JFactory::getApplication()->getMessageQueue();
+		if (!empty($executionErrors))
+		{
+			$messages[] = array('message' => $executionErrors, 'type' => 'notice');
+		}
 
 		if (!empty($messages))
 		{
 			$this->hal->setData('_messages', $messages);
 		}
-
-		// Set links from resources to the main document
-		$this->setDataValueToResource($this->hal, $this->resources, $this->data);
 
 		return $this;
 	}
@@ -481,8 +501,39 @@ class RApiHalHal extends RApi
 	 */
 	public function apiRead()
 	{
-		$id = $this->options->get('id', '');
-		$displayTarget = empty($id) ? 'list' : 'item';
+		$primaryKeys = array();
+		$primaryKeysFromFields = array();
+		$isReadItem = false;
+
+		// Checking for primary keys
+		if (!empty($this->operationConfiguration->item))
+		{
+			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $this->operationConfiguration->item);
+			$primaryKeysFromFields = $this->getPrimaryKeysFromFields($this->operationConfiguration->item);
+
+			// If there are no primary keys defined we will use id field as default
+			if (empty($primaryKeysFromFields))
+			{
+				$primaryKeysFromFields['id'] = array('transform' => 'int');
+			}
+
+			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+			{
+				if (isset($dataGet[$primaryKey]) && $dataGet[$primaryKey] != '')
+				{
+					$primaryKeys[] = $this->transformField($primaryKeyField['transform'], $dataGet[$primaryKey], false);
+					$isReadItem = true;
+				}
+
+				// If At least one of the primary keys is missing
+				if (!$isReadItem)
+				{
+					break;
+				}
+			}
+		}
+
+		$displayTarget = $isReadItem ? 'item' : 'list';
 		$this->apiDynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
 		$currentConfiguration = $this->operationConfiguration->{$displayTarget};
 		$model = $this->triggerFunction('loadModel', $this->elementName, $currentConfiguration);
@@ -519,8 +570,17 @@ class RApiHalHal extends RApi
 
 		// Getting single item
 		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItem');
+		$itemObject = method_exists($model, $functionName) ? call_user_func_array(array(&$model, $functionName), $primaryKeys) : array();
 
-		$itemObject = method_exists($model, $functionName) ? $model->{$functionName}($id) : array();
+		// Check to see if we have the item or not since it might return default properties
+		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+		{
+			if (!isset($itemObject->{$primaryKey}))
+			{
+				$itemObject = null;
+				break;
+			}
+		}
 
 		$this->triggerFunction('setForRenderItem', $itemObject, $currentConfiguration);
 
@@ -936,6 +996,7 @@ class RApiHalHal extends RApi
 	 * @param   object|array      $item           Item content
 	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
 	 *
+	 * @throws Exception
 	 * @return void
 	 */
 	public function setForRenderItem($item, $configuration)
@@ -954,8 +1015,10 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
-			// 204 => 'No Content'
-			$this->setStatusCode(204);
+			// 404 => 'Not found'
+			$this->setStatusCode(404);
+
+			throw new Exception(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_NO_CONTENT'), 404);
 		}
 	}
 
@@ -2053,5 +2116,32 @@ class RApiHalHal extends RApi
 		}
 
 		return $args;
+	}
+
+	/**
+	 * Returns primary keys from Element Fields properties
+	 *
+	 * @param   SimpleXMLElement  $xmlElement  Xml element
+	 *
+	 * @return  array
+	 */
+	public function getPrimaryKeysFromFields($xmlElement)
+	{
+		$primaryKeys = array();
+
+		if (isset($xmlElement->fields->field))
+		{
+			foreach ($xmlElement->fields->field as $field)
+			{
+				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
+
+				if (RApiHalHelper::isAttributeTrue($field, 'isPrimaryField'))
+				{
+					$primaryKeys[$fieldAttributes['name']] = $fieldAttributes;
+				}
+			}
+		}
+
+		return $primaryKeys;
 	}
 }

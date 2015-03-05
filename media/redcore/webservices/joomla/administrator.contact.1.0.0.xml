@@ -10,7 +10,7 @@
         <name>contact</name>
         <version>1.0.0</version>
         <!-- authorizationAssetName is used with Joomla authorization when preforming checks against ACL (if not authorized by scope) -->
-        <authorizationAssetName>com_contact</authorizationAssetName>
+        <authorizationAssetName>com_{webserviceName}</authorizationAssetName>
     </config>
     <operations>
         <!-- If operation is commented out or missing, it will not be possible to use it -->
@@ -65,14 +65,14 @@
                     <!-- _links -->
                     <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                     <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
-                    <resource displayGroup="_links" displayName="contact:first" fieldFormat="/index.php?option=contact&amp;list[limitstart]=0" linkTitle="Pagination first" />
-                    <resource displayGroup="_links" displayName="contact:previous" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.previous}" linkTitle="Pagination previous" />
-                    <resource displayGroup="_links" displayName="contact:next" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.next}" linkTitle="Pagination next" />
-                    <resource displayGroup="_links" displayName="contact:last" fieldFormat="/index.php?option=contact&amp;list[limitstart]={pagination.last}" linkTitle="Pagination last" />
-                    <resource displayGroup="_links" displayName="contact:all" fieldFormat="/index.php?option=contact&amp;list[limit]=0" linkTitle="Show all items" />
-                    <resource displayGroup="_links" displayName="contact:limit" fieldFormat="/index.php?option=contact&amp;list[limit]={limit}&amp;list[limitstart]={limitstart}" linkTemplated="true" linkTitle="List limit" />
-                    <resource displayGroup="_links" displayName="contact:filter" fieldFormat="/index.php?option=contact&amp;filter[search]={filter_search}" linkTemplated="true" linkTitle="Filter list" />
-                    <resource displayGroup="_links" displayName="contact:sort" fieldFormat="/index.php?option=contact&amp;filter[order]={filter_order}&amp;filter[order_Dir]={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:first" fieldFormat="{webserviceUrlPath}&amp;list[limitstart]=0" linkTitle="Pagination first" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:previous" fieldFormat="{webserviceUrlPath}&amp;list[limitstart]={pagination.previous}" linkTitle="Pagination previous" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:next" fieldFormat="{webserviceUrlPath}&amp;list[limitstart]={pagination.next}" linkTitle="Pagination next" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:last" fieldFormat="{webserviceUrlPath}&amp;list[limitstart]={pagination.last}" linkTitle="Pagination last" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:all" fieldFormat="{webserviceUrlPath}&amp;list[limit]=0" linkTitle="Show all items" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:limit" fieldFormat="{webserviceUrlPath}&amp;list[limit]={limit}&amp;list[limitstart]={limitstart}" linkTemplated="true" linkTitle="List limit" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:filter" fieldFormat="{webserviceUrlPath}&amp;filter[search]={filter_search}" linkTemplated="true" linkTitle="Filter list" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:sort" fieldFormat="{webserviceUrlPath}&amp;filter[order]={filter_order}&amp;filter[order_Dir]={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
                 </resources>
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
@@ -129,12 +129,12 @@
                     <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                     <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                     <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
-                    <resource displayGroup="_links" displayName="contact:checkout" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkout" />
-                    <resource displayGroup="_links" displayName="contact:checkin" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=checkin" />
-                    <resource displayGroup="_links" displayName="contact:featured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=featured" />
-                    <resource displayGroup="_links" displayName="contact:unfeatured" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unfeatured" />
-                    <resource displayGroup="_links" displayName="contact:publish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=publish" />
-                    <resource displayGroup="_links" displayName="contact:unpublish" fieldFormat="/index.php?option=contact&amp;id={id}&amp;task=unpublish" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:checkout" fieldFormat="{webserviceUrlPath}&amp;id={id}&amp;task=checkout" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:checkin" fieldFormat="{webserviceUrlPath}&amp;id={id}&amp;task=checkin" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:featured" fieldFormat="{webserviceUrlPath}&amp;id={id}&amp;task=featured" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:unfeatured" fieldFormat="{webserviceUrlPath}&amp;id={id}&amp;task=unfeatured" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:publish" fieldFormat="{webserviceUrlPath}&amp;id={id}&amp;task=publish" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:unpublish" fieldFormat="{webserviceUrlPath}&amp;id={id}&amp;task=unpublish" />
                 </resources>
                 <description><![CDATA[ This operation displays one Contact item. ]]></description>
             </item>
