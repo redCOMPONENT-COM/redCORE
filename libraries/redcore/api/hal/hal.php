@@ -574,6 +574,7 @@ class RApiHalHal extends RApi
 		$itemObject = method_exists($model, $functionName) ? call_user_func_array(array(&$model, $functionName), $primaryKeys) : array();
 		$messagesAfter = JFactory::getApplication()->getMessageQueue();
 
+		// Check to see if we have the item or not since it might return default properties
 		if (count($messagesBefore) != count($messagesAfter))
 		{
 			foreach ($messagesAfter as $messageKey => $messageValue)
