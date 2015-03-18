@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <version>1.4.14</version>
+    <version>1.4.15</version>
     <description>PLG_SYSTEM_REDCORE_XML_DESCRIPTION</description>
 
     <files>
@@ -111,6 +111,24 @@
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_AUTHORIZATION_CHECK_DESC">
                     <option value="0">PLG_SYSTEM_REDCORE_WEBSERVICES_AUTHORIZATION_CHECK_SCOPE</option>
                     <option value="1">PLG_SYSTEM_REDCORE_WEBSERVICES_AUTHORIZATION_CHECK_JOOMLA</option>
+                </field>
+                <field
+                        name="debug_webservices"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_DEBUG"
+                        description="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_DEBUG_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="enable_soap"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_SOAP_ENABLE_SOAP"
+                        description="PLG_SYSTEM_REDCORE_SOAP_ENABLE_SOAP_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
                 </field>
             </fieldset>
             <fieldset name="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_OPTIONS">
