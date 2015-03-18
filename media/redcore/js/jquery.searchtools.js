@@ -179,7 +179,7 @@
 			var self = this;
 
 			var option = $(element).find('option:selected');
-			if (option.val() != '') {
+			if (option.val() !== '') {
 				self.activeFilter(element);
 			} else {
 				self.deactiveFilter(element);
