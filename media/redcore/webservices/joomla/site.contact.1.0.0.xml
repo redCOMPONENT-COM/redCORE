@@ -120,7 +120,7 @@
         </read>
 
         <task>
-            <hit authorizationNeeded="true" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="" functionArgs="id{int}">
+            <hit authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="" functionArgs="id{int}">
                 <description><![CDATA[ This task enables you to Increase the hit counter for the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>

@@ -792,8 +792,18 @@ class RApiHalHelper
 	public static function buildWebserviceUri($client, $name, $version, $appendApi = '')
 	{
 		$uri = 'webserviceClient=' . $client
-			. '&option=' . $name
 			. '&webserviceVersion=' . $version;
+
+		// Views are separated by dash
+		$view = explode('-', $name);
+		$name = $view[0];
+
+		$uri .= '&option=' . $name;
+
+		if (!empty($view[1]))
+		{
+			$uri .= '&view=' . $view[1];
+		}
 
 		if (!empty($appendApi))
 		{

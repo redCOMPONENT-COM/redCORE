@@ -1101,10 +1101,6 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
-			$redCoreApi = 'redCOREAPI';
-			$redCoreApi .= !empty($this->webserviceName) ? ' / ' . $this->webserviceName . ' (version ' . $this->webserviceVersion . ')' : '';
-			JFactory::getApplication()->setHeader('Via', $redCoreApi, true);
-
 			$documentOptions = array(
 				'absoluteHrefs' => $this->options->get('absoluteHrefs', false),
 				'documentFormat' => $format,
@@ -1282,7 +1278,7 @@ class RApiHalHal extends RApi
 
 				if (!$form)
 				{
-					return false;
+					return true;
 				}
 
 				// Test whether the data is valid.
@@ -2162,7 +2158,7 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Calls method from defined object
+	 * Calls method from defined object as some Joomla methods require referenced parameters
 	 *
 	 * @param   object  $object        Object to run function on
 	 * @param   string  $functionName  Function name
@@ -2234,7 +2230,7 @@ class RApiHalHal extends RApi
 					}
 				}
 
-				$args[] = $parameterValue;
+				$args[] = &$parameterValue;
 			}
 		}
 		else

@@ -81,6 +81,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation->list,
 										'operationName' => $operationName . ' ' . 'list',
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -97,6 +98,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation->item,
 										'operationName' => $operationName . ' ' . 'item',
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -114,6 +116,7 @@ $date   = new JDate;
 										'operationXml'  => $task,
 										'operationName' => $operationName . ' ' . $taskName,
 										'taskName'      => $taskName,
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -129,6 +132,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation,
 										'operationName' => $operationName,
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>

@@ -53,15 +53,8 @@ class RApiSoapSoap extends RApi
 
 		JPluginHelper::importPlugin('redcore');
 
-		try
-		{
-			$this->webservice = new RApiHalHal($options);
-			$this->webservice->authorizationCheck = 'joomla';
-		}
-		catch (Exception $e)
-		{
-			throw $e;
-		}
+		$this->webservice = new RApiHalHal($options);
+		$this->webservice->authorizationCheck = 'joomla';
 
 		// Init Environment
 		$this->triggerFunction('setApiOperation');
@@ -155,7 +148,6 @@ class RApiSoapSoap extends RApi
 	 */
 	public function apiSoap()
 	{
-		ini_set("soap.wsdl_cache_enabled", "0");
 		$params = array(
 			'soap_version' => SOAP_1_2,
 		);
@@ -187,6 +179,7 @@ class RApiSoapSoap extends RApi
 	{
 		try
 		{
+			// Wet wsdl from webservice location
 			$wsdlFullPath = RApiHalHelper::getWebserviceFile(
 				$this->webservice->client,
 				strtolower($this->webservice->webserviceName),

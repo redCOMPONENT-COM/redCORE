@@ -1,6 +1,6 @@
 <?php
 /**
- * redCORE lib currency helper test
+ * redCORE soap helper test
  *
  * @package    Redcore.UnitTest
  * @copyright  Copyright (C) 2008 - 2015 redCOMPONENT.com
@@ -8,19 +8,22 @@
  */
 
 /**
- * Test class for Redevent lib helper class
+ * Test class for Soap Server
  *
- * @package  Redevent.UnitTest
- * @since    1.2.0
+ * @package  Redcore.UnitTest
+ * @since    1.4
  */
-class soapTest// extends JoomlaTestCase
+class soapTest
 {
 	/**
-	 * Test GetIsoCode
+	 * Test SoapClient
+	 *
+	 * @param   string  $wsdlUrl  Url to the wsdl file
 	 *
 	 * @return void
 	 */
-	public function testSoapClient()
+	public function testSoapClient(
+		$wsdlUrl = 'http://localhost/redComponent/red33test/index.php?option=com_contact&amp;webserviceVersion=1.0.0&amp;api=soap&amp;wsdl')
 	{
 		ini_set("soap.wsdl_cache_enabled", "0");
 		$params = array(
@@ -30,54 +33,51 @@ class soapTest// extends JoomlaTestCase
 			'cache_wsdl' => WSDL_CACHE_NONE,
 			'login' => 'admin',
 			'password' => 'admin',
-			'exceptions' => true
-			//'location' => 'http://localhost/redComponent/red33test/'
 		);
 
-		$requestParams = array(
-			'CityName' => 'Zagreb',
-			'CountryName' => 'Croatia'
-		);
+		try
+		{
+			$client = new SoapClient($wsdlUrl, $params);
 
-		/*$client = new SoapClient('http://www.webservicex.net/globalweather.asmx?WSDL', $params);
-		$response = $client->GetWeather($requestParams);
+			/*
+			 * Additional tests
+			$response = $client->readItem(array('id' => 4));
+			$response = $client->taskHit();
+			*/
 
-		print_r($response);*/
-		try {
-			//
-			$client = new SoapClient('http://localhost/redComponent/red33test/index.php?option=com_contact&amp;webserviceVersion=1.0.0&amp;api=soap&amp;wsdl', $params);
-			//$response = $client->sayHello();
+			$response = $client->readList(0, 2, '');
 
-			//$response = $client->readItem(array('id' => 4));
-			$response = $client->readList(0,2,'aaa');
-			//$response = $client->taskHit();
-
-			/*var_dump($client->__getLastRequest());
-			var_dump($client->__getLastRequestHeaders());
-			var_dump($client->__getLastResponse());
-			var_dump($client->__getLastResponseHeaders());*/
-			//var_dump($response);
+			// Dump request / response
+			$this->dumpSoapMessages($client);
 			var_dump($response);
 		}
-		catch(SoapFault $ex) {
+		catch (SoapFault $ex)
+		{
 			var_dump($ex);
-			//print $ex->getMessage();
-			//print $ex->getTraceAsString();
-    }
+		}
 
-		/*$client = new SoapClient('http://localhost/redComponent/red33test/index.php/hr/?option=com_contact&webserviceVersion=1.0.0&id=4&api=soap&wsdl', $params);
+		// $this->assertTrue(!is_null($response));
+	}
 
-		var_dump($client);
-		$response = $client->sayHello('Kixo');
-
-
-
-		print_r($response);*/
-
-		//$this->assertTrue(is_array($options) && count($options));
+	/**
+	 * Dump Client response and request messages
+	 *
+	 * @param   SoapClient  $client  Client instance
+	 *
+	 * @return void
+	 */
+	private function dumpSoapMessages($client)
+	{
+		echo '<br />$client->__getLastRequest():<br />';
+		var_dump($client->__getLastRequest());
+		echo '<br />$client->__getLastRequestHeaders():<br />';
+		var_dump($client->__getLastRequestHeaders());
+		echo '<br />$client->__getLastResponse():<br />';
+		var_dump($client->__getLastResponse());
+		echo '<br />$client->__getLastResponseHeaders():<br />';
+		var_dump($client->__getLastResponseHeaders());
 	}
 }
 
-$test = new soapTest();
+$test = new soapTest;
 $test->testSoapClient();
-

@@ -10,14 +10,15 @@
 defined('_JEXEC') or die;
 
 $view = !empty($displayData['view']) ? $displayData['view'] : null;
+$soapEnabled = $displayData['options']['soapEnabled'];
 $operationXml = !empty($displayData['options']['operationXml']) ? $displayData['options']['operationXml'] : array();
 $operationName = !empty($displayData['options']['operationName']) ? $displayData['options']['operationName'] : '';
 $authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtolower($operationXml['authorizationNeeded']) == 'false');
-$method = 'GET';
-$soapFunction = '';
 $url = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion);
 $view->resetDocumentResources();
 $resources = $view->loadResourceFromConfiguration($operationXml);
+$method = 'GET';
+$soapFunction = '';
 $taskName = '';
 $noteName = '';
 $currentDisplayGroup = '';
@@ -97,13 +98,15 @@ endif;
 	</h5>
 	<em><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE'); ?></em><br /><br />
 
-	<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP'); ?></strong><br />
-	<h5>
-		<span class="label label-success">
-			$client-><?php echo $soapFunction; ?>
-		</span> &nbsp;<?php echo $url . '&api=soap'; ?>
-	</h5>
-	<em><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE'); ?></em><br /><br />
+	<?php if ($soapEnabled): ?>
+		<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP'); ?></strong><br />
+		<h5>
+			<span class="label label-success">
+				$client-><?php echo $soapFunction; ?>
+			</span> &nbsp;<?php echo $url . '&api=soap'; ?>
+		</h5>
+		<em><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE'); ?></em><br /><br />
+	<?php endif; ?>
 
 	<div class="row">
 		<div class="col-xs-4 col-md-4 well" style="border: 2px solid #fff;">

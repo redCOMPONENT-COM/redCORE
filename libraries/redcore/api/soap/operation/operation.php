@@ -13,8 +13,8 @@ defined('JPATH_REDCORE') or die;
  * redCORE Soap Webservice Dynamic Class
  *
  * @package     Redcore
- * @subpackage  Base
- * @since       1.5
+ * @subpackage  Soap
+ * @since       1.4
  */
 class RApiSoapOperationOperation
 {
@@ -54,37 +54,42 @@ class RApiSoapOperationOperation
 		$this->setOperation('read');
 		$dataGet = $this->webservice->options->get('dataGet', array());
 
+		if (is_object($dataGet))
+		{
+			$dataGet = JArrayHelper::fromObject($dataGet);
+		}
+
 		if ($limitStart != 0)
 		{
-			$dataGet->list['limitstart'] = (int) $limitStart;
+			$dataGet['list']['limitstart'] = (int) $limitStart;
 		}
 
 		if ($limit != 20)
 		{
-			$dataGet->list['limit'] = (int) $limit;
+			$dataGet['list']['limit'] = (int) $limit;
 		}
 
 		if (!is_null($filterSearch))
 		{
-			$dataGet->filter['search'] = $filterSearch;
+			$dataGet['filter']['search'] = $filterSearch;
 		}
 
 		if (!empty($filters) && is_array($filters))
 		{
 			foreach ($filters as $key => $value)
 			{
-				$dataGet->filter[$key] = $value;
+				$dataGet['filter'][$key] = $value;
 			}
 		}
 
 		if (!is_null($ordering))
 		{
-			$dataGet->filter['order'] = $ordering;
+			$dataGet['filter']['order'] = $ordering;
 		}
 
 		if (!is_null($orderingDirection))
 		{
-			$dataGet->filter['order_Dir'] = $orderingDirection;
+			$dataGet['filter']['order_Dir'] = $orderingDirection;
 		}
 
 		$this->webservice->options->set('dataGet', $dataGet);
