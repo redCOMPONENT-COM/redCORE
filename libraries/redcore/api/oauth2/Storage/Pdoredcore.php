@@ -39,7 +39,7 @@ class Pdoredcore extends Pdo
 	public function checkUserCredentials($username, $password)
 	{
 		$credentials = array('username' => $username, 'password' => $password);
-		$response = \RUser::userLogin($credentials);
+		$response = \JFactory::getApplication()->login($credentials);
 
 		return $response;
 	}

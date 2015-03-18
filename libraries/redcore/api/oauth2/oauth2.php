@@ -59,7 +59,7 @@ class RApiOauth2Oauth2 extends RApi
 
 		// OAuth2 Server config from plugin
 		$this->serverConfig = array(
-			'use_crypto_tokens'        => (boolean) RTranslationHelper::$pluginParams->get('oauth2_use_crypto_tokens', false),
+			'use_jwt_access_tokens'        => (boolean) RTranslationHelper::$pluginParams->get('oauth2_use_jwt_access_tokens', false),
 			'store_encrypted_token_string' => (boolean) RTranslationHelper::$pluginParams->get('oauth2_store_encrypted_token_string', true),
 			'use_openid_connect'       => (boolean) RTranslationHelper::$pluginParams->get('oauth2_use_openid_connect', false),
 			'id_lifetime'              => RTranslationHelper::$pluginParams->get('oauth2_id_lifetime', 3600),

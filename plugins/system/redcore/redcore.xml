@@ -124,11 +124,11 @@
                     <option value="0">JNO</option>
                 </field>
                 <field
-                        name="oauth2_use_crypto_tokens"
+                        name="oauth2_use_jwt_access_tokens"
                         type="list"
                         default="0"
-                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_CRYPTO_TOKEN"
-                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_CRYPTO_TOKEN_DESC">
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_JWT_ACCESS_TOKEN"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_JWT_ACCESS_TOKEN">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
