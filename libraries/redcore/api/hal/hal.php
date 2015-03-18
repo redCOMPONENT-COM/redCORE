@@ -570,15 +570,31 @@ class RApiHalHal extends RApi
 
 		// Getting single item
 		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItem');
+		$messagesBefore = JFactory::getApplication()->getMessageQueue();
 		$itemObject = method_exists($model, $functionName) ? call_user_func_array(array(&$model, $functionName), $primaryKeys) : array();
+		$messagesAfter = JFactory::getApplication()->getMessageQueue();
 
 		// Check to see if we have the item or not since it might return default properties
-		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+		if (count($messagesBefore) != count($messagesAfter))
 		{
-			if (!isset($itemObject->{$primaryKey}))
+			foreach ($messagesAfter as $messageKey => $messageValue)
 			{
-				$itemObject = null;
-				break;
+				$messageFound = false;
+
+				foreach ($messagesBefore as $key => $value)
+				{
+					if ($messageValue['type'] == $value['type'] && $messageValue['message'] == $value['message'])
+					{
+						$messageFound = true;
+						break;
+					}
+				}
+
+				if (!$messageFound && $messageValue['type'] == 'error')
+				{
+					$itemObject = null;
+					break;
+				}
 			}
 		}
 
