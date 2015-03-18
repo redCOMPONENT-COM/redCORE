@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_jti` (
   `issuer` varchar(80) NOT NULL,
   `subject` varchar(80),
   `audiance` varchar(80),
-  `expires` varchar NOT NULL,
+  `expires` TIMESTAMP NOT NULL,
   `jti` varchar(2000) NOT NULL
 ) DEFAULT CHARSET = utf8;
 
