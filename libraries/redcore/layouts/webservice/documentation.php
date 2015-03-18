@@ -13,6 +13,7 @@ JHtml::_('rbootstrap.tooltip');
 
 $view = !empty($displayData['view']) ? $displayData['view'] : null;
 $xml = !empty($displayData['options']['xml']) ? $displayData['options']['xml'] : array();
+$soapEnabled = $displayData['options']['soapEnabled'];
 $date   = new JDate;
 ?>
 <!DOCTYPE html>
@@ -37,16 +38,22 @@ $date   = new JDate;
 				<strong><?php echo JText::_('LIB_REDCORE_COPYRIGHT'); ?></strong>: <?php echo (string) $xml->copyright; ?><br />
 			<?php endif; ?>
 			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_GENERATED'); ?></strong>: <?php echo $date->toRFC822(); ?><br />
-			<strong>
-				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_OPTION'); ?>:
-			</strong>
-			<?php echo $xml->config->name; ?> (com_<?php echo $xml->config->name; ?>)<br />
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SUPPORTED_FORMATS'); ?></strong>:
+			json (<?php echo JText::_('JDEFAULT'); ?>), xml<br />
 			<strong>
 				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_CLIENT'); ?>:
 			</strong>
 			<?php echo ucfirst($view->client); ?><br />
-			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SUPPORTED_FORMATS'); ?></strong>
-			: json (<?php echo JText::_('JDEFAULT'); ?>), xml<br />
+			<strong>
+				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_OPTION'); ?>:
+			</strong>
+			<?php echo $xml->config->name; ?> (com_<?php echo $xml->config->name; ?>)<br />
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_URL'); ?></strong>:
+			<?php echo RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal'); ?><br />
+			<?php if ($soapEnabled) : ?>
+				<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_WSDL_ACCESS_URL'); ?></strong>:
+				<?php echo RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'soap') . '&wsdl'; ?><br />
+			<?php endif; ?>
 		</div>
 			<?php if (isset($xml->description)) : ?>
 			<div class="well">
@@ -74,6 +81,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation->list,
 										'operationName' => $operationName . ' ' . 'list',
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -90,6 +98,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation->item,
 										'operationName' => $operationName . ' ' . 'item',
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -104,8 +113,10 @@ $date   = new JDate;
 									'view' => $view,
 									'options' => array (
 										'xml' => $xml,
-										'operationXml' => $task,
+										'operationXml'  => $task,
 										'operationName' => $operationName . ' ' . $taskName,
+										'taskName'      => $taskName,
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -121,6 +132,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation,
 										'operationName' => $operationName,
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
