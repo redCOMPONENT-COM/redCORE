@@ -84,6 +84,7 @@ class RApiOauth2Oauth2 extends RApi
 			'code_table' => $prefix . 'redcore_oauth_authorization_codes',
 			'user_table' => $prefix . 'redcore_oauth_users',
 			'jwt_table'  => $prefix . 'redcore_oauth_jwt',
+			'jti_table'  => $prefix . 'redcore_oauth_jti',
 			'scope_table'  => $prefix . 'redcore_oauth_scopes',
 			'public_key_table'  => $prefix . 'redcore_oauth_public_keys',
 		);
