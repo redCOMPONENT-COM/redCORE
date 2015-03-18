@@ -23,7 +23,7 @@
   /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
   /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
   /*!
- *  Font Awesome 4.2.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
  *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
  */
   /* FONT PATH
@@ -6695,6 +6695,10 @@
   font-size: 14px;
   line-height: 20px;
 }
+.redcore .form-group {
+  clear: both;
+  margin-bottom: 10px;
+}
 .redcore .form-horizontal .col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
   float: left;
 }
@@ -7327,8 +7331,8 @@
 }
 @font-face {
   font-family: 'FontAwesome';
-  src: url('lib/fontawesome420/fonts/fontawesome-webfont.eot?v=4.2.0');
-  src: url('lib/fontawesome420/fonts/fontawesome-webfont.eot?#iefix&v=4.2.0') format('embedded-opentype'), url('lib/fontawesome420/fonts/fontawesome-webfont.woff?v=4.2.0') format('woff'), url('lib/fontawesome420/fonts/fontawesome-webfont.ttf?v=4.2.0') format('truetype'), url('lib/fontawesome420/fonts/fontawesome-webfont.svg?v=4.2.0#fontawesomeregular') format('svg');
+  src: url('lib/fontawesome4/font/fontawesome-webfont.eot?v=4.3.0');
+  src: url('lib/fontawesome4/font/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('lib/fontawesome4/font/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('lib/fontawesome4/font/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('lib/fontawesome4/font/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('lib/fontawesome4/font/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -7339,6 +7343,7 @@
   text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transform: translate(0, 0);
 }
 .redcore .icon-lg {
   font-size: 1.33333333em;
@@ -7399,6 +7404,10 @@
 .redcore .icon-spin {
   -webkit-animation: fa-spin 2s infinite linear;
   animation: fa-spin 2s infinite linear;
+}
+.redcore .icon-pulse {
+  -webkit-animation: fa-spin 1s infinite steps(8);
+  animation: fa-spin 1s infinite steps(8);
 }
 @-webkit-keyframes fa-spin {
   0% {
@@ -7928,6 +7937,7 @@
 .redcore .icon-twitter:before {
   content: "\f099";
 }
+.redcore .icon-facebook-f:before,
 .redcore .icon-facebook:before {
   content: "\f09a";
 }
@@ -8577,7 +8587,8 @@
 .redcore .icon-male:before {
   content: "\f183";
 }
-.redcore .icon-gittip:before {
+.redcore .icon-gittip:before,
+.redcore .icon-gratipay:before {
   content: "\f184";
 }
 .redcore .icon-sun-o:before {
@@ -8844,6 +8855,7 @@
 .redcore .icon-history:before {
   content: "\f1da";
 }
+.redcore .icon-genderless:before,
 .redcore .icon-circle-thin:before {
   content: "\f1db";
 }
@@ -8987,6 +8999,127 @@
 }
 .redcore .icon-meanpath:before {
   content: "\f20c";
+}
+.redcore .icon-buysellads:before {
+  content: "\f20d";
+}
+.redcore .icon-connectdevelop:before {
+  content: "\f20e";
+}
+.redcore .icon-dashcube:before {
+  content: "\f210";
+}
+.redcore .icon-forumbee:before {
+  content: "\f211";
+}
+.redcore .icon-leanpub:before {
+  content: "\f212";
+}
+.redcore .icon-sellsy:before {
+  content: "\f213";
+}
+.redcore .icon-shirtsinbulk:before {
+  content: "\f214";
+}
+.redcore .icon-simplybuilt:before {
+  content: "\f215";
+}
+.redcore .icon-skyatlas:before {
+  content: "\f216";
+}
+.redcore .icon-cart-plus:before {
+  content: "\f217";
+}
+.redcore .icon-cart-arrow-down:before {
+  content: "\f218";
+}
+.redcore .icon-diamond:before {
+  content: "\f219";
+}
+.redcore .icon-ship:before {
+  content: "\f21a";
+}
+.redcore .icon-user-secret:before {
+  content: "\f21b";
+}
+.redcore .icon-motorcycle:before {
+  content: "\f21c";
+}
+.redcore .icon-street-view:before {
+  content: "\f21d";
+}
+.redcore .icon-heartbeat:before {
+  content: "\f21e";
+}
+.redcore .icon-venus:before {
+  content: "\f221";
+}
+.redcore .icon-mars:before {
+  content: "\f222";
+}
+.redcore .icon-mercury:before {
+  content: "\f223";
+}
+.redcore .icon-transgender:before {
+  content: "\f224";
+}
+.redcore .icon-transgender-alt:before {
+  content: "\f225";
+}
+.redcore .icon-venus-double:before {
+  content: "\f226";
+}
+.redcore .icon-mars-double:before {
+  content: "\f227";
+}
+.redcore .icon-venus-mars:before {
+  content: "\f228";
+}
+.redcore .icon-mars-stroke:before {
+  content: "\f229";
+}
+.redcore .icon-mars-stroke-v:before {
+  content: "\f22a";
+}
+.redcore .icon-mars-stroke-h:before {
+  content: "\f22b";
+}
+.redcore .icon-neuter:before {
+  content: "\f22c";
+}
+.redcore .icon-facebook-official:before {
+  content: "\f230";
+}
+.redcore .icon-pinterest-p:before {
+  content: "\f231";
+}
+.redcore .icon-whatsapp:before {
+  content: "\f232";
+}
+.redcore .icon-server:before {
+  content: "\f233";
+}
+.redcore .icon-user-plus:before {
+  content: "\f234";
+}
+.redcore .icon-user-times:before {
+  content: "\f235";
+}
+.redcore .icon-hotel:before,
+.redcore .icon-bed:before {
+  content: "\f236";
+}
+.redcore .icon-viacoin:before {
+  content: "\f237";
+}
+.redcore .icon-train:before {
+  content: "\f238";
+}
+.redcore .icon-subway:before {
+  content: "\f239";
+}
+.redcore .icon-medium:before {
+  content: "\f23a";
 }
 .redcore .icon-ok-sign:before {
   content: "\f058";
