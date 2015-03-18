@@ -29,8 +29,9 @@
                 <!-- isFilterField defines specific fields as filter fields when using dataMode="table". When filtering fields must be in format filter[fieldName] -->
                 <!-- isPrimaryField defines specific fields as primary key fields when using dataMode="table". -->
                 <fields>
-                    <field name="id" transform="int" isFilterField="true" isPrimaryField="true" />
-                    <field name="name" transform="string" isFilterField="true" isSearchableField="true" />
+                    <field name="id" transform="int" isPrimaryField="true" />
+                    <field name="name" transform="string" isSearchableField="true" />
+                    <field name="published" transform="int" isFilterField="true" />
                     <field name="ordering" transform="int" />
                     <field name="access" transform="int" />
                     <field name="language" />
@@ -79,6 +80,9 @@
             <!-- Api will automatically call getItem if functionName is not specified -->
             <!-- Api will automatically call ExampleModelElement if modelClassName is not specified -->
             <item dataMode="table" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" tableName="contact_details">
+                <fields>
+                    <field name="id" transform="int" isPrimaryField="true" />
+                </fields>
                 <resources>
 
                     <!-- standard -->

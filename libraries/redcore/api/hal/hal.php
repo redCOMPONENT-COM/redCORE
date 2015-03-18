@@ -16,7 +16,7 @@ defined('JPATH_BASE') or die;
 class RApiHalHal extends RApi
 {
 	/**
-	 * Webservice name
+	 * Webservice element name
 	 * @var string
 	 */
 	public $elementName = null;
@@ -124,6 +124,12 @@ class RApiHalHal extends RApi
 	public $viewName = '';
 
 	/**
+	 * @var    string  Authorization check method
+	 * @since  1.4
+	 */
+	public $authorizationCheck = 'oauth2';
+
+	/**
 	 * Method to instantiate the file-based api call.
 	 *
 	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
@@ -184,6 +190,15 @@ class RApiHalHal extends RApi
 		{
 			define('JSON_UNESCAPED_SLASHES', 64);
 		}
+		// OAuth2 check
+		if (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 0)
+		{
+			$this->authorizationCheck = 'oauth2';
+		}
+		elseif (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 1)
+		{
+			$this->authorizationCheck = 'joomla';
+		}
 	}
 
 	/**
@@ -206,6 +221,8 @@ class RApiHalHal extends RApi
 		{
 			$webserviceUrlPath .= '&amp;webserviceVersion=' . $this->webserviceVersion;
 		}
+
+		$webserviceUrlPath .= '&amp;webserviceClient=' . $this->client;
 
 		$this->data['webserviceUrlPath'] = $webserviceUrlPath;
 		$this->data['webserviceName'] = $this->webserviceName;
@@ -234,7 +251,7 @@ class RApiHalHal extends RApi
 				// We will set name of the webservice as a task controller name
 				$this->webserviceName = $this->options->get('optionName', '') . '-' . $taskSplit[0];
 				$task = $taskSplit[1];
-				$this->options->set('task', $task);
+				$this->options->set('task', strtolower($task));
 
 				return $this;
 			}
@@ -312,6 +329,9 @@ class RApiHalHal extends RApi
 	 */
 	public function execute()
 	{
+		// Set initial status code to OK
+		$this->setStatusCode(200);
+
 		// We do not want some unwanted text to appear before output
 		ob_start();
 
@@ -380,6 +400,18 @@ class RApiHalHal extends RApi
 
 		if (!empty($messages))
 		{
+			// If we are not in debug mode we will take out everything except errors
+			if (RTranslationHelper::$pluginParams->get('debug_webservices', 0) == 0)
+			{
+				foreach ($messages as $key => $message)
+				{
+					if ($message['type'] != 'error')
+					{
+						unset($messages[$key]);
+					}
+				}
+			}
+
 			$this->hal->setData('_messages', $messages);
 		}
 
@@ -485,6 +517,7 @@ class RApiHalHal extends RApi
 				'view' => $this,
 				'options' => array (
 					'xml' => $currentConfiguration,
+					'soapEnabled' => RTranslationHelper::$pluginParams->get('enable_soap', 0),
 				)
 			)
 		);
@@ -511,12 +544,6 @@ class RApiHalHal extends RApi
 			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $this->operationConfiguration->item);
 			$primaryKeysFromFields = $this->getPrimaryKeysFromFields($this->operationConfiguration->item);
 
-			// If there are no primary keys defined we will use id field as default
-			if (empty($primaryKeysFromFields))
-			{
-				$primaryKeysFromFields['id'] = array('transform' => 'int');
-			}
-
 			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 			{
 				if (isset($dataGet[$primaryKey]) && $dataGet[$primaryKey] != '')
@@ -537,6 +564,7 @@ class RApiHalHal extends RApi
 		$this->apiDynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
 		$currentConfiguration = $this->operationConfiguration->{$displayTarget};
 		$model = $this->triggerFunction('loadModel', $this->elementName, $currentConfiguration);
+		$this->assignFiltersList($model);
 
 		if ($displayTarget == 'list')
 		{
@@ -638,7 +666,11 @@ class RApiHalHal extends RApi
 		// Checks if that method exists in model class file and executes it
 		if (method_exists($model, $functionName))
 		{
-			$result = call_user_func_array(array($model, $functionName), $args);
+			$result = $this->triggerCallFunction($model, $functionName, $args);
+		}
+		else
+		{
+			$this->setStatusCode(400);
 		}
 
 		if (method_exists($model, 'getState'))
@@ -646,17 +678,13 @@ class RApiHalHal extends RApi
 			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
 		}
 
-		if ($result)
+		$this->setData('result', $result);
+		$this->triggerFunction('displayErrors', $model);
+
+		if ($this->statusCode < 400)
 		{
 			$this->setStatusCode(201);
 		}
-		else
-		{
-			$this->triggerFunction('displayErrors', $model);
-			$this->setStatusCode(400);
-		}
-
-		$this->setData('result', $result);
 	}
 
 	/**
@@ -696,20 +724,21 @@ class RApiHalHal extends RApi
 		// Checks if that method exists in model class file and executes it
 		if (method_exists($model, $functionName))
 		{
-			$result = call_user_func_array(array($model, $functionName), $args);
-		}
-
-		if ($result)
-		{
-			$this->setStatusCode(200);
+			$result = $this->triggerCallFunction($model, $functionName, $args);
 		}
 		else
 		{
-			$this->triggerFunction('displayErrors', $model);
 			$this->setStatusCode(400);
 		}
 
 		$this->setData('result', $result);
+
+		$this->triggerFunction('displayErrors', $model);
+
+		if ($this->statusCode < 400)
+		{
+			$this->setStatusCode(200);
+		}
 	}
 
 	/**
@@ -746,7 +775,11 @@ class RApiHalHal extends RApi
 		// Checks if that method exists in model class and executes it
 		if (method_exists($model, $functionName))
 		{
-			$result = call_user_func_array(array($model, $functionName), $args);
+			$result = $this->triggerCallFunction($model, $functionName, $args);
+		}
+		else
+		{
+			$this->setStatusCode(400);
 		}
 
 		if (method_exists($model, 'getState'))
@@ -754,17 +787,13 @@ class RApiHalHal extends RApi
 			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
 		}
 
-		if ($result)
+		$this->setData('result', $result);
+		$this->triggerFunction('displayErrors', $model);
+
+		if ($this->statusCode < 400)
 		{
 			$this->setStatusCode(200);
 		}
-		else
-		{
-			$this->triggerFunction('displayErrors', $model);
-			$this->setStatusCode(400);
-		}
-
-		$this->setData('result', $result);
 	}
 
 	/**
@@ -812,7 +841,11 @@ class RApiHalHal extends RApi
 			// Checks if that method exists in model class and executes it
 			if (method_exists($model, $functionName))
 			{
-				$result = call_user_func_array(array($model, $functionName), $args);
+				$result = $this->triggerCallFunction($model, $functionName, $args);
+			}
+			else
+			{
+				$this->setStatusCode(400);
 			}
 
 			if (method_exists($model, 'getState'))
@@ -821,17 +854,13 @@ class RApiHalHal extends RApi
 			}
 		}
 
-		if ($result)
+		$this->setData('result', $result);
+		$this->triggerFunction('displayErrors', $model);
+
+		if ($this->statusCode < 400)
 		{
 			$this->setStatusCode(200);
 		}
-		else
-		{
-			$this->triggerFunction('displayErrors', $model);
-			$this->setStatusCode(400);
-		}
-
-		$this->setData('result', $result);
 	}
 
 	/**
@@ -1343,6 +1372,8 @@ class RApiHalHal extends RApi
 
 		if (!isset($allowedOperations->{$this->operation}))
 		{
+			$this->setStatusCode(405);
+
 			return false;
 		}
 
@@ -1358,6 +1389,8 @@ class RApiHalHal extends RApi
 
 			if (!isset($allowedOperations->task->{$task}))
 			{
+				$this->setStatusCode(405);
+
 				return false;
 			}
 
@@ -1397,7 +1430,8 @@ class RApiHalHal extends RApi
 		}
 
 		// Does user have permission
-		if (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 0)
+		// OAuth2 check
+		if ($this->authorizationCheck == 'oauth2')
 		{
 			// Use scopes to authorize
 			$scope = array($this->client . '.' . $this->webserviceName . '.' . $scope);
@@ -1405,14 +1439,15 @@ class RApiHalHal extends RApi
 			// Add in Global scope check
 			$scope[] = $this->client . '.' . $this->operation;
 
-			$this->isAuthorized($scope, $terminateIfNotAuthorized);
+			return $this->isAuthorized($scope, $terminateIfNotAuthorized) || !$terminateIfNotAuthorized;
 		}
-		elseif (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 1)
+		// Joomla check
+		elseif ($this->authorizationCheck == 'joomla')
 		{
-			$this->isAuthorized($scope = null, $terminateIfNotAuthorized);
+			$isAuthorized = $this->isAuthorized($scope = null, $terminateIfNotAuthorized);
 
 			// Use Joomla to authorize
-			if ($terminateIfNotAuthorized && !empty($authorizationGroups))
+			if ($isAuthorized && $terminateIfNotAuthorized && !empty($authorizationGroups))
 			{
 				$authorizationGroups = explode(',', $authorizationGroups);
 				$authorized = false;
@@ -1434,9 +1469,13 @@ class RApiHalHal extends RApi
 
 				if (!$authorized)
 				{
+					$this->setStatusCode(405);
+
 					return false;
 				}
 			}
+
+			return $isAuthorized || !$terminateIfNotAuthorized;
 		}
 
 		return true;
@@ -1449,42 +1488,69 @@ class RApiHalHal extends RApi
 	 * @param   bool    $terminateIfNotAuthorized  Terminate api if client is not authorized
 	 *
 	 * @throws Exception
-	 * @return  void
+	 * @return  bool
 	 *
 	 * @since   1.2
 	 */
 	public function isAuthorized($scope, $terminateIfNotAuthorized)
 	{
-		/** @var $response OAuth2\Response */
-		$response = RApiOauth2Helper::verifyResourceRequest($scope);
+		$authorized = false;
+		JFactory::getApplication()->triggerEvent('RApiHalBeforeIsAuthorizedCheck',
+			array($scope, $terminateIfNotAuthorized, $this->options, $this->authorizationCheck, &$authorized)
+		);
 
-		if ($response instanceof OAuth2\Response)
+		if ($authorized)
 		{
-			if (!$response->isSuccessful() && $terminateIfNotAuthorized)
-			{
-				// OAuth2 Server response is in fact correct output for errors
-				$response->send($this->options->get('format', 'json'));
+			return $authorized;
+		}
 
-				JFactory::getApplication()->close();
+		// OAuth2 check
+		if ($this->authorizationCheck == 'oauth2')
+		{
+			/** @var $response OAuth2\Response */
+			$response = RApiOauth2Helper::verifyResourceRequest($scope);
+
+			if ($response instanceof OAuth2\Response)
+			{
+				if (!$response->isSuccessful() && $terminateIfNotAuthorized)
+				{
+					// OAuth2 Server response is in fact correct output for errors
+					$response->send($this->options->get('format', 'json'));
+
+					JFactory::getApplication()->close();
+				}
+			}
+			elseif ($response === false && $terminateIfNotAuthorized)
+			{
+				throw new Exception('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE');
+			}
+			else
+			{
+				$response = json_decode($response);
+
+				if (!empty($response->user_id))
+				{
+					return true;
+				}
+
+				$authorized = false || $terminateIfNotAuthorized;
 			}
 		}
-		elseif ($response === false && $terminateIfNotAuthorized)
+		// Joomla check through Basic Authentication
+		elseif ($this->authorizationCheck == 'joomla')
 		{
-			throw new Exception('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE');
+			// Get username and password from globals
+			$credentials = RApiHalHelper::getCredentialsFromGlobals();
+
+			$authorized = RUser::userLogin($credentials) || $terminateIfNotAuthorized;
 		}
-		else
+
+		if (!$authorized && $terminateIfNotAuthorized)
 		{
-			$response = json_decode($response);
-
-			if (!empty($response->user_id))
-			{
-				$user = JFactory::getUser($response->user_id);
-
-				// Load the JUser class on application for this client
-				JFactory::getApplication()->loadIdentity($user);
-				JFactory::getSession()->set('user', $user);
-			}
+			$this->setStatusCode(401);
 		}
+
+		return $authorized || $terminateIfNotAuthorized;
 	}
 
 	/**
@@ -1525,8 +1591,9 @@ class RApiHalHal extends RApi
 	 *
 	 * @param   SimpleXMLElement  $configuration  Configuration for current action
 	 *
-	 * @return  mixed It will return Api dynamic model class
+	 * @return mixed It will return Api dynamic model class
 	 *
+	 * @throws Exception
 	 * @since   1.3
 	 */
 	public function getDynamicModelObject($configuration)
@@ -1710,12 +1777,17 @@ class RApiHalHal extends RApi
 			}
 		}
 
-		if ($isAdmin)
+		if (!empty($this->viewName))
 		{
-			return RModel::getAdminInstance($this->viewName, array(), $this->optionName);
+			$elementName = $this->viewName;
 		}
 
-		return RModel::getFrontInstance($this->viewName, array(), $this->optionName);
+		if ($isAdmin)
+		{
+			return RModel::getAdminInstance($elementName, array(), $this->optionName);
+		}
+
+		return RModel::getFrontInstance($elementName, array(), $this->optionName);
 	}
 
 	/**
@@ -2067,6 +2139,13 @@ class RApiHalHal extends RApi
 		// We will add this instance of the object as last argument for manipulation in plugin and helper
 		$temp[] = &$this;
 
+		$result = JFactory::getApplication()->triggerEvent('RApiHalBefore' . $functionName, array($functionName, $temp));
+
+		if ($result)
+		{
+			return $result;
+		}
+
 		// Checks if that method exists in helper file and executes it
 		if (method_exists($apiHelperClass, $functionName))
 		{
@@ -2080,6 +2159,36 @@ class RApiHalHal extends RApi
 		JFactory::getApplication()->triggerEvent('RApiHal' . $functionName, $temp);
 
 		return $result;
+	}
+
+	/**
+	 * Calls method from defined object
+	 *
+	 * @param   object  $object        Object to run function on
+	 * @param   string  $functionName  Function name
+	 * @param   array   $args          Arguments for the function
+	 *
+	 * @return mixed Result from callback function
+	 */
+	public function triggerCallFunction($object, $functionName, $args)
+	{
+		switch (count($args))
+		{
+			case 0:
+				return $object->{$functionName}();
+			case 1:
+				return $object->{$functionName}($args[0]);
+			case 2:
+				return $object->{$functionName}($args[0], $args[1]);
+			case 3:
+				return $object->{$functionName}($args[0], $args[1], $args[2]);
+			case 4:
+				return $object->{$functionName}($args[0], $args[1], $args[2], $args[3]);
+			case 5:
+				return $object->{$functionName}($args[0], $args[1], $args[2], $args[3], $args[4]);
+			default:
+				return call_user_func_array(array($object, $functionName), $args);
+		}
 	}
 
 	/**
@@ -2106,29 +2215,31 @@ class RApiHalHal extends RApi
 				// First field is the name of the data field and second is transformation
 				$parameter[0] = trim($parameter[0]);
 				$parameter[1] = !empty($parameter[1]) ? strtolower(trim(str_replace('}', '', $parameter[1]))) : 'string';
+				$parameterValue = null;
 
 				// If we set argument to value, then it will not be transformed, instead we will take field name as a value
 				if ($parameter[1] == 'value')
 				{
-					$args[] = $parameter[0];
+					$parameterValue = $parameter[0];
 				}
 				else
 				{
 					if (isset($data[$parameter[0]]))
 					{
 						$parameterValue = $this->transformField($parameter[1], $data[$parameter[0]]);
-						$args[] = $parameterValue;
 					}
 					else
 					{
-						$args[] = null;
+						$parameterValue = null;
 					}
 				}
+
+				$args[] = $parameterValue;
 			}
 		}
 		else
 		{
-			$args[] = &$data;
+			$args[] = $data;
 		}
 
 		return $args;
@@ -2158,6 +2269,55 @@ class RApiHalHal extends RApi
 			}
 		}
 
+		// If there are no primary keys defined we will use id field as default
+		if (empty($primaryKeys))
+		{
+			$primaryKeys['id'] = array('transform' => 'int');
+		}
+
 		return $primaryKeys;
+	}
+
+	/**
+	 * We set filters and List parameters to the model object
+	 *
+	 * @param   object  &$model  Model object
+	 *
+	 * @return  array
+	 */
+	public function assignFiltersList(&$model)
+	{
+		if (method_exists($model, 'getState'))
+		{
+			// To initialize populateState
+			$model->getState();
+		}
+
+		// Set state for Filters and List
+		if (method_exists($model, 'setState'))
+		{
+			$dataGet = $this->options->get('dataGet', array());
+
+			if (is_object($dataGet))
+			{
+				$dataGet = JArrayHelper::fromObject($dataGet);
+			}
+
+			if (isset($dataGet['list']))
+			{
+				foreach ($dataGet['list'] as $key => $value)
+				{
+					$model->setState('list.' . $key, $value);
+				}
+			}
+
+			if (isset($dataGet['filter']))
+			{
+				foreach ($dataGet['filter'] as $key => $value)
+				{
+					$model->setState('filter.' . $key, $value);
+				}
+			}
+		}
 	}
 }
