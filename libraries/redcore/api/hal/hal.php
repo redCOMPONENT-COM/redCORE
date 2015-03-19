@@ -526,45 +526,6 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Returns read type (item or list) for current read operation and fills primary keys if read type is item
-	 *
-	 * @param   array  &$primaryKeys  List of primary keys
-	 *
-	 * @return  bool  Returns true if read type is Item
-	 *
-	 * @since   1.2
-	 */
-	public function apiReadTypeItem(&$primaryKeys)
-	{
-		$isReadItem = false;
-		$operations = $this->getConfig('operations');
-
-		// Checking for primary keys
-		if (!empty($operations->read->item))
-		{
-			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
-			$primaryKeysFromFields = $this->getPrimaryKeysFromFields($operations->read->item);
-
-			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
-			{
-				if (isset($dataGet[$primaryKey]) && $dataGet[$primaryKey] != '')
-				{
-					$primaryKeys[] = $this->transformField($primaryKeyField['transform'], $dataGet[$primaryKey], false);
-					$isReadItem = true;
-				}
-
-				// If At least one of the primary keys is missing
-				if (!$isReadItem)
-				{
-					break;
-				}
-			}
-		}
-
-		return $isReadItem;
-	}
-
-	/**
 	 * Execute the Api Read operation.
 	 *
 	 * @return  mixed  RApi object with information on success, boolean false on failure.
@@ -2332,5 +2293,44 @@ class RApiHalHal extends RApi
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns read type (item or list) for current read operation and fills primary keys if read type is item
+	 *
+	 * @param   array  &$primaryKeys  List of primary keys
+	 *
+	 * @return  bool  Returns true if read type is Item
+	 *
+	 * @since   1.2
+	 */
+	public function apiReadTypeItem(&$primaryKeys)
+	{
+		$isReadItem = false;
+		$operations = $this->getConfig('operations');
+
+		// Checking for primary keys
+		if (!empty($operations->read->item))
+		{
+			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
+			$primaryKeysFromFields = $this->getPrimaryKeysFromFields($operations->read->item);
+
+			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+			{
+				if (isset($dataGet[$primaryKey]) && $dataGet[$primaryKey] != '')
+				{
+					$primaryKeys[] = $this->transformField($primaryKeyField['transform'], $dataGet[$primaryKey], false);
+					$isReadItem = true;
+				}
+
+				// If At least one of the primary keys is missing
+				if (!$isReadItem)
+				{
+					break;
+				}
+			}
+		}
+
+		return $isReadItem;
 	}
 }
