@@ -7774,6 +7774,10 @@
   font-size: 14px;
   line-height: 20px;
 }
+.redcore .form-group {
+  clear: both;
+  margin-bottom: 10px;
+}
 @media (min-width: 767px) and (max-width: 1280px) {
   .redcore .row-fluid .span2.sidebar {
     width: 23.0769%;

@@ -24,7 +24,7 @@ abstract class RApiBase implements RApiInterface
 	 * @var    JRegistry
 	 * @since  1.2
 	 */
-	protected $options = null;
+	public $options = null;
 
 	/**
 	 * Debug information messages
@@ -135,13 +135,12 @@ abstract class RApiBase implements RApiInterface
 	public function setStatusCode($statusCode, $text = null)
 	{
 		$this->statusCode = (int) $statusCode;
+		$this->statusText = false === $text ? '' : (null === $text ? self::$statusTexts[$this->statusCode] : $text);
 
 		if ($this->isInvalid())
 		{
 			throw new Exception(JText::sprintf('LIB_REDCORE_API_STATUS_CODE_INVALID', $statusCode));
 		}
-
-		$this->statusText = false === $text ? '' : (null === $text ? self::$statusTexts[$this->statusCode] : $text);
 
 		return $this;
 	}

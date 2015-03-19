@@ -91,10 +91,6 @@
             <exclude name="**/jquery.lazyload.js"/>
             <exclude name="**/jquery-ui.js"/>
             <exclude name="**/select2.js"/>
-
-            <!-- Excluding map files -->
-            <exclude name="**/jquery-1.11.0.min.map"/>
-
         </fileset>
         </copy>
 

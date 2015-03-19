@@ -141,5 +141,7 @@ $authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtol
 				<?php endforeach; ?>
 			</table>
 		<?php endif; ?>
+
+		<?php echo $this->sublayout('example', $displayData); ?>
 	<?php endif; ?>
 </div>
