@@ -10,14 +10,7 @@ When you contribute code to the project we ask you to strictly use the standard 
 
 Commit messages must be in English and has to be formatted like this:
 
-<code>[type] Description</code>
+<code>[#ISSUE_NUMBER] Description</code>
 
-### Types
-
-* [-] Bug fix.
-* [*] Improvement.
-* [+] New feature.
-* [~] Feature deprecation.
-
-### Examples
-<code>[-] #RR-13 : Undefined variable </code>
+### Examples 
+<code>#RR-13 fix Undefined variable at Dashboard view</code>

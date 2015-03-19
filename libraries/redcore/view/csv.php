@@ -81,6 +81,9 @@ abstract class RViewCsv extends JViewLegacy
 		$csvLines[0] = $columns;
 		$i = 1;
 
+		// Check if the preprocessing method exists
+		$preprocessExists = method_exists($this, 'preprocess');
+
 		foreach ($items as $item)
 		{
 			$csvLines[$i] = array();
@@ -89,7 +92,7 @@ abstract class RViewCsv extends JViewLegacy
 			{
 				if (property_exists($item, $name))
 				{
-					$csvLines[$i][$name] = $item->$name;
+					$csvLines[$i][$name] = $preprocessExists ? $this->preprocess($name, $item->$name) : $item->$name;
 				}
 			}
 

@@ -21,55 +21,72 @@ jimport('joomla.filesystem.folder');
 final class RComponentHelper
 {
 	/**
+	 * Array of redCORE Extensions
+	 *
+	 * @var  array
+	 */
+	public static $redcoreExtensions = array();
+
+	/**
+	 * Array of redCORE Extension Manifests
+	 *
+	 * @var  array
+	 */
+	public static $redcoreExtensionManifests = array();
+
+	/**
 	 * Get the element name of the components using redcore.
 	 *
 	 * @return  array  An array of component names (com_redshopb...)
 	 */
 	public static function getRedcoreComponents()
 	{
-		$componentPath = JPATH_ADMINISTRATOR . '/components';
-		$folders = JFolder::folders($componentPath);
-
-		$components = array();
-
-		foreach ($folders as $folder)
+		if (empty(self::$redcoreExtensions))
 		{
-			$componentFolderPath = $componentPath . '/' . $folder;
-			$folderFiles = JFolder::files($componentFolderPath, '.xml');
+			$componentPath = JPATH_ADMINISTRATOR . '/components';
+			$folders = JFolder::folders($componentPath);
 
-			foreach ($folderFiles as $folderFile)
+			foreach ($folders as $folder)
 			{
-				$componentXmlPath = $componentFolderPath . '/' . $folderFile;
+				$componentFolderPath = $componentPath . '/' . $folder;
+				$folderFiles = JFolder::files($componentFolderPath, '.xml');
 
-				try
+				foreach ($folderFiles as $folderFile)
 				{
-					$content = @file_get_contents($componentXmlPath);
+					$componentXmlPath = $componentFolderPath . '/' . $folderFile;
 
-					if (!is_string($content))
+					try
 					{
-						continue;
+						$content = @file_get_contents($componentXmlPath);
+
+						if (!is_string($content))
+						{
+							continue;
+						}
+
+						$element = new SimpleXMLElement($content);
+
+						if (!isset($element->name) || 'com_redcore' === trim(strtolower($element->name)))
+						{
+							continue;
+						}
+
+						self::$redcoreExtensionManifests[$folder] = $element;
+
+						if ($element->xpath('//redcore'))
+						{
+							self::$redcoreExtensions[] = 'com_' . strstr($folderFile, '.xml', true);
+						}
 					}
-
-					$element = new SimpleXMLElement($content);
-
-					if (!isset($element->name) || 'com_redcore' === trim(strtolower($element->name)))
+					catch (Exception $e)
 					{
-						continue;
+						JFactory::getApplication()->enqueueMessage($e->getMessage() . ': ' . $folder . '/' . $folderFile, 'error');
 					}
-
-					if ($element->xpath('//redcore'))
-					{
-						$components[] = 'com_' . strstr($folderFile, '.xml', true);
-					}
-				}
-				catch (Exception $e)
-				{
-					JFactory::getApplication()->enqueueMessage($e->getMessage() . ': ' . $folder . '/' . $folderFile, 'error');
 				}
 			}
 		}
 
-		return $components;
+		return self::$redcoreExtensions;
 	}
 
 	/**
@@ -81,25 +98,30 @@ final class RComponentHelper
 	 */
 	public static function getComponentManifestFile($extensionName = 'com_redcore')
 	{
-		$xmlComponentName = strtolower(substr($extensionName, 4));
-		$componentXml = JPATH_ADMINISTRATOR . '/components/' . $extensionName . '/' . $xmlComponentName . '.xml';
-		$manifestFile = false;
-
-		if (file_exists($componentXml))
+		if (empty(self::$redcoreExtensionManifests[$extensionName]))
 		{
-			$content = @file_get_contents($componentXml);
+			$xmlComponentName = strtolower(substr($extensionName, 4));
+			$componentXml = JPATH_ADMINISTRATOR . '/components/' . $extensionName . '/' . $xmlComponentName . '.xml';
+			$manifestFile = false;
 
-			if (!is_string($content))
+			if (file_exists($componentXml))
 			{
-				return false;
+				$content = @file_get_contents($componentXml);
+
+				if (!is_string($content))
+				{
+					return false;
+				}
+
+				$manifestFile = new SimpleXMLElement($content);
+
+				$manifestFile->xmlComponentName = $xmlComponentName;
 			}
 
-			$manifestFile = new SimpleXMLElement($content);
-
-			$manifestFile->xmlComponentName = $xmlComponentName;
+			self::$redcoreExtensionManifests[$extensionName] = $manifestFile;
 		}
 
-		return $manifestFile;
+		return self::$redcoreExtensionManifests[$extensionName];
 	}
 
 	/**

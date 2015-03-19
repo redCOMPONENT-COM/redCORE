@@ -87,7 +87,7 @@ class JHttpFactory
 		{
 			$class = 'JHttpTransport' . ucfirst($adapter);
 
-			if ($class::isSupported())
+			if (class_exists($class) && $class::isSupported())
 			{
 				return new $class($options);
 			}
@@ -119,6 +119,9 @@ class JHttpFactory
 				$names[] = substr($fileName, 0, strrpos($fileName, '.'));
 			}
 		}
+
+		// Keep alphabetical order across all environments
+		sort($names);
 
 		// If curl is available set it to the first position
 		if ($key = array_search('curl', $names))

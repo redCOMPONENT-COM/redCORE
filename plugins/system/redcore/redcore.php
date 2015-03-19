@@ -58,7 +58,8 @@ class PlgSystemRedcore extends JPlugin
 			$apiName = JFactory::getApplication()->input->getString('api');
 
 			if (($this->params->get('enable_webservices', 0) == 1 && strtolower($apiName) == 'hal')
-				|| ($this->params->get('enable_oauth2_server', 0) == 1) && strtolower($apiName) == 'oauth2')
+				|| ($this->params->get('enable_oauth2_server', 0) == 1 && strtolower($apiName) == 'oauth2')
+				|| ($this->params->get('enable_soap', 0) == 1 && strtolower($apiName) == 'soap'))
 			{
 				$input = JFactory::getApplication()->input;
 
@@ -66,6 +67,7 @@ class PlgSystemRedcore extends JPlugin
 				{
 					try
 					{
+						JError::setErrorHandling(E_ERROR, 'message');
 						JFactory::getApplication()->clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
 						$optionName = $input->get->getString('option', '');
@@ -77,6 +79,7 @@ class PlgSystemRedcore extends JPlugin
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
 						$data = RApi::getPostedData();
+						$dataGet = $input->get->getArray();
 
 						if (empty($webserviceClient))
 						{
@@ -92,6 +95,7 @@ class PlgSystemRedcore extends JPlugin
 							'method'            => $method,
 							'task'              => $task,
 							'data'              => $data,
+							'dataGet'           => $dataGet,
 							'accessToken'       => $token,
 							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
 							'id'                => $input->getString('id', ''),
@@ -107,17 +111,26 @@ class PlgSystemRedcore extends JPlugin
 					}
 					catch (Exception $e)
 					{
-						// Set the server response code.
-						header('Status: 500', true, 500);
-
-						// Check for defined constants
-						if (!defined('JSON_UNESCAPED_SLASHES'))
+						if (strtolower($apiName) == 'soap')
 						{
-							define('JSON_UNESCAPED_SLASHES', 64);
+							echo RApiSoapHelper::createSoapFaultResponse($e->getMessage());
 						}
+						else
+						{
+							$code = $e->getCode() > 0 ? $e->getCode() : 500;
 
-						// An exception has been caught, echo the message and exit.
-						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
+							// Set the server response code.
+							header('Status: ' . $code, true, $code);
+
+							// Check for defined constants
+							if (!defined('JSON_UNESCAPED_SLASHES'))
+							{
+								define('JSON_UNESCAPED_SLASHES', 64);
+							}
+
+							// An exception has been caught, echo the message and exit.
+							echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
+						}
 					}
 
 					JFactory::getApplication()->close();

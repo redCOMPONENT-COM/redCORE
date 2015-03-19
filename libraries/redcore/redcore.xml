@@ -8,7 +8,7 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.4.10</version>
+    <version>1.4.17</version>
     <description>redCORE Libraries</description>
 
     <files>
@@ -31,7 +31,6 @@
         <folder>menu</folder>
         <folder>modal</folder>
         <folder>model</folder>
-        <folder>oauth</folder>
         <folder>pagination</folder>
         <folder>plugin</folder>
         <folder>route</folder>
@@ -39,6 +38,7 @@
         <folder>text</folder>
         <folder>toolbar</folder>
         <folder>translation</folder>
+        <folder>user</folder>
         <folder>view</folder>
         <filename>bootstrap.php</filename>
         <filename>functions.php</filename>

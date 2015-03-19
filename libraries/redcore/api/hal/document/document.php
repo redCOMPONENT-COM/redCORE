@@ -97,6 +97,8 @@ class RApiHalDocumentDocument extends JDocument
 		JFactory::getApplication()->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
 		JFactory::getApplication()->setHeader('Cache-Control', 'private', false);
 		JFactory::getApplication()->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+		JFactory::getApplication()->setHeader('Webservice name', $this->hal->webserviceName, true);
+		JFactory::getApplication()->setHeader('Webservice version', $this->hal->webserviceVersion, true);
 
 		JFactory::getApplication()->sendHeaders();
 

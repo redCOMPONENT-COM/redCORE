@@ -1,15 +1,10 @@
-/**
- * Select2 Bootstrap CSS 1.0
- * Compatible with select2 3.5.0
- * MIT License
- */
 .form-control .select2-choice {
     border: 0;
     border-radius: 2px;
 }
 
 .form-control .select2-choice .select2-arrow {
-    border-radius: 0 2px 2px 0;
+    border-radius: 0 2px 2px 0;   
 }
 
 .form-control.select2-container {

@@ -91,10 +91,6 @@
             <exclude name="**/jquery.lazyload.js"/>
             <exclude name="**/jquery-ui.js"/>
             <exclude name="**/select2.js"/>
-
-            <!-- Excluding map files -->
-            <exclude name="**/jquery-1.11.0.min.map"/>
-
         </fileset>
         </copy>
 
@@ -105,18 +101,41 @@
             </fileset>
         </copy>
 
+        <if>
+            <not>
+                <available file="${redcorepath}/plugins/system/mvcoverride/mvcoverride.xml" type="file"/>
+            </not>
+            <then>
+                <echo msg="Submodule not found: ${redcorepath}/plugins/system/mvcoverride. Trying a submodule update" />
+                <exec command="git submodule update --init --recursive" dir="${redcorepath}" />
+                <if>
+                    <not>
+                        <available file="${redcorepath}/plugins/system/mvcoverride/mvcoverride.xml" type="file"/>
+                    </not>
+                    <then>
+                        <fail msg="Submodule not found: ${redcorepath}/plugins/system/mvcoverride. Please update submodule first with: git submodule update --init --recursive" />
+                    </then>
+                </if>
+            </then>
+        </if>
+
+        <if>
+            <available file="${redcorepath}/plugins/system/mvcoverride/mvcoverride.xml" type="file"/>
+            <then>
+                <echo msg="Copying system MVC override plugin to build directory..."/>
+                <copy todir="${redcoretargetdir}/plugins/system/mvcoverride">
+                    <fileset dir="${redcorepath}/plugins/system/mvcoverride">
+                        <include name="**"/>
+                        <exclude name=".*"/>
+                        <exclude name="*.md"/>
+                    </fileset>
+                </copy>
+            </then>
+        </if>
+
         <echo msg="Copying system redCORE plugin to build directory..."/>
         <copy todir="${redcoretargetdir}/plugins/system/redcore">
             <fileset dir="${redcorepath}/plugins/system/redcore">
-                <include name="**"/>
-                <exclude name=".*"/>
-                <exclude name="*.md"/>
-            </fileset>
-        </copy>
-
-        <echo msg="Copying system MVC override plugin to build directory..."/>
-        <copy todir="${redcoretargetdir}/plugins/system/mvcoverride">
-            <fileset dir="${redcorepath}/plugins/system/mvcoverride">
                 <include name="**"/>
                 <exclude name=".*"/>
                 <exclude name="*.md"/>

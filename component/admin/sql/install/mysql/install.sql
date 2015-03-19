@@ -63,6 +63,14 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_jwt` (
   CONSTRAINT `redcore_jwt_client_id_pk` PRIMARY KEY (`client_id`)
 ) DEFAULT CHARSET = utf8;
 
+CREATE TABLE IF NOT EXISTS `#__redcore_oauth_jti` (
+  `issuer` varchar(80) NOT NULL,
+  `subject` varchar(80),
+  `audiance` varchar(80),
+  `expires` TIMESTAMP NOT NULL,
+  `jti` varchar(2000) NOT NULL
+) DEFAULT CHARSET = utf8;
+
 CREATE TABLE IF NOT EXISTS `#__redcore_oauth_public_keys` (
   `client_id`            varchar(80),
   `public_key`           varchar(2000),
