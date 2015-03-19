@@ -526,23 +526,24 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Execute the Api Read operation.
+	 * Returns read type (item or list) for current read operation and fills primary keys if read type is item
 	 *
-	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 * @param   array  &$primaryKeys  List of primary keys
+	 *
+	 * @return  bool  Returns true if read type is Item
 	 *
 	 * @since   1.2
 	 */
-	public function apiRead()
+	public function apiReadTypeItem(&$primaryKeys)
 	{
-		$primaryKeys = array();
-		$primaryKeysFromFields = array();
 		$isReadItem = false;
+		$operations = $this->getConfig('operations');
 
 		// Checking for primary keys
-		if (!empty($this->operationConfiguration->item))
+		if (!empty($operations->read->item))
 		{
-			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $this->operationConfiguration->item);
-			$primaryKeysFromFields = $this->getPrimaryKeysFromFields($this->operationConfiguration->item);
+			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
+			$primaryKeysFromFields = $this->getPrimaryKeysFromFields($operations->read->item);
 
 			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 			{
@@ -559,6 +560,21 @@ class RApiHalHal extends RApi
 				}
 			}
 		}
+
+		return $isReadItem;
+	}
+
+	/**
+	 * Execute the Api Read operation.
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.2
+	 */
+	public function apiRead()
+	{
+		$primaryKeys = array();
+		$isReadItem = $this->apiReadTypeItem($primaryKeys);
 
 		$displayTarget = $isReadItem ? 'item' : 'list';
 		$this->apiDynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
@@ -1409,8 +1425,9 @@ class RApiHalHal extends RApi
 			}
 			else
 			{
-				$id = $this->options->get('id', '');
-				$readType = empty($id) ? 'list' : 'item';
+				$primaryKeys = array();
+				$isReadItem = $this->apiReadTypeItem($primaryKeys);
+				$readType = $isReadItem ? 'item' : 'list';
 
 				if (isset($allowedOperations->read->{$readType}['authorizationNeeded'])
 					&& strtolower($allowedOperations->read->{$readType}['authorizationNeeded']) == 'false')
@@ -1474,7 +1491,7 @@ class RApiHalHal extends RApi
 			return $isAuthorized || !$terminateIfNotAuthorized;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
@@ -1529,7 +1546,7 @@ class RApiHalHal extends RApi
 					return true;
 				}
 
-				$authorized = false || $terminateIfNotAuthorized;
+				$authorized = false || !$terminateIfNotAuthorized;
 			}
 		}
 		// Joomla check through Basic Authentication
@@ -1538,7 +1555,7 @@ class RApiHalHal extends RApi
 			// Get username and password from globals
 			$credentials = RApiHalHelper::getCredentialsFromGlobals();
 
-			$authorized = RUser::userLogin($credentials) || $terminateIfNotAuthorized;
+			$authorized = RUser::userLogin($credentials) || !$terminateIfNotAuthorized;
 		}
 
 		if (!$authorized && $terminateIfNotAuthorized)
@@ -1546,7 +1563,7 @@ class RApiHalHal extends RApi
 			$this->setStatusCode(401);
 		}
 
-		return $authorized || $terminateIfNotAuthorized;
+		return $authorized || !$terminateIfNotAuthorized;
 	}
 
 	/**
