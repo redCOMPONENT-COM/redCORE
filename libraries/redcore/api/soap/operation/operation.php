@@ -211,9 +211,9 @@ class RApiSoapOperationOperation
 	 */
 	public function __call($method, $args)
 	{
-		if (strpos($method, 'task') === 0)
+		if (strpos($method, 'task_') === 0)
 		{
-			$taskName = substr($method, 4);
+			$taskName = substr($method, 5);
 
 			return $this->task($taskName, $args);
 		}
