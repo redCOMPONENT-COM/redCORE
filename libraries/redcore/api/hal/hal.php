@@ -251,7 +251,7 @@ class RApiHalHal extends RApi
 				// We will set name of the webservice as a task controller name
 				$this->webserviceName = $this->options->get('optionName', '') . '-' . $taskSplit[0];
 				$task = $taskSplit[1];
-				$this->options->set('task', strtolower($task));
+				$this->options->set('task', $task);
 
 				return $this;
 			}
