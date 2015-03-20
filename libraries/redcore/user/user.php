@@ -35,7 +35,6 @@ final class RUser
 
 			// Load the JUser class on application for this client
 			JFactory::getApplication()->loadIdentity($user);
-			JFactory::getSession()->set('user', $user);
 		}
 
 		return $login;
