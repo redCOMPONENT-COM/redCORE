@@ -367,7 +367,7 @@ class RApiSoapWsdl
 						array('name' => 'response', 'type' => 'xsd:stringArray'),
 					);
 
-					$this->addOperation($this->wsdl, $name = 'task' . ucfirst($taskName), $messageInputParts, $messageOutputParts);
+					$this->addOperation($this->wsdl, $name = 'task_' . $taskName, $messageInputParts, $messageOutputParts);
 				}
 			}
 		}

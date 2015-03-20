@@ -68,10 +68,9 @@ switch ($operationName)
 		$errorList = array(200, 400, 405, 406, 500);
 		break;
 	case 'task' :
-		$soapFunction = 'task' . ucfirst($taskName) . '($data = array())';
+		$soapFunction = 'task_' . $taskName . '($data = array())';
 		$method = 'GET / POST';
 		$errorList = array(200, 400, 405, 406, 500);
-		$url .= '&task=' . $taskName;
 		break;
 }
 
@@ -94,7 +93,7 @@ endif;
 	<h5>
 		<span class="label label-success">
 			<?php echo $method; ?>
-		</span> &nbsp;<?php echo $url . '&api=hal'; ?>
+		</span> &nbsp;<?php echo $url . ($operationName == 'task' ? '&task=' . $taskName : '') . '&api=hal'; ?>
 	</h5>
 	<em><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE'); ?></em><br /><br />
 

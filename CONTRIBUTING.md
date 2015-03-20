@@ -12,5 +12,5 @@ Commit messages must be in English and has to be formatted like this:
 
 <code>[#ISSUE_NUMBER] Description</code>
 
-### Examples
+### Examples 
 <code>#RR-13 fix Undefined variable at Dashboard view</code>

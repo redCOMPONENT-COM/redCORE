@@ -211,9 +211,9 @@ class RApiSoapOperationOperation
 	 */
 	public function __call($method, $args)
 	{
-		if (strpos($method, 'task') === 0)
+		if (strpos($method, 'task_') === 0)
 		{
-			$taskName = substr($method, 4);
+			$taskName = substr($method, 5);
 
 			return $this->task($taskName, $args);
 		}
@@ -230,7 +230,7 @@ class RApiSoapOperationOperation
 	private function task($taskName, $data)
 	{
 		// We are setting the operation of the webservice to task
-		$this->webservice->options->set('task', strtolower($taskName));
+		$this->webservice->options->set('task', $taskName);
 		$this->setOperation('task');
 		$this->webservice->options->set('data', $data);
 		$this->webservice->execute();

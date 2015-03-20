@@ -192,7 +192,7 @@ class RApiHalHelper
 			$task = $command;
 		}
 
-		return strtolower($task);
+		return $task;
 	}
 
 	/**

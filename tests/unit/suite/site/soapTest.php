@@ -42,10 +42,10 @@ class soapTest
 			/*
 			 * Additional tests
 			$response = $client->readItem(array('id' => 4));
-			$response = $client->taskHit();
-			*/
 
-			$response = $client->readList(0, 2, '');
+			*/
+			$response = $client->task_hit();
+			//$response = $client->readList(0, 2, '');
 
 			// Dump request / response
 			$this->dumpSoapMessages($client);
