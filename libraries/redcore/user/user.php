@@ -27,52 +27,18 @@ final class RUser
 	 */
 	public static function userLogin($credentials)
 	{
-		JLoader::import('joomla.user.authentication');
-		JLoader::import('joomla.user.helper');
-		JPluginHelper::importPlugin('user');
-		$loginOptions = array('remember' => false);
-		$authentication = JAuthentication::getInstance()->authenticate($credentials, $loginOptions);
+		$login = JFactory::getApplication()->login($credentials);
 
-		// Skip two factor authentication
-		if ($authentication->status != JAuthentication::STATUS_SUCCESS && method_exists('JUserHelper', 'verifyPassword'))
+		if ($login)
 		{
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true)
-				->select('id, password')
-				->from('#__users')
-				->where('username=' . $db->q($credentials['username']));
-			$db->setQuery($query);
-			$user = $db->loadObject();
+			$user = JFactory::getUser();
 
-			if ($user)
-			{
-				$match = JUserHelper::verifyPassword($credentials['password'], $user->password, $user->id);
-
-				if ($match === true)
-				{
-					$userObject = JUser::getInstance($user->id);
-					$authentication->fullname = $userObject->name;
-					$authentication->email = $userObject->email;
-					$authentication->language = JFactory::getApplication()->isAdmin() ? $userObject->getParam('admin_language') : $userObject->getParam('language');
-					$authentication->status = JAuthentication::STATUS_SUCCESS;
-					$authentication->error_message = '';
-				}
-			}
+			// Load the JUser class on application for this client
+			JFactory::getApplication()->loadIdentity($user);
+			JFactory::getSession()->set('user', $user);
 		}
 
-		if ($authentication->status == JAuthentication::STATUS_SUCCESS)
-		{
-			JFactory::getApplication()->triggerEvent('onLoginUser', array((array) $authentication, $loginOptions));
-
-			$userId = JUserHelper::getUserId($authentication->username);
-			$userObject = JFactory::getUser($userId);
-			$session = JFactory::getSession();
-			$session->set('user', $userObject);
-
-			return true;
-		}
-
-		return false;
+		return $login;
 	}
 
 	/**
