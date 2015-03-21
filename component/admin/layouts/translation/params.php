@@ -23,6 +23,7 @@ $translationForm = !empty($displayData['translationForm']) ? $displayData['trans
 $formType = $translationForm == true ? 'translationForm' : 'originalForm';
 $selectedFieldSets = !empty($column['fieldsets']) ? explode(',', $column['fieldsets']) : null;
 $selectedGroup = !empty($column['fieldsname']) ? $column['fieldsname'] : $name;
+$fieldSetNameAddition = !empty($column['formname']) && $column['formname'] == 'plugin' ? 'COM_PLUGINS_' : '';
 
 $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 ?>
@@ -47,7 +48,7 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 						continue;
 					endif;
 					?>
-					<?php $label = empty($fieldSet->label) ? $name : $fieldSet->label; ?>
+					<?php $label = empty($fieldSet->label) ?  $fieldSetNameAddition . $name . '_FIELDSET_LABEL' : $fieldSet->label; ?>
 					<li><a href="#params_<?php echo $formType;?>_<?php echo $name; ?>" data-toggle="tab"><?php echo RText::getTranslationIfExists($label, '', ''); ?></a></li>
 				<?php endforeach; ?>
 			</ul>
