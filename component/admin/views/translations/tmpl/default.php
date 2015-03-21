@@ -19,9 +19,21 @@ $listDirn = $this->state->get('list.direction');
 $selectedLanguage = $this->state->get('filter.language', '');
 $input = JFactory::getApplication()->input;
 $columns = array();
+$fieldsXml = $this->contentElement->getTranslateFields();
+$doNotTranslate = array();
+
+// We are adding fields that do not require translation
+foreach ($fieldsXml as $field)
+{
+	if ((string) $field['translate'] == '0' && (string) $field['type'] == 'titletext')
+	{
+		$doNotTranslate[] = (string) $field['name'];
+	}
+}
 
 if (!empty($this->items)):
 	$columns = (array) $this->translationTable->columns;
+	$columns = array_merge($doNotTranslate, $columns);
 	$this->translationTable->primaryKeys = (array) $this->translationTable->primaryKeys;
 
 	foreach ($columns as $key => $column):

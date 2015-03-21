@@ -9,8 +9,8 @@
         <table name="modules">
             <field type="referenceid" name="id" translate="0">ID</field>
             <field type="titletext" name="title" translate="1">Title</field>
+            <field type="titletext" name="module" translate="0">Module</field>
             <field type="htmltext" name="content" translate="1" ignoreifblank="1">Content</field>
-            <field type="text" name="module" translate="0">Module</field>
             <field type="text" name="client_id" translate="0">Module</field>
             <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
             <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>

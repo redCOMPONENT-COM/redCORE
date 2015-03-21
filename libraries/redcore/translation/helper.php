@@ -450,6 +450,10 @@ class RTranslationHelper
 		{
 			$form = self::preprocessFormMenu($form, $data);
 		}
+		elseif (strtolower($contentElement->name) == 'plugins')
+		{
+			$form = self::preprocessFormPlugins($form, $data);
+		}
 
 		// Import the appropriate plugin group.
 		JPluginHelper::importPlugin($group);
@@ -498,6 +502,44 @@ class RTranslationHelper
 		// Load the core and/or local language file(s).
 		$lang->load($module, $client->path, null, false, true)
 		||	$lang->load($module, $client->path . '/modules/' . $module, null, false, true);
+
+		if (file_exists($formFile))
+		{
+			// Get the module form.
+			if (!$form->loadFile($formFile, false, '//config'))
+			{
+				throw new Exception(JText::_('JERROR_LOADFILE_FAILED'));
+			}
+		}
+
+		return $form;
+	}
+
+	/**
+	 * Method to preprocess the form for plugins
+	 *
+	 * @param   JForm  $form  A form object.
+	 * @param   mixed  $data  The data expected for the form.
+	 *
+	 * @return  JForm
+	 *
+	 * @since   1.6
+	 * @throws  Exception if there is an error loading the form.
+	 */
+	public static function preprocessFormPlugins(JForm $form, $data)
+	{
+		jimport('joomla.filesystem.path');
+
+		$lang     = JFactory::getLanguage();
+		$extension = 'plg_' . $data->folder . '_' . $data->element;
+
+		$formFile = JPath::clean(JPATH_PLUGINS . '/' . $data->folder . '/' . $data->element . '/' . $data->element . '.xml');
+
+		// Load the core and/or local language file(s).
+		$lang->load(strtolower($extension), JPATH_ADMINISTRATOR, null, false, true)
+			|| $lang->load(strtolower($extension), JPATH_PLUGINS . '/' . $data->folder . '/' . $data->element, null, false, true);
+		$lang->load(strtolower($extension . '.sys'), JPATH_ADMINISTRATOR, null, false, true)
+			|| $lang->load(strtolower($extension . '.sys'), JPATH_PLUGINS . '/' . $data->folder . '/' . $data->element, null, false, true);
 
 		if (file_exists($formFile))
 		{
@@ -667,5 +709,34 @@ class RTranslationHelper
 		}
 
 		return $form;
+	}
+
+	/**
+	 * Method to reset plugin translation keys
+	 *
+	 * @return  void
+	 */
+	public static function resetPluginTranslation()
+	{
+		$user = JFactory::getUser();
+		$levels = implode(',', $user->getAuthorisedViewLevels());
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->select('folder AS type, element AS name, params')
+			->from('#__extensions')
+			->where('enabled = 1')
+			->where('type =' . $db->quote('plugin'))
+			->where('state IN (0,1)')
+			->where('access IN (' . $levels . ')')
+			->order('ordering');
+
+		$plugins = $db->setQuery($query)->loadObjectList();
+
+		foreach ($plugins as $plugin)
+		{
+			$joomlaPlugin = JPluginHelper::getPlugin($plugin->type, $plugin->name);
+			$joomlaPlugin->params = $plugin->params;
+		}
 	}
 }

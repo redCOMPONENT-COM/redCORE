@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.4.17</version>
+    <version>1.4.18</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.4.17" defaultFramework="bootstrap3" />
+    <redcore version="1.4.18" defaultFramework="bootstrap3" />
 
     <install folder="component/admin">
         <sql>
@@ -100,6 +100,7 @@
         <translation name="com_menus"/>
         <translation name="com_modules"/>
         <translation name="com_newsfeeds"/>
+        <translation name="com_plugins"/>
         <translation name="com_users"/>
         <translation name="com_weblinks"/>
     </translations>
