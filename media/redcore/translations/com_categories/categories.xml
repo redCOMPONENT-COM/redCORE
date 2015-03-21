@@ -8,7 +8,7 @@
 	<reference>
 		<table name="categories">
 			<field type="referenceid" name="id" translate="0">ID</field>
-            <field type="titletext" name="extension" translate="0" >Title</field>
+			<field type="titletext" name="extension" translate="0" >Extension</field>
 			<field type="titletext" name="title" translate="1" >Title</field>
 			<field type="text" name="alias" translate="1" posthandler="filterTitle">Alias</field>
 			<field type="htmltext" name="description" translate="1" ebuttons="readmore,pagebreak">Description</field>
