@@ -19,12 +19,19 @@ defined('JPATH_BASE') or die;
 class PlgSystemRedcore extends JPlugin
 {
 	/**
-	 * Method to register custom library.
+	 * Constructor
 	 *
-	 * @return  void
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An optional associative array of configuration settings.
+	 *                             Recognized key values include 'name', 'group', 'params', 'language'
+	 *                             (this list is not meant to be comprehensive).
+	 *
+	 * @since   1.5
 	 */
-	public function onAfterInitialise()
+	public function __construct(&$subject, $config = array())
 	{
+		parent::__construct($subject, $config);
+
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
 		if (file_exists($redcoreLoader))
@@ -40,9 +47,6 @@ class PlgSystemRedcore extends JPlugin
 
 			RBootstrap::bootstrap(false);
 
-			// Sets plugin parameters for further use in Translation Helper class
-			RTranslationHelper::$pluginParams = $this->params;
-
 			if ($this->params->get('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
 			{
 				JFactory::$database = null;
@@ -52,9 +56,28 @@ class PlgSystemRedcore extends JPlugin
 				$db = JFactory::getDbo();
 
 				// Enable translations
-				$db->translate = RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1;
-			}
+				$db->translate = $this->params->get('enable_translations', 0) == 1;
 
+				if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+				{
+					// Reset plugin params if we are in a different language than default
+					RTranslationHelper::resetPluginTranslation();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Method to register custom library.
+	 *
+	 * @return  void
+	 */
+	public function onAfterInitialise()
+	{
+		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
+
+		if (file_exists($redcoreLoader))
+		{
 			$apiName = JFactory::getApplication()->input->getString('api');
 
 			if (($this->params->get('enable_webservices', 0) == 1 && strtolower($apiName) == 'hal')
