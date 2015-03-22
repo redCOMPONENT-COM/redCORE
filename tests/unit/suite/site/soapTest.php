@@ -23,7 +23,7 @@ class soapTest
 	 * @return void
 	 */
 	public function testSoapClient(
-		$wsdlUrl = 'http://localhost/redComponent/red33test/index.php?option=com_redshopb&amp;view=country&amp;webserviceVersion=1.0.0&amp;api=soap&amp;wsdl')
+		$wsdlUrl = 'http://localhost/redComponent/red33test/index.php?option=com_contact&amp;webserviceVersion=1.0.0&amp;api=soap&amp;wsdl')
 	{
 		$wsdlUrl = 'http://dje.redhost.dk/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=redshopb&view=country&api=soap&wsdl';
 		ini_set("soap.wsdl_cache_enabled", "0");
@@ -32,8 +32,8 @@ class soapTest
 			'exceptions' => true,
 			'trace' => 1,
 			'cache_wsdl' => WSDL_CACHE_NONE,
-			'login' => 'super',//super
-			'password' => 'mgLJnL@Q3RJ2$xArsEQMNnb97p',//mgLJnL@Q3RJ2$xArsEQMNnb97p
+			'login' => 'admin',
+			'password' => 'admin',
 		);
 
 		try
@@ -46,7 +46,7 @@ class soapTest
 			*/
 			//$response = $client->task_hit();
 			//$response = $client->readList(0, 2, '');
-			$response = $client->readItem('AT', $language = 'en');
+			$response = $client->readItem(array('id' => 4), $language = 'en');
 
 			// Dump request / response
 			$this->dumpSoapMessages($client);
