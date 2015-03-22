@@ -33,6 +33,7 @@ class RApiHalTableTable extends RTable
 	{
 		$this->_tableName = $table;
 		$this->_tbl_key = $key;
+		$this->_tableKey = $key;
 
 		// Set all columns from table as properties
 		$columns = array();
