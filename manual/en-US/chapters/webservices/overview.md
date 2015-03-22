@@ -24,6 +24,12 @@ redCORE provides a user interface for webservice management in your administrati
 After installing webservice you'll also have a feature that will build automatic documentation for your webservice, enabling help to developers who will interact with it.
 To keep it short, redCORE is the easiest way to build robust, secure, and documented APIs.
 
+### HTTP Status Codes
+
+Each Status-Code is described below, including a description of which method(s) it can follow and any meta information required in the response. Status codes are given following this workflow:
+
+![](assets/img/status_codes_workflow.png)
+
 ### Tips
 
 We highly recommend using **OAuth2 Server** together with webservice API since it already brings token manipulation and ease of access to the data. 
