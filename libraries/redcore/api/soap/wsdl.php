@@ -78,7 +78,7 @@ class RApiSoapWsdl
 
 		// Add complex type
 		$complexType = $stringArrayElement->addChild('complexType');
-		$complexType->addAttribute('name', 'SOAPStrings');
+		$complexType->addAttribute('name', 'stringArray');
 
 		// Add complex content
 		$complexContent = $complexType->addChild('complexContent');
@@ -90,7 +90,7 @@ class RApiSoapWsdl
 		// Add complex content restriction attribute
 		$complexContentRestrictionAttribute = $complexContentRestriction->addChild('attribute');
 		$complexContentRestrictionAttribute->addAttribute('ref', 'SOAP-ENC:arrayType');
-		$complexContentRestrictionAttribute->addAttribute('wsdl:arrayType', 'xsd:string[][]');
+		$complexContentRestrictionAttribute->addAttribute('tns:arrayType', 'xsd:string[][]');
 	}
 
 	/**
@@ -112,7 +112,16 @@ class RApiSoapWsdl
 		{
 			$messagePart = $message->addChild('part');
 			$messagePart->addAttribute('name', $part['name']);
-			$messagePart->addAttribute('type', $part['type']);
+
+			if ($part['type'] != '')
+			{
+				$messagePart->addAttribute('type', $part['type']);
+			}
+
+			if ($part['element'] != '')
+			{
+				$messagePart->addAttribute('element', $part['element']);
+			}
 		}
 	}
 
@@ -246,14 +255,14 @@ class RApiSoapWsdl
 		$this->wsdl = new SimpleXMLElement('<?xml version="1.0"?><definitions name="' . $fullName . '"'
 			. ' xmlns="http://schemas.xmlsoap.org/wsdl/"'
 			. ' xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"'
-			. ' xmlns:tns="' . rtrim(JUri::base(), '/') . '/' . $fullName . '.wsdl"'
+			. ' xmlns:tns="' . str_replace('&', '&amp;', $this->webserviceUrl . '&wsdl') . '"'
 			. ' xmlns:xsd="http://www.w3.org/2001/XMLSchema"'
-			. ' targetNamespace="' . rtrim(JUri::base(), '/') . '/' . $fullName . '.wsdl"'
+			. ' targetNamespace="' . str_replace('&', '&amp;', $this->webserviceUrl . '&wsdl') . '"'
 			. ' ></definitions>');
 
 		$types = $this->wsdl->addChild('types');
 		$typeSchema = $types->addChild('schema');
-		$typeSchema->addAttribute('targetNamespace', rtrim(JUri::base(), '/') . '/' . $fullName . '.xsd');
+		$typeSchema->addAttribute('targetNamespace', $this->webserviceUrl . '&wsdl');
 		$typeSchema->addAttribute('xmlns', 'http://www.w3.org/2000/10/XMLSchema');
 
 		// Add global types (like array)
@@ -275,7 +284,7 @@ class RApiSoapWsdl
 					array('name' => 'limitStart', 'type' => 'xsd:int'),
 					array('name' => 'limit', 'type' => 'xsd:int'),
 					array('name' => 'filterSearch', 'type' => 'xsd:string'),
-					array('name' => 'filters', 'type' => 'xsd:stringArray'),
+					array('name' => 'filters', 'element' => 'tns:stringArray'),
 					array('name' => 'ordering', 'type' => 'xsd:string'),
 					array('name' => 'orderingDirection', 'type' => 'xsd:string'),
 					array('name' => 'language', 'type' => 'xsd:string'),
@@ -283,7 +292,7 @@ class RApiSoapWsdl
 
 				// Add read list response messages
 				$messageOutputParts = array(
-					array('name' => 'response', 'type' => 'xsd:stringArray'),
+					array('name' => 'response', 'element' => 'tns:stringArray'),
 				);
 
 				$this->addOperation($this->wsdl, $name = 'readList', $messageInputParts, $messageOutputParts);
@@ -297,7 +306,7 @@ class RApiSoapWsdl
 				if (count($primaryKeysFromFields) > 1)
 				{
 					$messageInputParts = array(
-						array('name' => 'ids', 'type' => 'xsd:stringArray')
+						array('name' => 'ids', 'element' => 'tns:stringArray')
 					);
 				}
 				else
@@ -314,7 +323,7 @@ class RApiSoapWsdl
 
 				// Add read item response messages
 				$messageOutputParts = array(
-					array('name' => 'response', 'type' => 'xsd:stringArray'),
+					array('name' => 'response', 'element' => 'tns:stringArray'),
 				);
 
 				$this->addOperation($this->wsdl, $name = 'readItem', $messageInputParts, $messageOutputParts);
@@ -325,12 +334,12 @@ class RApiSoapWsdl
 			{
 				// Add create messages
 				$messageInputParts = array(
-					array('name' => 'data', 'type' => 'xsd:stringArray'),
+					array('name' => 'data', 'element' => 'tns:stringArray'),
 				);
 
 				// Add create response messages
 				$messageOutputParts = array(
-					array('name' => 'response', 'type' => 'xsd:stringArray'),
+					array('name' => 'response', 'element' => 'tns:stringArray'),
 				);
 
 				$this->addOperation($this->wsdl, $name = 'create', $messageInputParts, $messageOutputParts);
@@ -341,12 +350,12 @@ class RApiSoapWsdl
 			{
 				// Add update messages
 				$messageInputParts = array(
-					array('name' => 'data', 'type' => 'xsd:stringArray'),
+					array('name' => 'data', 'element' => 'tns:stringArray'),
 				);
 
 				// Add update response messages
 				$messageOutputParts = array(
-					array('name' => 'response', 'type' => 'xsd:stringArray'),
+					array('name' => 'response', 'element' => 'tns:stringArray'),
 				);
 
 				$this->addOperation($this->wsdl, $name = 'update', $messageInputParts, $messageOutputParts);
@@ -357,12 +366,12 @@ class RApiSoapWsdl
 			{
 				// Add delete messages
 				$messageInputParts = array(
-					array('name' => 'id', 'type' => 'xsd:stringArray'),
+					array('name' => 'id', 'element' => 'tns:stringArray'),
 				);
 
 				// Add delete response messages
 				$messageOutputParts = array(
-					array('name' => 'response', 'type' => 'xsd:stringArray'),
+					array('name' => 'response', 'element' => 'tns:stringArray'),
 				);
 
 				$this->addOperation($this->wsdl, $name = 'delete', $messageInputParts, $messageOutputParts);
@@ -375,12 +384,12 @@ class RApiSoapWsdl
 				{
 					// Add task messages
 					$messageInputParts = array(
-						array('name' => 'data', 'type' => 'xsd:stringArray'),
+						array('name' => 'data', 'element' => 'tns:stringArray'),
 					);
 
 					// Add task response messages
 					$messageOutputParts = array(
-						array('name' => 'response', 'type' => 'xsd:stringArray'),
+						array('name' => 'response', 'element' => 'tns:stringArray'),
 					);
 
 					$this->addOperation($this->wsdl, $name = 'task_' . $taskName, $messageInputParts, $messageOutputParts);
