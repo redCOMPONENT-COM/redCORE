@@ -107,12 +107,12 @@ class RApiSoapOperationOperation
 	/**
 	 * Read item
 	 *
-	 * @param   array   $id        ID key(s) of the item. If multiple keys then they need to be in a array format (ex: array('id' => 4, 'sub_id' = 14))
+	 * @param   array   $ids       ID key(s) of the item. If multiple keys then they need to be in a array format (ex: array('id' => 4, 'sub_id' = 14))
 	 * @param   string  $language  Language Tag name (ex: en)
 	 *
 	 * @return  array
 	 */
-	public function readItem($id = array(), $language = null)
+	public function readItem($ids = array(), $language = null)
 	{
 		// We are setting the operation of the webservice to Read
 		$this->setOperation('read');
@@ -125,24 +125,24 @@ class RApiSoapOperationOperation
 			$primaryKeysFromFields['id'] = array('transform' => 'int');
 		}
 
-		if (!is_array($id))
+		if (!is_array($ids))
 		{
 			if (count($primaryKeysFromFields) == 1)
 			{
 				$id = array();
-				$id[key($primaryKeysFromFields)] = $id;
+				$id[key($primaryKeysFromFields)] = $ids;
 			}
 			else
 			{
-				$id = array('id' => $id);
+				$id = array('id' => $ids);
 			}
 		}
 
 		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 		{
-			if (isset($id[$primaryKey]) && $id[$primaryKey] != '')
+			if (isset($ids[$primaryKey]) && $ids[$primaryKey] != '')
 			{
-				$dataGet->{$primaryKey} = $this->webservice->transformField($primaryKeyField['transform'], $id[$primaryKey], false);
+				$dataGet->{$primaryKey} = $this->webservice->transformField($primaryKeyField['transform'], $ids[$primaryKey], false);
 			}
 		}
 
