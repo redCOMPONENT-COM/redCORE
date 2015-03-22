@@ -25,7 +25,6 @@ class soapTest
 	public function testSoapClient(
 		$wsdlUrl = 'http://localhost/redComponent/red33test/index.php?option=com_contact&amp;webserviceVersion=1.0.0&amp;api=soap&amp;wsdl')
 	{
-		$wsdlUrl = 'http://dje.redhost.dk/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=redshopb&view=country&api=soap&wsdl';
 		ini_set("soap.wsdl_cache_enabled", "0");
 		$params = array(
 			'soap_version' => SOAP_1_2,
