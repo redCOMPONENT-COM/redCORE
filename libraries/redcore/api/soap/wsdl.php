@@ -292,7 +292,7 @@ class RApiSoapWsdl
 			// Read item
 			if (isset($this->webserviceXml->operations->read->item))
 			{
-				$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($this->webservice->configuration->operations->read->item);
+				$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($this->webserviceXml->operations->read->item);
 
 				if (count($primaryKeysFromFields) > 1)
 				{
