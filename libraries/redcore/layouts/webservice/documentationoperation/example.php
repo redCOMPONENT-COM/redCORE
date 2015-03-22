@@ -46,13 +46,24 @@ switch ($operationName)
 		$errorList = array(200, 405, 500);
 		break;
 	case 'read item' :
-		$soapFunction = 'readItem($id = array(), $language = null)';
+
+		// If there are more than one primary key involved we are displaying them all
+		$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($operationXml);
+
+		if (count($primaryKeysFromFields) > 1)
+		{
+			$soapFunction = 'readItem($ids = array(), $language = null)';
+		}
+		else
+		{
+			$primaryKey = $primaryKeysFromFields[key($primaryKeysFromFields)];
+			$primaryKeyType = isset($primaryKey['transform']) && $primaryKey['transform'] == 'int' ? '0' : '""';
+			$soapFunction = 'readItem($' . key($primaryKeysFromFields) . ' = ' . $primaryKeyType . ', $language = null)';
+		}
+
 		$method = 'GET';
 		$noteName = '_ITEM';
 		$errorList = array(200, 404, 405, 500);
-
-		// If there are more than one primary key involved we are displaying them all
-		$primaryKeysFromFields = $view->getPrimaryKeysFromFields($operationXml);
 
 		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 		{

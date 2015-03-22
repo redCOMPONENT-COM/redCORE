@@ -292,11 +292,25 @@ class RApiSoapWsdl
 			// Read item
 			if (isset($this->webserviceXml->operations->read->item))
 			{
+				$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($this->webservice->configuration->operations->read->item);
+
+				if (count($primaryKeysFromFields) > 1)
+				{
+					$messageInputParts = array(
+						array('name' => 'ids', 'type' => 'xsd:stringArray')
+					);
+				}
+				else
+				{
+					$primaryKey = $primaryKeysFromFields[key($primaryKeysFromFields)];
+					$primaryKeyType = isset($primaryKey['transform']) && $primaryKey['transform'] == 'int' ? 'int' : 'string';
+					$messageInputParts = array(
+						array('name' => key($primaryKeysFromFields), 'type' => 'xsd:' . $primaryKeyType)
+					);
+				}
+
 				// Add read item messages
-				$messageInputParts = array(
-					array('name' => 'id', 'type' => 'xsd:stringArray'),
-					array('name' => 'language', 'type' => 'xsd:string'),
-				);
+				$messageInputParts[] = array('name' => 'language', 'type' => 'xsd:string');
 
 				// Add read item response messages
 				$messageOutputParts = array(
