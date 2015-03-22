@@ -130,7 +130,7 @@ class RApiSoapOperationOperation
 			if (count($primaryKeysFromFields) == 1)
 			{
 				$id = array();
-				$id[$primaryKeysFromFields[0]['name']] = $id;
+				$id[key($primaryKeysFromFields)] = $id;
 			}
 			else
 			{
