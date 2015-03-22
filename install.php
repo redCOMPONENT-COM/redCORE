@@ -572,7 +572,7 @@ class Com_RedcoreInstallerScript
 
 		$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
 
-		return $installer->copyFiles($copyFiles);
+		return $installer->copyFiles($copyFiles, true);
 	}
 
 	/**
