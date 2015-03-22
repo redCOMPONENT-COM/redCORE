@@ -132,22 +132,24 @@ class PlgSystemRedcore extends JPlugin
 						$api = RApi::getInstance($options);
 
 						// Run the api task
-						$api->execute()
-							->render();
+						$api->execute();
+
+						// Display output
+						$api->render();
 					}
 					catch (Exception $e)
 					{
+						$code = $e->getCode() > 0 ? $e->getCode() : 500;
+
+						// Set the server response code.
+						header('Status: ' . $code, true, $code);
+
 						if (strtolower($apiName) == 'soap')
 						{
 							echo RApiSoapHelper::createSoapFaultResponse($e->getMessage());
 						}
 						else
 						{
-							$code = $e->getCode() > 0 ? $e->getCode() : 500;
-
-							// Set the server response code.
-							header('Status: ' . $code, true, $code);
-
 							// Check for defined constants
 							if (!defined('JSON_UNESCAPED_SLASHES'))
 							{
