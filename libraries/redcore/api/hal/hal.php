@@ -339,40 +339,41 @@ class RApiHalHal extends RApi
 		{
 			if (!empty($this->webserviceName))
 			{
-				if (!$this->triggerFunction('isOperationAllowed'))
+				if ($this->triggerFunction('isOperationAllowed'))
 				{
-					throw new Exception(JText::_('LIB_REDCORE_API_HAL_OPERATION_NOT_ALLOWED'));
-				}
+					$this->elementName = ucfirst(strtolower((string) $this->getConfig('config.name')));
+					$this->operationConfiguration = $this->getConfig('operations.' . strtolower($this->operation));
 
-				$this->elementName = ucfirst(strtolower((string) $this->getConfig('config.name')));
-				$this->operationConfiguration = $this->getConfig('operations.' . strtolower($this->operation));
-
-				switch ($this->operation)
-				{
-					case 'create':
-						$this->triggerFunction('apiCreate');
-						break;
-					case 'read':
-						$this->triggerFunction('apiRead');
-						break;
-					case 'update':
-						$this->triggerFunction('apiUpdate');
-						break;
-					case 'delete':
-						$this->triggerFunction('apiDelete');
-						break;
-					case 'task':
-						$this->triggerFunction('apiTask');
-						break;
-					case 'documentation':
-						$this->triggerFunction('apiDocumentation');
-						break;
+					switch ($this->operation)
+					{
+						case 'create':
+							$this->triggerFunction('apiCreate');
+							break;
+						case 'read':
+							$this->triggerFunction('apiRead');
+							break;
+						case 'update':
+							$this->triggerFunction('apiUpdate');
+							break;
+						case 'delete':
+							$this->triggerFunction('apiDelete');
+							break;
+						case 'task':
+							$this->triggerFunction('apiTask');
+							break;
+						case 'documentation':
+							$this->triggerFunction('apiDocumentation');
+							break;
+					}
 				}
 			}
 			else
 			{
 				// If default page needs authorization to access it
-				$this->isAuthorized('', RTranslationHelper::$pluginParams->get('webservices_default_page_authorization', 0));
+				if (!$this->isAuthorized('', RTranslationHelper::$pluginParams->get('webservices_default_page_authorization', 0)))
+				{
+					return false;
+				}
 
 				// No webservice name. We display all webservices available
 				$this->triggerFunction('apiDefaultPage');
@@ -660,7 +661,14 @@ class RApiHalHal extends RApi
 
 		if ($this->statusCode < 400)
 		{
-			$this->setStatusCode(201);
+			if ($result === false)
+			{
+				$this->setStatusCode(404);
+			}
+			else
+			{
+				$this->setStatusCode(201);
+			}
 		}
 	}
 
@@ -714,7 +722,11 @@ class RApiHalHal extends RApi
 
 		if ($this->statusCode < 400)
 		{
-			$this->setStatusCode(200);
+			if ($result === false)
+			{
+				// If delete failed then we set it to Internal Server Error status code
+				$this->setStatusCode(500);
+			}
 		}
 	}
 
@@ -769,7 +781,11 @@ class RApiHalHal extends RApi
 
 		if ($this->statusCode < 400)
 		{
-			$this->setStatusCode(200);
+			if ($result === false)
+			{
+				// If update failed then we set it to Internal Server Error status code
+				$this->setStatusCode(500);
+			}
 		}
 	}
 
@@ -833,11 +849,6 @@ class RApiHalHal extends RApi
 
 		$this->setData('result', $result);
 		$this->triggerFunction('displayErrors', $model);
-
-		if ($this->statusCode < 400)
-		{
-			$this->setStatusCode(200);
-		}
 	}
 
 	/**

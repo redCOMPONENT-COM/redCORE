@@ -278,6 +278,7 @@ class RApiSoapWsdl
 					array('name' => 'filters', 'type' => 'xsd:stringArray'),
 					array('name' => 'ordering', 'type' => 'xsd:string'),
 					array('name' => 'orderingDirection', 'type' => 'xsd:string'),
+					array('name' => 'language', 'type' => 'xsd:string'),
 				);
 
 				// Add read list response messages
@@ -294,6 +295,7 @@ class RApiSoapWsdl
 				// Add read item messages
 				$messageInputParts = array(
 					array('name' => 'id', 'type' => 'xsd:stringArray'),
+					array('name' => 'language', 'type' => 'xsd:string'),
 				);
 
 				// Add read item response messages
