@@ -236,7 +236,16 @@ class RApiSoapSoap extends RApi
 		}
 		else
 		{
-			$body = $this->getBody();
+			// Add error faults if they exist
+			if ($this->webservice->statusCode >= 300)
+			{
+				$this->setStatusCode(500);
+				$body = RApiSoapHelper::createSoapFaultResponse($this->webservice->statusCode . ' ' . $this->webservice->statusText);
+			}
+			else
+			{
+				$body = $this->getBody();
+			}
 		}
 
 		JFactory::$document = new RApiSoapDocumentDocument($documentOptions);

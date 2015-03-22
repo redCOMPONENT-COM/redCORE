@@ -22,6 +22,7 @@ $soapFunction = '';
 $taskName = '';
 $noteName = '';
 $currentDisplayGroup = '';
+$basicUrl = '';
 $errorList = array();
 
 if (!empty($displayData['options']['taskName']) )
@@ -35,16 +36,17 @@ switch ($operationName)
 	case 'create' :
 		$soapFunction = 'create($data = array())';
 		$method = 'POST';
-		$errorList = array(201, 400, 405, 406, 500);
+		$errorList = array(201, 400, 404, 405, 406, 500);
 		break;
 	case 'read list' :
-		$soapFunction = 'readList($limitStart = 0, $limit = 20, $filterSearch = null, $filters = array(), $ordering = null, $orderingDirection = null)';
+		$soapFunction = 'readList($limitStart = 0, $limit = 20, $filterSearch = null, $filters = array(), $ordering = null, '
+			. '$orderingDirection = null, $language = null)';
 		$method = 'GET';
 		$noteName = '_LIST';
 		$errorList = array(200, 405, 500);
 		break;
 	case 'read item' :
-		$soapFunction = 'readItem($id = array())';
+		$soapFunction = 'readItem($id = array(), $language = null)';
 		$method = 'GET';
 		$noteName = '_ITEM';
 		$errorList = array(200, 404, 405, 500);
@@ -54,7 +56,7 @@ switch ($operationName)
 
 		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 		{
-			$url .= '&' . $primaryKey . '=1';
+			$basicUrl .= '&' . $primaryKey . '=1';
 		}
 		break;
 	case 'update' :
@@ -93,9 +95,15 @@ endif;
 	<h5>
 		<span class="label label-success">
 			<?php echo $method; ?>
-		</span> &nbsp;<?php echo $url . ($operationName == 'task' ? '&task=' . $taskName : '') . '&api=hal'; ?>
+		</span> &nbsp;<?php echo $url . ($operationName == 'task' ? '&task=' . $taskName : '') . $basicUrl . '&api=hal'; ?>
 	</h5>
-	<em><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE'); ?></em><br /><br />
+	<em><?php if ($operationName == 'read item'):
+			$ids = array_keys($primaryKeysFromFields);
+			$ids = implode(', ', $ids);
+			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE', $ids);
+		else:
+			echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE');
+		endif; ?></em><br /><br />
 
 	<?php if ($soapEnabled): ?>
 		<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP'); ?></strong><br />
@@ -104,7 +112,21 @@ endif;
 				$client-><?php echo $soapFunction; ?>
 			</span> &nbsp;<?php echo $url . '&api=soap'; ?>
 		</h5>
-		<em><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE'); ?></em><br /><br />
+		<em><?php if ($operationName == 'read item'):
+			$ids = array_keys($primaryKeysFromFields);
+			$arrayIds = array();
+
+			foreach ($ids as $id):
+				$arrayIds[] = "'" . $id . "' => '1'";
+			endforeach;
+
+			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE', implode(', ', $ids),
+				count($primaryKeysFromFields) > 1 ? JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEYS_NOTE', implode(', ', $arrayIds)) :
+					JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEY_NOTE')
+				);
+		else:
+			echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE');
+		endif; ?></em><br /><br />
 	<?php endif; ?>
 
 	<div class="row">
@@ -121,6 +143,8 @@ endif;
 						$fieldsContainer = array();
 
 						if ($operationName == 'read list'):
+							$fieldsContainer[] = '<strong>lang</strong> (<em>string, '
+								. JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_OPTIONAL') . '</em>)';
 							$fieldsContainer[] = '<strong>list[limitstart]</strong> (<em>int, '
 								. JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_OPTIONAL') . '</em>)';
 							$fieldsContainer[] = '<strong>list[limit]</strong> (<em>int, '
@@ -158,6 +182,9 @@ endif;
 								if (!RApiHalHelper::isAttributeTrue($field, 'isPrimaryField')):
 									continue;
 								endif;
+
+								// We set it as a required field for read item
+								$field['isRequiredField'] = 'true';
 							endif;
 
 							$fieldsContainer[] = '<strong>' . $field['name'] . '</strong> '

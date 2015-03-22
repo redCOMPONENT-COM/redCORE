@@ -45,10 +45,12 @@ class RApiSoapOperationOperation
 	 * @param   array   $filters            Search Data with specific filter
 	 * @param   string  $ordering           Ordering
 	 * @param   string  $orderingDirection  Ordering direction ASC or DESC
+	 * @param   string  $language           Language Tag name (ex: en)
 	 *
 	 * @return  array
 	 */
-	public function readList($limitStart = 0, $limit = 20, $filterSearch = null, $filters = array(), $ordering = null, $orderingDirection = null)
+	public function readList(
+		$limitStart = 0, $limit = 20, $filterSearch = null, $filters = array(), $ordering = null, $orderingDirection = null, $language = null)
 	{
 		// We are setting the operation of the webservice to Read
 		$this->setOperation('read');
@@ -92,6 +94,9 @@ class RApiSoapOperationOperation
 			$dataGet['filter']['order_Dir'] = $orderingDirection;
 		}
 
+		// Handle different language switch
+		$this->setLanguage($language);
+
 		$this->webservice->options->set('dataGet', $dataGet);
 		$this->webservice->options->set('task', '');
 		$this->webservice->execute();
@@ -102,11 +107,12 @@ class RApiSoapOperationOperation
 	/**
 	 * Read item
 	 *
-	 * @param   array  $id  ID key(s) of the item. If multiple keys then they need to be in a array format (ex: array('id' => 4, 'sub_id' = 14))
+	 * @param   array   $id        ID key(s) of the item. If multiple keys then they need to be in a array format (ex: array('id' => 4, 'sub_id' = 14))
+	 * @param   string  $language  Language Tag name (ex: en)
 	 *
 	 * @return  array
 	 */
-	public function readItem($id = array())
+	public function readItem($id = array(), $language = null)
 	{
 		// We are setting the operation of the webservice to Read
 		$this->setOperation('read');
@@ -139,6 +145,9 @@ class RApiSoapOperationOperation
 				$dataGet->{$primaryKey} = $this->webservice->transformField($primaryKeyField['transform'], $id[$primaryKey], false);
 			}
 		}
+
+		// Handle different language switch
+		$this->setLanguage($language);
 
 		$this->webservice->options->set('dataGet', $dataGet);
 		$this->webservice->options->set('task', '');
@@ -264,5 +273,27 @@ class RApiSoapOperationOperation
 		}
 
 		$this->webservice->operation = strtolower($operationName);
+	}
+
+	/**
+	 * Set language of the site
+	 *
+	 * @param   string  $language  Language name
+	 *
+	 * @return  void
+	 */
+	protected function setLanguage($language)
+	{
+		$languageObject = JFactory::getLanguage();
+		$languages = JLanguageHelper::getLanguages('sef');
+
+		if (!empty($language) && isset($languages[$language]))
+		{
+			$languageObject->setLanguage($languages[$language]->lang_code);
+		}
+		else
+		{
+			$languageObject->setLanguage($languages[RTranslationHelper::getSiteLanguage()]->lang_code);
+		}
 	}
 }
