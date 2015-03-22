@@ -117,7 +117,7 @@ class RApiSoapOperationOperation
 		// We are setting the operation of the webservice to Read
 		$this->setOperation('read');
 		$dataGet = $this->webservice->options->get('dataGet', array());
-		$primaryKeysFromFields = $this->webservice->getPrimaryKeysFromFields($this->webservice->configuration->operations->read->item);
+		$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($this->webservice->configuration->operations->read->item);
 
 		// If there are no primary keys defined we will use id field as default
 		if (empty($primaryKeysFromFields))
@@ -129,8 +129,9 @@ class RApiSoapOperationOperation
 		{
 			if (count($primaryKeysFromFields) == 1)
 			{
+				$idValue = $id;
 				$id = array();
-				$id[$primaryKeysFromFields[0]['name']] = $id;
+				$id[key($primaryKeysFromFields)] = $idValue;
 			}
 			else
 			{

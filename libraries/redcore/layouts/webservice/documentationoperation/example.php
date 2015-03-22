@@ -46,13 +46,24 @@ switch ($operationName)
 		$errorList = array(200, 405, 500);
 		break;
 	case 'read item' :
-		$soapFunction = 'readItem($id = array(), $language = null)';
+
+		// If there are more than one primary key involved we are displaying them all
+		$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($operationXml);
+
+		if (count($primaryKeysFromFields) > 1)
+		{
+			$soapFunction = 'readItem($ids = array(), $language = null)';
+		}
+		else
+		{
+			$primaryKey = $primaryKeysFromFields[key($primaryKeysFromFields)];
+			$primaryKeyType = isset($primaryKey['transform']) && $primaryKey['transform'] == 'int' ? 0 : '""';
+			$soapFunction = 'readItem($' . key($primaryKeysFromFields) . ' = ' . $primaryKeyType . ', $language = null)';
+		}
+
 		$method = 'GET';
 		$noteName = '_ITEM';
 		$errorList = array(200, 404, 405, 500);
-
-		// If there are more than one primary key involved we are displaying them all
-		$primaryKeysFromFields = $view->getPrimaryKeysFromFields($operationXml);
 
 		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 		{
@@ -122,7 +133,7 @@ endif;
 
 			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE', implode(', ', $ids),
 				count($primaryKeysFromFields) > 1 ? JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEYS_NOTE', implode(', ', $arrayIds)) :
-					JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEY_NOTE')
+					JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEY_NOTE', ($primaryKeyType === 0 ? 'integer' : 'string'))
 				);
 		else:
 			echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE');
