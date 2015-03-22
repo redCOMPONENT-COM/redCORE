@@ -57,7 +57,7 @@ switch ($operationName)
 		else
 		{
 			$primaryKey = $primaryKeysFromFields[key($primaryKeysFromFields)];
-			$primaryKeyType = isset($primaryKey['transform']) && $primaryKey['transform'] == 'int' ? '0' : '""';
+			$primaryKeyType = isset($primaryKey['transform']) && $primaryKey['transform'] == 'int' ? 0 : '""';
 			$soapFunction = 'readItem($' . key($primaryKeysFromFields) . ' = ' . $primaryKeyType . ', $language = null)';
 		}
 
@@ -133,7 +133,7 @@ endif;
 
 			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE', implode(', ', $ids),
 				count($primaryKeysFromFields) > 1 ? JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEYS_NOTE', implode(', ', $arrayIds)) :
-					JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEY_NOTE')
+					JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEY_NOTE', ($primaryKeyType === 0 ? 'int' : 'string'))
 				);
 		else:
 			echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE');
