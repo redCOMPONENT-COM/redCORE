@@ -34,6 +34,20 @@ class RApiHalTableTable extends RTable
 		$this->_tableName = $table;
 		$this->_tbl_key = $key;
 
+		// Set all columns from table as properties
+		$columns = array();
+		$dbColumns = $db->getTableColumns('#__' . $table, false);
+
+		if (count($dbColumns) > 0)
+		{
+			foreach ($dbColumns as $columnKey => $columnValue)
+			{
+				$columns[$columnValue->Field] = $columnValue->Default;
+			}
+
+			$this->setProperties($columns);
+		}
+
 		parent::__construct($db);
 	}
 }

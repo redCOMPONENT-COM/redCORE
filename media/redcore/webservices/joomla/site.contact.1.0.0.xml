@@ -13,7 +13,18 @@
     </config>
     <operations>
         <read>
-            <list authorizationNeeded="false" optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="">
+            <list dataMode="table" tableName="contact_details" authorizationNeeded="false" optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="">
+                <fields>
+                    <field name="id" transform="int" isPrimaryField="true" />
+                    <field name="name" transform="string" isSearchableField="true" />
+                    <field name="published" transform="int" isFilterField="true" />
+                    <field name="ordering" transform="int" />
+                    <field name="access" transform="int" />
+                    <field name="language" />
+                    <field name="featured" transform="int" />
+                    <!-- Disable specific fields from showing -->
+                    <field name="checked_out" isHiddenField="true" />
+                </fields>
                 <resources>
                     <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
 
@@ -50,7 +61,7 @@
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
 
-            <item authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
+            <item dataMode="table" tableName="contact_details" authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
                 <fields>
                     <field name="id" transform="int" isFilterField="true" isPrimaryField="true" />
                 </fields>
@@ -109,7 +120,7 @@
         </read>
 
         <task>
-            <hit optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
+            <hit authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="" functionArgs="id{int}">
                 <description><![CDATA[ This task enables you to Increase the hit counter for the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
