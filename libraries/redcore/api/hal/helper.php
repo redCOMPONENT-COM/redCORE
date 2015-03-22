@@ -940,4 +940,37 @@ class RApiHalHelper
 
 		return $headers;
 	}
+
+	/**
+	 * Returns primary keys from Element Fields properties
+	 *
+	 * @param   SimpleXMLElement  $xmlElement  Xml element
+	 *
+	 * @return  array
+	 */
+	public static function getPrimaryKeysFromFields($xmlElement)
+	{
+		$primaryKeys = array();
+
+		if (isset($xmlElement->fields->field))
+		{
+			foreach ($xmlElement->fields->field as $field)
+			{
+				$fieldAttributes = self::getXMLElementAttributes($field);
+
+				if (self::isAttributeTrue($field, 'isPrimaryField'))
+				{
+					$primaryKeys[$fieldAttributes['name']] = $fieldAttributes;
+				}
+			}
+		}
+
+		// If there are no primary keys defined we will use id field as default
+		if (empty($primaryKeys))
+		{
+			$primaryKeys['id'] = array('transform' => 'int');
+		}
+
+		return $primaryKeys;
+	}
 }

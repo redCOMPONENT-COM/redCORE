@@ -2237,39 +2237,6 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Returns primary keys from Element Fields properties
-	 *
-	 * @param   SimpleXMLElement  $xmlElement  Xml element
-	 *
-	 * @return  array
-	 */
-	public function getPrimaryKeysFromFields($xmlElement)
-	{
-		$primaryKeys = array();
-
-		if (isset($xmlElement->fields->field))
-		{
-			foreach ($xmlElement->fields->field as $field)
-			{
-				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
-
-				if (RApiHalHelper::isAttributeTrue($field, 'isPrimaryField'))
-				{
-					$primaryKeys[$fieldAttributes['name']] = $fieldAttributes;
-				}
-			}
-		}
-
-		// If there are no primary keys defined we will use id field as default
-		if (empty($primaryKeys))
-		{
-			$primaryKeys['id'] = array('transform' => 'int');
-		}
-
-		return $primaryKeys;
-	}
-
-	/**
 	 * We set filters and List parameters to the model object
 	 *
 	 * @param   object  &$model  Model object
@@ -2330,7 +2297,7 @@ class RApiHalHal extends RApi
 		if (!empty($operations->read->item))
 		{
 			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
-			$primaryKeysFromFields = $this->getPrimaryKeysFromFields($operations->read->item);
+			$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($operations->read->item);
 
 			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 			{
