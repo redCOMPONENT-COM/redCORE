@@ -116,10 +116,8 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 
 	function printDocumentation()
 	{
-		url = jQuery('#webservicePreview').data('url');
-		var w = window.open(url);
-		w.print();
-		w.close();
+		url = jQuery('#webservicePreview').data('url') + '&print';
+		window.open(url);
 	}
 </script>
 <style>
