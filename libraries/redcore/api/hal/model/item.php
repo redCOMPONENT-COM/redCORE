@@ -94,11 +94,39 @@ class RApiHalModelItem extends RModelAdmin
 	 *
 	 * @param   integer  $pk  The id of the primary key.
 	 *
-	 * @return  mixed  Object on success, false on failure.
+	 * @return  mixed    Object on success, false on failure.
+	 *
+	 * @since   12.2
 	 */
 	public function getItem($pk = null)
 	{
-		$item = parent::getItem($pk);
+		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
+		$table = $this->getTable();
+
+		if (!empty($pk))
+		{
+			// Attempt to load the row.
+			$return = $table->load($pk);
+
+			// Check for a table object error.
+			if ($return === false && $table->getError())
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+		}
+
+		// Convert to the JObject before adding other data.
+		$properties = $table->getProperties(1);
+		$item = JArrayHelper::toObject($properties, 'JObject');
+
+		if (property_exists($item, 'params'))
+		{
+			$registry = new Registry;
+			$registry->loadString($item->params);
+			$item->params = $registry->toArray();
+		}
 
 		return $item;
 	}

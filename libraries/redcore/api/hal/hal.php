@@ -512,6 +512,8 @@ class RApiHalHal extends RApi
 			$currentConfiguration = null;
 		}
 
+		$dataGet = $this->options->get('dataGet', array());
+
 		$this->documentation = RLayoutHelper::render(
 			'webservice.documentation',
 			array(
@@ -519,6 +521,7 @@ class RApiHalHal extends RApi
 				'options' => array (
 					'xml' => $currentConfiguration,
 					'soapEnabled' => RTranslationHelper::$pluginParams->get('enable_soap', 0),
+					'print' => isset($dataGet->print)
 				)
 			)
 		);

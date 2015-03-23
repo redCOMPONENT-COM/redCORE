@@ -63,6 +63,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 
 				jQuery('#webservicePreview .modal-body').html(data);
 				jQuery('#webservicePreview').modal('show');
+				jQuery('#webservicePreview').data('url', url);
 			}, dataType);
 
 		});
@@ -112,6 +113,12 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 			form.submit();
 		}
 	}
+
+	function printDocumentation()
+	{
+		url = jQuery('#webservicePreview').data('url') + '&print';
+		window.open(url);
+	}
 </script>
 <style>
 	pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
@@ -158,6 +165,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 				<div class="modal-body"><pre></pre>
 				</div>
 				<div class="modal-footer">
+					<button type="button" class="btn" onclick="printDocumentation();"><i class="icon-print"></i></button>
 					<button type="button" class="btn btn-default" data-dismiss="modal"><?php echo JText::_('JTOOLBAR_CLOSE') ?></button>
 				</div>
 			</div>
