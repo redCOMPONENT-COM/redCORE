@@ -125,14 +125,7 @@ class RApiHalModelItem extends RModelAdmin
 
 		if (property_exists($item, 'params'))
 		{
-			if (version_compare(JVERSION, '3.3', '<'))
-			{
-				$registry = new JRegistry;
-			}
-			else
-			{
-				$registry = new Registry;
-			}
+			$registry = new JRegistry;
 
 			$registry->loadString($item->params);
 			$item->params = $registry->toArray();
