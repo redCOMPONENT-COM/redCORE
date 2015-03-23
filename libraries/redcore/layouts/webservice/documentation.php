@@ -14,6 +14,7 @@ JHtml::_('rbootstrap.tooltip');
 $view = !empty($displayData['view']) ? $displayData['view'] : null;
 $xml = !empty($displayData['options']['xml']) ? $displayData['options']['xml'] : array();
 $soapEnabled = $displayData['options']['soapEnabled'];
+$print = $displayData['options']['print'];
 $date   = new JDate;
 ?>
 <!DOCTYPE html>
@@ -23,8 +24,20 @@ $date   = new JDate;
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1\" />
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+<?php
+	if ($print) :
+?>
+	<script type="text/javascript">
+		function printWindow() {
+			window.print();
+			window.close();
+		};
+	</script>
+<?php
+	endif;
+?>
 </head>
-<body>
+<body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?>>
 <div class="container-fluid">
 	<?php if (empty($xml)) : ?>
 		<h1><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_NONE'); ?></h1>
