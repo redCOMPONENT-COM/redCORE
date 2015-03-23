@@ -123,7 +123,8 @@ class RApiHalModelItem extends RModelAdmin
 
 		if (property_exists($item, 'params'))
 		{
-			$registry = new Registry;
+			$registry = new JRegistry;
+
 			$registry->loadString($item->params);
 			$item->params = $registry->toArray();
 		}
