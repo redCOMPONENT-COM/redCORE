@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Registry\Registry;
+
 /**
  * redCORE Dynamic Model List
  *
@@ -123,7 +125,15 @@ class RApiHalModelItem extends RModelAdmin
 
 		if (property_exists($item, 'params'))
 		{
-			$registry = new Registry;
+			if (version_compare(JVERSION, '3.3', '<'))
+			{
+				$registry = new JRegistry;
+			}
+			else
+			{
+				$registry = new Registry;
+			}
+
 			$registry->loadString($item->params);
 			$item->params = $registry->toArray();
 		}
