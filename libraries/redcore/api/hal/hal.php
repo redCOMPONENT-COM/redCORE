@@ -2228,7 +2228,7 @@ class RApiHalHal extends RApi
 					}
 				}
 
-				$args[] = &$parameterValue;
+				$args[] = $parameterValue;
 			}
 		}
 		else
