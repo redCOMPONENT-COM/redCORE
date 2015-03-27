@@ -231,7 +231,7 @@ class RApiSoapWsdl
 
 			// Add new binding12 element
 			$this->binding12 = $wsdl->addChild('binding');
-			$this->binding12->addAttribute('name', $this->webserviceFullName . '_12');
+			$this->binding12->addAttribute('name', $this->webserviceFullName . '_Soap12');
 			$this->binding12->addAttribute('type', 'tns:' . $this->webserviceFullName);
 
 			// Apply soap binding (12)
@@ -317,7 +317,7 @@ class RApiSoapWsdl
 		// Add new port binding
 		$port12 = $this->wsdlServices->addChild('port');
 		$port12->addAttribute('name', $this->webserviceFullName . '_Soap12');
-		$port12->addAttribute('binding', 'tns:' . $this->webserviceFullName . '_12');
+		$port12->addAttribute('binding', 'tns:' . $this->webserviceFullName . '_Soap12');
 
 		// Add soap addresses
 		$soapAddress12 = $port12->addChild('soap:address', null, 'http://schemas.xmlsoap.org/wsdl/soap12/');
