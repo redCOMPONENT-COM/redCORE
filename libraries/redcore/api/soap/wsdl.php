@@ -51,12 +51,28 @@ class RApiSoapWsdl
 	public $webserviceUrl = null;
 
 	/**
+	 * Full name of the webservice
+	 *
+	 * @var    string  Full name of the webservice
+	 * @since  1.4
+	 */
+	public $webserviceFullName = null;
+
+	/**
 	 * portType xml element
 	 *
 	 * @var    SimpleXMLElement  portType xml element file
 	 * @since  1.4
 	 */
 	public $portType = null;
+
+	/**
+	 * typeSchema xml element
+	 *
+	 * @var    SimpleXMLElement  typeSchema xml element file
+	 * @since  1.4
+	 */
+	public $typeSchema = null;
 
 	/**
 	 * binding xml element
@@ -97,24 +113,19 @@ class RApiSoapWsdl
 	public function addGlobalTypes(&$typeSchema)
 	{
 		// Add ArrayOfString complex type
-		$complexTypeArrayOfString = $typeSchema->addChild('s:complexType', null, 'http://www.w3.org/2001/XMLSchema');
+		$complexTypeArrayOfString = $typeSchema->addChild('complexType', null, 'http://www.w3.org/2001/XMLSchema');
 		$complexTypeArrayOfString->addAttribute('name', 'ArrayOfStringType');
 
 		// Add sequence for ArrayOfString
-		$complexTypeSequenceArrayOfString = $complexTypeArrayOfString->addChild('s:sequence', null, 'http://www.w3.org/2001/XMLSchema');
+		$complexTypeSequenceArrayOfString = $complexTypeArrayOfString->addChild('sequence', null, 'http://www.w3.org/2001/XMLSchema');
 
 		// Add element for ArrayOfString
-		$complexTypeSequenceElementArrayOfString = $complexTypeSequenceArrayOfString->addChild('s:element', null, 'http://www.w3.org/2001/XMLSchema');
+		$complexTypeSequenceElementArrayOfString = $complexTypeSequenceArrayOfString->addChild('element', null, 'http://www.w3.org/2001/XMLSchema');
 		$complexTypeSequenceElementArrayOfString->addAttribute('minOccurs', '0');
 		$complexTypeSequenceElementArrayOfString->addAttribute('maxOccurs', 'unbounded');
 		$complexTypeSequenceElementArrayOfString->addAttribute('name', 'string');
 		$complexTypeSequenceElementArrayOfString->addAttribute('nillable', 'true');
 		$complexTypeSequenceElementArrayOfString->addAttribute('type', 's:string');
-
-		// Add ArrayOfString element
-		$elementArrayOfString = $typeSchema->addChild('s:element', null, 'http://www.w3.org/2001/XMLSchema');
-		$elementArrayOfString->addAttribute('name', 'ArrayOfString');
-		$elementArrayOfString->addAttribute('type', 'tns:ArrayOfStringType');
 	}
 
 	/**
@@ -122,31 +133,18 @@ class RApiSoapWsdl
 	 *
 	 * @param   SimpleXMLElement  &$wsdl        Wsdl document
 	 * @param   string            $messageName  Message name
-	 * @param   array             $parts        Parts of the message
 	 *
 	 * @return  void
 	 */
-	public function addMessage(&$wsdl, $messageName, $parts = array())
+	public function addMessage(&$wsdl, $messageName)
 	{
 		// Add new message
 		$message = $wsdl->addChild('message');
 		$message->addAttribute('name', $messageName);
 
-		foreach ($parts as $part)
-		{
-			$messagePart = $message->addChild('part');
-			$messagePart->addAttribute('name', $part['name']);
-
-			if ($part['type'] != '')
-			{
-				$messagePart->addAttribute('type', $part['type']);
-			}
-
-			if ($part['element'] != '')
-			{
-				$messagePart->addAttribute('element', $part['element']);
-			}
-		}
+		$messagePart = $message->addChild('part');
+		$messagePart->addAttribute('name', 'parameters');
+		$messagePart->addAttribute('element', 'tns:' . $messageName);
 	}
 
 	/**
@@ -163,7 +161,7 @@ class RApiSoapWsdl
 		{
 			// Add new port type
 			$this->portType = $wsdl->addChild('portType');
-			$this->portType->addAttribute('name', ucfirst($this->webserviceXml->config->name));
+			$this->portType->addAttribute('name', $this->webserviceFullName);
 		}
 
 		// Add port operation
@@ -224,8 +222,8 @@ class RApiSoapWsdl
 		{
 			// Add new binding element
 			$this->binding = $wsdl->addChild('binding');
-			$this->binding->addAttribute('name', ucfirst($this->webserviceXml->config->name));
-			$this->binding->addAttribute('type', 'tns:' . ucfirst($this->webserviceXml->config->name));
+			$this->binding->addAttribute('name', $this->webserviceFullName);
+			$this->binding->addAttribute('type', 'tns:' . $this->webserviceFullName);
 
 			// Apply soap binding
 			$soapBinding = $this->binding->addChild('soap:binding', null, 'http://schemas.xmlsoap.org/wsdl/soap/');
@@ -233,8 +231,8 @@ class RApiSoapWsdl
 
 			// Add new binding12 element
 			$this->binding12 = $wsdl->addChild('binding');
-			$this->binding12->addAttribute('name', ucfirst($this->webserviceXml->config->name) . '12');
-			$this->binding12->addAttribute('type', 'tns:' . ucfirst($this->webserviceXml->config->name));
+			$this->binding12->addAttribute('name', $this->webserviceFullName . '_12');
+			$this->binding12->addAttribute('type', 'tns:' . $this->webserviceFullName);
 
 			// Apply soap binding (12)
 			$soapBinding = $this->binding12->addChild('soap:binding', null, 'http://schemas.xmlsoap.org/wsdl/soap12/');
@@ -248,22 +246,24 @@ class RApiSoapWsdl
 	/**
 	 * Add operation to a Wsdl document
 	 *
-	 * @param   SimpleXMLElement  &$wsdl               Wsdl document
-	 * @param   string            $name                Operation name
-	 * @param   array             $messageInputParts   Message input parts
-	 * @param   array             $messageOutputParts  Message output parts
+	 * @param   SimpleXMLElement  &$wsdl                   Wsdl document
+	 * @param   string            $name                    Operation name
+	 * @param   array             $inputFields             Message input fields
+	 * @param   array             $outputFields            Message output fields
+	 * @param   boolean           $validateOptionalInput   Optional parameter to validate if the inputs are optional or if they're set as required
+	 * @param   boolean           $validateOptionalOutput  Optional parameter to validate if the outputs are optional or if they're set as required
 	 *
 	 * @return  void
 	 */
-	public function addOperation(&$wsdl, $name, $messageInputParts, $messageOutputParts)
+	public function addOperation(&$wsdl, $name, $inputFields, $outputFields, $validateOptionalInput = false, $validateOptionalOutput = false)
 	{
-		$this->addMessage($wsdl, ucfirst($name) . 'Request', $messageInputParts);
-
-		$this->addMessage($wsdl, ucfirst($name) . 'Response', $messageOutputParts);
-
+		$this->addMessage($wsdl, ucfirst($name) . 'Request');
+		$this->addMessage($wsdl, ucfirst($name) . 'Response');
 		$this->addPortType($wsdl, $name);
-
 		$this->addBinding($wsdl, $name);
+
+		RApiSoapHelper::addElementFields($inputFields, $this->typeSchema, '', $validateOptionalInput, ucfirst($name) . 'Request');
+		RApiSoapHelper::addElementFields($outputFields, $this->typeSchema, '', $validateOptionalOutput, ucfirst($name) . 'Response');
 	}
 
 	/**
@@ -274,10 +274,9 @@ class RApiSoapWsdl
 	public function generateWsdl()
 	{
 		$client = RApiHalHelper::attributeToString($this->webserviceXml, 'client', 'site');
-		$name = $this->webserviceXml->config->name;
 		$version = !empty($this->webserviceXml->config->version) ? $this->webserviceXml->config->version : '1.0.0';
-		$fullName = $client . '.' . $name . '.' . $version;
-		$this->webserviceUrl = RApiHalHelper::buildWebserviceFullUrl($client, $name, $version, 'soap');
+		$this->webserviceFullName = $client . '.' . $this->webserviceXml->config->name . '.' . $version;
+		$this->webserviceUrl = RApiHalHelper::buildWebserviceFullUrl($client, $this->webserviceXml->config->name, $version, 'soap');
 
 		// Root of the document
 		$this->wsdl = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8" ?><wsdl:definitions'
@@ -294,23 +293,22 @@ class RApiSoapWsdl
 			0, false, 'wsdl', true
 		);
 
-		$types = $this->wsdl->addChild('wsdl:types');
-		$typeSchema = $types->addChild('s:schema', null, 'http://www.w3.org/2001/XMLSchema');
-		$typeSchema->addAttribute('targetNamespace', $this->webserviceUrl . '&wsdl');
-		$typeSchema->addAttribute('elementFormDefault', 'qualified');
+		$types = $this->wsdl->addChild('types');
+		$this->typeSchema = $types->addChild('s:schema', null, 'http://www.w3.org/2001/XMLSchema');
+		$this->typeSchema->addAttribute('targetNamespace', $this->webserviceUrl . '&wsdl');
+		$this->typeSchema->addAttribute('elementFormDefault', 'qualified');
 
-		// Add global types (like array)
-		$this->addGlobalTypes($typeSchema);
+		$this->addGlobalTypes($this->typeSchema);
 
 		// Adding service
 		$this->wsdlServices = $this->wsdl->addChild('service');
-		$this->wsdlServices->addAttribute('name', $fullName . '_Service');
-		$this->wsdlServices->addChild('documentation', JText::sprintf('LIB_REDCORE_API_SOAP_WSDL_DESCRIPTION', $fullName . '_Service'));
+		$this->wsdlServices->addAttribute('name', $this->webserviceFullName);
+		$this->wsdlServices->addChild('documentation', $this->webserviceXml->description);
 
 		// Add new port binding
 		$port = $this->wsdlServices->addChild('port');
-		$port->addAttribute('name', ucfirst($name));
-		$port->addAttribute('binding', 'tns:' . ucfirst($name));
+		$port->addAttribute('name', $this->webserviceFullName . '_Soap');
+		$port->addAttribute('binding', 'tns:' . $this->webserviceFullName);
 
 		// Add soap addresses
 		$soapAddress = $port->addChild('soap:address', null, 'http://schemas.xmlsoap.org/wsdl/soap/');
@@ -318,8 +316,8 @@ class RApiSoapWsdl
 
 		// Add new port binding
 		$port12 = $this->wsdlServices->addChild('port');
-		$port12->addAttribute('name', ucfirst($name) . '12');
-		$port12->addAttribute('binding', 'tns:' . ucfirst($name) . '12');
+		$port12->addAttribute('name', $this->webserviceFullName . '_Soap12');
+		$port12->addAttribute('binding', 'tns:' . $this->webserviceFullName . '_12');
 
 		// Add soap addresses
 		$soapAddress12 = $port12->addChild('soap:address', null, 'http://schemas.xmlsoap.org/wsdl/soap12/');
@@ -331,102 +329,109 @@ class RApiSoapWsdl
 			// Read list
 			if (isset($this->webserviceXml->operations->read->list))
 			{
+				$filters = array();
+
+				if (isset($this->webserviceXml->operations->read->list->fields->field))
+				{
+					foreach ($this->webserviceXml->operations->read->list->fields->field as $field)
+					{
+						$required = 'false';
+
+						if (isset($field['isFilterField']) && $field['isFilterField'] == 'true')
+						{
+							if (isset($field['isRequiredField']) && $field['isRequiredField'] == 'true')
+							{
+								$required = 'true';
+							}
+
+							$filters[] = array(
+								'name' => (string) $field['name'],
+								'isRequiredField' => $required,
+								'transform' => (isset($field['transform'])) ? (string) $field['transform'] : 'string'
+							);
+						}
+					}
+				}
+
 				// Add read list messages
-				$messageInputParts = array(
-					array('name' => 'limitStart', 'type' => 's:int'),
-					array('name' => 'limit', 'type' => 's:int'),
-					array('name' => 'filterSearch', 'type' => 's:string'),
-					array('name' => 'filters', 'element' => 'tns:ArrayOfString'),
-					array('name' => 'ordering', 'type' => 's:string'),
-					array('name' => 'orderingDirection', 'type' => 's:string'),
-					array('name' => 'language', 'type' => 's:string'),
+				$inputFields = array(
+					array('name' => 'limitStart', 'transform' => 'int'),
+					array('name' => 'limit', 'transform' => 'int'),
+					array('name' => 'filterSearch', 'transform' => 'string'),
+					array('name' => 'ordering', 'transform' => 'string'),
+					array('name' => 'orderingDirection', 'transform' => 'string'),
+					array('name' => 'language', 'transform' => 'string'),
 				);
+
+				if (!empty($filters))
+				{
+					$inputFields[] = array('name' => 'filters', 'transform' => 'arraydefined', 'fields' => $filters);
+				}
 
 				// Add read list response messages
-				$messageOutputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$outputFields = array(
+					array(
+						'name' => 'parameters',
+						'transform' => 'arrayrequired',
+						'fields' => RApiSoapHelper::getOutputResources($this->webserviceXml->operations->read->list, 'listItem')
+						)
+					);
 
-				$this->addOperation($this->wsdl, $name = 'readList', $messageInputParts, $messageOutputParts);
+				$this->addOperation($this->wsdl, 'readList', $inputFields, $outputFields, true, true);
 			}
 
 			// Read item
 			if (isset($this->webserviceXml->operations->read->item))
 			{
-				$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($this->webserviceXml->operations->read->item);
-
-				if (count($primaryKeysFromFields) > 1)
-				{
-					$messageInputParts = array(
-						array('name' => 'ids', 'element' => 'tns:ArrayOfString')
-					);
-				}
-				else
-				{
-					$primaryKey = $primaryKeysFromFields[key($primaryKeysFromFields)];
-					$primaryKeyType = isset($primaryKey['transform']) && $primaryKey['transform'] == 'int' ? 'int' : 'string';
-					$messageInputParts = array(
-						array('name' => key($primaryKeysFromFields), 'type' => 's:' . $primaryKeyType)
-					);
-				}
-
 				// Add read item messages
-				$messageInputParts[] = array('name' => 'language', 'type' => 's:string');
+				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->read->item);
 
 				// Add read item response messages
-				$messageOutputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$outputFields = array(
+					array(
+						'name' => 'parameters',
+						'transform' => 'arrayrequired',
+						'fields' => RApiSoapHelper::getOutputResources($this->webserviceXml->operations->read->item)
+						)
+					);
 
-				$this->addOperation($this->wsdl, $name = 'readItem', $messageInputParts, $messageOutputParts);
+				$this->addOperation($this->wsdl, 'readItem', $inputFields, $outputFields, false, true);
 			}
 
 			// Create operation
 			if (isset($this->webserviceXml->operations->create))
 			{
 				// Add create messages
-				$messageInputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->create, false);
 
 				// Add create response messages
-				$messageOutputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$outputFields = array(RApiSoapHelper::getResultResource($this->webserviceXml->operations->create));
 
-				$this->addOperation($this->wsdl, $name = 'create', $messageInputParts, $messageOutputParts);
+				$this->addOperation($this->wsdl, 'create', $inputFields, $outputFields, true);
 			}
 
 			// Update operation
 			if (isset($this->webserviceXml->operations->update))
 			{
 				// Add update messages
-				$messageInputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->update, false);
 
 				// Add update response messages
-				$messageOutputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$outputFields = array(RApiSoapHelper::getResultResource($this->webserviceXml->operations->update));
 
-				$this->addOperation($this->wsdl, $name = 'update', $messageInputParts, $messageOutputParts);
+				$this->addOperation($this->wsdl, 'update', $inputFields, $outputFields, true);
 			}
 
 			// Delete operation
 			if (isset($this->webserviceXml->operations->delete))
 			{
 				// Add delete messages
-				$messageInputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->delete);
 
 				// Add delete response messages
-				$messageOutputParts = array(
-					array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-				);
+				$outputFields = array(RApiSoapHelper::getResultResource($this->webserviceXml->operations->delete));
 
-				$this->addOperation($this->wsdl, $name = 'delete', $messageInputParts, $messageOutputParts);
+				$this->addOperation($this->wsdl, 'delete', $inputFields, $outputFields);
 			}
 
 			// Task operation
@@ -435,16 +440,12 @@ class RApiSoapWsdl
 				foreach ($this->webserviceXml->operations->task->children() as $taskName => $task)
 				{
 					// Add task messages
-					$messageInputParts = array(
-						array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-					);
+					$inputFields = RApiHalHelper::getFieldsArray($task, false);
 
 					// Add task response messages
-					$messageOutputParts = array(
-						array('name' => 'parameters', 'element' => 'tns:ArrayOfString'),
-					);
+					$outputFields = array(RApiSoapHelper::getResultResource($task));
 
-					$this->addOperation($this->wsdl, $name = 'task_' . $taskName, $messageInputParts, $messageOutputParts);
+					$this->addOperation($this->wsdl, 'task_' . $taskName, $inputFields, $outputFields, true);
 				}
 			}
 		}

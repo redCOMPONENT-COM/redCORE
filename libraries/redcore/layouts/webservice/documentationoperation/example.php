@@ -48,7 +48,7 @@ switch ($operationName)
 	case 'read item' :
 
 		// If there are more than one primary key involved we are displaying them all
-		$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($operationXml);
+		$primaryKeysFromFields = RApiHalHelper::getFieldsArray($operationXml);
 
 		if (count($primaryKeysFromFields) > 1)
 		{
