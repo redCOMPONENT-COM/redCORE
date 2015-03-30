@@ -221,7 +221,7 @@ class RApiSoapSoap extends RApi
 		try
 		{
 			// Wet wsdl from webservice location
-			$this->wsdlPath = RApiSoapHelper::getWebserviceFile(
+			$this->wsdlPath = RApiSoapHelper::getWebserviceFilePath(
 				$this->webservice->client,
 				strtolower($this->webservice->webserviceName),
 				$this->webservice->webserviceVersion,

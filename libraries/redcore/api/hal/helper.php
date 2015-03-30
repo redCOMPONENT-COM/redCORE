@@ -959,7 +959,7 @@ class RApiHalHelper
 			{
 				$fieldAttributes = self::getXMLElementAttributes($field);
 
-				if ($primaryKeys && self::isAttributeTrue($field, 'isPrimaryField')
+				if (($primaryKeys && self::isAttributeTrue($field, 'isPrimaryField'))
 					|| !$primaryKeys)
 				{
 					$fields[$fieldAttributes['name']] = $fieldAttributes;

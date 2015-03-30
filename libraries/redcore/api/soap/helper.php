@@ -180,7 +180,7 @@ class RApiSoapHelper
 			}
 		}
 
-		$resource = new SimpleXMLElement('<resource name="result" displayName="result" transform="array" fieldFormat="{result}" />');
+		$resource = new SimpleXMLElement('<resource name="result" displayName="result" transform="boolean" fieldFormat="{result}" />');
 
 		return $resource;
 	}
@@ -198,7 +198,7 @@ class RApiSoapHelper
 	 *
 	 * @since   1.4
 	 */
-	public static function getWebserviceFile($client, $webserviceName, $version = '', $extension = 'xml', $path = '')
+	public static function getWebserviceFilePath($client, $webserviceName, $version = '', $extension = 'xml', $path = '')
 	{
 		JLoader::import('joomla.filesystem.path');
 
