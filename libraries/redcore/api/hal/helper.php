@@ -975,4 +975,70 @@ class RApiHalHelper
 
 		return $fields;
 	}
+
+	/**
+	 * Gets list of filter fields from operation configuration
+	 *
+	 * @param   SimpleXMLElement  $configuration   Configuration for current action
+	 * @param   boolean           $excludeSearch   Exclude the search element, maintaining just the xml-provided fields
+	 * @param   boolean           $fullDefinition  Gets the full definition of the filter, not just the name
+	 *
+	 * @return  array
+	 *
+	 * @since   1.3
+	 */
+	public static function getFilterFields($configuration, $excludeSearch = false, $fullDefinition = false)
+	{
+		// We have one search filter field
+		$filterFields = array();
+
+		if (!$excludeSearch)
+		{
+			if ($fullDefinition)
+			{
+				$filterFields[] = array(
+					'name' => 'search',
+					'isRequiredField' => 'false',
+					'transform' => 'string'
+				);
+			}
+			else
+			{
+				$filterFields[] = 'search';
+			}
+		}
+
+		if (!empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				$isFilterField = self::isAttributeTrue($field, 'isFilterField');
+
+				if (self::isAttributeTrue($field, 'isFilterField'))
+				{
+					if ($fullDefinition)
+					{
+						$required = 'false';
+
+						if (self::isAttributeTrue($field, 'isRequiredField'))
+						{
+							$required = 'true';
+						}
+
+						$filterFields[] = array(
+							'name' => (string) $field['name'],
+							'isRequiredField' => $required,
+							'transform' => (isset($field['transform'])) ? (string) $field['transform'] : 'string'
+						);
+					}
+					else
+					{
+						$filterFields[] = (string) $field["name"];
+					}
+				}
+			}
+		}
+
+		return $filterFields;
+	}
 }

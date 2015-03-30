@@ -311,29 +311,7 @@ class RApiSoapWsdl
 			// Read list
 			if (isset($this->webserviceXml->operations->read->list))
 			{
-				$filters = array();
-
-				if (isset($this->webserviceXml->operations->read->list->fields->field))
-				{
-					foreach ($this->webserviceXml->operations->read->list->fields->field as $field)
-					{
-						$required = 'false';
-
-						if (RApiHalHelper::isAttributeTrue($field, 'isFilterField'))
-						{
-							if (RApiHalHelper::isAttributeTrue($field, 'isRequiredField'))
-							{
-								$required = 'true';
-							}
-
-							$filters[] = array(
-								'name' => (string) $field['name'],
-								'isRequiredField' => $required,
-								'transform' => (isset($field['transform'])) ? (string) $field['transform'] : 'string'
-							);
-						}
-					}
-				}
+				$filters = RApiHalHelper::getFilterFields($this->webserviceXml->operations->read->list, true, true);
 
 				if (empty($filters))
 				{

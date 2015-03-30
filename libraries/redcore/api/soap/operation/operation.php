@@ -55,27 +55,22 @@ class RApiSoapOperationOperation
 			$dataGet = JArrayHelper::fromObject($dataGet);
 		}
 
-		$dataGet['list']['limitstart'] = (int) (isset($data->limitStart) ? $data->limitStart : 0);
-		$dataGet['list']['limit'] = (int) (isset($data->limit) ? $data->limit : 20);
-		$dataGet['filter']['search'] = (string) (isset($data->filterSearch) ? $data->filterSearch : '');
+		$dataGet['list']['limitstart'] = (isset($data->limitStart) ? (int) $data->limitStart : 0);
+		$dataGet['list']['limit'] = (isset($data->limit) ? (int) $data->limit : 20);
+		$dataGet['filter']['search'] = (isset($data->filterSearch) ? (string) $data->filterSearch : '');
 
-		if (isset($this->webservice->configuration->operations->read->list->fields))
+		$filters = RApiHalHelper::getFilterFields($this->webservice->configuration->operations->read->list);
+
+		foreach ($filters as $filter)
 		{
-			foreach ($this->webservice->configuration->operations->read->list->fields->field as $field)
-			{
-				if (RApiHalHelper::isAttributeTrue($field, 'isFilterField'))
-				{
-					$fieldName = RApiHalHelper::attributeToString($field, 'name', 'field');
-					$dataGet['filter'][$fieldName] = $data->filters->$fieldName;
-				}
-			}
+			$dataGet['filter'][$filter] = $data->filters->$filter;
 		}
 
-		$dataGet['filter']['order'] = (string) (isset($data->ordering) ? $data->ordering : '');
-		$dataGet['filter']['order_Dir'] = (string) (isset($data->orderingDirection) ? $data->orderingDirection : '');
+		$dataGet['filter']['order'] = (isset($data->ordering) ? (string) $data->ordering : '');
+		$dataGet['filter']['order_Dir'] = (isset($data->orderingDirection) ? (string) $data->orderingDirection : '');
 
 		// Handle different language switch
-		$this->setLanguage((string) (isset($data->language) ? $data->language : ''));
+		$this->setLanguage((isset($data->language) ? (string) $data->language : ''));
 
 		$this->webservice->options->set('dataGet', $dataGet);
 		$this->webservice->options->set('task', '');
@@ -147,7 +142,7 @@ class RApiSoapOperationOperation
 		$response = RApiSoapHelper::selectListResources($outputResources, array($arr));
 
 		$final = new stdClass;
-		$final->item = $response[0];
+		$final->item = (empty($response) ? array() : $response[0]);
 
 		$match = true;
 

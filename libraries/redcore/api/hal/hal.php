@@ -1637,7 +1637,7 @@ class RApiHalHal extends RApi
 
 		// We are not using prefix like str_replace(array('.', '-'), array('_', '_'), $context) . '_';
 		$paginationPrefix = '';
-		$filterFields = $this->getFilterFields($configuration);
+		$filterFields = RApiHalHelper::getFilterFields($configuration);
 		$primaryFields = $this->getPrimaryFields($configuration);
 		$fields = $this->getAllFields($configuration);
 
@@ -1658,36 +1658,6 @@ class RApiHalHal extends RApi
 		}
 
 		return $this->apiDynamicModelClass;
-	}
-
-	/**
-	 * Gets list of filter fields from operation configuration
-	 *
-	 * @param   SimpleXMLElement  $configuration  Configuration for current action
-	 *
-	 * @return  array
-	 *
-	 * @since   1.3
-	 */
-	public function getFilterFields($configuration)
-	{
-		// We have one search filter field
-		$filterFields = array('search');
-
-		if (!empty($configuration->fields))
-		{
-			foreach ($configuration->fields->field as $field)
-			{
-				$isFilterField = RApiHalHelper::isAttributeTrue($field, 'isFilterField');
-
-				if ($isFilterField)
-				{
-					$filterFields[] = (string) $field["name"];
-				}
-			}
-		}
-
-		return $filterFields;
 	}
 
 	/**
