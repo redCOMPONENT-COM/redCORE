@@ -55,11 +55,6 @@ class RApiSoapTransformBase implements RApiSoapTransformInterface
 
 		if (!isset($this->element['minOccurs']))
 		{
-			if ($field['name'] == 'name')
-			{
-				var_dump($field);
-			}
-
 			$this->element->addAttribute(
 				'minOccurs',
 				(($validateOptional && RApiHalHelper::isAttributeTrue($field, 'isRequiredField') || !$validateOptional) ? '1' : '0')
@@ -68,7 +63,7 @@ class RApiSoapTransformBase implements RApiSoapTransformInterface
 
 		if (!isset($this->element['maxOccurs']))
 		{
-			$this->element->addAttribute('maxOccurs', '1');
+			$this->element->addAttribute('maxOccurs', RApiHalHelper::attributeToString($field, 'maxOccurs', 1));
 		}
 
 		if (!isset($this->element['name']) && isset($field['name']))

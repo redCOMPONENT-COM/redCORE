@@ -44,14 +44,15 @@ class RApiSoapHelper
 	 * Returns generated WSDL file for the webservice
 	 *
 	 * @param   SimpleXMLElement  $webservice  Webservice configuration xml
+	 * @param   string            $wsdlPath    Path of WSDL file
 	 *
 	 * @return  SimpleXMLElement
 	 */
-	public static function generateWsdl($webservice)
+	public static function generateWsdl($webservice, $wsdlPath)
 	{
 		$wsdl = new RApiSoapWsdl($webservice);
 
-		return $wsdl->generateWsdl();
+		return $wsdl->generateWsdl($wsdlPath);
 	}
 
 	/**
@@ -113,10 +114,11 @@ class RApiSoapHelper
 	 *
 	 * @param   SimpleXMLElement  $xmlElement        Xml element
 	 * @param   string            $resourceSpecific  Optionally limits the results to a certain specific resource
+	 * @param   boolean           $namesOnly         Optionally create an array of names only
 	 *
 	 * @return  array
 	 */
-	public static function getOutputResources($xmlElement, $resourceSpecific = '')
+	public static function getOutputResources($xmlElement, $resourceSpecific = '', $namesOnly = false)
 	{
 		$outputResources = array();
 
@@ -136,8 +138,15 @@ class RApiSoapHelper
 						if (($resourceSpecific != '' && RApiHalHelper::attributeToString($resource, 'resourceSpecific') == $resourceSpecific)
 							|| $resourceSpecific == '')
 						{
-							$resource->addAttribute('name', $resource['displayName']);
-							$outputResources[] = $resource;
+							if ($namesOnly)
+							{
+								$outputResources[] = RApiHalHelper::attributeToString($resource, 'displayName');
+							}
+							else
+							{
+								$resource->addAttribute('name', $resource['displayName']);
+								$outputResources[] = $resource;
+							}
 						}
 				}
 			}
@@ -174,5 +183,88 @@ class RApiSoapHelper
 		$resource = new SimpleXMLElement('<resource name="result" displayName="result" transform="array" fieldFormat="{result}" />');
 
 		return $resource;
+	}
+
+	/**
+	 * Method to determine the wsdl file name
+	 *
+	 * @param   string  $client          Client
+	 * @param   string  $webserviceName  Name of the webservice
+	 * @param   string  $version         Suffixes to the file name (ex. 1.0.0)
+	 * @param   string  $extension       Extension of the file to search
+	 * @param   string  $path            Path to webservice files
+	 *
+	 * @return  string  The full path to the api file
+	 *
+	 * @since   1.4
+	 */
+	public static function getWebserviceFile($client, $webserviceName, $version = '', $extension = 'xml', $path = '')
+	{
+		JLoader::import('joomla.filesystem.path');
+
+		if (!empty($webserviceName))
+		{
+			$version = !empty($version) ? JPath::clean($version) : '1.0.0';
+			$webservicePath = !empty($path) ? RApiHalHelper::getWebservicesRelativePath() . '/' . $path : RApiHalHelper::getWebservicesRelativePath();
+
+			$rawPath = $webserviceName . '.' . $version;
+			$rawPath = !empty($extension) ? $rawPath . '.' . $extension : $rawPath;
+			$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
+
+			return $webservicePath . '/' . $rawPath;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Select resources from output array to display them in SOAP output list
+	 *
+	 * @param   array  $outputResources  Selected output resources from the ws xml config file
+	 * @param   array  $items            Output resources with final values
+	 *
+	 * @return  array  Array of selected resources and value in simple array for SOAP output
+	 *
+	 * @since   1.4
+	 */
+	public static function selectListResources($outputResources, $items)
+	{
+		$response = array();
+
+		if ($items)
+		{
+			foreach ($items as $item)
+			{
+				$object = new stdClass;
+				$i = 0;
+
+				foreach ($item as $field => $value)
+				{
+					if (is_array($value))
+					{
+						foreach ($value as $fieldint => $valueint)
+						{
+							if (in_array($fieldint, $outputResources))
+							{
+								$object->$fieldint = $valueint;
+								$i++;
+							}
+						}
+					}
+					else
+					{
+						if (in_array($field, $outputResources))
+						{
+							$object->$field = $value;
+							$i++;
+						}
+					}
+				}
+
+				$response[] = $object;
+			}
+		}
+
+		return $response;
 	}
 }

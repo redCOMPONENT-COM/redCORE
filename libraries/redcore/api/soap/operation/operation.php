@@ -39,18 +39,12 @@ class RApiSoapOperationOperation
 	/**
 	 * Read list
 	 *
-	 * @param   int     $limitStart         Start position number of the fetched data
-	 * @param   int     $limit              Limit the number of fetched rows. Set 0 for all rows
-	 * @param   string  $filterSearch       Search Data with specific filter
-	 * @param   array   $filters            Search Data with specific filter
-	 * @param   string  $ordering           Ordering
-	 * @param   string  $orderingDirection  Ordering direction ASC or DESC
-	 * @param   string  $language           Language Tag name (ex: en)
+	 * @param   object  $data  $limitStart, $limit, $filterSearch,
+	 *                         $filters, $ordering, $orderingDirection, $language
 	 *
 	 * @return  array
 	 */
-	public function readList(
-		$limitStart = 0, $limit = 20, $filterSearch = null, $filters = array(), $ordering = null, $orderingDirection = null, $language = null)
+	public function readList($data)
 	{
 		// We are setting the operation of the webservice to Read
 		$this->setOperation('read');
@@ -61,58 +55,60 @@ class RApiSoapOperationOperation
 			$dataGet = JArrayHelper::fromObject($dataGet);
 		}
 
-		if ($limitStart != 0)
-		{
-			$dataGet['list']['limitstart'] = (int) $limitStart;
-		}
+		$dataGet['list']['limitstart'] = (int) (isset($data->limitStart) ? $data->limitStart : 0);
+		$dataGet['list']['limit'] = (int) (isset($data->limit) ? $data->limit : 20);
+		$dataGet['filter']['search'] = (string) (isset($data->filterSearch) ? $data->filterSearch : '');
 
-		if ($limit != 20)
+		if (isset($this->webservice->configuration->operations->read->list->fields))
 		{
-			$dataGet['list']['limit'] = (int) $limit;
-		}
-
-		if (!is_null($filterSearch))
-		{
-			$dataGet['filter']['search'] = $filterSearch;
-		}
-
-		if (!empty($filters) && is_array($filters))
-		{
-			foreach ($filters as $key => $value)
+			foreach ($this->webservice->configuration->operations->read->list->fields->field as $field)
 			{
-				$dataGet['filter'][$key] = $value;
+				if (RApiHalHelper::isAttributeTrue($field, 'isFilterField'))
+				{
+					$fieldName = RApiHalHelper::attributeToString($field, 'name', 'field');
+					$dataGet['filter'][$fieldName] = $data->filters->$fieldName;
+				}
 			}
 		}
 
-		if (!is_null($ordering))
-		{
-			$dataGet['filter']['order'] = $ordering;
-		}
-
-		if (!is_null($orderingDirection))
-		{
-			$dataGet['filter']['order_Dir'] = $orderingDirection;
-		}
+		$dataGet['filter']['order'] = (string) (isset($data->ordering) ? $data->ordering : '');
+		$dataGet['filter']['order_Dir'] = (string) (isset($data->orderingDirection) ? $data->orderingDirection : '');
 
 		// Handle different language switch
-		$this->setLanguage($language);
+		$this->setLanguage((string) (isset($data->language) ? $data->language : ''));
 
 		$this->webservice->options->set('dataGet', $dataGet);
 		$this->webservice->options->set('task', '');
+		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
+		$this->webservice->options->set('filterResourcesSpecific', 'listItem');
 		$this->webservice->execute();
 
-		return $this->webservice->hal->toArray();
+		$arr = $this->webservice->hal->toArray();
+		$outputResources = RApiSoapHelper::getOutputResources($this->webservice->configuration->operations->read->list, 'listItem', true);
+
+		if ($arr['_embedded'] && $arr['_embedded']['item'])
+		{
+			$response = RApiSoapHelper::selectListResources($outputResources, $arr['_embedded']['item']);
+		}
+		else
+		{
+			$response = array();
+		}
+
+		$final = new stdClass;
+		$final->list = $response;
+
+		return $final;
 	}
 
 	/**
 	 * Read item
 	 *
-	 * @param   array   $id        ID key(s) of the item. If multiple keys then they need to be in a array format (ex: array('id' => 4, 'sub_id' = 14))
-	 * @param   string  $language  Language Tag name (ex: en)
+	 * @param   object  $data  Primary keys and $language
 	 *
 	 * @return  array
 	 */
-	public function readItem($id = array(), $language = null)
+	public function readItem($data)
 	{
 		// We are setting the operation of the webservice to Read
 		$this->setOperation('read');
@@ -125,51 +121,71 @@ class RApiSoapOperationOperation
 			$primaryKeysFromFields['id'] = array('transform' => 'int');
 		}
 
-		if (!is_array($id))
-		{
-			if (count($primaryKeysFromFields) == 1)
-			{
-				$idValue = $id;
-				$id = array();
-				$id[key($primaryKeysFromFields)] = $idValue;
-			}
-			else
-			{
-				$id = array('id' => $id);
-			}
-		}
-
 		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 		{
-			if (isset($id[$primaryKey]) && $id[$primaryKey] != '')
+			$keyData = '';
+
+			if (isset($data->$primaryKey) && $data->$primaryKey != '')
 			{
-				$dataGet->{$primaryKey} = $this->webservice->transformField($primaryKeyField['transform'], $id[$primaryKey], false);
+				$keyData = $data->$primaryKey;
 			}
+
+			$dataGet->$primaryKey = $this->webservice->transformField($primaryKeyField['transform'], $keyData, false);
 		}
 
 		// Handle different language switch
-		$this->setLanguage($language);
+		$this->setLanguage((string) (isset($data->language) ? $data->language : ''));
 
 		$this->webservice->options->set('dataGet', $dataGet);
 		$this->webservice->options->set('task', '');
+		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
-		return $this->webservice->hal->toArray();
+		$arr = $this->webservice->hal->toArray();
+		$outputResources = RApiSoapHelper::getOutputResources($this->webservice->configuration->operations->read->item, '', true);
+
+		$response = RApiSoapHelper::selectListResources($outputResources, array($arr));
+
+		$final = new stdClass;
+		$final->item = $response[0];
+
+		$match = true;
+
+		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+		{
+			if ($dataGet->$primaryKey != $final->item->$primaryKey)
+			{
+				$match = false;
+			}
+		}
+
+		if (!$match)
+		{
+			$final = array();
+		}
+
+		if (!count((array) $final->item))
+		{
+			$final = array();
+		}
+
+		return $final;
 	}
 
 	/**
 	 * Create operation
 	 *
-	 * @param   array  $data  Data array passed for the item
+	 * @param   object  $data  Data array passed for the item
 	 *
-	 * @return  array
+	 * @return  mixed
 	 */
-	public function create($data = array())
+	public function create($data)
 	{
 		// We are setting the operation of the webservice to create
 		$this->webservice->options->set('task', '');
 		$this->setOperation('create');
-		$this->webservice->options->set('data', $data);
+		$this->webservice->options->set('data', (array) $data);
+		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
 		return $this->webservice->hal->toArray();
@@ -188,6 +204,7 @@ class RApiSoapOperationOperation
 		$this->webservice->options->set('task', '');
 		$this->setOperation('update');
 		$this->webservice->options->set('data', $data);
+		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
 		return $this->webservice->hal->toArray();
@@ -206,6 +223,7 @@ class RApiSoapOperationOperation
 		$this->webservice->options->set('task', '');
 		$this->setOperation('delete');
 		$this->webservice->options->set('data', $data);
+		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
 		return $this->webservice->hal->toArray();
@@ -233,16 +251,23 @@ class RApiSoapOperationOperation
 	 * Triggers specific task operation on the webservice
 	 *
 	 * @param   string  $taskName  Task name
-	 * @param   array   $data      Data Array passed to the task method
+	 * @param   object  $data      Data Array passed to the task method
 	 *
 	 * @return  array
 	 */
 	private function task($taskName, $data)
 	{
+		// Correctly load of data coming from SOAP request
+		if (is_array($data) && !empty($data))
+		{
+			$data = $data[0];
+		}
+
 		// We are setting the operation of the webservice to task
 		$this->webservice->options->set('task', $taskName);
 		$this->setOperation('task');
-		$this->webservice->options->set('data', $data);
+		$this->webservice->options->set('data', (array) $data);
+		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
 		return $this->webservice->hal->toArray();

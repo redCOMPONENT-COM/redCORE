@@ -40,6 +40,14 @@ class RApiSoapSoap extends RApi
 	public $soapResponse = null;
 
 	/**
+	 * WSDL path
+	 *
+	 * @var    string  WSDL path
+	 * @since  1.4
+	 */
+	public $wsdlPath = null;
+
+	/**
 	 * Method to instantiate the file-based api call.
 	 *
 	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
@@ -100,6 +108,8 @@ class RApiSoapSoap extends RApi
 
 		try
 		{
+			$this->checkWSDL();
+
 			switch ($this->operation)
 			{
 				case 'soap':
@@ -108,9 +118,7 @@ class RApiSoapSoap extends RApi
 
 				case 'wsdl':
 				default:
-
 					$this->triggerFunction('apiWsdl');
-				break;
 			}
 
 			$messages = JFactory::getApplication()->getMessageQueue();
@@ -148,16 +156,13 @@ class RApiSoapSoap extends RApi
 	 */
 	public function apiSoap()
 	{
+		$wsdl = JUri::root() . $this->wsdlPath;
 		$params = array(
+			'uri' => $wsdl,
 			'soap_version' => SOAP_1_2,
 		);
 		$operation = new RApiSoapOperationOperation($this->webservice);
-		$server = new SoapServer(
-			RApiHalHelper::buildWebserviceFullUrl(
-				$this->webservice->client, $this->webservice->webserviceName, $this->webservice->webserviceVersion, 'soap'
-			) . '&wsdl',
-			$params
-		);
+		$server = new SoapServer($wsdl, $params);
 		$server->setObject($operation);
 
 		ob_start();
@@ -165,7 +170,7 @@ class RApiSoapSoap extends RApi
 		$response = ob_get_contents();
 		ob_end_clean();
 
-		$this->soapResponse = $response;
+		$this->soapResponse = str_replace('&', '&amp;', $response);
 	}
 
 	/**
@@ -179,8 +184,44 @@ class RApiSoapSoap extends RApi
 	{
 		try
 		{
+			$content = @file_get_contents(JPATH_SITE . '/' . $this->wsdlPath);
+
+			if (is_string($content))
+			{
+				$this->wsdl = new SimpleXMLElement($content);
+			}
+			else
+			{
+				unlink(JPATH_SITE . '/' . $this->wsdlPath);
+				$this->checkWSDL();
+
+				return $this->apiWsdl();
+			}
+		}
+		catch (Exception $e)
+		{
+			unlink(JPATH_SITE . '/' . $this->wsdlPath);
+			$this->checkWSDL();
+
+			return $this->apiWsdl();
+		}
+
+		return $this->wsdl;
+	}
+
+	/**
+	 * Checks and ensures that a static WSDL file exist and is in place
+	 *
+	 * @return  string  WSDL path
+	 *
+	 * @since   1.4
+	 */
+	public function checkWSDL()
+	{
+		try
+		{
 			// Wet wsdl from webservice location
-			$wsdlFullPath = RApiHalHelper::getWebserviceFile(
+			$this->wsdlPath = RApiSoapHelper::getWebserviceFile(
 				$this->webservice->client,
 				strtolower($this->webservice->webserviceName),
 				$this->webservice->webserviceVersion,
@@ -188,14 +229,9 @@ class RApiSoapSoap extends RApi
 				$this->webservice->webservicePath
 			);
 
-			if (is_readable($wsdlFullPath))
+			if (is_readable(JPATH_SITE . '/' . $this->wsdlPath))
 			{
-				$content = @file_get_contents($wsdlFullPath);
-
-				if (is_string($content))
-				{
-					$this->wsdl = new SimpleXMLElement($content);
-				}
+				return $this->wsdlPath;
 			}
 		}
 		catch (Exception $e)
@@ -203,12 +239,10 @@ class RApiSoapSoap extends RApi
 		}
 
 		// Something went wrong, we are going to generate it on the fly
-		if (empty($this->wsdl))
-		{
-			$this->wsdl = RApiSoapHelper::generateWsdl($this->webservice->configuration);
-		}
+		$this->wsdl = RApiSoapHelper::generateWsdl($this->webservice->configuration, $this->wsdlPath);
+		$this->wsdl->asXML(JPATH_SITE . '/' . $this->wsdlPath);
 
-		return $this->wsdl;
+		return $this->wsdlPath;
 	}
 
 	/**
@@ -248,7 +282,7 @@ class RApiSoapSoap extends RApi
 			}
 		}
 
-		JFactory::$document = new RApiSoapDocumentDocument($documentOptions);
+		JFactory::$document = new RApiSoapDocumentDocument($documentOptions, ($this->operation == 'wsdl' ? 'xml' : 'soap+xml'));
 		$body = $this->triggerFunction('prepareBody', $body);
 
 		// Push results into the document.

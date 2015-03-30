@@ -478,6 +478,60 @@ class RTable extends JTable
 			}
 		}
 
+		// Optional created_by field updated when present
+		if (!$this->id && isset($this->created_by))
+		{
+			$user = JFactory::getUser();
+
+			if ($user->id)
+			{
+				$this->created_by = $user->id;
+			}
+			else
+			{
+				$this->created_by = null;
+			}
+		}
+		elseif (isset($this->created_by) && ($this->created_by === 0))
+		{
+			$user = JFactory::getUser();
+
+			if (!$user->id)
+			{
+				$this->created_by = null;
+			}
+		}
+
+		// Optional created_date field updated when present
+		if (!$this->id && isset($this->created_date))
+		{
+			$this->created_date = date('Y-m-d H:i:s');
+		}
+
+		// Optional modified_by field updated when present
+		if (isset($this->modified_by))
+		{
+			if (!isset($user))
+			{
+				$user = JFactory::getUser();
+			}
+
+			if ($user->id)
+			{
+				$this->modified_by = $user->id;
+			}
+			else
+			{
+				$this->modified_by = null;
+			}
+		}
+
+		// Optional modified_date field updated when present
+		if (isset($this->modified_date))
+		{
+			$this->modified_date = date('Y-m-d H:i:s');
+		}
+
 		return true;
 	}
 
