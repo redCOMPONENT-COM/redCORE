@@ -949,7 +949,7 @@ class RApiHalHelper
 	 *
 	 * @return  array
 	 */
-	public static function getFieldsArray($xmlElement, $primaryKeys = true)
+	public static function getFieldsArray($xmlElement, $primaryKeys = false)
 	{
 		$fields = array();
 

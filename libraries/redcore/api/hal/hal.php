@@ -2329,7 +2329,7 @@ class RApiHalHal extends RApi
 		if (!empty($operations->read->item))
 		{
 			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
-			$primaryKeysFromFields = RApiHalHelper::getFieldsArray($operations->read->item);
+			$primaryKeysFromFields = RApiHalHelper::getFieldsArray($operations->read->item, true);
 
 			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 			{

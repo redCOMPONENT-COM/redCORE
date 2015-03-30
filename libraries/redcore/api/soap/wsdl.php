@@ -378,7 +378,7 @@ class RApiSoapWsdl
 			{
 				// Add read item messages
 				$inputFields = array_merge(
-					RApiHalHelper::getFieldsArray($this->webserviceXml->operations->read->item),
+					RApiHalHelper::getFieldsArray($this->webserviceXml->operations->read->item, true),
 					array(array('name' => 'language', 'transform' => 'string'))
 				);
 
@@ -399,7 +399,7 @@ class RApiSoapWsdl
 			if (isset($this->webserviceXml->operations->create))
 			{
 				// Add create messages
-				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->create, false);
+				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->create);
 
 				// Add create response messages
 				$outputFields = array(RApiSoapHelper::getResultResource($this->webserviceXml->operations->create));
@@ -411,7 +411,7 @@ class RApiSoapWsdl
 			if (isset($this->webserviceXml->operations->update))
 			{
 				// Add update messages
-				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->update, false);
+				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->update);
 
 				// Add update response messages
 				$outputFields = array(RApiSoapHelper::getResultResource($this->webserviceXml->operations->update));
@@ -423,7 +423,7 @@ class RApiSoapWsdl
 			if (isset($this->webserviceXml->operations->delete))
 			{
 				// Add delete messages
-				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->delete);
+				$inputFields = RApiHalHelper::getFieldsArray($this->webserviceXml->operations->delete, true);
 
 				// Add delete response messages
 				$outputFields = array(RApiSoapHelper::getResultResource($this->webserviceXml->operations->delete));
@@ -437,7 +437,7 @@ class RApiSoapWsdl
 				foreach ($this->webserviceXml->operations->task->children() as $taskName => $task)
 				{
 					// Add task messages
-					$inputFields = RApiHalHelper::getFieldsArray($task, false);
+					$inputFields = RApiHalHelper::getFieldsArray($task);
 
 					// Add task response messages
 					$outputFields = array(RApiSoapHelper::getResultResource($task));
