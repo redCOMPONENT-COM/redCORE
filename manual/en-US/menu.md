@@ -2,7 +2,7 @@
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
 - **Translation feature**
     - [Overview](chapters/translation/overview.md)
-    - [First steps](chapters/translation/firsts-steps.md)
+    - [First steps](chapters/translation/firsts_steps.md)
 - **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)
 		- [Breakdown Step-by-step](chapters/webservices/breakdown.md)
