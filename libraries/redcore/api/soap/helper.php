@@ -267,4 +267,49 @@ class RApiSoapHelper
 
 		return $response;
 	}
+
+	/**
+	 * Gets an array of fields ready for SOAP documentation purposes
+	 *
+	 * @param   array    $fields       Array of fields using their xml properties (using 'name' for the field name itself)
+	 * @param   boolean  $allRequired  Mark all the fields as required
+	 * @param   string   $assignation  Assignation operation
+	 *
+	 * @return  array
+	 *
+	 * @since   1.4
+	 */
+	public static function documentationFields($fields, $allRequired = false, $assignation = '=')
+	{
+		$fieldsArray = array();
+
+		if ($fields && is_array($fields))
+		{
+			foreach ($fields as $field)
+			{
+				$transform = RApiHalHelper::attributeToString($field, 'transform', 'string');
+				$defaultValue = RApiHalHelper::attributeToString($field, 'defaultValue', 'null');
+
+				if ($defaultValue == 'null' && ($allRequired || RApiHalHelper::isAttributeTrue($field, 'isRequiredField')))
+				{
+					$transformClass = 'RApiSoapTransform' . ucfirst($transform);
+
+					if (!class_exists($transformClass))
+					{
+						$transformClass = 'RApiSoapTransformBase';
+					}
+
+					$transformObject = new $transformClass;
+					$defaultValue = $transformObject->defaultValue;
+				}
+
+				$fieldsArray[] = '$' .
+					RApiHalHelper::attributeToString($field, 'name') .
+					' ' . $assignation . ' (' . $transform . ') ' .
+					$defaultValue;
+			}
+		}
+
+		return $fieldsArray;
+	}
 }

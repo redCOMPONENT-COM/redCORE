@@ -170,7 +170,7 @@ class RApiSoapSoap extends RApi
 		$response = ob_get_contents();
 		ob_end_clean();
 
-		$this->soapResponse = str_replace('&', '&amp;', $response);
+		$this->soapResponse = str_replace('&', '&amp;', str_replace('&amp;', '&', $response));
 	}
 
 	/**

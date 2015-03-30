@@ -626,7 +626,7 @@ class RApiHalHal extends RApi
 
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
-		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration, true);
+		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
 		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
 
@@ -817,7 +817,7 @@ class RApiHalHal extends RApi
 
 			$model = $this->triggerFunction('loadModel', $this->elementName, $taskConfiguration);
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
-			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration, true);
+			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
 
 			$data = $this->triggerFunction('validatePostData', $model, $data, $taskConfiguration);
 
@@ -1217,13 +1217,12 @@ class RApiHalHal extends RApi
 	 *
 	 * @param   array             $data           Raw Posted data
 	 * @param   SimpleXMLElement  $configuration  Configuration for displaying object
-	 * @param   boolean           $removeNulls    Remove null values to avoid sending them
 	 *
 	 * @return  mixed  Array with posted data.
 	 *
 	 * @since   1.2
 	 */
-	public function processPostData($data, $configuration, $removeNulls = false)
+	public function processPostData($data, $configuration)
 	{
 		if (is_object($data))
 		{
@@ -1244,11 +1243,6 @@ class RApiHalHal extends RApi
 				$fieldAttributes['defaultValue'] = !empty($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
 				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
 				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
-
-				if ($removeNulls && $data[$fieldAttributes['name']] == '')
-				{
-					unset($data[$fieldAttributes['name']]);
-				}
 			}
 		}
 

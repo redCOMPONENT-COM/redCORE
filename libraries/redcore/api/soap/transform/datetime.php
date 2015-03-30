@@ -19,10 +19,20 @@ defined('JPATH_BASE') or die;
 final class RApiSoapTransformDatetime extends RApiSoapTransformBase
 {
 	/**
-	 * string type
+	 * string $type
 	 *
 	 * @var    string  Base SOAP type
 	 * @since  1.4
 	 */
 	public $type = 's:dateTime';
+
+	/**
+	 * Constructor function
+	 *
+	 * @since  1.4
+	 */
+	public function __construct()
+	{
+		$this->defaultValue = date('Y-m-d h:i:s');
+	}
 }

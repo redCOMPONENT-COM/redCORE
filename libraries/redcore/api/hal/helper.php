@@ -782,14 +782,15 @@ class RApiHalHelper
 	/**
 	 * Returns uri to the webservice
 	 *
-	 * @param   string  $client     Client
-	 * @param   string  $name       Name
-	 * @param   string  $version    Version
-	 * @param   string  $appendApi  Append api at the end or the URI
+	 * @param   string  $client        Client
+	 * @param   string  $name          Name
+	 * @param   string  $version       Version
+	 * @param   string  $appendApi     Append api at the end or the URI
+	 * @param   string  $appendFormat  Append format at the end or the URI
 	 *
 	 * @return  string
 	 */
-	public static function buildWebserviceUri($client, $name, $version, $appendApi = '')
+	public static function buildWebserviceUri($client, $name, $version, $appendApi = '', $appendFormat = '')
 	{
 		$uri = 'webserviceClient=' . $client
 			. '&webserviceVersion=' . $version;
@@ -810,22 +811,28 @@ class RApiHalHelper
 			$uri .= '&api=' . $appendApi;
 		}
 
+		if (!empty($appendFormat))
+		{
+			$uri .= '&format=' . $appendFormat;
+		}
+
 		return $uri;
 	}
 
 	/**
 	 * Returns Full URL to the webservice
 	 *
-	 * @param   string  $client     Client
-	 * @param   string  $name       Name
-	 * @param   string  $version    Version
-	 * @param   string  $appendApi  Append api at the end or the URI
+	 * @param   string  $client        Client
+	 * @param   string  $name          Name
+	 * @param   string  $version       Version
+	 * @param   string  $appendApi     Append api at the end or the URI
+	 * @param   string  $appendFormat  Append format at the end or the URI
 	 *
 	 * @return  string
 	 */
-	public static function buildWebserviceFullUrl($client, $name, $version, $appendApi = '')
+	public static function buildWebserviceFullUrl($client, $name, $version, $appendApi = '', $appendFormat = '')
 	{
-		$uri = self::buildWebserviceUri($client, $name, $version, $appendApi);
+		$uri = self::buildWebserviceUri($client, $name, $version, $appendApi, $appendFormat);
 
 		return rtrim(JUri::base(), '/') . '/index.php?' . $uri;
 	}
@@ -968,7 +975,7 @@ class RApiHalHelper
 		}
 
 		// If there are no primary keys defined we will use id field as default
-		if (empty($fields))
+		if (empty($fields) && $primaryKeys)
 		{
 			$fields['id'] = array('name' => 'id', 'transform' => 'int');
 		}

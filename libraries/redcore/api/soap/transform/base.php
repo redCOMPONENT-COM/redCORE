@@ -27,12 +27,29 @@ class RApiSoapTransformBase implements RApiSoapTransformInterface
 	public $element = null;
 
 	/**
-	 * string type
+	 * string $type
 	 *
 	 * @var    string  Base SOAP type
 	 * @since  1.4
 	 */
 	public $type = 's:string';
+
+	/**
+	 * string $defaultValue
+	 *
+	 * @var    string  Default value when not null
+	 * @since  1.4
+	 */
+	public $defaultValue = '\'\'';
+
+	/**
+	 * Constructor function
+	 *
+	 * @since  1.4
+	 */
+	public function __construct()
+	{
+	}
 
 	/**
 	 * Method to transform a type to publish it in the WSDL file

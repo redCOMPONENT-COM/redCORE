@@ -19,10 +19,18 @@ defined('JPATH_BASE') or die;
 final class RApiSoapTransformBoolean extends RApiSoapTransformBase
 {
 	/**
-	 * string type
+	 * string $type
 	 *
 	 * @var    string  Base SOAP type
 	 * @since  1.4
 	 */
 	public $type = 's:boolean';
+
+	/**
+	 * string $defaultValue
+	 *
+	 * @var    string  Default value when not null
+	 * @since  1.4
+	 */
+	public $defaultValue = 'true';
 }

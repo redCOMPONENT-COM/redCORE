@@ -187,7 +187,7 @@ class RApiSoapOperationOperation
 
 		if (!isset($arr['result']))
 		{
-			$arr['result'] = 0;
+			$arr['result'] = false;
 		}
 
 		return $arr;
@@ -213,7 +213,7 @@ class RApiSoapOperationOperation
 
 		if (!isset($arr['result']))
 		{
-			$arr['result'] = 0;
+			$arr['result'] = false;
 		}
 
 		return $arr;
@@ -239,7 +239,7 @@ class RApiSoapOperationOperation
 
 		if (!isset($arr['result']))
 		{
-			$arr['result'] = 0;
+			$arr['result'] = false;
 		}
 
 		return $arr;
@@ -290,7 +290,7 @@ class RApiSoapOperationOperation
 
 		if (!isset($arr['result']))
 		{
-			$arr['result'] = 0;
+			$arr['result'] = false;
 		}
 
 		return $arr;

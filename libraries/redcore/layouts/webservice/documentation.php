@@ -67,6 +67,8 @@ $date   = new JDate;
 				<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_WSDL_ACCESS_URL'); ?></strong>:
 				<?php echo RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'soap') . '&wsdl'; ?><br />
 			<?php endif; ?>
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_DOCUMENTATION_URL'); ?></strong>:
+			<?php echo RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal', 'doc'); ?><br />
 		</div>
 			<?php if (isset($xml->description)) : ?>
 			<div class="well">

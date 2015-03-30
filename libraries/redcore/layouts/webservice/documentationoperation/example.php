@@ -34,54 +34,48 @@ if (!empty($displayData['options']['taskName']) )
 switch ($operationName)
 {
 	case 'create' :
-		$soapFunction = 'create($data = array())';
+		$fieldsArray = RApiSoapHelper::documentationFields(RApiHalHelper::getFieldsArray($operationXml, false, true));
+		$soapFunction = 'create(' . implode(', ', $fieldsArray) . ')';
 		$method = 'POST';
 		$errorList = array(201, 400, 404, 405, 406, 500);
 		break;
 	case 'read list' :
-		$soapFunction = 'readList($limitStart = 0, $limit = 20, $filterSearch = null, $filters = array(), $ordering = null, '
+		$fieldsArray = RApiSoapHelper::documentationFields(RApiHalHelper::getFilterFields($operationXml, true, true), false, '=>');
+		$soapFunction = 'readList($limitStart = 0, $limit = 20, $filterSearch = null, $filters = array(' .
+			implode(', ', $fieldsArray) . '), $ordering = null, '
 			. '$orderingDirection = null, $language = null)';
 		$method = 'GET';
 		$noteName = '_LIST';
 		$errorList = array(200, 405, 500);
 		break;
 	case 'read item' :
-
-		// If there are more than one primary key involved we are displaying them all
-		$primaryKeysFromFields = RApiHalHelper::getFieldsArray($operationXml, true);
-
-		if (count($primaryKeysFromFields) > 1)
-		{
-			$soapFunction = 'readItem($ids = array(), $language = null)';
-		}
-		else
-		{
-			$primaryKey = $primaryKeysFromFields[key($primaryKeysFromFields)];
-			$primaryKeyType = isset($primaryKey['transform']) && $primaryKey['transform'] == 'int' ? 0 : '""';
-			$soapFunction = 'readItem($' . key($primaryKeysFromFields) . ' = ' . $primaryKeyType . ', $language = null)';
-		}
-
+		$fields = RApiHalHelper::getFieldsArray($operationXml, true, true);
+		$fieldsArray = RApiSoapHelper::documentationFields($fields, true);
+		$soapFunction = 'readItem(' . implode(', ', $fieldsArray) . ')';
 		$method = 'GET';
 		$noteName = '_ITEM';
 		$errorList = array(200, 404, 405, 500);
 
-		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+		foreach ($fieldsArray as $primaryKey => $primaryKeyField)
 		{
-			$basicUrl .= '&' . $primaryKey . '=1';
+			$basicUrl .= '&' . $primaryKey['name'] . '=1';
 		}
 		break;
 	case 'update' :
-		$soapFunction = 'update($data = array())';
+		$fieldsArray = RApiSoapHelper::documentationFields(RApiHalHelper::getFieldsArray($operationXml, false, true));
+		$soapFunction = 'update(' . implode(', ', $fieldsArray) . ')';
 		$method = 'PUT';
 		$errorList = array(200, 400, 405, 406, 500);
 		break;
 	case 'delete' :
-		$soapFunction = 'delete($data = array())';
+		$fieldsArray = RApiSoapHelper::documentationFields(RApiHalHelper::getFieldsArray($operationXml, true, true));
+		$soapFunction = 'delete(' . implode(', ', $fieldsArray) . ')';
 		$method = 'DELETE';
 		$errorList = array(200, 400, 405, 406, 500);
 		break;
 	case 'task' :
-		$soapFunction = 'task_' . $taskName . '($data = array())';
+		$fieldsArray = RApiSoapHelper::documentationFields(RApiHalHelper::getFieldsArray($operationXml, false, true));
+		$soapFunction = 'task_' . $taskName . '(' . implode(', ', $fieldsArray) . ')';
 		$method = 'GET / POST';
 		$errorList = array(200, 400, 405, 406, 500);
 		break;
@@ -109,39 +103,22 @@ endif;
 		</span> &nbsp;<?php echo $url . ($operationName == 'task' ? '&task=' . $taskName : '') . $basicUrl . '&api=hal'; ?>
 	</h5>
 	<em><?php if ($operationName == 'read item'):
-			$ids = array_keys($primaryKeysFromFields);
-			$ids = implode(', ', $ids);
-			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE', $ids);
+			$ids = array();
+
+			if ($fields)
+			{
+				foreach ($fields as $field)
+				{
+					$ids[] = $field['name'];
+				}
+			}
+			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE', implode(', ', $ids));
 		else:
 			echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_BASIC' . $noteName . '_NOTE');
 		endif; ?></em><br /><br />
 
-	<?php if ($soapEnabled): ?>
-		<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP'); ?></strong><br />
-		<h5>
-			<span class="label label-success">
-				$client-><?php echo $soapFunction; ?>
-			</span> &nbsp;<?php echo $url . '&api=soap'; ?>
-		</h5>
-		<em><?php if ($operationName == 'read item'):
-			$ids = array_keys($primaryKeysFromFields);
-			$arrayIds = array();
-
-			foreach ($ids as $id):
-				$arrayIds[] = "'" . $id . "' => '1'";
-			endforeach;
-
-			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE', implode(', ', $ids),
-				count($primaryKeysFromFields) > 1 ? JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEYS_NOTE', implode(', ', $arrayIds)) :
-					JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEY_NOTE', ($primaryKeyType === 0 ? 'integer' : 'string'))
-				);
-		else:
-			echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE');
-		endif; ?></em><br /><br />
-	<?php endif; ?>
-
 	<div class="row">
-		<div class="col-xs-4 col-md-4 well" style="border: 2px solid #fff;">
+		<div class="col-xs-6 col-md-6 well" style="border: 2px solid #fff;">
 			<h5 style="border-bottom: 1px solid #ddd"><strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST'); ?></strong></h5>
 			<small>
 				<?php if ($operationName == 'read item' && empty($operationXml->fields)):
@@ -209,7 +186,7 @@ endif;
 				endif; ?>
 			</small>
 		</div>
-		<div class="col-xs-4 col-md-4 well" style="border: 2px solid #fff;">
+		<div class="col-xs-6 col-md-6 well" style="border: 2px solid #fff;">
 			<h5 style="border-bottom: 1px solid #ddd"><strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESPONSE'); ?></strong></h5>
 			<small>
 				<?php if (!empty($resources)) :
@@ -244,15 +221,45 @@ endif;
 				endif; ?>
 			</small>
 		</div>
-		<div class="col-xs-4 col-md-4 well" style="border: 2px solid #fff;">
-			<h5 style="border-bottom: 1px solid #ddd"><strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_HEADERS'); ?></strong></h5>
-			<small>
-				<?php if (!empty($errorList)) : ?>
-					<?php foreach ($errorList as $error) : ?>
-						<?php echo '<strong>' . $error . ':</strong> ' . RApiBase::$statusTexts[$error]; ?><br />
-					<?php endforeach; ?>
-				<?php endif; ?>
-			</small>
+	</div>
+
+	<?php if ($soapEnabled): ?>
+		<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP'); ?></strong><br />
+		<h5>
+			<span class="label label-success">
+				$client-><?php echo $soapFunction; ?>
+			</span>
+			<br /><br />
+			<?php echo $url . '&api=soap'; ?>
+		</h5>
+		<em><?php if ($operationName == 'read item'):
+			$arrayIds = array();
+
+			foreach ($ids as $id):
+				$arrayIds[] = "'" . $id . "' => '1'";
+			endforeach;
+
+			echo JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE', implode(', ', $ids),
+				count($fields) > 1 ? JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEYS_NOTE', implode(', ', $arrayIds)) :
+					JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP_ITEM_KEY_NOTE', ($primaryKeyType === 0 ? 'integer' : 'string'))
+				);
+		else:
+			echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SOAP' . $noteName . '_NOTE');
+		endif; ?></em><br /><br />
+	<?php endif; ?>
+
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_HEADERS'); ?></strong><br />
+			<div class="well" style="border: 2px solid #fff;">
+				<small>
+					<?php if (!empty($errorList)) : ?>
+						<?php foreach ($errorList as $error) : ?>
+							<?php echo '<strong>' . $error . ':</strong> ' . RApiBase::$statusTexts[$error]; ?><br />
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</small>				
+			</div>
 		</div>
 	</div>
 </div>

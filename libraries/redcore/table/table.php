@@ -215,6 +215,15 @@ class RTable extends JTable
 			$this->setRules($rules);
 		}
 
+		// Sets to null every field with '' to avoid converting ints to 0 that can lead to FK errors
+		foreach ($src as $field => $value)
+		{
+			if ($value == '')
+			{
+				$src[$field] = null;
+			}
+		}
+
 		return parent::bind($src, $ignore);
 	}
 
@@ -513,6 +522,7 @@ class RTable extends JTable
 			}
 		}
 
+		// Audit fields optional auto-update (on by default)
 		if ($this->getOption('updateAuditFields', true))
 		{
 			// Optional created_by field updated when present

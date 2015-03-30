@@ -19,10 +19,18 @@ defined('JPATH_BASE') or die;
 final class RApiSoapTransformArray extends RApiSoapTransformBase
 {
 	/**
-	 * string type
+	 * string $type
 	 *
 	 * @var    string  Base SOAP type
 	 * @since  1.4
 	 */
 	public $type = 'tns:ArrayOfStringType';
+
+	/**
+	 * string $defaultValue
+	 *
+	 * @var    string  Default value when not null
+	 * @since  1.4
+	 */
+	public $defaultValue = 'array()';
 }
