@@ -1,7 +1,8 @@
 - [Introduction](chapters/introduction.md)
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
 - **Translation feature**
-    - @todo
+    - [Overview](chapters/translation/overview.md)
+    - [First steps](chapters/translation/firsts-steps.md)
 - **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)
 		- [Breakdown Step-by-step](chapters/webservices/breakdown.md)
