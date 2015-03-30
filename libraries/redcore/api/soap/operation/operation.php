@@ -183,7 +183,14 @@ class RApiSoapOperationOperation
 		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
-		return $this->webservice->hal->toArray();
+		$arr = $this->webservice->hal->toArray();
+
+		if (!isset($arr['result']))
+		{
+			$arr['result'] = 0;
+		}
+
+		return $arr;
 	}
 
 	/**
@@ -202,7 +209,14 @@ class RApiSoapOperationOperation
 		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
-		return $this->webservice->hal->toArray();
+		$arr = $this->webservice->hal->toArray();
+
+		if (!isset($arr['result']))
+		{
+			$arr['result'] = 0;
+		}
+
+		return $arr;
 	}
 
 	/**
@@ -221,7 +235,14 @@ class RApiSoapOperationOperation
 		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
-		return $this->webservice->hal->toArray();
+		$arr = $this->webservice->hal->toArray();
+
+		if (!isset($arr['result']))
+		{
+			$arr['result'] = 0;
+		}
+
+		return $arr;
 	}
 
 	/**
@@ -265,7 +286,14 @@ class RApiSoapOperationOperation
 		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
-		return $this->webservice->hal->toArray();
+		$arr = $this->webservice->hal->toArray();
+
+		if (!isset($arr['result']))
+		{
+			$arr['result'] = 0;
+		}
+
+		return $arr;
 	}
 
 	/**
