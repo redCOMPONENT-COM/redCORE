@@ -51,11 +51,12 @@ class RApiSoapDocumentDocument extends JDocument
 	/**
 	 * Class constructor
 	 *
-	 * @param   array  $options  Associative array of options
+	 * @param   array   $options   Associative array of options
+	 * @param   string  $mimeType  Document type
 	 *
 	 * @since  1.4
 	 */
-	public function __construct($options = array())
+	public function __construct($options = array(), $mimeType = 'soap+xml')
 	{
 		parent::__construct($options);
 
@@ -67,7 +68,7 @@ class RApiSoapDocumentDocument extends JDocument
 		}
 
 		// Set default mime type.
-		$this->_mime = 'application/xml';
+		$this->_mime = 'application/' . $mimeType;
 
 		// Set document type.
 		$this->_type = 'xml';

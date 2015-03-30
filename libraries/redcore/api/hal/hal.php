@@ -818,6 +818,7 @@ class RApiHalHal extends RApi
 			$model = $this->triggerFunction('loadModel', $this->elementName, $taskConfiguration);
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
 			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
+
 			$data = $this->triggerFunction('validatePostData', $model, $data, $taskConfiguration);
 
 			if ($data === false)
@@ -967,6 +968,27 @@ class RApiHalHal extends RApi
 			{
 				$resource = RApiHalHelper::getXMLElementAttributes($resourceXML);
 
+				// Filters out specified displayGroup values
+				if ($this->options->get('filterOutResourcesGroups') != ''
+					&& in_array($resource['displayGroup'], $this->options->get('filterOutResourcesGroups')))
+				{
+					continue;
+				}
+
+				// Filters out if the optional resourceSpecific filter is not the one defined
+				if ($this->options->get('filterResourcesSpecific') != ''
+					&& $resource['resourceSpecific'] != $this->options->get('filterResourcesSpecific'))
+				{
+					continue;
+				}
+
+				// Filters out if the optional displayName filter is not the one defined
+				if ($this->options->get('filterDisplayName') != ''
+					&& $resource['displayName'] != $this->options->get('filterDisplayName'))
+				{
+					continue;
+				}
+
 				if (!empty($resourceXML->description))
 				{
 					$resource['description'] = $resourceXML->description;
@@ -975,6 +997,7 @@ class RApiHalHal extends RApi
 				$resource = RApiHalDocumentResource::defaultResourceField($resource);
 				$resourceName = $resource['displayName'];
 				$resourceSpecific = $resource['resourceSpecific'];
+
 				$this->resources[$resourceSpecific][$resourceName] = $resource;
 			}
 		}
@@ -1608,7 +1631,7 @@ class RApiHalHal extends RApi
 
 		// We are not using prefix like str_replace(array('.', '-'), array('_', '_'), $context) . '_';
 		$paginationPrefix = '';
-		$filterFields = $this->getFilterFields($configuration);
+		$filterFields = RApiHalHelper::getFilterFields($configuration);
 		$primaryFields = $this->getPrimaryFields($configuration);
 		$fields = $this->getAllFields($configuration);
 
@@ -1629,36 +1652,6 @@ class RApiHalHal extends RApi
 		}
 
 		return $this->apiDynamicModelClass;
-	}
-
-	/**
-	 * Gets list of filter fields from operation configuration
-	 *
-	 * @param   SimpleXMLElement  $configuration  Configuration for current action
-	 *
-	 * @return  array
-	 *
-	 * @since   1.3
-	 */
-	public function getFilterFields($configuration)
-	{
-		// We have one search filter field
-		$filterFields = array('search');
-
-		if (!empty($configuration->fields))
-		{
-			foreach ($configuration->fields->field as $field)
-			{
-				$isFilterField = RApiHalHelper::isAttributeTrue($field, 'isFilterField');
-
-				if ($isFilterField)
-				{
-					$filterFields[] = (string) $field["name"];
-				}
-			}
-		}
-
-		return $filterFields;
 	}
 
 	/**
@@ -2300,7 +2293,7 @@ class RApiHalHal extends RApi
 		if (!empty($operations->read->item))
 		{
 			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
-			$primaryKeysFromFields = RApiHalHelper::getPrimaryKeysFromFields($operations->read->item);
+			$primaryKeysFromFields = RApiHalHelper::getFieldsArray($operations->read->item, true);
 
 			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 			{
