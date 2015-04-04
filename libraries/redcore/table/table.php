@@ -54,6 +54,41 @@ class RTable extends JTable
 	protected $_tableFieldState = 'state';
 
 	/**
+	 * Field name to keep creator user (created_by)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldCreatedBy = 'created_by';
+
+	/**
+	 * Field name to keep latest modifier user (modified_by)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldModifiedBy = 'modified_by';
+
+	/**
+	 * Field name to keep created date (created_date)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldCreatedDate = 'created_date';
+
+	/**
+	 * Field name to keep latest modified user (modified_date)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldModifiedDate = 'modified_date';
+
+	/**
+	 * Format for audit date fields (created_date, modified_date)
+	 *
+	 * @var  string
+	 */
+	protected $_auditDateFormat = 'Y-m-d H:i:s';
+
+	/**
 	 * An array of plugin types to import.
 	 *
 	 * @var  array
@@ -178,6 +213,15 @@ class RTable extends JTable
 		{
 			$rules = new JAccessRules($src['rules']);
 			$this->setRules($rules);
+		}
+
+		// Sets to null every field with '' to avoid converting ints to 0 that can lead to FK errors
+		foreach ($src as $field => $value)
+		{
+			if ($value == '')
+			{
+				$src[$field] = null;
+			}
 		}
 
 		return parent::bind($src, $ignore);
@@ -475,6 +519,64 @@ class RTable extends JTable
 			if (count($results) && in_array(false, $results, true))
 			{
 				return false;
+			}
+		}
+
+		// Audit fields optional auto-update (on by default)
+		if ($this->getOption('updateAuditFields', true))
+		{
+			// Optional created_by field updated when present
+			if (!$this->hasPrimaryKey() && isset($this->{$this->_tableFieldCreatedBy}))
+			{
+				$user = JFactory::getUser();
+
+				if ($user->id)
+				{
+					$this->{$this->_tableFieldCreatedBy} = $user->id;
+				}
+				else
+				{
+					$this->{$this->_tableFieldCreatedBy} = null;
+				}
+			}
+			elseif (isset($this->{$this->_tableFieldCreatedBy}) && ($this->{$this->_tableFieldCreatedBy} === 0))
+			{
+				$user = JFactory::getUser();
+
+				if (!$user->id)
+				{
+					$this->{$this->_tableFieldCreatedBy} = null;
+				}
+			}
+
+			// Optional created_date field updated when present
+			if (!$this->hasPrimaryKey() && isset($this->{$this->_tableFieldCreatedDate}))
+			{
+				$this->{$this->_tableFieldCreatedDate} = date($this->_auditDateFormat);
+			}
+
+			// Optional modified_by field updated when present
+			if (isset($this->{$this->_tableFieldModifiedBy}))
+			{
+				if (!isset($user))
+				{
+					$user = JFactory::getUser();
+				}
+
+				if ($user->id)
+				{
+					$this->{$this->_tableFieldModifiedBy} = $user->id;
+				}
+				else
+				{
+					$this->{$this->_tableFieldModifiedBy} = null;
+				}
+			}
+
+			// Optional modified_date field updated when present
+			if (isset($this->{$this->_tableFieldModifiedDate}))
+			{
+				$this->{$this->_tableFieldModifiedDate} = date($this->_auditDateFormat);
 			}
 		}
 

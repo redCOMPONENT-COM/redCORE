@@ -16,6 +16,10 @@ $xml = !empty($displayData['options']['xml']) ? $displayData['options']['xml'] :
 $soapEnabled = $displayData['options']['soapEnabled'];
 $print = $displayData['options']['print'];
 $date   = new JDate;
+
+$halLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal');
+$docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal', 'doc');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,11 +66,30 @@ $date   = new JDate;
 			</strong>
 			<?php echo $xml->config->name; ?> (com_<?php echo $xml->config->name; ?>)<br />
 			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_URL'); ?></strong>:
-			<?php echo RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal'); ?><br />
-			<?php if ($soapEnabled) : ?>
+			<small>
+				<a href="<?php echo $halLink ?>">
+					<?php echo $halLink ?>
+				</a>
+			</small>
+			<br />
+			<?php
+				if ($soapEnabled) :
+					$wsdlLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'soap') . '&wsdl';
+			?>
 				<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_WSDL_ACCESS_URL'); ?></strong>:
-				<?php echo RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'soap') . '&wsdl'; ?><br />
+				<small>
+					<a href="<?php echo $wsdlLink ?>">
+						<?php echo $wsdlLink ?>
+					</a>
+				</small>
+				<br />
 			<?php endif; ?>
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_DOCUMENTATION_URL'); ?></strong>:
+			<small>
+				<a href="<?php echo $docsLink ?>">
+					<?php echo $docsLink ?>
+				</a>
+			</small>
 		</div>
 			<?php if (isset($xml->description)) : ?>
 			<div class="well">

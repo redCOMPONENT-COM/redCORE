@@ -782,14 +782,15 @@ class RApiHalHelper
 	/**
 	 * Returns uri to the webservice
 	 *
-	 * @param   string  $client     Client
-	 * @param   string  $name       Name
-	 * @param   string  $version    Version
-	 * @param   string  $appendApi  Append api at the end or the URI
+	 * @param   string  $client        Client
+	 * @param   string  $name          Name
+	 * @param   string  $version       Version
+	 * @param   string  $appendApi     Append api at the end or the URI
+	 * @param   string  $appendFormat  Append format at the end or the URI
 	 *
 	 * @return  string
 	 */
-	public static function buildWebserviceUri($client, $name, $version, $appendApi = '')
+	public static function buildWebserviceUri($client, $name, $version, $appendApi = '', $appendFormat = '')
 	{
 		$uri = 'webserviceClient=' . $client
 			. '&webserviceVersion=' . $version;
@@ -810,22 +811,28 @@ class RApiHalHelper
 			$uri .= '&api=' . $appendApi;
 		}
 
+		if (!empty($appendFormat))
+		{
+			$uri .= '&format=' . $appendFormat;
+		}
+
 		return $uri;
 	}
 
 	/**
 	 * Returns Full URL to the webservice
 	 *
-	 * @param   string  $client     Client
-	 * @param   string  $name       Name
-	 * @param   string  $version    Version
-	 * @param   string  $appendApi  Append api at the end or the URI
+	 * @param   string  $client        Client
+	 * @param   string  $name          Name
+	 * @param   string  $version       Version
+	 * @param   string  $appendApi     Append api at the end or the URI
+	 * @param   string  $appendFormat  Append format at the end or the URI
 	 *
 	 * @return  string
 	 */
-	public static function buildWebserviceFullUrl($client, $name, $version, $appendApi = '')
+	public static function buildWebserviceFullUrl($client, $name, $version, $appendApi = '', $appendFormat = '')
 	{
-		$uri = self::buildWebserviceUri($client, $name, $version, $appendApi);
+		$uri = self::buildWebserviceUri($client, $name, $version, $appendApi, $appendFormat);
 
 		return rtrim(JUri::base(), '/') . '/index.php?' . $uri;
 	}
@@ -942,15 +949,16 @@ class RApiHalHelper
 	}
 
 	/**
-	 * Returns primary keys from Element Fields properties
+	 * Returns an array of fields from Element Fields properties
 	 *
-	 * @param   SimpleXMLElement  $xmlElement  Xml element
+	 * @param   SimpleXMLElement  $xmlElement   Xml element
+	 * @param   boolean           $primaryKeys  Only extract primary keys
 	 *
 	 * @return  array
 	 */
-	public static function getPrimaryKeysFromFields($xmlElement)
+	public static function getFieldsArray($xmlElement, $primaryKeys = false)
 	{
-		$primaryKeys = array();
+		$fields = array();
 
 		if (isset($xmlElement->fields->field))
 		{
@@ -958,19 +966,86 @@ class RApiHalHelper
 			{
 				$fieldAttributes = self::getXMLElementAttributes($field);
 
-				if (self::isAttributeTrue($field, 'isPrimaryField'))
+				if (($primaryKeys && self::isAttributeTrue($field, 'isPrimaryField'))
+					|| !$primaryKeys)
 				{
-					$primaryKeys[$fieldAttributes['name']] = $fieldAttributes;
+					$fields[$fieldAttributes['name']] = $fieldAttributes;
 				}
 			}
 		}
 
 		// If there are no primary keys defined we will use id field as default
-		if (empty($primaryKeys))
+		if (empty($fields) && $primaryKeys)
 		{
-			$primaryKeys['id'] = array('transform' => 'int');
+			$fields['id'] = array('name' => 'id', 'transform' => 'int');
 		}
 
-		return $primaryKeys;
+		return $fields;
+	}
+
+	/**
+	 * Gets list of filter fields from operation configuration
+	 *
+	 * @param   SimpleXMLElement  $configuration   Configuration for current action
+	 * @param   boolean           $excludeSearch   Exclude the search element, maintaining just the xml-provided fields
+	 * @param   boolean           $fullDefinition  Gets the full definition of the filter, not just the name
+	 *
+	 * @return  array
+	 *
+	 * @since   1.3
+	 */
+	public static function getFilterFields($configuration, $excludeSearch = false, $fullDefinition = false)
+	{
+		// We have one search filter field
+		$filterFields = array();
+
+		if (!$excludeSearch)
+		{
+			if ($fullDefinition)
+			{
+				$filterFields[] = array(
+					'name' => 'search',
+					'isRequiredField' => 'false',
+					'transform' => 'string'
+				);
+			}
+			else
+			{
+				$filterFields[] = 'search';
+			}
+		}
+
+		if (!empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				$isFilterField = self::isAttributeTrue($field, 'isFilterField');
+
+				if (self::isAttributeTrue($field, 'isFilterField'))
+				{
+					if ($fullDefinition)
+					{
+						$required = 'false';
+
+						if (self::isAttributeTrue($field, 'isRequiredField'))
+						{
+							$required = 'true';
+						}
+
+						$filterFields[] = array(
+							'name' => (string) $field['name'],
+							'isRequiredField' => $required,
+							'transform' => (isset($field['transform'])) ? (string) $field['transform'] : 'string'
+						);
+					}
+					else
+					{
+						$filterFields[] = (string) $field["name"];
+					}
+				}
+			}
+		}
+
+		return $filterFields;
 	}
 }

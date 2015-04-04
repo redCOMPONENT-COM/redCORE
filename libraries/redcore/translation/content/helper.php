@@ -46,7 +46,7 @@ final class RTranslationContentHelper
 	 *
 	 * @return  void
 	 */
-	public function saveUrlParams($field, &$fieldValue, &$allValues, $translationTable)
+	public static function saveUrlParams($field, &$fieldValue, &$allValues, $translationTable)
 	{
 		// Check for the extension specific 'request' entry.
 		if (!empty($allValues['request']) && is_array($allValues['request']))
@@ -70,7 +70,7 @@ final class RTranslationContentHelper
 	 *
 	 * @return  void
 	 */
-	public function saveMenuPath($field, &$fieldValue, &$allValues, $translationTable)
+	public static function saveMenuPath($field, &$fieldValue, &$allValues, $translationTable)
 	{
 		// If there is no alias or path field, just return true.
 		if (!array_key_exists('alias', $allValues) || !array_key_exists('path', $allValues))
