@@ -19,12 +19,19 @@ defined('JPATH_BASE') or die;
 class PlgSystemRedcore extends JPlugin
 {
 	/**
-	 * Method to register custom library.
+	 * Constructor
 	 *
-	 * @return  void
+	 * @param   object  &$subject  The object to observe
+	 * @param   array   $config    An optional associative array of configuration settings.
+	 *                             Recognized key values include 'name', 'group', 'params', 'language'
+	 *                             (this list is not meant to be comprehensive).
+	 *
+	 * @since   1.5
 	 */
-	public function onAfterInitialise()
+	public function __construct(&$subject, $config = array())
 	{
+		parent::__construct($subject, $config);
+
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
 		if (file_exists($redcoreLoader))
@@ -52,13 +59,33 @@ class PlgSystemRedcore extends JPlugin
 				$db = JFactory::getDbo();
 
 				// Enable translations
-				$db->translate = RTranslationHelper::$pluginParams->get('enable_translations', 0) == 1;
-			}
+				$db->translate = $this->params->get('enable_translations', 0) == 1;
 
+				if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+				{
+					// Reset plugin params if we are in a different language than default
+					RTranslationHelper::resetPluginTranslation();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Method to register custom library.
+	 *
+	 * @return  void
+	 */
+	public function onAfterInitialise()
+	{
+		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
+
+		if (file_exists($redcoreLoader))
+		{
 			$apiName = JFactory::getApplication()->input->getString('api');
 
 			if (($this->params->get('enable_webservices', 0) == 1 && strtolower($apiName) == 'hal')
-				|| ($this->params->get('enable_oauth2_server', 0) == 1) && strtolower($apiName) == 'oauth2')
+				|| ($this->params->get('enable_oauth2_server', 0) == 1 && strtolower($apiName) == 'oauth2')
+				|| ($this->params->get('enable_soap', 0) == 1 && strtolower($apiName) == 'soap'))
 			{
 				$input = JFactory::getApplication()->input;
 
@@ -66,6 +93,7 @@ class PlgSystemRedcore extends JPlugin
 				{
 					try
 					{
+						JError::setErrorHandling(E_ERROR, 'message');
 						JFactory::getApplication()->clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
 						$optionName = $input->get->getString('option', '');
@@ -77,6 +105,7 @@ class PlgSystemRedcore extends JPlugin
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
 						$data = RApi::getPostedData();
+						$dataGet = $input->get->getArray();
 
 						if (empty($webserviceClient))
 						{
@@ -92,6 +121,7 @@ class PlgSystemRedcore extends JPlugin
 							'method'            => $method,
 							'task'              => $task,
 							'data'              => $data,
+							'dataGet'           => $dataGet,
 							'accessToken'       => $token,
 							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
 							'id'                => $input->getString('id', ''),
@@ -102,22 +132,33 @@ class PlgSystemRedcore extends JPlugin
 						$api = RApi::getInstance($options);
 
 						// Run the api task
-						$api->execute()
-							->render();
+						$api->execute();
+
+						// Display output
+						$api->render();
 					}
 					catch (Exception $e)
 					{
+						$code = $e->getCode() > 0 ? $e->getCode() : 500;
+
 						// Set the server response code.
-						header('Status: 500', true, 500);
+						header('Status: ' . $code, true, $code);
 
-						// Check for defined constants
-						if (!defined('JSON_UNESCAPED_SLASHES'))
+						if (strtolower($apiName) == 'soap')
 						{
-							define('JSON_UNESCAPED_SLASHES', 64);
+							echo RApiSoapHelper::createSoapFaultResponse($e->getMessage());
 						}
+						else
+						{
+							// Check for defined constants
+							if (!defined('JSON_UNESCAPED_SLASHES'))
+							{
+								define('JSON_UNESCAPED_SLASHES', 64);
+							}
 
-						// An exception has been caught, echo the message and exit.
-						echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
+							// An exception has been caught, echo the message and exit.
+							echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
+						}
 					}
 
 					JFactory::getApplication()->close();

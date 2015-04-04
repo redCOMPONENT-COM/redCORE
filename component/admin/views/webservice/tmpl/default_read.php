@@ -28,7 +28,7 @@ $firstContentActive = true;
 	<?php foreach ($this->formData as $operation => $operationData): ?>
 		<?php
 		if (substr($operation, 0, strlen('read-')) === 'read-') :
-			$fieldList = array('isRequiredField', 'isPrimaryField');
+			$fieldList = array('defaultValue', 'isRequiredField', 'isPrimaryField');
 
 			if ($operation == 'read-list')
 			{

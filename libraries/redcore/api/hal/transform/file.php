@@ -39,6 +39,12 @@ class RApiHalTransformFile extends RApiHalTransformBase
 	 */
 	public static function toInternal($definition)
 	{
+		// This is already converted to file type so we are returning it as is
+		if (is_array($definition))
+		{
+			return $definition;
+		}
+
 		return !empty($_FILES[$definition]) ? $_FILES[$definition] : false;
 	}
 }

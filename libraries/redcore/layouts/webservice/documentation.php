@@ -13,7 +13,13 @@ JHtml::_('rbootstrap.tooltip');
 
 $view = !empty($displayData['view']) ? $displayData['view'] : null;
 $xml = !empty($displayData['options']['xml']) ? $displayData['options']['xml'] : array();
+$soapEnabled = $displayData['options']['soapEnabled'];
+$print = $displayData['options']['print'];
 $date   = new JDate;
+
+$halLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal');
+$docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal', 'doc');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,8 +28,20 @@ $date   = new JDate;
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="viewport" content="width=device-width, initial-scale=1\" />
 	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+<?php
+	if ($print) :
+?>
+	<script type="text/javascript">
+		function printWindow() {
+			window.print();
+			window.close();
+		};
+	</script>
+<?php
+	endif;
+?>
 </head>
-<body>
+<body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?>>
 <div class="container-fluid">
 	<?php if (empty($xml)) : ?>
 		<h1><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_NONE'); ?></h1>
@@ -37,16 +55,41 @@ $date   = new JDate;
 				<strong><?php echo JText::_('LIB_REDCORE_COPYRIGHT'); ?></strong>: <?php echo (string) $xml->copyright; ?><br />
 			<?php endif; ?>
 			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_GENERATED'); ?></strong>: <?php echo $date->toRFC822(); ?><br />
-			<strong>
-				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_OPTION'); ?>:
-			</strong>
-			<?php echo $xml->config->name; ?> (com_<?php echo $xml->config->name; ?>)<br />
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SUPPORTED_FORMATS'); ?></strong>:
+			json (<?php echo JText::_('JDEFAULT'); ?>), xml<br />
 			<strong>
 				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_CLIENT'); ?>:
 			</strong>
 			<?php echo ucfirst($view->client); ?><br />
-			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_SUPPORTED_FORMATS'); ?></strong>
-			: json (<?php echo JText::_('JDEFAULT'); ?>), xml<br />
+			<strong>
+				<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_OPTION'); ?>:
+			</strong>
+			<?php echo $xml->config->name; ?> (com_<?php echo $xml->config->name; ?>)<br />
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ACCESS_URL'); ?></strong>:
+			<small>
+				<a href="<?php echo $halLink ?>">
+					<?php echo $halLink ?>
+				</a>
+			</small>
+			<br />
+			<?php
+				if ($soapEnabled) :
+					$wsdlLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'soap') . '&wsdl';
+			?>
+				<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_WSDL_ACCESS_URL'); ?></strong>:
+				<small>
+					<a href="<?php echo $wsdlLink ?>">
+						<?php echo $wsdlLink ?>
+					</a>
+				</small>
+				<br />
+			<?php endif; ?>
+			<strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_DOCUMENTATION_URL'); ?></strong>:
+			<small>
+				<a href="<?php echo $docsLink ?>">
+					<?php echo $docsLink ?>
+				</a>
+			</small>
 		</div>
 			<?php if (isset($xml->description)) : ?>
 			<div class="well">
@@ -74,6 +117,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation->list,
 										'operationName' => $operationName . ' ' . 'list',
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -90,6 +134,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation->item,
 										'operationName' => $operationName . ' ' . 'item',
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -104,8 +149,10 @@ $date   = new JDate;
 									'view' => $view,
 									'options' => array (
 										'xml' => $xml,
-										'operationXml' => $task,
+										'operationXml'  => $task,
 										'operationName' => $operationName . ' ' . $taskName,
+										'taskName'      => $taskName,
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>
@@ -121,6 +168,7 @@ $date   = new JDate;
 										'xml' => $xml,
 										'operationXml' => $operation,
 										'operationName' => $operationName,
+										'soapEnabled' => $soapEnabled,
 									)
 								)
 							);?>

@@ -591,7 +591,7 @@ class RApiHalHelper
 	{
 		$installedWebservices = self::getInstalledWebservices();
 
-		if (!empty($installedWebservices))
+		if (!empty($installedWebservices) && isset($installedWebservices[$client][$webserviceName]))
 		{
 			// First element is always newest
 			foreach ($installedWebservices[$client][$webserviceName] as $version => $webservice)
@@ -777,5 +777,275 @@ class RApiHalHelper
 		}
 
 		return 'string';
+	}
+
+	/**
+	 * Returns uri to the webservice
+	 *
+	 * @param   string  $client        Client
+	 * @param   string  $name          Name
+	 * @param   string  $version       Version
+	 * @param   string  $appendApi     Append api at the end or the URI
+	 * @param   string  $appendFormat  Append format at the end or the URI
+	 *
+	 * @return  string
+	 */
+	public static function buildWebserviceUri($client, $name, $version, $appendApi = '', $appendFormat = '')
+	{
+		$uri = 'webserviceClient=' . $client
+			. '&webserviceVersion=' . $version;
+
+		// Views are separated by dash
+		$view = explode('-', $name);
+		$name = $view[0];
+
+		$uri .= '&option=' . $name;
+
+		if (!empty($view[1]))
+		{
+			$uri .= '&view=' . $view[1];
+		}
+
+		if (!empty($appendApi))
+		{
+			$uri .= '&api=' . $appendApi;
+		}
+
+		if (!empty($appendFormat))
+		{
+			$uri .= '&format=' . $appendFormat;
+		}
+
+		return $uri;
+	}
+
+	/**
+	 * Returns Full URL to the webservice
+	 *
+	 * @param   string  $client        Client
+	 * @param   string  $name          Name
+	 * @param   string  $version       Version
+	 * @param   string  $appendApi     Append api at the end or the URI
+	 * @param   string  $appendFormat  Append format at the end or the URI
+	 *
+	 * @return  string
+	 */
+	public static function buildWebserviceFullUrl($client, $name, $version, $appendApi = '', $appendFormat = '')
+	{
+		$uri = self::buildWebserviceUri($client, $name, $version, $appendApi, $appendFormat);
+
+		return rtrim(JUri::base(), '/') . '/index.php?' . $uri;
+	}
+
+	/**
+	 * Returns user credentials from globals
+	 *
+	 * @return  array
+	 */
+	public static function getCredentialsFromGlobals()
+	{
+		$credentials = array();
+		$headers = self::getHeaderVariablesFromGlobals();
+
+		if (isset($headers['PHP_AUTH_USER']) && isset($headers['PHP_AUTH_PW']))
+		{
+			return $credentials = array(
+				'username'	 => $headers['PHP_AUTH_USER'],
+				'password'	 => $headers['PHP_AUTH_PW']
+			);
+		}
+
+		return $credentials;
+	}
+
+	/**
+	 * Returns header variables from globals
+	 *
+	 * @return  array
+	 */
+	public static function getHeaderVariablesFromGlobals()
+	{
+		$headers = array();
+
+		foreach ($_SERVER as $key => $value)
+		{
+			if (strpos($key, 'HTTP_') === 0)
+			{
+				$headers[substr($key, 5)] = $value;
+			}
+			// CONTENT_* are not prefixed with HTTP_
+			elseif (in_array($key, array('CONTENT_LENGTH', 'CONTENT_MD5', 'CONTENT_TYPE')))
+			{
+				$headers[$key] = $value;
+			}
+		}
+
+		if (isset($server['PHP_AUTH_USER']))
+		{
+			$headers['PHP_AUTH_USER'] = $server['PHP_AUTH_USER'];
+			$headers['PHP_AUTH_PW'] = isset($server['PHP_AUTH_PW']) ? $server['PHP_AUTH_PW'] : '';
+		}
+		else
+		{
+			/*
+			 * php-cgi under Apache does not pass HTTP Basic user/pass to PHP by default
+			 * For this workaround to work, add this line to your .htaccess file:
+			 * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+			 *
+			 * A sample .htaccess file:
+			 * RewriteEngine On
+			 * RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+			 * RewriteCond %{REQUEST_FILENAME} !-f
+			 * RewriteRule ^(.*)$ app.php [QSA,L]
+			 */
+
+			$authorizationHeader = null;
+
+			if (isset($server['HTTP_AUTHORIZATION']))
+			{
+				$authorizationHeader = $server['HTTP_AUTHORIZATION'];
+			}
+			elseif (isset($server['REDIRECT_HTTP_AUTHORIZATION']))
+			{
+				$authorizationHeader = $server['REDIRECT_HTTP_AUTHORIZATION'];
+			}
+			elseif (function_exists('apache_request_headers'))
+			{
+				$requestHeaders = (array) apache_request_headers();
+
+				// Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
+				$requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+
+				if (isset($requestHeaders['Authorization']))
+				{
+					$authorizationHeader = trim($requestHeaders['Authorization']);
+				}
+			}
+
+			if (null !== $authorizationHeader)
+			{
+				$headers['AUTHORIZATION'] = $authorizationHeader;
+
+				// Decode AUTHORIZATION header into PHP_AUTH_USER and PHP_AUTH_PW when authorization header is basic
+				if (0 === stripos($authorizationHeader, 'basic'))
+				{
+					$exploded = explode(':', base64_decode(substr($authorizationHeader, 6)));
+
+					if (count($exploded) == 2)
+					{
+						list($headers['PHP_AUTH_USER'], $headers['PHP_AUTH_PW']) = $exploded;
+					}
+				}
+			}
+		}
+
+		// PHP_AUTH_USER/PHP_AUTH_PW
+		if (isset($headers['PHP_AUTH_USER']))
+		{
+			$headers['AUTHORIZATION'] = 'Basic ' . base64_encode($headers['PHP_AUTH_USER'] . ':' . $headers['PHP_AUTH_PW']);
+		}
+
+		return $headers;
+	}
+
+	/**
+	 * Returns an array of fields from Element Fields properties
+	 *
+	 * @param   SimpleXMLElement  $xmlElement   Xml element
+	 * @param   boolean           $primaryKeys  Only extract primary keys
+	 *
+	 * @return  array
+	 */
+	public static function getFieldsArray($xmlElement, $primaryKeys = false)
+	{
+		$fields = array();
+
+		if (isset($xmlElement->fields->field))
+		{
+			foreach ($xmlElement->fields->field as $field)
+			{
+				$fieldAttributes = self::getXMLElementAttributes($field);
+
+				if (($primaryKeys && self::isAttributeTrue($field, 'isPrimaryField'))
+					|| !$primaryKeys)
+				{
+					$fields[$fieldAttributes['name']] = $fieldAttributes;
+				}
+			}
+		}
+
+		// If there are no primary keys defined we will use id field as default
+		if (empty($fields) && $primaryKeys)
+		{
+			$fields['id'] = array('name' => 'id', 'transform' => 'int');
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Gets list of filter fields from operation configuration
+	 *
+	 * @param   SimpleXMLElement  $configuration   Configuration for current action
+	 * @param   boolean           $excludeSearch   Exclude the search element, maintaining just the xml-provided fields
+	 * @param   boolean           $fullDefinition  Gets the full definition of the filter, not just the name
+	 *
+	 * @return  array
+	 *
+	 * @since   1.3
+	 */
+	public static function getFilterFields($configuration, $excludeSearch = false, $fullDefinition = false)
+	{
+		// We have one search filter field
+		$filterFields = array();
+
+		if (!$excludeSearch)
+		{
+			if ($fullDefinition)
+			{
+				$filterFields[] = array(
+					'name' => 'search',
+					'isRequiredField' => 'false',
+					'transform' => 'string'
+				);
+			}
+			else
+			{
+				$filterFields[] = 'search';
+			}
+		}
+
+		if (!empty($configuration->fields))
+		{
+			foreach ($configuration->fields->field as $field)
+			{
+				$isFilterField = self::isAttributeTrue($field, 'isFilterField');
+
+				if (self::isAttributeTrue($field, 'isFilterField'))
+				{
+					if ($fullDefinition)
+					{
+						$required = 'false';
+
+						if (self::isAttributeTrue($field, 'isRequiredField'))
+						{
+							$required = 'true';
+						}
+
+						$filterFields[] = array(
+							'name' => (string) $field['name'],
+							'isRequiredField' => $required,
+							'transform' => (isset($field['transform'])) ? (string) $field['transform'] : 'string'
+						);
+					}
+					else
+					{
+						$filterFields[] = (string) $field["name"];
+					}
+				}
+			}
+		}
+
+		return $filterFields;
 	}
 }

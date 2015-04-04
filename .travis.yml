@@ -12,7 +12,7 @@ before_script:
 
   # Install Apache
   - sudo apt-get update -qq
-  - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl > /dev/null
+  - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
   #- composer install --dev --prefer-dist
 
   # XVFB
@@ -26,8 +26,8 @@ before_script:
   - "fluxbox &"
 
   # Selenium server
-  - "wget http://selenium-release.storage.googleapis.com/2.43/selenium-server-standalone-2.43.1.jar"
-  - "java -jar selenium-server-standalone-2.43.1.jar > /dev/null 2>/dev/null &"
+  - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar -O selenium-server-standalone.jar
+  - "java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &"
   - .travis/wait4selenium.sh
 
   # Composer
