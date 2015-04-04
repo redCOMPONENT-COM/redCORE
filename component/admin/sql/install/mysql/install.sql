@@ -100,4 +100,70 @@ CREATE TABLE IF NOT EXISTS `#__redcore_webservices` (
   PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8;
 
+CREATE TABLE IF NOT EXISTS `#__redcore_payments` (
+  `id`                  INT(11)  UNSIGNED NOT NULL AUTO_INCREMENT,
+  `extension_name`      VARCHAR(255)      NOT NULL DEFAULT '',
+  `owner_id`            INT(11)  UNSIGNED NULL DEFAULT NULL,
+  `owner_name`          VARCHAR(255)      NOT NULL DEFAULT '',
+  `owner_email`         VARCHAR(255)      NOT NULL DEFAULT '',
+  `order_name`          VARCHAR(255)      NOT NULL DEFAULT '',
+  `order_id`            VARCHAR(255)      NOT NULL DEFAULT '',
+  `client_email`        VARCHAR(255)      NOT NULL DEFAULT '',
+  `created_date`        DATETIME          NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `transaction_id`      VARCHAR(255)      NOT NULL DEFAULT '',
+  `amount_original`     DECIMAL(10,2)     NOT NULL,
+  `amount_order_tax`    DECIMAL(10,2)     NOT NULL,
+  `order_tax_details`   VARCHAR(2000)     NOT NULL DEFAULT '',
+  `amount_shipping`     DECIMAL(10,2)     NOT NULL,
+  `shipping_details`    VARCHAR(2000)     NOT NULL DEFAULT '',
+  `amount_gateway_fee`  DECIMAL(10,2)     NOT NULL,
+  `amount_total`        DECIMAL(10,2)     NOT NULL,
+  `amount_payed`        DECIMAL(10,2)     NOT NULL,
+  `customer_note`       VARCHAR(2000)     NOT NULL DEFAULT '',
+  `status`              VARCHAR(32)       NOT NULL DEFAULT '',
+  `gateway_name`        VARCHAR(50)       NOT NULL DEFAULT '',
+  `currency`            VARCHAR(32)       NOT NULL DEFAULT '',
+  `params`              TEXT              NOT NULL,
+  `reacurring_date`     DATETIME          NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `retry_counter`       TINYINT(4)        NOT NULL DEFAULT '0',
+  CONSTRAINT `redcore_payments_id_pk` PRIMARY KEY (`id`)
+) DEFAULT CHARSET = utf8;
+
+CREATE TABLE IF NOT EXISTS `#__redcore_payment_log` (
+  `id`              INT(11)  UNSIGNED NOT NULL AUTO_INCREMENT,
+  `payment_id`      INT(11)  UNSIGNED NOT NULL,
+  `created_date`    DATETIME          NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `payed_by`        VARCHAR(255)      NOT NULL DEFAULT '',
+  `amount`          DECIMAL(10,2)     NOT NULL,
+  `currency`        VARCHAR(32)       NOT NULL DEFAULT '',
+  `coupon_code`     VARCHAR(255)      NOT NULL DEFAULT '',
+  `ip_address`      VARCHAR(255)      NOT NULL DEFAULT '',
+  `message_uri`     VARCHAR(2000)     NOT NULL DEFAULT '',
+  `message_text`    TEXT              NOT NULL,
+  `status`          VARCHAR(32)       NOT NULL DEFAULT '',
+  `transaction_id`  VARCHAR(255)      NOT NULL DEFAULT '',
+  `customer_note`   VARCHAR(2000)     NOT NULL DEFAULT '',
+  `gateway_name`    VARCHAR(50)       NOT NULL DEFAULT '',
+  CONSTRAINT `redcore_payment_log_id_pk` PRIMARY KEY (`id`)
+) DEFAULT CHARSET = utf8;
+
+CREATE TABLE IF NOT EXISTS `#__redcore_payment_configuration` (
+  `id`              INT(11)  UNSIGNED NOT NULL AUTO_INCREMENT,
+  `extension_name`      VARCHAR(255)      NOT NULL DEFAULT '',
+  `owner_id`            INT(11)  UNSIGNED NULL DEFAULT NULL,
+  `created_date`    DATETIME          NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `payed_by`        VARCHAR(255)      NOT NULL DEFAULT '',
+  `amount`          DECIMAL(10,2)     NOT NULL,
+  `currency`        VARCHAR(32)       NOT NULL DEFAULT '',
+  `coupon_code`     VARCHAR(255)      NOT NULL DEFAULT '',
+  `ip_address`      VARCHAR(255)      NOT NULL DEFAULT '',
+  `message_uri`     VARCHAR(2000)     NOT NULL DEFAULT '',
+  `message_text`    TEXT              NOT NULL,
+  `status`          VARCHAR(32)       NOT NULL DEFAULT '',
+  `transaction_id`  VARCHAR(255)      NOT NULL DEFAULT '',
+  `customer_note`   VARCHAR(2000)     NOT NULL DEFAULT '',
+  `gateway_name`    VARCHAR(50)       NOT NULL DEFAULT '',
+  CONSTRAINT `redcore_payment_log_id_pk` PRIMARY KEY (`id`)
+) DEFAULT CHARSET = utf8;
+
 SET FOREIGN_KEY_CHECKS = 1;

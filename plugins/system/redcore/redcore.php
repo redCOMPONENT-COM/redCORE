@@ -68,6 +68,7 @@ class PlgSystemRedcore extends JPlugin
 				}
 			}
 		}
+
 	}
 
 	/**
@@ -165,6 +166,8 @@ class PlgSystemRedcore extends JPlugin
 				}
 			}
 		}
+
+		JPluginHelper::importPlugin('redpayment');
 	}
 
 	/**

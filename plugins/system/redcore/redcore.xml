@@ -169,12 +169,12 @@
                     <option value="0">JNO</option>
                 </field>
                 <field
-                    name="oauth2_id_lifetime"
-                    type="text"
-                    default="3600"
-                    label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME"
-                    description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME_DESC"
-                    />
+                        name="oauth2_id_lifetime"
+                        type="text"
+                        default="3600"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME_DESC"
+                        />
                 <field
                         name="oauth2_access_lifetime"
                         type="text"
@@ -247,6 +247,40 @@
                         default="0"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+            </fieldset>
+            <fieldset name="PLG_SYSTEM_REDCORE_PAYMENT_API_OPTIONS">
+                <field
+                        name="payment_request_method"
+                        type="list"
+                        default="curl"
+                        label="PLG_SYSTEM_REDCORE_PAYMENT_REQUEST_METHOD"
+                        description="PLG_SYSTEM_REDCORE_PAYMENT_REQUEST_METHOD_DESC">
+                    <option value="curl">PLG_SYSTEM_REDCORE_PAYMENT_REQUEST_METHOD_CURL</option>
+                    <option value="fsockopen">PLG_SYSTEM_REDCORE_PAYMENT_REQUEST_METHOD_FSOCKOPEN</option>
+                </field>
+                <field
+                        name="payment_time_between_order_check_requests"
+                        type="text"
+                        default="24"
+                        label="PLG_SYSTEM_REDCORE_PAYMENT_TIME_BETWEEN_ORDER_CHECKS"
+                        description="PLG_SYSTEM_REDCORE_PAYMENT_TIME_BETWEEN_ORDER_CHECKS_DESC">
+                </field>
+                <field
+                        name="payment_number_of_order_check_retries"
+                        type="text"
+                        default="30"
+                        label="PLG_SYSTEM_REDCORE_PAYMENT_NUMBER_OF_RETRIES"
+                        description="PLG_SYSTEM_REDCORE_PAYMENT_NUMBER_OF_RETRIES_DESC">
+                </field>
+                <field
+                        name="payment_enable_file_logger"
+                        type="list"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_FILE_LOGGER"
+                        description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_FILE_LOGGER_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
