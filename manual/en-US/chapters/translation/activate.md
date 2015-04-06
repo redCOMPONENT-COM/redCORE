@@ -31,6 +31,11 @@ And then enable translations and save the plugin information
 <img src="./assets/img/translation/06.png" class="example" />
 
 ### Step 7:
+Finally, search for the "Language Filter" plugin and make sure it's enabled
+
+<img src="./assets/img/translation/24.png" class="example" />
+
+### Step 8:
 You can now go back to redCORE translations  `Components -> redCORE -> Translations`:
 
 <img src="./assets/img/translation/01.png" class="example" />

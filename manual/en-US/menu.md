@@ -5,6 +5,8 @@
     - [Activate redCORE translations](chapters/translation/activate.md)
     - [Create content languages in Joomla](chapters/translation/joomla-content-language.md)
     - [Publish language switcher module](chapters/translation/language-switcher.md)
+    - [Create translation elements](chapters/translation/create-elements.md)
+    - [Add translation elements](chapters/translation/add-elements.md)
     - [Translate content](chapters/translation/translate-content.md)
 - **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)

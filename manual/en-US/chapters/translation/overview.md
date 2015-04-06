@@ -16,4 +16,6 @@ redCORE is ready to import translations from other system like Joomfish or Falan
 1. [Activate redCORE translations](chapters/translation/activate.md)
 2. [Create content languages in Joomla](chapters/translation/joomla-content-language.md)
 3. [Publish language switcher module](chapters/translation/language-switcher.md)
-4. [Translate content](chapters/translation/translate-content.md)
+4. [Create translation elements](chapters/translation/create-elements.md)
+5. [Add translation elements](chapters/translation/add-elements.md)
+6. [Translate content](chapters/translation/translate-content.md)
