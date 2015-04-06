@@ -629,21 +629,15 @@ class RApiHalHal extends RApi
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
 		// Remove primary keys for "model" and "table" data mode
-		$dataMode = RApiHalHelper::attributeToString($this->operationConfiguration, 'dataMode');
+		$primaryKeys = $model->getTable()->getKeyName(true);
 
-		if (($dataMode == 'model') || ($dataMode == 'table'))
+		if (!empty($primaryKeys))
 		{
-			// Get the primary keys
-			$primaryKeys = $model->getTable()->getKeyName(true);
-
-			if (!empty($primaryKeys))
+			foreach ($primaryKeys as $primaryKey)
 			{
-				foreach ($primaryKeys as $primaryKey)
+				if (isset($data[$primaryKey]))
 				{
-					if (isset($data[$primaryKey]))
-					{
-						unset($data[$primaryKey]);
-					}
+					unset($data[$primaryKey]);
 				}
 			}
 		}
