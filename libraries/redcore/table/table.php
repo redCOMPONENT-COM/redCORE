@@ -702,7 +702,7 @@ class RTable extends JTable
 		$db = $this->_db;
 
 		// Initialise variables.
-		$k = $db->quoteName($this->_tbl_key);
+		$k = $this->_tbl_key;
 
 		// Sanitize input.
 		JArrayHelper::toInteger($pks);
@@ -730,7 +730,7 @@ class RTable extends JTable
 		$query = $db->getQuery(true)
 			->update($db->quoteName($this->_tbl))
 			->set($db->quoteName($this->_tableFieldState) . ' = ' . (int) $state)
-			->where($k . '=' . implode(' OR ' . $k . '=', $pks));
+			->where($db->quoteName($k) . '=' . implode(' OR ' . $db->quoteName($k) . '=', $pks));
 
 		// Determine if there is checkin support for the table.
 		if (!property_exists($this, 'checked_out') || !property_exists($this, 'checked_out_time'))
