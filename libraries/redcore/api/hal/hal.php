@@ -628,17 +628,18 @@ class RApiHalHal extends RApi
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
-		// Remove primary keys for "model" and "table" data mode
-		$primaryKeys = $model->getTable()->getKeyName(true);
+		// Check if table has primary keys
+		$table = $model->getTable();
 
-		if (!empty($primaryKeys))
+		// If table has primary key and only has 1 primary key => has autoincrement feature.
+		// Reference: libraries/joomla/table/table.php:147
+		if ($table->hasPrimaryKey() && (count($table->getKeyName(true)) == 1))
 		{
-			foreach ($primaryKeys as $primaryKey)
+			$primaryKey = $table->getKeyName();
+
+			if (isset($data[$primaryKey]))
 			{
-				if (isset($data[$primaryKey]))
-				{
-					unset($data[$primaryKey]);
-				}
+				unset($data[$primaryKey]);
 			}
 		}
 
