@@ -3,24 +3,24 @@ The next step consists in publishing the Language Swticher Module in the Frontpa
 
 <img src="./assets/img/translation/19.png" class="example" />
 
-1. Go to `Extensions -> Module Manager`:
+### Step 1: Go to `Extensions -> Module Manager`:
 
 <img src="./assets/img/translation/14.png" class="example" />
 
-2. Find the `redCORE language switcher` module and click on it:
+### Step 2: Find the `redCORE language switcher` module and click on it:
 
 <img src="./assets/img/translation/16.png" class="example" />
 
-3. Publish the module (set it as `Published`)
+### Step 3: Publish the module (set it as `Published`)
 
 <img src="./assets/img/translation/17.png" class="example" />
 
-4. Place it on all pages (or select the pages you want it to appear):
+### Step 4: Place it on all pages (or select the pages you want it to appear):
 
 <img src="./assets/img/translation/18.png" class="example" />
 
 Also make sure you place it in a proper position in your template.  If you are using Joomla default template use the `position-7` as we do in this example to place it on the right sidebar.
 
-At the end of this process you should be able to go to your website and see the Language switcher:
+When this process is complete, you should be able to go to your website and see the Language switcher:
 
 <img src="./assets/img/translation/19.png" class="example" />
