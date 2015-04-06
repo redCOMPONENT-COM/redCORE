@@ -2,7 +2,10 @@
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
 - **Translation feature**
     - [Overview](chapters/translation/overview.md)
-    - [First steps](chapters/translation/firsts_steps.md)
+    - [Activate redCORE translations](chapters/translation/activate.md)
+    - [Create content languages in Joomla](chapters/translation/joomla-content-language.md)
+    - [Publish language switcher module](chapters/translation/language-switcher.md)
+    - [Translate content](chapters/translation/translate-content.md)
 - **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)
 		- [Breakdown Step-by-step](chapters/webservices/breakdown.md)

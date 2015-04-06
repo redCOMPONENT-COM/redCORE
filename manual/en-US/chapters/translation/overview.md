@@ -9,4 +9,11 @@ Comparison between the Joomla native translation system and redCORE System:
 * Extending translation: redCORE allows you to translate even these extensions witch are not ready to be translatable. Only a small XML file is needed and you are ready to internationalise.
 
 ### Compatibility with other translation systems
-redCORE is ready to import translations from other system like Joomfish or Falang. This allows you to migrate old Joomla 1.5 sites to Joomla 3.x ensuring that your translated contents will still work without issues.
+redCORE is ready to import translations from other system like Joomfish or Falang. This allows you to migrate old Joomla 1.5 sites to Joomla 3.x ensuring that your translated contents will still work without issues
+
+### How to use redCORE translation system
+
+1. [Activate redCORE translations](chapters/translation/activate.md)
+2. [Create content languages in Joomla](chapters/translation/joomla-content-language.md)
+3. [Publish language switcher module](chapters/translation/language-switcher.md)
+4. [Translate content](chapters/translation/translate-content.md)
