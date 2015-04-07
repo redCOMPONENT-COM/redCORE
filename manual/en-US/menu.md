@@ -9,6 +9,7 @@
 	- Translating Joomla extensions:
     	- [- Create translation elements](chapters/translation/create-elements.md)
     	- [- Add translation elements](chapters/translation/add-elements.md)
+	- [Advanced Configuration](chapters/translation/advanced-configuration.md)
 - **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)
 		- [- Breakdown Step-by-step](chapters/webservices/breakdown.md)
