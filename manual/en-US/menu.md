@@ -1,15 +1,16 @@
 - [Introduction](chapters/introduction.md)
+- [Download redCORE](https://github.com/redCOMPONENT-COM/redCORE/releases/latest)
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
-- **Translation feature**
-    - [Overview](chapters/translation/overview.md)
-    - [Activate redCORE translations](chapters/translation/activate.md)
-    - [Create content languages in Joomla](chapters/translation/joomla-content-language.md)
-    - [Publish language switcher module](chapters/translation/language-switcher.md)
-    - [Translate content](chapters/translation/translate-content.md)
+- **Translation feature:**
+	- [Overview](chapters/translation/overview.md)
+	- [Activate redCORE translations](chapters/translation/activate.md)
+	- [Create content languages in Joomla](chapters/translation/joomla-content-language.md)
+	- [Publish language switcher module](chapters/translation/language-switcher.md)
+	- [Translate content](chapters/translation/translate-content.md)
 	- Translating Joomla extensions:
-    	- [- Create translation elements](chapters/translation/create-elements.md)
-    	- [- Add translation elements](chapters/translation/add-elements.md)
-- **Webservices and HAL**
+		- [- Create translation elements](chapters/translation/create-elements.md)
+		- [- Add translation elements](chapters/translation/add-elements.md)
+- **Webservices and HAL:**
 	- [Overview](chapters/webservices/overview.md)
 		- [- Breakdown Step-by-step](chapters/webservices/breakdown.md)
 	- [HAL](chapters/webservices/hal.md)
@@ -23,7 +24,7 @@
 	- Sample Output:
 		- [- Read List](chapters/webservices/output_read_list.md)
 		- [- Read Item](chapters/webservices/output_read_item.md)
-- **OAuth2 Server**
+- **OAuth2 Server:**
 	- [Overview](chapters/oauth2/overview.md)
 		- [- Breakdown Step-by-step](chapters/oauth2/breakdown.md)
 	- [OAuth2 Clients](chapters/oauth2/clients.md)
@@ -37,55 +38,56 @@
 	- [Access token](chapters/oauth2/token.md)
 	- [Joomla user connection](chapters/oauth2/joomla_user_connection.md)
 	- [Scope](chapters/oauth2/scope.md)
-- **The Override plugin**
-    - [Overview](chapters/mvcoverride/overview.md)
-- **Extension Development**
-    - [Installer](chapters/Installer.md)
-    - [in your extension](chapters/add-to-your-extension.md)
-    - [The PHING packager](chapters/phing.md)
-- **MVC**
-    - [Model](chapters/Model.md)
-    - [View and CSV](chapters/View.md)
-    - [Table](chapters/Table.md)
-    - [Controllers](chapters/Controllers.md)
-- **Forms**
-    - [Forms](chapters/Forms.md)
-       - [- Fields](chapters/Fields.md)
-          - [· RChildlist](chapters/RChildlist.md)
-          - [· RCountry](chapters/RCountry.md)
-          - [· RCurrency](chapters/RCurrency.md)
-          - [· RDatepicker](chapters/RDatepicker.md)
-          - [· RPublished](chapters/RPublished.md)
-          - [· Checkbox](chapters/Checkbox.md)
-       - [- Rules](chapters/Rules.md)
-- **Helpers**
-    - [Helpers](chapters/Helpers.md)
-       - [- Currency](chapters/Currency.md)
-       - [- Country](chapters/Country.md)
-       - [- List](chapters/List.md)
-- **Widgets**
-    - [Widgets](chapters/Widgets.md)
-       - Tooltip
-- **Menu**
-    - [Menu](chapters/Menu.md)
-- **HTML**
-    - [Html](chapters/Html.md)
-       - [- Sorting](chapters/Sorting.md)
-- **Layouts**
-    - [Layouts](chapters/Layouts.md)
-       - Topbar
-       - Modal
-- **Assets**
-    - [Assets](chapters/Assets.md)
-       - [- CSS minified files](chapters/Css-minified-files.md)
-       - [- JS minified files](chapters/JS-minified-files.md)
-       - [- Chosen](chapters/Chosen.md)
-       - [- Select2](chapters/Select2.md)
-       - [- Holder](chapters/Holder.md)
-       - [- Flexslider](chapters/Flexslider.md)
-    - [Browser](chapters/Browser.md)
-- **Media**
-    - [Icons](chapters/Icons.md)
-
-- **Appendices**
-    - [Examples](appendices/examples.md)
+- **The Override plugin:**
+	- [Overview](chapters/mvcoverride/overview.md)
+- **redCORE Framework:**
+	- [Overview](chapters/framework/overview.md)
+	- Extension Development
+		- [Installer](chapters/Installer.md)
+		- [in your extension](chapters/add-to-your-extension.md)
+		- [The PHING packager](chapters/phing.md)
+	- MVC
+		- [Model](chapters/Model.md)
+		- [View and CSV](chapters/View.md)
+		- [Table](chapters/Table.md)
+		- [Controllers](chapters/Controllers.md)
+	- Forms
+		- [Forms](chapters/Forms.md)
+		   - [- Fields](chapters/Fields.md)
+			  - [· RChildlist](chapters/RChildlist.md)
+			  - [· RCountry](chapters/RCountry.md)
+			  - [· RCurrency](chapters/RCurrency.md)
+			  - [· RDatepicker](chapters/RDatepicker.md)
+			  - [· RPublished](chapters/RPublished.md)
+			  - [· Checkbox](chapters/Checkbox.md)
+		   - [- Rules](chapters/Rules.md)
+	- Helpers
+		- [Helpers](chapters/Helpers.md)
+		   - [- Currency](chapters/Currency.md)
+		   - [- Country](chapters/Country.md)
+		   - [- List](chapters/List.md)
+	- Widgets
+		- [Widgets](chapters/Widgets.md)
+		   - Tooltip
+	- Menu
+		- [Menu](chapters/Menu.md)
+	- HTML
+		- [Html](chapters/Html.md)
+		   - [- Sorting](chapters/Sorting.md)
+	- Layouts
+		- [Layouts](chapters/Layouts.md)
+		   - Topbar
+		   - Modal
+	- Assets
+		- [Assets](chapters/Assets.md)
+		   - [- CSS minified files](chapters/Css-minified-files.md)
+		   - [- JS minified files](chapters/JS-minified-files.md)
+		   - [- Chosen](chapters/Chosen.md)
+		   - [- Select2](chapters/Select2.md)
+		   - [- Holder](chapters/Holder.md)
+		   - [- Flexslider](chapters/Flexslider.md)
+		- [Browser](chapters/Browser.md)
+	- Media
+		- [Icons](chapters/Icons.md)
+	- Appendices
+		- [Examples](appendices/examples.md)
