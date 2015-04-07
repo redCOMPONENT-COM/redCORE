@@ -100,6 +100,18 @@ if (empty($return))
 			</a>
 		</li>
 	<?php endif; ?>
+
+	<?php if ($view === 'payments'): ?>
+		<li class="nav-header"><?php echo JText::_('COM_REDCORE_PAYMENTS') ?></li>
+		<li class="divider"></li>
+	<?php else: ?>
+		<li>
+			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=payment_configurations') ?>">
+				<i class="icon-money"></i>
+				<?php echo JText::_('COM_REDCORE_PAYMENTS') ?>
+			</a>
+		</li>
+	<?php endif; ?>
 	<li>
 		<a href="http://redcomponent-com.github.io/redCORE/" target="_blank">
 			<i class="icon-book"></i>
