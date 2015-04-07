@@ -12,7 +12,7 @@
   <operations>
     <documentation authorizationNeeded="false" source="auto" url=""/>
     <task>
-      <forgotUsername useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="">
+      <forgotUsername useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="" strictFields="false">
         <description><![CDATA[This task for user can retrieve username.]]></description>
         <fields>
           <field name="email" transform="string" defaultValue="" isRequiredField="true" isPrimaryField="false">
@@ -26,7 +26,7 @@
           <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
         </resources>
       </forgotUsername>
-      <forgotPassword useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="">
+      <forgotPassword useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="" strictFields="false">
         <description><![CDATA[This task for user can retrieve password.]]></description>
         <fields>
           <field name="email" transform="string" defaultValue="" isRequiredField="true" isPrimaryField="false">

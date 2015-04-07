@@ -43,6 +43,18 @@
                 <option value="false">JNO</option>
             </field>
             <field
+                    name="strictFields"
+                    labelclass="col-sm-2 control-label"
+                    type="radio"
+                    label="COM_REDCORE_WEBSERVICE_STRICT_FIELDS_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_STRICT_FIELDS_DESCRIPTION"
+                    class="btn-group"
+                    default="false"
+                    >
+                <option value="true">JYES</option>
+                <option value="false">JNO</option>
+            </field>
+            <field
                     name="authorization"
                     labelclass="col-sm-2 control-label"
                     type="text"

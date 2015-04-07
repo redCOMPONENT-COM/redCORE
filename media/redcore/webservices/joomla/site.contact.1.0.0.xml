@@ -13,7 +13,7 @@
     </config>
     <operations>
         <read>
-            <list dataMode="table" tableName="contact_details" authorizationNeeded="false" optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="">
+            <list dataMode="table" tableName="contact_details" authorizationNeeded="false" optionName="com_contact" modelClassName="category" classPath="" isAdminClass="false" functionName="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isPrimaryField="true" />
                     <field name="name" transform="string" isSearchableField="true" />
@@ -61,7 +61,7 @@
                 <description><![CDATA[ This operation lists Contact items. ]]></description>
             </list>
 
-            <item dataMode="table" tableName="contact_details" authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="">
+            <item dataMode="table" tableName="contact_details" authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isFilterField="true" isPrimaryField="true" />
                 </fields>
@@ -120,7 +120,7 @@
         </read>
 
         <task>
-            <hit authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="" functionArgs="id{int}">
+            <hit authorizationNeeded="false" optionName="com_contact" modelClassName="contact" classPath="" isAdminClass="false" functionName="" functionArgs="id{int}" strictFields="false">
                 <description><![CDATA[ This task enables you to Increase the hit counter for the contact. ]]></description>
                 <resources>
                     <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
