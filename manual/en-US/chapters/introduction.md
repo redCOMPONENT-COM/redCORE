@@ -1,10 +1,13 @@
 ## Introduction
+redCORE is a Joomla extension that incorporates great features for users and developers:
 
-Rapid Application Development framework for Joomla
+- [Translate Joomla Core and any 3rd party extension](chapters/translation/overview.md)
+- [Webservices for Joomla and 3rd party Extensions](chapters/webservices/overview.md)
+- [MVC Override plugin for Joomla](chapters/mvcoverride/overview.md)
+- [Extension Development framework for Joomla](chapters/framework/overview.md)
 
-redCORE is a quicker and more uniform way of creating extensions while adding some very interesting libraries and features to Joomla.
+Download latest redCORE for FREE at: [github.com/redCOMPONENT-COM/redCORE/releases/latest](https://github.com/redCOMPONENT-COM/redCORE/releases/latest)
 
-redCORE based extensions works for Joomla 2.5 and 3.x.
 
 ## About this documentation
 
