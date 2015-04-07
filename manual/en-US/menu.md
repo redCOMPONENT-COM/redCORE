@@ -8,9 +8,10 @@
 	- [Publish language switcher module](chapters/translation/language-switcher.md)
 	- [Translate content](chapters/translation/translate-content.md)
 	- Translating Joomla extensions:
-		- [- Create translation elements](chapters/translation/create-elements.md)
-		- [- Add translation elements](chapters/translation/add-elements.md)
-- **Webservices and HAL:**
+    	- [- Create translation elements](chapters/translation/create-elements.md)
+    	- [- Add translation elements](chapters/translation/add-elements.md)
+    - [Advanced Configuration](chapters/translation/advanced-configuration.md)
+- **Webservices and HAL**
 	- [Overview](chapters/webservices/overview.md)
 		- [- Breakdown Step-by-step](chapters/webservices/breakdown.md)
 	- [HAL](chapters/webservices/hal.md)
