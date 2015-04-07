@@ -23,7 +23,7 @@
             <!-- Api will automatically call ExampleModelElements if modelClassName is not specified -->
             <!-- dataMode can be model, helper or table. Default is model. If you use "table" then tableName attribute must be set.
                  If it is set to "helper" it will run operation on web service helper class -->
-            <list dataMode="table" optionName="com_contact" modelClassName="contacts" modelClassPath="" isAdminClass="true" functionName="" tableName="contact_details">
+            <list dataMode="table" optionName="com_contact" modelClassName="contacts" modelClassPath="" isAdminClass="true" functionName="" tableName="contact_details" strictFields="false">
 
                 <!-- Enable or disable fields to read. If left empty, all fields will be available -->
                 <!-- isFilterField defines specific fields as filter fields when using dataMode="table". When filtering fields must be in format filter[fieldName] -->
@@ -79,7 +79,7 @@
             </list>
             <!-- Api will automatically call getItem if functionName is not specified -->
             <!-- Api will automatically call ExampleModelElement if modelClassName is not specified -->
-            <item dataMode="table" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" tableName="contact_details">
+            <item dataMode="table" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" tableName="contact_details" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isPrimaryField="true" />
                 </fields>
@@ -145,7 +145,7 @@
         </read>
         <!-- validateData can be set as: none, form, function. Default value is "none". If option function is selected then validateDataFunction attribute will be used -->
         <!-- validateDataFunction is a function name used to check data before passing it to the operation. Default value is "validate". -->
-        <create dataMode="table" authorization="core.create" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" validateData="form" validateDataFunction="" tableName="contact_details">
+        <create dataMode="table" authorization="core.create" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" validateData="form" validateDataFunction="" tableName="contact_details" strictFields="false">
             <fields>
                 <field name="name" transform="string" isRequiredField="true" />
                 <field name="catid" transform="int" isRequiredField="true" />
@@ -164,7 +164,7 @@
             </resources>
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
         </create>
-        <update dataMode="table" authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="" tableName="contact_details">
+        <update dataMode="table" authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="" tableName="contact_details" strictFields="false">
             <fields>
                 <field name="id" transform="int" isRequiredField="true" />
                 <field name="name" transform="string" isRequiredField="true" />
@@ -184,7 +184,7 @@
             <description><![CDATA[ This operation updates Contact item. ]]></description>
         </update>
         <!-- Primary keys can be multiple if separated by comma, default primary Id is id -->
-        <delete dataMode="table" authorization="core.delete" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="form" validateDataFunction="" tableName="contact_details">
+        <delete dataMode="table" authorization="core.delete" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="form" validateDataFunction="" tableName="contact_details" strictFields="false">
             <fields>
                 <field name="id" transform="int" isRequiredField="true" />
 
@@ -203,7 +203,7 @@
 
             <!-- Each task can be preformed in separate class and system will take this values instead -->
             <!-- If functionArgs attribute is defined, only arguments defined there will be pulled from posted data and passed to the function. Default is to send all posted data in one array -->
-            <featured authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int},1{value}" displayName="task featured" validateData="" validateDataFunction="">
+            <featured authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int},1{value}" displayName="task featured" validateData="" validateDataFunction="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
 
@@ -218,7 +218,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as featured. Expected data: id of the contact. ]]></description>
             </featured>
 
-            <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="featured" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
+            <unfeatured authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="featured" functionArgs="id{int},0{value}" validateData="" validateDataFunction="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
                 </fields>
@@ -231,7 +231,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unfeatured. Expected data: id of the contact. ]]></description>
             </unfeatured>
 
-            <publish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
+            <publish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
                 </fields>
@@ -244,7 +244,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as published. Expected data: id of the contact. ]]></description>
             </publish>
 
-            <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="publish" functionArgs="id{int},0{value}" validateData="" validateDataFunction="">
+            <unpublish authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="publish" functionArgs="id{int},0{value}" validateData="" validateDataFunction="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
                 </fields>
@@ -257,7 +257,7 @@
                 <description><![CDATA[ This task enables you to set specific Contact or Contacts as unpublished. Expected data: id of the contact. ]]></description>
             </unpublish>
 
-            <checkin authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
+            <checkin authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
                 </fields>
@@ -270,7 +270,7 @@
                 <description><![CDATA[ This task enables you to check-in currently checked-out Contact item. Expected data: id of the contact. ]]></description>
             </checkin>
 
-            <checkout authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="">
+            <checkout authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="" functionArgs="id{int}" validateData="" validateDataFunction="" strictFields="false">
                 <fields>
                     <field name="id" transform="int" isRequiredField="true" />
                 </fields>

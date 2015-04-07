@@ -45,6 +45,12 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 			</div>
 		</div>
 		<div class="form-group">
+			<?php echo $form->getLabel('strictFields', $operation); ?>
+			<div class="col-sm-10">
+				<?php echo $form->getInput('strictFields', $operation); ?>
+			</div>
+		</div>
+		<div class="form-group">
 			<?php echo $form->getLabel('dataMode', $operation); ?>
 			<div class="col-sm-10">
 				<?php echo $form->getInput('dataMode', $operation); ?>

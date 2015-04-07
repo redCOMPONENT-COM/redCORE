@@ -1236,6 +1236,8 @@ class RApiHalHal extends RApi
 
 		if (!empty($data) && !empty($configuration->fields))
 		{
+			$dataFields = array();
+
 			foreach ($configuration->fields->field as $field)
 			{
 				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
@@ -1243,6 +1245,12 @@ class RApiHalHal extends RApi
 				$fieldAttributes['defaultValue'] = !empty($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
 				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
 				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
+				$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
+			}
+
+			if (RApiHalHelper::isAttributeTrue($configuration, 'strictFields'))
+			{
+				$data = $dataFields;
 			}
 		}
 
