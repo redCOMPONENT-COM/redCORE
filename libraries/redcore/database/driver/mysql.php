@@ -29,24 +29,45 @@ class RDatabaseDriverMysql extends JDatabaseDriverMysql
 	 * This function replaces a string identifier <var>$prefix</var> with the string held is the
 	 * <var>tablePrefix</var> class variable.
 	 *
-	 * @param   string  $sql     The SQL statement to prepare.
-	 * @param   string  $prefix  The common table prefix.
+	 * @param   string  $sql           The SQL statement to prepare.
+	 * @param   string  $prefix        The common table prefix.
+	 * @param   string  $insideQuotes  Replace prefix inside quotes too
 	 *
 	 * @return  string  The processed SQL statement.
 	 *
 	 * @since   11.1
 	 */
-	public function replacePrefix($sql, $prefix = '#__')
+	public function replacePrefix($sql, $prefix = '#__', $insideQuotes = false)
 	{
 		// Basic check for translations
 		if ($this->translate)
 		{
 			if ($parsedSql = RDatabaseSqlparserSqltranslation::buildTranslationQuery($sql, $prefix))
 			{
-				return parent::replacePrefix($parsedSql, $prefix);
+				return RDatabaseDriver::replacePrefixRC($parsedSql, $this->tablePrefix, $prefix, $insideQuotes);
 			}
 		}
 
-		return parent::replacePrefix($sql, $prefix);
+		return RDatabaseDriver::replacePrefixRC($sql, $this->tablePrefix, $prefix, $insideQuotes);
+	}
+
+	/**
+	 * Execute the SQL statement.
+	 *
+	 * @param   boolean  $replacePrefixQuotes  Replace the prefixes inside the quotes too
+	 *
+	 * @return  mixed  A database cursor resource on success, boolean false on failure.
+	 *
+	 * @since   12.1
+	 * @throws  RuntimeException
+	 */
+	public function execute($replacePrefixQuotes = false)
+	{
+		if ($replacePrefixQuotes)
+		{
+			$this->sql = $this->replacePrefix((string) $this->sql, '#__', $replacePrefixQuotes);
+		}
+
+		return parent::execute();
 	}
 }

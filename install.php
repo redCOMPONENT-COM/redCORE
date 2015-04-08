@@ -40,6 +40,20 @@ class Com_RedcoreInstallerScript
 	public $installer = null;
 
 	/**
+	 * Extension name
+	 *
+	 * @var  string
+	 */
+	protected $extensionName = '';
+
+	/**
+	 * Old version according to manifest
+	 *
+	 * @var  string
+	 */
+	protected $oldVersion = '0.0.0';
+
+	/**
 	 * Get the common JInstaller instance used to install all the extensions
 	 *
 	 * @return JInstaller The JInstaller object
@@ -99,11 +113,37 @@ class Com_RedcoreInstallerScript
 		$this->installRedcore($type, $parent);
 		$this->loadRedcoreLibrary();
 		$this->loadRedcoreLanguage();
-		$manifest  = $this->getManifest($parent);
-		$extensionType      = $manifest->attributes()->type;
+		$manifest = $this->getManifest($parent);
+		$extensionType = $manifest->attributes()->type;
+		$this->extensionName = strtolower($manifest->name);
 
 		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
 		{
+			// Update SQL pre-processing
+			if ($type == 'update')
+			{
+				// Reads current (old) version from manifest
+				$db = JFactory::getDbo();
+				$version = $db->setQuery(
+					$db->getQuery(true)
+						->select($db->qn('s.version_id'))
+						->from($db->qn('#__schemas', 's'))
+						->join('inner', $db->qn('#__extensions', 'e') . ' ON ' . $db->qn('e.extension_id') . ' = ' . $db->qn('s.extension_id'))
+						->where('e.element = ' . $db->q($this->extensionName))
+				)
+					->loadResult();
+
+				if (!empty($version))
+				{
+					$this->oldVersion = (string) $version;
+				}
+
+				if (!$this->preprocessUpdates($parent))
+				{
+					return false;
+				}
+			}
+
 			// In case we are installing redcore
 			if (get_called_class() == 'Com_RedcoreInstallerScript')
 			{
@@ -194,6 +234,9 @@ class Com_RedcoreInstallerScript
 	 */
 	public function installOrUpdate($parent)
 	{
+		// Process PHP update files
+		$this->phpUpdates($parent);
+
 		// Install extensions
 		$this->installLibraries($parent);
 		$this->loadRedcoreLibrary();
@@ -202,6 +245,176 @@ class Com_RedcoreInstallerScript
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
+
+		return true;
+	}
+
+	/**
+	 * Method to process SQL updates previous to the install process
+	 *
+	 * @param   object  $parent  Class calling this method
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function preprocessUpdates($parent)
+	{
+		$manifest  = $parent->get('manifest');
+
+		if (isset($manifest->update))
+		{
+			if (isset($manifest->update->attributes()->folder))
+			{
+				$path = $manifest->update->attributes()->folder;
+
+				if (isset($manifest->update->pre) && isset($manifest->update->pre->schemas))
+				{
+					$schemapaths = $manifest->update->pre->schemas->children();
+
+					if (count($schemapaths))
+					{
+						$sourcePath = $parent->getParent()->getPath('source');
+						$db = RFactory::getDbo();
+						$dbDriver = strtolower($db->name);
+						$schemapath = '';
+
+						if ($dbDriver == 'mysqli')
+						{
+							$dbDriver = 'mysql';
+						}
+
+						foreach ($schemapaths as $entry)
+						{
+							if (isset($entry->attributes()->type))
+							{
+								$uDriver = strtolower($entry->attributes()->type);
+
+								if ($uDriver == 'mysqli')
+								{
+									$uDriver = 'mysql';
+								}
+
+								if ($uDriver == $dbDriver)
+								{
+									$schemapath = (string) $entry;
+									break;
+								}
+							}
+						}
+
+						if ($schemapath != '')
+						{
+							$files = str_replace('.sql', '', JFolder::files($sourcePath . '/' . $path . '/' . $schemapath, '\.sql$'));
+							usort($files, 'version_compare');
+
+							if (!count($files))
+							{
+								return false;
+							}
+
+							foreach ($files as $file)
+							{
+								if (version_compare($file, $this->oldVersion) > 0)
+								{
+									$buffer = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
+									$queries = RDatabaseDriver::splitSQL($buffer);
+
+									if (count($queries))
+									{
+										foreach ($queries as $query)
+										{
+											if ($query != '' && $query{0} != '#')
+											{
+												$db->setQuery($query);
+
+												if (!$db->execute(true))
+												{
+													JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)), JLog::WARNING, 'jerror');
+
+													return false;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to process PHP update files defined in the manifest file
+	 *
+	 * @param   object  $parent  Class calling this method
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function phpUpdates($parent)
+	{
+		$manifest  = $parent->get('manifest');
+
+		if (isset($manifest->update))
+		{
+			if (isset($manifest->update->php) && isset($manifest->update->php->path))
+			{
+				$updatePath = (string) $manifest->update->php->path;
+
+				if ($updatePath != '')
+				{
+					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionName;
+					$db = JFactory::getDbo();
+
+					$files = str_replace('.php', '', JFolder::files($sourcePath . '/' . $updatePath, '\.php$'));
+					usort($files, 'version_compare');
+
+					if (!count($files))
+					{
+						return false;
+					}
+
+					foreach ($files as $file)
+					{
+						if (version_compare($file, $this->oldVersion) > 0)
+						{
+							$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file);
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to process a single PHP update file
+	 *
+	 * @param   string  $file     File to process
+	 * @param   string  $version  File version
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function processPHPUpdateFile($file, $version)
+	{
+		include $file;
+		$class = ucfirst($this->extensionName) . 'UpgraderScript_' . str_replace('.', '_', $version);
+
+		if (class_exists($class))
+		{
+			$upgrader = new $class;
+
+			if (method_exists($upgrader, 'upgrade'))
+			{
+				if (!$upgrader->upgrade())
+				{
+					return false;
+				}
+			}
+		}
 
 		return true;
 	}
