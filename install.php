@@ -273,7 +273,8 @@ class Com_RedcoreInstallerScript
 					if (count($schemapaths))
 					{
 						$sourcePath = $parent->getParent()->getPath('source');
-						$db = RFactory::getDbo();
+						$db = JFactory::getDbo();
+
 						$dbDriver = strtolower($db->name);
 						$schemapath = '';
 
