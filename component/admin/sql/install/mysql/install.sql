@@ -153,14 +153,14 @@ CREATE TABLE IF NOT EXISTS `#__redcore_payment_configuration` (
   `owner_id`          INT(11)  UNSIGNED NULL DEFAULT NULL,
   `payment_name`      VARCHAR(50)       NOT NULL DEFAULT '',
   `params`            TEXT              NOT NULL,
-	`state`             TINYINT(1)        NOT NULL DEFAULT '1',
-	`checked_out`       INT(11)           NULL      DEFAULT NULL,
+  `state`             TINYINT(1)        NOT NULL DEFAULT '1',
+  `checked_out`       INT(11)           NULL      DEFAULT NULL,
   `checked_out_time`  DATETIME          NOT NULL  DEFAULT '0000-00-00 00:00:00',
   `created_by`        INT(11)           NULL      DEFAULT NULL,
   `created_date`      DATETIME          NOT NULL  DEFAULT '0000-00-00 00:00:00',
   `modified_by`       INT(11)           NULL      DEFAULT NULL,
   `modified_date`     DATETIME          NOT NULL  DEFAULT '0000-00-00 00:00:00',
-  CONSTRAINT `redcore_payment_log_id_pk` PRIMARY KEY (`id`)
+  CONSTRAINT `redcore_payment_configuration_id_pk` PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8;
 
 SET FOREIGN_KEY_CHECKS = 1;
