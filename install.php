@@ -234,9 +234,6 @@ class Com_RedcoreInstallerScript
 	 */
 	public function installOrUpdate($parent)
 	{
-		// Process PHP update files
-		$this->phpUpdates($parent);
-
 		// Install extensions
 		$this->installLibraries($parent);
 		$this->loadRedcoreLibrary();
@@ -1023,6 +1020,9 @@ class Com_RedcoreInstallerScript
 	 */
 	public function update($parent)
 	{
+		// Process PHP update files
+		$this->phpUpdates($parent);
+
 		// Common tasks for install or update
 		$this->installOrUpdate($parent);
 	}
