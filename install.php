@@ -273,6 +273,15 @@ class Com_RedcoreInstallerScript
 					if (count($schemapaths))
 					{
 						$sourcePath = $parent->getParent()->getPath('source');
+
+						// If it just upgraded redCORE to a newer version using RFactory for database, it forces using the redCORE database drivers
+						if (substr(get_class(JFactory::$database), 0, 1) == 'J' && $this->extensionName != 'com_redcore')
+						{
+							RFactory::$database = null;
+							JFactory::$database = null;
+							JFactory::$database = RFactory::getDbo();
+						}
+
 						$db = JFactory::getDbo();
 
 						$dbDriver = strtolower($db->name);

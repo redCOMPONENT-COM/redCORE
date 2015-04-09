@@ -50,6 +50,7 @@ class PlgSystemRedcore extends JPlugin
 			// Sets plugin parameters for further use in Translation Helper class
 			RTranslationHelper::$pluginParams = $this->params;
 
+			// Replaces Joomla database driver for redCORE database driver
 			JFactory::$database = null;
 			JFactory::$database = RFactory::getDbo();
 
