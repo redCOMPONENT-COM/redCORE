@@ -40,11 +40,11 @@ class Com_RedcoreInstallerScript
 	public $installer = null;
 
 	/**
-	 * Extension name
+	 * Extension element name
 	 *
 	 * @var  string
 	 */
-	protected $extensionName = '';
+	protected $extensionElement = '';
 
 	/**
 	 * Old version according to manifest
@@ -115,7 +115,7 @@ class Com_RedcoreInstallerScript
 		$this->loadRedcoreLanguage();
 		$manifest = $this->getManifest($parent);
 		$extensionType = $manifest->attributes()->type;
-		$this->extensionName = strtolower($manifest->name);
+		$this->extensionElement = $this->getElement($manifest, $parent);
 
 		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
 		{
@@ -129,7 +129,7 @@ class Com_RedcoreInstallerScript
 						->select($db->qn('s.version_id'))
 						->from($db->qn('#__schemas', 's'))
 						->join('inner', $db->qn('#__extensions', 'e') . ' ON ' . $db->qn('e.extension_id') . ' = ' . $db->qn('s.extension_id'))
-						->where('e.element = ' . $db->q($this->extensionName))
+						->where('e.element = ' . $db->q($this->extensionElement))
 				)
 					->loadResult();
 
@@ -275,7 +275,7 @@ class Com_RedcoreInstallerScript
 						$sourcePath = $parent->getParent()->getPath('source');
 
 						// If it just upgraded redCORE to a newer version using RFactory for database, it forces using the redCORE database drivers
-						if (substr(get_class(JFactory::$database), 0, 1) == 'J' && $this->extensionName != 'com_redcore')
+						if (substr(get_class(JFactory::$database), 0, 1) == 'J' && $this->extensionElement != 'com_redcore')
 						{
 							RFactory::$database = null;
 							JFactory::$database = null;
@@ -316,31 +316,29 @@ class Com_RedcoreInstallerScript
 							$files = str_replace('.sql', '', JFolder::files($sourcePath . '/' . $path . '/' . $schemapath, '\.sql$'));
 							usort($files, 'version_compare');
 
-							if (!count($files))
+							if (count($files))
 							{
-								return false;
-							}
-
-							foreach ($files as $file)
-							{
-								if (version_compare($file, $this->oldVersion) > 0)
+								foreach ($files as $file)
 								{
-									$buffer = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
-									$queries = RDatabaseDriver::splitSQL($buffer);
-
-									if (count($queries))
+									if (version_compare($file, $this->oldVersion) > 0)
 									{
-										foreach ($queries as $query)
+										$buffer = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
+										$queries = RDatabaseDriver::splitSQL($buffer);
+
+										if (count($queries))
 										{
-											if ($query != '' && $query{0} != '#')
+											foreach ($queries as $query)
 											{
-												$db->setQuery($query);
-
-												if (!$db->execute(true))
+												if ($query != '' && $query{0} != '#')
 												{
-													JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)), JLog::WARNING, 'jerror');
+													$db->setQuery($query);
 
-													return false;
+													if (!$db->execute(true))
+													{
+														JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)), JLog::WARNING, 'jerror');
+
+														return false;
+													}
 												}
 											}
 										}
@@ -375,22 +373,23 @@ class Com_RedcoreInstallerScript
 
 				if ($updatePath != '')
 				{
-					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionName;
+					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
 					$db = JFactory::getDbo();
 
 					$files = str_replace('.php', '', JFolder::files($sourcePath . '/' . $updatePath, '\.php$'));
 					usort($files, 'version_compare');
 
-					if (!count($files))
+					if (count($files))
 					{
-						return false;
-					}
-
-					foreach ($files as $file)
-					{
-						if (version_compare($file, $this->oldVersion) > 0)
+						foreach ($files as $file)
 						{
-							$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file);
+							if (version_compare($file, $this->oldVersion) > 0)
+							{
+								if (!$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file))
+								{
+									return false;
+								}
+							}
 						}
 					}
 				}
@@ -411,15 +410,15 @@ class Com_RedcoreInstallerScript
 	public function processPHPUpdateFile($file, $version)
 	{
 		include $file;
-		$class = ucfirst($this->extensionName) . 'UpgraderScript_' . str_replace('.', '_', $version);
+		$class = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', $version);
 
 		if (class_exists($class))
 		{
 			$upgrader = new $class;
 
-			if (method_exists($upgrader, 'upgrade'))
+			if (method_exists($upgrader, 'execute'))
 			{
-				if (!$upgrader->upgrade())
+				if (!$upgrader->execute())
 				{
 					return false;
 				}
@@ -1435,6 +1434,34 @@ class Com_RedcoreInstallerScript
 		}
 
 		return true;
+	}
+
+	/**
+	 * Gets or generates the element name (using the manifest)
+	 *
+	 * @param   SimpleXMLElement  $manifest  Extension manifest
+	 * @param   object            $parent    Parent adapter
+	 *
+	 * @return  string  Element
+	 */
+	public function getElement($manifest, $parent)
+	{
+		if (method_exists($parent, 'getElement'))
+		{
+			return $parent->getElement();
+		}
+
+		if (isset($manifest->element))
+		{
+			$element = (string) $manifest->element;
+		}
+		else
+		{
+			$element = (string) $manifest->name;
+		}
+
+		// Filter the name for illegal characters
+		return strtolower(JFilterInput::getInstance()->clean($element, 'cmd'));
 	}
 
 	/**
