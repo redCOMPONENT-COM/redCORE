@@ -40,6 +40,20 @@ class Com_RedcoreInstallerScript
 	public $installer = null;
 
 	/**
+	 * Extension element name
+	 *
+	 * @var  string
+	 */
+	protected $extensionElement = '';
+
+	/**
+	 * Old version according to manifest
+	 *
+	 * @var  string
+	 */
+	protected $oldVersion = '0.0.0';
+
+	/**
 	 * Get the common JInstaller instance used to install all the extensions
 	 *
 	 * @return JInstaller The JInstaller object
@@ -99,11 +113,37 @@ class Com_RedcoreInstallerScript
 		$this->installRedcore($type, $parent);
 		$this->loadRedcoreLibrary();
 		$this->loadRedcoreLanguage();
-		$manifest  = $this->getManifest($parent);
-		$extensionType      = $manifest->attributes()->type;
+		$manifest = $this->getManifest($parent);
+		$extensionType = $manifest->attributes()->type;
+		$this->extensionElement = $this->getElement($manifest, $parent);
 
 		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
 		{
+			// Update SQL pre-processing
+			if ($type == 'update')
+			{
+				// Reads current (old) version from manifest
+				$db = JFactory::getDbo();
+				$version = $db->setQuery(
+					$db->getQuery(true)
+						->select($db->qn('s.version_id'))
+						->from($db->qn('#__schemas', 's'))
+						->join('inner', $db->qn('#__extensions', 'e') . ' ON ' . $db->qn('e.extension_id') . ' = ' . $db->qn('s.extension_id'))
+						->where('e.element = ' . $db->q($this->extensionElement))
+				)
+					->loadResult();
+
+				if (!empty($version))
+				{
+					$this->oldVersion = (string) $version;
+				}
+
+				if (!$this->preprocessUpdates($parent))
+				{
+					return false;
+				}
+			}
+
 			// In case we are installing redcore
 			if (get_called_class() == 'Com_RedcoreInstallerScript')
 			{
@@ -202,6 +242,185 @@ class Com_RedcoreInstallerScript
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
+
+		return true;
+	}
+
+	/**
+	 * Method to process SQL updates previous to the install process
+	 *
+	 * @param   object  $parent  Class calling this method
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function preprocessUpdates($parent)
+	{
+		$manifest  = $parent->get('manifest');
+
+		if (isset($manifest->update))
+		{
+			if (isset($manifest->update->attributes()->folder))
+			{
+				$path = $manifest->update->attributes()->folder;
+
+				if (isset($manifest->update->pre) && isset($manifest->update->pre->schemas))
+				{
+					$schemapaths = $manifest->update->pre->schemas->children();
+
+					if (count($schemapaths))
+					{
+						$sourcePath = $parent->getParent()->getPath('source');
+
+						// If it just upgraded redCORE to a newer version using RFactory for database, it forces using the redCORE database drivers
+						if (substr(get_class(JFactory::$database), 0, 1) == 'J' && $this->extensionElement != 'com_redcore')
+						{
+							RFactory::$database = null;
+							JFactory::$database = null;
+							JFactory::$database = RFactory::getDbo();
+						}
+
+						$db = JFactory::getDbo();
+
+						$dbDriver = strtolower($db->name);
+						$schemapath = '';
+
+						if ($dbDriver == 'mysqli')
+						{
+							$dbDriver = 'mysql';
+						}
+
+						foreach ($schemapaths as $entry)
+						{
+							if (isset($entry->attributes()->type))
+							{
+								$uDriver = strtolower($entry->attributes()->type);
+
+								if ($uDriver == 'mysqli')
+								{
+									$uDriver = 'mysql';
+								}
+
+								if ($uDriver == $dbDriver)
+								{
+									$schemapath = (string) $entry;
+									break;
+								}
+							}
+						}
+
+						if ($schemapath != '')
+						{
+							$files = str_replace('.sql', '', JFolder::files($sourcePath . '/' . $path . '/' . $schemapath, '\.sql$'));
+							usort($files, 'version_compare');
+
+							if (count($files))
+							{
+								foreach ($files as $file)
+								{
+									if (version_compare($file, $this->oldVersion) > 0)
+									{
+										$buffer = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
+										$queries = RHelperDatabase::splitSQL($buffer);
+
+										if (count($queries))
+										{
+											foreach ($queries as $query)
+											{
+												if ($query != '' && $query{0} != '#')
+												{
+													$db->setQuery($query);
+
+													if (!$db->execute(true))
+													{
+														JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)), JLog::WARNING, 'jerror');
+
+														return false;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to process PHP update files defined in the manifest file
+	 *
+	 * @param   object  $parent  Class calling this method
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function phpUpdates($parent)
+	{
+		$manifest  = $parent->get('manifest');
+
+		if (isset($manifest->update))
+		{
+			if (isset($manifest->update->php) && isset($manifest->update->php->path))
+			{
+				$updatePath = (string) $manifest->update->php->path;
+
+				if ($updatePath != '')
+				{
+					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
+					$db = JFactory::getDbo();
+
+					$files = str_replace('.php', '', JFolder::files($sourcePath . '/' . $updatePath, '\.php$'));
+					usort($files, 'version_compare');
+
+					if (count($files))
+					{
+						foreach ($files as $file)
+						{
+							if (version_compare($file, $this->oldVersion) > 0)
+							{
+								if (!$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file))
+								{
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to process a single PHP update file
+	 *
+	 * @param   string  $file     File to process
+	 * @param   string  $version  File version
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function processPHPUpdateFile($file, $version)
+	{
+		include $file;
+		$class = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', $version);
+
+		if (class_exists($class))
+		{
+			$upgrader = new $class;
+
+			if (method_exists($upgrader, 'execute'))
+			{
+				if (!$upgrader->execute())
+				{
+					return false;
+				}
+			}
+		}
 
 		return true;
 	}
@@ -801,6 +1020,9 @@ class Com_RedcoreInstallerScript
 	 */
 	public function update($parent)
 	{
+		// Process PHP update files
+		$this->phpUpdates($parent);
+
 		// Common tasks for install or update
 		$this->installOrUpdate($parent);
 	}
@@ -1212,6 +1434,34 @@ class Com_RedcoreInstallerScript
 		}
 
 		return true;
+	}
+
+	/**
+	 * Gets or generates the element name (using the manifest)
+	 *
+	 * @param   SimpleXMLElement  $manifest  Extension manifest
+	 * @param   object            $parent    Parent adapter
+	 *
+	 * @return  string  Element
+	 */
+	public function getElement($manifest, $parent)
+	{
+		if (method_exists($parent, 'getElement'))
+		{
+			return $parent->getElement();
+		}
+
+		if (isset($manifest->element))
+		{
+			$element = (string) $manifest->element;
+		}
+		else
+		{
+			$element = (string) $manifest->name;
+		}
+
+		// Filter the name for illegal characters
+		return strtolower(JFilterInput::getInstance()->clean($element, 'cmd'));
 	}
 
 	/**
