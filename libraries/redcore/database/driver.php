@@ -111,7 +111,7 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 				// Create our new JDatabase connector based on the options given.
 				try
 				{
-					$instance = new $class($options);
+					$instance = $class::getInstance($options);
 				}
 				catch (JDatabaseException $e)
 				{
