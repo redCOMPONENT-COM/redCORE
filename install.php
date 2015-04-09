@@ -320,7 +320,7 @@ class Com_RedcoreInstallerScript
 									if (version_compare($file, $this->oldVersion) > 0)
 									{
 										$buffer = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
-										$queries = RDatabaseDriver::splitSQL($buffer);
+										$queries = RHelperDatabase::splitSQL($buffer);
 
 										if (count($queries))
 										{

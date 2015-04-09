@@ -44,11 +44,11 @@ class RDatabaseDriverMysql extends JDatabaseDriverMysql
 		{
 			if ($parsedSql = RDatabaseSqlparserSqltranslation::buildTranslationQuery($sql, $prefix))
 			{
-				return RDatabaseDriver::replacePrefixRC($parsedSql, $this->tablePrefix, $prefix, $insideQuotes);
+				return RHelperDatabase::replacePrefix($parsedSql, $this->tablePrefix, $prefix, $insideQuotes);
 			}
 		}
 
-		return RDatabaseDriver::replacePrefixRC($sql, $this->tablePrefix, $prefix, $insideQuotes);
+		return RHelperDatabase::replacePrefix($sql, $this->tablePrefix, $prefix, $insideQuotes);
 	}
 
 	/**
