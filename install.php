@@ -397,6 +397,19 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Ensures first character of every item in an array to be uppercase
+	 *
+	 * @param   string  &$item  Array item
+	 * @param   string  $key    Array item key
+	 *
+	 * @return  void
+	 */
+	protected static function ucFirstArray(&$item, $key)
+	{
+		$item = ucfirst($item);
+	}
+
+	/**
 	 * Method to process a single PHP update file
 	 *
 	 * @param   string  $file     File to process
@@ -407,7 +420,10 @@ class Com_RedcoreInstallerScript
 	public function processPHPUpdateFile($file, $version)
 	{
 		include $file;
-		$class = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', $version);
+		$extensionElementParts = explode('_', $this->extensionElement);
+		array_walk($extensionElementParts, 'self::ucFirstArray');
+
+		$class = implode('_', $extensionElementParts) . 'UpdateScript_' . str_replace('.', '_', $version);
 
 		if (class_exists($class))
 		{
