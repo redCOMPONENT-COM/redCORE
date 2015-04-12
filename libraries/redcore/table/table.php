@@ -843,6 +843,12 @@ class RTable extends JTable
 		if ($option === 'auto')
 		{
 			$option = JFactory::getApplication()->input->getString('option', '');
+
+			if ($option == 'com_installer')
+			{
+				$installer = JInstaller::getInstance();
+				$option = $installer->manifestClass->getElement($installer);
+			}
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
@@ -868,7 +874,7 @@ class RTable extends JTable
 		else
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instanciate the table %s. Invalid client %s.', $name, $client)
+				sprintf('Cannot instanciate the table %s in component %s. Invalid client %s.', $name, $option, $client)
 			);
 		}
 
@@ -877,7 +883,7 @@ class RTable extends JTable
 		if (!$table instanceof JTable)
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instanciate the table %s from client %s.', $name, $client)
+				sprintf('Cannot instanciate the table %s in component %s from client %s.', $name, $option, $client)
 			);
 		}
 

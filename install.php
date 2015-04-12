@@ -115,7 +115,7 @@ class Com_RedcoreInstallerScript
 		$this->loadRedcoreLanguage();
 		$manifest = $this->getManifest($parent);
 		$extensionType = $manifest->attributes()->type;
-		$this->extensionElement = $this->getElement($manifest, $parent);
+		$this->extensionElement = $this->getElement($parent, $manifest);
 
 		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
 		{
@@ -1439,16 +1439,21 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Gets or generates the element name (using the manifest)
 	 *
-	 * @param   SimpleXMLElement  $manifest  Extension manifest
 	 * @param   object            $parent    Parent adapter
+	 * @param   SimpleXMLElement  $manifest  Extension manifest
 	 *
 	 * @return  string  Element
 	 */
-	public function getElement($manifest, $parent)
+	public function getElement($parent, $manifest = null)
 	{
 		if (method_exists($parent, 'getElement'))
 		{
 			return $parent->getElement();
+		}
+
+		if (!isset($manifest))
+		{
+			$manifest = $parent->get('manifest');
 		}
 
 		if (isset($manifest->element))
