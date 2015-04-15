@@ -509,7 +509,7 @@ class Com_RedcoreInstallerScript
 				// Standard install
 				if (is_dir($extPath))
 				{
-					$moduleAdapter = $installer->getAdapter('module')->set('route', 'Install');
+					$installer->getAdapter('module')->set('route', 'Install');
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'module', '-1'))
@@ -550,7 +550,7 @@ class Com_RedcoreInstallerScript
 				// Standard install
 				if (is_dir($extPath))
 				{
-					$pluginAdapter = $installer->getAdapter('plugin')->set('route', 'install');
+					$installer->getAdapter('plugin')->set('route', 'install');
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'plugin', '-1', $extGroup))
@@ -732,7 +732,7 @@ class Com_RedcoreInstallerScript
 				// Standard install
 				if (is_dir($extPath))
 				{
-					$templateAdapter = $installer->getAdapter('template')->set('route', 'install');
+					$installer->getAdapter('template')->set('route', 'install');
 					$result = $installer->install($extPath);
 				}
 
