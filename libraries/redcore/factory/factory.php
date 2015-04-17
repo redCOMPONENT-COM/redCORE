@@ -118,7 +118,7 @@ final class RFactory extends JFactory
 	{
 		if (!$tzOffset)
 		{
-			$tzOffset = self::getConfig()->getValue('offset');
+			$tzOffset = new DateTimeZone(self::getConfig()->getValue('offset'));
 		}
 
 		return parent::getDate($time, $tzOffset);
