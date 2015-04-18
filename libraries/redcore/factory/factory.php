@@ -106,19 +106,21 @@ final class RFactory extends JFactory
 	/**
 	 * Return the {@link JDate} object
 	 *
-	 * @param   mixed  $time      The initial time for the JDate object
-	 * @param   mixed  $tzOffset  The timezone offset.
+	 * @param   mixed    $time          The initial time for the JDate object
+	 * @param   mixed    $tzOffset      The timezone offset.
+	 * @param   boolean  $loadTimeZone  True for load default timezone of user, joomla configuration.
 	 *
 	 * @return  JDate object
 	 *
 	 * @see     JDate
 	 * @since   11.1
 	 */
-	public static function getDate($time = 'now', $tzOffset = null)
+	public static function getDate($time = 'now', $tzOffset = null, $loadTimeZone = true)
 	{
-		if (!$tzOffset)
+		// If timezone not available and enable load timezone from default
+		if (is_null($tzOffset) && $loadTimeZone)
 		{
-			$tzOffset = new DateTimeZone(self::getConfig()->getValue('offset'));
+			$tzOffset = new DateTimeZone(self::getUser()->getParam('timezone', self::getConfig()->get('offset')));
 		}
 
 		return parent::getDate($time, $tzOffset);
