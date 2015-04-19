@@ -102,4 +102,26 @@ final class RFactory extends JFactory
 
 		return $db;
 	}
+
+	/**
+	 * Return the {@link JDate} object
+	 *
+	 * @param   mixed  $time      The initial time for the JDate object
+	 * @param   mixed  $tzOffset  The timezone offset.
+	 *
+	 * @return  JDate object
+	 *
+	 * @see     JDate
+	 * @since   11.1
+	 */
+	public static function getDate($time = 'now', $tzOffset = null)
+	{
+		// If timezone not available and enable load timezone from default
+		if (is_null($tzOffset))
+		{
+			$tzOffset = new DateTimeZone(self::getUser()->getParam('timezone', self::getConfig()->get('offset')));
+		}
+
+		return parent::getDate($time, $tzOffset);
+	}
 }
