@@ -56,6 +56,41 @@ class RTableNested extends JTableNested
 	protected $_tableFieldState = 'state';
 
 	/**
+	 * Field name to keep creator user (created_by)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldCreatedBy = 'created_by';
+
+	/**
+	 * Field name to keep latest modifier user (modified_by)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldModifiedBy = 'modified_by';
+
+	/**
+	 * Field name to keep created date (created_date)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldCreatedDate = 'created_date';
+
+	/**
+	 * Field name to keep latest modified user (modified_date)
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldModifiedDate = 'modified_date';
+
+	/**
+	 * Format for audit date fields (created_date, modified_date)
+	 *
+	 * @var  string
+	 */
+	protected $_auditDateFormat = 'Y-m-d H:i:s';
+
+	/**
 	 * An array of plugin types to import.
 	 *
 	 * @var  array
@@ -483,6 +518,12 @@ class RTableNested extends JTableNested
 			}
 		}
 
+		// Audit fields optional auto-update (on by default)
+		if ($this->getOption('updateAuditFields', true))
+		{
+			RTable::updateAuditFields($this);
+		}
+
 		return true;
 	}
 
@@ -713,5 +754,29 @@ class RTableNested extends JTableNested
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Validate that the primary key has been set.
+	 *
+	 * @return  boolean  True if the primary key(s) have been set.
+	 *
+	 * @since   1.5.2
+	 */
+	public function hasPrimaryKey()
+	{
+		// For Joomla 3.2+ a native method has been provided
+		if (method_exists(get_parent_class(), 'hasPrimaryKey'))
+		{
+			return parent::hasPrimaryKey();
+		}
+
+		// Otherwise, it checks if the only key field compatible for older Joomla versions is set or not
+		if (isset($this->_tbl_key) && !empty($this->_tbl_key) && empty($this->{$this->_tbl_key}))
+		{
+			return false;
+		}
+
+		return true;
 	}
 }
