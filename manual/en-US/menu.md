@@ -63,10 +63,10 @@
 			  - [· Checkbox](chapters/Checkbox.md)
 		   - [- Rules](chapters/Rules.md)
 	- Helpers
-		- [Helpers](chapters/Helpers.md)
-		   - [- Currency](chapters/Currency.md)
-		   - [- Country](chapters/Country.md)
-		   - [- List](chapters/List.md)
+		- [- File Upload](chapters/framework/fileupload.md)
+		- [- Currency](chapters/Currency.md)
+		- [- Country](chapters/Country.md)
+		- [- List](chapters/List.md)
 	- Widgets
 		- [Widgets](chapters/Widgets.md)
 		   - Tooltip
