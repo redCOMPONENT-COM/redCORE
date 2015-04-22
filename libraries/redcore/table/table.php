@@ -526,7 +526,7 @@ class RTable extends JTable
 		if ($this->getOption('updateAuditFields', true))
 		{
 			// Optional created_by field updated when present
-			if (!$this->hasPrimaryKey() && isset($this->{$this->_tableFieldCreatedBy}))
+			if (!$this->hasPrimaryKey() && property_exists($this, $this->_tableFieldCreatedBy))
 			{
 				$user = JFactory::getUser();
 
@@ -539,7 +539,7 @@ class RTable extends JTable
 					$this->{$this->_tableFieldCreatedBy} = null;
 				}
 			}
-			elseif (isset($this->{$this->_tableFieldCreatedBy}) && ($this->{$this->_tableFieldCreatedBy} === 0))
+			elseif (property_exists($this, $this->_tableFieldCreatedBy) && ($this->{$this->_tableFieldCreatedBy} === 0))
 			{
 				$user = JFactory::getUser();
 
@@ -550,13 +550,13 @@ class RTable extends JTable
 			}
 
 			// Optional created_date field updated when present
-			if (!$this->hasPrimaryKey() && isset($this->{$this->_tableFieldCreatedDate}))
+			if (!$this->hasPrimaryKey() && property_exists($this, $this->_tableFieldCreatedDate))
 			{
 				$this->{$this->_tableFieldCreatedDate} = date($this->_auditDateFormat);
 			}
 
 			// Optional modified_by field updated when present
-			if (isset($this->{$this->_tableFieldModifiedBy}))
+			if (property_exists($this, $this->_tableFieldModifiedBy))
 			{
 				if (!isset($user))
 				{
@@ -574,7 +574,7 @@ class RTable extends JTable
 			}
 
 			// Optional modified_date field updated when present
-			if (isset($this->{$this->_tableFieldModifiedDate}))
+			if (property_exists($this, $this->_tableFieldModifiedDate))
 			{
 				$this->{$this->_tableFieldModifiedDate} = date($this->_auditDateFormat);
 			}
@@ -949,5 +949,29 @@ class RTable extends JTable
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Validate that the primary key has been set.
+	 *
+	 * @return  boolean  True if the primary key(s) have been set.
+	 *
+	 * @since   1.5.2
+	 */
+	public function hasPrimaryKey()
+	{
+		// For Joomla 3.2+ a native method has been provided
+		if (method_exists(get_parent_class(), 'hasPrimaryKey'))
+		{
+			return parent::hasPrimaryKey();
+		}
+
+		// Otherwise, it checks if the only key field compatible for older Joomla versions is set or not
+		if (isset($this->_tbl_key) && !empty($this->_tbl_key) && empty($this->{$this->_tbl_key}))
+		{
+			return false;
+		}
+
+		return true;
 	}
 }
