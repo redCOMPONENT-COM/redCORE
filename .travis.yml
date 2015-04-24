@@ -1,55 +1,42 @@
 language: php
-
 php:
-  - 5.4
-
+- 5.4
 env:
- - GROUP=Joomla2 ENV=joomla2
- - GROUP=Joomla3 ENV=joomla3
-
+- GROUP=Joomla2 ENV=joomla2
+- GROUP=Joomla3 ENV=joomla3
 before_script:
-  - phpenv rehash
-
-  # Install Apache
-  - sudo apt-get update -qq
-  - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
-  #- composer install --dev --prefer-dist
-
-  # XVFB
-  - "export DISPLAY=:99.0"
-  - "Xvfb :99.0 -extension RANDR > /dev/null &"
-
-  # Window manager
-  - echo "c10"
-  - "sudo apt-get install fluxbox -y --force-yes"
-  - echo "c11"
-  - "fluxbox &"
-
-  # Selenium server
-  - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar -O selenium-server-standalone.jar
-  - "java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &"
-  - .travis/wait4selenium.sh
-
-  # Composer
-  - composer update
-
+- phpenv rehash
+- sudo apt-get update -qq
+- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql
+  php5-intl php5-gd > /dev/null
+- export DISPLAY=:99.0
+- Xvfb :99.0 -extension RANDR > /dev/null &
+- echo "c10"
+- sudo apt-get install fluxbox -y --force-yes
+- echo "c11"
+- fluxbox &
+- wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
+  -O selenium-server-standalone.jar
+- java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &
+- .travis/wait4selenium.sh
+- composer update
 script:
-  - php .travis/phppec.php component/ libraries/ modules/ plugins/ #parse error checker
-  - php .travis/phpcs.php # Code Style error checker
-  - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/ # Missed debug code checker
-  #- php .travis/phpmd.php # PHP mess detector code checker
-
-  # Prepare system tests environment
-  - php vendor/phing/phing/bin/phing -f tests/getjoomla.xml # Get Joomla CMS for System Tests
-  - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
-  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms2/ /var/www/joomla-cms2 #Add joomla 2 to apache htdocs
-  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/ /var/www/joomla-cms3 #Add joomla 3 to apache htdocs
-  - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-  - sudo /etc/init.d/apache2 restart
-  - php .travis/traviswebserverckecker.php http://localhost/joomla-cms2/installation/index.php # Test apache
-  - php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php # Test apache
-  - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
-  - php vendor/bin/codecept build
-  - php vendor/bin/codecept run acceptance -g $GROUP --env $ENV
+- php .travis/phppec.php component/ libraries/ modules/ plugins/
+- php .travis/phpcs.php
+- php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
+- php vendor/phing/phing/bin/phing -f tests/getjoomla.xml
+- sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
+- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms2/
+  /var/www/joomla-cms2
+- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/system/joomla-cms3/
+  /var/www/joomla-cms3
+- sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
+- sudo /etc/init.d/apache2 restart
+- php .travis/traviswebserverckecker.php http://localhost/joomla-cms2/installation/index.php
+- php .travis/traviswebserverckecker.php http://localhost/joomla-cms3/installation/index.php
+- mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
+- php vendor/bin/codecept build
+- php vendor/bin/codecept run acceptance -g $GROUP --env $ENV
 notifications:
-  slack: "redweb:avRTm2UsnC3MGoS9vnGdXdzd"
+  slack:
+    secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=
