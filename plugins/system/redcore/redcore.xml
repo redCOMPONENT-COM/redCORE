@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
     <description>PLG_SYSTEM_REDCORE_XML_DESCRIPTION</description>
 
     <files>
@@ -33,10 +33,6 @@
                     <option value="0">JNO</option>
                 </field>
                 <field name="frontend_jquery_migrate" type="list" default="1" label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_MIGRATE" description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_MIGRATE_DESC">
-                    <option value="1">JYES</option>
-                    <option value="0">JNO</option>
-                </field>
-                <field name="frontend_bootstrap" type="list" default="1" label="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP" description="PLG_SYSTEM_REDCORE_FRONTEND_BOOTSTRAP_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>

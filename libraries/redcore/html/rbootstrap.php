@@ -46,7 +46,7 @@ abstract class JHtmlRbootstrap
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
 		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
-		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
 			if ($loadCss)
 			{
@@ -55,7 +55,7 @@ abstract class JHtmlRbootstrap
 
 			RHtmlMedia::loadFrameworkJs();
 		}
-		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendCSS && !version_compare(JVERSION, '3.0', '<'))
 		{
 			JHtml::_('bootstrap.framework');
 		}
@@ -73,7 +73,7 @@ abstract class JHtmlRbootstrap
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
 		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
-		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
 			RHelperAsset::load('lib/bootstrap/css/bootstrap.min.css', static::EXTENSION);
 			RHelperAsset::load('lib/bootstrap/css/bootstrap-responsive.min.css', static::EXTENSION);
