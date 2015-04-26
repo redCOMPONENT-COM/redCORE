@@ -50,7 +50,6 @@ $input->set('redcore', true);
 // Load bootstrap + fontawesome
 RHtmlMedia::loadFrameworkCss();
 RHtmlMedia::loadFrameworkJs();
-RHelperAsset::load('component.min.js', 'redcore');
 
 // Load a custom CSS option for this component if exists
 if ($comOption = $input->get('option', null))

@@ -104,16 +104,21 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		if (self::getFramework() == 'bootstrap2')
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
-			RHelperAsset::load('component.min.css', 'redcore');
-		}
-		elseif (self::getFramework() == 'bootstrap3')
-		{
-			RHelperAsset::load('component.bs3.min.css', 'redcore');
-		}
-		elseif (self::getFramework() == 'foundation5')
-		{
+			if (self::getFramework() == 'bootstrap2')
+			{
+				RHelperAsset::load('component.min.css', 'redcore');
+			}
+			elseif (self::getFramework() == 'bootstrap3')
+			{
+				RHelperAsset::load('component.bs3.min.css', 'redcore');
+			}
+			elseif (self::getFramework() == 'foundation5')
+			{
+			}
 		}
 	}
 
@@ -133,16 +138,21 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		if (self::getFramework() == 'bootstrap2')
+		$isAdmin = JFactory::getApplication()->isAdmin();
+
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
-			RHelperAsset::load('lib/bootstrap.min.js', 'redcore');
-		}
-		elseif (self::getFramework() == 'bootstrap3')
-		{
-			RHelperAsset::load('lib/bootstrap3/bootstrap.min.js', 'redcore');
-		}
-		elseif (self::getFramework() == 'foundation5')
-		{
+			if (self::getFramework() == 'bootstrap2')
+			{
+				RHelperAsset::load('lib/bootstrap.min.js', 'redcore');
+			}
+			elseif (self::getFramework() == 'bootstrap3')
+			{
+				RHelperAsset::load('lib/bootstrap3/bootstrap.min.js', 'redcore');
+			}
+			elseif (self::getFramework() == 'foundation5')
+			{
+			}
 		}
 	}
 
