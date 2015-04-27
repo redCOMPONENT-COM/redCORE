@@ -792,6 +792,9 @@ class RTable extends JTable
 		{
 			$option = JFactory::getApplication()->input->getString('option', '');
 
+			// Add com_ to the element name if not exist
+			$option = (strpos($option, 'com_') === 0 ? '' : 'com_') . $option;
+
 			if ($option == 'com_installer')
 			{
 				$installer = JInstaller::getInstance();
