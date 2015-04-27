@@ -791,6 +791,12 @@ class RTable extends JTable
 		if ($option === 'auto')
 		{
 			$option = JFactory::getApplication()->input->getString('option', '');
+			$api = JFactory::getApplication()->input->getString('api', '');
+
+			if ($api != '')
+			{
+				$option = 'com_' . $option;
+			}
 
 			if ($option == 'com_installer')
 			{
