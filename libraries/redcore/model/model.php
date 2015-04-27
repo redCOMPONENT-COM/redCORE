@@ -66,12 +66,9 @@ abstract class RModel extends JModelLegacy
 		if ($option === 'auto')
 		{
 			$option = JFactory::getApplication()->input->getString('option', '');
-			$api = JFactory::getApplication()->input->getString('api', '');
 
-			if ($api != '')
-			{
-				$option = 'com_' . $option;
-			}
+			// Add com_ to the element name if not exist
+			$option = (strpos($option, 'com_') === 0 ? '' : 'com_') . $option;
 
 			if ($option == 'com_installer')
 			{
