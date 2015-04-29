@@ -374,18 +374,25 @@ class Com_RedcoreInstallerScript
 				{
 					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
 
-					$files = str_replace('.php', '', JFolder::files($sourcePath . '/' . $updatePath, '\.php$'));
-					usort($files, 'version_compare');
-
-					if (count($files))
+					if (is_dir($sourcePath . '/' . $updatePath))
 					{
-						foreach ($files as $file)
+						$files = str_replace('.php', '', JFolder::files($sourcePath . '/' . $updatePath, '\.php$'));
+
+						if (!empty($files))
 						{
-							if (version_compare($file, $this->oldVersion) > 0)
+							usort($files, 'version_compare');
+
+							if (count($files))
 							{
-								if (!$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file, $executeAfterUpdate))
+								foreach ($files as $file)
 								{
-									return false;
+									if (version_compare($file, $this->oldVersion) > 0)
+									{
+										if (!$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file, $executeAfterUpdate))
+										{
+											return false;
+										}
+									}
 								}
 							}
 						}

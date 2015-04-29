@@ -398,8 +398,15 @@ final class RTranslationTable
 			self::removeExistingConstraintKeys($originalTable, $primaryKeys);
 		}
 
+		$constraintType = 'foreign_keys';
+
+		if (method_exists('RBootstrap', 'getConfig'))
+		{
+			$constraintType = RBootstrap::getConfig('translations_constraint_type', 'foreign_keys');
+		}
+
 		// New install use default value foreign key if InnoDB is present
-		if ((RBootstrap::getConfig('translations_constraint_type', 'foreign_keys') == 'foreign_keys'))
+		if (($constraintType == 'foreign_keys'))
 		{
 			if ($innoDBSupport)
 			{
@@ -413,7 +420,7 @@ final class RTranslationTable
 				}
 			}
 		}
-		elseif (RBootstrap::getConfig('translations_constraint_type', 'foreign_keys') == 'triggers')
+		elseif ($constraintType == 'triggers')
 		{
 			self::updateTableTriggers($fieldsXml, $newTable, $originalTable);
 		}

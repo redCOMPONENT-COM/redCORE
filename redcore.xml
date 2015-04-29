@@ -88,6 +88,7 @@
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
         <plugin name="mvcoverride" group="system" disabled="1" />
+        <plugin name="paypal" group="redpayment"/>
     </plugins>
 
     <!-- Modules to install with the component -->

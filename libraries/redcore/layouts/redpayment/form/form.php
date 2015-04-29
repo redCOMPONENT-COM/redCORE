@@ -11,6 +11,7 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
+$params = $data['options']['params'];
 $paymentData = $data['options']['paymentData'];
 $fields = !empty($paymentData['hiddenFields']) ? $paymentData['hiddenFields'] : array();
 $extensionName = $data['options']['extensionName'];
@@ -20,7 +21,6 @@ $paymentTitle = $data['options']['paymentTitle'];
 $paymentLogo = $params->get('payment_logo');
 $formName = 'redpaymentForm' . $data['options']['paymentName'];
 $action = $data['options']['action'];
-$params = $data['options']['params'];
 $autoSubmit = !empty($data['options']['autoSubmit']);
 ?>
 <form action="<?php echo $action ?>" class="adminForm" method="post" name="<?php echo $formName ?>" id="<?php echo $formName ?>">

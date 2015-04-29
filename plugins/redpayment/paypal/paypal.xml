@@ -11,7 +11,8 @@
 	<description>PLG_REDPAYMENT_PAYPAL_XML_DESCRIPTION</description>
 
 	<files>
-		<folder>helpers</folder>
+		<folder>form</folder>
+        <folder>helpers</folder>
 		<folder>language</folder>
         <filename plugin="paypal">paypal.php</filename>
 	</files>

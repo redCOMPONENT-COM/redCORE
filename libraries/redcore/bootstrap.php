@@ -76,18 +76,19 @@ class RBootstrap
 		{
 			$plugin = JPluginHelper::getPlugin('system', 'redcore');
 
-			if (is_string($plugin->params))
+			if ($plugin)
 			{
-				self::$config = new JRegistry($plugin->params);
+				if (is_string($plugin->params))
+				{
+					self::$config = new JRegistry($plugin->params);
+				}
+				elseif (is_object($plugin->params))
+				{
+					self::$config = $plugin->params;
+				}
 			}
-			elseif (is_object($plugin->params))
-			{
-				self::$config = $plugin->params;
-			}
-			else
-			{
-				self::$config = new JRegistry;
-			}
+
+			return null;
 		}
 
 		return self::$config->get($key, $default);
