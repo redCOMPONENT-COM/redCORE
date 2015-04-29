@@ -3,33 +3,33 @@ php:
 - 5.4
 
 before_script:
-  # Install Apache
-  - sudo apt-get update -qq
-  - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
-  - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
-  - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/ /var/www/tests #Add joomla to apache htdocs
-  - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-  - sudo /etc/init.d/apache2 restart
-  - composer install --dev --prefer-dist
+# Install Apache
+- sudo apt-get update -qq
+- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
+- sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
+- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/ /var/www/tests #Add joomla to apache htdocs
+- sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
+- sudo /etc/init.d/apache2 restart
+- composer install --dev --prefer-dist
 
-  # XVFB
-  - "export DISPLAY=:99.0"
-  - "Xvfb :99.0 -extension RANDR > /dev/null &"
+# XVFB
+- "export DISPLAY=:99.0"
+- "Xvfb :99.0 -extension RANDR > /dev/null &"
 
-  # Window manager
-  - echo "c10"
-  - "sudo apt-get install fluxbox -y --force-yes"
-  - echo "c11"
-  - "fluxbox &"
+# Window manager
+- echo "c10"
+- "sudo apt-get install fluxbox -y --force-yes"
+- echo "c11"
+- "fluxbox &"
 
 
 script:
 - php .travis/phppec.php component/ libraries/ modules/ plugins/
 - php .travis/phpcs.php
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
-  # system testing starts
-  - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
-  - php robo.phar test:acceptance
+# system testing starts
+- mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
+- php robo.phar test:acceptance
 # -  php vendor/bin/codecept run acceptance -g $GROUP --env $ENV
 notifications:
   slack:
