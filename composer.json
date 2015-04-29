@@ -8,8 +8,9 @@
     "require-dev": {
         "squizlabs/php_codesniffer": "1.*",
         "phpmd/phpmd": "*",
-        "codeception/codeception": "*",
+        "codeception/codeception": "2.0.x-dev",
         "phing/phing": "2.9.*@dev",
-        "alebear/versioncontrol_git": "dev-master"
+        "alebear/versioncontrol_git": "dev-master",
+        "joomla-projects/joomla-browser": "dev-develop"
     }
 }
