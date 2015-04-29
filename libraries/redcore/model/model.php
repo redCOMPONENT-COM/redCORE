@@ -66,6 +66,15 @@ abstract class RModel extends JModelLegacy
 		if ($option === 'auto')
 		{
 			$option = JFactory::getApplication()->input->getString('option', '');
+
+			// Add com_ to the element name if not exist
+			$option = (strpos($option, 'com_') === 0 ? '' : 'com_') . $option;
+
+			if ($option == 'com_installer')
+			{
+				$installer = JInstaller::getInstance();
+				$option = $installer->manifestClass->getElement($installer);
+			}
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
@@ -93,7 +102,7 @@ abstract class RModel extends JModelLegacy
 		else
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instanciate the model %s. Invalid client %s.', $name, $client)
+				sprintf('Cannot instanciate the model %s in component %s. Invalid client %s.', $name, $option, $client)
 			);
 		}
 
@@ -102,7 +111,7 @@ abstract class RModel extends JModelLegacy
 		if (!$model instanceof JModel && !$model instanceof JModelLegacy)
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instanciate the model %s from client %s.', $name, $client)
+				sprintf('Cannot instanciate the model %s in component %s. Invalid client %s.', $name, $option, $client)
 			);
 		}
 

@@ -56,13 +56,6 @@ class RBootstrap
 	public static $loadFrontendjQueryMigrate = true;
 
 	/**
-	 * Defines if Bootstrap should be loaded in Frontend component/modules
-	 *
-	 * @var    bool
-	 */
-	public static $loadFrontendBootstrap = true;
-
-	/**
 	 * Defines if Mootools should be disabled in Frontend component/modules
 	 *
 	 * @var    bool

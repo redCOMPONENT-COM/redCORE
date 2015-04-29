@@ -47,12 +47,12 @@ vendor/*
 npm-debug.log
 
 # Test related files
-/tests/system/servers/configdef.php
-/tests/system/webdriver/tests/logs/
-/tests/acceptance.suite.yml
-codecept.phar
+tests/acceptance.suite.yml
 tests/*/*Tester.php
-
+tests/joomla-cms3*
+selenium-server-standalone.jar
+codecept.phar
+composer.phar
 
 # Never ignore
 !.gitignore

@@ -525,59 +525,7 @@ class RTable extends JTable
 		// Audit fields optional auto-update (on by default)
 		if ($this->getOption('updateAuditFields', true))
 		{
-			// Optional created_by field updated when present
-			if (!$this->hasPrimaryKey() && isset($this->{$this->_tableFieldCreatedBy}))
-			{
-				$user = JFactory::getUser();
-
-				if ($user->id)
-				{
-					$this->{$this->_tableFieldCreatedBy} = $user->id;
-				}
-				else
-				{
-					$this->{$this->_tableFieldCreatedBy} = null;
-				}
-			}
-			elseif (isset($this->{$this->_tableFieldCreatedBy}) && ($this->{$this->_tableFieldCreatedBy} === 0))
-			{
-				$user = JFactory::getUser();
-
-				if (!$user->id)
-				{
-					$this->{$this->_tableFieldCreatedBy} = null;
-				}
-			}
-
-			// Optional created_date field updated when present
-			if (!$this->hasPrimaryKey() && isset($this->{$this->_tableFieldCreatedDate}))
-			{
-				$this->{$this->_tableFieldCreatedDate} = date($this->_auditDateFormat);
-			}
-
-			// Optional modified_by field updated when present
-			if (isset($this->{$this->_tableFieldModifiedBy}))
-			{
-				if (!isset($user))
-				{
-					$user = JFactory::getUser();
-				}
-
-				if ($user->id)
-				{
-					$this->{$this->_tableFieldModifiedBy} = $user->id;
-				}
-				else
-				{
-					$this->{$this->_tableFieldModifiedBy} = null;
-				}
-			}
-
-			// Optional modified_date field updated when present
-			if (isset($this->{$this->_tableFieldModifiedDate}))
-			{
-				$this->{$this->_tableFieldModifiedDate} = date($this->_auditDateFormat);
-			}
+			self::updateAuditFields($this);
 		}
 
 		return true;
@@ -843,6 +791,15 @@ class RTable extends JTable
 		if ($option === 'auto')
 		{
 			$option = JFactory::getApplication()->input->getString('option', '');
+
+			// Add com_ to the element name if not exist
+			$option = (strpos($option, 'com_') === 0 ? '' : 'com_') . $option;
+
+			if ($option == 'com_installer')
+			{
+				$installer = JInstaller::getInstance();
+				$option = $installer->manifestClass->getElement($installer);
+			}
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
@@ -868,7 +825,7 @@ class RTable extends JTable
 		else
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instanciate the table %s. Invalid client %s.', $name, $client)
+				sprintf('Cannot instanciate the table %s in component %s. Invalid client %s.', $name, $option, $client)
 			);
 		}
 
@@ -877,7 +834,7 @@ class RTable extends JTable
 		if (!$table instanceof JTable)
 		{
 			throw new InvalidArgumentException(
-				sprintf('Cannot instanciate the table %s from client %s.', $name, $client)
+				sprintf('Cannot instanciate the table %s in component %s from client %s.', $name, $option, $client)
 			);
 		}
 
@@ -943,5 +900,92 @@ class RTable extends JTable
 		}
 
 		return $default;
+	}
+
+	/**
+	 * Validate that the primary key has been set.
+	 *
+	 * @return  boolean  True if the primary key(s) have been set.
+	 *
+	 * @since   1.5.2
+	 */
+	public function hasPrimaryKey()
+	{
+		// For Joomla 3.2+ a native method has been provided
+		if (method_exists(get_parent_class(), 'hasPrimaryKey'))
+		{
+			return parent::hasPrimaryKey();
+		}
+
+		// Otherwise, it checks if the only key field compatible for older Joomla versions is set or not
+		if (isset($this->_tbl_key) && !empty($this->_tbl_key) && empty($this->{$this->_tbl_key}))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to update audit fields using a static function, to reuse in non-children classes like RNestedTable
+	 *
+	 * @param   RTable  &$tableInstance  Table instance
+	 *
+	 * @return  void
+	 *
+	 * @since   1.5.2
+	 */
+	public static function updateAuditFields(&$tableInstance)
+	{
+		$tableFieldCreatedBy = $tableInstance->get('_tableFieldCreatedBy');
+		$tableFieldCreatedDate = $tableInstance->get('_tableFieldCreatedDate');
+		$tableFieldModifiedBy = $tableInstance->get('_tableFieldModifiedBy');
+		$tableFieldModifiedDate = $tableInstance->get('_tableFieldModifiedDate');
+		$auditDateFormat = $tableInstance->get('_auditDateFormat');
+
+		// Optional created_by field updated when present
+		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedBy))
+		{
+			$user = JFactory::getUser();
+
+			if ($user->id)
+			{
+				$tableInstance->{$tableFieldCreatedBy} = $user->id;
+			}
+			else
+			{
+				$tableInstance->{$tableFieldCreatedBy} = null;
+			}
+		}
+
+		// Optional created_date field updated when present
+		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedDate))
+		{
+			$tableInstance->{$tableFieldCreatedDate} = date($auditDateFormat);
+		}
+
+		// Optional modified_by field updated when present
+		if (property_exists($tableInstance, $tableFieldModifiedBy))
+		{
+			if (!isset($user))
+			{
+				$user = JFactory::getUser();
+			}
+
+			if ($user->id)
+			{
+				$tableInstance->{$tableFieldModifiedBy} = $user->id;
+			}
+			else
+			{
+				$tableInstance->{$tableFieldModifiedBy} = null;
+			}
+		}
+
+		// Optional modified_date field updated when present
+		if (property_exists($tableInstance, $tableFieldModifiedDate))
+		{
+			$tableInstance->{$tableFieldModifiedDate} = date($auditDateFormat);
+		}
 	}
 }

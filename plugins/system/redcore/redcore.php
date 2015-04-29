@@ -42,7 +42,6 @@ class PlgSystemRedcore extends JPlugin
 			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
 			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
-			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
 
 			RBootstrap::bootstrap(false);
@@ -301,7 +300,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
