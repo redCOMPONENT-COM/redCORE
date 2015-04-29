@@ -108,11 +108,36 @@ if (empty($return))
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4 class="panel-title">
-				<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=payment_configurations') ?>">
+				<a
+					data-toggle="collapse"
+					data-parent="#rc-sidebar-accordion"
+					href="#rc-sidebar-accordion-payments">
 					<i class="icon-money"></i>
-					<?php echo JText::_('COM_REDCORE_PAYMENTS') ?>
-				</a>
+					<?php echo JText::_('COM_REDCORE_PAYMENTS') ?></a>
 			</h4>
+		</div>
+		<div id="rc-sidebar-accordion-payments"
+		     class="panel-collapse collapse<?php echo in_array($view, array('payments', 'payment_configurations', 'payment_dashboards')) ? ' in' : '';?>">
+			<ul class="list-group">
+				<li class="list-group-item">
+					<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=payment_dashboard') ?>">
+						<i class="icon-dashboard"></i>
+						<?php echo JText::_('COM_REDCORE_PAYMENT_DASHBOARD') ?>
+					</a>
+				</li>
+				<li class="list-group-item">
+					<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=payment_configurations') ?>">
+						<i class="icon-cogs"></i>
+						<?php echo JText::_('COM_REDCORE_PAYMENT_CONFIGURATION_LIST_TITLE') ?>
+					</a>
+				</li>
+				<li class="list-group-item">
+					<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=payments') ?>">
+						<i class="icon-money"></i>
+						<?php echo JText::_('COM_REDCORE_PAYMENTS') ?>
+					</a>
+				</li>
+			</ul>
 		</div>
 	</div>
 	<div class="panel panel-default">

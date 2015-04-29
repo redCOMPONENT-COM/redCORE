@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter" addfieldpath="/libraries/redcore/form/fields">
+        <field
+                name="search_payment_configurations"
+                type="text"
+                label="COM_REDCORE_FILTER_SEARCH_DESC"
+                placeholder="JSEARCH_FILTER"
+                class="js-enter-submits"
+                />
+        <field
+                name="extension_name"
+                type="componentlist"
+                loadContentElements="false"
+                showFullName="true"
+                label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
+                description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_PAYMENT_SELECT_EXTENSION</option>
+        </field>
+        <field
+                name="payment_name"
+                type="paymentplugins"
+                label="COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_NAME_LABEL"
+                description="COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_NAME_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_PAYMENT_SELECT_PAYMENT</option>
+        </field>
+    </fields>
+    <fields name="list">
+        <field
+                name="payment_configurations_limit"
+                type="rlimitbox"
+                class="inputbox input-mini chzn"
+                default="25"
+                label="JGLOBAL_ORDERING_LIST_LIMIT"
+                description="JGLOBAL_ORDERING_LIST_LIMIT_DESC"
+                onchange="this.form.submit();"
+                />
+    </fields>
+</form>

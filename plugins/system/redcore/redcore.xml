@@ -253,6 +253,24 @@
             </fieldset>
             <fieldset name="PLG_SYSTEM_REDCORE_PAYMENT_API_OPTIONS">
                 <field
+                        name="enable_payment"
+                        type="list"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE"
+                        description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="payment_list_payments_type"
+                        type="list"
+                        default="radio"
+                        label="PLG_SYSTEM_REDCORE_PAYMENT_LIST_PAYMENT_TYPE"
+                        description="PLG_SYSTEM_REDCORE_PAYMENT_LIST_PAYMENT_TYPE_DESC">
+                    <option value="radio">PLG_SYSTEM_REDCORE_PAYMENT_LIST_PAYMENT_TYPE_RADIO</option>
+                    <option value="dropdown">PLG_SYSTEM_REDCORE_PAYMENT_LIST_PAYMENT_TYPE_DROPDOWN</option>
+                </field>
+                <field
                         name="payment_request_method"
                         type="list"
                         default="curl"
@@ -262,14 +280,14 @@
                     <option value="fsockopen">PLG_SYSTEM_REDCORE_PAYMENT_REQUEST_METHOD_FSOCKOPEN</option>
                 </field>
                 <field
-                        name="payment_time_between_order_check_requests"
+                        name="payment_time_between_payment_check_requests"
                         type="text"
                         default="24"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_TIME_BETWEEN_ORDER_CHECKS"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_TIME_BETWEEN_ORDER_CHECKS_DESC">
                 </field>
                 <field
-                        name="payment_number_of_order_check_retries"
+                        name="payment_number_of_payment_check_retries"
                         type="text"
                         default="30"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_NUMBER_OF_RETRIES"
@@ -283,6 +301,27 @@
                         description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_FILE_LOGGER_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
+                </field>
+                <field
+                        name="payment_chart_type"
+                        type="rchart"
+                        label="LIB_REDCORE_CHART_NAME_LABEL"
+                        description="LIB_REDCORE_CHART_NAME_DESC"
+                        default="Line"
+                        class="inputbox">
+                    <option value="">LIB_REDCORE_CHART_NAME_SELECT_CHART</option>
+                </field>
+                <field
+                        name="payment_dashboard_view_type"
+                        type="rlist"
+                        label="COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_LABEL"
+                        description="COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_DESC"
+                        default="payment_name"
+                        class="inputbox">
+                    <option value="">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_SELECT</option>
+                    <option value="extension_name">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_EXTENSION</option>
+                    <option value="payment_name">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_PAYMENT</option>
+                    <option value="status">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_STATUS</option>
                 </field>
             </fieldset>
         </fields>

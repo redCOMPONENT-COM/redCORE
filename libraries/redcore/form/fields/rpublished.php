@@ -56,7 +56,7 @@ class JFormFieldRpublished extends JFormFieldRpredefinedList
 	 * @since   1.0
 	 */
 	protected function getOptions()
-	{
+	{JFormFieldRadio::
 		// Hash for caching
 		$hash = md5($this->element);
 		$type = strtolower($this->type);

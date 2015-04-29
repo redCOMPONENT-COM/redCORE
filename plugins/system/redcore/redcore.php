@@ -47,8 +47,8 @@ class PlgSystemRedcore extends JPlugin
 
 			RBootstrap::bootstrap(false);
 
-			// Sets plugin parameters for further use in Translation Helper class
-			RTranslationHelper::$pluginParams = $this->params;
+			// Sets plugin parameters for further use
+			RBootstrap::$config = $this->params;
 
 			// Replaces Joomla database driver for redCORE database driver
 			JFactory::$database = null;
@@ -69,7 +69,6 @@ class PlgSystemRedcore extends JPlugin
 				}
 			}
 		}
-
 	}
 
 	/**
@@ -85,9 +84,7 @@ class PlgSystemRedcore extends JPlugin
 		{
 			$apiName = JFactory::getApplication()->input->getString('api');
 
-			if (($this->params->get('enable_webservices', 0) == 1 && strtolower($apiName) == 'hal')
-				|| ($this->params->get('enable_oauth2_server', 0) == 1 && strtolower($apiName) == 'oauth2')
-				|| ($this->params->get('enable_soap', 0) == 1 && strtolower($apiName) == 'soap'))
+			if ($this->isApiEnabled($apiName))
 			{
 				$input = JFactory::getApplication()->input;
 
@@ -102,7 +99,7 @@ class PlgSystemRedcore extends JPlugin
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
 						$viewName = $input->getString('view', '');
 						$version = $input->getString('webserviceVersion', '');
-						$token = $input->getString(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), '');
+						$token = $input->getString(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), '');
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
@@ -358,5 +355,22 @@ class PlgSystemRedcore extends JPlugin
 		}
 
 		return $disable;
+	}
+
+	/**
+	 * Checks if given api name is currently install and enabled on this server
+	 *
+	 * @param   string  $apiName  Api name
+	 *
+	 * @return bool
+	 */
+	private function isApiEnabled($apiName)
+	{
+		$apiName = strtolower($apiName);
+
+		return ($this->params->get('enable_webservices', 0) == 1 && $apiName == 'hal')
+		|| ($this->params->get('enable_oauth2_server', 0) == 1 && $apiName == 'oauth2')
+		|| ($this->params->get('enable_soap', 0) == 1 && $apiName == 'soap')
+		|| ($this->params->get('enable_payment', 1) == 1 && $apiName == 'payment');
 	}
 }

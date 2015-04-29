@@ -242,6 +242,7 @@ class Com_RedcoreInstallerScript
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
+		$this->installCli($parent);
 
 		return true;
 	}
@@ -354,13 +355,14 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to process PHP update files defined in the manifest file
 	 *
-	 * @param   object  $parent  Class calling this method
+	 * @param   object  $parent              Class calling this method
+	 * @param   bool    $executeAfterUpdate  The name of the function to execute
 	 *
 	 * @return  boolean          True on success
 	 */
-	public function phpUpdates($parent)
+	public function phpUpdates($parent, $executeAfterUpdate)
 	{
-		$manifest  = $parent->get('manifest');
+		$manifest = $parent->get('manifest');
 
 		if (isset($manifest->update))
 		{
@@ -371,7 +373,6 @@ class Com_RedcoreInstallerScript
 				if ($updatePath != '')
 				{
 					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
-					$db = JFactory::getDbo();
 
 					$files = str_replace('.php', '', JFolder::files($sourcePath . '/' . $updatePath, '\.php$'));
 					usort($files, 'version_compare');
@@ -382,7 +383,7 @@ class Com_RedcoreInstallerScript
 						{
 							if (version_compare($file, $this->oldVersion) > 0)
 							{
-								if (!$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file))
+								if (!$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file, $executeAfterUpdate))
 								{
 									return false;
 								}
@@ -399,23 +400,35 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to process a single PHP update file
 	 *
-	 * @param   string  $file     File to process
-	 * @param   string  $version  File version
+	 * @param   string  $file                File to process
+	 * @param   string  $version             File version
+	 * @param   bool    $executeAfterUpdate  The name of the function to execute
 	 *
 	 * @return  boolean          True on success
 	 */
-	public function processPHPUpdateFile($file, $version)
+	public function processPHPUpdateFile($file, $version, $executeAfterUpdate)
 	{
-		include $file;
+		static $upgradeClasses;
+
+		if (!isset($upgradeClasses))
+		{
+			$upgradeClasses = array();
+		}
+
+		require_once $file;
 		$class = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', $version);
+		$methodName = $executeAfterUpdate ? 'executeAfterUpdate' : 'execute';
 
 		if (class_exists($class))
 		{
-			$upgrader = new $class;
-
-			if (method_exists($upgrader, 'execute'))
+			if (!isset($upgradeClasses[$class]))
 			{
-				if (!$upgrader->execute())
+				$upgradeClasses[$class] = new $class;
+			}
+
+			if (method_exists($upgradeClasses[$class], $methodName))
+			{
+				if (!$upgradeClasses[$class]->{$methodName}())
 				{
 					return false;
 				}
@@ -745,6 +758,63 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Install the package Cli scripts
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	private function installCli($parent)
+	{
+		// Required objects
+		$installer = $this->getInstaller();
+		$manifest  = $parent->get('manifest');
+		$src       = $parent->getParent()->getPath('source');
+
+		if (!$manifest)
+		{
+			return;
+		}
+
+		$installer->setPath('source', $src);
+		$element = $manifest->cli;
+
+		if (!$element || !count($element->children()))
+		{
+			// Either the tag does not exist or has no children therefore we return zero files processed.
+			return;
+		}
+
+		$nodes = $element->children();
+
+		foreach ($nodes as $node)
+		{
+			// Here we set the folder name we are going to copy the files to.
+			$name = (string) $node->attributes()->name;
+
+			// Here we set the folder we are going to copy the files to.
+			$destination = JPath::clean(JPATH_ROOT . '/cli/' . $name);
+
+			// Here we set the folder we are going to copy the files from.
+			$folder = (string) $node->attributes()->folder;
+
+			if ($folder && file_exists($src . '/' . $folder))
+			{
+				$source = $src . '/' . $folder;
+			}
+			else
+			{
+				// Cli folder does not exist
+				continue;
+			}
+
+			$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
+
+			$installer->copyFiles($copyFiles, true);
+		}
+	}
+
+	/**
 	 * Method to parse through a webservices element of the installation manifest and take appropriate
 	 * action.
 	 *
@@ -1021,10 +1091,13 @@ class Com_RedcoreInstallerScript
 	public function update($parent)
 	{
 		// Process PHP update files
-		$this->phpUpdates($parent);
+		$this->phpUpdates($parent, false);
 
 		// Common tasks for install or update
 		$this->installOrUpdate($parent);
+
+		// Process PHP update files
+		$this->phpUpdates($parent, true);
 	}
 
 	/**
@@ -1082,6 +1155,7 @@ class Com_RedcoreInstallerScript
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
+		$this->uninstallCli($parent);
 		$this->uninstallLibraries($parent);
 	}
 
@@ -1211,6 +1285,72 @@ class Com_RedcoreInstallerScript
 
 			// Actually delete the files/folders
 
+			if (is_dir($path))
+			{
+				$val = JFolder::delete($path);
+			}
+			else
+			{
+				$val = JFile::delete($path);
+			}
+
+			if ($val === false)
+			{
+				JLog::add(JText::sprintf('LIB_REDCORE_INSTALLER_ERROR_FAILED_TO_DELETE', $path), JLog::WARNING, 'jerror', JLog::WARNING, 'jerror');
+				$returnValue = false;
+			}
+		}
+
+		return $returnValue;
+	}
+
+	/**
+	 * Uninstall the Cli
+	 *
+	 * @param   object  $parent  class calling this method
+	 *
+	 * @return  boolean
+	 */
+	protected function uninstallCli($parent)
+	{
+		// Required objects
+		$manifest  = $this->getManifest($parent);
+
+		if (!$manifest)
+		{
+			return false;
+		}
+
+		// We will use cli removal function to remove cli folders
+		$element = $manifest->cli;
+
+		if (!$element || !count($element->children()))
+		{
+			// Either the tag does not exist or has no children therefore we return zero files processed.
+			return true;
+		}
+
+		$returnValue = true;
+
+		// Get the array of file nodes to process
+		$folders = $element->children();
+		$source = JPATH_ROOT . '/cli/';
+
+		// Process each folder in the $folders array
+		foreach ($folders as $folder)
+		{
+			// Here we set the folder name we are going to delete from cli main folder
+			$name = (string) $folder->attributes()->name;
+
+			// If name is not set we should not delete whole cli folder
+			if (empty($name))
+			{
+				continue;
+			}
+
+			$path = $source . '/' . $name;
+
+			// Delete the files/folders
 			if (is_dir($path))
 			{
 				$val = JFolder::delete($path);

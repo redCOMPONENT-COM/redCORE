@@ -83,6 +83,7 @@
             <exclude name="**/bootstrap3/bootstrap.js"/>
             <exclude name="**/bootstrap-checkbox.js"/>
             <exclude name="**/bootstrap-timepicker.js"/>
+            <exclude name="**/chart/Chart.js"/>
             <exclude name="**/chosen.jquery.js"/>
             <exclude name="**/jquery.js"/>
             <exclude name="**/jquery-migrate.js"/>
@@ -91,6 +92,9 @@
             <exclude name="**/jquery.lazyload.js"/>
             <exclude name="**/jquery-ui.js"/>
             <exclude name="**/select2.js"/>
+            <exclude name="**/i18n/jquery-ui-i18n.js"/>
+
+            <exclude name="**/README.md"/>
         </fileset>
         </copy>
 

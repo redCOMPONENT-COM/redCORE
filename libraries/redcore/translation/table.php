@@ -399,34 +399,23 @@ final class RTranslationTable
 		}
 
 		// New install use default value foreign key if InnoDB is present
-		if (empty(RTranslationHelper::$pluginParams))
+		if ((RBootstrap::getConfig('translations_constraint_type', 'foreign_keys') == 'foreign_keys'))
 		{
 			if ($innoDBSupport)
 			{
 				self::updateTableForeignKeys($fieldsXml, $newTable, $originalTable);
 			}
+			else
+			{
+				if ($showNotifications)
+				{
+					JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INNODB_MISSING'), 'message');
+				}
+			}
 		}
-		else
+		elseif (RBootstrap::getConfig('translations_constraint_type', 'foreign_keys') == 'triggers')
 		{
-			// Updating existing table
-			if ((RTranslationHelper::$pluginParams->get('translations_constraint_type', 'foreign_keys') == 'foreign_keys'))
-			{
-				if ($innoDBSupport)
-				{
-					self::updateTableForeignKeys($fieldsXml, $newTable, $originalTable);
-				}
-				else
-				{
-					if ($showNotifications)
-					{
-						JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INNODB_MISSING'), 'message');
-					}
-				}
-			}
-			elseif (RTranslationHelper::$pluginParams->get('translations_constraint_type', 'foreign_keys') == 'triggers')
-			{
-				self::updateTableTriggers($fieldsXml, $newTable, $originalTable);
-			}
+			self::updateTableTriggers($fieldsXml, $newTable, $originalTable);
 		}
 
 		$contentElement->allContentElementsFields = explode(',', $allContentElementsFields);

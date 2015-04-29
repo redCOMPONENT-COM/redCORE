@@ -92,7 +92,7 @@ class RedcoreModelWebservice extends RModelAdmin
 		}
 
 		/** @var RedcoreModelWebservices $model */
-		$model = RModelAdmin::getInstance('Webservices', 'RedcoreModel');
+		$model = RModelAdmin::getAdminInstance('Webservices', array(), 'com_redcore');
 
 		if ($id = $model->installWebservice(
 				$data['main']['client'],

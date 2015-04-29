@@ -203,8 +203,7 @@ final class RComponentHelper
 		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_redcore/models', 'RedcoreModel');
 		$option = strtolower($option);
 		/** @var RedcoreModelConfig $modelConfig */
-		$modelConfig = RModelAdmin::getInstance('Config', 'RedcoreModel', array('ignore_request' => true));
-
+		$modelConfig = RModelAdmin::getAdminInstance('Config', array('ignore_request' => true), 'com_redcore');
 		$component = $modelConfig->getComponent($option);
 
 		$loadInstallModules = array('%' . $component->xml->xmlComponentName . '%');

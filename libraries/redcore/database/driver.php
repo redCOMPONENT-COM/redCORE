@@ -210,11 +210,12 @@ else
 						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DRIVER_ERROR', $options['driver']), 'error');
 					}
 
+					// Initialize Config if not set
+					RBootstrap::getConfig('enable_translations');
+
 					// We will disable plugin option in this instance so we do not try to translate
-					if (!empty(RTranslationHelper::$pluginParams))
-					{
-						RTranslationHelper::$pluginParams->set('enable_translations', 0);
-					}
+					RBootstrap::$config->set('enable_translations', 0);
+
 					// We are not supporting this driver
 					return parent::getInstance($options);
 				}

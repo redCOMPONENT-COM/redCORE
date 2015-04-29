@@ -363,6 +363,7 @@ class RTranslationHelper
 		}
 
 		// Handle the optional arguments.
+		$options = array();
 		$options['control'] = $controlName;
 		$options['load_data'] = true;
 		$formData = array();

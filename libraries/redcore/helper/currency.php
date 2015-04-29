@@ -18,7 +18,136 @@ defined('JPATH_REDCORE') or die;
  */
 final class RHelperCurrency
 {
-	protected static $codes;
+	/**
+	 * Currency cache
+	 *
+	 * @var  array
+	 */
+	protected static $currencies = array();
+
+	/**
+	 * Reload currencies
+	 *
+	 * @var  bool
+	 */
+	protected static $completeLoad = false;
+
+	/**
+	 * Get Currency object by symbol or id
+	 *
+	 * @param   mixed  $currency  currency symbol or id
+	 *
+	 * @return null/object
+	 */
+	public static function getCurrency($currency = 'DKK')
+	{
+		if (!isset(self::$currencies[(string) $currency]))
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select('*')
+				->from($db->qn('#__redcore_currency'));
+
+			if (is_numeric($currency))
+			{
+				$query->where('id = ' . (int) ($currency));
+			}
+			else
+			{
+				$query->where('alpha3 = ' . $db->q($currency));
+			}
+
+			$db->setQuery($query);
+			$item = $db->loadObject();
+
+			if ($item)
+			{
+				$item->precision = $item->decimals;
+			}
+
+			self::$currencies[$currency] = $item;
+		}
+
+		return self::$currencies[$currency];
+	}
+
+	/**
+	 * Load all currencies
+	 *
+	 * @return array
+	 */
+	public static function getAllCurrencies()
+	{
+		if (self::$completeLoad == false)
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select('*')
+				->from($db->qn('#__redcore_currency'));
+
+			$db->setQuery($query);
+			$items = $db->loadObjectList();
+
+			foreach ($items as $item)
+			{
+				$item->precision = $item->decimals;
+				self::$currencies[$item->alpha3] = $item;
+			}
+
+			self::$completeLoad = true;
+		}
+
+		return self::$currencies;
+	}
+
+	/**
+	 * Formatted Price
+	 *
+	 * @param   float   $amount          Amount
+	 * @param   string  $currencySymbol  Currency symbol
+	 * @param   bool    $appendSymbol    Append currency symbol to results?
+	 *
+	 * @return  string  Formatted Price
+	 */
+	public static function getFormattedPrice($amount, $currencySymbol = 'DKK', $appendSymbol = true)
+	{
+		$price = '';
+		$currency = self::getCurrency($currencySymbol);
+
+		if (!$currency)
+		{
+			return $amount;
+		}
+
+		if (is_numeric($amount))
+		{
+			/*
+			 * $currency->decimals: Sets the number of decimal points.
+			 * $currency->decimal_separator: Sets the separator for the decimal point.
+			 * $currency->thousands_separator: Sets the thousands separator
+			 */
+			$price = number_format(
+				(double) $amount,
+				$currency->decimals,
+				$currency->decimal_separator,
+				$currency->thousands_separator
+			);
+
+			// Sets blank space between the currency symbol and the price
+			$blankSpace = ($currency->blank_space == 1) ? ' ' : '';
+
+			if ($currency->symbol_position == 0 && $appendSymbol)
+			{
+				$price = $currency->symbol . $blankSpace . $price;
+			}
+			elseif ($currency->symbol_position == 1 && $appendSymbol)
+			{
+				$price .= $blankSpace . $currency->symbol;
+			}
+		}
+
+		return $price;
+	}
 
 	/**
 	 * Return iso code from iso number
@@ -29,11 +158,11 @@ final class RHelperCurrency
 	 */
 	public static function getIsoCode($number)
 	{
-		$cur = self::get_iso_4217_currency_codes();
+		$cur = self::getAllCurrencies();
 
 		foreach ($cur as $code => $currency)
 		{
-			if ($currency->number == $number)
+			if ($currency->numeric == $number)
 			{
 				return $code;
 			}
@@ -51,7 +180,7 @@ final class RHelperCurrency
 	 */
 	public static function getIsoNumber($code)
 	{
-		return self::getCurrency($code)->number;
+		return self::getCurrency($code)->numeric;
 	}
 
 	/**
@@ -61,7 +190,7 @@ final class RHelperCurrency
 	 */
 	public static function getCurrencyOptions()
 	{
-		$cur = self::get_iso_4217_currency_codes();
+		$cur = self::getAllCurrencies();
 		$options = array();
 
 		foreach ($cur as $code => $currency)
@@ -70,6 +199,20 @@ final class RHelperCurrency
 		}
 
 		return $options;
+	}
+
+	/**
+	 * Return decimal precision in number of digits
+	 *
+	 * @param   string  $code  iso 4217 3 letters currency code
+	 *
+	 * @throws OutOfRangeException
+	 *
+	 * @return int
+	 */
+	public static function getPrecision($code)
+	{
+		return self::getCurrency($code)->decimals;
 	}
 
 	/**
@@ -86,90 +229,8 @@ final class RHelperCurrency
 			return false;
 		}
 
-		$cur = self::get_iso_4217_currency_codes();
+		self::getCurrency($code);
 
-		return isset($cur[$code]);
-	}
-
-	/**
-	 * Return decimal precision in number of digits
-	 *
-	 * @param   string  $code  iso 4217 3 letters currency code
-	 *
-	 * @throws OutOfRangeException
-	 *
-	 * @return int
-	 */
-	public static function getPrecision($code)
-	{
-		return self::getCurrency($code)->precision;
-	}
-
-	/**
-	 * Return supported currencies from http://www.currency-iso.org
-	 *
-	 * @return array
-	 */
-	protected static function get_iso_4217_currency_codes()
-	{
-		if (!self::$codes)
-		{
-			// Xml file was pulled from http://www.currency-iso.org/dam/downloads/table_a1.xml. Should be refreshed sometimes !
-			$xml = file_get_contents(dirname(__FILE__) . '/currency_iso_4217_table.xml');
-			$obj = new SimpleXMLElement($xml);
-
-			$currencies = array();
-
-			foreach ($obj->children()->children() as $country)
-			{
-				$code = (string) $country->Ccy;
-
-				if ($code && !isset($currencies[$code]))
-				{
-					$obj = new stdclass;
-					$obj->name   = (string) $country->CcyNm;
-					$obj->code   = (string) $country->Ccy;
-					$obj->number = (string) $country->CcyNbr;
-					$obj->precision = (string) $country->CcyMnrUnts;
-
-					$currencies[$code] = $obj;
-				}
-			}
-
-			self::$codes = $currencies;
-		}
-
-		return self::$codes;
-	}
-
-	/**
-	 * Return currency object
-	 *
-	 * @param   string  $code  iso 4217 3 letters currency code
-	 *
-	 * @return mixed
-	 */
-	protected static function getCurrency($code)
-	{
-		self::throwExceptionIfNotValid($code);
-
-		return self::$codes[$code];
-	}
-
-	/**
-	 * Throws OutOfRangeException if currency code is not valid
-	 *
-	 * @param   string  $code  iso 4217 3 letters currency code
-	 *
-	 * @throws OutOfRangeException
-	 *
-	 * @return void
-	 */
-	protected static function throwExceptionIfNotValid($code)
-	{
-		if (!self::isValid($code))
-		{
-			throw new OutOfRangeException('invalid iso code: ' . $code);
-		}
+		return !empty(self::$currencies[$code]);
 	}
 }

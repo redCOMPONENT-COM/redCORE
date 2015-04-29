@@ -87,7 +87,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		else
 		{
 			/** @var RedcoreModelConfig $modelConfig */
-			$modelConfig = RModelAdmin::getInstance('Config', 'RedcoreModel', array('ignore_request' => true));
+			$modelConfig = RModelAdmin::getAdminInstance('Config', array('ignore_request' => true), 'com_redcore');
 
 			if (!empty($this->componentName))
 			{
@@ -108,7 +108,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		}
 
 		// Check if option is enabled
-		if (RTranslationHelper::$pluginParams->get('enable_translations', 0) == 0)
+		if (RBootstrap::getConfig('enable_translations', 0) == 0)
 		{
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
