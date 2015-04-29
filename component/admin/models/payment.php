@@ -19,25 +19,6 @@ defined('_JEXEC') or die;
 class RedcoreModelPayment extends RModelAdmin
 {
 	/**
-	 * Load item object
-	 *
-	 * @param   integer  $pk  The id of the primary key.
-	 *
-	 * @return  mixed    Object on success, false on failure.
-	 *
-	 * @since   1.2
-	 */
-	public function getItem($pk = null)
-	{
-		if (!$item = parent::getItem($pk))
-		{
-			return $item;
-		}
-
-		return $item;
-	}
-
-	/**
 	 * Prepare and sanitise the table data prior to saving.
 	 *
 	 * @param   JTable  $table  A reference to a JTable object.

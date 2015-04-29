@@ -71,8 +71,8 @@ class RedcoreModelPayment_Configuration extends RModelAdmin
 				->select('p.params as plugin_params, p.name as plugin_name, p.element, p.enabled, p.extension_id')
 				->select('CONCAT("plg_redpayment_", p.element) as plugin_path_name')
 				->from($db->qn('#__extensions', 'p'))
-				->where($db->qn('p.type') . '= "plugin"')
-				->where($db->qn('p.folder') . '= "redpayment"')
+				->where($db->qn('p.type') . '= ' . $db->q("plugin"))
+				->where($db->qn('p.folder') . '= ' . $db->q("redpayment"))
 				->where($db->qn('p.element') . '= ' . $db->q($this->paymentName));
 			$db->setQuery($query);
 

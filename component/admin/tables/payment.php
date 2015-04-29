@@ -186,10 +186,18 @@ class RedcoreTablePayment extends RTable
 		$this->extension_name = trim($this->extension_name);
 		$this->owner_name = trim($this->owner_name);
 		$this->payment_name = trim($this->payment_name);
+		$this->order_id = trim($this->order_id);
 
 		if (empty($this->extension_name))
 		{
 			$this->setError(JText::_('COM_REDCORE_PAYMENT_EXTENSION_NAME_FIELD_CANNOT_BE_EMPTY'));
+
+			return false;
+		}
+
+		if (empty($this->order_id))
+		{
+			$this->setError(JText::_('COM_REDCORE_PAYMENT_ORDER_ID_FIELD_CANNOT_BE_EMPTY'));
 
 			return false;
 		}

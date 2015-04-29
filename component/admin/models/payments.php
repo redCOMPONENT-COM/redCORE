@@ -94,18 +94,4 @@ class RedcoreModelPayments extends RModelList
 
 		return $query;
 	}
-
-	/**
-	 * Method to get an array of data items. override to add content items
-	 *
-	 * @return  mixed  An array of data items on success, false on failure.
-	 *
-	 * @since   1.2
-	 */
-	public function getItems()
-	{
-		$items = parent::getItems();
-
-		return $items;
-	}
 }

@@ -67,7 +67,7 @@ class RedcoreViewPayment_Dashboard extends RedcoreHelpersView
 		$this->activeFilters = $model->getActiveFilters();
 		$this->filterForm = $model->getForm();
 		$filters = array();
-		$filters['status'] = 'Completed';
+		$filters['status'] = RApiPaymentStatus::getStatusCompleted();
 
 		if ($filter = $this->state->get('filter.payment_name'))
 		{
@@ -113,7 +113,7 @@ class RedcoreViewPayment_Dashboard extends RedcoreHelpersView
 
 		$filters['start_date'] = date('Y-01-01', strtotime('today -1 year'));
 		$filters['end_date'] = date('Y-m-d', strtotime('today'));
-		$filters['status'] = 'Completed';
+		$filters['status'] = RApiPaymentStatus::getStatusCompleted();
 		$this->paymentData['overall'] = RApiPaymentHelper::getChartData($filters, 7, 'all');
 		$this->chartData = RApiPaymentHelper::prepareChartData($this->paymentData['chart'], $this->chartType);
 

@@ -44,16 +44,16 @@ $listDirn = $this->state->get('list.direction');
 					       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 				</th>
 				<th>
-					<?php echo JHtml::_('rgrid.sort', 'JSTATUS', 'pc.state', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('rgrid.sort', 'JSTATUS', 'state', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap">
-					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_PLUGIN_NAME', 'pc.payment_name', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_PLUGIN_NAME', 'payment_name', $listDirn, $listOrder); ?>
 				</th>
 				<th>
-					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_EXTENSION_NAME', 'pc.extension_name', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_EXTENSION_NAME', 'extension_name', $listDirn, $listOrder); ?>
 				</th>
 				<th>
-					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_OWNER_NAME', 'pc.owner_name', $listDirn, $listOrder); ?>
+					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_OWNER_NAME', 'owner_name', $listDirn, $listOrder); ?>
 				</th>
 				<th>
 					<?php echo JText::_('COM_REDCORE_PAYMENT_CONFIGURATION_TEST_CONFIGURATION'); ?>

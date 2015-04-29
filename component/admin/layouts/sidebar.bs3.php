@@ -117,7 +117,8 @@ if (empty($return))
 			</h4>
 		</div>
 		<div id="rc-sidebar-accordion-payments"
-		     class="panel-collapse collapse<?php echo in_array($view, array('payments', 'payment_configurations', 'payment_dashboards')) ? ' in' : '';?>">
+		     class="panel-collapse collapse<?php echo in_array($view, array('payments', 'payment_configurations', 'payment_dashboards', 'payment_logs')) ?
+			     ' in' : '';?>">
 			<ul class="list-group">
 				<li class="list-group-item">
 					<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=payment_dashboard') ?>">

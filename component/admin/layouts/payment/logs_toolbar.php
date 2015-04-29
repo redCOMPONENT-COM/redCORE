@@ -14,19 +14,6 @@ $data = $displayData;
 $formName = $data['formName'];
 $return = isset($data['return']) ? $data['return'] : null;
 ?>
-<script type="text/javascript">
-	function submitToCSV(ele)
-	{
-		var $form = jQuery(ele).parents('form');
-		var oldAction = $form.attr('action');
-		var oldTask = $form.find('[name="task"]').val();
-		$form.attr('action', 'index.php?option=com_redcore&view=payment_logs&format=csv')
-			.find('[name="task"]').val('');
-		$form.submit();
-		$form.attr('action', oldAction)
-			.find('[name="task"]').val(oldTask);
-	}
-</script>
 <h2>
 	<?php echo JText::_('COM_REDCORE_PAYMENT_LOG'); ?>
 </h2>

@@ -61,6 +61,11 @@ class RedcoreTablePayment_Log extends RTable
 	/**
 	 * @var string
 	 */
+	public $message_post;
+
+	/**
+	 * @var string
+	 */
 	public $message_text;
 
 	/**

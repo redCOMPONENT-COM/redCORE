@@ -49,6 +49,26 @@ class RedcoreTablePayment_Configuration extends RTable
 	public $state;
 
 	/**
+	 * @var  string
+	 */
+	public $created_date = '0000-00-00 00:00:00';
+
+	/**
+	 * @var  integer
+	 */
+	public $created_by = null;
+
+	/**
+	 * @var  string
+	 */
+	public $modified_date = '0000-00-00 00:00:00';
+
+	/**
+	 * @var  integer
+	 */
+	public $modified_by = null;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JDatabase  &$db  A database connector object

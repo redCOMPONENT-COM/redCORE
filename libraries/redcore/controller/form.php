@@ -39,7 +39,6 @@ class RControllerForm extends JControllerForm
 		$this->paths = array();
 		$this->redirect = null;
 		$this->taskMap = array();
-		$this->taskMap = array();
 
 		if (defined('JDEBUG') && JDEBUG)
 		{
