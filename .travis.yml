@@ -19,7 +19,7 @@ before_script:
 #   -O selenium-server-standalone.jar
 # - java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &
 # - .travis/wait4selenium.sh
-# - composer update
+ - composer update
 script:
 - php .travis/phppec.php component/ libraries/ modules/ plugins/
 - php .travis/phpcs.php
