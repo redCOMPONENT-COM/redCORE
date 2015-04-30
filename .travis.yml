@@ -29,7 +29,10 @@ script:
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
 # system testing starts
 - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
-- php robo.phar test:acceptance
+- php robo.phar prepare:site-for-system-tests
+- sudo chmod 777 -R $TRAVIS_BUILD_DIR # Avoids Joomla installer to load the FTP tab
+- php robo.phar run:tests
+
 # -  php vendor/bin/codecept run acceptance -g $GROUP --env $ENV
 notifications:
   slack:
