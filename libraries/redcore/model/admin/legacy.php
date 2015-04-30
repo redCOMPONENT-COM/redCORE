@@ -19,7 +19,7 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 	 * @since       1.0
 	 */
 	class RModelAdminLegacy extends RModelAdminBase
-	{
+				{
 		/**
 		 * Prepare and sanitise the table data prior to saving.
 		 *
@@ -66,7 +66,7 @@ else
 	 * @since       1.0
 	 */
 	class RModelAdminLegacy extends RModelAdminBase
-	{
+				{
 		/**
 		 * Prepare and sanitise the table data prior to saving.
 		 *

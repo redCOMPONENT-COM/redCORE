@@ -200,6 +200,11 @@ final class RComponentHelper
 	 */
 	public static function displayComponentInfo($option, $message = '')
 	{
+		if (isset(self::$redcoreExtensionManifests[$option]))
+		{
+			unset(self::$redcoreExtensionManifests[$option]);
+		}
+
 		JModelLegacy::addIncludePath(JPATH_ADMINISTRATOR . '/components/com_redcore/models', 'RedcoreModel');
 		$option = strtolower($option);
 		/** @var RedcoreModelConfig $modelConfig */
