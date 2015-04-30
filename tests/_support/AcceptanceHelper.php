@@ -29,7 +29,7 @@ class AcceptanceHelper extends \Codeception\Module
      */
     public function getConfiguration($element = null)
     {
-        if (!$element) {
+        if (is_null($element)) {
             throw new InvalidArgumentException('empty value or non existing element was requested from configuration');
         }
 
