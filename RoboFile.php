@@ -7,11 +7,25 @@
 class RoboFile extends \Robo\Tasks
 {
     /**
+     * Downloads and prepares a Joomla CMS site for testing
+     */
+    public function prepareSiteForSystemTests()
+    {
+        // Get Joomla Clean Testing sites
+        if (is_dir('tests/joomla-cms3')) {
+            $this->taskDeleteDir('tests/joomla-cms3')->run();
+        }
+
+        $this->_exec('git clone -b staging --single-branch --depth 1 https://github.com/joomla/joomla-cms.git tests/joomla-cms3');
+        $this->say('Joomla CMS site created at tests/joomla-cms3');
+    }
+
+    /**
      * Executes Selenium System Tests in your machine
      *
      * @param null $seleniumPath
      */
-    public function testAcceptance($seleniumPath = null)
+    public function runTests($seleniumPath = null)
     {
         if(!$seleniumPath) {
             if (!file_exists('selenium-server-standalone.jar')) {
@@ -36,14 +50,7 @@ class RoboFile extends \Robo\Tasks
         }
 
         $this->taskComposerUpdate()->run();
-
-        // Get Joomla Clean Testing sites
-        if (is_dir('tests/joomla-cms3')) {
-            $this->taskDeleteDir('tests/joomla-cms3')->run();
-        }
-
-        $this->_exec('git clone -b staging --single-branch --depth 1 https://github.com/joomla/joomla-cms.git tests/joomla-cms3');
-
+        
         // Loading Symfony Command and running with passed argument
         $this->taskCodecept()->getCommand('build');
 
