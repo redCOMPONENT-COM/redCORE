@@ -191,11 +191,11 @@ class RApiHalHal extends RApi
 			define('JSON_UNESCAPED_SLASHES', 64);
 		}
 		// OAuth2 check
-		if (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 0)
+		if (RBootstrap::getConfig('webservices_authorization_check', 0) == 0)
 		{
 			$this->authorizationCheck = 'oauth2';
 		}
-		elseif (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 1)
+		elseif (RBootstrap::getConfig('webservices_authorization_check', 0) == 1)
 		{
 			$this->authorizationCheck = 'joomla';
 		}
@@ -370,7 +370,7 @@ class RApiHalHal extends RApi
 			else
 			{
 				// If default page needs authorization to access it
-				if (!$this->isAuthorized('', RTranslationHelper::$pluginParams->get('webservices_default_page_authorization', 0)))
+				if (!$this->isAuthorized('', RBootstrap::getConfig('webservices_default_page_authorization', 0)))
 				{
 					return false;
 				}
@@ -402,7 +402,7 @@ class RApiHalHal extends RApi
 		if (!empty($messages))
 		{
 			// If we are not in debug mode we will take out everything except errors
-			if (RTranslationHelper::$pluginParams->get('debug_webservices', 0) == 0)
+			if (RBootstrap::getConfig('debug_webservices', 0) == 0)
 			{
 				foreach ($messages as $key => $message)
 				{
@@ -520,7 +520,7 @@ class RApiHalHal extends RApi
 				'view' => $this,
 				'options' => array (
 					'xml' => $currentConfiguration,
-					'soapEnabled' => RTranslationHelper::$pluginParams->get('enable_soap', 0),
+					'soapEnabled' => RBootstrap::getConfig('enable_soap', 0),
 					'print' => isset($dataGet->print)
 				)
 			)
@@ -1098,7 +1098,7 @@ class RApiHalHal extends RApi
 
 		if (!empty($token))
 		{
-			$this->setUriParams(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), $token);
+			$this->setUriParams(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), $token);
 		}
 
 		if ($client == 'administrator')

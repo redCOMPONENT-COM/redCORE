@@ -28,6 +28,13 @@ if (!defined('JPATH_REDCORE'))
 class RBootstrap
 {
 	/**
+	 * Redcore configuration
+	 *
+	 * @var    JRegistry
+	 */
+	public static $config = null;
+
+	/**
 	 * Defines if redCORE base css should be loaded in Frontend component/modules
 	 *
 	 * @var    bool
@@ -54,6 +61,38 @@ class RBootstrap
 	 * @var    bool
 	 */
 	public static $disableFrontendMootools = false;
+
+	/**
+	 * Gets redCORE config param
+	 *
+	 * @param   string  $key      Config key
+	 * @param   mixed   $default  Default value
+	 *
+	 * @return  mixed
+	 */
+	public static function getConfig($key, $default = null)
+	{
+		if (is_null(self::$config))
+		{
+			$plugin = JPluginHelper::getPlugin('system', 'redcore');
+
+			if ($plugin)
+			{
+				if (is_string($plugin->params))
+				{
+					self::$config = new JRegistry($plugin->params);
+				}
+				elseif (is_object($plugin->params))
+				{
+					self::$config = $plugin->params;
+				}
+			}
+
+			return null;
+		}
+
+		return self::$config->get($key, $default);
+	}
 
 	/**
 	 * Effectively bootstrap redCORE.

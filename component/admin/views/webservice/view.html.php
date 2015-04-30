@@ -60,7 +60,7 @@ class RedcoreViewWebservice extends RedcoreHelpersView
 		$this->formData = $model->formData;
 
 		// Check if option is enabled
-		if (RTranslationHelper::$pluginParams->get('enable_webservices', 0) == 0)
+		if (RBootstrap::getConfig('enable_webservices', 0) == 0)
 		{
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(

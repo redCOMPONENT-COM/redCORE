@@ -175,7 +175,7 @@ abstract class JHtmlRjquery
 			$doc->_scripts = array_merge($jqueryNoConflict, $doc->_scripts);
 			$doc->_scripts = array_merge($jqueryLib, $doc->_scripts);
 		}
-		elseif (!$isAdmin && !RBootstrap::$loadFrontendBootstrap && !version_compare(JVERSION, '3.0', '<'))
+		elseif (!$isAdmin && !RBootstrap::$loadFrontendjQuery && !version_compare(JVERSION, '3.0', '<'))
 		{
 			JHtml::_('jquery.framework');
 		}

@@ -9127,6 +9127,9 @@
 .redcore .modal-backdrop {
   z-index: 0;
 }
+.redcore form fieldset.radio input[type="radio"] {
+  margin-left: 5px;
+}
 .modal-open .modal {
   overflow-x: hidden;
   overflow-y: auto;
@@ -9136,6 +9139,7 @@
   /* Force tabs to overflow visible */
   /* Custom */
   /* Fixing chosen bug when form is inline */
+  /* Chart.js */
 }
 .redcore .content {
   margin-top: 10px;
@@ -9287,4 +9291,26 @@
 }
 .redcore .form-inline .input-group .chzn-container {
   width: 100% !important;
+}
+.redcore ul.chart-legend {
+  list-style-type: none;
+  margin: 0;
+  font-size: 0.8em;
+}
+.redcore ul.chart-legend li {
+  float: left;
+  padding: 5px;
+}
+.redcore ul.chart-legend li div {
+  display: inline-block;
+  margin: 5px;
+  width: 20px;
+  border-radius: 5px;
+}
+.redcore .chart-legend-container {
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+.redcore .chart-box {
+  padding: 0;
 }

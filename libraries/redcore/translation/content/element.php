@@ -77,18 +77,22 @@ final class RTranslationContentElement
 	{
 		$this->extension = $extension;
 		$this->contentElementXml = $contentElementXml;
-		$this->contentElementXmlPath = self::getContentElementXmlPath($extension, $contentElementXml);
 
-		$content = @file_get_contents($this->contentElementXmlPath);
-
-		if (is_string($content))
+		if (!empty($contentElementXml))
 		{
-			$xmlDoc = new SimpleXMLElement($content);
+			$this->contentElementXmlPath = self::getContentElementXmlPath($extension, $contentElementXml);
 
-			$this->xml = $xmlDoc;
-			$this->table = $this->getTableName();
-			$this->name = $this->getContentElementName();
-			$this->primaryKey = $this->getPrimaryKey();
+			$content = @file_get_contents($this->contentElementXmlPath);
+
+			if (is_string($content))
+			{
+				$xmlDoc = new SimpleXMLElement($content);
+
+				$this->xml = $xmlDoc;
+				$this->table = $this->getTableName();
+				$this->name = $this->getContentElementName();
+				$this->primaryKey = $this->getPrimaryKey();
+			}
 		}
 	}
 

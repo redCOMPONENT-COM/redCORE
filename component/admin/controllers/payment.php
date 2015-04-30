@@ -1,0 +1,116 @@
+<?php
+/**
+ * @package     Redcore.Backend
+ * @subpackage  Controllers
+ *
+ * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
+ */
+
+defined('_JEXEC') or die;
+
+/**
+ * Payment Controller
+ *
+ * @package     Redcore.Backend
+ * @subpackage  Controllers
+ * @since       1.5
+ */
+class RedcoreControllerPayment extends RControllerForm
+{
+	/**
+	 * Ajax call to get logs tab content.
+	 *
+	 * @return  void
+	 */
+	public function ajaxlogs()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+		$paymentId = $input->getInt('id');
+
+		if ($paymentId)
+		{
+			/** @var RedcoreModelPayment_Logs $logsModel */
+			$logsModel = RModelAdmin::getAdminInstance('Payment_Logs', array(), 'com_redcore');
+			$state = $logsModel->getState();
+
+			$logsModel->setState('filter.payment_id', $paymentId);
+			$app->setUserState('log.payment_id', $paymentId);
+
+			$formName = 'logsForm';
+			$pagination = $logsModel->getPagination();
+			$pagination->set('formName', $formName);
+
+			echo RLayoutHelper::render('payment.logs', array(
+					'state' => $state,
+					'items' => $logsModel->getItems(),
+					'pagination' => $pagination,
+					'filterForm' => $logsModel->getForm(),
+					'activeFilters' => $logsModel->getActiveFilters(),
+					'formName' => $formName,
+					'showToolbar' => true,
+					'action' => RRoute::_('index.php?option=com_redcore&view=payment&model=payment_logs'),
+					'return' => base64_encode('index.php?option=com_redcore&view=payment&layout=edit&id='
+						. $paymentId . '&tab=logs&from_payment=1')
+				)
+			);
+		}
+
+		$app->close();
+	}
+
+	/**
+	 * Method called to save a model state
+	 *
+	 * @return  void
+	 */
+	public function saveModelState()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$returnUrl = $input->get('return', 'index.php');
+
+		if ($model = $input->get('model', null))
+		{
+			$returnUrl = $input->get('return', 'index.php');
+			$returnUrl = base64_decode($returnUrl);
+			$context = $input->getCmd('context', '');
+
+			$model = RModel::getAdminInstance(ucfirst($model), array('context' => $context));
+
+			$state = $model->getState();
+		}
+
+		$app->redirect($returnUrl);
+	}
+
+	/**
+	 * Force Check payment now
+	 *
+	 * @return  void
+	 */
+	public function checkPayment()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$ids = $input->get('cid', array(), 'array');
+
+		foreach ($ids as $id)
+		{
+			$status = RApiPaymentHelper::checkPayment($id);
+
+			if (!empty($status))
+			{
+				$app->enqueueMessage($status['message'], $status['type']);
+			}
+		}
+
+		// Redirect to the list screen
+		$this->setRedirect(
+			$this->getRedirectToListRoute($this->getRedirectToListAppend())
+		);
+	}
+}

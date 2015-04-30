@@ -255,7 +255,7 @@ class RedcoreModelConfig extends RModelAdmin
 	 *
 	 * @param   string   $extensionType      Extension type
 	 * @param   array    $extensionElements  Extension element search type
-	 * @param   string   $extensionFolder    Folder user when searching for plugin
+	 * @param   array    $extensionFolder    Folder user when searching for plugin
 	 * @param   boolean  $loadLanguage       Load language file for that extension
 	 *
 	 * @return  array  List of objects
@@ -263,7 +263,7 @@ class RedcoreModelConfig extends RModelAdmin
 	public function getInstalledExtensions(
 		$extensionType = 'module',
 		$extensionElements = array('%redcore%'),
-		$extensionFolder = 'redcore',
+		$extensionFolder = array('redcore'),
 		$loadLanguage = true)
 	{
 		$db = $this->getDbo();
@@ -273,6 +273,24 @@ class RedcoreModelConfig extends RModelAdmin
 			->where('e.type = ' . $db->q($extensionType))
 			->where('e.client_id = 0')
 			->order('e.name');
+
+		$folders = is_array($extensionFolder) ? $extensionFolder : array($extensionFolder);
+		$isRedCore = false;
+
+		foreach ($folders as $key => $folder)
+		{
+			$folders[$key] = $db->q($folder);
+
+			if ($folder == 'redcore')
+			{
+				$isRedCore = true;
+			}
+		}
+
+		if ($isRedCore)
+		{
+			$folders[] = $db->q('redpayment');
+		}
 
 		if ($extensionType == 'module')
 		{
@@ -306,7 +324,7 @@ class RedcoreModelConfig extends RModelAdmin
 			$extensionsSearch .= ' OR ';
 		}
 
-		$query->where('(' . $extensionsSearch . ($extensionType == 'plugin' ? ' e.folder = ' . $db->q($extensionFolder) : '') . ')');
+		$query->where('(' . $extensionsSearch . ($extensionType == 'plugin' ? ' e.folder IN (' . implode(',', $folders) . ')' : '') . ')');
 		$db->setQuery($query);
 
 		$extensions = $db->loadObjectList();
