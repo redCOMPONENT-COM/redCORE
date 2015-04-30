@@ -18,28 +18,4 @@ defined('_JEXEC') or die;
  */
 class RedcoreModelPayment_Log extends RModelAdmin
 {
-	/**
-	 * Prepare and sanitise the table data prior to saving.
-	 *
-	 * @param   JTable  $table  A reference to a JTable object.
-	 *
-	 * @return  void
-	 */
-	protected function prepareTable($table)
-	{
-		parent::prepareTable($table);
-
-		$now = JDate::getInstance();
-		$nowFormatted = $now->toSql();
-
-		if ((is_null($table->created_date) || empty($table->created_date)))
-		{
-			$table->bind(
-				array(
-					'created_date' => $nowFormatted,
-					'created_time' => $nowFormatted
-				)
-			);
-		}
-	}
 }
