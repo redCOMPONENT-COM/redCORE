@@ -201,7 +201,7 @@ class RApiPaymentHelper
 
 					foreach ($amount as $value)
 					{
-						$dataValues += $value;
+						$dataValues += $value['sum'];
 					}
 
 					$dataSet = new stdClass;
