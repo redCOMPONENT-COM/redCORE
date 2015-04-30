@@ -72,8 +72,13 @@ class RApiPaymentHelper
 			->where($db->qn('p.type') . '= ' . $db->q('plugin'))
 			->where($db->qn('p.folder') . '= ' . $db->q('redpayment'))
 			->where($db->qn('p.element') . ' = ' . $db->q($paymentName))
-			->leftJoin($db->qn('#__redcore_payment_configuration', 'pc1') . ' ON pc1.payment_name = p.element AND pc1.extension_name = ' . $db->q($extensionName))
-			->leftJoin($db->qn('#__redcore_payment_configuration', 'pc2') . ' ON pc2.payment_name = p.element AND pc2.extension_name = ' . $db->q($extensionName) . ' AND pc2.owner_name = ' . $db->q($ownerName));
+			->leftJoin(
+				$db->qn('#__redcore_payment_configuration', 'pc1') . ' ON pc1.payment_name = p.element AND pc1.extension_name = ' . $db->q($extensionName)
+			)
+			->leftJoin(
+				$db->qn('#__redcore_payment_configuration', 'pc2') . ' ON pc2.payment_name = p.element AND pc2.extension_name = ' . $db->q($extensionName)
+				. ' AND pc2.owner_name = ' . $db->q($ownerName)
+			);
 
 		$db->setQuery($query);
 		$item = $db->loadObject();
@@ -268,9 +273,9 @@ class RApiPaymentHelper
 	/**
 	 * Prepare Payment data for chart
 	 *
-	 * @param   array   $filters       Filters for chart data
-	 * @param   int     $interval      Chart interval points
-	 * @param   string  $sortItem      On which field should it sort the values
+	 * @param   array   $filters   Filters for chart data
+	 * @param   int     $interval  Chart interval points
+	 * @param   string  $sortItem  On which field should it sort the values
 	 *
 	 * @return  mixed
 	 *
@@ -420,8 +425,10 @@ class RApiPaymentHelper
 					}
 
 					$daysInMonth = date('t', strtotime($year . '-' . $month . '-01'));
-					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageCount'] = round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['count'] / $daysInMonth, 2);
-					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageSum'] = round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['sum'] / $daysInMonth, 2);
+					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageCount'] =
+						round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['count'] / $daysInMonth, 2);
+					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageSum'] =
+						round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['sum'] / $daysInMonth, 2);
 				}
 
 				// If this is current year then it is not over yet we need to get only up to current date
@@ -434,8 +441,10 @@ class RApiPaymentHelper
 					$daysInYear = date('z', strtotime($year . '-12-31')) + 1;
 				}
 
-				$chartData['amounts'][$extensionName]['sum'][$year]['averageCount'] = round($chartData['amounts'][$extensionName]['sum'][$year]['count'] / $daysInYear, 2);
-				$chartData['amounts'][$extensionName]['sum'][$year]['averageSum'] = round($chartData['amounts'][$extensionName]['sum'][$year]['sum'] / $daysInYear, 2);
+				$chartData['amounts'][$extensionName]['sum'][$year]['averageCount'] =
+					round($chartData['amounts'][$extensionName]['sum'][$year]['count'] / $daysInYear, 2);
+				$chartData['amounts'][$extensionName]['sum'][$year]['averageSum'] =
+					round($chartData['amounts'][$extensionName]['sum'][$year]['sum'] / $daysInYear, 2);
 			}
 
 			$chartData['amounts'][$extensionName]['sum']['sum'] = $sum;
@@ -844,7 +853,9 @@ class RApiPaymentHelper
 
 		if ($item = self::getPaymentById($paymentId))
 		{
-			JFactory::getApplication()->triggerEvent('onRedpaymentRefundPayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isRefunded));
+			JFactory::getApplication()->triggerEvent(
+				'onRedpaymentRefundPayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isRefunded)
+			);
 		}
 
 		return $isRefunded;
@@ -866,7 +877,9 @@ class RApiPaymentHelper
 
 		if ($item = self::getPaymentById($paymentId))
 		{
-			JFactory::getApplication()->triggerEvent('onRedpaymentCapturePayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isCaptured));
+			JFactory::getApplication()->triggerEvent(
+				'onRedpaymentCapturePayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isCaptured)
+			);
 		}
 
 		return $isCaptured;
@@ -888,7 +901,9 @@ class RApiPaymentHelper
 
 		if ($item = self::getPaymentById($paymentId))
 		{
-			JFactory::getApplication()->triggerEvent('onRedpaymentDeletePayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isDeleted));
+			JFactory::getApplication()->triggerEvent(
+				'onRedpaymentDeletePayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isDeleted)
+			);
 		}
 
 		return $isDeleted;
@@ -916,7 +931,8 @@ class RApiPaymentHelper
 		$config = JFactory::getConfig();
 		$logpath = $config->get('log_path');
 
-		$logFilename = $logpath . '/redpayment/' . $paymentName . '/' . $extensionName . '/' . date('Y-m-') . strtolower($paymentName) . '-' . strtolower($extensionName) . '_log';
+		$logFilename = $logpath . '/redpayment/' . $paymentName . '/' . $extensionName . '/'
+			. date('Y-m-') . strtolower($paymentName) . '-' . strtolower($extensionName) . '_log';
 		$logFile = $logFilename . '.php';
 
 		if (JFile::exists($logFile))
@@ -995,9 +1011,9 @@ class RApiPaymentHelper
 	/**
 	 * Generate Payment Log depending on the status
 	 *
-	 * @param   string         $status   Status string
-	 * @param   array|object   $data     Data from gateway
-	 * @param   string         $message  Message Text
+	 * @param   string        $status   Status string
+	 * @param   array|object  $data     Data from gateway
+	 * @param   string        $message  Message Text
 	 *
 	 * @return array
 	 */
@@ -1016,7 +1032,8 @@ class RApiPaymentHelper
 		$paymentLog['status'] = RApiPaymentStatus::getStatus($status);
 		$paymentLog['message_uri'] = JUri::getInstance()->toString();
 		$paymentLog['message_post'] = json_encode($data);
-		$paymentLog['message_text'] = !is_null($message) ? $message : JText::sprintf('LIB_REDCORE_PAYMENT_LOG_DEFAULT_MESSAGE', $data['extension_name'], $data['payment_name']);
+		$paymentLog['message_text'] = !is_null($message) ?
+			$message : JText::sprintf('LIB_REDCORE_PAYMENT_LOG_DEFAULT_MESSAGE', $data['extension_name'], $data['payment_name']);
 
 		return $paymentLog;
 	}
@@ -1024,8 +1041,8 @@ class RApiPaymentHelper
 	/**
 	 * Generate Payment Log depending on the status
 	 *
-	 * @param   array   $paymentLog           Data for payment log storage
-	 * @param   bool    $updatePaymentStatus  Update Payment Status
+	 * @param   array  $paymentLog           Data for payment log storage
+	 * @param   bool   $updatePaymentStatus  Update Payment Status
 	 *
 	 * @return array
 	 */
@@ -1046,7 +1063,7 @@ class RApiPaymentHelper
 		{
 			if ($updatePaymentStatus)
 			{
-				RApiPaymentHelper::updatePaymentStatus($paymentLog['payment_id']);
+				self::updatePaymentStatus($paymentLog['payment_id']);
 			}
 		}
 	}
@@ -1061,7 +1078,7 @@ class RApiPaymentHelper
 	 */
 	public static function triggerExtensionHelperMethod($extensionName, $functionName)
 	{
-		$apiHelperClass = RApiPaymentHelper::getExtensionHelperObject($extensionName);
+		$apiHelperClass = self::getExtensionHelperObject($extensionName);
 		$args = func_get_args();
 
 		// Remove extension and function name from arguments

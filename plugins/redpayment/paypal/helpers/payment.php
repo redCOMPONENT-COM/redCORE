@@ -196,7 +196,6 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 				$isValid = true,
 				$statusText
 			);
-
 		}
 		elseif (strcmp($response, "INVALID") == 0)
 		{

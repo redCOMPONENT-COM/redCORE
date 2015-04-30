@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  Views
  * @since       1.2
  */
-class RedcoreViewPayment_configurations extends RedcoreHelpersView
+class RedcoreViewPayment_Configurations extends RedcoreHelpersView
 {
 	/**
 	 * @var  array

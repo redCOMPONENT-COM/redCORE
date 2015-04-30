@@ -351,9 +351,6 @@ class RApiPaymentPayment extends RApi
 			$this->paymentId = $this->paymentObject->id;
 		}
 
-		// If we cannot find it either by Payment Id or Extension order Id, then we have to create it
-
-
 		return $this->paymentObject;
 	}
 
