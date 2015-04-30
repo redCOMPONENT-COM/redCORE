@@ -425,10 +425,10 @@ class RApiPaymentHelper
 					}
 
 					$daysInMonth = date('t', strtotime($year . '-' . $month . '-01'));
-					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageCount'] =
-						round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['count'] / $daysInMonth, 2);
-					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageSum'] =
-						round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['sum'] / $daysInMonth, 2);
+					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageCount']
+									= round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['count'] / $daysInMonth, 2);
+					$chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['averageSum']
+									= round($chartData['amounts'][$extensionName]['sum'][$year]['val'][$month]['sum'] / $daysInMonth, 2);
 				}
 
 				// If this is current year then it is not over yet we need to get only up to current date
@@ -441,10 +441,10 @@ class RApiPaymentHelper
 					$daysInYear = date('z', strtotime($year . '-12-31')) + 1;
 				}
 
-				$chartData['amounts'][$extensionName]['sum'][$year]['averageCount'] =
-					round($chartData['amounts'][$extensionName]['sum'][$year]['count'] / $daysInYear, 2);
-				$chartData['amounts'][$extensionName]['sum'][$year]['averageSum'] =
-					round($chartData['amounts'][$extensionName]['sum'][$year]['sum'] / $daysInYear, 2);
+				$chartData['amounts'][$extensionName]['sum'][$year]['averageCount']
+								= round($chartData['amounts'][$extensionName]['sum'][$year]['count'] / $daysInYear, 2);
+				$chartData['amounts'][$extensionName]['sum'][$year]['averageSum']
+								= round($chartData['amounts'][$extensionName]['sum'][$year]['sum'] / $daysInYear, 2);
 			}
 
 			$chartData['amounts'][$extensionName]['sum']['sum'] = $sum;
@@ -770,7 +770,7 @@ class RApiPaymentHelper
 	 *
 	 * @param   string  $extensionName  Extension name
 	 * @param   string  $ownerName      Owner name
-	 * @param   string  $listType       List type can be between radio and dropdown (if parameter not set then default redcore plugin option will be used)
+	 * @param   string  $listType       List type can be between radio and dropdown (if parameter not set then default redcore plugin option is used)
 	 * @param   string  $name           Name of the field
 	 * @param   string  $value          Selected value of the field
 	 * @param   string  $id             Id of the field
@@ -1044,7 +1044,7 @@ class RApiPaymentHelper
 	 * @param   array  $paymentLog           Data for payment log storage
 	 * @param   bool   $updatePaymentStatus  Update Payment Status
 	 *
-	 * @return array
+	 * @return bool
 	 */
 	public static function saveNewPaymentLog($paymentLog, $updatePaymentStatus = true)
 	{
@@ -1066,6 +1066,8 @@ class RApiPaymentHelper
 				self::updatePaymentStatus($paymentLog['payment_id']);
 			}
 		}
+
+		return true;
 	}
 
 	/**
