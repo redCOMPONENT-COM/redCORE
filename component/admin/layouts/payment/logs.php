@@ -87,22 +87,22 @@ $searchToolsOptions = array(
 					<input type="checkbox" name="checkall-toggle" value=""
 					       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 				</th>
-				<th width="20%" class="nowrap" data-hide="phone">
+				<th width="20%" class="nowrap">
 					<?php echo JHtml::_(
 						'rsearchtools.sort', 'COM_REDCORE_PAYMENT_CREATED', 'l.created_date', $listDirn, $listOrder, null, 'asc', '', null, $formName
 					); ?>
 				</th>
-				<th width="20%" class="nowrap" data-hide="phone">
+				<th width="20%" class="nowrap">
 					<?php echo JHtml::_(
 						'rsearchtools.sort', 'COM_REDCORE_PAYMENT_LOG_AMOUNT', 'l.amount', $listDirn, $listOrder, null, 'asc', '', null, $formName
 					); ?>
 				</th>
-				<th class="nowrap" data-toggle="true">
+				<th class="nowrap">
 					<?php echo JHtml::_(
 						'rsearchtools.sort', 'COM_REDCORE_PAYMENT_LOG_MESSAGE', 'l.message_text', $listDirn, $listOrder, null, 'asc', '', null, $formName
 					); ?>
 				</th>
-				<th width="15%" class="nowrap" data-hide="phone">
+				<th width="15%" class="nowrap">
 					<?php echo JHtml::_(
 						'rsearchtools.sort', 'COM_REDCORE_PAYMENT_LOG_STATUS', 'l.status', $listDirn, $listOrder, null, 'asc', '', null, $formName
 					); ?>

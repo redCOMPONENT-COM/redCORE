@@ -7812,6 +7812,7 @@
 .redcore {
   padding-top: 40px;
   /* Force tabs to overflow visible */
+  /* Chart.js */
 }
 .redcore .content {
   margin-top: 10px;
@@ -7914,4 +7915,26 @@
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   outline: none;
+}
+.redcore ul.chart-legend {
+  list-style-type: none;
+  margin: 0;
+  font-size: 0.8em;
+}
+.redcore ul.chart-legend li {
+  float: left;
+  padding: 5px;
+}
+.redcore ul.chart-legend li div {
+  display: inline-block;
+  margin: 5px;
+  width: 20px;
+  border-radius: 5px;
+}
+.redcore .chart-legend-container {
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+.redcore .chart-box {
+  padding: 0;
 }

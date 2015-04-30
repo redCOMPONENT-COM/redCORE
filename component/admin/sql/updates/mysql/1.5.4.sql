@@ -2,7 +2,13 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 -- Change current tables
 ALTER TABLE `#__redcore_webservices`
-ADD KEY `idx_webservice_keys` (`client`, `name`, `version`);
+ ADD KEY `idx_webservice_keys` (`client`, `name`, `version`);
+
+ALTER TABLE `#__redcore_oauth_clients`
+ DROP KEY `idx_client_id`;
+
+ALTER TABLE `#__redcore_oauth_clients`
+ ADD UNIQUE KEY `idx_client_id` (`client_id`);
 
 -- Add new tables
 

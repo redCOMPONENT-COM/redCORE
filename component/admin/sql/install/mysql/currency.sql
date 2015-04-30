@@ -156,5 +156,4 @@ INSERT INTO `#__redcore_currency` (`id`, `alpha3`, `name`, `symbol`, `numeric`, 
 	(155, 'XPF', 'CFP Franc', 'XPF', 953, 1, 2, 1, 1, ',', '.'),
 	(156, 'YER', 'Yemeni Rial', '﷼', 886, 1, 2, 1, 1, ',', '.'),
 	(157, 'ZAR', 'Rand', 'R', 710, 1, 2, 1, 1, ',', '.'),
-	(158, 'ZMK', 'Zambian Kwacha', 'ZK', 894, 1, 2, 1, 1, ',', '.'),
-	(159, 'PTS', 'Points', 'Pts', 999, 1, 2, 1, 1, ',', '.');
+	(158, 'ZMK', 'Zambian Kwacha', 'ZK', 894, 1, 2, 1, 1, ',', '.');
