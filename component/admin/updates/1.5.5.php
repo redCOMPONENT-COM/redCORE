@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  Upgrade
  * @since       1.5
  */
-class Com_RedcoreUpdateScript_1_5_4
+class Com_RedcoreUpdateScript_1_5_5
 {
 	/**
 	 * Performs the upgrade after initial Joomla update for this version
