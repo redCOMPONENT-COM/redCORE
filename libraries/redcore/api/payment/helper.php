@@ -607,7 +607,7 @@ class RApiPaymentHelper
 			return false;
 		}
 
-		$paymentId = (int) $model->getState('payment.id');
+		$paymentId = (isset($paymentData['id']) ? $paymentData['id'] : (int) $model->getState('payment.id'));
 
 		if (!empty($paymentData['id']))
 		{
