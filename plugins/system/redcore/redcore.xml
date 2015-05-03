@@ -319,6 +319,15 @@
                     <option value="payment_name">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_PAYMENT</option>
                     <option value="status">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_STATUS</option>
                 </field>
+                <field
+                        name="payment_enable_chart_sandbox_payments"
+                        type="list"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_CHART_SANDBOX_PAYMENTS"
+                        description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_CHART_SANDBOX_PAYMENTS_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
             </fieldset>
         </fields>
     </config>

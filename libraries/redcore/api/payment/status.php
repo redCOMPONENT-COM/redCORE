@@ -122,6 +122,39 @@ class RApiPaymentStatus
 	}
 
 	/**
+	 * Gives proper status label class for Status Name
+	 *
+	 * @param   string  $statusName  Status Key name
+	 *
+	 * @return  string
+	 */
+	public static function getStatusLabelClass($statusName)
+	{
+		$key = self::getStatus($statusName);
+
+		switch ($key)
+		{
+			case self::getStatusCreated():
+			case self::getStatusProcessed():
+				return 'default';
+			case self::getStatusUndefined():
+			case self::getStatusPending():
+				return 'danger';
+			case self::getStatusCompleted():
+			case self::getStatusCanceled_Reversal():
+				return 'success';
+			case self::getStatusExpired():
+			case self::getStatusReversed():
+			case self::getStatusFailed():
+			case self::getStatusDenied():
+			case self::getStatusRefunded():
+				return 'danger';
+		}
+
+		return JText::_('LIB_REDCORE_PAYMENT_STATUS_' . strtoupper($key));
+	}
+
+	/**
 	 * Gives proper status string for Status Created
 	 *
 	 * @return  string

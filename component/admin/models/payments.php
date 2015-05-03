@@ -88,8 +88,8 @@ class RedcoreModelPayments extends RModelList
 		$orderList = $this->getState('list.ordering');
 		$directionList = $this->getState('list.direction');
 
-		$order = !empty($orderList) ? $orderList : 'p.payment_name';
-		$direction = !empty($directionList) ? $directionList : 'ASC';
+		$order = !empty($orderList) ? $orderList : 'p.modified_date';
+		$direction = !empty($directionList) ? $directionList : 'DESC';
 		$query->order($db->escape($order) . ' ' . $db->escape($direction));
 
 		return $query;

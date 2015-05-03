@@ -74,6 +74,14 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	public $autoSubmit = false;
 
 	/**
+	 * There are two types of calculating fee based on percentage:
+	 * 'add' adds a percentage based fee to the total amount (ex. 100$ + 10% = 110$)
+	 * 'include' Fee is calculated as a commission rate (ex. 100$ + include commission = 111,11$ that will result of giving shopper full amount of 100$)
+	 * @var string
+	 */
+	public $paymentFeeType = 'include';
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JRegistry  $params  Parameters from the plugin
@@ -717,13 +725,14 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 * Calculates fee based on given amount and currency
 	 *
 	 * @param   float   $amount    Amount to calculate fee
-	 * @param   string  $currency  iso 4217 3 letters currency code
+	 * @param   string  $currency  Iso 4217 3 letters currency code
 	 *
 	 * @return float
 	 */
 	protected function getPaymentFee($amount, $currency)
 	{
 		$paymentFee = $this->params->get('payment_fee', 0);
+		$paymentFeeType = $this->params->get('payment_fee_type', $this->paymentFeeType);
 
 		if (strpos($paymentFee, '%') === false || $paymentFee == 0)
 		{
@@ -731,10 +740,17 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		}
 
 		$paymentFee = (float) $paymentFee;
-		$fee = $amount * (1 + $paymentFee / 100);
 
-		// Trim to precision
-		$fee = round($fee, RHelperCurrency::getPrecision($currency));
+		if ($paymentFeeType == 'add')
+		{
+			// Adds a percentage based fee to the total amount
+			$fee = $amount * ($paymentFee / 100);
+		}
+		else
+		{
+			// The fee is calculated as a commission rate
+			$fee = ($amount / (1 - ($paymentFee / 100))) - $amount;
+		}
 
 		return $fee;
 	}

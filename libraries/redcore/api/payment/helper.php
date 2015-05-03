@@ -473,8 +473,12 @@ class RApiPaymentHelper
 
 		$query = $db->getQuery(true)
 			->select('p.*')
-			->from($db->qn('#__redcore_payments', 'p'))
-			->where('p.sandbox = 0');
+			->from($db->qn('#__redcore_payments', 'p'));
+
+		if (RBootstrap::getConfig('payment_enable_chart_sandbox_payments', 1) == 0)
+		{
+			$query->where('p.sandbox = 0');
+		}
 
 		// Is status is not set then we are in the statuses view graph and we are not looking only confirmed payments
 		$dateField = !isset($filters['status']) ? 'created_date' : 'confirmed_date';

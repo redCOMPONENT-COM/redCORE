@@ -17,12 +17,12 @@ JHtml::_('rjquery.chosen', 'select');
 ?>
 <form action="<?php echo $action; ?>" method="post" name="adminForm" id="adminForm"
       class="form-validate form-horizontal">
+	<div class="col-md-12">
+		<h3><?php echo JText::_('COM_REDCORE_PAYMENT_LOG_TITLE_TEXT'); ?></h3>
+		<?php echo $this->item->message_text; ?>
+		<br/><br/>
+	</div>
 	<div class="container-fluid">
-		<div class="col-md-12">
-			<h3><label class="label label-primary"><?php echo JText::_('COM_REDCORE_PAYMENT_LOG_TITLE_TEXT'); ?></label></h3>
-			<?php echo $this->item->message_text; ?>
-			<br/><br/>
-		</div>
 		<div class="col-md-6">
 			<table class="table table-condensed table-striped">
 				<tr>
@@ -62,7 +62,9 @@ JHtml::_('rjquery.chosen', 'select');
 						<?php echo JText::_('COM_REDCORE_PAYMENT_STATUS'); ?>
 					</th>
 					<td>
-						<?php echo RApiPaymentStatus::getStatusLabel($this->item->status); ?>
+						<label class="label label-<?php echo RApiPaymentStatus::getStatusLabelClass($this->item->status); ?>">
+							<?php echo RApiPaymentStatus::getStatusLabel($this->item->status); ?>
+						</label>
 					</td>
 				</tr>
 			</table>
@@ -87,10 +89,18 @@ JHtml::_('rjquery.chosen', 'select');
 					</td>
 				</tr>
 				<tr>
+					<th>
+						<?php echo JText::_('COM_REDCORE_PAYMENT_LOG_REFERRER'); ?>
+					</th>
+					<td style="word-wrap:break-word;">
+						<?php echo $this->item->referrer; ?>
+					</td>
+				</tr>
+				<tr>
 					<th style="width: 25%;word-wrap:break-word;">
 						<?php echo JText::_('COM_REDCORE_PAYMENT_LOG_MESSAGE_URI'); ?>
 					</th>
-					<td>
+					<td style="word-wrap:break-word;">
 						<?php echo $this->item->message_uri; ?>
 					</td>
 				</tr>
@@ -98,16 +108,16 @@ JHtml::_('rjquery.chosen', 'select');
 					<th>
 						<?php echo JText::_('COM_REDCORE_PAYMENT_CUSTOMER_NOTE'); ?>
 					</th>
-					<td>
+					<td style="word-wrap:break-word;">
 						<?php echo $this->item->customer_note; ?>
 					</td>
 				</tr>
 			</table>
 		</div>
 	</div>
-	<div>
-		<h3><label class="label label-primary"><?php echo JText::_('COM_REDCORE_PAYMENT_LOG_MESSAGE_TEXT'); ?></label></h3><br />
-		<?php echo $this->item->message_post; ?>
+	<div class="container-fluid">
+		<h3><?php echo JText::_('COM_REDCORE_PAYMENT_LOG_MESSAGE_TEXT'); ?></h3><br />
+		<p style="word-wrap:break-word;"><?php echo $this->item->message_post; ?></p>
 	</div>
 
 	<!-- hidden fields -->
