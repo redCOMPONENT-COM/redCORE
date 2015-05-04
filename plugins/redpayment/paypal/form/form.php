@@ -19,7 +19,8 @@ $ownerName = $data['options']['ownerName'];
 $paymentName = $data['options']['paymentName'];
 $paymentTitle = $data['options']['paymentTitle'];
 $paymentLogo = $params->get('payment_logo');
-$formName = 'redpaymentForm' . $data['options']['paymentName'];
+$payment = $data['options']['payment'];
+$formName = $data['options']['formName'];
 $action = $data['options']['action'];
 $autoSubmit = !empty($data['options']['autoSubmit']);
 ?>
@@ -37,11 +38,23 @@ $autoSubmit = !empty($data['options']['autoSubmit']);
 				document.getElementById("<?php echo $formName ?>").submit();
 			}
 		</script>
-	<?php else : ?>
-		<?php if ($paymentLogo) : ?>
-			<input type="image" src="<?php echo $paymentLogo; ?>" alt="<?php echo JText::sprintf('LIB_REDCORE_PAYMENT_SUBMIT_TO_PAYMENT', $paymentName); ?>" />
+	<?php else :
+		$text = JText::sprintf('LIB_REDCORE_PAYMENT_SUBMIT_TO_PAYMENT', $paymentTitle);
+		if ($paymentLogo) : ?>
+			<input
+				type="image"
+				name="<?php echo $formName ?>Submit"
+				id="<?php echo $formName ?>Submit"
+				class="submitButton"
+				src="<?php echo $paymentLogo; ?>"
+				alt="<?php echo $text; ?>" />
 		<?php else : ?>
-			<input type="submit" value="<?php echo JText::sprintf('LIB_REDCORE_PAYMENT_SUBMIT_TO_PAYMENT', $paymentName); ?>" />
-		<?php endif; ?>
-	<?php endif; ?>
+			<input
+				type="submit"
+				name="<?php echo $formName ?>Submit"
+				id="<?php echo $formName ?>Submit"
+				class="btn btn-primary submitButton"
+				value="<?php echo $text; ?>" />
+		<?php endif;
+	endif; ?>
 </form>
