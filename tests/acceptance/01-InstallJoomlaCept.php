@@ -9,9 +9,9 @@
 // Load the Step Object Page
 $I = new \AcceptanceTester($scenario);
 
-$I->wantToTest('redCORE installation in Joomla 3');
-//$I->installJoomla();
+$I->wantToTest('Joomla 3 Installation');
+$I->installJoomla();
 $I->doAdministratorLogin();
-//$I->setErrorReportingToDevelopment();
+$I->setErrorReportingToDevelopment();
 $path = $I->getConfiguration('repo_folder');
 $I->installExtensionFromDirectory($path);
