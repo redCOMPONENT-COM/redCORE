@@ -654,6 +654,8 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 				'action'        => $this->getPaymentURL(),
 				'autoSubmit'    => isset($data['autoSubmit']) ? $data['autoSubmit'] : $this->autoSubmit,
 				'params'        => $this->params,
+				'payment'       => $payment,
+				'formName'      => 'redpaymentForm' . $payment->id,
 			)
 		);
 
