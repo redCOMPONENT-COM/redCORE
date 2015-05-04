@@ -19,8 +19,6 @@ $I->click(['link' => 'Translation options']);
 $I->selectOptionInChosen('Enable translations', 'Yes');
 $I->click(['link' => 'Webservice options']);
 $I->selectOptionInChosen('Enable webservices', 'Yes');
-$I->click(['link' => 'OAuth2 Server options']);
-$I->selectOptionInChosen('Enable Oauth2 Server', 'Yes');
 $I->click(['xpath' => "//div[@id='toolbar-apply']/button"]);
 $I->waitForText('Plugin successfully saved.', 5, ['id' => 'system-message-container']);
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');
