@@ -180,7 +180,9 @@ final class RHelperCurrency
 	 */
 	public static function getIsoNumber($code)
 	{
-		return !empty($code) ? self::getCurrency($code)->numeric : $code;
+		$currency = !empty($code) ? self::getCurrency($code) : null;
+
+		return $currency ? $currency->numeric : $code;
 	}
 
 	/**
@@ -212,7 +214,9 @@ final class RHelperCurrency
 	 */
 	public static function getPrecision($code)
 	{
-		return self::getCurrency($code)->decimals;
+		$currency = self::getCurrency($code);
+
+		return $currency ? $currency->decimals : 0;
 	}
 
 	/**

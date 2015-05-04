@@ -72,7 +72,7 @@ $listDirn = $this->state->get('list.direction');
 			<?php if ($this->items): ?>
 				<tbody>
 				<?php foreach ($this->items as $i => $item): ?>
-					<tr>
+					<tr class="<?php echo RApiPaymentStatus::getStatusLabelClass($item->status); ?>">
 						<td>
 							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
 						</td>

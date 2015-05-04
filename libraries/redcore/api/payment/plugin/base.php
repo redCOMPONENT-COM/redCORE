@@ -81,6 +81,8 @@ abstract class RApiPaymentPluginBase extends JPlugin
 			'value' => $this->paymentName,
 			'text' => $this->params->get('payment_title', $this->paymentName),
 			'logo' => $this->params->get('payment_logo', ''),
+			'params' => $this->paymentHelper->params,
+			'helper' => $this->paymentHelper
 		);
 	}
 

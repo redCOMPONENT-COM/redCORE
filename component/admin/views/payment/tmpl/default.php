@@ -95,6 +95,14 @@ JHtml::_('rsearchtools.main');
 				</tr>
 				<tr>
 					<th>
+						<?php echo JText::_('COM_REDCORE_PAYMENT_LOG_COUPON_CODE'); ?>
+					</th>
+					<td>
+						<?php echo $this->item->coupon_code; ?>
+					</td>
+				</tr>
+				<tr>
+					<th>
 						<?php echo JText::_('COM_REDCORE_PAYMENT_CREATED'); ?>
 					</th>
 					<td>
@@ -119,14 +127,6 @@ JHtml::_('rsearchtools.main');
 				</tr>
 				<tr>
 					<th>
-						<?php echo JText::_('COM_REDCORE_PAYMENT_CUSTOMER_NOTE'); ?>
-					</th>
-					<td>
-						<?php echo $this->item->customer_note; ?>
-					</td>
-				</tr>
-				<tr>
-					<th>
 						<?php echo JText::_('COM_REDCORE_PAYMENT_RETRY_COUNTER'); ?>
 					</th>
 					<td>
@@ -138,7 +138,17 @@ JHtml::_('rsearchtools.main');
 						<?php echo JText::_('COM_REDCORE_PAYMENT_STATUS'); ?>
 					</th>
 					<td>
-						<?php echo RApiPaymentStatus::getStatusLabel($this->item->status); ?>
+						<label class="label label-<?php echo RApiPaymentStatus::getStatusLabelClass($this->item->status); ?>">
+							<?php echo RApiPaymentStatus::getStatusLabel($this->item->status); ?>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<?php echo JText::_('COM_REDCORE_PAYMENT_CUSTOMER_NOTE'); ?>
+					</th>
+					<td>
+						<?php echo $this->item->customer_note; ?>
 					</td>
 				</tr>
 			</table>

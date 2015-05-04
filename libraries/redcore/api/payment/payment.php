@@ -220,7 +220,7 @@ class RApiPaymentPayment extends RApi
 		$app->triggerEvent('onRedpaymentRequestAccept', array($this->paymentName, $this->extensionName, $this->ownerName, $this->requestData, &$logData));
 
 		// Save payment log and do not update change for payment
-		RApiPaymentHelper::saveNewPaymentLog($logData, false);
+		RApiPaymentHelper::saveNewPaymentLog($logData);
 
 		$redirect = !empty($payment->url_accept) ? $payment->url_accept : JUri::root() . 'index.php?option=' . $payment->extension_name;
 
@@ -249,7 +249,7 @@ class RApiPaymentPayment extends RApi
 		$app->triggerEvent('onRedpaymentRequestCancel', array($this->paymentName, $this->extensionName, $this->ownerName, $this->requestData, &$logData));
 
 		// Save payment log and do not update change for payment
-		RApiPaymentHelper::saveNewPaymentLog($logData, false);
+		RApiPaymentHelper::saveNewPaymentLog($logData);
 
 		$redirect = !empty($payment->url_cancel) ? $payment->url_cancel : JUri::root() . 'index.php?option=' . $payment->extension_name;
 

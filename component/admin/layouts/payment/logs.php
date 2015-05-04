@@ -121,7 +121,7 @@ $searchToolsOptions = array(
 						$itemUrl .= '&return=' . $return;
 					}
 					?>
-					<tr>
+					<tr class="<?php echo RApiPaymentStatus::getStatusLabelClass($item->status); ?>">
 						<td>
 							<?php echo JHtml::_('rgrid.id', $i, $item->id, false, 'cid', $formName); ?>
 						</td>
