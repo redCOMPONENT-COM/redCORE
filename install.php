@@ -651,23 +651,20 @@ class Com_RedcoreInstallerScript
 			$manifest  = $this->getManifest($parent);
 			$type      = $manifest->attributes()->type;
 
-			if ($type == 'component')
+			if ($manifest->redcore)
 			{
-				if ($manifest->redcore)
+				$installer = $this->getInstaller();
+				$redcoreFolder = dirname(__FILE__);
+				$redcoreComponentFolder = $this->getRedcoreComponentFolder();
+
+				if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
 				{
-					$installer = $this->getInstaller();
-					$redcoreFolder = dirname(__FILE__);
-					$redcoreComponentFolder = $this->getRedcoreComponentFolder();
+					$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
 
-					if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
+					if ($install)
 					{
-						$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
-
-						if ($install)
-						{
-							$installer->install($redcoreFolder);
-							$this->loadRedcoreLibrary();
-						}
+						$installer->install($redcoreFolder);
+						$this->loadRedcoreLibrary();
 					}
 				}
 			}
