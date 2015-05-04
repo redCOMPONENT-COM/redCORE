@@ -731,7 +731,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 *
 	 * @return float
 	 */
-	protected function getPaymentFee($amount, $currency)
+	public function getPaymentFee($amount, $currency = '')
 	{
 		$paymentFee = $this->params->get('payment_fee', 0);
 		$paymentFeeType = $this->params->get('payment_fee_type', $this->paymentFeeType);
