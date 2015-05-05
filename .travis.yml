@@ -22,6 +22,10 @@ before_script:
 - echo "c11"
 - "fluxbox &"
 
+# Selenium server
+- wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar -O selenium-server-standalone.jar # Downloads Selenium and renames it
+- "java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &" # Starts selenium standalone server
+- redCORE/.travis/wait4selenium.sh # Loops until selenium is ready
 
 script:
 - php .travis/phppec.php component/ libraries/ modules/ plugins/
