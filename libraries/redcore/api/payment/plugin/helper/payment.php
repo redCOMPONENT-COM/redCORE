@@ -396,7 +396,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 			}
 
 			// Create new payment based on order data
-			$this->createPayment($extensionName, $ownerName, $orderData);
+			$this->createPayment($extensionName, $ownerName, $createData);
 
 			$payment = RApiPaymentHelper::getPaymentByExtensionId($extensionName, $orderId);
 		}
