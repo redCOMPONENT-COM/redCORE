@@ -4,8 +4,38 @@
  *
  * @see http://robo.li/
  */
+require_once 'vendor/autoload.php';
+
+
 class RoboFile extends \Robo\Tasks
 {
+    use \redcomponent\robo\loadTasks;
+
+    public function sayHelloWorld()
+    {
+        $result = $this->taskHelloWorld()->run();
+
+        return $result;
+    }
+
+    /**
+     * @param string $slackChannel              The Slack Channel ID
+     * @param string $slackToken                Your Slack authentication token.
+     * @param string $codeceptionOutputFolder   Optional. By default tests/_output
+     *
+     * @return mixed
+     */
+    public function sendCodeceptionOutputToSlack($slackChannel, $slackToken = null, $codeceptionOutputFolder = null)
+    {
+        if (is_null($slackToken)) {
+            $slackToken = getenv('SLACK_ENCRYPTED_TOKEN');
+        }
+
+        $result = $this->taskSendCodeceptionOutputToSlack($slackChannel, $slackToken, $codeceptionOutputFolder)->run();
+
+        return $result;
+    }
+
     /**
      * Downloads and prepares a Joomla CMS site for testing
      */
