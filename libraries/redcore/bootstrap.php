@@ -155,6 +155,25 @@ class RBootstrap
 
 			// Make available the rules
 			JFormHelper::addRulePath(JPATH_LIBRARIES . '/redcore/form/rules');
+
+			// Replaces Joomla database driver for redCORE database driver
+			JFactory::$database = null;
+			JFactory::$database = RFactory::getDbo();
+
+			if (self::getConfig('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
+			{
+				// This is our object now
+				$db = JFactory::getDbo();
+
+				// Enable translations
+				$db->translate = self::getConfig('enable_translations', 0) == 1;
+
+				if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+				{
+					// Reset plugin params if we are in a different language than default
+					RTranslationHelper::resetPluginTranslation();
+				}
+			}
 		}
 	}
 }
