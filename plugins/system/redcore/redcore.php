@@ -34,9 +34,12 @@ class PlgSystemRedcore extends JPlugin
 
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
-		if (file_exists($redcoreLoader) && !$this->isInstaller())
+		if (file_exists($redcoreLoader))
 		{
 			require_once $redcoreLoader;
+
+			// Sets plugin parameters for further use
+			RBootstrap::$config = $this->params;
 
 			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
 			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
@@ -44,28 +47,9 @@ class PlgSystemRedcore extends JPlugin
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
 
-			RBootstrap::bootstrap(false);
-
-			// Sets plugin parameters for further use
-			RBootstrap::$config = $this->params;
-
-			// Replaces Joomla database driver for redCORE database driver
-			JFactory::$database = null;
-			JFactory::$database = RFactory::getDbo();
-
-			if ($this->params->get('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
+			if (!$this->isInstaller())
 			{
-				// This is our object now
-				$db = JFactory::getDbo();
-
-				// Enable translations
-				$db->translate = $this->params->get('enable_translations', 0) == 1;
-
-				if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
-				{
-					// Reset plugin params if we are in a different language than default
-					RTranslationHelper::resetPluginTranslation();
-				}
+				RBootstrap::bootstrap(false);
 			}
 		}
 	}
