@@ -270,6 +270,9 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 */
 	public function createPayment($extensionName, $ownerName, $data)
 	{
+		// Is payment new
+		$isNew = empty($data['id']);
+
 		// Calculate price
 		$data['amount_total'] = (float) $data['amount_original'];
 
@@ -315,8 +318,29 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 			$data['order_name'] = $data['order_id'];
 		}
 
+		// Set payment name
+		if (empty($data['payment_name']))
+		{
+			$data['payment_name'] = $this->paymentName;
+		}
+
+		// Set extension name
+		if (empty($data['extension_name']))
+		{
+			$data['extension_name'] = $extensionName;
+		}
+
+		// Set owner name
+		if (empty($data['owner_name']))
+		{
+			$data['owner_name'] = $ownerName;
+		}
+
 		// This field sets how many times does the plugin try to get response from Payment Gateway for the transaction status.
-		$data['retry_counter'] = $this->params->get('retry_counter', RBootstrap::getConfig('payment_number_of_payment_check_retries', 30));
+		if (!isset($data['retry_counter']))
+		{
+			$data['retry_counter'] = $this->params->get('retry_counter', RBootstrap::getConfig('payment_number_of_payment_check_retries', 30));
+		}
 
 		$paymentId = RApiPaymentHelper::updatePaymentData($data);
 
@@ -332,7 +356,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 			$data['payment_log'] = RApiPaymentHelper::generatePaymentLog(
 				RApiPaymentStatus::getStatusCreated(),
 				$data,
-				JText::sprintf('LIB_REDCORE_PAYMENT_LOG_CREATE_MESSAGE', $data['extension_name'], $this->paymentName)
+				JText::sprintf('LIB_REDCORE_PAYMENT_LOG_' . ($isNew ? 'CREATE' : 'UPDATE') . '_MESSAGE', $data['extension_name'], $this->paymentName)
 			);
 		}
 
@@ -353,15 +377,45 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	{
 		$orderId = empty($orderData['order_id']) ? $orderData['id'] : $orderData['order_id'];
 		$payment = RApiPaymentHelper::getPaymentByExtensionId($extensionName, $orderId);
+		$restrictedData = array(
+			'id', 'extension_name', 'payment_name', 'sandbox', 'created_date', 'modified_date', 'confirmed_date', 'transaction_id',
+			'amount_total', 'amount_paid', 'coupon_code', 'customer_note', 'status'
+		);
 
 		if (!$payment)
 		{
 			$ownerName = !empty($orderData['owner_name']) ? $orderData['owner_name'] : '';
+			$createData = array();
+
+			foreach ($orderData as $key => $value)
+			{
+				if (!in_array($key, $restrictedData))
+				{
+					$createData[$key] = $orderData[$key];
+				}
+			}
 
 			// Create new payment based on order data
-			$this->createPayment($extensionName, $ownerName, $orderData);
+			$this->createPayment($extensionName, $ownerName, $createData);
 
 			$payment = RApiPaymentHelper::getPaymentByExtensionId($extensionName, $orderId);
+		}
+		else
+		{
+			// We will update payment with provided data if it is different than originally provided
+			$ownerName = !empty($orderData['owner_name']) ? $orderData['owner_name'] : $payment->owner_name;
+			$updateData = JArrayHelper::fromObject($payment);
+
+			foreach ($orderData as $key => $value)
+			{
+				if (!in_array($key, $restrictedData))
+				{
+					$updateData[$key] = $orderData[$key];
+				}
+			}
+
+			// Create new payment based on order data
+			$this->createPayment($extensionName, $ownerName, $updateData);
 		}
 
 		return $payment;

@@ -704,6 +704,11 @@ class RApiPaymentHelper
 				}
 			}
 
+			if ($status == RApiPaymentStatus::getStatusCompleted() && $payment['amount_paid'] != $payment['amount_total'])
+			{
+				$status = RApiPaymentStatus::getStatusPending();
+			}
+
 			$payment['customer_note'] = implode("\r\n", $customerNote);
 			$payment['amount_paid'] = $amountPaid;
 			$payment['status'] = $status;

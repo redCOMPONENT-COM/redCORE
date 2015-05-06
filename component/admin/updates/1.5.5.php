@@ -21,17 +21,19 @@ class Com_RedcoreUpdateScript_1_5_5
 	/**
 	 * Performs the upgrade after initial Joomla update for this version
 	 *
+	 * @param   JInstallerAdapter  $parent  Class calling this method
+	 *
 	 * @return  bool
 	 */
-	public function executeAfterUpdate()
+	public function executeAfterUpdate($parent)
 	{
 		// Add currency data
 		$currencySqlPath = JPATH_ADMINISTRATOR . '/components/com_redcore/sql/install/mysql/currency.sql';
-		RHelperDatabase::executeFileQueries($currencySqlPath);
+		RHelperQuery::executeFileQueries($currencySqlPath);
 
 		// Add country data
 		$countrySqlPath = JPATH_ADMINISTRATOR . '/components/com_redcore/sql/install/mysql/country.sql';
-		RHelperDatabase::executeFileQueries($countrySqlPath);
+		RHelperQuery::executeFileQueries($countrySqlPath);
 
 		return true;
 	}
