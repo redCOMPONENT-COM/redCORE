@@ -157,17 +157,20 @@ class Com_RedcoreInstallerScript
 					return false;
 				}
 
-				$searchPaths = array(
-					// Discover install
-					JPATH_LIBRARIES . '/redcore/component',
-					// Install
-					dirname(__FILE__) . '/redCORE/libraries/redcore/component',
-					dirname(__FILE__) . '/libraries/redcore/component',
-				);
-
-				if ($componentHelper = JPath::find($searchPaths, 'helper.php'))
+				if (!class_exists('RComponentHelper'))
 				{
-					require_once $componentHelper;
+					$searchPaths = array(
+						// Discover install
+						JPATH_LIBRARIES . '/redcore/component',
+						// Install
+						dirname(__FILE__) . '/redCORE/libraries/redcore/component',
+						dirname(__FILE__) . '/libraries/redcore/component',
+					);
+
+					if ($componentHelper = JPath::find($searchPaths, 'helper.php'))
+					{
+						require_once $componentHelper;
+					}
 				}
 			}
 
