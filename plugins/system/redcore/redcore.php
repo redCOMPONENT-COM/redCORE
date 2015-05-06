@@ -34,7 +34,7 @@ class PlgSystemRedcore extends JPlugin
 
 		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
-		if (file_exists($redcoreLoader))
+		if (file_exists($redcoreLoader) && !$this->isInstaller())
 		{
 			require_once $redcoreLoader;
 
@@ -77,9 +77,7 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
-		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
-
-		if (file_exists($redcoreLoader))
+		if (defined('REDCORE_LIBRARY_LOADED'))
 		{
 			$apiName = JFactory::getApplication()->input->getString('api');
 
@@ -163,8 +161,6 @@ class PlgSystemRedcore extends JPlugin
 				}
 			}
 		}
-
-		JPluginHelper::importPlugin('redpayment');
 	}
 
 	/**
@@ -335,6 +331,19 @@ class PlgSystemRedcore extends JPlugin
 	private function isRedcoreComponent()
 	{
 		return defined('REDCORE_BOOTSTRAPPED');
+	}
+
+	/**
+	 * Check is is a redCORE view
+	 *
+	 * @return  boolean
+	 */
+	private function isInstaller()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		return $app->isAdmin() && $input->getString('option') == 'com_installer' && $input->get('task') == 'install.install';
 	}
 
 	/**

@@ -71,7 +71,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Shit happens. Patched function to bypass bug in package uninstaller
 	 *
-	 * @param   JInstaller  $parent  Parent object
+	 * @param   JInstallerAdapter  $parent  Parent object
 	 *
 	 * @return  SimpleXMLElement
 	 */
@@ -103,8 +103,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to run before an install/update/uninstall method
 	 *
-	 * @param   object      $type    type of change (install, update or discover_install)
-	 * @param   JInstaller  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return bool
 	 */
@@ -213,7 +213,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to install the component
 	 *
-	 * @param   object  $parent  Class calling this method
+	 * @param   JInstallerAdapter  $parent  Class calling this method
 	 *
 	 * @return  boolean          True on success
 	 */
@@ -228,14 +228,19 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to install the component
 	 *
-	 * @param   object  $parent  Class calling this method
+	 * @param   JInstallerAdapter  $parent  Class calling this method
 	 *
 	 * @return  boolean          True on success
 	 */
 	public function installOrUpdate($parent)
 	{
 		// Install extensions
-		$this->installLibraries($parent);
+		// We have already installed redCORE library on preflight so we will not do it again
+		if ((get_called_class() != 'Com_RedcoreInstallerScript'))
+		{
+			$this->installLibraries($parent);
+		}
+
 		$this->loadRedcoreLibrary();
 		$this->installMedia($parent);
 		$this->installWebservices($parent);
@@ -250,7 +255,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to process SQL updates previous to the install process
 	 *
-	 * @param   object  $parent  Class calling this method
+	 * @param   JInstallerAdapter  $parent  Class calling this method
 	 *
 	 * @return  boolean          True on success
 	 */
@@ -355,8 +360,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to process PHP update files defined in the manifest file
 	 *
-	 * @param   object  $parent              Class calling this method
-	 * @param   bool    $executeAfterUpdate  The name of the function to execute
+	 * @param   JInstallerAdapter  $parent              Class calling this method
+	 * @param   bool               $executeAfterUpdate  The name of the function to execute
 	 *
 	 * @return  boolean          True on success
 	 */
@@ -388,7 +393,7 @@ class Com_RedcoreInstallerScript
 								{
 									if (version_compare($file, $this->oldVersion) > 0)
 									{
-										if (!$this->processPHPUpdateFile($sourcePath . '/' . $updatePath . '/' . $file . '.php', $file, $executeAfterUpdate))
+										if (!$this->processPHPUpdateFile($parent, $sourcePath . '/' . $updatePath . '/' . $file . '.php', $file, $executeAfterUpdate))
 										{
 											return false;
 										}
@@ -407,13 +412,14 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to process a single PHP update file
 	 *
-	 * @param   string  $file                File to process
-	 * @param   string  $version             File version
-	 * @param   bool    $executeAfterUpdate  The name of the function to execute
+	 * @param   JInstallerAdapter  $parent              Class calling this method
+	 * @param   string             $file                File to process
+	 * @param   string             $version             File version
+	 * @param   bool               $executeAfterUpdate  The name of the function to execute
 	 *
 	 * @return  boolean          True on success
 	 */
-	public function processPHPUpdateFile($file, $version, $executeAfterUpdate)
+	public function processPHPUpdateFile($parent, $file, $version, $executeAfterUpdate)
 	{
 		static $upgradeClasses;
 
@@ -435,7 +441,7 @@ class Com_RedcoreInstallerScript
 
 			if (method_exists($upgradeClasses[$class], $methodName))
 			{
-				if (!$upgradeClasses[$class]->{$methodName}())
+				if (!$upgradeClasses[$class]->{$methodName}($parent))
 				{
 					return false;
 				}
@@ -448,7 +454,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package libraries
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -456,7 +462,7 @@ class Com_RedcoreInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $this->getManifest($parent);
 		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->libraries->library)
@@ -472,8 +478,8 @@ class Com_RedcoreInstallerScript
 				{
 					$result = $installer->install($extPath);
 				}
+				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'library', '-1'))
-					// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -486,7 +492,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the media folder
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -506,7 +512,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package modules
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -546,7 +552,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package libraries
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -603,7 +609,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package translations
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -638,8 +644,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Function to install redCORE for components
 	 *
-	 * @param   object  $type    type of change (install, update or discover_install)
-	 * @param   object  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -649,7 +655,6 @@ class Com_RedcoreInstallerScript
 		if (get_called_class() != 'Com_RedcoreInstallerScript' && $type != 'discover_install')
 		{
 			$manifest  = $this->getManifest($parent);
-			$type      = $manifest->attributes()->type;
 
 			if ($manifest->redcore)
 			{
@@ -669,12 +674,23 @@ class Com_RedcoreInstallerScript
 				}
 			}
 		}
+		// If it is installing redCORE we want to make sure it installs redCORE library first
+		elseif (get_called_class() == 'Com_RedcoreInstallerScript' && in_array($type, array('install', 'update', 'discover_install')))
+		{
+			$install = $this->checkComponentVersion(JPATH_LIBRARIES . '/redcore', dirname(__FILE__) . '/libraries/redcore', 'redcore.xml');
+
+			// Only install if installation in the package is newer version
+			if ($install)
+			{
+				$this->installLibraries($parent);
+			}
+		}
 	}
 
 	/**
 	 * Function to install redCORE for components
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -726,7 +742,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package templates
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -767,7 +783,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package Cli scripts
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -825,7 +841,7 @@ class Com_RedcoreInstallerScript
 	 * Method to parse through a webservices element of the installation manifest and take appropriate
 	 * action.
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean     True on success
 	 *
@@ -918,8 +934,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to run after an install/update/uninstall method
 	 *
-	 * @param   object  $type    type of change (install, update or discover_install)
-	 * @param   object  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean
 	 */
@@ -956,8 +972,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Execute the postflight tasks from the manifest if there is any.
 	 *
-	 * @param   object  $type    type of change (install, update or discover_install)
-	 * @param   object  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1006,9 +1022,9 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Delete the menu item of the extension.
 	 *
-	 * @param   object  $type    Type of change (install, update or discover_install)
-	 * @param   object  $parent  Class calling this method
-	 * @param   string  $client  The client
+	 * @param   object             $type    Type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  Class calling this method
+	 * @param   string             $client  The client
 	 *
 	 * @return  void
 	 */
@@ -1091,7 +1107,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * method to update the component
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return void
 	 */
@@ -1110,7 +1126,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Prevents uninstalling redcore component if some components using it are still installed.
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 *
@@ -1145,7 +1161,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * method to uninstall the component
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 *
@@ -1206,7 +1222,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the package libraries
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1237,7 +1253,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the media folder
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1256,7 +1272,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the webservices
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean
 	 */
@@ -1314,7 +1330,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the Cli
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean
 	 */
@@ -1380,7 +1396,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the package modules
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1412,7 +1428,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the package plugins
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1444,7 +1460,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the package templates
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1502,8 +1518,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to display component info
 	 *
-	 * @param   object  $parent   Class calling this method
-	 * @param   string  $message  Message to apply to the Component info layout
+	 * @param   JInstallerAdapter  $parent   Class calling this method
+	 * @param   string             $message  Message to apply to the Component info layout
 	 *
 	 * @return  void
 	 */
@@ -1586,8 +1602,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Gets or generates the element name (using the manifest)
 	 *
-	 * @param   object            $parent    Parent adapter
-	 * @param   SimpleXMLElement  $manifest  Extension manifest
+	 * @param   JInstallerAdapter  $parent    Parent adapter
+	 * @param   SimpleXMLElement   $manifest  Extension manifest
 	 *
 	 * @return  string  Element
 	 */

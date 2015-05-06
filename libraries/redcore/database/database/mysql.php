@@ -31,7 +31,7 @@ class RDatabaseMysql extends JDatabaseMySQL
 	 *
 	 * @param   string  $sql           The SQL statement to prepare.
 	 * @param   string  $prefix        The common table prefix.
-	 * @param   string  $insideQuotes  Replace prefix inside quotes too
+	 * @param   bool    $insideQuotes  Replace prefix inside quotes too
 	 *
 	 * @return  string  The processed SQL statement.
 	 *
