@@ -28,6 +28,7 @@ class RoboFile extends \Robo\Tasks
     public function sendCodeceptionOutputToSlack($slackChannel, $slackToken = null, $codeceptionOutputFolder = null)
     {
         if (is_null($slackToken)) {
+            $this->say('we are in Travis environment, getting token from ENV');
             $slackToken = getenv('SLACK_ENCRYPTED_TOKEN');
         }
 
