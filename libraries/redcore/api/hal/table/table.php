@@ -32,8 +32,17 @@ class RApiHalTableTable extends RTable
 	public function __construct($table, $key, $db)
 	{
 		$this->_tableName = $table;
-		$this->_tbl_key = $key;
-		$this->_tableKey = $key;
+
+		if (is_array($key))
+		{
+			$this->_tbl_keys = $key;
+			$this->_tbl_key = $key[key($key)];
+		}
+		else
+		{
+			$this->_tbl_key = $key;
+			$this->_tableKey = $key;
+		}
 
 		// Set all columns from table as properties
 		$columns = array();

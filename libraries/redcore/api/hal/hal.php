@@ -2307,7 +2307,7 @@ class RApiHalHal extends RApi
 			{
 				if (isset($dataGet[$primaryKey]) && $dataGet[$primaryKey] != '')
 				{
-					$primaryKeys[] = $this->transformField($primaryKeyField['transform'], $dataGet[$primaryKey], false);
+					$primaryKeys[$primaryKey] = $this->transformField($primaryKeyField['transform'], $dataGet[$primaryKey], false);
 					$isReadItem = true;
 				}
 
