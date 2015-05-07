@@ -48,12 +48,13 @@ $selectName = $readOnly ? '' : $data->name;
 <select name="<?php echo $selectName; ?>" <?php echo $renderedAttributes; ?>>
 	<?php if ($data->options) : ?>
 		<?php foreach ($data->options as $option) :?>
-				<option value="<?php echo $option->value; ?>" <?php if ((is_array($data->value) && in_array($option->value, $data->value)) || (!is_array($data->value) && $option->value == $data->value)): ?>selected="selected"<?php endif; ?>>
-					<?php echo $option->text; ?>
-				</option>
+				<option
+					value="<?php echo $option->value; ?>"
+					<?php if ((is_array($data->value) && in_array($option->value, $data->value)) || (!is_array($data->value) && $option->value == $data->value)):
+						echo 'selected="selected"';
+					endif; ?>><?php echo $option->text; ?></option>
 		<?php endforeach; ?>
 	<?php endif; ?>
-
 </select>
 <?php if ((string) $data->element['readonly'] == 'true') : ?>
 	<input type="hidden" name="<?php echo $data->name; ?>" value="<?php echo $data->value; ?>"/>
