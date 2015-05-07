@@ -1,7 +1,4 @@
 language: php
-env:
-  global:
-  - secure: X6eCqXFAd2SvaAM0e73MfimysePd1i3XdvIXWCxw+85SV0DK0CHpG8OBPg8KOB2iMmLOP8tkmflm53FpjaK8b031yG4I6dA9sNcosjoAQC8SPrb3EOsR+U93jz0C4eme8wDKfE1G5oHbA7WEEyxg6UOH4e4Nw70uTvONW1t5VNo=
 php:
 - 5.4
 before_script:
