@@ -1992,7 +1992,6 @@ class RApiHalHal extends RApi
 					}
 				}
 			}
-
 		}
 
 		// We replace global data as well
@@ -2000,8 +1999,8 @@ class RApiHalHal extends RApi
 
 		if (!empty($stringsToReplace[1]))
 		{
-			// If we did not found data with that resource we will set it to 0, except for linkRel which is a template
-			if ($format == $resource[$attribute] && $resource['linkRel'] == '')
+			// If we did not found data with that resource we will set it to 0, except for linkRel which is a documentation template
+			if ($format == $resource[$attribute] && $resource['linkRel'] != 'curies')
 			{
 				$format = null;
 			}
