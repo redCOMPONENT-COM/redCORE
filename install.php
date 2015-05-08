@@ -47,6 +47,13 @@ class Com_RedcoreInstallerScript
 	protected $extensionElement = '';
 
 	/**
+	 * Manifest of the extension being processed
+	 *
+	 * @var  SimpleXMLElement
+	 */
+	protected $manifest;
+
+	/**
 	 * Old version according to manifest
 	 *
 	 * @var  string
@@ -69,7 +76,7 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
-	 * Shit happens. Patched function to bypass bug in package uninstaller
+	 * Getter with manifest cache support
 	 *
 	 * @param   JInstallerAdapter  $parent  Parent object
 	 *
@@ -77,27 +84,12 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function getManifest($parent)
 	{
-		$element = strtolower(str_replace('InstallerScript', '', __CLASS__));
-		$elementParts = explode('_', $element);
-
-		if (count($elementParts) == 2)
+		if (null === $this->manifest)
 		{
-			$extType = $elementParts[0];
-
-			if ($extType == 'pkg')
-			{
-				$rootPath = $parent->getParent()->getPath('extension_root');
-				$manifestPath = dirname($rootPath);
-				$manifestFile = $manifestPath . '/' . $element . '.xml';
-
-				if (file_exists($manifestFile))
-				{
-					return JFactory::getXML($manifestFile);
-				}
-			}
+			$this->loadManifest($parent);
 		}
 
-		return $parent->get('manifest');
+		return $this->manifest;
 	}
 
 	/**
@@ -1643,5 +1635,40 @@ class Com_RedcoreInstallerScript
 	public function getRedcoreComponentFolder()
 	{
 		return JPATH_ADMINISTRATOR . '/components/com_redcore';
+	}
+
+	/**
+	 * Shit happens. Patched function to bypass bug in package uninstaller
+	 *
+	 * @param   JInstallerAdapter  $parent  Parent object
+	 *
+	 * @return  void
+	 */
+	protected function loadManifest($parent)
+	{
+		$element = strtolower(str_replace('InstallerScript', '', get_called_class()));
+		$elementParts = explode('_', $element);
+
+		// Not a package
+		if (count($elementParts) != 2 && strtolower($elementParts[0]) != 'pkg')
+		{
+			$this->manifest = $parent->get('manifest');
+
+			return;
+		}
+
+		$rootPath = $parent->getParent()->getPath('extension_root');
+		$manifestPath = dirname($rootPath);
+		$manifestFile = $manifestPath . '/' . $element . '.xml';
+
+		// Package manifest found
+		if (file_exists($manifestFile))
+		{
+			$this->manifest = JFactory::getXML($manifestFile);
+
+			return;
+		}
+
+		$this->manifest = $parent->get('manifest');
 	}
 }
