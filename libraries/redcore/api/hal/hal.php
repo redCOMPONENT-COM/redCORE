@@ -686,9 +686,6 @@ class RApiHalHal extends RApi
 	 */
 	public function apiDelete()
 	{
-		$primaryKeys = array();
-		$this->apiFillPrimaryKeys($primaryKeys, $this->operationConfiguration);
-
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 
@@ -716,6 +713,9 @@ class RApiHalHal extends RApi
 		// Prepare parameters for the function
 		if (strtolower(RApiHalHelper::attributeToString($this->operationConfiguration, 'dataMode', 'model')) == 'table')
 		{
+			$primaryKeys = array();
+			$this->apiFillPrimaryKeys($primaryKeys, $this->operationConfiguration);
+
 			if (!empty($primaryKeys))
 			{
 				$result = $model->{$functionName}($primaryKeys);
