@@ -18,7 +18,7 @@ before_script:
 - fluxbox &
 - wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
   -O selenium-server-standalone.jar
-- java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &
+- java -jar selenium-server-standalone.jar > selenium.log &
 - .travis/wait4selenium.sh
 script:
 - php .travis/phppec.php component/ libraries/ modules/ plugins/
@@ -29,6 +29,7 @@ script:
 - sudo chmod 777 -R $TRAVIS_BUILD_DIR
 - php vendor/bin/robo run:tests
 - php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
+- cat selenium.log
 notifications:
   slack:
     secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=
