@@ -28,7 +28,7 @@ script:
 - php vendor/bin/robo prepare:site-for-system-tests
 - sudo chmod 777 -R $TRAVIS_BUILD_DIR
 - php vendor/bin/robo run:tests
-- php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E
+- php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
 notifications:
   slack:
     secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=
