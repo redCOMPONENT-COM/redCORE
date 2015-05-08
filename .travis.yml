@@ -1,43 +1,34 @@
 language: php
 php:
 - 5.4
-
 before_script:
-# Install Apache
 - sudo apt-get update -qq
-- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
+- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql
+  php5-intl php5-gd > /dev/null
 - sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
-- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/ /var/www/tests #Add joomla to apache htdocs
+- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/ /var/www/tests
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
 - sudo /etc/init.d/apache2 restart
 - composer install --dev --prefer-dist
-
-# XVFB
-- "export DISPLAY=:99.0"
-- "Xvfb :99.0 -extension RANDR > /dev/null &"
-
-# Window manager
+- export DISPLAY=:99.0
+- Xvfb :99.0 -extension RANDR > /dev/null &
 - echo "c10"
-- "sudo apt-get install fluxbox -y --force-yes"
+- sudo apt-get install fluxbox -y --force-yes
 - echo "c11"
-- "fluxbox &"
-
-# Selenium server
-- wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar -O selenium-server-standalone.jar # Downloads Selenium and renames it
-- "java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &" # Starts selenium standalone server
-- .travis/wait4selenium.sh # Loops until selenium is ready
-
+- fluxbox &
+- wget http://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
+  -O selenium-server-standalone.jar
+- java -jar selenium-server-standalone.jar > /dev/null 2>/dev/null &
+- .travis/wait4selenium.sh
 script:
 - php .travis/phppec.php component/ libraries/ modules/ plugins/
 - php .travis/phpcs.php
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
-# system testing starts
-- mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml # Create travis system tests config file
-- php robo.phar prepare:site-for-system-tests
-- sudo chmod 777 -R $TRAVIS_BUILD_DIR # Avoids Joomla installer to load the FTP tab
-- php robo.phar run:tests
-
-# -  php vendor/bin/codecept run acceptance -g $GROUP --env $ENV
+- mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
+- php vendor/bin/robo prepare:site-for-system-tests
+- sudo chmod 777 -R $TRAVIS_BUILD_DIR
+- php vendor/bin/robo run:tests
+- php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
 notifications:
   slack:
     secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=

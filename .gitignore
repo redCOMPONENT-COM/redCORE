@@ -43,6 +43,9 @@ composer.lock
 composer.phar
 vendor/*
 
+# Robo
+robo.phar
+
 # LESS Transpiler
 npm-debug.log
 
