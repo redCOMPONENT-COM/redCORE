@@ -1649,8 +1649,8 @@ class Com_RedcoreInstallerScript
 		$element = strtolower(str_replace('InstallerScript', '', get_called_class()));
 		$elementParts = explode('_', $element);
 
-		// Not a package
-		if (count($elementParts) != 2 && strtolower($elementParts[0]) != 'pkg')
+		// Type not properly detected or not a package
+		if (count($elementParts) != 2 || strtolower($elementParts[0]) != 'pkg')
 		{
 			$this->manifest = $parent->get('manifest');
 
