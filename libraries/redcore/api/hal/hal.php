@@ -539,7 +539,7 @@ class RApiHalHal extends RApi
 	public function apiRead()
 	{
 		$primaryKeys = array();
-		$isReadItem = $this->apiReadTypeItem($primaryKeys);
+		$isReadItem = $this->apiFillPrimaryKeys($primaryKeys);
 
 		$displayTarget = $isReadItem ? 'item' : 'list';
 		$this->apiDynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
@@ -576,6 +576,8 @@ class RApiHalHal extends RApi
 
 			return $this;
 		}
+
+		$primaryKeys = count($primaryKeys) > 1 ? array($primaryKeys) : $primaryKeys;
 
 		// Getting single item
 		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItem');
@@ -684,6 +686,9 @@ class RApiHalHal extends RApi
 	 */
 	public function apiDelete()
 	{
+		$primaryKeys = array();
+		$this->apiFillPrimaryKeys($primaryKeys, $this->operationConfiguration);
+
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 
@@ -705,18 +710,32 @@ class RApiHalHal extends RApi
 			return;
 		}
 
-		// Prepare parameters for the function
-		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
 		$result = null;
+		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
 
-		// Checks if that method exists in model class file and executes it
-		if (method_exists($model, $functionName))
+		// Prepare parameters for the function
+		if (strtolower(RApiHalHelper::attributeToString($this->operationConfiguration, 'dataMode', 'model')) == 'table')
 		{
-			$result = $this->triggerCallFunction($model, $functionName, $args);
+			if (!empty($primaryKeys))
+			{
+				$result = $model->{$functionName}($primaryKeys);
+			}
+			else
+			{
+				$result = $model->{$functionName}($args);
+			}
 		}
 		else
 		{
-			$this->setStatusCode(400);
+			// Checks if that method exists in model class file and executes it
+			if (method_exists($model, $functionName))
+			{
+				$result = $this->triggerCallFunction($model, $functionName, $args);
+			}
+			else
+			{
+				$this->setStatusCode(400);
+			}
 		}
 
 		$this->setData('result', $result);
@@ -1300,7 +1319,7 @@ class RApiHalHal extends RApi
 
 				if (!$form)
 				{
-					return true;
+					return $data;
 				}
 
 				// Test whether the data is valid.
@@ -1432,7 +1451,7 @@ class RApiHalHal extends RApi
 			else
 			{
 				$primaryKeys = array();
-				$isReadItem = $this->apiReadTypeItem($primaryKeys);
+				$isReadItem = $this->apiFillPrimaryKeys($primaryKeys);
 				$readType = $isReadItem ? 'item' : 'list';
 
 				if (isset($allowedOperations->read->{$readType}['authorizationNeeded'])
@@ -2284,41 +2303,65 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Returns read type (item or list) for current read operation and fills primary keys if read type is item
+	 * Returns if all primary keys have set values
+	 * Easily get read type (item or list) for current read operation and fills primary keys
 	 *
-	 * @param   array  &$primaryKeys  List of primary keys
+	 * @param   array             &$primaryKeys   List of primary keys
+	 * @param   SimpleXMLElement  $configuration  Configuration group
 	 *
 	 * @return  bool  Returns true if read type is Item
 	 *
 	 * @since   1.2
 	 */
-	public function apiReadTypeItem(&$primaryKeys)
+	public function apiFillPrimaryKeys(&$primaryKeys, $configuration = null)
 	{
-		$isReadItem = false;
-		$operations = $this->getConfig('operations');
-
-		// Checking for primary keys
-		if (!empty($operations->read->item))
+		if (is_null($configuration))
 		{
-			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
-			$primaryKeysFromFields = RApiHalHelper::getFieldsArray($operations->read->item, true);
+			$operations = $this->getConfig('operations');
 
-			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+			if (!empty($operations->read->item))
 			{
-				if (isset($dataGet[$primaryKey]) && $dataGet[$primaryKey] != '')
-				{
-					$primaryKeys[$primaryKey] = $this->transformField($primaryKeyField['transform'], $dataGet[$primaryKey], false);
-					$isReadItem = true;
-				}
-
-				// If At least one of the primary keys is missing
-				if (!$isReadItem)
-				{
-					break;
-				}
+				$configuration = $operations->read->item;
 			}
+
+			$data = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $configuration);
+		}
+		else
+		{
+			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $configuration);
 		}
 
-		return $isReadItem;
+		// Checking for primary keys
+		if (!empty($configuration))
+		{
+			$primaryKeysFromFields = RApiHalHelper::getFieldsArray($configuration, true);
+
+			if (!empty($primaryKeysFromFields))
+			{
+				foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+				{
+					if (isset($data[$primaryKey]) && $data[$primaryKey] != '')
+					{
+						$primaryKeys[$primaryKey] = $this->transformField($primaryKeyField['transform'], $data[$primaryKey], false);
+					}
+					else
+					{
+						$primaryKeys[$primaryKey] = null;
+					}
+				}
+
+				foreach ($primaryKeys as $primaryKey => $primaryKeyField)
+				{
+					if (is_null($primaryKeyField))
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }
