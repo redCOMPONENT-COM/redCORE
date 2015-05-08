@@ -98,9 +98,9 @@ class RoboFile extends \Robo\Tasks
         }
 
         // running Selenium server in background
-        $this->taskExec('java -jar ' . $seleniumPath)
-            ->background()
-            ->run();
+        //$this->taskExec('java -jar ' . $seleniumPath)
+        //    ->background()
+        //    ->run();
 
         // Make sure we have Composer
         if (!file_exists('./composer.phar')) {
