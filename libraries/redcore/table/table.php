@@ -728,7 +728,7 @@ class RTable extends JTable
 	}
 
 	/**
-	 * Delete on or more registers
+	 * Delete one or more registers
 	 *
 	 * @param   string/array  $pk  Array of ids or ids comma separated
 	 *
@@ -739,16 +739,44 @@ class RTable extends JTable
 		// Initialise variables.
 		$k = $this->_tbl_key;
 
-		// Received an array of ids?
-		if (is_array($pk))
-		{
-			// Sanitize input.
-			JArrayHelper::toInteger($pk);
-			$pk = RHelperArray::quote($pk);
-			$pk = implode(',', $pk);
-		}
+		// Multiple keys
+		$multiplePrimaryKeys = count($this->_tbl_keys) > 1;
 
-		$pk = (is_null($pk)) ? $this->$k : $pk;
+		// We are dealing with multiple primary keys
+		if ($multiplePrimaryKeys)
+		{
+			// Received an array of ids?
+			if (is_null($pk))
+			{
+				$pk = array();
+
+				foreach ($this->_tbl_keys AS $key)
+				{
+					$pk[$key] = $this->$key;
+				}
+			}
+			elseif (is_array($pk))
+			{
+				$pk = array();
+
+				foreach ($this->_tbl_keys AS $key)
+				{
+					$pk[$key] = !empty($pk[$key]) ? $pk[$key] : $this->$key;
+				}
+			}
+		}
+		// Standard Joomla delete method
+		else
+		{
+			if (is_array($pk))
+			{
+				// Sanitize input.
+				JArrayHelper::toInteger($pk);
+				$pk = RHelperArray::quote($pk);
+				$pk = implode(',', $pk);
+				$multipleDelete = true;
+			}
+		}
 
 		// If no primary key is given, return false.
 		if ($pk === null)
@@ -759,9 +787,21 @@ class RTable extends JTable
 		// Delete the row by primary key.
 		$query = $this->_db->getQuery(true);
 		$query->delete($this->_db->quoteName($this->_tbl));
-		$query->where($this->_db->quoteName($this->_tbl_key) . ' IN (' . $pk . ')');
+
+		if ($multiplePrimaryKeys)
+		{
+			foreach ($this->_tbl_keys AS $k)
+			{
+				$query->where($this->_db->quoteName($k) . ' = ' . $this->_db->quote($pk[$k]));
+			}
+		}
+		else
+		{
+			$query->where($this->_db->quoteName($this->_tbl_key) . ' IN (' . $pk . ')');
+		}
+
 		$this->_db->setQuery($query);
-		$this->_db->query();
+		$this->_db->execute();
 
 		// Check for a database error.
 		if ($this->_db->getErrorNum())

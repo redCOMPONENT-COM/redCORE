@@ -242,6 +242,14 @@ class RApiHalModelList extends RModelList
 	{
 		// Initialise variables.
 		$table = $this->getTable();
+		$key = $table->getKeyName();
+
+		// We are dealing with multiple primary keys
+		if (is_array($key) && count($key) > 1)
+		{
+			$table->load($pks);
+		}
+
 		$table->delete($pks);
 
 		return true;
