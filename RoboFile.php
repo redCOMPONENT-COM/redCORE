@@ -97,20 +97,17 @@ class RoboFile extends \Robo\Tasks
             $seleniumPath = 'selenium-server-standalone.jar';
         }
 
-        // running Selenium server in background
-        //$this->taskExec('java -jar ' . $seleniumPath)
-        //    ->background()
-        //    ->run();
-
         // Make sure we have Composer
         if (!file_exists('./composer.phar')) {
             $this->_exec('curl -sS https://getcomposer.org/installer | php');
         }
-
         $this->taskComposerUpdate()->run();
-        
-        // Loading Symfony Command and running with passed argument
-        $this->taskCodecept()->getCommand('build');
+
+        // Running Selenium server in background
+        $this->_exec("java -jar $seleniumPath > selenium-errors.log 2>selenium.log &");
+
+        $this->taskWaitForSeleniumStandaloneServer()
+            ->run();
 
         $this->taskCodecept()
             ->suite('acceptance')
@@ -119,6 +116,8 @@ class RoboFile extends \Robo\Tasks
             ->run();
 
         // Kill selenium server
-        //$this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
+        // $this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
+        $this->say(file_get_contents('selenium-errors.log'));
+        $this->say(file_get_contents('selenium.log'));
     }
 }

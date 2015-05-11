@@ -55,8 +55,8 @@ tests/*/*Tester.php
 tests/joomla-cms3*
 selenium-server-standalone.jar
 codecept.phar
-composer.phar
 selenium.log
+selenium-errors.log
 
 # Never ignore
 !.gitignore
