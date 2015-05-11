@@ -251,7 +251,7 @@
                 <field
                         name="enable_payment"
                         type="list"
-                        default="1"
+                        default="0"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_DESC">
                     <option value="1">JYES</option>
