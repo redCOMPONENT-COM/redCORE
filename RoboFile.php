@@ -12,8 +12,14 @@ require_once 'vendor/autoload.php';
 
 class RoboFile extends \Robo\Tasks
 {
+
     // load tasks from composer, see composer.json
     use \redcomponent\robo\loadTasks;
+
+    /**
+     * Robo
+     */
+    private $version = 1.0;
 
     /**
      * Hello World example task.
@@ -97,20 +103,18 @@ class RoboFile extends \Robo\Tasks
             $seleniumPath = 'selenium-server-standalone.jar';
         }
 
-        // running Selenium server in background
-        //$this->taskExec('java -jar ' . $seleniumPath)
-        //    ->background()
-        //    ->run();
-
         // Make sure we have Composer
         if (!file_exists('./composer.phar')) {
             $this->_exec('curl -sS https://getcomposer.org/installer | php');
         }
-
         $this->taskComposerUpdate()->run();
-        
-        // Loading Symfony Command and running with passed argument
-        $this->taskCodecept()->getCommand('build');
+
+        // Running Selenium server
+        $this->_exec("java -jar $seleniumPath > selenium-errors.log 2>selenium.log &");
+
+        $this->taskWaitForSeleniumStandaloneServer()
+            ->run()
+            ->stopOnFail();
 
         $this->taskCodecept()
             ->suite('acceptance')
@@ -119,6 +123,25 @@ class RoboFile extends \Robo\Tasks
             ->run();
 
         // Kill selenium server
-        //$this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
+        // $this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
+
+        $this->say('Printing Selenium Log files');
+        $this->say('------ selenium-errors.log (start) ---------');
+        $seleniumErrors = file_get_contents('selenium-errors.log');
+        if ($seleniumErrors) {
+            $this->say(file_get_contents('selenium-errors.log'));
+        }
+        else {
+            $this->say('no errors were found');
+        }
+        $this->say('------ selenium-errors.log (end) -----------');
+
+        /*
+        // Uncomment if you need to debug issues in selenium
+        $this->say('');
+        $this->say('------ selenium.log (start) -----------');
+        $this->say(file_get_contents('selenium.log'));
+        $this->say('------ selenium.log (end) -----------');
+        */
     }
 }
