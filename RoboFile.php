@@ -19,7 +19,7 @@ class RoboFile extends \Robo\Tasks
     /**
      * Current RoboFile version
      */
-    private $version = '1.1';
+    private $version = '1.2';
 
     /**
      * Hello World example task.
