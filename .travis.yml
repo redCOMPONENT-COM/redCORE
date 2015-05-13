@@ -14,6 +14,7 @@ before_script:
 - sleep 3 # give xvfb some time to start
 - sudo apt-get install fluxbox -y --force-yes
 - fluxbox &
+- sleep 3 # give fluxbox some time to start
 
 script:
 - php vendor/bin/robo check:robo-file-version
