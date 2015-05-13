@@ -103,11 +103,12 @@ class RoboFile extends \Robo\Tasks
         }
         $this->taskComposerUpdate()->run();
 
-        // Running Selenium server in background
+        // Running Selenium server
         $this->_exec("java -jar $seleniumPath > selenium-errors.log 2>selenium.log &");
 
         $this->taskWaitForSeleniumStandaloneServer()
-            ->run();
+            ->run()
+            ->stopOnFail();
 
         $this->taskCodecept()
             ->suite('acceptance')
