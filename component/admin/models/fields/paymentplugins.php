@@ -76,7 +76,12 @@ class JFormFieldPaymentplugins extends JFormFieldList
 					$lang->load($extension . '.sys', JPATH_ADMINISTRATOR, null, false, true)
 					||	$lang->load($extension . '.sys', $source, null, false, true);
 
-					if ($this->getAttribute('showFullName', 'false') == 'true')
+					if ($this->getAttribute('showTitle', 'true') == 'true')
+					{
+						$params = new JRegistry($value->params);
+						$title = $params->get('payment_title', $extension);
+					}
+					elseif ($this->getAttribute('showFullName', 'false') == 'true')
 					{
 						$title = JText::_($value->name);
 					}

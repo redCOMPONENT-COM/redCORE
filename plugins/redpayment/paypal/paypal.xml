@@ -71,7 +71,7 @@
                         name="retry_counter"
                         type="text"
                         default="30"
-                        label="PLG_REDPAYMENT_EPAY_RETRY_COUNTER"
+                        label="PLG_REDPAYMENT_EPAY_RETRY_COUNTER_LABEL"
                         description="PLG_REDPAYMENT_EPAY_RETRY_COUNTER_DESC"
                         />
             </fieldset>
