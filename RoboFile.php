@@ -17,9 +17,9 @@ class RoboFile extends \Robo\Tasks
     use \redcomponent\robo\loadTasks;
 
     /**
-     * Robo
+     * Current RoboFile version
      */
-    private $version = 1.0;
+    private $version = '1.1';
 
     /**
      * Hello World example task.
@@ -144,4 +144,16 @@ class RoboFile extends \Robo\Tasks
         $this->say('------ selenium.log (end) -----------');
         */
     }
+
+    /**
+     * This function ensures that you have the latest version of RoboFile in your project.
+     * All redCOMPONENT RoboFiles are clones. All special needs for a project are stored in a robofile.yml file
+     */
+    public function checkRoboFileVersion()
+    {
+        $this->taskCheckRoboFileVersion($this->version)
+            ->run()
+            ->stopOnFail();
+    }
+
 }

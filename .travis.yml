@@ -16,6 +16,7 @@ before_script:
 - fluxbox &
 
 script:
+- php vendor/bin/robo check:robo-file-version
 - php .travis/phppec.php component/ libraries/ modules/ plugins/
 - php .travis/phpcs.php
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
