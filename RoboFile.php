@@ -27,7 +27,7 @@ class RoboFile extends \Robo\Tasks
      * @see  https://github.com/redCOMPONENT-COM/robo/blob/master/src/HelloWorld.php
      * @link https://packagist.org/packages/redcomponent/robo
      *
-     * @return object Result
+     * @return Robo\Result Result
      */
     public function sayHelloWorld()
     {
@@ -43,7 +43,7 @@ class RoboFile extends \Robo\Tasks
      * @param string $slackToken              Your Slack authentication token.
      * @param string $codeceptionOutputFolder Optional. By default tests/_output
      *
-     * @return mixed
+     * @return Robo\Result
      */
     public function sendCodeceptionOutputToSlack($slackChannel, $slackToken = null, $codeceptionOutputFolder = null)
     {
