@@ -20,9 +20,24 @@ $id = !empty($data['options']['id']) ? $data['options']['id'] : 'redpayment_paym
 $attr = !empty($data['options']['attributes']) ? $data['options']['attributes'] : '';
 $options = array();
 
-foreach ($payments as $key => $payment)
-{
-	$options[] = JHTML::_('select.option', $payment->value, $payment->text);
-}
-
-echo JHtml::_('select.radiolist', $options, $name, trim($attr), 'value', 'text', $value, $id);
+if (!empty($payments)) :
+?>
+	<div class="controls">
+<?php
+	foreach ($payments as $key => $payment) :
+?>
+		<label for="<?php echo $payment->value ?>" id="<?php echo $payment->value ?>-lbl" class="radio">
+			<input type="radio" name="<?php echo $name ?>" id="<?php echo $payment->value ?>"
+				value="<?php echo $payment->value ?>" <?php echo trim($attr) . ($value == $payment->value ? ' checked="checked"' : '') ?> />
+			<?php echo $payment->params->get('payment_title', $payment->text) ?>
+			<?php if ($payment->params->get('payment_logo', '') != '') : ?>
+				<br />
+				<img src="<?php echo $payment->params->get('payment_logo', '') ?>" alt="<?php echo $payment->params->get('payment_title', $payment->text) ?>" />
+			<?php endif; ?>
+		</label>
+<?php
+	endforeach;
+?>
+	</div>
+<?php
+endif;

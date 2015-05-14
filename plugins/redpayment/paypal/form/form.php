@@ -40,21 +40,18 @@ $autoSubmit = !empty($data['options']['autoSubmit']);
 		</script>
 	<?php else :
 		$text = JText::sprintf('LIB_REDCORE_PAYMENT_SUBMIT_TO_PAYMENT', $paymentTitle);
-		if ($paymentLogo) : ?>
-			<input
-				type="image"
-				name="<?php echo $formName ?>Submit"
-				id="<?php echo $formName ?>Submit"
-				class="submitButton"
-				src="<?php echo $paymentLogo; ?>"
-				alt="<?php echo $text; ?>" />
-		<?php else : ?>
-			<input
-				type="submit"
-				name="<?php echo $formName ?>Submit"
-				id="<?php echo $formName ?>Submit"
-				class="btn btn-primary submitButton"
-				value="<?php echo $text; ?>" />
+	?>
+		<input
+			type="submit"
+			name="<?php echo $formName ?>Submit"
+			id="<?php echo $formName ?>Submit"
+			class="btn btn-primary submitButton"
+			value="<?php echo $text; ?>" />
+		<?php if ($paymentLogo) : ?>
+		<br />
+		<img
+			src="<?php echo $paymentLogo; ?>"
+			alt="<?php echo $text; ?>" />
 		<?php endif;
 	endif; ?>
 </form>
