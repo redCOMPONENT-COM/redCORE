@@ -1,4 +1,5 @@
 language: php
+env: TRAVIS_PUBLIC_REPOSITORY=true
 php:
 - 5.4
 before_script:
