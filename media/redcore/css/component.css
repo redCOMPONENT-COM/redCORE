@@ -7770,7 +7770,7 @@
 .redcore form input[type="tel"],
 .redcore form input[type="color"],
 .redcore form .uneditable-input {
-  height: 34px;
+  height: 20px;
   font-size: 14px;
   line-height: 20px;
 }
