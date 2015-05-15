@@ -45,6 +45,9 @@ class RedcoreViewPayment_Configuration extends RedcoreHelpersView
 	public function display($tpl = null)
 	{
 		$model = $this->getModel();
+		$model->getState();
+		$model->setState('payment_name', JFactory::getApplication()->input->getString('payment_name', ''));
+		$model->setState('process_params', '1');
 		$this->form	= $model->getForm();
 		$this->item	= $model->getItem();
 
