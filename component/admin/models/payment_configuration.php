@@ -60,37 +60,42 @@ class RedcoreModelPayment_Configuration extends RModelAdmin
 	 */
 	public function getItem($pk = null)
 	{
-		$item = parent::getItem($pk);
+		$this->paymentName = $this->getState('payment_name', '');
 
-		$this->paymentName = JFactory::getApplication()->input->getString('payment_name', '');
-
-		if ($this->paymentName && (empty($item->payment_name) || $item->payment_name != $this->paymentName))
+		if ($this->paymentName != '' || $this->getState('process_params', '0') == '1')
 		{
-			$db	= $this->getDbo();
-			$query = $db->getQuery(true)
-				->select('p.params as plugin_params, p.name as plugin_name, p.element, p.enabled, p.extension_id')
-				->select('CONCAT("plg_redpayment_", p.element) as plugin_path_name')
-				->from($db->qn('#__extensions', 'p'))
-				->where($db->qn('p.type') . '= ' . $db->q("plugin"))
-				->where($db->qn('p.folder') . '= ' . $db->q("redpayment"))
-				->where($db->qn('p.element') . '= ' . $db->q($this->paymentName));
-			$db->setQuery($query);
+			$item = parent::getItem($pk);
 
-			if ($defaultPlugin = $db->loadObject())
+			if ($this->paymentName && (empty($item->payment_name) || $item->payment_name != $this->paymentName))
 			{
-				$item->params = $defaultPlugin->plugin_params;
-				$item->payment_name = $this->paymentName;
+				$db	= $this->getDbo();
+				$query = $db->getQuery(true)
+					->select('p.params as plugin_params, p.name as plugin_name, p.element, p.enabled, p.extension_id')
+					->select('CONCAT("plg_redpayment_", p.element) as plugin_path_name')
+					->from($db->qn('#__extensions', 'p'))
+					->where($db->qn('p.type') . '= ' . $db->q("plugin"))
+					->where($db->qn('p.folder') . '= ' . $db->q("redpayment"))
+					->where($db->qn('p.element') . '= ' . $db->q($this->paymentName));
+				$db->setQuery($query);
+
+				if ($defaultPlugin = $db->loadObject())
+				{
+					$item->params = $defaultPlugin->plugin_params;
+					$item->payment_name = $this->paymentName;
+				}
 			}
-		}
-		else
-		{
-			$this->paymentName = $item->payment_name;
-			$item->params = json_encode($item->params);
+			else
+			{
+				$this->paymentName = $item->payment_name;
+				$item->params = json_encode($item->params);
+			}
+
+			$item->folder = 'redpayment';
+			$item->element = $this->paymentName;
+
+			return $item;
 		}
 
-		$item->folder = 'redpayment';
-		$item->element = $this->paymentName;
-
-		return $item;
+		return parent::getItem($pk);
 	}
 }

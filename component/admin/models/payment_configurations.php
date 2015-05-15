@@ -84,21 +84,21 @@ class RedcoreModelPayment_Configurations extends RModelList
 
 		if ($paymentName = $this->getState('filter.payment_name'))
 		{
-			$paymentName = $db->quote($db->escape($paymentName, true));
+			$paymentName = $db->quote($paymentName);
 			$query->where('pc.payment_name = ' . $paymentName);
 			$queryDefaults->where('p.element = ' . $paymentName);
 		}
 
 		if ($extensionName = $this->getState('filter.extension_name'))
 		{
-			$extensionName = $db->quote($db->escape($extensionName, true));
+			$extensionName = $db->quote($extensionName);
 			$query->where('pc.extension_name = ' . $extensionName);
 			$queryDefaults->where('pc.extension_name = ' . $extensionName);
 		}
 
 		if ($ownerName = $this->getState('filter.owner_name'))
 		{
-			$ownerName = $db->quote($db->escape($ownerName, true));
+			$ownerName = $db->quote($ownerName);
 			$query->where('pc.owner_name = ' . $ownerName);
 			$queryDefaults->where('pc.owner_name = ' . $ownerName);
 		}
