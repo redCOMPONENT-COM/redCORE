@@ -444,8 +444,6 @@ abstract class RApiPaymentPluginBase extends JPlugin
 				require_once $helperPath . '/helpers/payment.php';
 
 				$helperClass = 'PaymentHelper' . ucfirst($this->paymentName);
-
-
 				$this->paymentHelper = new $helperClass($this->params);
 			}
 		}
