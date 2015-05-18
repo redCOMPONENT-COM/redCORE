@@ -193,7 +193,9 @@ class RedcoreControllerConfig extends RControllerForm
 		$id = $this->input->getInt('id');
 
 		// Loading language files from other components if necessary
-		$lang->load($this->input->post->get('component'), JPATH_ADMINISTRATOR);
+		$externalExtension = $this->input->getString('component');
+		$model->loadExtensionLanguage($externalExtension, $externalExtension);
+		$model->loadExtensionLanguage($externalExtension, $externalExtension . '.sys');
 
 		// Determine the name of the primary key for the data.
 		if (empty($key))
