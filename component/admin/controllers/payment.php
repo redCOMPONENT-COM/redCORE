@@ -104,7 +104,106 @@ class RedcoreControllerPayment extends RControllerForm
 
 			if (!empty($status))
 			{
-				$app->enqueueMessage($status['message'], $status['type']);
+				$app->enqueueMessage($status['message'], !empty($status['type']) ? $status['type'] : 'message');
+			}
+		}
+
+		// Redirect to the list screen
+		$this->setRedirect(
+			$this->getRedirectToListRoute($this->getRedirectToListAppend())
+		);
+	}
+
+	/**
+	 * Capture payment
+	 *
+	 * @return  void
+	 */
+	public function capturePayment()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$ids = $input->get('cid', array(), 'array');
+
+		foreach ($ids as $id)
+		{
+			$status = RApiPaymentHelper::capturePayment($id);
+
+			if ($status)
+			{
+				$app->enqueueMessage(JText::_('COM_REDCORE_PAYMENT_CAPTURE_PAYMENT_SUCCESS'));
+			}
+			else
+			{
+				$lastLog = RApiPaymentHelper::getLastPaymentLog($id);
+				$app->enqueueMessage(JText::sprintf('COM_REDCORE_PAYMENT_CAPTURE_PAYMENT_FAILED', $lastLog->message_text), 'error');
+			}
+		}
+
+		// Redirect to the list screen
+		$this->setRedirect(
+			$this->getRedirectToListRoute($this->getRedirectToListAppend())
+		);
+	}
+
+	/**
+	 * Refund payment
+	 *
+	 * @return  void
+	 */
+	public function refundPayment()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$ids = $input->get('cid', array(), 'array');
+
+		foreach ($ids as $id)
+		{
+			$status = RApiPaymentHelper::refundPayment($id);
+
+			if ($status)
+			{
+				$app->enqueueMessage(JText::_('COM_REDCORE_PAYMENT_REFUND_PAYMENT_SUCCESS'));
+			}
+			else
+			{
+				$lastLog = RApiPaymentHelper::getLastPaymentLog($id);
+				$app->enqueueMessage(JText::sprintf('COM_REDCORE_PAYMENT_REFUND_PAYMENT_FAILED', $lastLog->message_text), 'error');
+			}
+		}
+
+		// Redirect to the list screen
+		$this->setRedirect(
+			$this->getRedirectToListRoute($this->getRedirectToListAppend())
+		);
+	}
+
+	/**
+	 * Delete payment
+	 *
+	 * @return  void
+	 */
+	public function deletePayment()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$ids = $input->get('cid', array(), 'array');
+
+		foreach ($ids as $id)
+		{
+			$status = RApiPaymentHelper::deletePayment($id);
+
+			if ($status)
+			{
+				$app->enqueueMessage(JText::_('COM_REDCORE_PAYMENT_DELETE_PAYMENT_SUCCESS'));
+			}
+			else
+			{
+				$lastLog = RApiPaymentHelper::getLastPaymentLog($id);
+				$app->enqueueMessage(JText::sprintf('COM_REDCORE_PAYMENT_DELETE_PAYMENT_FAILED', $lastLog->message_text), 'error');
 			}
 		}
 

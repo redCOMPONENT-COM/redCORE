@@ -84,30 +84,41 @@ class RedcoreViewPayments extends RedcoreHelpersView
 		$user = JFactory::getUser();
 
 		$firstGroup = new RToolbarButtonGroup;
-		$secondGroup = new RToolbarButtonGroup;
+		$secondGroup = new RToolbarButtonGroup('', true, 'icon-cogs', JText::_('COM_REDCORE_PAYMENT_OPTIONS'));
+		$thirdGroup = new RToolbarButtonGroup;
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
 			if ($canDo->get('core.edit'))
 			{
-				$edit = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_INSPECT_PAYMENT', 'payment.edit', '', 'icon-edit');
-				$firstGroup->addButton($edit);
+				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_INSPECT_PAYMENT', 'payment.edit', '', 'icon-edit');
+				$firstGroup->addButton($button);
 
-				$edit = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CHECK_PAYMENT', 'payment.checkPayment', 'btn btn-warning', 'icon-refresh');
-				$firstGroup->addButton($edit);
+				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CHECK_PAYMENT', 'payment.checkPayment', '', 'icon-refresh');
+				$secondGroup->addButton($button);
+
+				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CAPTURE_PAYMENT', 'payment.capturePayment', '', 'icon-money');
+				$secondGroup->addButton($button);
+
+				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_REFUND_PAYMENT', 'payment.refundPayment', '', 'icon-money');
+				$secondGroup->addButton($button);
+
+				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_DELETE_PAYMENT', 'payment.deletePayment', '', 'icon-money');
+				$secondGroup->addButton($button);
 			}
 
 			// Delete / Trash
 			if ($canDo->get('core.delete'))
 			{
 				$delete = RToolbarBuilder::createDeleteButton('payments.delete');
-				$secondGroup->addButton($delete);
+				$thirdGroup->addButton($delete);
 			}
 		}
 
 		$toolbar = new RToolbar;
 		$toolbar->addGroup($firstGroup)
-			->addGroup($secondGroup);
+			->addGroup($secondGroup)
+			->addGroup($thirdGroup);
 
 		return $toolbar;
 	}
