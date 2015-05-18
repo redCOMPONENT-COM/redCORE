@@ -192,6 +192,9 @@ class RedcoreControllerConfig extends RControllerForm
 		$task = $this->getTask();
 		$id = $this->input->getInt('id');
 
+		// Loading language files from other components if necessary
+		$lang->load($this->input->post->get('component'), JPATH_ADMINISTRATOR);
+
 		// Determine the name of the primary key for the data.
 		if (empty($key))
 		{
