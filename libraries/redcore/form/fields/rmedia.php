@@ -76,7 +76,7 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '	}';
 
 			$script[] = '	function jMediaRefreshPreview(id) {';
-			$script[] = '		var value = document.v(id).value;';
+			$script[] = '		var value = document.getElementById(id).value;';
 			$script[] = '		var img = document.getElementById(id + "_preview");';
 			$script[] = '		if (img) {';
 			$script[] = '			if (value) {';
@@ -270,7 +270,7 @@ class JFormFieldRmedia extends JFormField
 		$html[] = '</div>';
 
 		// Create the real field, hidden, that stored the user id.
-		$html[] = '<input type="hidden" id="' . $this->id . '_id" name="' . $this->name . '" value="' . $this->value . '" />';
+		$html[] = '<input type="hidden" id="' . $modalId . '_id" name="' . $this->name . '" value="' . $this->value . '" />';
 
 		return implode("\n", $html);
 	}
