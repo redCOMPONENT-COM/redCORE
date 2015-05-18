@@ -27,6 +27,8 @@ class RApiPaymentStatus
 		'created'           => 'Created',
 		// A payment has been accepted.
 		'processed'         => 'Processed',
+		// A payment has been authorized and ready for capture.
+		'authorized'         => 'Authorized',
 		// Payment is in Pending state (not completed or failed). We wait for the gateway for the next notification
 		'pending'           => 'Pending',
 		// This is approved and confirmed payment
@@ -136,6 +138,7 @@ class RApiPaymentStatus
 		{
 			case self::getStatusCreated():
 			case self::getStatusProcessed():
+			case self::getStatusAuthorized():
 				return 'default';
 			case self::getStatusUndefined():
 			case self::getStatusPending():
@@ -172,6 +175,16 @@ class RApiPaymentStatus
 	public static function getStatusProcessed()
 	{
 		return self::$statuses['processed'];
+	}
+
+	/**
+	 * Gives proper status string for Status Authorized
+	 *
+	 * @return  string
+	 */
+	public static function getStatusAuthorized()
+	{
+		return self::$statuses['authorized'];
 	}
 
 	/**

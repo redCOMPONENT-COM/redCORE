@@ -211,7 +211,7 @@ abstract class RApiPaymentPluginBase extends JPlugin
 	 * @param   string  $paymentName    Payment name
 	 * @param   string  $extensionName  Extension name
 	 * @param   string  $ownerName      Owner name
-	 * @param   array   $data           Data needed to preform capture
+	 * @param   object  $data           Data needed to preform capture
 	 * @param   bool    &$isCaptured    If capture is successful then this flag should be true
 	 *
 	 * @return void
@@ -246,7 +246,7 @@ abstract class RApiPaymentPluginBase extends JPlugin
 	 * @param   string  $paymentName    Payment name
 	 * @param   string  $extensionName  Extension name
 	 * @param   string  $ownerName      Owner name
-	 * @param   array   $data           Data needed to preform delete
+	 * @param   object  $data           Data needed to preform delete
 	 * @param   bool    &$isDeleted     If delete is successful then this flag should be true
 	 *
 	 * @return void
@@ -444,13 +444,8 @@ abstract class RApiPaymentPluginBase extends JPlugin
 				require_once $helperPath . '/helpers/payment.php';
 
 				$helperClass = 'PaymentHelper' . ucfirst($this->paymentName);
+				$this->paymentHelper = new $helperClass($this->params);
 			}
-			else
-			{
-				$helperClass = 'RApiPaymentPluginHelperPayment';
-			}
-
-			$this->paymentHelper = new $helperClass($this->params);
 		}
 
 		return $this->paymentHelper;

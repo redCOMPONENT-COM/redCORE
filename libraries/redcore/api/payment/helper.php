@@ -671,8 +671,15 @@ class RApiPaymentHelper
 					}
 					else
 					{
-						$amountPaid += $paymentLog->amount;
-						$currency = $paymentLog->currency;
+						if ($payment['transaction_id'] != $paymentLog->transaction_id || $amountPaid == 0)
+						{
+							$amountPaid += $paymentLog->amount;
+						}
+
+						if (!empty($paymentLog->currency))
+						{
+							$currency = $paymentLog->currency;
+						}
 					}
 
 					$payment['coupon_code'] = $paymentLog->coupon_code;
@@ -704,14 +711,26 @@ class RApiPaymentHelper
 				}
 			}
 
+			$payment['amount_paid'] = $amountPaid;
+			$payment['customer_note'] = implode("\r\n", $customerNote);
+
 			if ($status == RApiPaymentStatus::getStatusCompleted() && $payment['amount_paid'] != $payment['amount_total'])
 			{
 				$status = RApiPaymentStatus::getStatusPending();
 			}
 
-			$payment['customer_note'] = implode("\r\n", $customerNote);
-			$payment['amount_paid'] = $amountPaid;
 			$payment['status'] = $status;
+
+			if (empty($payment['currency']))
+			{
+				$payment['currency'] = $currency;
+			}
+
+			// Currency should not be numeric
+			if (!empty($payment['currency']) && is_numeric($payment['currency']))
+			{
+				$payment['currency'] = RHelperCurrency::getIsoCode($payment['currency']);
+			}
 
 			if (!self::updatePaymentData($payment))
 			{
@@ -923,7 +942,7 @@ class RApiPaymentHelper
 	 *
 	 * @param   string   $paymentName    Payment name
 	 * @param   string   $extensionName  Extension name
-	 * @param   array    $data           Request data
+	 * @param   mixed    $data           Request data
 	 * @param   boolean  $isValid        Is Valid payment
 	 * @param   string   $statusText     Status text
 	 *
@@ -1007,6 +1026,10 @@ class RApiPaymentHelper
 				$logData .= str_pad($key, 30, ' ') . $value . "\n";
 			}
 		}
+		elseif (is_object($data))
+		{
+			$logData .= (json_encode($data)) . "\n";
+		}
 		else
 		{
 			$logData .= $data . "\n";
@@ -1038,6 +1061,7 @@ class RApiPaymentHelper
 		$paymentLog['payment_id'] = !empty($data['payment_id']) ? $data['payment_id'] : @$data['id'];
 		$paymentLog['ip_address'] = $_SERVER['REMOTE_ADDR'];
 		$paymentLog['referrer'] = $_SERVER['HTTP_REFERER'];
+		$paymentLog['transaction_id'] = !empty($data['transaction_id']) ? $data['transaction_id'] : '';
 		$paymentLog['status'] = RApiPaymentStatus::getStatus($status);
 		$paymentLog['message_uri'] = JUri::getInstance()->toString();
 		$paymentLog['message_post'] = json_encode($data);
@@ -1064,6 +1088,12 @@ class RApiPaymentHelper
 
 		// Forcing default set of statuses
 		$paymentLog['status'] = RApiPaymentStatus::getStatus($paymentLog['status']);
+
+		// Currency should not be numeric
+		if (!empty($paymentLog['currency']) && is_numeric($paymentLog['currency']))
+		{
+			$paymentLog['currency'] = RHelperCurrency::getIsoCode($paymentLog['currency']);
+		}
 
 		/** @var RedcoreModelPayment_Log $logModel */
 		$logModel = RModelAdmin::getAdminInstance('Payment_Log', array(), 'com_redcore');
@@ -1147,5 +1177,29 @@ class RApiPaymentHelper
 		}
 
 		return self::$extensionHelperClasses[$extensionName];
+	}
+
+	/**
+	 * Gets last payment log object
+	 *
+	 * @param   int  $paymentId  Id of the payment
+	 *
+	 * @return  object
+	 *
+	 * @since   1.5
+	 */
+	public static function getLastPaymentLog($paymentId)
+	{
+		$db = JFactory::getDbo();
+
+		$query = $db->getQuery(true)
+			->select('pl.*')
+			->from($db->qn('#__redcore_payment_log', 'pl'))
+			->where('pl.payment_id = ' . (int) $paymentId)
+			->order('pl.created_date DESC');
+
+		$db->setQuery($query, 0, 1);
+
+		return $db->loadObject();
 	}
 }

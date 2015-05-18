@@ -82,6 +82,18 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	public $paymentFeeType = 'include';
 
 	/**
+	 * Payment api will use given folder path to load custom (not official) omnipay payment classes
+	 * @var string
+	 */
+	protected $omnipayCustomClassPath = '';
+
+	/**
+	 * If using omnipay this property must be the name of the omnipay payment gateway ex. Stripe
+	 * @var string
+	 */
+	protected $omnipayGatewayName = '';
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JRegistry  $params  Parameters from the plugin
@@ -104,7 +116,14 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 *
 	 * @return bool paid status
 	 */
-	abstract public function handleCallback($extensionName, $ownerName, $data, &$logData);
+	public function handleCallback($extensionName, $ownerName, $data, &$logData)
+	{
+		// This function should be implemented in the child class if needed
+		// This method is not set as abstract because many of the payment gateways do not support it
+		$logData['message_text'] = JText::sprintf('LIB_REDCORE_PAYMENT_LOG_METHOD_NOT_SUPPORTED', 'handleCallback', $this->paymentName);
+
+		return false;
+	}
 
 	/**
 	 * Handle the reception of notification from the payment gateway
@@ -190,7 +209,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 *
 	 * @param   string  $extensionName  Name of the extension
 	 * @param   string  $ownerName      Name of the owner
-	 * @param   array   $data           Payment data
+	 * @param   object  $data           Payment data
 	 * @param   array   &$logData       Log data
 	 * @param   bool    &$isCaptured    If process is successful then this flag should be true
 	 *
@@ -212,7 +231,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 *
 	 * @param   string  $extensionName  Name of the extension
 	 * @param   string  $ownerName      Name of the owner
-	 * @param   array   $data           Payment data
+	 * @param   object  $data           Payment data
 	 * @param   array   &$logData       Log data
 	 * @param   bool    &$isDeleted     If process is successful then this flag should be true
 	 *
@@ -256,6 +275,25 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 */
 	public function preparePaymentSubmitData($extensionName, $ownerName, $data, $payment)
 	{
+		return $data;
+	}
+
+	/**
+	 * Prepare data for omnipay from payment object
+	 *
+	 * @param   object  $payment  Payment object from saved payment table
+	 *
+	 * @return array
+	 */
+	public function prepareOmnipayData($payment)
+	{
+		$data = !is_array($payment) ? JArrayHelper::fromObject($payment) : $payment;
+
+		$data['amount']     = $data['amount_total'];
+		$data['transactionId'] = $data['transaction_id'];
+		$data['returnUrl'] = $this->getResponseUrl($payment, 'callback');
+		$data['cancelUrl'] = $this->getResponseUrl($payment, 'cancel');
+
 		return $data;
 	}
 
@@ -809,5 +847,66 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		}
 
 		return $fee;
+	}
+
+	/**
+	 * Load omnipay library and this payment gateway classes if needed
+	 *
+	 * @return boolean
+	 */
+	public function loadOmnipay()
+	{
+		// Load omnipay libraries
+		$omnipayLibraries = JPATH_LIBRARIES . '/redpayment_omnipay/vendor/autoload.php';
+
+		if (!file_exists($omnipayLibraries))
+		{
+			return false;
+		}
+
+		$loader = require $omnipayLibraries;
+
+		// If custom class path is set we will load additional classes for omnipay
+		if (!empty($this->omnipayCustomClassPath))
+		{
+			$map = array(
+				'Omnipay\\' . $this->omnipayGatewayName . '\\' => array($this->omnipayCustomClassPath),
+			);
+
+			foreach ($map as $namespace => $path)
+			{
+				$loader->setPsr4($namespace, $path);
+			}
+
+			$loader->register(true);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Get the payment amount as an integer.
+	 *
+	 * @param   float   $amount    Amount
+	 * @param   string  $currency  Iso 4217 3 letters currency code
+	 *
+	 * @return integer
+	 */
+	public function getAmountInteger($amount, $currency)
+	{
+		return (int) round($amount * pow(10, RHelperCurrency::getPrecision($currency)));
+	}
+
+	/**
+	 * Get the payment amount as an float.
+	 *
+	 * @param   int     $amount    Amount
+	 * @param   string  $currency  Iso 4217 3 letters currency code
+	 *
+	 * @return float
+	 */
+	public function getAmountToFloat($amount, $currency)
+	{
+		return (float) round($amount / pow(10, RHelperCurrency::getPrecision($currency)));
 	}
 }

@@ -95,7 +95,7 @@ class JFormFieldComponentlist extends JFormFieldList
 						$title = $value->name;
 					}
 
-					$options[] = JHtml::_('select.option', $value->name, $title . $contentElements);
+					$options[] = JHtml::_('select.option', $value->element, $title . $contentElements);
 				}
 
 				static::$cache[$hash] = array_merge(static::$cache[$hash], $options);
