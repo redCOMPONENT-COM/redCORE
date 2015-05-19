@@ -7,11 +7,8 @@ before_script:
 - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
 - sudo /etc/init.d/apache2 stop
 - sudo sed -i "s,www-data,$USER,g" /etc/apache2/envvars
-- sudo chown $USER:$USER -R /home/travis/build/redCOMPONENT-COM/redCORE/
-- sudo chmod 0755 -R /home/travis/build/redCOMPONENT-COM/redCORE/
-- sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/ /var/www/tests
+- sudo ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-- echo $TRAVIS_REPO_SLUG
 - apachectl configtest
 - sudo /etc/init.d/apache2 start
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
