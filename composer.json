@@ -12,6 +12,7 @@
         "phing/phing": "2.9.*@dev",
         "joomla-projects/joomla-browser": "dev-develop",
         "codegyre/robo": "~0.5",
-        "redcomponent/robo": "dev-master"
+        "redcomponent/robo": "dev-master",
+        "phingofficial/phing" : "dev-master"
     }
 }
