@@ -5,8 +5,9 @@ php:
 before_script:
 - sudo apt-get update -qq
 - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
-- cat /etc/apache2/envvars | grep APACHE_RUN
-- sudo chmod 777 -R /home/travis/build/redCOMPONENT-COM/redCORE/
+- sudo sed -i "s,www-data,$USER,g" /etc/apache2/envvars
+- sudo chown $USER:$USER -R /home/travis/build/redCOMPONENT-COM/redCORE/
+- sudo chmod 0755 -R /home/travis/build/redCOMPONENT-COM/redCORE/
 - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/ /var/www/tests
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
 - sudo /etc/init.d/apache2 restart
@@ -26,8 +27,8 @@ script:
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
 - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
 - php vendor/bin/robo prepare:site-for-system-tests
-- echo $TRAVIS_BUILD_DIR
-- sudo chmod 777 -R $TRAVIS_BUILD_DIR
+- sudo chown $USER:$USER -R $TRAVIS_BUILD_DIR
+- sudo chmod 0755 -R $TRAVIS_BUILD_DIR
 - php vendor/bin/robo run:tests
 - php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
 notifications:
