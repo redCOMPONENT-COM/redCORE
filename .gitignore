@@ -29,6 +29,7 @@ Desktop.ini
 # Phing
 build.properties
 phing-latest.phar
+.dist
 
 # Github pages and Jekyll files
 /_site/
