@@ -7,9 +7,9 @@ before_script:
 - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
 - sudo /etc/init.d/apache2 stop
 - sudo sed -i "s,www-data,$USER,g" /etc/apache2/envvars
-- sudo ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
+- sudo chown $USER:$USER /var/www
+- ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-- cat /etc/apache2/sites-available/default
 - sudo /etc/init.d/apache2 start
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
 - ./composer.phar install --prefer-dist
@@ -27,8 +27,6 @@ script:
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
 - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
 - php vendor/bin/robo prepare:site-for-system-tests
-- sudo chown $USER:$USER -R $TRAVIS_BUILD_DIR
-- sudo chmod 0755 -R $TRAVIS_BUILD_DIR
 - php vendor/bin/robo run:tests
 - php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
 notifications:
