@@ -15,8 +15,8 @@ before_script:
 - sudo /etc/init.d/apache2 start
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
 - ./composer.phar install --prefer-dist
-- sudo pear channel-discover pear.phing.info
-- sudo pear install --onlyreqdeps --soft phing/phing
+- chmod a+x tests/travis-phing.sh
+- sudo tests/travis-phing.sh
 - phing -f extension_packager.xml autopack
 - unzip .dist/redcore-v*.zip -d .dist/redCORE
 - "export DISPLAY=:99.0"
