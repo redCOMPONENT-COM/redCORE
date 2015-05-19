@@ -11,6 +11,7 @@ before_script:
 - sudo chmod 0755 -R /home/travis/build/redCOMPONENT-COM/redCORE/
 - sudo ln -s /home/travis/build/redCOMPONENT-COM/redCORE/tests/ /var/www/tests
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
+- echo $TRAVIS_REPO_SLUG
 - apachectl configtest
 - sudo /etc/init.d/apache2 start
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
