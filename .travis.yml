@@ -11,7 +11,7 @@ before_script:
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
 - sudo /etc/init.d/apache2 restart
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
-- ./composer.phar install --dev --prefer-dist
+- ./composer.phar install --prefer-dist
 - "export DISPLAY=:99.0"
 - "sh -e /etc/init.d/xvfb start"
 - sleep 3 # give xvfb some time to start
@@ -26,6 +26,7 @@ script:
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
 - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
 - php vendor/bin/robo prepare:site-for-system-tests
+- echo $TRAVIS_BUILD_DIR
 - sudo chmod 777 -R $TRAVIS_BUILD_DIR
 - php vendor/bin/robo run:tests
 - php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
