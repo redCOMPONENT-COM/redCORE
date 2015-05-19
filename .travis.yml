@@ -9,7 +9,7 @@ before_script:
 - sudo sed -i "s,www-data,$USER,g" /etc/apache2/envvars
 - sudo ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-- apachectl configtest
+- cat /etc/apache2/sites-available/default
 - sudo /etc/init.d/apache2 start
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
 - ./composer.phar install --prefer-dist
