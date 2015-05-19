@@ -6,10 +6,11 @@ before_script:
 - sudo apt-get update -qq
 - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
 - sudo /etc/init.d/apache2 stop
-- sudo ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
 - sudo sed -i -e "s,APACHE_RUN_USER=www-data,APACHE_RUN_USER=$USER,g" /etc/apache2/envvars
 - sudo sed -i -e "s,APACHE_RUN_GROUP=www-data,APACHE_RUN_USER=$USER,g" /etc/apache2/envvars
-- cat /etc/apache2/envvars
+- sudo chown -R $USER:$USER /var/lock/apache2
+- sudo chown -R $USER:$USER /var/www
+- ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
 - sudo /etc/init.d/apache2 start
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
