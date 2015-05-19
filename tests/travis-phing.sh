@@ -42,21 +42,8 @@ if [[ $TRAVIS_PHP_VERSION < 5.3 ]]; then
     pear install HTTP_Request2
     pear install VersionControl_SVN-alpha
     pear install VersionControl_Git-alpha
-   
-    mkdir vendor
-    touch vendor/autoload.php
 else
     echo -e "\nInstalling composer packages ... "
     ./composer.phar selfupdate --quiet
     ./composer.phar install -o --no-progress
 fi
-
-if [[ $TRAVIS_PHP_VERSION != 'hhvm-nightly' && $TRAVIS_PHP_VERSION != 'hhvm' ]]; then
-    phpenv config-add .travis.php.ini
-else
-    echo "hhvm.libxml.ext_entity_whitelist = file" >> /etc/hhvm/php.ini
-    phpenv rehash
-    echo "hhvm.libxml.ext_entity_whitelist = file" >> /etc/hhvm/php.ini
-fi
-
-phpenv rehash
