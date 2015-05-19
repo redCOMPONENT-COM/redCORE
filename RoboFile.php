@@ -126,16 +126,18 @@ class RoboFile extends \Robo\Tasks
         // Kill selenium server
         // $this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
 
-        $this->say('Printing Selenium Log files');
-        $this->say('------ selenium.log (start) ---------');
         $seleniumErrors = file_get_contents('selenium.log');
         if ($seleniumErrors) {
+            /*
+            // Uncomment if you need to debug issues in selenium
+            $this->say('Printing Selenium Log files');
+            $this->say('------ selenium.log (start) ---------');
             $this->say(file_get_contents('selenium.log'));
+            $this->say('------ selenium.log (end) -----------');*/
         }
         else {
             $this->say('no errors were found');
         }
-        $this->say('------ selenium.log (end) -----------');
     }
 
     /**
