@@ -7,6 +7,11 @@ before_script:
 - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
 - sudo /etc/init.d/apache2 stop
 - sudo ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
+- echo $USER
+- groups $USER
+- sudo sed -i -e "s,APACHE_RUN_USER=www-data,APACHE_RUN_USER=$USER,g" /etc/apache2/envvars
+- sudo sed -i -e "s,APACHE_RUN_GROUP=www-data,APACHE_RUN_USER=$GROUP,g" /etc/apache2/envvars
+- echo /etc/apache2/envvars
 - sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
 - sudo /etc/init.d/apache2 start
 - if [ ! -f composer.phar ]; then curl -sS https://getcomposer.org/installer | php; fi
@@ -27,6 +32,3 @@ script:
 - php vendor/bin/robo prepare:site-for-system-tests
 - php vendor/bin/robo run:tests
 - php vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
-notifications:
-  slack:
-    secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=
