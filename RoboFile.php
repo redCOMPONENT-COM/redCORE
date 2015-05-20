@@ -110,7 +110,7 @@ class RoboFile extends \Robo\Tasks
         $this->taskComposerUpdate()->run();
 
         // Running Selenium server
-        $this->_exec("java -jar $seleniumPath > selenium-errors.log 2>selenium.log &");
+        $this->_exec("java -jar $seleniumPath >> selenium.log 2>&1 &");
 
         $this->taskWaitForSeleniumStandaloneServer()
             ->run()
@@ -126,24 +126,18 @@ class RoboFile extends \Robo\Tasks
         // Kill selenium server
         // $this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
 
-        $this->say('Printing Selenium Log files');
-        $this->say('------ selenium-errors.log (start) ---------');
-        $seleniumErrors = file_get_contents('selenium-errors.log');
+        $seleniumErrors = file_get_contents('selenium.log');
         if ($seleniumErrors) {
-            $this->say(file_get_contents('selenium-errors.log'));
+            /*
+            // Uncomment if you need to debug issues in selenium
+            $this->say('Printing Selenium Log files');
+            $this->say('------ selenium.log (start) ---------');
+            $this->say(file_get_contents('selenium.log'));
+            $this->say('------ selenium.log (end) -----------');*/
         }
         else {
             $this->say('no errors were found');
         }
-        $this->say('------ selenium-errors.log (end) -----------');
-
-        /*
-        // Uncomment if you need to debug issues in selenium
-        $this->say('');
-        $this->say('------ selenium.log (start) -----------');
-        $this->say(file_get_contents('selenium.log'));
-        $this->say('------ selenium.log (end) -----------');
-        */
     }
 
     /**
