@@ -66,8 +66,8 @@ class RApiSoapOperationOperation
 			$dataGet['filter'][$filter] = isset($data->filters->$filter) ? $data->filters->$filter : '';
 		}
 
-		$dataGet['filter']['order'] = (isset($data->ordering) ? (string) $data->ordering : '');
-		$dataGet['filter']['order_Dir'] = (isset($data->orderingDirection) ? (string) $data->orderingDirection : '');
+		$dataGet['list']['ordering'] = (isset($data->ordering) ? (string) $data->ordering : '');
+		$dataGet['list']['direction'] = (isset($data->orderingDirection) ? (string) $data->orderingDirection : '');
 
 		// Handle different language switch
 		$this->setLanguage((isset($data->language) ? (string) $data->language : ''));
