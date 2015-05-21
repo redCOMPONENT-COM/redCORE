@@ -156,10 +156,13 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterRoute()
 	{
-		if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+		if (defined('REDCORE_LIBRARY_LOADED'))
 		{
-			// Reset menus because they are loaded before any other module
-			RMenu::resetJoomlaMenuItems();
+			if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+			{
+				// Reset menus because they are loaded before any other module
+				RMenu::resetJoomlaMenuItems();
+			}
 		}
 	}
 
