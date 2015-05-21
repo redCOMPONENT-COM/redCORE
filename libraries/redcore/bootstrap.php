@@ -168,11 +168,8 @@ class RBootstrap
 				// Enable translations
 				$db->translate = self::getConfig('enable_translations', 0) == 1;
 
-				if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
-				{
-					// Reset plugin params if we are in a different language than default
-					RTranslationHelper::resetPluginTranslation();
-				}
+				// Reset plugin translations params if needed
+				RTranslationHelper::resetPluginTranslation();
 			}
 		}
 	}

@@ -148,6 +148,22 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
+	 * After route.
+	 *
+	 * @return  void
+	 *
+	 * @since   3.4
+	 */
+	public function onAfterRoute()
+	{
+		if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+		{
+			// Reset menus because they are loaded before any other module
+			RMenu::resetJoomlaMenuItems();
+		}
+	}
+
+	/**
 	 * This event is triggered after pushing the document buffers into the template placeholders,
 	 * retrieving data from the document and pushing it into the into the JResponse buffer.
 	 * http://docs.joomla.org/Plugin/Events/System

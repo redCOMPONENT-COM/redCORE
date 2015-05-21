@@ -27,7 +27,6 @@ class ModRedCORELanguageSwitcherHelper
 	{
 		$app = JFactory::getApplication();
 		$languages = JLanguageHelper::getLanguages();
-		$currentLang = JLanguageHelper::detectLanguage();
 		$db = JFactory::getDbo();
 
 		$Itemid = $app->input->getInt('Itemid', 0);
@@ -46,44 +45,19 @@ class ModRedCORELanguageSwitcherHelper
 			}
 		}
 
+		// For every language we load menu items language specific alias and params
 		foreach ($languages as $i => $language)
 		{
 			$db->forceLanguageTranslation = $language->lang_code;
-			self::resetMenuItems();
+			RMenu::resetJoomlaMenuItems();
 			$db->forceLanguageTranslation = false;
-			$languages[$i]->active = ($language->lang_code == $currentLang);
+			$languages[$i]->active = $language->lang_code == JFactory::getLanguage()->getTag();
 			$languages[$i]->link = RRoute::_('index.php?' . $location . '&lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : ''));
 		}
 
-		self::resetMenuItems();
+		// After we are done we reset it the way it was
+		RMenu::resetJoomlaMenuItems();
 
 		return $languages;
-	}
-
-	/**
-	 * Function for resetting menu items so they can be loaded with separate language aliases
-	 *
-	 * @return	array  Language list
-	 */
-	public static function resetMenuItems()
-	{
-		$menu = JFactory::getApplication()->getMenu();
-		$menu->load();
-		$menuItems = $menu->getMenu();
-
-		foreach ($menuItems as $item)
-		{
-			if ($item->home)
-			{
-				$menu->setDefault($item->id, trim($item->language));
-			}
-
-			$item = $menu->getItem($item->id);
-
-			// Decode the item params
-			$result = new JRegistry;
-			$result->loadString($item->params);
-			$item->params = $result;
-		}
 	}
 }
