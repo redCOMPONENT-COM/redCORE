@@ -40,6 +40,7 @@ class Com_RedcoreUpdateScript_1_5_5
 
 	/**
 	 * Execute File Queries
+	 * Added for backwards compatibility when redCORE library was not copied before actual installation
 	 *
 	 * @param   string  $path  Path to sql file
 	 *
