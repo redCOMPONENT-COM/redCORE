@@ -150,18 +150,20 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
                 $backtracking[] = $charPos;
 
             } elseif (($key === 'ref_clause' || $key === 'columns') && $parsed !== false) {
-	            // we hold the current position and come back after n base_expr(s)
-	            // there is an array of sub-elements before (!) the base_expr clause of the current element
-	            // so we go through the sub-elements and must come at the end
+              // we hold the current position and come back after n base_expr(s)
+              // there is an array of sub-elements before (!) the base_expr clause of the current element
+              // so we go through the sub-elements and must come at the end
                 $backtracking[] = $charPos;
-                for ($i = 1; $i < count($parsed); $i++) {
+                $parsedCount = count($parsed);
+                for ($i = 1; $i < $parsedCount; $i++) {
                     $backtracking[] = false; // backtracking only after n base_expr!
                 }
             } elseif ($key === 'sub_tree' && $parsed !== false) {
-	            // we prevent wrong backtracking on subtrees (too much array_pop())
-	            // there is an array of sub-elements after(!) the base_expr clause of the current element
-	            // so we go through the sub-elements and must not come back at the end
-                for ($i = 1; $i < count($parsed); $i++) {
+              // we prevent wrong backtracking on subtrees (too much array_pop())
+              // there is an array of sub-elements after(!) the base_expr clause of the current element
+              // so we go through the sub-elements and must not come back at the end
+                $parsedCount = count($parsed);
+                for ($i = 1; $i < $parsedCount; $i++) {
                     $backtracking[] = false;
                 }
             } else {

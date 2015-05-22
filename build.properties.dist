@@ -1,6 +1,6 @@
 # Properties files are configuration files used by PHING scripts containing:
 # key=value
-# more info at: https://redweb.atlassian.net/wiki/display/RWEB/Using+PHING+for+packaging+and+testing+an+extension
+# more info at: https://redweb.atlassian.net/wiki/display/Devportal/Using+PHING+for+packaging+and+testing+an+extension
 
 # Extension details:
 comp.name=redcore
