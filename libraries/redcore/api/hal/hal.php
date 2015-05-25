@@ -1560,7 +1560,7 @@ class RApiHalHal extends RApi
 			}
 			elseif ($response === false && $terminateIfNotAuthorized)
 			{
-				throw new Exception('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE');
+				throw new Exception(JText::_('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE'));
 			}
 			else
 			{
@@ -1651,7 +1651,7 @@ class RApiHalHal extends RApi
 
 		if (empty($tableName))
 		{
-			throw new Exception('LIB_REDCORE_API_HAL_WEBSERVICE_TABLE_NAME_NOT_SET');
+			throw new Exception(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_TABLE_NAME_NOT_SET'));
 		}
 
 		$context = $this->webserviceName . '.' . $this->webserviceVersion;
