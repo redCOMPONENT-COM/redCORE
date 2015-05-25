@@ -4903,6 +4903,17 @@
   right: -21px;
   color: inherit;
 }
+.redcore .alert-message {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+.redcore .alert-message hr {
+  border-top-color: #c9e2b3;
+}
+.redcore .alert-message .alert-link {
+  color: #2b542c;
+}
 .redcore .alert-success {
   color: #3c763d;
   background-color: #dff0d8;
@@ -4935,6 +4946,17 @@
 }
 .redcore .alert-warning .alert-link {
   color: #66512c;
+}
+.redcore .alert-error {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+.redcore .alert-error hr {
+  border-top-color: #e4b9c0;
+}
+.redcore .alert-error .alert-link {
+  color: #843534;
 }
 .redcore .alert-danger {
   color: #a94442;
