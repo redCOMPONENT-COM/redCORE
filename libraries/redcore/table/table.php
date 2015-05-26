@@ -776,6 +776,11 @@ class RTable extends JTable
 				$pk = implode(',', $pk);
 				$multipleDelete = true;
 			}
+			// Try the instance property value
+			elseif ($this->{$k})
+			{
+				$pk = $this->{$k};
+			}
 		}
 
 		// If no primary key is given, return false.
