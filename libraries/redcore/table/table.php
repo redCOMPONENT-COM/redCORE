@@ -777,7 +777,7 @@ class RTable extends JTable
 				$multipleDelete = true;
 			}
 			// Try the instance property value
-			elseif ($this->{$k})
+			elseif (empty($pk) && $this->{$k})
 			{
 				$pk = $this->{$k};
 			}
