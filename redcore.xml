@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="2.5" method="upgrade">
     <name>COM_REDCORE</name>
-    <creationDate>August 2014</creationDate>
+    <creationDate>April 2015</creationDate>
     <author>redCOMPONENT</author>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.5.0" defaultFramework="bootstrap3" />
+    <redcore version="1.6.0" defaultFramework="bootstrap3" />
 
     <install folder="component/admin">
         <sql>
             <file driver="mysql" charset="utf8">sql/install/mysql/install.sql</file>
             <file driver="mysqli" charset="utf8">sql/install/mysql/install.sql</file>
             <file driver="mysql" charset="utf8">sql/install/mysql/data.sql</file>
+            <file driver="mysql" charset="utf8">sql/install/mysql/currency.sql</file>
+            <file driver="mysql" charset="utf8">sql/install/mysql/country.sql</file>
         </sql>
     </install>
     <uninstall folder="component/admin">
@@ -30,6 +32,9 @@
             <schemapath type="mysql">sql/updates/mysql</schemapath>
             <schemapath type="mysqli">sql/updates/mysql</schemapath>
         </schemas>
+        <php>
+            <path>updates</path>
+        </php>
     </update>
 
     <administration>
@@ -40,6 +45,7 @@
             <folder>models</folder>
             <folder>sql</folder>
             <folder>tables</folder>
+            <folder>updates</folder>
             <folder>views</folder>
             <filename>LICENSE</filename>
             <filename>access.xml</filename>
@@ -59,6 +65,7 @@
             <menu link="option=com_redcore&amp;view=translations" view="translations">COM_REDCORE_TRANSLATIONS</menu>
             <menu link="option=com_redcore&amp;view=webservices" view="webservices">COM_REDCORE_WEBSERVICES</menu>
             <menu link="option=com_redcore&amp;view=oauth_clients" view="oauth_clients">COM_REDCORE_OAUTH_CLIENTS</menu>
+            <menu link="option=com_redcore&amp;view=payment_dashboard" view="payment_dashboard">COM_REDCORE_PAYMENTS</menu>
         </submenu>
     </administration>
 
@@ -82,6 +89,7 @@
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
         <plugin name="mvcoverride" group="system" disabled="1" />
+        <plugin name="paypal" group="redpayment"/>
     </plugins>
 
     <!-- Modules to install with the component -->
@@ -101,9 +109,15 @@
         <translation name="com_modules"/>
         <translation name="com_newsfeeds"/>
         <translation name="com_plugins"/>
+        <translation name="com_redcore"/>
         <translation name="com_users"/>
         <translation name="com_weblinks"/>
     </translations>
+
+    <!-- Cli to install with the component -->
+    <cli>
+        <folder name="com_redcore" folder="component/cli/com_redcore"/>
+    </cli>
 
     <!-- Minimum requirements for extension -->
     <requirements>

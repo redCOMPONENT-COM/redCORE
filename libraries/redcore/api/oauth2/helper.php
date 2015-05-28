@@ -101,7 +101,7 @@ class RApiOauth2Helper
 	 */
 	public static function getOAuth2Server()
 	{
-		if (RTranslationHelper::$pluginParams->get('enable_oauth2_server', 0) == 0)
+		if (RBootstrap::getConfig('enable_oauth2_server', 0) == 0)
 		{
 			return null;
 		}

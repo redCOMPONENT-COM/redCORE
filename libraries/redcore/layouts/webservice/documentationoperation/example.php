@@ -123,9 +123,9 @@ endif;
 								. JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_OPTIONAL') . '</em>)';
 							$fieldsContainer[] = '<strong>filter[search]</strong> (<em>string, '
 								. JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_OPTIONAL') . '</em>)';
-							$fieldsContainer[] = '<strong>filter[order]</strong> (<em>string, '
+							$fieldsContainer[] = '<strong>list[ordering]</strong> (<em>string, '
 								. JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_OPTIONAL') . '</em>)';
-							$fieldsContainer[] = '<strong>filter[order_Dir]</strong> (<em>string, '
+							$fieldsContainer[] = '<strong>list[direction]</strong> (<em>string, '
 								. JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_FIELD_OPTIONAL') . '</em>)';
 						endif;
 

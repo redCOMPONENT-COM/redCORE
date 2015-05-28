@@ -40,6 +40,27 @@ class Com_RedcoreInstallerScript
 	public $installer = null;
 
 	/**
+	 * Extension element name
+	 *
+	 * @var  string
+	 */
+	protected $extensionElement = '';
+
+	/**
+	 * Manifest of the extension being processed
+	 *
+	 * @var  SimpleXMLElement
+	 */
+	protected $manifest;
+
+	/**
+	 * Old version according to manifest
+	 *
+	 * @var  string
+	 */
+	protected $oldVersion = '0.0.0';
+
+	/**
 	 * Get the common JInstaller instance used to install all the extensions
 	 *
 	 * @return JInstaller The JInstaller object
@@ -55,42 +76,27 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
-	 * Shit happens. Patched function to bypass bug in package uninstaller
+	 * Getter with manifest cache support
 	 *
-	 * @param   JInstaller  $parent  Parent object
+	 * @param   JInstallerAdapter  $parent  Parent object
 	 *
 	 * @return  SimpleXMLElement
 	 */
 	protected function getManifest($parent)
 	{
-		$element = strtolower(str_replace('InstallerScript', '', __CLASS__));
-		$elementParts = explode('_', $element);
-
-		if (count($elementParts) == 2)
+		if (null === $this->manifest)
 		{
-			$extType = $elementParts[0];
-
-			if ($extType == 'pkg')
-			{
-				$rootPath = $parent->getParent()->getPath('extension_root');
-				$manifestPath = dirname($rootPath);
-				$manifestFile = $manifestPath . '/' . $element . '.xml';
-
-				if (file_exists($manifestFile))
-				{
-					return JFactory::getXML($manifestFile);
-				}
-			}
+			$this->loadManifest($parent);
 		}
 
-		return $parent->get('manifest');
+		return $this->manifest;
 	}
 
 	/**
 	 * Method to run before an install/update/uninstall method
 	 *
-	 * @param   object      $type    type of change (install, update or discover_install)
-	 * @param   JInstaller  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return bool
 	 */
@@ -99,11 +105,37 @@ class Com_RedcoreInstallerScript
 		$this->installRedcore($type, $parent);
 		$this->loadRedcoreLibrary();
 		$this->loadRedcoreLanguage();
-		$manifest  = $this->getManifest($parent);
-		$extensionType      = $manifest->attributes()->type;
+		$manifest = $this->getManifest($parent);
+		$extensionType = $manifest->attributes()->type;
+		$this->extensionElement = $this->getElement($parent, $manifest);
 
 		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
 		{
+			// Update SQL pre-processing
+			if ($type == 'update')
+			{
+				// Reads current (old) version from manifest
+				$db = JFactory::getDbo();
+				$version = $db->setQuery(
+					$db->getQuery(true)
+						->select($db->qn('s.version_id'))
+						->from($db->qn('#__schemas', 's'))
+						->join('inner', $db->qn('#__extensions', 'e') . ' ON ' . $db->qn('e.extension_id') . ' = ' . $db->qn('s.extension_id'))
+						->where('e.element = ' . $db->q($this->extensionElement))
+				)
+					->loadResult();
+
+				if (!empty($version))
+				{
+					$this->oldVersion = (string) $version;
+				}
+
+				if (!$this->preprocessUpdates($parent))
+				{
+					return false;
+				}
+			}
+
 			// In case we are installing redcore
 			if (get_called_class() == 'Com_RedcoreInstallerScript')
 			{
@@ -117,17 +149,20 @@ class Com_RedcoreInstallerScript
 					return false;
 				}
 
-				$searchPaths = array(
-					// Discover install
-					JPATH_LIBRARIES . '/redcore/component',
-					// Install
-					dirname(__FILE__) . '/redCORE/libraries/redcore/component',
-					dirname(__FILE__) . '/libraries/redcore/component',
-				);
-
-				if ($componentHelper = JPath::find($searchPaths, 'helper.php'))
+				if (!class_exists('RComponentHelper'))
 				{
-					require_once $componentHelper;
+					$searchPaths = array(
+						// Discover install
+						JPATH_LIBRARIES . '/redcore/component',
+						// Install
+						dirname(__FILE__) . '/redCORE/libraries/redcore/component',
+						dirname(__FILE__) . '/libraries/redcore/component',
+					);
+
+					if ($componentHelper = JPath::find($searchPaths, 'helper.php'))
+					{
+						require_once $componentHelper;
+					}
 				}
 			}
 
@@ -173,7 +208,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to install the component
 	 *
-	 * @param   object  $parent  Class calling this method
+	 * @param   JInstallerAdapter  $parent  Class calling this method
 	 *
 	 * @return  boolean          True on success
 	 */
@@ -188,20 +223,225 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to install the component
 	 *
-	 * @param   object  $parent  Class calling this method
+	 * @param   JInstallerAdapter  $parent  Class calling this method
 	 *
 	 * @return  boolean          True on success
 	 */
 	public function installOrUpdate($parent)
 	{
 		// Install extensions
-		$this->installLibraries($parent);
+		// We have already installed redCORE library on preflight so we will not do it again
+		if ((get_called_class() != 'Com_RedcoreInstallerScript'))
+		{
+			$this->installLibraries($parent);
+		}
+
 		$this->loadRedcoreLibrary();
 		$this->installMedia($parent);
 		$this->installWebservices($parent);
 		$this->installModules($parent);
 		$this->installPlugins($parent);
 		$this->installTemplates($parent);
+		$this->installCli($parent);
+
+		return true;
+	}
+
+	/**
+	 * Method to process SQL updates previous to the install process
+	 *
+	 * @param   JInstallerAdapter  $parent  Class calling this method
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function preprocessUpdates($parent)
+	{
+		$manifest  = $parent->get('manifest');
+
+		if (isset($manifest->update))
+		{
+			if (isset($manifest->update->attributes()->folder))
+			{
+				$path = $manifest->update->attributes()->folder;
+
+				if (isset($manifest->update->pre) && isset($manifest->update->pre->schemas))
+				{
+					$schemapaths = $manifest->update->pre->schemas->children();
+
+					if (count($schemapaths))
+					{
+						$sourcePath = $parent->getParent()->getPath('source');
+
+						// If it just upgraded redCORE to a newer version using RFactory for database, it forces using the redCORE database drivers
+						if (substr(get_class(JFactory::$database), 0, 1) == 'J' && $this->extensionElement != 'com_redcore')
+						{
+							RFactory::$database = null;
+							JFactory::$database = null;
+							JFactory::$database = RFactory::getDbo();
+						}
+
+						$db = JFactory::getDbo();
+
+						$dbDriver = strtolower($db->name);
+						$schemapath = '';
+
+						if ($dbDriver == 'mysqli')
+						{
+							$dbDriver = 'mysql';
+						}
+
+						foreach ($schemapaths as $entry)
+						{
+							if (isset($entry->attributes()->type))
+							{
+								$uDriver = strtolower($entry->attributes()->type);
+
+								if ($uDriver == 'mysqli')
+								{
+									$uDriver = 'mysql';
+								}
+
+								if ($uDriver == $dbDriver)
+								{
+									$schemapath = (string) $entry;
+									break;
+								}
+							}
+						}
+
+						if ($schemapath != '')
+						{
+							$files = str_replace('.sql', '', JFolder::files($sourcePath . '/' . $path . '/' . $schemapath, '\.sql$'));
+							usort($files, 'version_compare');
+
+							if (count($files))
+							{
+								foreach ($files as $file)
+								{
+									if (version_compare($file, $this->oldVersion) > 0)
+									{
+										$buffer = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
+										$queries = RHelperDatabase::splitSQL($buffer);
+
+										if (count($queries))
+										{
+											foreach ($queries as $query)
+											{
+												if ($query != '' && $query{0} != '#')
+												{
+													$db->setQuery($query);
+
+													if (!$db->execute(true))
+													{
+														JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)), JLog::WARNING, 'jerror');
+
+														return false;
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to process PHP update files defined in the manifest file
+	 *
+	 * @param   JInstallerAdapter  $parent              Class calling this method
+	 * @param   bool               $executeAfterUpdate  The name of the function to execute
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function phpUpdates($parent, $executeAfterUpdate)
+	{
+		$manifest = $parent->get('manifest');
+
+		if (isset($manifest->update))
+		{
+			if (isset($manifest->update->php) && isset($manifest->update->php->path))
+			{
+				$updatePath = (string) $manifest->update->php->path;
+
+				if ($updatePath != '')
+				{
+					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
+
+					if (is_dir($sourcePath . '/' . $updatePath))
+					{
+						$files = str_replace('.php', '', JFolder::files($sourcePath . '/' . $updatePath, '\.php$'));
+
+						if (!empty($files))
+						{
+							usort($files, 'version_compare');
+
+							if (count($files))
+							{
+								foreach ($files as $file)
+								{
+									if (version_compare($file, $this->oldVersion) > 0)
+									{
+										if (!$this->processPHPUpdateFile($parent, $sourcePath . '/' . $updatePath . '/' . $file . '.php', $file, $executeAfterUpdate))
+										{
+											return false;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Method to process a single PHP update file
+	 *
+	 * @param   JInstallerAdapter  $parent              Class calling this method
+	 * @param   string             $file                File to process
+	 * @param   string             $version             File version
+	 * @param   bool               $executeAfterUpdate  The name of the function to execute
+	 *
+	 * @return  boolean          True on success
+	 */
+	public function processPHPUpdateFile($parent, $file, $version, $executeAfterUpdate)
+	{
+		static $upgradeClasses;
+
+		if (!isset($upgradeClasses))
+		{
+			$upgradeClasses = array();
+		}
+
+		require_once $file;
+		$class = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', $version);
+		$methodName = $executeAfterUpdate ? 'executeAfterUpdate' : 'execute';
+
+		if (class_exists($class))
+		{
+			if (!isset($upgradeClasses[$class]))
+			{
+				$upgradeClasses[$class] = new $class;
+			}
+
+			if (method_exists($upgradeClasses[$class], $methodName))
+			{
+				if (!$upgradeClasses[$class]->{$methodName}($parent))
+				{
+					return false;
+				}
+			}
+		}
 
 		return true;
 	}
@@ -209,7 +449,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package libraries
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -217,7 +457,7 @@ class Com_RedcoreInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $this->getManifest($parent);
 		$src       = $parent->getParent()->getPath('source');
 
 		if ($nodes = $manifest->libraries->library)
@@ -233,8 +473,8 @@ class Com_RedcoreInstallerScript
 				{
 					$result = $installer->install($extPath);
 				}
+				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'library', '-1'))
-					// Discover install
 				{
 					$result = $installer->discover_install($extId);
 				}
@@ -247,7 +487,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the media folder
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -267,7 +507,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package modules
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -290,6 +530,7 @@ class Com_RedcoreInstallerScript
 				// Standard install
 				if (is_dir($extPath))
 				{
+					$installer->setAdapter('module');
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'module', '-1'))
@@ -306,7 +547,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package libraries
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -330,6 +571,7 @@ class Com_RedcoreInstallerScript
 				// Standard install
 				if (is_dir($extPath))
 				{
+					$installer->setAdapter('plugin');
 					$result = $installer->install($extPath);
 				}
 				elseif ($extId = $this->searchExtension($extName, 'plugin', '-1', $extGroup))
@@ -362,7 +604,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package translations
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -397,8 +639,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Function to install redCORE for components
 	 *
-	 * @param   object  $type    type of change (install, update or discover_install)
-	 * @param   object  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -408,27 +650,34 @@ class Com_RedcoreInstallerScript
 		if (get_called_class() != 'Com_RedcoreInstallerScript' && $type != 'discover_install')
 		{
 			$manifest  = $this->getManifest($parent);
-			$type      = $manifest->attributes()->type;
 
-			if ($type == 'component')
+			if ($manifest->redcore)
 			{
-				if ($manifest->redcore)
+				$installer = $this->getInstaller();
+				$redcoreFolder = dirname(__FILE__);
+				$redcoreComponentFolder = $this->getRedcoreComponentFolder();
+
+				if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
 				{
-					$installer = $this->getInstaller();
-					$redcoreFolder = dirname(__FILE__);
-					$redcoreComponentFolder = $this->getRedcoreComponentFolder();
+					$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
 
-					if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
+					if ($install)
 					{
-						$install = $this->checkComponentVersion($redcoreComponentFolder, $redcoreFolder, 'redcore.xml');
-
-						if ($install)
-						{
-							$installer->install($redcoreFolder);
-							$this->loadRedcoreLibrary();
-						}
+						$installer->install($redcoreFolder);
+						$this->loadRedcoreLibrary();
 					}
 				}
+			}
+		}
+		// If it is installing redCORE we want to make sure it installs redCORE library first
+		elseif (get_called_class() == 'Com_RedcoreInstallerScript' && in_array($type, array('install', 'update', 'discover_install')))
+		{
+			$install = $this->checkComponentVersion(JPATH_LIBRARIES . '/redcore', dirname(__FILE__) . '/libraries/redcore', 'redcore.xml');
+
+			// Only install if installation in the package is newer version
+			if ($install)
+			{
+				$this->installLibraries($parent);
 			}
 		}
 	}
@@ -436,7 +685,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Function to install redCORE for components
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -488,7 +737,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Install the package templates
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -511,6 +760,7 @@ class Com_RedcoreInstallerScript
 				// Standard install
 				if (is_dir($extPath))
 				{
+					$installer->setAdapter('template');
 					$result = $installer->install($extPath);
 				}
 
@@ -526,10 +776,67 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Install the package Cli scripts
+	 *
+	 * @param   JInstallerAdapter  $parent  class calling this method
+	 *
+	 * @return  void
+	 */
+	private function installCli($parent)
+	{
+		// Required objects
+		$installer = $this->getInstaller();
+		$manifest  = $parent->get('manifest');
+		$src       = $parent->getParent()->getPath('source');
+
+		if (!$manifest)
+		{
+			return;
+		}
+
+		$installer->setPath('source', $src);
+		$element = $manifest->cli;
+
+		if (!$element || !count($element->children()))
+		{
+			// Either the tag does not exist or has no children therefore we return zero files processed.
+			return;
+		}
+
+		$nodes = $element->children();
+
+		foreach ($nodes as $node)
+		{
+			// Here we set the folder name we are going to copy the files to.
+			$name = (string) $node->attributes()->name;
+
+			// Here we set the folder we are going to copy the files to.
+			$destination = JPath::clean(JPATH_ROOT . '/cli/' . $name);
+
+			// Here we set the folder we are going to copy the files from.
+			$folder = (string) $node->attributes()->folder;
+
+			if ($folder && file_exists($src . '/' . $folder))
+			{
+				$source = $src . '/' . $folder;
+			}
+			else
+			{
+				// Cli folder does not exist
+				continue;
+			}
+
+			$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
+
+			$installer->copyFiles($copyFiles, true);
+		}
+	}
+
+	/**
 	 * Method to parse through a webservices element of the installation manifest and take appropriate
 	 * action.
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean     True on success
 	 *
@@ -622,8 +929,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to run after an install/update/uninstall method
 	 *
-	 * @param   object  $type    type of change (install, update or discover_install)
-	 * @param   object  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean
 	 */
@@ -660,8 +967,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Execute the postflight tasks from the manifest if there is any.
 	 *
-	 * @param   object  $type    type of change (install, update or discover_install)
-	 * @param   object  $parent  class calling this method
+	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -710,9 +1017,9 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Delete the menu item of the extension.
 	 *
-	 * @param   object  $type    Type of change (install, update or discover_install)
-	 * @param   object  $parent  Class calling this method
-	 * @param   string  $client  The client
+	 * @param   object             $type    Type of change (install, update or discover_install)
+	 * @param   JInstallerAdapter  $parent  Class calling this method
+	 * @param   string             $client  The client
 	 *
 	 * @return  void
 	 */
@@ -795,20 +1102,26 @@ class Com_RedcoreInstallerScript
 	/**
 	 * method to update the component
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return void
 	 */
 	public function update($parent)
 	{
+		// Process PHP update files
+		$this->phpUpdates($parent, false);
+
 		// Common tasks for install or update
 		$this->installOrUpdate($parent);
+
+		// Process PHP update files
+		$this->phpUpdates($parent, true);
 	}
 
 	/**
 	 * Prevents uninstalling redcore component if some components using it are still installed.
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 *
@@ -843,7 +1156,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * method to uninstall the component
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 *
@@ -860,6 +1173,7 @@ class Com_RedcoreInstallerScript
 		$this->uninstallModules($parent);
 		$this->uninstallPlugins($parent);
 		$this->uninstallTemplates($parent);
+		$this->uninstallCli($parent);
 		$this->uninstallLibraries($parent);
 	}
 
@@ -903,7 +1217,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the package libraries
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -934,7 +1248,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the media folder
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -953,7 +1267,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the webservices
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean
 	 */
@@ -1009,9 +1323,75 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Uninstall the Cli
+	 *
+	 * @param   JInstallerAdapter  $parent  class calling this method
+	 *
+	 * @return  boolean
+	 */
+	protected function uninstallCli($parent)
+	{
+		// Required objects
+		$manifest  = $this->getManifest($parent);
+
+		if (!$manifest)
+		{
+			return false;
+		}
+
+		// We will use cli removal function to remove cli folders
+		$element = $manifest->cli;
+
+		if (!$element || !count($element->children()))
+		{
+			// Either the tag does not exist or has no children therefore we return zero files processed.
+			return true;
+		}
+
+		$returnValue = true;
+
+		// Get the array of file nodes to process
+		$folders = $element->children();
+		$source = JPATH_ROOT . '/cli/';
+
+		// Process each folder in the $folders array
+		foreach ($folders as $folder)
+		{
+			// Here we set the folder name we are going to delete from cli main folder
+			$name = (string) $folder->attributes()->name;
+
+			// If name is not set we should not delete whole cli folder
+			if (empty($name))
+			{
+				continue;
+			}
+
+			$path = $source . '/' . $name;
+
+			// Delete the files/folders
+			if (is_dir($path))
+			{
+				$val = JFolder::delete($path);
+			}
+			else
+			{
+				$val = JFile::delete($path);
+			}
+
+			if ($val === false)
+			{
+				JLog::add(JText::sprintf('LIB_REDCORE_INSTALLER_ERROR_FAILED_TO_DELETE', $path), JLog::WARNING, 'jerror', JLog::WARNING, 'jerror');
+				$returnValue = false;
+			}
+		}
+
+		return $returnValue;
+	}
+
+	/**
 	 * Uninstall the package modules
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1043,7 +1423,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the package plugins
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1075,7 +1455,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall the package templates
 	 *
-	 * @param   object  $parent  class calling this method
+	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
 	 */
@@ -1133,8 +1513,8 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to display component info
 	 *
-	 * @param   object  $parent   Class calling this method
-	 * @param   string  $message  Message to apply to the Component info layout
+	 * @param   JInstallerAdapter  $parent   Class calling this method
+	 * @param   string             $message  Message to apply to the Component info layout
 	 *
 	 * @return  void
 	 */
@@ -1215,6 +1595,39 @@ class Com_RedcoreInstallerScript
 	}
 
 	/**
+	 * Gets or generates the element name (using the manifest)
+	 *
+	 * @param   JInstallerAdapter  $parent    Parent adapter
+	 * @param   SimpleXMLElement   $manifest  Extension manifest
+	 *
+	 * @return  string  Element
+	 */
+	public function getElement($parent, $manifest = null)
+	{
+		if (method_exists($parent, 'getElement'))
+		{
+			return $parent->getElement();
+		}
+
+		if (!isset($manifest))
+		{
+			$manifest = $parent->get('manifest');
+		}
+
+		if (isset($manifest->element))
+		{
+			$element = (string) $manifest->element;
+		}
+		else
+		{
+			$element = (string) $manifest->name;
+		}
+
+		// Filter the name for illegal characters
+		return strtolower(JFilterInput::getInstance()->clean($element, 'cmd'));
+	}
+
+	/**
 	 * Gets the path of redCORE component
 	 *
 	 * @return  string
@@ -1222,5 +1635,40 @@ class Com_RedcoreInstallerScript
 	public function getRedcoreComponentFolder()
 	{
 		return JPATH_ADMINISTRATOR . '/components/com_redcore';
+	}
+
+	/**
+	 * Shit happens. Patched function to bypass bug in package uninstaller
+	 *
+	 * @param   JInstallerAdapter  $parent  Parent object
+	 *
+	 * @return  void
+	 */
+	protected function loadManifest($parent)
+	{
+		$element = strtolower(str_replace('InstallerScript', '', get_called_class()));
+		$elementParts = explode('_', $element);
+
+		// Type not properly detected or not a package
+		if (count($elementParts) != 2 || strtolower($elementParts[0]) != 'pkg')
+		{
+			$this->manifest = $parent->get('manifest');
+
+			return;
+		}
+
+		$rootPath = $parent->getParent()->getPath('extension_root');
+		$manifestPath = dirname($rootPath);
+		$manifestFile = $manifestPath . '/' . $element . '.xml';
+
+		// Package manifest found
+		if (file_exists($manifestFile))
+		{
+			$this->manifest = JFactory::getXML($manifestFile);
+
+			return;
+		}
+
+		$this->manifest = $parent->get('manifest');
 	}
 }

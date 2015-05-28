@@ -174,4 +174,115 @@ class RApiHalModelItem extends RModelAdmin
 	{
 		$this->setState($this->getName() . '.id', 0);
 	}
+
+	/**
+	 * Method to save the form data.
+	 *
+	 * @param   array  $data  The form data.
+	 *
+	 * @return  boolean  True on success, False on error.
+	 *
+	 * @since   12.2
+	 */
+	public function save($data)
+	{
+		$dispatcher = JEventDispatcher::getInstance();
+		$table      = $this->getTable();
+		$context    = $this->option . '.' . $this->name;
+
+		if ((!empty($data['tags']) && $data['tags'][0] != ''))
+		{
+			$table->newTags = $data['tags'];
+		}
+
+		$key = $table->getKeyName();
+
+		if (is_array($key))
+		{
+			$pk = array();
+
+			foreach ($key as $pkKey)
+			{
+				$pk[$pkKey] = (!empty($data[$pkKey])) ? $data[$pkKey] : (int) $this->getState($this->getName() . '.' . $pkKey);
+			}
+		}
+		else
+		{
+			$pk = (!empty($data[$key])) ? $data[$key] : (int) $this->getState($this->getName() . '.id');
+		}
+
+		$isNew = true;
+
+		// Include the plugins for the save events.
+		JPluginHelper::importPlugin($this->events_map['save']);
+
+		// Allow an exception to be thrown.
+		try
+		{
+			// Load the row if saving an existing record.
+			if (!empty($pk))
+			{
+				$table->load($pk);
+				$isNew = false;
+			}
+
+			// Bind the data.
+			if (!$table->bind($data))
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Prepare the row for saving
+			$this->prepareTable($table);
+
+			// Check the data.
+			if (!$table->check())
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Trigger the before save event.
+			$result = $dispatcher->trigger($this->event_before_save, array($context, $table, $isNew));
+
+			if (in_array(false, $result, true))
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Store the data.
+			if (!$table->store())
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Clean the cache.
+			$this->cleanCache();
+
+			// Trigger the after save event.
+			$dispatcher->trigger($this->event_after_save, array($context, $table, $isNew));
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+
+			return false;
+		}
+
+		if (isset($table->$key))
+		{
+			$this->setState($this->getName() . '.id', $table->$key);
+		}
+
+		$this->setState($this->getName() . '.new', $isNew);
+
+		return true;
+	}
 }

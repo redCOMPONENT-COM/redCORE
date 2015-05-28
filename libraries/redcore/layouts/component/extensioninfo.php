@@ -195,7 +195,7 @@ JHtml::_('rbootstrap.tooltip');
 				<?php foreach ($plugins as $plugin):
 					$fromExtension = false;
 					foreach ($xml->plugins->plugin as $xmlPlugin):
-						if ($plugin->element == (string) $xmlPlugin['name']):
+						if ($plugin->element == (string) $xmlPlugin['name'] || $plugin->name == (string) $xmlPlugin['name']):
 							$fromExtension = true;
 							break;
 						endif;

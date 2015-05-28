@@ -9,96 +9,132 @@
 
 defined('JPATH_REDCORE') or die;
 
-if (version_compare(JVERSION, '3.0', 'lt'))
+/**
+ * redCORE Model Admin
+ *
+ * @package     Redcore
+ * @subpackage  Model
+ * @since       1.0
+ */
+class RModelAdmin extends RModelAdminLegacy
 {
 	/**
-	 * redCORE Model Admin
+	 * Added from Joomla's legacy.php to preserve static $paths
 	 *
-	 * @package     Redcore
-	 * @subpackage  Model
-	 * @since       1.0
+	 * @param   string  $type    The model type to instantiate
+	 * @param   string  $prefix  Prefix for the model class name. Optional.
+	 * @param   array   $config  Configuration array for model. Optional.
+	 *
+	 * @return  mixed   A model object or false on failure
 	 */
-	class RModelAdmin extends RModelAdminBase
+	public static function getInstance($type, $prefix = '', $config = array())
 	{
-		/**
-		 * Prepare and sanitise the table data prior to saving.
-		 *
-		 * @param   JTable  &$table  A reference to a JTable object.
-		 *
-		 * @return  void
-		 */
-		protected function prepareTable(&$table)
-		{
-			$now = JDate::getInstance();
-			$nowFormatted = $now->toSql();
-			$userId = JFactory::getUser()->id;
+		$return = parent::getInstance($type, $prefix, $config);
 
-			$table->bind(
-				array(
-					'modified_by' => $userId,
-					'modified_date' => $nowFormatted,
-					'modified_time' => $nowFormatted
-				)
-			);
-
-			if (property_exists($table, 'created_by')
-				&& (is_null($table->created_by) || empty($table->created_by)))
-			{
-				$table->bind(
-					array(
-						'created_by' => $userId,
-						'created_date' => $nowFormatted,
-						'created_time' => $nowFormatted
-					)
-				);
-			}
-		}
+		return $return;
 	}
-}
 
-else
-{
 	/**
-	 * redCORE Model Admin
+	 * Added from Joomla's legacy.php to preserve static $paths
 	 *
-	 * @package     Redcore
-	 * @subpackage  Model
-	 * @since       1.0
+	 * @param   mixed   $path    A path or array[sting] of paths to search.
+	 * @param   string  $prefix  A prefix for models.
+	 *
+	 * @return  array  An array with directory elements. If prefix is equal to '', all directories are returned.
 	 */
-	class RModelAdmin extends RModelAdminBase
+	public static function addIncludePath($path = '', $prefix = '')
 	{
-		/**
-		 * Prepare and sanitise the table data prior to saving.
-		 *
-		 * @param   JTable  $table  A reference to a JTable object.
-		 *
-		 * @return  void
-		 */
-		protected function prepareTable($table)
+		parent::addIncludePath($path, $prefix);
+		$return = JModelLegacy::addIncludePath($path, $prefix);
+
+		return $return;
+	}
+
+	/**
+	 * Get a model instance.
+	 *
+	 * @param   string  $name    Model name
+	 * @param   mixed   $client  Client. null = auto, 1 = admin, 0 = frontend
+	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call model from modules
+	 *
+	 * @return  RModelAdmin  The model
+	 *
+	 * @throws  InvalidArgumentException
+	 */
+	public static function getAutoInstance($name, $client = null, array $config = array(), $option = 'auto')
+	{
+		if ($option === 'auto')
 		{
-			$now = JDate::getInstance();
-			$nowFormatted = $now->toSql();
-			$userId = JFactory::getUser()->id;
-
-			$table->bind(
-				array(
-					'modified_by' => $userId,
-					'modified_date' => $nowFormatted,
-					'modified_time' => $nowFormatted
-				)
-			);
-
-			if (property_exists($table, 'created_by')
-				&& (is_null($table->created_by) || empty($table->created_by)))
-			{
-				$table->bind(
-					array(
-						'created_by' => $userId,
-						'created_date' => $nowFormatted,
-						'created_time' => $nowFormatted
-					)
-				);
-			}
+			$option = JFactory::getApplication()->input->getString('option', '');
 		}
+
+		$componentName = ucfirst(strtolower(substr($option, 4)));
+		$prefix = $componentName . 'Model';
+
+		if (is_null($client))
+		{
+			$client = (int) JFactory::getApplication()->isAdmin();
+		}
+
+		// Admin
+		if ($client === 1)
+		{
+			self::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/models', $prefix);
+			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/tables');
+		}
+
+		// Site
+		elseif ($client === 0)
+		{
+			self::addIncludePath(JPATH_SITE . '/components/' . $option . '/models', $prefix);
+			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/tables');
+		}
+
+		else
+		{
+			throw new InvalidArgumentException(
+				sprintf('Cannot instantiate the model %s. Invalid client %s.', $name, $client)
+			);
+		}
+
+		$model = self::getInstance($name, $prefix, $config);
+
+		if (!$model instanceof JModelAdmin && !$model instanceof JModelLegacy)
+		{
+			throw new InvalidArgumentException(
+				sprintf('Cannot instantiate the model %s from client %s.', $name, $client)
+			);
+		}
+
+		return $model;
+	}
+
+	/**
+	 * Get a backend model instance
+	 *
+	 * @param   string  $name    Model name
+	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call model from modules
+	 *
+	 * @return  RModelAdmin  Model instance
+	 */
+	public static function getAdminInstance($name, array $config = array(), $option = 'auto')
+	{
+		return self::getAutoInstance($name, 1, $config, $option);
+	}
+
+	/**
+	 * Get a frontend Model instance
+	 *
+	 * @param   string  $name    Model name
+	 * @param   array   $config  An optional array of configuration
+	 * @param   string  $option  Component name, use for call model from modules
+	 *
+	 * @return  RModelAdmin  Model instance
+	 */
+	public static function getFrontInstance($name, array $config = array(), $option = 'auto')
+	{
+		return self::getAutoInstance($name, 0, $config, $option);
 	}
 }

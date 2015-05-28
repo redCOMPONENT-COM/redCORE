@@ -52,14 +52,12 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 			// If we already have a database connector instance for these options then just use that.
 			if (empty(self::$instances[$signature]))
 			{
-
 				// Derive the class name from the driver.
 				$class = 'RDatabase' . ucfirst($options['driver']);
 
 				// If the class doesn't exist, let's look for it and register it.
 				if (!class_exists($class))
 				{
-
 					// Derive the file path for the driver class.
 					$path = dirname(__FILE__) . '/database/' . $options['driver'] . '.php';
 
@@ -71,7 +69,6 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 					// If it doesn't exist we are at an impasse so throw an exception.
 					else
 					{
-
 						// Legacy error handling switch based on the JError::$legacy switch.
 						// @deprecated  12.1
 
@@ -80,6 +77,7 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 							// Deprecation warning.
 							JLog::add('JError is deprecated.', JLog::WARNING, 'deprecated');
 							JError::setErrorHandling(E_ERROR, 'die');
+
 							return JError::raiseError(500, JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
 						}
 						else
@@ -92,7 +90,6 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 				// If the class still doesn't exist we have nothing left to do but throw an exception.  We did our best.
 				if (!class_exists($class))
 				{
-
 					// Legacy error handling switch based on the JError::$legacy switch.
 					// @deprecated  12.1
 
@@ -102,6 +99,7 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 						JLog::add('JError() is deprecated.', JLog::WARNING, 'deprecated');
 
 						JError::setErrorHandling(E_ERROR, 'die');
+
 						return JError::raiseError(500, JText::sprintf('JLIB_DATABASE_ERROR_LOAD_DATABASE_DRIVER', $options['driver']));
 					}
 					else
@@ -113,7 +111,7 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 				// Create our new JDatabase connector based on the options given.
 				try
 				{
-					$instance = new $class($options);
+					$instance = $class::getInstance($options);
 				}
 				catch (JDatabaseException $e)
 				{
@@ -127,6 +125,7 @@ if (version_compare(JVERSION, '3.0', 'lt'))
 						JLog::add('JError() is deprecated.', JLog::WARNING, 'deprecated');
 
 						JError::setErrorHandling(E_ERROR, 'ignore');
+
 						return JError::raiseError(500, JText::sprintf('JLIB_DATABASE_ERROR_CONNECT_DATABASE', $e->getMessage()));
 					}
 					else
@@ -211,11 +210,12 @@ else
 						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DRIVER_ERROR', $options['driver']), 'error');
 					}
 
+					// Initialize Config if not set
+					RBootstrap::getConfig('enable_translations');
+
 					// We will disable plugin option in this instance so we do not try to translate
-					if (!empty(RTranslationHelper::$pluginParams))
-					{
-						RTranslationHelper::$pluginParams->set('enable_translations', 0);
-					}
+					RBootstrap::$config->set('enable_translations', 0);
+
 					// We are not supporting this driver
 					return parent::getInstance($options);
 				}

@@ -50,7 +50,7 @@ JHtml::_('rjquery.chosen', 'select');
 <script type="text/javascript">
 	jQuery(document).ready(function () {
 		jQuery('#mainTabs a').on('click', function () {
-			jQuery('#currentTab').val(jQuery(this).attr('href').substr(1))	;
+			jQuery('#currentTab').val(jQuery(this).attr('href').substr(1));
 		});
 
 		jQuery('#mainTabs a[href="#<?php echo $tab ?>"]').tab('show');

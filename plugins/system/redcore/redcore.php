@@ -38,34 +38,18 @@ class PlgSystemRedcore extends JPlugin
 		{
 			require_once $redcoreLoader;
 
+			// Sets plugin parameters for further use
+			RBootstrap::$config = $this->params;
+
 			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
 			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
 			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
-			RBootstrap::$loadFrontendBootstrap = $this->params->get('frontend_bootstrap', true);
 			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
 
-			RBootstrap::bootstrap(false);
-
-			// Sets plugin parameters for further use in Translation Helper class
-			RTranslationHelper::$pluginParams = $this->params;
-
-			if ($this->params->get('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
+			if (!$this->isInstaller())
 			{
-				JFactory::$database = null;
-				JFactory::$database = RFactory::getDbo();
-
-				// This is our object now
-				$db = JFactory::getDbo();
-
-				// Enable translations
-				$db->translate = $this->params->get('enable_translations', 0) == 1;
-
-				if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
-				{
-					// Reset plugin params if we are in a different language than default
-					RTranslationHelper::resetPluginTranslation();
-				}
+				RBootstrap::bootstrap(false);
 			}
 		}
 	}
@@ -77,15 +61,11 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
-		$redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
-
-		if (file_exists($redcoreLoader))
+		if (defined('REDCORE_LIBRARY_LOADED'))
 		{
 			$apiName = JFactory::getApplication()->input->getString('api');
 
-			if (($this->params->get('enable_webservices', 0) == 1 && strtolower($apiName) == 'hal')
-				|| ($this->params->get('enable_oauth2_server', 0) == 1 && strtolower($apiName) == 'oauth2')
-				|| ($this->params->get('enable_soap', 0) == 1 && strtolower($apiName) == 'soap'))
+			if ($this->isApiEnabled($apiName))
 			{
 				$input = JFactory::getApplication()->input;
 
@@ -100,7 +80,7 @@ class PlgSystemRedcore extends JPlugin
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
 						$viewName = $input->getString('view', '');
 						$version = $input->getString('webserviceVersion', '');
-						$token = $input->getString(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), '');
+						$token = $input->getString(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), '');
 						$apiName = ucfirst($apiName);
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
@@ -163,6 +143,25 @@ class PlgSystemRedcore extends JPlugin
 
 					JFactory::getApplication()->close();
 				}
+			}
+		}
+	}
+
+	/**
+	 * After route.
+	 *
+	 * @return  void
+	 *
+	 * @since   3.4
+	 */
+	public function onAfterRoute()
+	{
+		if (defined('REDCORE_LIBRARY_LOADED'))
+		{
+			if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+			{
+				// Reset menus because they are loaded before any other module
+				RMenu::resetJoomlaMenuItems();
 			}
 		}
 	}
@@ -300,7 +299,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendBootstrap))
+			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
@@ -338,6 +337,19 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
+	 * Check is is a redCORE view
+	 *
+	 * @return  boolean
+	 */
+	private function isInstaller()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		return $app->isAdmin() && $input->getString('option') == 'com_installer' && $input->get('task') == 'install.install';
+	}
+
+	/**
 	 * Check if the view asked to disable mootools
 	 *
 	 * @return  boolean
@@ -354,5 +366,22 @@ class PlgSystemRedcore extends JPlugin
 		}
 
 		return $disable;
+	}
+
+	/**
+	 * Checks if given api name is currently install and enabled on this server
+	 *
+	 * @param   string  $apiName  Api name
+	 *
+	 * @return bool
+	 */
+	private function isApiEnabled($apiName)
+	{
+		$apiName = strtolower($apiName);
+
+		return ($this->params->get('enable_webservices', 0) == 1 && $apiName == 'hal')
+		|| ($this->params->get('enable_oauth2_server', 0) == 1 && $apiName == 'oauth2')
+		|| ($this->params->get('enable_soap', 0) == 1 && $apiName == 'soap')
+		|| ($this->params->get('enable_payment', 1) == 1 && $apiName == 'payment');
 	}
 }

@@ -1019,8 +1019,6 @@ class RApiHalHelper
 		{
 			foreach ($configuration->fields->field as $field)
 			{
-				$isFilterField = self::isAttributeTrue($field, 'isFilterField');
-
 				if (self::isAttributeTrue($field, 'isFilterField'))
 				{
 					if ($fullDefinition)

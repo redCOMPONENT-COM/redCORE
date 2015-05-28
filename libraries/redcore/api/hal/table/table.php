@@ -32,8 +32,18 @@ class RApiHalTableTable extends RTable
 	public function __construct($table, $key, $db)
 	{
 		$this->_tableName = $table;
-		$this->_tbl_key = $key;
-		$this->_tableKey = $key;
+
+		if (is_array($key))
+		{
+			$this->_tbl_keys = $key;
+			$this->_tbl_key = $key;
+			$this->_tableKey = $key[key($key)];
+		}
+		else
+		{
+			$this->_tbl_key = $key;
+			$this->_tableKey = $key;
+		}
 
 		// Set all columns from table as properties
 		$columns = array();
@@ -50,5 +60,35 @@ class RApiHalTableTable extends RTable
 		}
 
 		parent::__construct($db);
+	}
+
+	/**
+	 * Method to get the primary key field name for the table.
+	 *
+	 * @param   boolean  $multiple  True to return all primary keys (as an array) or false to return just the first one (as a string).
+	 *
+	 * @return  mixed  Array of primary key field names or string containing the first primary key field.
+	 *
+	 * @link    https://docs.joomla.org/JTable/getKeyName
+	 * @since   11.1
+	 */
+	public function getKeyName($multiple = false)
+	{
+		// Count the number of keys
+		if (count($this->_tbl_keys))
+		{
+			if (count($this->_tbl_keys) > 1)
+			{
+				// If we want multiple keys, return the raw array.
+				return $this->_tbl_keys;
+			}
+			else
+			{
+				// If we want the standard method, just return the first key.
+				return $this->_tbl_keys[0];
+			}
+		}
+
+		return '';
 	}
 }

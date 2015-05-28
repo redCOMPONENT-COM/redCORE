@@ -59,20 +59,20 @@ class RApiOauth2Oauth2 extends RApi
 
 		// OAuth2 Server config from plugin
 		$this->serverConfig = array(
-			'use_jwt_access_tokens'        => (boolean) RTranslationHelper::$pluginParams->get('oauth2_use_jwt_access_tokens', false),
-			'store_encrypted_token_string' => (boolean) RTranslationHelper::$pluginParams->get('oauth2_store_encrypted_token_string', true),
-			'use_openid_connect'       => (boolean) RTranslationHelper::$pluginParams->get('oauth2_use_openid_connect', false),
-			'id_lifetime'              => RTranslationHelper::$pluginParams->get('oauth2_id_lifetime', 3600),
-			'access_lifetime'          => RTranslationHelper::$pluginParams->get('oauth2_access_lifetime', 3600),
+			'use_jwt_access_tokens'        => (boolean) RBootstrap::getConfig('oauth2_use_jwt_access_tokens', false),
+			'store_encrypted_token_string' => (boolean) RBootstrap::getConfig('oauth2_store_encrypted_token_string', true),
+			'use_openid_connect'       => (boolean) RBootstrap::getConfig('oauth2_use_openid_connect', false),
+			'id_lifetime'              => RBootstrap::getConfig('oauth2_id_lifetime', 3600),
+			'access_lifetime'          => RBootstrap::getConfig('oauth2_access_lifetime', 3600),
 			'www_realm'                => 'Service',
-			'token_param_name'         => RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'),
-			'token_bearer_header_name' => RTranslationHelper::$pluginParams->get('oauth2_token_bearer_header_name', 'Bearer'),
-			'enforce_state'            => (boolean) RTranslationHelper::$pluginParams->get('oauth2_enforce_state', true),
-			'require_exact_redirect_uri' => (boolean) RTranslationHelper::$pluginParams->get('oauth2_require_exact_redirect_uri', true),
-			'allow_implicit'           => (boolean) RTranslationHelper::$pluginParams->get('oauth2_allow_implicit', false),
-			'allow_credentials_in_request_body' => (boolean) RTranslationHelper::$pluginParams->get('oauth2_allow_credentials_in_request_body', true),
-			'allow_public_clients'     => (boolean) RTranslationHelper::$pluginParams->get('oauth2_allow_public_clients', true),
-			'always_issue_new_refresh_token' => (boolean) RTranslationHelper::$pluginParams->get('oauth2_always_issue_new_refresh_token', false),
+			'token_param_name'         => RBootstrap::getConfig('oauth2_token_param_name', 'access_token'),
+			'token_bearer_header_name' => RBootstrap::getConfig('oauth2_token_bearer_header_name', 'Bearer'),
+			'enforce_state'            => (boolean) RBootstrap::getConfig('oauth2_enforce_state', true),
+			'require_exact_redirect_uri' => (boolean) RBootstrap::getConfig('oauth2_require_exact_redirect_uri', true),
+			'allow_implicit'           => (boolean) RBootstrap::getConfig('oauth2_allow_implicit', false),
+			'allow_credentials_in_request_body' => (boolean) RBootstrap::getConfig('oauth2_allow_credentials_in_request_body', true),
+			'allow_public_clients'     => (boolean) RBootstrap::getConfig('oauth2_allow_public_clients', true),
+			'always_issue_new_refresh_token' => (boolean) RBootstrap::getConfig('oauth2_always_issue_new_refresh_token', false),
 		);
 
 		// Set database names to Redcore DB tables

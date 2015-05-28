@@ -22,33 +22,19 @@ class AcceptanceHelper extends \Codeception\Module
 	/**
 	 * Function to getConfiguration from the YML and return in the test
 	 *
-	 * @return array
-	 */
-	public function getConfig()
-	{
-		$configuration = [
-		"username" => $this->config['username'],
-		"password" => $this->config['password'],
-		"folder" => $this->config['folder'],
-		"db_host" => $this->config['db_host'],
-		"db_user" => $this->config['db_user'],
-		"db_pass" => $this->config['db_pass'],
-		"db_name" => $this->config['db_name'],
-		"db_type" => $this->config['db_type'],
-		"db_prefix" => $this->config['db_prefix'],
-		"sample_data_file" => $this->config['sample_data_file'],
-		"site_name" => $this->config['site_name'],
-		"admin_email" => $this->config['admin_email'],
-		"language" => $this->config['language'],
-		"sample_data" => $this->config['sample_data'],
-		"host" => $this->config['host'],
-		"extension_name" => $this->config['extension_name'],
-		"install_extension_demo_data" => $this->config['install_extension_demo_data'],
-		"env" => $this->config['env']
-		];
+     * @param null $element
+     *
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    public function getConfiguration($element = null)
+    {
+        if (is_null($element)) {
+            throw new InvalidArgumentException('empty value or non existing element was requested from configuration');
+        }
 
-		return $configuration;
-	}
+        return $this->config[$element];
+    }
 
 	/**
 	 * Function to Verify State of an Object

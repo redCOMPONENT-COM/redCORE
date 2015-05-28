@@ -62,4 +62,33 @@ class RMenu
 	{
 		return $this->trees;
 	}
+
+	/**
+	 * Function for resetting menu items so they can be loaded with separate language aliases
+	 *
+	 * @param   string  $client  Application client (site or admin)
+	 *
+	 * @return	array  Language list
+	 */
+	public static function resetJoomlaMenuItems($client = 'site')
+	{
+		$menu = JFactory::getApplication($client)->getMenu();
+		$menu->load();
+		$menuItems = $menu->getMenu();
+
+		foreach ($menuItems as $item)
+		{
+			if ($item->home)
+			{
+				$menu->setDefault($item->id, trim($item->language));
+			}
+
+			$item = $menu->getItem($item->id);
+
+			// Decode the item params
+			$result = new JRegistry;
+			$result->loadString($item->params);
+			$item->params = $result;
+		}
+	}
 }

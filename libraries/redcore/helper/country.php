@@ -10,7 +10,7 @@
 defined('JPATH_REDCORE') or die;
 
 /**
- * Currency helper class.
+ * Country helper class.
  *
  * @package     Redcore
  * @subpackage  Helper
@@ -18,51 +18,96 @@ defined('JPATH_REDCORE') or die;
  */
 final class RHelperCountry
 {
-	protected static $codes;
+	/**
+	 * Country cache
+	 *
+	 * @var  array
+	 */
+	protected static $countries = array();
 
 	/**
-	 * Return supported currencies from http://www.currency-iso.org
+	 * Reload countries
 	 *
-	 * @return array
+	 * @var  bool
 	 */
-	protected static function get_iso_codes()
+	protected static $completeLoad = false;
+
+	/**
+	 * Get Country object by symbol or id
+	 *
+	 * @param   mixed  $country  country symbol or id
+	 *
+	 * @return null/object
+	 */
+	public static function getCountry($country = 'DK')
 	{
-		if (!self::$codes)
+		if (!isset(self::$countries[(string) $country]))
 		{
-			// Xml file was pulled from http://www.currency-iso.org/dam/downloads/table_a1.xml. Should be refreshed sometimes !
-			$xml = file_get_contents(dirname(__FILE__) . '/countries_iso_3166_alpha_2_table.xml');
-			$obj = new SimpleXMLElement($xml);
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select('*')
+				->from($db->qn('#__redcore_country'));
 
-			$codes = array();
-
-			foreach ($obj->children() as $country)
+			if (is_numeric($country))
 			{
-				$code = (string) $country->{'ISO_3166-1_Alpha-2_Code_element'};
-
-				if ($code && !isset($currencies[$code]))
-				{
-					$obj = new stdclass;
-					$obj->name   = (string) $country->{'ISO_3166-1_Country_name'};
-					$obj->code   = (string) $country->{'ISO_3166-1_Alpha-2_Code_element'};
-
-					$codes[$code] = $obj;
-				}
+				$query->where('id = ' . (int) ($country));
+			}
+			else
+			{
+				$query->where('alpha2 = ' . $db->q($country));
 			}
 
-			self::$codes = $codes;
+			$db->setQuery($query);
+			$item = $db->loadObject();
+
+			if ($item)
+			{
+				$item->code = $item->alpha2;
+			}
+
+			self::$countries[$country] = $item;
 		}
 
-		return self::$codes;
+		return self::$countries[$country];
 	}
 
 	/**
-	 * get currencies as options, with code as value
+	 * Load all countries
+	 *
+	 * @return array
+	 */
+	public static function getAllCountries()
+	{
+		if (self::$completeLoad == false)
+		{
+			$db    = JFactory::getDbo();
+			$query = $db->getQuery(true)
+				->select('*')
+				->from($db->qn('#__redcore_country'));
+
+			$db->setQuery($query);
+			$items = $db->loadObjectList();
+
+			foreach ($items as $item)
+			{
+				$item->code = $item->alpha2;
+				self::$countries[$item->alpha2] = $item;
+			}
+
+			self::$completeLoad = true;
+		}
+
+		return self::$countries;
+	}
+
+	/**
+	 * get countries as options, with code as value
 	 *
 	 * @return array
 	 */
 	public static function getOptions()
 	{
-		$cur = self::get_iso_codes();
+		$cur = self::getAllCountries();
 		$options = array();
 
 		foreach ($cur as $code => $country)
@@ -87,8 +132,8 @@ final class RHelperCountry
 			return false;
 		}
 
-		$cur = self::get_iso_codes();
+		self::getCountry($country);
 
-		return isset($cur[$country]);
+		return !empty(self::$countries[$country]);
 	}
 }

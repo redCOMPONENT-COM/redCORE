@@ -36,7 +36,7 @@
                     <resource displayGroup="_links" displayName="{webserviceName}:all" fieldFormat="{webserviceUrlPath}&amp;list[limit]=0" linkTitle="Show all items" />
                     <resource displayGroup="_links" displayName="{webserviceName}:limit" fieldFormat="{webserviceUrlPath}&amp;list[limit]={limit}&amp;list[limitstart]={limitstart}" linkTemplated="true" linkTitle="List limit" />
                     <resource displayGroup="_links" displayName="{webserviceName}:filter" fieldFormat="{webserviceUrlPath}&amp;filter[search]={filter_search}" linkTemplated="true" linkTitle="Filter list" />
-                    <resource displayGroup="_links" displayName="{webserviceName}:sort" fieldFormat="{webserviceUrlPath}&amp;filter[order]={filter_order}&amp;filter[order_Dir]={filter_order_Dir}" linkTemplated="true" linkTitle="List sort" />
+                    <resource displayGroup="_links" displayName="{webserviceName}:sort" fieldFormat="{webserviceUrlPath}&amp;list[ordering]={list_ordering}&amp;list[direction]={list_direction}" linkTemplated="true" linkTitle="List sort" />
                 </resources>
             </list>
             <item isEnabled="0">

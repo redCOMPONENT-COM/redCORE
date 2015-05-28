@@ -191,11 +191,11 @@ class RApiHalHal extends RApi
 			define('JSON_UNESCAPED_SLASHES', 64);
 		}
 		// OAuth2 check
-		if (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 0)
+		if (RBootstrap::getConfig('webservices_authorization_check', 0) == 0)
 		{
 			$this->authorizationCheck = 'oauth2';
 		}
-		elseif (RTranslationHelper::$pluginParams->get('webservices_authorization_check', 0) == 1)
+		elseif (RBootstrap::getConfig('webservices_authorization_check', 0) == 1)
 		{
 			$this->authorizationCheck = 'joomla';
 		}
@@ -370,7 +370,7 @@ class RApiHalHal extends RApi
 			else
 			{
 				// If default page needs authorization to access it
-				if (!$this->isAuthorized('', RTranslationHelper::$pluginParams->get('webservices_default_page_authorization', 0)))
+				if (!$this->isAuthorized('', RBootstrap::getConfig('webservices_default_page_authorization', 0)))
 				{
 					return false;
 				}
@@ -402,7 +402,7 @@ class RApiHalHal extends RApi
 		if (!empty($messages))
 		{
 			// If we are not in debug mode we will take out everything except errors
-			if (RTranslationHelper::$pluginParams->get('debug_webservices', 0) == 0)
+			if (RBootstrap::getConfig('debug_webservices', 0) == 0)
 			{
 				foreach ($messages as $key => $message)
 				{
@@ -520,7 +520,7 @@ class RApiHalHal extends RApi
 				'view' => $this,
 				'options' => array (
 					'xml' => $currentConfiguration,
-					'soapEnabled' => RTranslationHelper::$pluginParams->get('enable_soap', 0),
+					'soapEnabled' => RBootstrap::getConfig('enable_soap', 0),
 					'print' => isset($dataGet->print)
 				)
 			)
@@ -539,7 +539,7 @@ class RApiHalHal extends RApi
 	public function apiRead()
 	{
 		$primaryKeys = array();
-		$isReadItem = $this->apiReadTypeItem($primaryKeys);
+		$isReadItem = $this->apiFillPrimaryKeys($primaryKeys);
 
 		$displayTarget = $isReadItem ? 'item' : 'list';
 		$this->apiDynamicModelClassName = 'RApiHalModel' . ucfirst($displayTarget);
@@ -576,6 +576,8 @@ class RApiHalHal extends RApi
 
 			return $this;
 		}
+
+		$primaryKeys = count($primaryKeys) > 1 ? array($primaryKeys) : $primaryKeys;
 
 		// Getting single item
 		$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItem');
@@ -705,18 +707,35 @@ class RApiHalHal extends RApi
 			return;
 		}
 
-		// Prepare parameters for the function
-		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
 		$result = null;
+		$args = $this->buildFunctionArgs($this->operationConfiguration, $data);
 
-		// Checks if that method exists in model class file and executes it
-		if (method_exists($model, $functionName))
+		// Prepare parameters for the function
+		if (strtolower(RApiHalHelper::attributeToString($this->operationConfiguration, 'dataMode', 'model')) == 'table')
 		{
-			$result = $this->triggerCallFunction($model, $functionName, $args);
+			$primaryKeys = array();
+			$this->apiFillPrimaryKeys($primaryKeys, $this->operationConfiguration);
+
+			if (!empty($primaryKeys))
+			{
+				$result = $model->{$functionName}($primaryKeys);
+			}
+			else
+			{
+				$result = $model->{$functionName}($args);
+			}
 		}
 		else
 		{
-			$this->setStatusCode(400);
+			// Checks if that method exists in model class file and executes it
+			if (method_exists($model, $functionName))
+			{
+				$result = $this->triggerCallFunction($model, $functionName, $args);
+			}
+			else
+			{
+				$this->setStatusCode(400);
+			}
 		}
 
 		$this->setData('result', $result);
@@ -1098,7 +1117,7 @@ class RApiHalHal extends RApi
 
 		if (!empty($token))
 		{
-			$this->setUriParams(RTranslationHelper::$pluginParams->get('oauth2_token_param_name', 'access_token'), $token);
+			$this->setUriParams(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), $token);
 		}
 
 		if ($client == 'administrator')
@@ -1236,6 +1255,8 @@ class RApiHalHal extends RApi
 
 		if (!empty($data) && !empty($configuration->fields))
 		{
+			$dataFields = array();
+
 			foreach ($configuration->fields->field as $field)
 			{
 				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
@@ -1243,6 +1264,12 @@ class RApiHalHal extends RApi
 				$fieldAttributes['defaultValue'] = !empty($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
 				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
 				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
+				$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
+			}
+
+			if (RApiHalHelper::isAttributeTrue($configuration, 'strictFields'))
+			{
+				$data = $dataFields;
 			}
 		}
 
@@ -1292,7 +1319,7 @@ class RApiHalHal extends RApi
 
 				if (!$form)
 				{
-					return true;
+					return $data;
 				}
 
 				// Test whether the data is valid.
@@ -1424,7 +1451,7 @@ class RApiHalHal extends RApi
 			else
 			{
 				$primaryKeys = array();
-				$isReadItem = $this->apiReadTypeItem($primaryKeys);
+				$isReadItem = $this->apiFillPrimaryKeys($primaryKeys);
 				$readType = $isReadItem ? 'item' : 'list';
 
 				if (isset($allowedOperations->read->{$readType}['authorizationNeeded'])
@@ -1533,7 +1560,7 @@ class RApiHalHal extends RApi
 			}
 			elseif ($response === false && $terminateIfNotAuthorized)
 			{
-				throw new Exception('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE');
+				throw new Exception(JText::_('LIB_REDCORE_API_OAUTH2_SERVER_IS_NOT_ACTIVE'));
 			}
 			else
 			{
@@ -1624,7 +1651,7 @@ class RApiHalHal extends RApi
 
 		if (empty($tableName))
 		{
-			throw new Exception('LIB_REDCORE_API_HAL_WEBSERVICE_TABLE_NAME_NOT_SET');
+			throw new Exception(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_TABLE_NAME_NOT_SET'));
 		}
 
 		$context = $this->webserviceName . '.' . $this->webserviceVersion;
@@ -1986,7 +2013,19 @@ class RApiHalHal extends RApi
 			}
 		}
 
-		return $this->assignGlobalValueToResource($format);
+		// We replace global data as well
+		$format = $this->assignGlobalValueToResource($format);
+
+		if (!empty($stringsToReplace[1]))
+		{
+			// If we did not found data with that resource we will set it to 0, except for linkRel which is a documentation template
+			if ($format == $resource[$attribute] && $resource['linkRel'] != 'curies')
+			{
+				$format = null;
+			}
+		}
+
+		return $format;
 	}
 
 	/**
@@ -2276,41 +2315,65 @@ class RApiHalHal extends RApi
 	}
 
 	/**
-	 * Returns read type (item or list) for current read operation and fills primary keys if read type is item
+	 * Returns if all primary keys have set values
+	 * Easily get read type (item or list) for current read operation and fills primary keys
 	 *
-	 * @param   array  &$primaryKeys  List of primary keys
+	 * @param   array             &$primaryKeys   List of primary keys
+	 * @param   SimpleXMLElement  $configuration  Configuration group
 	 *
 	 * @return  bool  Returns true if read type is Item
 	 *
 	 * @since   1.2
 	 */
-	public function apiReadTypeItem(&$primaryKeys)
+	public function apiFillPrimaryKeys(&$primaryKeys, $configuration = null)
 	{
-		$isReadItem = false;
-		$operations = $this->getConfig('operations');
-
-		// Checking for primary keys
-		if (!empty($operations->read->item))
+		if (is_null($configuration))
 		{
-			$dataGet = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $operations->read->item);
-			$primaryKeysFromFields = RApiHalHelper::getFieldsArray($operations->read->item, true);
+			$operations = $this->getConfig('operations');
 
-			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+			if (!empty($operations->read->item))
 			{
-				if (isset($dataGet[$primaryKey]) && $dataGet[$primaryKey] != '')
-				{
-					$primaryKeys[] = $this->transformField($primaryKeyField['transform'], $dataGet[$primaryKey], false);
-					$isReadItem = true;
-				}
-
-				// If At least one of the primary keys is missing
-				if (!$isReadItem)
-				{
-					break;
-				}
+				$configuration = $operations->read->item;
 			}
+
+			$data = $this->triggerFunction('processPostData', $this->options->get('dataGet', array()), $configuration);
+		}
+		else
+		{
+			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $configuration);
 		}
 
-		return $isReadItem;
+		// Checking for primary keys
+		if (!empty($configuration))
+		{
+			$primaryKeysFromFields = RApiHalHelper::getFieldsArray($configuration, true);
+
+			if (!empty($primaryKeysFromFields))
+			{
+				foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+				{
+					if (isset($data[$primaryKey]) && $data[$primaryKey] != '')
+					{
+						$primaryKeys[$primaryKey] = $this->transformField($primaryKeyField['transform'], $data[$primaryKey], false);
+					}
+					else
+					{
+						$primaryKeys[$primaryKey] = null;
+					}
+				}
+
+				foreach ($primaryKeys as $primaryKey => $primaryKeyField)
+				{
+					if (is_null($primaryKeyField))
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }

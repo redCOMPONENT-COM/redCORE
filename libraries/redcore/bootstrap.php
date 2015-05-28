@@ -28,6 +28,13 @@ if (!defined('JPATH_REDCORE'))
 class RBootstrap
 {
 	/**
+	 * Redcore configuration
+	 *
+	 * @var    JRegistry
+	 */
+	public static $config = null;
+
+	/**
 	 * Defines if redCORE base css should be loaded in Frontend component/modules
 	 *
 	 * @var    bool
@@ -49,18 +56,43 @@ class RBootstrap
 	public static $loadFrontendjQueryMigrate = true;
 
 	/**
-	 * Defines if Bootstrap should be loaded in Frontend component/modules
-	 *
-	 * @var    bool
-	 */
-	public static $loadFrontendBootstrap = true;
-
-	/**
 	 * Defines if Mootools should be disabled in Frontend component/modules
 	 *
 	 * @var    bool
 	 */
 	public static $disableFrontendMootools = false;
+
+	/**
+	 * Gets redCORE config param
+	 *
+	 * @param   string  $key      Config key
+	 * @param   mixed   $default  Default value
+	 *
+	 * @return  mixed
+	 */
+	public static function getConfig($key, $default = null)
+	{
+		if (is_null(self::$config))
+		{
+			$plugin = JPluginHelper::getPlugin('system', 'redcore');
+
+			if ($plugin)
+			{
+				if (is_string($plugin->params))
+				{
+					self::$config = new JRegistry($plugin->params);
+				}
+				elseif (is_object($plugin->params))
+				{
+					self::$config = $plugin->params;
+				}
+			}
+
+			return null;
+		}
+
+		return self::$config->get($key, $default);
+	}
 
 	/**
 	 * Effectively bootstrap redCORE.
@@ -123,6 +155,22 @@ class RBootstrap
 
 			// Make available the rules
 			JFormHelper::addRulePath(JPATH_LIBRARIES . '/redcore/form/rules');
+
+			// Replaces Joomla database driver for redCORE database driver
+			JFactory::$database = null;
+			JFactory::$database = RFactory::getDbo();
+
+			if (self::getConfig('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
+			{
+				// This is our object now
+				$db = JFactory::getDbo();
+
+				// Enable translations
+				$db->translate = self::getConfig('enable_translations', 0) == 1;
+
+				// Reset plugin translations params if needed
+				RTranslationHelper::resetPluginTranslation();
+			}
 		}
 	}
 }

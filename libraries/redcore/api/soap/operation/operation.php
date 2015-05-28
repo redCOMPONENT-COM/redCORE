@@ -59,15 +59,15 @@ class RApiSoapOperationOperation
 		$dataGet['list']['limit'] = (isset($data->limit) ? (int) $data->limit : 20);
 		$dataGet['filter']['search'] = (isset($data->filterSearch) ? (string) $data->filterSearch : '');
 
-		$filters = RApiHalHelper::getFilterFields($this->webservice->configuration->operations->read->list);
+		$filters = RApiHalHelper::getFilterFields($this->webservice->configuration->operations->read->list, true);
 
 		foreach ($filters as $filter)
 		{
-			$dataGet['filter'][$filter] = $data->filters->$filter;
+			$dataGet['filter'][$filter] = isset($data->filters->$filter) ? $data->filters->$filter : '';
 		}
 
-		$dataGet['filter']['order'] = (isset($data->ordering) ? (string) $data->ordering : '');
-		$dataGet['filter']['order_Dir'] = (isset($data->orderingDirection) ? (string) $data->orderingDirection : '');
+		$dataGet['list']['ordering'] = (isset($data->ordering) ? (string) $data->ordering : '');
+		$dataGet['list']['direction'] = (isset($data->orderingDirection) ? (string) $data->orderingDirection : '');
 
 		// Handle different language switch
 		$this->setLanguage((isset($data->language) ? (string) $data->language : ''));

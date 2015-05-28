@@ -61,7 +61,7 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 		$this->filterForm = $model->getForm();
 
 		// Check if option is enabled
-		if (RTranslationHelper::$pluginParams->get('enable_oauth2_server', 0) == 0)
+		if (RBootstrap::getConfig('enable_oauth2_server', 0) == 0)
 		{
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(

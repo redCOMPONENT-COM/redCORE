@@ -29,6 +29,7 @@ Desktop.ini
 # Phing
 build.properties
 phing-latest.phar
+.dist
 
 # Github pages and Jekyll files
 /_site/
@@ -43,16 +44,21 @@ composer.lock
 composer.phar
 vendor/*
 
+# Robo
+robo.phar
+
 # LESS Transpiler
 npm-debug.log
 
 # Test related files
-/tests/system/servers/configdef.php
-/tests/system/webdriver/tests/logs/
-/tests/acceptance.suite.yml
-codecept.phar
+tests/acceptance.suite.yml
 tests/*/*Tester.php
-
+tests/joomla-cms3*
+tests/_output
+selenium-server-standalone.jar
+codecept.phar
+selenium.log
+selenium-errors.log
 
 # Never ignore
 !.gitignore

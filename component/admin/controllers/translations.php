@@ -69,9 +69,9 @@ class RedcoreControllerTranslations extends RControllerAdmin
 	protected function getRedirectToListRoute($append = '')
 	{
 		// Setup redirect info.
-		if ($contentelement = JFactory::getApplication()->input->get('contentelement'))
+		if ($contentElement = JFactory::getApplication()->input->get('contentelement'))
 		{
-			$append = '&contentelement=' . $contentelement . $append;
+			$append = '&contentelement=' . $contentElement . $append;
 		}
 
 		return parent::getRedirectToListRoute($append);
