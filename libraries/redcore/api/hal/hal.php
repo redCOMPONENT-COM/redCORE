@@ -1262,7 +1262,7 @@ class RApiHalHal extends RApi
 				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
 				$fieldAttributes['transform'] = !empty($fieldAttributes['transform']) ? $fieldAttributes['transform'] : 'string';
 				$fieldAttributes['defaultValue'] = !empty($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
-				$data[$fieldAttributes['name']] = !empty($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
+				$data[$fieldAttributes['name']] = !is_null($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
 				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
 				$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
 			}
@@ -1374,7 +1374,7 @@ class RApiHalHal extends RApi
 			{
 				if (RApiHalHelper::isAttributeTrue($field, 'isRequiredField'))
 				{
-					if (empty($data[(string) $field['name']]))
+					if (is_null($data[(string) $field['name']]))
 					{
 						JFactory::getApplication()->enqueueMessage(
 							JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']), 'error'
