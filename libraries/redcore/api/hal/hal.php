@@ -130,6 +130,12 @@ class RApiHalHal extends RApi
 	public $authorizationCheck = 'oauth2';
 
 	/**
+	 * @var    object  Array for storing operation errors
+	 * @since  1.6
+	 */
+	public $apiErrors = array();
+
+	/**
 	 * Method to instantiate the file-based api call.
 	 *
 	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
