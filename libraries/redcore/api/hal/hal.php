@@ -629,10 +629,8 @@ class RApiHalHal extends RApi
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
 
-		$errors = array();
-
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
-		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration, $errors);
+		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
 
 		if ($data === false)
 		{
@@ -691,7 +689,6 @@ class RApiHalHal extends RApi
 	{
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
-		$errors = array();
 
 		// Delete function requires references and not values like we use in call_user_func_array so we use List delete function
 		$this->apiDynamicModelClassName = 'RApiHalModelList';
@@ -699,7 +696,7 @@ class RApiHalHal extends RApi
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'delete');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
-		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration, $errors);
+		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
 
 		if ($data === false)
 		{
@@ -766,15 +763,13 @@ class RApiHalHal extends RApi
 	 */
 	public function apiUpdate()
 	{
-		$errors = array();
-
 		// Get resource list from configuration
 		$this->loadResourceFromConfiguration($this->operationConfiguration);
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
 		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
-		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration, $errors);
+		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
 
 		if ($data === false)
 		{
@@ -830,7 +825,6 @@ class RApiHalHal extends RApi
 	{
 		$task = $this->options->get('task', '');
 		$result = false;
-		$errors = array();
 
 		if (!empty($task))
 		{
@@ -847,7 +841,7 @@ class RApiHalHal extends RApi
 			$functionName = RApiHalHelper::attributeToString($taskConfiguration, 'functionName', $task);
 			$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $taskConfiguration);
 
-			$data = $this->triggerFunction('validatePostData', $model, $data, $taskConfiguration, $errors);
+			$data = $this->triggerFunction('validatePostData', $model, $data, $taskConfiguration);
 
 			if ($data === false)
 			{
