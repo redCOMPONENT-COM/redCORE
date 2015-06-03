@@ -85,7 +85,7 @@ if ($isFrameModal)
 
 	if (!isset($params['width']))
 	{
-		$params['width'] = 740;
+		$params['width'] = 640;
 	}
 
 	if (!isset($params['height']))
@@ -100,6 +100,11 @@ if ($isFrameModal)
 		'jQuery(document).ready(function(){jQuery("#' . $dataTarget . '").appendTo(jQuery(document.body));});'
 	);
 	$document->addStyleDeclaration('
+		#' . $dataTarget . '{
+			width: ' . ($params['width'] + 25) . 'px;
+			height: ' . ($params['height'] + 100) . 'px;
+			margin-left: -' . (($params['width'] + 20) / 2) . 'px;
+		}
 		#' . $dataTarget . ' .modal-body {
 			max-height: none !important;
 		}
