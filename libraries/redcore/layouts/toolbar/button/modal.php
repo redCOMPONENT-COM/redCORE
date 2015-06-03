@@ -24,18 +24,31 @@ $class = $button->getClass();
 $iconClass = $button->getIconClass();
 $text = $button->getText();
 $isList = $button->isList();
+$params = $button->getParams();
 
 $dataTarget = $button->getDataTarget();
 
 // Get the button class.
 $btnClass = $isOption ? '' : 'btn btn-default';
+$isFrameModal = false;
+$attributes = '';
+$cmd = '';
 
 if (!empty($class))
 {
 	$btnClass .= ' ' . $class;
 }
 
-$cmd = "jQuery('" . $dataTarget . "').modal('toggle');";
+if (isset($params['url']) && $params['url'])
+{
+	$isFrameModal = true;
+	$btnClass .= ' modal';
+	$attributes = ' data-toggle="modal" data-target="#' . $dataTarget . '"';
+}
+else
+{
+	$cmd = "jQuery('#" . $dataTarget . "').modal('toggle');";
+}
 
 if ($isList)
 {
@@ -43,14 +56,14 @@ if ($isList)
 	JHtml::_('behavior.framework');
 	$message = JText::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST');
 	$message = addslashes($message);
-	$cmd = "if (document.adminForm.boxchecked.value == 0) {alert('" . $message . "');jQuery('" . $dataTarget . "').modal('hide');}
-	else {jQuery('" . $dataTarget  . "').modal('toggle');}";
+	$cmd = "if (document.adminForm.boxchecked.value == 0) {alert('" . $message . "');jQuery('#" . $dataTarget . "').modal('hide');}
+	else {jQuery('#" . $dataTarget . "').modal('toggle');}";
 }
 ?>
 
 <?php if ($isOption) :?>
 	<li>
-		<a href="#" class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+		<a href="#" class="<?php echo $btnClass ?>" <?php echo $attributes; ?> onclick="<?php echo $cmd ?>">
 			<?php if (!empty($iconClass)) : ?>
 				<i class="<?php echo $iconClass ?>"></i>
 			<?php endif; ?>
@@ -58,10 +71,43 @@ if ($isList)
 		</a>
 	</li>
 <?php else:?>
-	<button class="<?php echo $btnClass ?>" onclick="<?php echo $cmd ?>">
+	<button class="<?php echo $btnClass ?>" <?php echo $attributes; ?> onclick="<?php echo $cmd ?>">
 		<?php if (!empty($iconClass)) : ?>
 			<i class="<?php echo $iconClass ?>"></i>
 		<?php endif; ?>
 		<?php echo $text ?>
 	</button>
-<?php endif;?>
+<?php endif;
+
+if ($isFrameModal)
+{
+	$params['title']  = $text;
+
+	if (!isset($params['width']))
+	{
+		$params['width'] = 740;
+	}
+
+	if (!isset($params['height']))
+	{
+		$params['height'] = 480;
+	}
+
+	echo JHtml::_('rbootstrap.renderModal', $dataTarget, $params);
+
+	$document = JFactory::getDocument();
+	$document->addScriptDeclaration(
+		'jQuery(document).ready(function(){jQuery("#' . $dataTarget . '").appendTo(jQuery(document.body));});'
+	);
+	$document->addStyleDeclaration('
+		#' . $dataTarget . ' .modal-body {
+			max-height: none !important;
+		}
+		#' . $dataTarget . ' .modal-body iframe{
+			width: 100%;
+			max-height: none;
+			border: 0 !important;
+			max-width: 100%;
+		}
+  ');
+}
