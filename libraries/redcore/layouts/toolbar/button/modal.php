@@ -28,6 +28,9 @@ $params = $button->getParams();
 
 $dataTarget = $button->getDataTarget();
 
+// Fix old name targets with #
+$dataTarget = str_replace('#', '', $dataTarget);
+
 // Get the button class.
 $btnClass = $isOption ? '' : 'btn btn-default';
 $isFrameModal = false;
