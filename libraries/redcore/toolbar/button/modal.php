@@ -33,6 +33,13 @@ class RToolbarButtonModal extends RToolbarButton
 	protected $list;
 
 	/**
+	 * The button params
+	 *
+	 * @var array
+	 */
+	public $params;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   string   $text        The button text.
@@ -40,13 +47,25 @@ class RToolbarButtonModal extends RToolbarButton
 	 * @param   string   $class       The button class.
 	 * @param   string   $iconClass   The icon class.
 	 * @param   boolean  $list        Is the button applying on a list ?
+	 * @param   array    $params      The button params
 	 */
-	public function __construct($text = '', $dataTarget = '', $class = '', $iconClass = '', $list = false)
+	public function __construct($text = '', $dataTarget = '', $class = '', $iconClass = '', $list = false, $params = array())
 	{
 		parent::__construct($text, $iconClass, $class);
 
+		$this->params = $params;
 		$this->dataTarget = $dataTarget;
 		$this->list = $list;
+	}
+
+	/**
+	 * Get button params
+	 *
+	 * @return array
+	 */
+	public function getParams()
+	{
+		return $this->params;
 	}
 
 	/**
