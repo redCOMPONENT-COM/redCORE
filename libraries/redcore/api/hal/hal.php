@@ -669,13 +669,14 @@ class RApiHalHal extends RApi
 		}
 
 		$this->setData('result', $result);
-		$this->triggerFunction('displayErrors', $model);
+		$this->triggerFunction('displayErrors', $model->getErrors());
 
 		if ($this->statusCode < 400)
 		{
-			if ($result === false)
+			if ($result === false || !empty($model->getErrors()))
 			{
-				$this->setStatusCode(404);
+				$customError = $this->triggerFunction('createCustomHttpError', 404, $model->getErrors());
+				$this->setStatusCode(404, $customError);
 			}
 			else
 			{
@@ -742,7 +743,8 @@ class RApiHalHal extends RApi
 			}
 			else
 			{
-				$this->setStatusCode(400);
+				$customError = $this->triggerFunction('createCustomHttpError', 406, $model->getErrors());
+				$this->setStatusCode(400, $customError);
 			}
 		}
 
@@ -755,7 +757,8 @@ class RApiHalHal extends RApi
 			if ($result === false)
 			{
 				// If delete failed then we set it to Internal Server Error status code
-				$this->setStatusCode(500);
+				$customError = $this->triggerFunction('createCustomHttpError', 500, $model->getErrors());
+				$this->setStatusCode(500, $customError);
 			}
 		}
 	}
@@ -812,10 +815,11 @@ class RApiHalHal extends RApi
 
 		if ($this->statusCode < 400)
 		{
-			if ($result === false)
+			if ($result === false || !empty($model->getErrors()))
 			{
 				// If update failed then we set it to Internal Server Error status code
-				$this->setStatusCode(500);
+				$customError = $this->triggerFunction('createCustomHttpError', 404, $model->getErrors());
+				$this->setStatusCode(500, $customError);
 			}
 		}
 	}
@@ -882,6 +886,12 @@ class RApiHalHal extends RApi
 
 		$this->setData('result', $result);
 		$this->triggerFunction('displayErrors', $model);
+
+		if ($result === false || !empty($model->getErrors()))
+		{
+			$customError = $this->triggerFunction('createCustomHttpError', 404, $model->getErrors());
+			$this->setStatusCode(404, $customError);
+		}
 	}
 
 	/**
@@ -1388,6 +1398,10 @@ class RApiHalHal extends RApi
 				{
 					if (is_null($data[(string) $field['name']]) || $data[(string) $field['name']] == '')
 					{
+						JFactory::getApplication()->enqueueMessage(
+						JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']), 'error'
+					);
+
 						$errors[] = JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']);
 					}
 				}
