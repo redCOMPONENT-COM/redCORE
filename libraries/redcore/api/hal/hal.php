@@ -675,8 +675,8 @@ class RApiHalHal extends RApi
 		{
 			if ($result === false || !empty($model->getErrors()))
 			{
-				$customError = $this->triggerFunction('createCustomHttpError', 404, $model->getErrors());
-				$this->setStatusCode(404, $customError);
+				$customError = $this->triggerFunction('createCustomHttpError', 400, $model->getErrors());
+				$this->setStatusCode(400, $customError);
 			}
 			else
 			{
@@ -743,7 +743,7 @@ class RApiHalHal extends RApi
 			}
 			else
 			{
-				$customError = $this->triggerFunction('createCustomHttpError', 406, $model->getErrors());
+				$customError = $this->triggerFunction('createCustomHttpError', 400, $model->getErrors());
 				$this->setStatusCode(400, $customError);
 			}
 		}
@@ -818,7 +818,7 @@ class RApiHalHal extends RApi
 			if ($result === false || !empty($model->getErrors()))
 			{
 				// If update failed then we set it to Internal Server Error status code
-				$customError = $this->triggerFunction('createCustomHttpError', 404, $model->getErrors());
+				$customError = $this->triggerFunction('createCustomHttpError', 500, $model->getErrors());
 				$this->setStatusCode(500, $customError);
 			}
 		}
