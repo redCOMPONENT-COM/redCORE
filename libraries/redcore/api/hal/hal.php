@@ -658,7 +658,7 @@ class RApiHalHal extends RApi
 
 		if (method_exists($model, 'getState'))
 		{
-			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
+			$this->setData('id', $model->getState($model->getName() . '.id'));
 		}
 
 		$this->setData('result', $result);
@@ -2019,7 +2019,7 @@ class RApiHalHal extends RApi
 		if (!empty($stringsToReplace[1]))
 		{
 			// If we did not found data with that resource we will set it to 0, except for linkRel which is a documentation template
-			if ($format == $resource[$attribute] && $resource['linkRel'] != 'curies')
+			if ($format === $resource[$attribute] && $resource['linkRel'] != 'curies')
 			{
 				$format = null;
 			}
