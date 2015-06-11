@@ -158,6 +158,7 @@ if ($result instanceof Exception)
 	return $result;
 }
 ?>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type="text/javascript">
 	jQuery(document).ready(function () {
 		jQuery('.message-sys').append(jQuery('#system-message-container'));
