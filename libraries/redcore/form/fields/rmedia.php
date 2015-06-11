@@ -62,9 +62,9 @@ class JFormFieldRmedia extends JFormField
 			// Build the script.
 			$script = array();
 			$script[] = '	function jInsertFieldValue(value, id) {';
-			$script[] = '		var old_value = document.id(id).value;';
+			$script[] = '		var old_value = document.getElementById(id).value;';
 			$script[] = '		if (old_value != value) {';
-			$script[] = '			var elem = document.id(id);';
+			$script[] = '			var elem = document.getElementById(id);';
 			$script[] = '			elem.value = value;';
 			$script[] = '			elem.fireEvent("change");';
 			$script[] = '			if (typeof(elem.onchange) === "function") {';
@@ -76,17 +76,17 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '	}';
 
 			$script[] = '	function jMediaRefreshPreview(id) {';
-			$script[] = '		var value = document.id(id).value;';
-			$script[] = '		var img = document.id(id + "_preview");';
+			$script[] = '		var value = document.getElementById(id).value;';
+			$script[] = '		var img = document.getElementById(id + "_preview");';
 			$script[] = '		if (img) {';
 			$script[] = '			if (value) {';
 			$script[] = '				img.src = "' . JUri::root() . '" + value;';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "none");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "");';
+			$script[] = '				document.getElementById(id + "_preview_empty").setStyle("display", "none");';
+			$script[] = '				document.getElementById(id + "_preview_img").setStyle("display", "");';
 			$script[] = '			} else { ';
 			$script[] = '				img.src = ""';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "none");';
+			$script[] = '				document.getElementById(id + "_preview_empty").setStyle("display", "");';
+			$script[] = '				document.getElementById(id + "_preview_img").setStyle("display", "none");';
 			$script[] = '			} ';
 			$script[] = '		} ';
 			$script[] = '	}';
@@ -198,7 +198,7 @@ class JFormFieldRmedia extends JFormField
 				$tooltip = $previewImgEmpty . $previewImg;
 				$options = array(
 					'title' => JText::_('JLIB_FORM_MEDIA_PREVIEW_SELECTED_IMAGE'),
-					'text' => '<i class="icon-eye-open"></i>',
+					'text' => '<i class="icon-eye"></i>',
 					'class' => 'hasTipPreview'
 				);
 				$html[] = RHtml::tooltip($tooltip, $options);
@@ -239,37 +239,38 @@ class JFormFieldRmedia extends JFormField
 			. $this->id . '&amp;folder=' . $folder
 			. '&amp;redcore=true';
 
-		// Create the modal object
-		$modal = RModal::getInstance(
-			array(
-				'attribs' => array(
-					'id'    => $modalId,
-					'class' => 'modal hide',
-					'style' => 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;'
-				),
-				'params' => array(
-					'showHeader'      => true,
-					'showFooter'      => false,
-					'showHeaderClose' => true,
-					'title' => $modalTitle,
-					'link' => $link,
-					'events' => array (
-						'onload' => 'jSetIframeHeight'
-					)
+		// Create the user select button.
+		if ($this->readonly === false)
+		{
+			$html[] = RLayoutHelper::render(
+				'modal.iframe',
+				array(
+					'view' => $this,
+					'options' => array(
+						'id'    => $modalId,
+						'class' => 'modal fade',
+						'tabindex' => '-1',
+						'role' => 'dialog',
+						'aria-hidden' => true,
+						'header' => $modalTitle,
+						'linkName' => '<i class="icon-upload"></i>',
+						'link' => $link,
+						'linkClass' => 'btn btn-primary',
+						'showHeader'      => true,
+						'showFooter'      => false,
+						'showHeaderClose' => true,
+						'events' => array (
+							'onload' => 'jSetIframeHeight'
+						)
+					),
 				)
-			),
-			$modalId
-		);
-
-		$html[] = RLayoutHelper::render(
-			'fields.rmedia',
-			array(
-				'modal' => $modal,
-				'field' => $this
-			)
-		);
+			);
+		}
 
 		$html[] = '</div>';
+
+		// Create the real field, hidden, that stored the user id.
+		$html[] = '<input type="hidden" id="' . $modalId . '_id" name="' . $this->name . '" value="' . $this->value . '" />';
 
 		return implode("\n", $html);
 	}
