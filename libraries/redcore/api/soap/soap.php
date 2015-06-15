@@ -160,6 +160,7 @@ class RApiSoapSoap extends RApi
 		$params = array(
 			'uri' => $wsdl,
 			'soap_version' => SOAP_1_2,
+			'cache_wsdl' => WSDL_CACHE_NONE
 		);
 		$operation = new RApiSoapOperationOperation($this->webservice);
 		$server = new SoapServer($wsdl, $params);
