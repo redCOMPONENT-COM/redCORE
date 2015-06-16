@@ -79,6 +79,7 @@ class RApiSoapOperationOperation
 		$this->webservice->execute();
 
 		$arr = $this->webservice->hal->toArray();
+
 		$outputResources = RApiSoapHelper::getOutputResources($this->webservice->configuration->operations->read->list, 'listItem', true);
 
 		if ($arr['_embedded'] && $arr['_embedded']['item'])

@@ -1958,6 +1958,12 @@ class RApiHalHal extends RApi
 		$format = $resource[$attribute];
 		$transform = RApiHalHelper::attributeToString($resource, 'transform', '');
 
+		// Filters out the complex SOAP arrays, to treat them as regular arrays
+		if (preg_match('/^array\[(.+)\]$/im', $transform))
+		{
+			$transform = 'array';
+		}
+
 		$stringsToReplace = array();
 		preg_match_all('/\{([^}]+)\}/', $format, $stringsToReplace);
 
