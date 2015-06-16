@@ -322,7 +322,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 							</div>
 							<div class="controls">
 								<button
-									class="btn btn-success"
+									class="btn btn-success lc-install_all_webservices"
 									type="button"
 									onclick="setWebservice('', 'all', '', '', 'webservices.installWebservice')">
 									<i class="icon-cogs"></i>

@@ -35,9 +35,11 @@ script:
 - php .travis/phpcs.php
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
 - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
-- php vendor/bin/robo prepare:site-for-system-tests
-- vendor/bin/robo run:groups-tests --group installation
-- vendor/bin/robo run:groups-tests --group installation --skip_group yes
+- vendor/bin/robo prepare:site-for-system-tests
+- vendor/bin/robo run:tests --groups installation
+- vendor/bin/robo run:tests --skip_groups=installation,uninstallation
+- vendor/bin/robo run:tests --suite=api
+- vendor/bin/robo run:tests --groups uninstallation
 - vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
 notifications:
   slack:
