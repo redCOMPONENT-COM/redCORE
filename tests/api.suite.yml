@@ -5,4 +5,4 @@ modules:
       PhpBrowser:
           url: http://joomla.dev/redcore/
       REST:
-          url: http://joomla.dev/redcore/index.php?option=contact&api=Hal&id=1
+          url: http://joomla.dev/redcore/

@@ -38,6 +38,7 @@ script:
 - vendor/bin/robo prepare:site-for-system-tests
 - vendor/bin/robo run:tests --groups installation
 - vendor/bin/robo run:tests --skip_groups=installation,uninstallation
+- mv tests/api.suite.dist.yml tests/api.suite.yml
 - vendor/bin/robo run:tests --suite=api
 - vendor/bin/robo run:tests --groups uninstallation
 - vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7

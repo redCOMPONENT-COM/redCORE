@@ -3,6 +3,6 @@ modules:
     enabled: [PhpBrowser, REST, ApiHelper]
     config:
       PhpBrowser:
-          url: http://serviceapp/
+          url: http://localhost/tests/joomla-cms3/
       REST:
-          url: http://serviceapp/api/v1/
+          url: http://localhost/tests/joomla-cms3/
