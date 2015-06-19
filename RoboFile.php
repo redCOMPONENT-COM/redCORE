@@ -161,13 +161,10 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return void
 	 */
-	public function runTests($options = [
-		'group'         => '',
-		'skip_group'    => '',
-		'suite'         => 'acceptance',
-		'selenium_path' => null
-		])
+	public function runTests($options = ['selenium_path' => null])
 	{
+		$this->prepareSiteForSystemTests();
+
 		if (!$options['selenium_path'])
 		{
 			$this->getSelenium();
@@ -186,23 +183,37 @@ class RoboFile extends \Robo\Tasks
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
-		$testsTask = $this->taskCodecept()
-				->suite($options['suite'])
+		$this->taskCodecept()
 				->arg('--steps')
 				->arg('--debug')
-				->arg('--fail-fast');
+				->arg('--fail-fast')
+				->arg('tests/acceptance/install/')
+				->run()
+				->stopOnFail();
 
-		if ($options['group'])
-		{
-				$testsTask->group($options['group']);
-		}
+		$this->taskCodecept()
+			->arg('--steps')
+			->arg('--debug')
+			->arg('--fail-fast')
+			->arg('tests/acceptance/administrator/')
+			->run()
+			->stopOnFail();
 
-		if ($options['skip_group'])
-		{
-			$testsTask->excludeGroup($options['skip_group']);
-		}
+		$this->taskCodecept()
+			->arg('--steps')
+			->arg('--debug')
+			->arg('--fail-fast')
+			->arg('api')
+			->run()
+			->stopOnFail();
 
-		$testsTask->run()->stopOnFail();
+		$this->taskCodecept()
+			->arg('--steps')
+			->arg('--debug')
+			->arg('--fail-fast')
+			->arg('tests/acceptance/uninstall/')
+			->run()
+			->stopOnFail();
 
 		$this->killSelenium();
 	}

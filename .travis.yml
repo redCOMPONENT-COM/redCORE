@@ -35,13 +35,8 @@ script:
 - php .travis/phpcs.php
 - php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
 - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
-- vendor/bin/robo prepare:site-for-system-tests
-- vendor/bin/robo run:test --test=01-InstallJoomlaCept.php
-- vendor/bin/robo run:test --test=02-InstallExtensionCept.php
-- vendor/bin/robo run:tests --skip_group=installation
 - mv tests/api.suite.dist.yml tests/api.suite.yml
-- vendor/bin/robo run:tests --suite=api
-- vendor/bin/robo run:test --test=ZZ-UninstallExtensionCept.php
+- vendor/bin/robo run:tests
 - vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7
 notifications:
   slack:

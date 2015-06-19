@@ -19,13 +19,10 @@ First you need to create the configuration files:
 - rename `tests/api.suite.dist.yml` into `tests/api.suite.yml`
 - edit `tests/api.suite.yml` with your server configuration
 
-Run the tests in the following order:
+Run the tests executing the following CLI command:
 
 ```
-vendor/bin/robo vendor/bin/robo run:test --test=01-InstallJoomlaCept.php
-vendor/bin/robo vendor/bin/robo run:test --test=02-InstallExtensionCept.php
-vendor/bin/robo run:tests --suite=api
-vendor/bin/robo run:test --test=ZZ-UninstallExtensionCept.php
+vendor/bin/robo run:tests
 ```
 
 ## Running the tests manually
