@@ -9,7 +9,7 @@
 $I = new \AcceptanceTester($scenario);
 $I->wantToTest('Activate the default webservices available in redCORE');
 $I->doAdministratorLogin();
-$I->comment('enable basic authentication');
+$I->comment('I enable basic authentication');
 $I->amOnPage('administrator/index.php?option=com_plugins');
 $I->waitForText('Plugin Manager: Plugins', 30, ['css' => 'H1']);
 $I->fillField(['id' => 'filter_search'], 'redcore - system plugin');
@@ -25,3 +25,7 @@ $I->amOnPage('administrator/index.php?option=com_redcore&view=webservices');
 $I->waitForText('Webservice Manager', 30, ['css' => 'H1']);
 $I->click(['class' => 'lc-not_installed_webservices']);
 $I->click(['class' => 'lc-install_all_webservices']);
+$I->waitForElement(['id' => 'oauthClientsList'], 30);
+$I->see('administrator.contact.1.0.0.xml',['class' => 'lc-webservice-file']);
+$I->see('site.contact.1.0.0.xml',['class' => 'lc-webservice-file']);
+$I->see('site.users.1.0.0.xml',['class' => 'lc-webservice-file']);

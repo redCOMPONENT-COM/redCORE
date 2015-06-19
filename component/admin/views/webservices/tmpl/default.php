@@ -263,7 +263,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 								<td style="word-wrap:break-word;">
 									<?php $folder = !empty($item->path) ? '/' . $item->path : ''; ?>
 									<?php echo RApiHalHelper::getWebservicesRelativePath(); ?>
-									<strong><?php echo $folder . '/' . $item->xmlFile; ?></strong>
+									<strong><?php echo $folder ?>/<span class="lc-webservice-file"><?php echo $item->xmlFile; ?></span></strong>
 									<?php if (!JFile::exists(RApiHalHelper::getWebservicesPath() . $folder . '/' . $item->xmlFile)) : ?>
 										<span class="label label-danger"><?php echo JText::_('COM_REDCORE_WEBSERVICES_XML_MISSING'); ?></span>
 									<?php elseif ($item->xmlHashed != md5($item->xml)) : ?>
