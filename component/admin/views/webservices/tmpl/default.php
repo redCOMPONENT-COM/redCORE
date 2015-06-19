@@ -176,7 +176,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 			<a href="#mainComponentWebservices" data-toggle="tab"><?php echo JText::_('COM_REDCORE_WEBSERVICES_INSTALLED_WEBSERVICES'); ?></a>
 		</li>
 		<li role="presentation">
-			<a href="#mainComponentWebservicesXmls" data-toggle="tab">
+			<a href="#mainComponentWebservicesXmls" data-toggle="tab" class="lc-not_installed_webservices">
 				<?php echo JText::_('COM_REDCORE_WEBSERVICES_AVAILABLE_WEBSERVICES'); ?> <span class="badge"><?php echo $this->xmlFilesAvailable; ?></span>
 			</a>
 		</li>
@@ -263,7 +263,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 								<td style="word-wrap:break-word;">
 									<?php $folder = !empty($item->path) ? '/' . $item->path : ''; ?>
 									<?php echo RApiHalHelper::getWebservicesRelativePath(); ?>
-									<strong><?php echo $folder . '/' . $item->xmlFile; ?></strong>
+									<strong><?php echo $folder ?>/<span class="lc-webservice-file"><?php echo $item->xmlFile; ?></span></strong>
 									<?php if (!JFile::exists(RApiHalHelper::getWebservicesPath() . $folder . '/' . $item->xmlFile)) : ?>
 										<span class="label label-danger"><?php echo JText::_('COM_REDCORE_WEBSERVICES_XML_MISSING'); ?></span>
 									<?php elseif ($item->xmlHashed != md5($item->xml)) : ?>
@@ -322,7 +322,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 							</div>
 							<div class="controls">
 								<button
-									class="btn btn-success"
+									class="btn btn-success lc-install_all_webservices"
 									type="button"
 									onclick="setWebservice('', 'all', '', '', 'webservices.installWebservice')">
 									<i class="icon-cogs"></i>
