@@ -11,6 +11,7 @@ $I->wantToTest('Activate the default webservices available in redCORE');
 $I->doAdministratorLogin();
 $I->comment('enable basic authentication');
 $I->amOnPage('administrator/index.php?option=com_plugins');
+$I->waitForText('Plugin Manager: Plugins', 30, ['css' => 'H1']);
 $I->fillField(['id' => 'filter_search'], 'redcore - system plugin');
 $I->click(['xpath' => "//div[@id='filter-bar']/div[2]/button"]); // search button
 $I->click(['link' => 'redCORE - System plugin']);
@@ -21,5 +22,6 @@ $I->selectOptionInChosen('Check user permission against','Joomla - Use already d
 $I->click(['xpath' => "//div[@id='toolbar-apply']/button"]);
 $I->waitForText('Plugin successfully saved.', 5, ['id' => 'system-message-container']);
 $I->amOnPage('administrator/index.php?option=com_redcore&view=webservices');
-$I->click(['link' => 'Not installed webservices']);
+$I->waitForText('Webservice Manager', 30, ['css' => 'H1']);
+$I->click(['class' => 'lc-not_installed_webservices']);
 $I->click(['class' => 'lc-install_all_webservices']);

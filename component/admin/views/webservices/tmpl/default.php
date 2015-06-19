@@ -176,7 +176,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 			<a href="#mainComponentWebservices" data-toggle="tab"><?php echo JText::_('COM_REDCORE_WEBSERVICES_INSTALLED_WEBSERVICES'); ?></a>
 		</li>
 		<li role="presentation">
-			<a href="#mainComponentWebservicesXmls" data-toggle="tab">
+			<a href="#mainComponentWebservicesXmls" data-toggle="tab" class="lc-not_installed_webservices">
 				<?php echo JText::_('COM_REDCORE_WEBSERVICES_AVAILABLE_WEBSERVICES'); ?> <span class="badge"><?php echo $this->xmlFilesAvailable; ?></span>
 			</a>
 		</li>
