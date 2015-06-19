@@ -33,7 +33,7 @@ class ContactsCest
 	{
 		$I->wantTo('POST via webservices a new Contact in com_contacts');
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendPOST('/administrator/index.php?option=contact&api=Hal', [
+		$I->sendPOST('administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'api' => 'Hal',
 			'webserviceVersion' => '1.0.0',
@@ -59,7 +59,7 @@ class ContactsCest
 	{
 		$I->wantTo("GET via webservices an existing Contact");
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendGET('/administrator/index.php?option=contact&api=Hal', [
+		$I->sendGET('administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'webserviceClient' => 'administrator',
 			'api' => 'Hal',
@@ -82,7 +82,7 @@ class ContactsCest
 		$I->amHttpAuthenticated('admin', 'admin');
 
 		$this->contactName = 'new_' . $this->contactName;
-		$I->sendPUT('/administrator/index.php?option=contact&api=Hal', [
+		$I->sendPUT('administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'api' => 'Hal',
 			'webserviceVersion' => '1.0.0',
@@ -93,7 +93,7 @@ class ContactsCest
 		]);
 		$I->seeResponseCodeIs(200);
 
-		$I->sendGET('/administrator/index.php?option=contact&api=Hal', [
+		$I->sendGET('administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'webserviceClient' => 'administrator',
 			'api' => 'Hal',
@@ -113,8 +113,6 @@ class ContactsCest
 	 */
 	public function administratorDeleteContact(ApiTester $I)
 	{
-		/*
-		 * @Todo: this issue can't be fished until https://redweb.atlassian.net/browse/REDCORE-418 gets resolved
 
 		$I->wantTo('Delete via webservices a new Contact in com_contacts using DELETE');
 		$I->amHttpAuthenticated('admin', 'admin');
@@ -129,6 +127,8 @@ class ContactsCest
 		]);
 		$I->seeResponseCodeIs(200);
 
+		/*
+		 * @Todo: this issue can't be fished until https://redweb.atlassian.net/browse/REDCORE-418 gets resolved
 		$I->sendGET('/administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'webserviceClient' => 'administrator',
@@ -150,7 +150,7 @@ class ContactsCest
 	{
 		$I->wantTo("POST via webservices a new Contact in com_contacts without specifying client in the request params");
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendPOST('/administrator/index.php?option=contact&api=Hal', [
+		$I->sendPOST('administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'api' => 'Hal',
 			'webserviceVersion' => '1.0.0',
@@ -175,7 +175,7 @@ class ContactsCest
 	{
 		$I->wantTo('GET via webservices an existing Contact without specify Client in the request');
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendGET('/administrator/index.php?option=contact&api=Hal', [
+		$I->sendGET('administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'api' => 'Hal',
 			'id' => $this->contactID]);
