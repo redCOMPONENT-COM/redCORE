@@ -162,8 +162,8 @@ class RoboFile extends \Robo\Tasks
 	 * @return void
 	 */
 	public function runTests($options = [
-		'groups'        => [],
-		'skip_groups'   => [],
+		'group'         => '',
+		'skip_group'    => '',
 		'suite'         => 'acceptance',
 		'selenium_path' => null
 		])
@@ -192,24 +192,14 @@ class RoboFile extends \Robo\Tasks
 				->arg('--debug')
 				->arg('--fail-fast');
 
-		if ($options['groups'])
+		if ($options['group'])
 		{
-			$groups = explode(',', $options['groups']);
-
-			foreach ($groups as $group)
-			{
-				$testsTask->group($group);
-			}
+				$testsTask->group($options['group']);
 		}
 
-		if ($options['skip_groups'])
+		if ($options['skip_group'])
 		{
-			$skipGroups = explode(',', $options['skip_groups']);
-
-			foreach ($skipGroups as $skipGroup)
-			{
-				$testsTask->excludeGroup($skipGroup);
-			}
+			$testsTask->excludeGroup($options['skip_group']);
 		}
 
 		$testsTask->run()->stopOnFail();

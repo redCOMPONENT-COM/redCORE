@@ -22,10 +22,10 @@ First you need to create the configuration files:
 Run the tests in the following order:
 
 ```
-vendor/bin/robo run:tests --groups installation
-vendor/bin/robo run:tests --skip_groups=installation,uninstallation
+vendor/bin/robo vendor/bin/robo run:test --test=01-InstallJoomlaCept.php
+vendor/bin/robo vendor/bin/robo run:test --test=02-InstallExtensionCept.php
 vendor/bin/robo run:tests --suite=api
-vendor/bin/robo run:tests --groups uninstallation
+vendor/bin/robo run:test --test=ZZ-UninstallExtensionCept.php
 ```
 
 ## Running the tests manually
