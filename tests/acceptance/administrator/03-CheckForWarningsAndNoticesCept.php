@@ -14,13 +14,13 @@ $I->amOnPage('administrator/index.php?option=com_plugins');
 $I->fillField(['id' => 'filter_search'], 'redcore - system plugin');
 $I->click(['xpath' => "//div[@id='filter-bar']/div[2]/button"]); // search button
 $I->click(['link' => 'redCORE - System plugin']);
-$I->waitForText('Plugin Manager: redCORE - System plugin', 5, ['css' => 'h1']);
+$I->waitForText('Plugin Manager: redCORE - System plugin', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);
 $I->selectOptionInChosen('Enable translations', 'Yes');
 $I->click(['link' => 'Webservice options']);
 $I->selectOptionInChosen('Enable webservices', 'Yes');
 $I->click(['xpath' => "//div[@id='toolbar-apply']/button"]);
-$I->waitForText('Plugin successfully saved.', 5, ['id' => 'system-message-container']);
+$I->waitForText('Plugin successfully saved.', 30, ['id' => 'system-message-container']);
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&contentelement=&layout=manage');
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&component=com_banners&contentelement=banner_clients');
