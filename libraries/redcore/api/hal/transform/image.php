@@ -33,10 +33,7 @@ class RApiHalTransformImage extends RApiHalTransformBase
 			return $definition;
 		}
 
-		$fileName = $definition['name'];
-		$section = $definition['section'];
-
-		return JUri::root(true) . '/' . RedshopbHelperThumbnail::getFullImagePath($fileName, $section);
+		return JUri::root(true) . '/' . RedshopbHelperThumbnail::getFullImagePath($definition['name'], $definition['section']);
 	}
 
 	/**
@@ -54,11 +51,10 @@ class RApiHalTransformImage extends RApiHalTransformBase
 			return $definition;
 		}
 
-		$fullPath = $definition['name'];
-		$fileName = $definition['name'];
 		$id = (int) preg_replace('/\D/', '', $definition['id']);
-		$section = $definition['section'];
 
-		return RedshopbHelperThumbnail::savingImage($fullPath, $fileName, $id, true, $section);
+		return RedshopbHelperThumbnail::savingImage(
+			$definition['fullPath'], $definition['fullPath'], $id, true, $definition['section']
+		);
 	}
 }
