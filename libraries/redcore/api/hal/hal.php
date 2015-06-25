@@ -1891,6 +1891,14 @@ class RApiHalHal extends RApi
 
 		$this->optionName = $optionName;
 		$this->viewName = $viewName;
+
+		// We add separate view and option name if they were merged
+		if (!empty($viewName))
+		{
+			$input = JFactory::getApplication()->input;
+			$input->set('option', $optionName);
+			$input->set('view', $viewName);
+		}
 	}
 
 	/**
