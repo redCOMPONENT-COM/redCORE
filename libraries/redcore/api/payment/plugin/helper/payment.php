@@ -311,7 +311,8 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		// Is payment new
 		$isNew = empty($data['id']);
 
-		if (isset($data['calculate_total_amount_manually']) && $data['calculate_total_amount_manually'] === true)
+		// Only calculate amount if set in provided data
+		if (isset($data['calculate_total_amount_manually_redpayment']) && $data['calculate_total_amount_manually_redpayment'] === true)
 		{
 			// Calculate price
 			$data['amount_total'] = (float) $data['amount_original'];
