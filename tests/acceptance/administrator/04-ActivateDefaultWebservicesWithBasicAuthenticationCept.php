@@ -15,12 +15,12 @@ $I->waitForText('Plugin Manager: Plugins', 30, ['css' => 'H1']);
 $I->fillField(['id' => 'filter_search'], 'redcore - system plugin');
 $I->click(['xpath' => "//div[@id='filter-bar']/div[2]/button"]); // search button
 $I->click(['link' => 'redCORE - System plugin']);
-$I->waitForText('Plugin Manager: redCORE - System plugin', 5, ['css' => 'h1']);
+$I->waitForText('Plugin Manager: redCORE - System plugin', 30, ['css' => 'h1']);
 $I->click(['link' => 'Webservice options']);
 $I->selectOptionInChosen('Enable webservices', 'Yes');
 $I->selectOptionInChosen('Check user permission against','Joomla - Use already defined authorization checks in Joomla');
 $I->click(['xpath' => "//div[@id='toolbar-apply']/button"]);
-$I->waitForText('Plugin successfully saved.', 5, ['id' => 'system-message-container']);
+$I->waitForText('Plugin successfully saved.', 30, ['id' => 'system-message-container']);
 $I->amOnPage('administrator/index.php?option=com_redcore&view=webservices');
 $I->waitForText('Webservice Manager', 30, ['css' => 'H1']);
 $I->click(['class' => 'lc-not_installed_webservices']);
