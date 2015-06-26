@@ -98,7 +98,7 @@ class RoboFile extends \Robo\Tasks
 		'test'         => null,
 		'suite'         => 'acceptance',
 		'selenium_path' => null
-		])
+	])
 	{
 		if (!$options['selenium_path'])
 		{
@@ -112,29 +112,38 @@ class RoboFile extends \Robo\Tasks
 		$this->runSelenium($options['selenium_path']);
 
 		$this->taskWaitForSeleniumStandaloneServer()
-			->run()
-			->stopOnFail();
+		     ->run()
+		     ->stopOnFail();
 
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
 		if (!$options['test'])
 		{
-			$tests = array();
 			$this->say('Available tests in the system:');
-			$filesInSuite = scandir(getcwd() . '/tests/' . $options['suite']);
 
+			$iterator = new RecursiveIteratorIterator(
+				new RecursiveDirectoryIterator(
+					'tests/' . $options['suite'],
+					RecursiveDirectoryIterator::SKIP_DOTS),
+				RecursiveIteratorIterator::SELF_FIRST);
+
+			$tests = array();
+
+			$iterator->rewind();
 			$i = 1;
 
-			foreach ($filesInSuite as $file)
+			while ($iterator->valid())
 			{
-				// Make sure the file is a Test file
-				if (strripos($file, 'cept.php') || strripos($file, 'cest.php'))
+				if (strripos($iterator->getSubPathName(), 'cept.php')
+					|| strripos($iterator->getSubPathName(), 'cest.php'))
 				{
-					$tests[$i] = $file;
-					$this->say('[' . $i . '] ' . $file);
+					$this->say('[' . $i . '] ' . $iterator->getSubPathName());
+					$tests[$i] = $iterator->getSubPathName();
 					$i++;
 				}
+
+				$iterator->next();
 			}
 
 			$this->say('');
@@ -145,11 +154,11 @@ class RoboFile extends \Robo\Tasks
 		$pathToTestFile = 'tests/' . $options['suite'] . '/' . $options['test'];
 
 		$this->taskCodecept()
-			->test($pathToTestFile)
-			->arg('--steps')
-			->arg('--debug')
-			->run()
-			->stopOnFail();
+		     ->test($pathToTestFile)
+		     ->arg('--steps')
+		     ->arg('--debug')
+		     ->run()
+		     ->stopOnFail();
 
 		$this->killSelenium();
 	}
@@ -177,43 +186,43 @@ class RoboFile extends \Robo\Tasks
 		$this->runSelenium($options['selenium_path']);
 
 		$this->taskWaitForSeleniumStandaloneServer()
-			->run()
-			->stopOnFail();
+		     ->run()
+		     ->stopOnFail();
 
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-				->arg('--steps')
-				->arg('--debug')
-				->arg('--fail-fast')
-				->arg('tests/acceptance/install/')
-				->run()
-				->stopOnFail();
+		     ->arg('--steps')
+		     ->arg('--debug')
+		     ->arg('--fail-fast')
+		     ->arg('tests/acceptance/install/')
+		     ->run()
+		     ->stopOnFail();
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
-			->arg('--fail-fast')
-			->arg('tests/acceptance/administrator/')
-			->run()
-			->stopOnFail();
+		     ->arg('--steps')
+		     ->arg('--debug')
+		     ->arg('--fail-fast')
+		     ->arg('tests/acceptance/administrator/')
+		     ->run()
+		     ->stopOnFail();
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
-			->arg('--fail-fast')
-			->arg('api')
-			->run()
-			->stopOnFail();
+		     ->arg('--steps')
+		     ->arg('--debug')
+		     ->arg('--fail-fast')
+		     ->arg('api')
+		     ->run()
+		     ->stopOnFail();
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
-			->arg('--fail-fast')
-			->arg('tests/acceptance/uninstall/')
-			->run()
-			->stopOnFail();
+		     ->arg('--steps')
+		     ->arg('--debug')
+		     ->arg('--fail-fast')
+		     ->arg('tests/acceptance/uninstall/')
+		     ->run()
+		     ->stopOnFail();
 
 		$this->killSelenium();
 	}
@@ -227,8 +236,8 @@ class RoboFile extends \Robo\Tasks
 	public function checkRoboFileVersion()
 	{
 		$this->taskCheckRoboFileVersion($this->version)
-			->run()
-			->stopOnFail();
+		     ->run()
+		     ->stopOnFail();
 	}
 
 	/**
@@ -242,10 +251,10 @@ class RoboFile extends \Robo\Tasks
 		{
 			$this->say('Downloading Selenium Server, this may take a while.');
 			$this->_exec('curl'
-			. ' -sS'
-			. ' --retry 3 --retry-delay 5'
-			. ' http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar'
-			. ' > selenium-server-standalone.jar');
+			             . ' -sS'
+			             . ' --retry 3 --retry-delay 5'
+			             . ' http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar'
+			             . ' > selenium-server-standalone.jar');
 		}
 	}
 
