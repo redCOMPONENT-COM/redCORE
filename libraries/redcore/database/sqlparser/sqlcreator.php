@@ -379,6 +379,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processWhereExpression($v);
 			$sql .= $this->processWhereBracketExpression($v);
+			$sql .= $this->processSubQuery($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('WHERE expression subtree', $k, $v, 'expr_type');
@@ -415,6 +416,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processWhereExpression($v);
 			$sql .= $this->processWhereBracketExpression($v);
+			$sql .= $this->processSubQuery($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('WHERE expression subtree', $k, $v, 'expr_type');
