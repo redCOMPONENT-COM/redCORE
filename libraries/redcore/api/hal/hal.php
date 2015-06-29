@@ -2333,12 +2333,12 @@ class RApiHalHal extends RApi
 		}
 
 		// Support for B/C custom limit fields
-		if ($limitField != 'limit' && !empty($dataGet['limit']) && empty($dataGet[$limitField]))
+		if ($limitField != 'limit' && !empty($dataGet['limit']) && !isset($dataGet[$limitField]))
 		{
 			$dataGet[$limitField] = $dataGet['limit'];
 		}
 
-		if ($limitStartField != 'limitstart' && !empty($dataGet['limitstart']) && empty($dataGet[$limitStartField]))
+		if ($limitStartField != 'limitstart' && !empty($dataGet['limitstart']) && !isset($dataGet[$limitStartField]))
 		{
 			$dataGet[$limitStartField] = $dataGet['limitstart'];
 		}
