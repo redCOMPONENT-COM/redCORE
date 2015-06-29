@@ -88,8 +88,7 @@ class ContactsCest
 			'webserviceVersion' => '1.0.0',
 			'webserviceClient' => 'administrator',
 			'id' => $this->contactID,
-			'name' => $this->contactName,
-			'catid' => 4 // Uncategorised default category
+			'name' => $this->contactName
 		]);
 		$I->seeResponseCodeIs(200);
 
