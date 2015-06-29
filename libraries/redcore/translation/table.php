@@ -106,8 +106,10 @@ final class RTranslationTable
 			if (empty(self::$columnsList[$tableName]))
 			{
 				$db = JFactory::getDbo();
-
+				$translate = property_exists($db, 'translate') ? $db->translate : false;
+				$db->translate = false;
 				self::$columnsList[$tableName] = $db->getTableColumns($tableName, false);
+				$db->translate = $translate;
 			}
 
 			return self::$columnsList[$tableName];
@@ -126,8 +128,11 @@ final class RTranslationTable
 		if (empty(self::$tablePrefix))
 		{
 			$db = JFactory::getDbo();
+			$translate = property_exists($db, 'translate') ? $db->translate : false;
+			$db->translate = false;
 			self::$tableList = $db->getTableList();
 			self::$tablePrefix = $db->getPrefix();
+			$db->translate = $translate;
 		}
 
 		return self::$tableList;
