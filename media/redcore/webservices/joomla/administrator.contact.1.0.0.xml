@@ -170,8 +170,8 @@
         <update dataMode="table" authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="" tableName="contact_details" strictFields="false">
             <fields>
                 <field name="id" transform="int" isRequiredField="true" />
-                <field name="name" transform="string" isRequiredField="true" />
-                <field name="catid" transform="int" isRequiredField="true" />
+                <field name="name" transform="string" isRequiredField="false" />
+                <field name="catid" transform="int" isRequiredField="false" />
                 <field name="language" defaultValue="*" />
                 <field name="published" transform="int" defaultValue="1" />
 
