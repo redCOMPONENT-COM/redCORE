@@ -127,18 +127,15 @@ class ContactsCest
 		]);
 		$I->seeResponseCodeIs(200);
 
-		/*
-		 * @Todo: this issue can't be fished until https://redweb.atlassian.net/browse/REDCORE-418 gets resolved
 		$I->sendGET('/administrator/index.php?option=contact&api=Hal', [
 			'option' => 'contact',
 			'webserviceClient' => 'administrator',
 			'api' => 'Hal',
-			'id' => $this->contactID]);
-		$I->seeResponseCodeIs(200);
+			'id' => $this->contactID]
+		);
+		$I->seeResponseCodeIs(404);
 		$I->seeResponseIsJson();
-		$I->seeResponseContains('"name":"'. $this->contactName.'"');
-		$I->comment("The contact name has been modified to: $this->contactName");
-		*/
+		$I->seeResponseContains('"message":"Item not found with given key.","code":404,"type":"Exception"');
 	}
 
 	/**
