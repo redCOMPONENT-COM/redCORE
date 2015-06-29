@@ -609,6 +609,16 @@ class RApiHalHal extends RApi
 			}
 		}
 
+		// Checking if primary keys are found
+		foreach ($primaryKeys as $primaryKey => $primaryKeyValue)
+		{
+			if (property_exists($itemObject, $primaryKey) && $itemObject->{$primaryKey} != $primaryKeyValue)
+			{
+				$itemObject = null;
+				break;
+			}
+		}
+
 		$this->triggerFunction('setForRenderItem', $itemObject, $currentConfiguration);
 
 		return $this;
