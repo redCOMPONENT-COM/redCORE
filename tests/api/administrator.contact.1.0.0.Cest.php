@@ -138,18 +138,15 @@ class AdministratorContacts1Cest
 	 */
 	public function delete(ApiTester $I)
 	{
-
 		$I->wantTo('Delete via webservices a new Contact in com_contacts using DELETE');
 		$I->amHttpAuthenticated('admin', 'admin');
 
-		$this->contactName = 'new_' . $this->contactName;
-		$I->sendDELETE('/administrator/index.php?option=contact&api=Hal', [
+		$I->sendDELETE("administrator/index.php?option=contact&api=Hal&id=$this->contactID", [
 			'option' => 'contact',
 			'api' => 'Hal',
 			'webserviceVersion' => '1.0.0',
-			'webserviceClient' => 'administrator',
-			'id' => $this->contactID,
-		]);
+			'webserviceClient' => 'administrator']
+		);
 		$I->seeResponseCodeIs(200);
 
 		$I->sendGET('/administrator/index.php?option=contact&api=Hal', [
