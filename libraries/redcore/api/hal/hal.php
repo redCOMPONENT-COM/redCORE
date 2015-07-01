@@ -679,7 +679,7 @@ class RApiHalHal extends RApi
 		}
 
 		$this->setData('result', $result);
-		$this->triggerFunction('displayErrors', $model->getErrors());
+		$this->triggerFunction('displayErrors', $model);
 
 		if ($this->statusCode < 400)
 		{
@@ -885,7 +885,8 @@ class RApiHalHal extends RApi
 			}
 			else
 			{
-				$this->setStatusCode(400);
+				$customError = $this->triggerFunction('createCustomHttpError', 400, $model->getErrors());
+				$this->setStatusCode(400, $customError);
 			}
 
 			if (method_exists($model, 'getState'))
