@@ -35,10 +35,12 @@ final class RApiSoapTransformArrayrequired extends RApiSoapTransformBase
 	 * @param   string            $elementName       Parent element name to add the new derived types with unique names
 	 * @param   boolean           $validateOptional  Optional parameter to validate if the field is optional.  Otherwise it's always set as required
 	 * @param   array             $extraFields       Array of extra fields to process - in case of array types
+	 * @param   SimpleXMLElmenet  $complexArrays     Complex arrays definitions
 	 *
 	 * @return void
 	 */
-	public function wsdlField($field, &$sequence, &$typeSchema, $elementName, $validateOptional = false, $extraFields = array())
+	public function wsdlField(
+		$field, &$sequence, &$typeSchema, $elementName, $validateOptional = false, $extraFields = array(), $complexArrays = null)
 	{
 		parent::wsdlField($field, $sequence, $typeSchema, $elementName, $validateOptional);
 
@@ -46,7 +48,7 @@ final class RApiSoapTransformArrayrequired extends RApiSoapTransformBase
 
 		if (!empty($extraFields))
 		{
-			RApiSoapHelper::addElementFields($extraFields, $typeSchema, $elementName . '_' . $field['name']);
+			RApiSoapHelper::addElementFields($extraFields, $typeSchema, $elementName . '_' . $field['name'], false, '', $complexArrays);
 		}
 	}
 }

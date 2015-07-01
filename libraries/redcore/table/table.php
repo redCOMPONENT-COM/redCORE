@@ -725,7 +725,7 @@ class RTable extends JTable
 	 *
 	 * @return  boolean  Deleted successfuly?
 	 */
-	private function doDelete($pk = null)
+	protected function doDelete($pk = null)
 	{
 		// Initialise variables.
 		$k = $this->_tbl_key;

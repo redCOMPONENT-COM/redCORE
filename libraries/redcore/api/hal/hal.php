@@ -615,6 +615,16 @@ class RApiHalHal extends RApi
 			}
 		}
 
+		// Checking if primary keys are found
+		foreach ($primaryKeys as $primaryKey => $primaryKeyValue)
+		{
+			if (property_exists($itemObject, $primaryKey) && $itemObject->{$primaryKey} != $primaryKeyValue)
+			{
+				$itemObject = null;
+				break;
+			}
+		}
+
 		$this->triggerFunction('setForRenderItem', $itemObject, $currentConfiguration);
 
 		return $this;
@@ -665,7 +675,7 @@ class RApiHalHal extends RApi
 
 		if (method_exists($model, 'getState'))
 		{
-			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
+			$this->setData('id', $model->getState($model->getName() . '.id'));
 		}
 
 		$this->setData('result', $result);
@@ -1282,7 +1292,12 @@ class RApiHalHal extends RApi
 				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
 				$fieldAttributes['transform'] = !is_null($fieldAttributes['transform']) ? $fieldAttributes['transform'] : 'string';
 				$fieldAttributes['defaultValue'] = !is_null($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
-				$data[$fieldAttributes['name']] = !is_null($data[$fieldAttributes['name']]) ? $data[$fieldAttributes['name']] : $fieldAttributes['defaultValue'];
+
+				if (!isset($data[$fieldAttributes['name']]) || is_null($data[$fieldAttributes['name']]))
+				{
+					$data[$fieldAttributes['name']] = $fieldAttributes['defaultValue'];
+				}
+
 				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
 				$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
 			}
@@ -1915,6 +1930,14 @@ class RApiHalHal extends RApi
 
 		$this->optionName = $optionName;
 		$this->viewName = $viewName;
+
+		// We add separate view and option name if they were merged
+		if (!empty($viewName))
+		{
+			$input = JFactory::getApplication()->input;
+			$input->set('option', $optionName);
+			$input->set('view', $viewName);
+		}
 	}
 
 	/**
@@ -1987,6 +2010,12 @@ class RApiHalHal extends RApi
 		$format = $resource[$attribute];
 		$transform = RApiHalHelper::attributeToString($resource, 'transform', '');
 
+		// Filters out the complex SOAP arrays, to treat them as regular arrays
+		if (preg_match('/^array\[(.+)\]$/im', $transform))
+		{
+			$transform = 'array';
+		}
+
 		$stringsToReplace = array();
 		preg_match_all('/\{([^}]+)\}/', $format, $stringsToReplace);
 
@@ -2048,7 +2077,7 @@ class RApiHalHal extends RApi
 		if (!empty($stringsToReplace[1]))
 		{
 			// If we did not found data with that resource we will set it to 0, except for linkRel which is a documentation template
-			if ($format == $resource[$attribute] && $resource['linkRel'] != 'curies')
+			if ($format === $resource[$attribute] && $resource['linkRel'] != 'curies')
 			{
 				$format = null;
 			}
@@ -2315,16 +2344,47 @@ class RApiHalHal extends RApi
 			$model->getState();
 		}
 
+		$dataGet = $this->options->get('dataGet', array());
+
+		if (is_object($dataGet))
+		{
+			$dataGet = JArrayHelper::fromObject($dataGet);
+		}
+
+		$limitField = 'limit';
+		$limitStartField = 'limitstart';
+
+		if (method_exists($model, 'get'))
+		{
+			// RedCORE limit fields
+			$limitField = $model->get('limitField', $limitField);
+			$limitStartField = $model->get('limitstartField', $limitStartField);
+		}
+
+		if (isset($dataGet['list']['limit']))
+		{
+			$dataGet[$limitField] = $dataGet['list']['limit'];
+		}
+
+		if (isset($dataGet['list']['limitstart']))
+		{
+			$dataGet[$limitStartField] = $dataGet['list']['limitstart'];
+		}
+
+		// Support for B/C custom limit fields
+		if ($limitField != 'limit' && !empty($dataGet['limit']) && !isset($dataGet[$limitField]))
+		{
+			$dataGet[$limitField] = $dataGet['limit'];
+		}
+
+		if ($limitStartField != 'limitstart' && !empty($dataGet['limitstart']) && !isset($dataGet[$limitStartField]))
+		{
+			$dataGet[$limitStartField] = $dataGet['limitstart'];
+		}
+
 		// Set state for Filters and List
 		if (method_exists($model, 'setState'))
 		{
-			$dataGet = $this->options->get('dataGet', array());
-
-			if (is_object($dataGet))
-			{
-				$dataGet = JArrayHelper::fromObject($dataGet);
-			}
-
 			if (isset($dataGet['list']))
 			{
 				foreach ($dataGet['list'] as $key => $value)
@@ -2340,7 +2400,23 @@ class RApiHalHal extends RApi
 					$model->setState('filter.' . $key, $value);
 				}
 			}
+
+			if (isset($dataGet[$limitField]))
+			{
+				$model->setState('limit', $dataGet[$limitField]);
+				$model->setState('list.limit', $dataGet[$limitField]);
+				$model->setState($limitField, $dataGet[$limitField]);
+			}
+
+			if (isset($dataGet[$limitStartField]))
+			{
+				$model->setState('limitstart', $dataGet[$limitStartField]);
+				$model->setState('list.start', $dataGet[$limitStartField]);
+				$model->setState($limitStartField, $dataGet[$limitStartField]);
+			}
 		}
+
+		$this->options->set('dataGet', $dataGet);
 	}
 
 	/**

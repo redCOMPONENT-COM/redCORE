@@ -63,10 +63,11 @@ class RApiSoapHelper
 	 * @param   string            $typeName          Name of the complexType to create (if $elementName is included, this is ignored)
 	 * @param   boolean           $validateOptional  Optional parameter to validate if the fields are optional.  Otherwise they're always set as required
 	 * @param   string            $elementName       Name of the optional element to create
+	 * @param   SimpleXMLElmenet  $complexArrays     Complex arrays definitions
 	 *
 	 * @return  void
 	 */
-	public static function addElementFields($fields, &$typeSchema, $typeName, $validateOptional = false, $elementName = '')
+	public static function addElementFields($fields, &$typeSchema, $typeName, $validateOptional = false, $elementName = '', $complexArrays = null)
 	{
 		if ($elementName != '')
 		{
@@ -91,7 +92,26 @@ class RApiSoapHelper
 
 			foreach ($fields as $field)
 			{
-				$transformClass = 'RApiSoapTransform' . ucfirst(isset($field['transform']) ? $field['transform'] : 'string');
+				$transformType = $field['transform'];
+				$complexArrayType = '';
+				$additionalFields = isset($field['fields']) ? $field['fields'] : array();
+				$fieldValidateOptional = $validateOptional;
+
+				if (preg_match('/^array\[(.+)\]$/im', $transformType, $matches))
+				{
+					if (isset($complexArrays->{$matches[1]}) && isset($complexArrays->{$matches[1]}->field) && count($complexArrays->{$matches[1]}->field))
+					{
+						$transformType = 'arraycomplex';
+						$additionalFields = $complexArrays->{$matches[1]}->field;
+						$fieldValidateOptional = true;
+					}
+					else
+					{
+						$transformType = 'array';
+					}
+				}
+
+				$transformClass = 'RApiSoapTransform' . ucfirst(isset($transformType) ? $transformType : 'string');
 
 				if (!class_exists($transformClass))
 				{
@@ -102,8 +122,9 @@ class RApiSoapHelper
 				$transform->wsdlField(
 					$field, $sequence, $typeSchema,
 					($elementName != '' ? $elementName : $typeName),
-					$validateOptional,
-					(isset($field['fields']) ? $field['fields'] : array())
+					$fieldValidateOptional,
+					$additionalFields,
+					$complexArrays
 				);
 			}
 		}
@@ -240,24 +261,10 @@ class RApiSoapHelper
 
 				foreach ($item as $field => $value)
 				{
-					if (is_array($value))
+					if (in_array($field, $outputResources))
 					{
-						foreach ($value as $fieldint => $valueint)
-						{
-							if (in_array($fieldint, $outputResources))
-							{
-								$object->$fieldint = $valueint;
-								$i++;
-							}
-						}
-					}
-					else
-					{
-						if (in_array($field, $outputResources))
-						{
-							$object->$field = $value;
-							$i++;
-						}
+						$object->$field = $value;
+						$i++;
 					}
 				}
 

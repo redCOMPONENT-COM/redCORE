@@ -87,20 +87,21 @@ class RApiHalDocumentDocument extends JDocument
 	public function render($cache = false, $params = array())
 	{
 		$runtime = microtime(true) - $this->hal->startTime;
+		$app = JFactory::getApplication();
 
-		JFactory::getApplication()->setHeader('Status', $this->hal->statusCode . ' ' . $this->hal->statusText, true);
-		JFactory::getApplication()->setHeader('Server', '', true);
-		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
-		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);
-		JFactory::getApplication()->setHeader('Pragma', 'public', true);
-		JFactory::getApplication()->setHeader('Expires', '0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'private', false);
-		JFactory::getApplication()->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-		JFactory::getApplication()->setHeader('Webservice name', $this->hal->webserviceName, true);
-		JFactory::getApplication()->setHeader('Webservice version', $this->hal->webserviceVersion, true);
+		$app->setHeader('Status', $this->hal->statusCode . ' ' . $this->hal->statusText, true);
+		$app->setHeader('Server', '', true);
+		$app->setHeader('X-Runtime', $runtime, true);
+		$app->setHeader('Access-Control-Allow-Origin', '*', true);
+		$app->setHeader('Pragma', 'public', true);
+		$app->setHeader('Expires', '0', true);
+		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		$app->setHeader('Cache-Control', 'private', false);
+		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+		$app->setHeader('Webservice-name', $this->hal->webserviceName, true);
+		$app->setHeader('Webservice-version', $this->hal->webserviceVersion, true);
 
-		JFactory::getApplication()->sendHeaders();
+		$app->sendHeaders();
 
 		// Get the HAL object from the buffer.
 		/* @var $hal RApiHalDocumentResource */
