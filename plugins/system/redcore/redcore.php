@@ -205,6 +205,11 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onBeforeCompileHead()
 	{
+		if (!$this->isRedcoreComponent())
+		{
+			return;
+		}
+
 		$doc = JFactory::getDocument();
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
