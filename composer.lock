@@ -511,12 +511,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/joomla-projects/joomla-browser.git",
-                "reference": "33598e0e24c23544d48031a49de1a1e054bbda43"
+                "reference": "7fbef2ec12f134d33a89d9068239e485a26ce889"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/33598e0e24c23544d48031a49de1a1e054bbda43",
-                "reference": "33598e0e24c23544d48031a49de1a1e054bbda43",
+                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/7fbef2ec12f134d33a89d9068239e485a26ce889",
+                "reference": "7fbef2ec12f134d33a89d9068239e485a26ce889",
                 "shasum": ""
             },
             "require": {
