@@ -135,7 +135,14 @@ abstract class RApiBase implements RApiInterface
 	 */
 	public function createCustomHttpError($errorCode, $errors)
 	{
-		return self::$statusTexts[$errorCode] . ': ' . implode(chr('. '), $errors);
+		if (!empty($errors))
+		{
+			return self::$statusTexts[$errorCode] . ': ' . implode(chr('. '), $errors);
+		}
+		else
+		{
+			return self::$statusTexts[$errorCode];
+		}
 	}
 
 	/**
