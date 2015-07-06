@@ -130,6 +130,12 @@ class RApiHalHal extends RApi
 	public $authorizationCheck = 'oauth2';
 
 	/**
+	 * @var    object  Array for storing operation errors
+	 * @since  1.6
+	 */
+	public $apiErrors = array();
+
+	/**
 	 * Method to instantiate the file-based api call.
 	 *
 	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
@@ -638,14 +644,15 @@ class RApiHalHal extends RApi
 
 		$model = $this->triggerFunction('loadModel', $this->elementName, $this->operationConfiguration);
 		$functionName = RApiHalHelper::attributeToString($this->operationConfiguration, 'functionName', 'save');
-		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 
+		$data = $this->triggerFunction('processPostData', $this->options->get('data', array()), $this->operationConfiguration);
 		$data = $this->triggerFunction('validatePostData', $model, $data, $this->operationConfiguration);
 
 		if ($data === false)
 		{
 			// Not Acceptable
-			$this->setStatusCode(406);
+			$customError = $this->triggerFunction('createCustomHttpError', 406, $this->apiErrors);
+			$this->setStatusCode(406, $customError);
 			$this->triggerFunction('displayErrors', $model);
 			$this->setData('result', $data);
 
@@ -663,12 +670,23 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
-			$this->setStatusCode(400);
+			$customError = $this->triggerFunction('createCustomHttpError', 400, $this->apiErrors);
+			$this->setStatusCode(400, $customError);
 		}
 
 		if (method_exists($model, 'getState'))
 		{
 			$this->setData('id', $model->getState($model->getName() . '.id'));
+		}
+
+		if (method_exists($model, 'getErrors'))
+		{
+			$modelErrors = $model->getErrors();
+
+			if (!empty($modelErrors))
+			{
+				$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
+			}
 		}
 
 		$this->setData('result', $result);
@@ -678,7 +696,8 @@ class RApiHalHal extends RApi
 		{
 			if ($result === false)
 			{
-				$this->setStatusCode(404);
+				$customError = $this->triggerFunction('createCustomHttpError', 404, $this->apiErrors);
+				$this->setStatusCode(404, $customError);
 			}
 			else
 			{
@@ -710,7 +729,8 @@ class RApiHalHal extends RApi
 		if ($data === false)
 		{
 			// Not Acceptable
-			$this->setStatusCode(406);
+			$customError = $this->triggerFunction('createCustomHttpError', 406, $this->apiErrors);
+			$this->setStatusCode(406, $customError);
 			$this->triggerFunction('displayErrors', $model);
 			$this->setData('result', $data);
 
@@ -744,7 +764,18 @@ class RApiHalHal extends RApi
 			}
 			else
 			{
-				$this->setStatusCode(400);
+				$customError = $this->triggerFunction('createCustomHttpError', 400, $this->apiErrors);
+				$this->setStatusCode(400, $customError);
+			}
+		}
+
+		if (method_exists($model, 'getErrors'))
+		{
+			$modelErrors = $model->getErrors();
+
+			if (!empty($modelErrors))
+			{
+				$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
 			}
 		}
 
@@ -757,7 +788,8 @@ class RApiHalHal extends RApi
 			if ($result === false)
 			{
 				// If delete failed then we set it to Internal Server Error status code
-				$this->setStatusCode(500);
+				$customError = $this->triggerFunction('createCustomHttpError', 500, $this->apiErrors);
+				$this->setStatusCode(500, $customError);
 			}
 		}
 	}
@@ -782,7 +814,8 @@ class RApiHalHal extends RApi
 		if ($data === false)
 		{
 			// Not Acceptable
-			$this->setStatusCode(406);
+			$customError = $this->triggerFunction('createCustomHttpError', 406, $this->apiErrors);
+			$this->setStatusCode(406, $customError);
 			$this->triggerFunction('displayErrors', $model);
 			$this->setData('result', $data);
 
@@ -800,12 +833,23 @@ class RApiHalHal extends RApi
 		}
 		else
 		{
-			$this->setStatusCode(400);
+			$customError = $this->triggerFunction('createCustomHttpError', 400, $this->apiErrors);
+			$this->setStatusCode(400, $customError);
 		}
 
 		if (method_exists($model, 'getState'))
 		{
 			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
+		}
+
+		if (method_exists($model, 'getErrors'))
+		{
+			$modelErrors = $model->getErrors();
+
+			if (!empty($modelErrors))
+			{
+				$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
+			}
 		}
 
 		$this->setData('result', $result);
@@ -816,7 +860,8 @@ class RApiHalHal extends RApi
 			if ($result === false)
 			{
 				// If update failed then we set it to Internal Server Error status code
-				$this->setStatusCode(500);
+				$customError = $this->triggerFunction('createCustomHttpError', 500, $this->apiErrors);
+				$this->setStatusCode(500, $customError);
 			}
 		}
 	}
@@ -853,7 +898,8 @@ class RApiHalHal extends RApi
 			if ($data === false)
 			{
 				// Not Acceptable
-				$this->setStatusCode(406);
+				$customError = $this->triggerFunction('createCustomHttpError', 406, $this->apiErrors);
+				$this->setStatusCode(406, $customError);
 				$this->triggerFunction('displayErrors', $model);
 				$this->setData('result', $data);
 
@@ -871,7 +917,19 @@ class RApiHalHal extends RApi
 			}
 			else
 			{
-				$this->setStatusCode(400);
+				$customError = $this->triggerFunction('createCustomHttpError', 400, $this->apiErrors);
+				$this->setStatusCode(400, $customError);
+				$this->triggerFunction('displayErrors', $model);
+			}
+
+			if (method_exists($model, 'getErrors'))
+			{
+				$modelErrors = $model->getErrors();
+
+				if (!empty($modelErrors))
+				{
+					$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
+				}
 			}
 
 			if (method_exists($model, 'getState'))
@@ -1104,7 +1162,8 @@ class RApiHalHal extends RApi
 		else
 		{
 			// 404 => 'Not found'
-			$this->setStatusCode(404);
+			$customError = $this->triggerFunction('createCustomHttpError', 404, $this->apiErrors);
+			$this->setStatusCode(404, $customError);
 
 			throw new Exception(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_NO_CONTENT'), 404);
 		}
@@ -1383,6 +1442,8 @@ class RApiHalHal extends RApi
 	 */
 	public function checkRequiredFields($data, $configuration)
 	{
+		$errors = array();
+
 		if (!empty($configuration->fields))
 		{
 			foreach ($configuration->fields->field as $field)
@@ -1392,13 +1453,20 @@ class RApiHalHal extends RApi
 					if (is_null($data[(string) $field['name']]) || $data[(string) $field['name']] == '')
 					{
 						JFactory::getApplication()->enqueueMessage(
-							JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']), 'error'
-						);
+						JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']), 'error'
+					);
 
-						return false;
+						$errors[] = JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']);
 					}
 				}
 			}
+		}
+
+		if (!empty($errors))
+		{
+			$this->apiErrors = array_merge($this->apiErrors, $errors);
+
+			return false;
 		}
 
 		return true;
@@ -1424,7 +1492,8 @@ class RApiHalHal extends RApi
 
 		if (!isset($allowedOperations->{$this->operation}))
 		{
-			$this->setStatusCode(405);
+			$customError = $this->triggerFunction('createCustomHttpError', 405, $this->apiErrors);
+			$this->setStatusCode(405, $customError);
 
 			return false;
 		}
@@ -1441,7 +1510,8 @@ class RApiHalHal extends RApi
 
 			if (!isset($allowedOperations->task->{$task}))
 			{
-				$this->setStatusCode(405);
+				$customError = $this->triggerFunction('createCustomHttpError', 405, $this->apiErrors);
+				$this->setStatusCode(405, $customError);
 
 				return false;
 			}
@@ -1522,7 +1592,8 @@ class RApiHalHal extends RApi
 
 				if (!$authorized)
 				{
-					$this->setStatusCode(405);
+					$customError = $this->triggerFunction('createCustomHttpError', 405, $this->apiErrors);
+					$this->setStatusCode(405, $customError);
 
 					return false;
 				}
@@ -1606,7 +1677,8 @@ class RApiHalHal extends RApi
 
 		if (!$authorized && $terminateIfNotAuthorized)
 		{
-			$this->setStatusCode(401);
+			$customError = $this->triggerFunction('createCustomHttpError', 401, $this->apiErrors);
+			$this->setStatusCode(401, $customError);
 		}
 
 		return $authorized || !$terminateIfNotAuthorized;

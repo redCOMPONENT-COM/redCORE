@@ -124,6 +124,28 @@ abstract class RApiBase implements RApiInterface
 	}
 
 	/**
+	 * Transform a source field data value.
+	 *
+	 * Creates a custom response text error the given errors
+	 *
+	 * @param   string  $errorCode  HTTP error code
+	 * @param   array   $errors     Array with errors to be set in the message
+	 *
+	 * @return string
+	 */
+	public function createCustomHttpError($errorCode, $errors)
+	{
+		if (!empty($errors))
+		{
+			return self::$statusTexts[$errorCode] . ': ' . implode(chr('. '), $errors);
+		}
+		else
+		{
+			return self::$statusTexts[$errorCode];
+		}
+	}
+
+	/**
 	 * Set status code for current api call
 	 *
 	 * @param   int     $statusCode  Status code
