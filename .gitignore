@@ -40,7 +40,6 @@ phing-latest.phar
 tests/unit/phpunit.xml
 
 # composer
-composer.lock
 composer.phar
 vendor/*
 
