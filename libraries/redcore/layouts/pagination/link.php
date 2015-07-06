@@ -68,12 +68,20 @@ if($displayData['active'])
 		$title = ' title="' . $item->text . '" ';
 	}
 
-	$onClick = "document."
-		. $item->formName
-		. "."
-		. $item->prefix
-		. $limit
-		. "; Joomla.submitform(document.forms['" . $item->formName . "'].task.value, document.forms['" . $item->formName . "']);return false;";
+	$onClick = '';
+	$href    = trim($item->link);
+
+	// Still using javascript approach in backend
+	if (JFactory::getApplication()->isAdmin())
+	{
+		$onClick = 'onclick="document.'
+				. $item->formName
+				. '.'
+				. $item->prefix
+				. $limit
+				. '; Joomla.submitform(document.forms[\'' . $item->formName . '\'].task.value, document.forms[\'' . $item->formName . '\']);return false;"';
+		$href    = '#';
+	}
 }
 else
 {
@@ -82,7 +90,12 @@ else
 ?>
 <?php if ($displayData['active']) : ?>
 	<li>
-		<a class="<?php echo implode(' ', $cssClasses); ?>" <?php echo $title; ?> href="#" onclick="<?php echo $onClick; ?>">
+		<a
+			<?php echo !empty($cssClasses) ? 'class="' . implode(' ', $cssClasses) . '"' : ''; ?>
+			<?php echo $title; ?>
+			<?php echo $onClick; ?>
+			href="<?php echo $href; ?>"
+		>
 			<?php echo $display; ?>
 		</a>
 	</li>
