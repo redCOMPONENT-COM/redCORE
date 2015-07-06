@@ -679,9 +679,14 @@ class RApiHalHal extends RApi
 			$this->setData('id', $model->getState($model->getName() . '.id'));
 		}
 
-		if (method_exists($model, 'getErrors') && !empty($model->getErrors()))
+		if (method_exists($model, 'getErrors'))
 		{
-			$this->apiErrors = array_merge($this->apiErrors, $model->getErrors());
+			$modelErrors = $model->getErrors();
+
+			if (!empty($modelErrors))
+			{
+				$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
+			}
 		}
 
 		$this->setData('result', $result);
@@ -764,9 +769,14 @@ class RApiHalHal extends RApi
 			}
 		}
 
-		if (method_exists($model, 'getErrors') && !empty($model->getErrors()))
+		if (method_exists($model, 'getErrors'))
 		{
-			$this->apiErrors = array_merge($this->apiErrors, $model->getErrors());
+			$modelErrors = $model->getErrors();
+
+			if (!empty($modelErrors))
+			{
+				$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
+			}
 		}
 
 		$this->setData('result', $result);
@@ -832,9 +842,14 @@ class RApiHalHal extends RApi
 			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
 		}
 
-		if (method_exists($model, 'getErrors') && !empty($model->getErrors()))
+		if (method_exists($model, 'getErrors'))
 		{
-			$this->apiErrors = array_merge($this->apiErrors, $model->getErrors());
+			$modelErrors = $model->getErrors();
+
+			if (!empty($modelErrors))
+			{
+				$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
+			}
 		}
 
 		$this->setData('result', $result);
@@ -907,9 +922,14 @@ class RApiHalHal extends RApi
 				$this->triggerFunction('displayErrors', $model);
 			}
 
-			if (method_exists($model, 'getErrors') && !empty($model->getErrors()))
+			if (method_exists($model, 'getErrors'))
 			{
-				$this->apiErrors = array_merge($this->apiErrors, $model->getErrors());
+				$modelErrors = $model->getErrors();
+
+				if (!empty($modelErrors))
+				{
+					$this->apiErrors = array_merge($this->apiErrors, $modelErrors);
+				}
 			}
 
 			if (method_exists($model, 'getState'))
