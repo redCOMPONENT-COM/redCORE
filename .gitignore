@@ -61,6 +61,7 @@ selenium-server-standalone.jar
 codecept.phar
 selenium.log
 selenium-errors.log
+tests/_support/_generated/*
 
 # Never ignore
 !.gitignore
