@@ -188,7 +188,7 @@ class RApiOauth2Oauth2 extends RApi
 		$user = null;
 
 		// Implicit grant type and Authorization code grant type require user to be logged in before authorising
-		if ($request->request('grant_type') == 'implicit' || $request->request('grant_type') == 'authorization_code')
+		if ($request->request('grant_type') == 'implicit')
 		{
 			$user = $this->getLoggedUser();
 		}
