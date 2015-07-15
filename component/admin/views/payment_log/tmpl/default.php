@@ -123,7 +123,7 @@ JHtml::_('rjquery.chosen', 'select');
 	<!-- hidden fields -->
 	<input type="hidden" name="option" value="com_redcore">
 	<input type="hidden" name="id" value="<?php echo $this->item->id; ?>">
-	<input type="hidden" name="return" value="<?php echo JFactory::getApplication()->input->get('return'); ?>">
+	<input type="hidden" name="return" value="<?php echo JFactory::getApplication()->input->get('return', '', 'Base64'); ?>">
 	<input type="hidden" name="task" value="">
 	<?php echo JHTML::_('form.token'); ?>
 </form>
