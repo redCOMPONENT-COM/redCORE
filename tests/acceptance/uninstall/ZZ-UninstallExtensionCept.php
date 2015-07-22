@@ -13,7 +13,7 @@ $I = new AcceptanceTester($scenario);
 $I->wantTo('Uninstall redCORE Extension');
 $I->doAdministratorLogin();
 $I->amOnPage('/administrator/index.php?option=com_installer&view=manage');
-$I->waitForText('Extension Manager: Manage', 30, ['css' => 'H1']);
+$I->waitForText('Extensions: Manage', 30, ['css' => 'H1']);
 $I->fillField('#filter_search', 'redCORE - component');
 $I->click(['xpath' => "//button[@type='submit' and @data-original-title='Search']"]);
 $I->waitForElement(['id' => 'manageList']);
