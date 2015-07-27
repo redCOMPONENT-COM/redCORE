@@ -24,19 +24,43 @@
     <config>
         <fields name="params">
             <fieldset name="REDCORE_FRONTEND">
-                <field name="frontend_css" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_CSS" description="PLG_SYSTEM_REDCORE_FRONTEND_CSS_DESC">
+                <field
+                        name="frontend_css"
+                        class="btn-group"
+                        type="radio"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_FRONTEND_CSS"
+                        description="PLG_SYSTEM_REDCORE_FRONTEND_CSS_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name="frontend_jquery" type="list" default="1" label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY" description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_DESC">
+                <field
+                        name="frontend_jquery"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY"
+                        description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name="frontend_jquery_migrate" type="list" default="1" label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_MIGRATE" description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_MIGRATE_DESC">
+                <field
+                        name="frontend_jquery_migrate"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_MIGRATE"
+                        description="PLG_SYSTEM_REDCORE_FRONTEND_JQUERY_MIGRATE_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <field name="frontend_mootools_disable" type="list" default="0" label="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE" description="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE_DESC">
+                <field
+                        name="frontend_mootools_disable"
+                        class="btn-group"
+                        type="radio"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE"
+                        description="PLG_SYSTEM_REDCORE_FRONTEND_MOOTOOLS_DISABLE_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
@@ -44,7 +68,8 @@
             <fieldset name="PLG_SYSTEM_REDCORE_TRANSLATIONS_OPTIONS">
                 <field
                         name="enable_translations"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON"
                         description="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON_DESC">
@@ -74,7 +99,8 @@
             <fieldset name="PLG_SYSTEM_REDCORE_WEBSERVICES_OPTIONS">
                 <field
                         name="enable_webservices"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_WEBSERVICES"
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_WEBSERVICES_DESC">
@@ -83,7 +109,8 @@
                 </field>
                 <field
                         name="webservices_default_format"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="json"
                         label="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_FORMAT"
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_FORMAT_DESC">
@@ -92,7 +119,8 @@
                 </field>
                 <field
                         name="webservices_default_page_authorization"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_PAGE_AUTHORIZATION"
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_DEFAULT_PAGE_AUTHORIZATION_DESC">
@@ -102,6 +130,7 @@
                 <field
                         name="webservices_authorization_check"
                         type="list"
+                        class="input-xlarge"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_WEBSERVICES_AUTHORIZATION_CHECK"
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_AUTHORIZATION_CHECK_DESC">
@@ -110,7 +139,8 @@
                 </field>
                 <field
                         name="debug_webservices"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_DEBUG"
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_DEBUG_DESC">
@@ -119,7 +149,8 @@
                 </field>
                 <field
                         name="enable_soap"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_SOAP_ENABLE_SOAP"
                         description="PLG_SYSTEM_REDCORE_SOAP_ENABLE_SOAP_DESC">
@@ -130,7 +161,8 @@
             <fieldset name="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_OPTIONS">
                 <field
                         name="enable_oauth2_server"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENABLE"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENABLE_DESC">
@@ -139,7 +171,8 @@
                 </field>
                 <field
                         name="oauth2_use_jwt_access_tokens"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_JWT_ACCESS_TOKEN"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_JWT_ACCESS_TOKEN">
@@ -148,7 +181,8 @@
                 </field>
                 <field
                         name="oauth2_store_encrypted_token_string"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="1"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_STORE_ENCRYPTED_TOKEN_STRING"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_STORE_ENCRYPTED_TOKEN_STRING_DESC">
@@ -157,7 +191,8 @@
                 </field>
                 <field
                         name="oauth2_use_openid_connect"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_OPENID_CONNECT"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_USE_OPENID_CONNECT_DESC">
@@ -166,14 +201,16 @@
                 </field>
                 <field
                         name="oauth2_id_lifetime"
-                        type="text"
+                        type="number"
+                        validate="integer"
                         default="3600"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ID_LIFETIME_DESC"
                         />
                 <field
                         name="oauth2_access_lifetime"
-                        type="text"
+                        type="number"
+                        validate="integer"
                         default="3600"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ACCESS_LIFETIME"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ACCESS_LIFETIME_DESC"
@@ -194,7 +231,8 @@
                         />
                 <field
                         name="oauth2_enforce_state"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="1"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENFORCE_STATE"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ENFORCE_STATE_DESC">
@@ -203,7 +241,8 @@
                 </field>
                 <field
                         name="oauth2_require_exact_redirect_uri"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="1"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_REQUIRE_EXACT_REDIRECT_URI"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_REQUIRE_EXACT_REDIRECT_URI_DESC">
@@ -212,7 +251,8 @@
                 </field>
                 <field
                         name="oauth2_allow_implicit"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_IMPLICIT"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_IMPLICIT_DESC">
@@ -221,7 +261,8 @@
                 </field>
                 <field
                         name="oauth2_allow_credentials_in_request_body"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="1"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_CREDENTIALS_IN_REQUEST_BODY"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_CREDENTIALS_IN_REQUEST_BODY_DESC">
@@ -230,7 +271,8 @@
                 </field>
                 <field
                         name="oauth2_allow_public_clients"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="1"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_PUBLIC_CLIENTS"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALLOW_PUBLIC_CLIENTS_DESC">
@@ -239,7 +281,8 @@
                 </field>
                 <field
                         name="oauth2_always_issue_new_refresh_token"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN_DESC">
@@ -250,7 +293,8 @@
             <fieldset name="PLG_SYSTEM_REDCORE_PAYMENT_API_OPTIONS">
                 <field
                         name="enable_payment"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_DESC">
@@ -259,7 +303,8 @@
                 </field>
                 <field
                         name="payment_list_payments_type"
-                        type="list"
+                        type="radio"
+                        class="btn-group"
                         default="radio"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_LIST_PAYMENT_TYPE"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_LIST_PAYMENT_TYPE_DESC">
@@ -268,7 +313,8 @@
                 </field>
                 <field
                         name="payment_request_method"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="curl"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_REQUEST_METHOD"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_REQUEST_METHOD_DESC">
@@ -277,21 +323,24 @@
                 </field>
                 <field
                         name="payment_time_between_payment_check_requests"
-                        type="text"
+                        type="number"
+                        validate="integer"
                         default="24"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_TIME_BETWEEN_ORDER_CHECKS"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_TIME_BETWEEN_ORDER_CHECKS_DESC">
                 </field>
                 <field
                         name="payment_number_of_payment_check_retries"
-                        type="text"
+                        type="number"
+                        validate="integer"
                         default="30"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_NUMBER_OF_RETRIES"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_NUMBER_OF_RETRIES_DESC">
                 </field>
                 <field
                         name="payment_enable_file_logger"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_FILE_LOGGER"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_FILE_LOGGER_DESC">
@@ -321,7 +370,8 @@
                 </field>
                 <field
                         name="payment_enable_chart_sandbox_payments"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="1"
                         label="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_CHART_SANDBOX_PAYMENTS"
                         description="PLG_SYSTEM_REDCORE_PAYMENT_ENABLE_CHART_SANDBOX_PAYMENTS_DESC">
