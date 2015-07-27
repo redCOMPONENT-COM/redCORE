@@ -14,7 +14,7 @@ $I->amOnPage('administrator/index.php?option=com_plugins');
 $I->fillField(['id' => 'filter_search'], 'redcore - system plugin');
 $I->click(['xpath' => "//div[@id='filter-bar']/div[2]/button"]); // search button
 $I->click(['link' => 'redCORE - System plugin']);
-$I->waitForText('Plugin Manager: redCORE - System plugin', 30, ['css' => 'h1']);
+$I->waitForText('Plugins: redCORE - System plugin', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);
 $I->selectOptionInChosen('Enable translations', 'Yes');
 $I->click(['link' => 'Webservice options']);

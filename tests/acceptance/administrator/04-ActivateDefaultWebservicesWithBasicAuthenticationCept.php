@@ -11,11 +11,11 @@ $I->wantToTest('Activate the default webservices available in redCORE');
 $I->doAdministratorLogin();
 $I->comment('I enable basic authentication');
 $I->amOnPage('administrator/index.php?option=com_plugins');
-$I->waitForText('Plugin Manager: Plugins', 30, ['css' => 'H1']);
+$I->waitForText('Plugins', 30, ['css' => 'H1']);
 $I->fillField(['id' => 'filter_search'], 'redcore - system plugin');
 $I->click(['xpath' => "//div[@id='filter-bar']/div[2]/button"]); // search button
 $I->click(['link' => 'redCORE - System plugin']);
-$I->waitForText('Plugin Manager: redCORE - System plugin', 30, ['css' => 'h1']);
+$I->waitForText('Plugins: redCORE - System plugin', 30, ['css' => 'h1']);
 $I->click(['link' => 'Webservice options']);
 $I->selectOptionInChosen('Enable webservices', 'Yes');
 $I->selectOptionInChosen('Check user permission against','Joomla - Use already defined authorization checks in Joomla');
