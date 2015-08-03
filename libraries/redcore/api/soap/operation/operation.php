@@ -147,11 +147,14 @@ class RApiSoapOperationOperation
 
 		$match = true;
 
-		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+		if (RApiHalHelper::isAttributeTrue($this->webservice->configuration->operations->read->item, 'enforcePKs', true))
 		{
-			if ($dataGet->$primaryKey != $final->item->$primaryKey)
+			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 			{
-				$match = false;
+				if ($dataGet->$primaryKey != $final->item->$primaryKey)
+				{
+					$match = false;
+				}
 			}
 		}
 
