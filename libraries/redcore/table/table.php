@@ -154,7 +154,7 @@ class RTable extends JTable
 	/**
 	 * Constructor
 	 *
-	 * @param   JDatabase  &$db  A database connector object
+	 * @param   JDatabaseDriver  &$db  A database connector object
 	 *
 	 * @throws  UnexpectedValueException
 	 */
@@ -167,18 +167,26 @@ class RTable extends JTable
 			$this->_tbl = '#__' . $this->_tableName;
 		}
 
+		$key = $this->_tbl_key;
+
+		if (empty($key) && !empty($this->_tbl_keys))
+		{
+			$key = $this->_tbl_keys;
+		}
+
 		// Keep checking _tbl_key for standard defined tables
-		if (empty($this->_tbl_key) && !empty($this->_tableKey))
+		if (empty($key) && !empty($this->_tableKey))
 		{
 			$this->_tbl_key = $this->_tableKey;
+			$key = $this->_tbl_key;
 		}
 
-		if (empty($this->_tbl) || empty($this->_tbl_key))
+		if (empty($this->_tbl) || empty($key))
 		{
-			throw new UnexpectedValueException(sprintf('Missing data to initialize %s table | id: %s', $this->_tbl, $this->_tbl_key));
+			throw new UnexpectedValueException(sprintf('Missing data to initialize %s table | id: %s', $this->_tbl, $key));
 		}
 
-		parent::__construct($this->_tbl, $this->_tbl_key, $db);
+		parent::__construct($this->_tbl, $key, $db);
 	}
 
 	/**
