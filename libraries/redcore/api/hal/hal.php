@@ -1333,7 +1333,8 @@ class RApiHalHal extends RApi
 			{
 				$fieldAttributes = RApiHalHelper::getXMLElementAttributes($field);
 				$fieldAttributes['transform'] = !is_null($fieldAttributes['transform']) ? $fieldAttributes['transform'] : 'string';
-				$fieldAttributes['defaultValue'] = !is_null($fieldAttributes['defaultValue']) ? $fieldAttributes['defaultValue'] : '';
+				$fieldAttributes['defaultValue'] = !is_null($fieldAttributes['defaultValue'])
+					&& !RApiHalHelper::isAttributeTrue($fieldAttributes, 'isPrimaryField') ? $fieldAttributes['defaultValue'] : '';
 
 				if (!isset($data[$fieldAttributes['name']]) || is_null($data[$fieldAttributes['name']]))
 				{
