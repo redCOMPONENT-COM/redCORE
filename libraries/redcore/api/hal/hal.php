@@ -654,8 +654,7 @@ class RApiHalHal extends RApi
 		if ($data === false)
 		{
 			// Not Acceptable
-			$customError = $this->triggerFunction('createCustomHttpError', 406, $this->apiErrors);
-			$this->setStatusCode(406, $customError);
+			$this->setStatusCode(406);
 			$this->triggerFunction('displayErrors', $model);
 			$this->setData('result', $data);
 
