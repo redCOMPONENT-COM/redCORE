@@ -410,12 +410,25 @@ class RApiHalHal extends RApi
 			// If we are not in debug mode we will take out everything except errors
 			if (RBootstrap::getConfig('debug_webservices', 0) == 0)
 			{
+				$warnings = array();
+
 				foreach ($messages as $key => $message)
 				{
+					if ($message['type'] == 'warning')
+					{
+						$warnings[] = $message;
+					}
+
 					if ($message['type'] != 'error')
 					{
 						unset($messages[$key]);
 					}
+				}
+
+				// Showing 'warning' messages only if no 'error' are present
+				if (!count($messages))
+				{
+					$messages = $warnings;
 				}
 			}
 
