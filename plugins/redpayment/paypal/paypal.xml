@@ -7,7 +7,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
 	<description>PLG_REDPAYMENT_PAYPAL_XML_DESCRIPTION</description>
 
 	<files>

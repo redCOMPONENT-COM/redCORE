@@ -126,6 +126,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processSelectExpression($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processConstant($v);
+			$sql .= $this->processSelectBracketExpression($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('SELECT', $k, $v, 'expr_type');
