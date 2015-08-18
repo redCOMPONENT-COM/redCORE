@@ -40,7 +40,6 @@ class ModRedCORELanguageSwitcherHelper
 			$location .= '&';
 		}
 
-
 		if (!$Itemid)
 		{
 			$active = $app->getMenu()->getActive();
