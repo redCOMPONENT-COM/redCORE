@@ -192,6 +192,7 @@ class RTranslationHelper
 		if (!isset(self::$installedTranslationTables))
 		{
 			$db = JFactory::getDbo();
+			$oldTranslate = $db->translate;
 
 			// We do not want to translate this value
 			$db->translate = false;
@@ -199,7 +200,7 @@ class RTranslationHelper
 			$component = JComponentHelper::getComponent('com_redcore');
 
 			// We put translation check back on
-			$db->translate = true;
+			$db->translate = $oldTranslate;
 			self::$installedTranslationTables = (array) $component->params->get('translations', array());
 		}
 
@@ -218,6 +219,7 @@ class RTranslationHelper
 		if (!isset(self::$siteLanguage))
 		{
 			$db = JFactory::getDbo();
+			$oldTranslate = $db->translate;
 
 			// We do not want to translate this value
 			$db->translate = false;
@@ -225,7 +227,7 @@ class RTranslationHelper
 			self::$siteLanguage = JComponentHelper::getParams('com_languages')->get($client);
 
 			// We put translation check back on
-			$db->translate = true;
+			$db->translate = $oldTranslate;
 		}
 
 		return self::$siteLanguage;
