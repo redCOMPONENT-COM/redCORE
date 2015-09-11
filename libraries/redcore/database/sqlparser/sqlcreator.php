@@ -518,12 +518,22 @@ class RDatabaseSqlparserSqlcreator {
 		return $sql;
 	}
 
-	protected function processSelectBracketExpression($parsed) {
-		if ($parsed['expr_type'] !== 'bracket_expression') {
+	protected function processSelectBracketExpression($parsed)
+	{
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'bracket_expression')
+		{
 			return "";
 		}
+		elseif (empty($parsed['sub_tree']))
+		{
+			return "";
+		}
+
 		$sql = $this->processSubTree($parsed, " ");
+		$sql .= $this->processColRef($parsed);
 		$sql = "(" . $sql . ")";
+		$sql .= !empty($parsed['alias']) ? $this->processAlias($parsed['alias']) : '';
+
 		return $sql;
 	}
 
@@ -544,10 +554,12 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processOperator($v);
 			$sql .= $this->processConstant($v);
-			$sql .= $this->processColRef($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
 			$sql .= $this->processSubQuery($v);
+
+			// Always last since it will give alias if needed
+			$sql .= $this->processColRef($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('expression subtree', $k, $v, 'expr_type');
@@ -555,7 +567,10 @@ class RDatabaseSqlparserSqlcreator {
 
 			$sql .= ($this->isReserved($v) || $this->isOperator($v) ? " " : $delim);
 		}
-		return substr($sql, 0, -1);
+
+		$sql = substr($sql, 0, -1);
+
+		return $sql;
 	}
 
 	protected function processRefClause($parsed) {
@@ -672,23 +687,29 @@ class RDatabaseSqlparserSqlcreator {
 		return $sql;
 	}
 
-	protected function processSubQuery($parsed, $index = 0) {
-		if ($parsed['expr_type'] !== 'subquery') {
+	protected function processSubQuery($parsed, $index = 0)
+	{
+		if ($parsed['expr_type'] !== 'subquery')
+		{
 			return "";
 		}
 
-		$sql = $this->processSelectStatement($parsed['sub_tree']);
+		// We handle subqueries in a loop in sqltranslation file
+		$sql = $parsed['base_expr'];
 		$sql = "(" . $sql . ")";
 
-		if (isset($parsed['alias'])) {
+		if (isset($parsed['alias']))
+		{
 			$sql .= $this->processAlias($parsed['alias']);
 		}
 
-		if ($index !== 0) {
+		if ($index !== 0)
+		{
 			$sql = $this->processJoin($parsed['join_type']) . " " . $sql;
 			$sql .= $this->processRefType($parsed['ref_type']);
 			$sql .= $this->processRefClause($parsed['ref_clause']);
 		}
+
 		return $sql;
 	}
 
