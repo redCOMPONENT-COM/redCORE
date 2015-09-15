@@ -1466,7 +1466,7 @@ class RApiHalHal extends RApi
 			{
 				if (RApiHalHelper::isAttributeTrue($field, 'isRequiredField'))
 				{
-					if (is_null($data[(string) $field['name']]) || $data[(string) $field['name']] == '')
+					if (is_null($data[(string) $field['name']]) || $data[(string) $field['name']] === '')
 					{
 						JFactory::getApplication()->enqueueMessage(
 						JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_ERROR_REQUIRED_FIELD', (string) $field['name']), 'error'
