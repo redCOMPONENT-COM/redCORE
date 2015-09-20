@@ -26,18 +26,15 @@ class RApiSoapHelper
 	 *
 	 * @return  string
 	 */
-	public static function createSoapFaultResponse($message, $faultCode = 'SOAP-ENV:Server')
+	public static function createSoapFaultResponse($message, $faultCode = 'env:Sender')
 	{
-		return '<?xml version="1.0" encoding="UTF-8"?>
-			<SOAP-ENV:Envelope
-			    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
-			    <SOAP-ENV:Body>
-			        <SOAP-ENV:Fault>
-			            <faultcode>' . $faultCode . '</faultcode>
-			            <faultstring>' . $message . '</faultstring>
-			        </SOAP-ENV:Fault>
-			    </SOAP-ENV:Body>
-			</SOAP-ENV:Envelope>';
+		$errorCodeMaxCharacters = 7650;
+		$message = trim((strlen($message . $faultCode) > $errorCodeMaxCharacters) ? substr($message, 0, $errorCodeMaxCharacters - 3) . '...' : $message);
+		$message = "<![CDATA[ " . $message . " ]]>";
+
+		return '<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><env:Fault><env:Code>'
+		. '<env:Value>' . $faultCode . '</env:Value></env:Code><env:Reason><env:Text xml:lang="en">' . $message . '</env:Text></env:Reason><env:Detail/>'
+		. '</env:Fault></env:Body></env:Envelope>';
 	}
 
 	/**
