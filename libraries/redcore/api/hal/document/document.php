@@ -86,6 +86,26 @@ class RApiHalDocumentDocument extends JDocument
 	 */
 	public function render($cache = false, $params = array())
 	{
+		// Get the HAL object from the buffer.
+		/* @var $hal RApiHalDocumentResource */
+		$hal = $this->getBuffer();
+
+		// If required, change relative links to absolute.
+		if (is_object($hal))
+		{
+			// Adjust hrefs in the _links object.
+			$this->relToAbs($hal, $this->absoluteHrefs);
+		}
+
+		if ($this->documentFormat == 'xml')
+		{
+			$content = $hal->getXML()->asXML();
+		}
+		else
+		{
+			$content = (string) $hal;
+		}
+
 		$runtime = microtime(true) - $this->hal->startTime;
 		$app = JFactory::getApplication();
 
@@ -100,28 +120,11 @@ class RApiHalDocumentDocument extends JDocument
 		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
 		$app->setHeader('Webservice-name', $this->hal->webserviceName, true);
 		$app->setHeader('Webservice-version', $this->hal->webserviceVersion, true);
+		$app->setHeader('Content-length', strlen($content), true);
 
 		$app->sendHeaders();
 
-		// Get the HAL object from the buffer.
-		/* @var $hal RApiHalDocumentResource */
-		$hal = $this->getBuffer();
-
-		// If required, change relative links to absolute.
-		if (is_object($hal))
-		{
-			// Adjust hrefs in the _links object.
-			$this->relToAbs($hal, $this->absoluteHrefs);
-		}
-
-		if ($this->documentFormat == 'xml')
-		{
-			echo $hal->getXML()->asXML();
-		}
-		else
-		{
-			echo (string) $hal;
-		}
+		echo $content;
 	}
 
 	/**

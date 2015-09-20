@@ -92,24 +92,25 @@ class RApiSoapDocumentDocument extends JDocument
 	 */
 	public function render($cache = false, $params = array())
 	{
-		$runtime = microtime(true) - $this->soap->startTime;
-
-		JFactory::getApplication()->setHeader('Status', $this->soap->statusCode . ' ' . $this->soap->statusText, true);
-		JFactory::getApplication()->setHeader('Server', '', true);
-		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
-		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);
-		JFactory::getApplication()->setHeader('Pragma', 'public', true);
-		JFactory::getApplication()->setHeader('Expires', '0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'private', false);
-		JFactory::getApplication()->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-
-		JFactory::getApplication()->sendHeaders();
-
 		// Get the Soap string from the buffer.
-		$content = $this->getBuffer();
+		$content = (string) $this->getBuffer();
+		$runtime = microtime(true) - $this->soap->startTime;
+		$app = JFactory::getApplication();
 
-		echo (string) $content;
+		$app->setHeader('Status', $this->soap->statusCode . ' ' . $this->soap->statusText, true);
+		$app->setHeader('Server', '', true);
+		$app->setHeader('X-Runtime', $runtime, true);
+		$app->setHeader('Access-Control-Allow-Origin', '*', true);
+		$app->setHeader('Pragma', 'public', true);
+		$app->setHeader('Expires', '0', true);
+		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		$app->setHeader('Cache-Control', 'private', false);
+		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+		$app->setHeader('Content-length', strlen($content), true);
+
+		$app->sendHeaders();
+
+		echo $content;
 	}
 
 	/**

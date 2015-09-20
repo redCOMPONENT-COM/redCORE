@@ -274,7 +274,8 @@ class RApiSoapSoap extends RApi
 			// Add error faults if they exist
 			if ($this->webservice->statusCode >= 300)
 			{
-				$this->setStatusCode(500);
+				// We must have status of 200 for SOAP communication even if it is fault
+				$this->setStatusCode(200);
 				$body = RApiSoapHelper::createSoapFaultResponse($this->webservice->statusCode . ' ' . $this->webservice->statusText);
 			}
 			else
