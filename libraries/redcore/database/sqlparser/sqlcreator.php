@@ -163,6 +163,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processOrderByAlias($v);
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processConstant($v);
+			$sql .= $this->processFunction($v);
 			$sql .= $this->processOrderByExpression($v);
 
 			if ($len == strlen($sql)) {
