@@ -49,6 +49,11 @@ robo.phar
 # LESS Transpiler
 npm-debug.log
 
+# Build config
+gulp-config.json
+node_modules
+releases
+
 # Test related files
 tests/acceptance.suite.yml
 tests/functional.suite.yml
