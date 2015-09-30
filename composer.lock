@@ -511,12 +511,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/joomla-projects/joomla-browser.git",
-                "reference": "650962ebb7fb2ff25b09b71a71147e28bb8939f9"
+                "reference": "6070485e9d7680f83f9e3ed09700cebf04b2bfe9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/650962ebb7fb2ff25b09b71a71147e28bb8939f9",
-                "reference": "650962ebb7fb2ff25b09b71a71147e28bb8939f9",
+                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/6070485e9d7680f83f9e3ed09700cebf04b2bfe9",
+                "reference": "6070485e9d7680f83f9e3ed09700cebf04b2bfe9",
                 "shasum": ""
             },
             "require": {
@@ -554,7 +554,7 @@
                 "acceptance testing",
                 "joomla"
             ],
-            "time": "2015-09-28 14:59:15"
+            "time": "2015-09-22 11:29:55"
         },
         {
             "name": "pdepend/pdepend",
