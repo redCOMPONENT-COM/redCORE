@@ -208,8 +208,9 @@ class RApi extends RApiBase
 		{
 			$inputData = JArrayHelper::fromObject($inputData);
 		}
-		elseif(is_string($inputData))
+		elseif (is_string($inputData))
 		{
+			$inputData = trim($inputData);
 			$parsedData = null;
 
 			// We try to transform it into JSON

@@ -69,7 +69,7 @@ class RedcoreViewConfig extends RedcoreHelpersView
 
 		$this->form	= $model->getForm();
 		$this->component = $model->getComponent($option);
-		$this->return = JFactory::getApplication()->input->get('return');
+		$this->return = JFactory::getApplication()->input->get('return', '', 'Base64');
 		$this->componentTitle = RText::getTranslationIfExists($this->component->xml->name, '', '');
 		$this->contentElements = $model->loadContentElements($option);
 		$this->missingContentElements = $model->loadMissingContentElements($option, $this->contentElements);

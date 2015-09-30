@@ -276,12 +276,7 @@ class RLayoutFile extends RLayoutBase
 				break;
 
 			case 'auto':
-				if (defined('JPATH_COMPONENT'))
-				{
-					$parts = explode('/', JPATH_COMPONENT);
-					$component = end($parts);
-				}
-
+				$component = JApplicationHelper::getComponentName();
 				break;
 
 			default:

@@ -160,6 +160,7 @@ class RApiSoapSoap extends RApi
 		$params = array(
 			'uri' => $wsdl,
 			'soap_version' => SOAP_1_2,
+			'cache_wsdl' => WSDL_CACHE_NONE
 		);
 		$operation = new RApiSoapOperationOperation($this->webservice);
 		$server = new SoapServer($wsdl, $params);
@@ -273,7 +274,8 @@ class RApiSoapSoap extends RApi
 			// Add error faults if they exist
 			if ($this->webservice->statusCode >= 300)
 			{
-				$this->setStatusCode(500);
+				// We must have status of 200 for SOAP communication even if it is fault
+				$this->setStatusCode(200);
 				$body = RApiSoapHelper::createSoapFaultResponse($this->webservice->statusCode . ' ' . $this->webservice->statusText);
 			}
 			else

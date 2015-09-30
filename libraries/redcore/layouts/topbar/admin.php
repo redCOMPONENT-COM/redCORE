@@ -58,7 +58,14 @@ $view = $input->getString('view', 'null');
 $returnUri = 'index.php?option=' . $option;
 
 // Prepare the component uri
-$componentUri = JRoute::_('index.php?option=' . $option);
+if ($option == 'com_redcore' && $view == 'config')
+{
+	$componentUri = JRoute::_('index.php?option=' . $input->getString('component', $option));
+}
+else
+{
+	$componentUri = JRoute::_('index.php?option=' . $option);
+}
 
 if ($view)
 {

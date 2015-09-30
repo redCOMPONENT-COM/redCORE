@@ -70,12 +70,11 @@ class RedcoreControllerPayment extends RControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 
-		$returnUrl = $input->get('return', 'index.php');
+		$returnUrl = $input->get('return', '', 'Base64');
+		$returnUrl = $returnUrl ? base64_decode($returnUrl) : 'index.php';
 
 		if ($model = $input->get('model', null))
 		{
-			$returnUrl = $input->get('return', 'index.php');
-			$returnUrl = base64_decode($returnUrl);
 			$context = $input->getCmd('context', '');
 
 			$model = RModel::getAdminInstance(ucfirst($model), array('context' => $context));

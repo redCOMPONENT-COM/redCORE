@@ -40,7 +40,6 @@ phing-latest.phar
 tests/unit/phpunit.xml
 
 # composer
-composer.lock
 composer.phar
 vendor/*
 
@@ -52,6 +51,9 @@ npm-debug.log
 
 # Test related files
 tests/acceptance.suite.yml
+tests/functional.suite.yml
+tests/unit.suite.yml
+tests/api.suite.yml
 tests/*/*Tester.php
 tests/joomla-cms3*
 tests/_output
@@ -59,6 +61,7 @@ selenium-server-standalone.jar
 codecept.phar
 selenium.log
 selenium-errors.log
+tests/_support/_generated/*
 
 # Never ignore
 !.gitignore

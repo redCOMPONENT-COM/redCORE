@@ -106,7 +106,7 @@ abstract class RHtmlMedia
 
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
+		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
 			if (self::getFramework() == 'bootstrap2')
 			{
@@ -140,7 +140,7 @@ abstract class RHtmlMedia
 
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
+		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
 			if (self::getFramework() == 'bootstrap2')
 			{

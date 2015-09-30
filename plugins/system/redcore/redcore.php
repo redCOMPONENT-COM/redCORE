@@ -73,6 +73,9 @@ class PlgSystemRedcore extends JPlugin
 				{
 					try
 					{
+						// We will disable all error messaging from PHP from the output
+						error_reporting(0);
+						ini_set('display_errors', 0);
 						JError::setErrorHandling(E_ERROR, 'message');
 						JFactory::getApplication()->clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
@@ -121,15 +124,20 @@ class PlgSystemRedcore extends JPlugin
 					{
 						$code = $e->getCode() > 0 ? $e->getCode() : 500;
 
-						// Set the server response code.
-						header('Status: ' . $code, true, $code);
-
 						if (strtolower($apiName) == 'soap')
 						{
-							echo RApiSoapHelper::createSoapFaultResponse($e->getMessage());
+							// We must have status of 200 for SOAP communication even if it is fault
+							$message = RApiSoapHelper::createSoapFaultResponse($e->getMessage());
+							header("Content-Type: soap+xml");
+							header("Content-length: " . strlen($message));
+							header("Status: 200");
+							echo $message;
 						}
 						else
 						{
+							// Set the server response code.
+							header('Status: ' . $code, true, $code);
+
 							// Check for defined constants
 							if (!defined('JSON_UNESCAPED_SLASHES'))
 							{

@@ -52,6 +52,7 @@
                 description="COM_REDCORE_OAUTH_CLIENTS_SCOPE_DESC"
                 multiple="true"
                 default=""
+                showCheckAll="true"
                 />
 		<field
 			name="user_id"

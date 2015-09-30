@@ -48,7 +48,8 @@ switch ($operationName)
 
 		foreach ($fields as $primaryKey => $primaryKeyField)
 		{
-			$basicUrl .= '&' . $primaryKey . '=1';
+			$defaultValue = !empty($primaryKeyField['defaultValue']) ? $primaryKeyField['defaultValue'] : 1;
+			$basicUrl .= '&' . $primaryKey . '=' . $defaultValue;
 		}
 		break;
 	case 'update' :
