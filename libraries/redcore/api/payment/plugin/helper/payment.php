@@ -311,26 +311,34 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		// Is payment new
 		$isNew = empty($data['id']);
 
-		// Calculate price
-		$data['amount_total'] = (float) $data['amount_original'];
-
-		// Add tax
-		if (!empty($data['amount_order_tax']))
+		// Only calculate amount if set in provided data
+		if (isset($data['calculate_total_amount_manually_redpayment']) && $data['calculate_total_amount_manually_redpayment'] === true)
 		{
-			$data['amount_total'] += (float) $data['amount_order_tax'];
-		}
+			// Calculate price
+			$data['amount_total'] = (float) $data['amount_original'];
 
-		// Add shipping
-		if (!empty($data['amount_shipping']))
+			// Add tax
+			if (!empty($data['amount_order_tax']))
+			{
+				$data['amount_total'] += (float) $data['amount_order_tax'];
+			}
+
+			// Add shipping
+			if (!empty($data['amount_shipping']))
+			{
+				$data['amount_total'] += (float) $data['amount_shipping'];
+			}
+
+			// Calculate payment fee
+			$paymentFee = $this->getPaymentFee($data['amount_total'], $data['currency']);
+			$data['amount_payment_fee'] = $paymentFee;
+
+			$data['amount_total'] += $data['amount_payment_fee'];
+		}
+		elseif (empty($data['amount_total']) && isset($data['amount_original']))
 		{
-			$data['amount_total'] += (float) $data['amount_shipping'];
+			$data['amount_total'] = (float) $data['amount_original'];
 		}
-
-		// Calculate payment fee
-		$paymentFee = $this->getPaymentFee($data['amount_total'], $data['currency']);
-		$data['amount_payment_fee'] = $paymentFee;
-
-		$data['amount_total'] += $data['amount_payment_fee'];
 
 		// Set cancel URL
 		if (empty($data['url_cancel']))

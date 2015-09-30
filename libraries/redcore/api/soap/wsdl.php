@@ -250,8 +250,10 @@ class RApiSoapWsdl
 		$this->addPortType($wsdl, $name);
 		$this->addBinding($wsdl, $name);
 
-		RApiSoapHelper::addElementFields($inputFields, $this->typeSchema, '', $validateOptionalInput, $name);
-		RApiSoapHelper::addElementFields($outputFields, $this->typeSchema, '', $validateOptionalOutput, $name . 'Response');
+		$complexArrays = (isset($this->webserviceXml->complexArrays) ? $this->webserviceXml->complexArrays : null);
+
+		RApiSoapHelper::addElementFields($inputFields, $this->typeSchema, '', $validateOptionalInput, $name, $complexArrays);
+		RApiSoapHelper::addElementFields($outputFields, $this->typeSchema, '', $validateOptionalOutput, $name . 'Response', $complexArrays);
 	}
 
 	/**

@@ -16,7 +16,7 @@ defined('JPATH_BASE') or die;
  * @subpackage  Api
  * @since       1.4
  */
-final class RApiSoapTransformArraydefined extends RApiSoapTransformBase
+final class RApiSoapTransformArraycomplex extends RApiSoapTransformBase
 {
 	/**
 	 * string type
@@ -42,7 +42,25 @@ final class RApiSoapTransformArraydefined extends RApiSoapTransformBase
 	public function wsdlField(
 		$field, &$sequence, &$typeSchema, $elementName, $validateOptional = false, $extraFields = array(), $complexArrays = null)
 	{
-		parent::wsdlField($field, $sequence, $typeSchema, $elementName, $validateOptional);
+		if (!isset($this->element))
+		{
+			$this->element = $sequence->addChild('element', null, 'http://www.w3.org/2001/XMLSchema');
+		}
+
+		if (!isset($this->element['minOccurs']))
+		{
+			$this->element->addAttribute(
+				'minOccurs',
+				(($validateOptional && RApiHalHelper::isAttributeTrue($field, 'isRequiredField') || !$validateOptional) ? '1' : '0')
+			);
+		}
+
+		$this->element->addAttribute('maxOccurs', 'unbounded');
+
+		if (!isset($this->element['name']) && isset($field['name']))
+		{
+			$this->element->addAttribute('name', $field['name']);
+		}
 
 		$this->element->addAttribute('type', 'tns:' . $elementName . '_' . $field['name']);
 

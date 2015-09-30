@@ -35,6 +35,11 @@ class ModRedCORELanguageSwitcherHelper
 		$uri->delVar('Itemid');
 		$location = htmlspecialchars($uri->getQuery());
 
+		if (!empty($location))
+		{
+			$location .= '&';
+		}
+
 		if (!$Itemid)
 		{
 			$active = $app->getMenu()->getActive();
@@ -52,7 +57,7 @@ class ModRedCORELanguageSwitcherHelper
 			RMenu::resetJoomlaMenuItems();
 			$db->forceLanguageTranslation = false;
 			$languages[$i]->active = $language->lang_code == JFactory::getLanguage()->getTag();
-			$languages[$i]->link = RRoute::_('index.php?' . $location . '&lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : ''));
+			$languages[$i]->link = RRoute::_('index.php?' . $location . 'lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : ''));
 		}
 
 		// After we are done we reset it the way it was

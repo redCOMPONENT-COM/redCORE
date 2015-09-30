@@ -160,6 +160,18 @@ class RModelAdminBase extends JModelAdmin
 		RForm::addFormPath(JPATH_COMPONENT . '/models/forms');
 		RForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
 
+		// Add form path from MVC override plugin
+		if (method_exists('RModelAdminBase', 'addComponentFormPath'))
+		{
+			RForm::addFormPath(self::addComponentFormPath());
+		}
+
+		// Add field path from MVC override plugin
+		if (method_exists('RModelAdminBase', 'addComponentFieldPath'))
+		{
+			RForm::addFieldPath(self::addComponentFieldPath());
+		}
+
 		try
 		{
 			$form = RForm::getInstance($name, $source, $options, false, $xpath);

@@ -320,12 +320,13 @@ final class RToolbarBuilder
 	 * @param   string   $class       The button class.
 	 * @param   string   $iconClass   The icon class.
 	 * @param   boolean  $list        Is the button applying on a list ?
+	 * @param   array    $params      The list params
 	 *
 	 * @return  RToolbarButtonStandard  The button.
 	 */
-	public static function createModalButton($dataTarget, $text, $class = '', $iconClass = '', $list = false)
+	public static function createModalButton($dataTarget, $text, $class = '', $iconClass = '', $list = false, $params = array())
 	{
-		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass, $list);
+		return new RToolbarButtonModal($text, $dataTarget, $class, $iconClass, $list, $params);
 	}
 
 	/**

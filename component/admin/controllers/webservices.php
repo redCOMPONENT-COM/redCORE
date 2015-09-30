@@ -165,7 +165,7 @@ class RedcoreControllerWebservices extends RControllerAdmin
 	 */
 	public function redirectAfterAction()
 	{
-		if ($returnUrl = $this->input->get('return'))
+		if ($returnUrl = $this->input->get('return', '', 'Base64'))
 		{
 			$this->setRedirect(JRoute::_(base64_decode($returnUrl), false));
 		}

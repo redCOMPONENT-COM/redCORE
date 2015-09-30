@@ -40,14 +40,7 @@ JHtml::_('rjquery.chosen', 'select');
 						<?php endif; ?>
 						<?php foreach ($this->form->getFieldset($name) as $field): ?>
 							<div class="form-group">
-								<?php if (!$field->hidden && $name != "permissions") : ?>
-									<div class="control-label">
-										<?php echo $field->label; ?>
-									</div>
-								<?php endif; ?>
-								<div class="<?php if ($name != "permissions") : ?>controls<?php endif; ?>">
-									<?php echo $field->input; ?>
-								</div>
+								<?php echo $field->renderField(); ?>
 							</div>
 						<?php endforeach; ?>
 					</div>

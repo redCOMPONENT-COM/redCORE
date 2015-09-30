@@ -67,6 +67,14 @@ class JFormFieldWebservicescopes extends JFormFieldList
 	 */
 	protected function getInput()
 	{
+		// ShowCheckAll attribute process
+		$showCheckAll = false;
+
+		if ($this->getAttribute('showCheckAll', false) == true)
+		{
+			$showCheckAll = true;
+		}
+
 		return RLayoutHelper::render(
 			'webservice.scopes',
 			array(
@@ -77,6 +85,7 @@ class JFormFieldWebservicescopes extends JFormFieldList
 					'name' => $this->name,
 					'label' => $this->label,
 					'value' => $this->value,
+					'showCheckAll' => $showCheckAll
 				)
 			)
 		);

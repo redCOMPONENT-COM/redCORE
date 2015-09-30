@@ -701,7 +701,7 @@ class RControllerForm extends JControllerForm
 	{
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
 
-		$return = $this->input->get('return');
+		$return = $this->input->get('return', '', 'Base64');
 
 		if ($return)
 		{
@@ -720,7 +720,7 @@ class RControllerForm extends JControllerForm
 	{
 		$append = parent::getRedirectToListAppend();
 
-		$return = $this->input->get('return');
+		$return = $this->input->get('return', '', 'Base64');
 
 		if ($return)
 		{
@@ -739,7 +739,7 @@ class RControllerForm extends JControllerForm
 	 */
 	protected function getRedirectToListRoute($append = null)
 	{
-		$returnUrl = $this->input->get('return');
+		$returnUrl = $this->input->get('return', '', 'Base64');
 
 		if ($returnUrl)
 		{

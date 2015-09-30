@@ -160,6 +160,9 @@
                 <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                 <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                 <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="id" transform="int" fieldFormat="{id}" displayGroup="" resourceSpecific="rcwsGlobal">
+                    <description><![CDATA[The ID of the created Contact]]></description>
+                </resource>
                 <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
             </resources>
             <description><![CDATA[ This operation creates new Contact item. ]]></description>
@@ -167,8 +170,8 @@
         <update dataMode="table" authorization="core.edit,core.edit.own" optionName="com_contact" modelClassName="" modelClassPath="" isAdminClass="true" functionName="save" validateData="form" validateDataFunction="" tableName="contact_details" strictFields="false">
             <fields>
                 <field name="id" transform="int" isRequiredField="true" />
-                <field name="name" transform="string" isRequiredField="true" />
-                <field name="catid" transform="int" isRequiredField="true" />
+                <field name="name" transform="string" isRequiredField="false" />
+                <field name="catid" transform="int" isRequiredField="false" />
                 <field name="language" defaultValue="*" />
                 <field name="published" transform="int" defaultValue="1" />
 
@@ -179,6 +182,9 @@
                 <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                 <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
                 <resource displayName="{webserviceName}:self" transform="string" fieldFormat="{webserviceUrlPath}&amp;id={id}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+                <resource displayName="id" transform="int" fieldFormat="{id}" displayGroup="" resourceSpecific="rcwsGlobal">
+                    <description><![CDATA[The ID of the created Contact]]></description>
+                </resource>
                 <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
             </resources>
             <description><![CDATA[ This operation updates Contact item. ]]></description>

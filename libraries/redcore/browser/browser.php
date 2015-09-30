@@ -84,10 +84,11 @@ class RBrowser
 		// We are removing format because of default value is csv if present and if not set
 		// and we are never going to remember csv page in a browser history anyway
 		$uri->delVar('format');
-		$query = $router->parse($uri);
-		$uri = 'index.php?' . Juri::getInstance()->buildQuery($query);
+		$parseUri = clone $uri;
+		$query = $router->parse($parseUri);
+		$url = 'index.php?' . Juri::getInstance()->buildQuery($query);
 
-		$this->history->enqueue($uri, $duplicateLast);
+		$this->history->enqueue($url, $duplicateLast);
 	}
 
 	/**

@@ -79,6 +79,7 @@ class RApiSoapOperationOperation
 		$this->webservice->execute();
 
 		$arr = $this->webservice->hal->toArray();
+
 		$outputResources = RApiSoapHelper::getOutputResources($this->webservice->configuration->operations->read->list, 'listItem', true);
 
 		if ($arr['_embedded'] && $arr['_embedded']['item'])
@@ -146,11 +147,14 @@ class RApiSoapOperationOperation
 
 		$match = true;
 
-		foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
+		if (RApiHalHelper::isAttributeTrue($this->webservice->configuration->operations->read->item, 'enforcePKs', true))
 		{
-			if ($dataGet->$primaryKey != $final->item->$primaryKey)
+			foreach ($primaryKeysFromFields as $primaryKey => $primaryKeyField)
 			{
-				$match = false;
+				if ($dataGet->$primaryKey != $final->item->$primaryKey)
+				{
+					$match = false;
+				}
 			}
 		}
 
