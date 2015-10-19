@@ -10,6 +10,6 @@
 $I = new \AcceptanceTester($scenario);
 
 $I->wantToTest('Joomla 3 Installation');
-$I->installJoomla();
+$I->installJoomlaRemovingInstallationFolder();
 $I->doAdministratorLogin();
 $I->setErrorReportingToDevelopment();

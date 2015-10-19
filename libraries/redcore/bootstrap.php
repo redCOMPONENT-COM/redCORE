@@ -142,7 +142,7 @@ class RBootstrap
 
 			// Load library language
 			$lang = JFactory::getLanguage();
-			$lang->load('lib_redcore', JPATH_SITE);
+			$lang->load('lib_redcore', JPATH_REDCORE);
 
 			// For Joomla! 2.5 compatibility we add some core functions
 			if (version_compare(JVERSION, '3.0', '<'))
