@@ -131,6 +131,7 @@ class RBootstrap
 			RLoader::setup();
 
 			// Make available the redCORE fields
+			JFormHelper::addFieldPath(JPATH_REDCORE . '/form/field');
 			JFormHelper::addFieldPath(JPATH_REDCORE . '/form/fields');
 
 			// Make available the redCORE form rules
