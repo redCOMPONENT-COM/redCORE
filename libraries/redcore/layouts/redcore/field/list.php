@@ -50,7 +50,7 @@ $selectName = $readOnly ? '' : $data->name;
 		<?php foreach ($data->options as $option) :?>
 				<option
 					value="<?php echo $option->value; ?>"
-					<?php if ((is_array($data->value) && in_array($option->value, $data->value)) || (!is_array($data->value) && $option->value == $data->value)):
+					<?php if ((is_array($data->value) && in_array($option->value, $data->value)) || (!is_array($data->value) && (string) $option->value === (string) $data->value)):
 						echo 'selected="selected"';
 					endif; ?>><?php echo $option->text; ?></option>
 		<?php endforeach; ?>
