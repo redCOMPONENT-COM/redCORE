@@ -25,6 +25,7 @@
         <folder>html</folder>
         <folder>inflector</folder>
         <folder>joomla</folder>
+        <folder>language</folder>
         <folder>layout</folder>
         <folder>layouts</folder>
         <folder>loader</folder>
@@ -44,9 +45,4 @@
         <filename>functions.php</filename>
         <filename>redcore.xml</filename>
     </files>
-
-    <languages folder="language">
-        <language tag="en-GB">en-GB/en-GB.lib_redcore.ini</language>
-        <language tag="da-DK">da-DK/da-DK.lib_redcore.ini</language>
-    </languages>
 </extension>

@@ -9,19 +9,14 @@
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<description>MOD_REDCORE_LANGUAGE_SWITCHER_XML_DESCRIPTION</description>
 	<files>
-		<filename module="mod_redcore_language_switcher">mod_redcore_language_switcher.php</filename>
-		<filename>helper.php</filename>
+		<folder>language</folder>
 		<folder>tmpl</folder>
+		<filename>helper.php</filename>
+		<filename module="mod_redcore_language_switcher">mod_redcore_language_switcher.php</filename>
 	</files>
-    <media destination="mod_redcore_language_switcher" folder="media">
-        <folder>css</folder>
+    <media folder="media">
+        <folder>mod_redcore_language_switcher</folder>
     </media>
-    <languages folder="language">
-        <language tag="en-GB">en-GB/en-GB.mod_redcore_language_switcher.ini</language>
-        <language tag="en-GB">en-GB/en-GB.mod_redcore_language_switcher.sys.ini</language>
-        <language tag="da-DK">da-DK/da-DK.mod_redcore_language_switcher.ini</language>
-        <language tag="da-DK">da-DK/da-DK.mod_redcore_language_switcher.sys.ini</language>
-    </languages>
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
