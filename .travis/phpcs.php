@@ -62,7 +62,8 @@ $options = array(
 	'standard'     => array( REPO_BASE . '/.travis/phpcs/Joomla'),
 	'ignored'      => $ignored,
 	'showProgress' => true,
-	'verbosity' => false
+	'verbosity' => false,
+	'extensions' => array('php')
 );
 
 // Instantiate the sniffer

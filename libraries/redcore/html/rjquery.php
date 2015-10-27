@@ -152,6 +152,8 @@ abstract class JHtmlRjquery
 	 */
 	public static function framework()
 	{
+		$doc = JFactory::getDocument();
+
 		// Only load once
 		if (!empty(static::$loaded[__METHOD__]))
 		{
@@ -160,11 +162,18 @@ abstract class JHtmlRjquery
 
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
+		// Load jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
+		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
+		{
+			$jqueryMigrate = array(
+				JUri::root(true) . '/media/redcore/js/lib/jquery-migrate.min.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
+			);
+			$doc->_scripts = array_merge($jqueryMigrate, $doc->_scripts);
+		}
+
 		// Load jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
 		{
-			$doc = JFactory::getDocument();
-
 			$jqueryLib = array(
 				JUri::root(true) . '/media/redcore/js/lib/jquery.min.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
 			);
@@ -178,12 +187,6 @@ abstract class JHtmlRjquery
 		elseif (!$isAdmin && !RBootstrap::$loadFrontendjQuery && !version_compare(JVERSION, '3.0', '<'))
 		{
 			JHtml::_('jquery.framework');
-		}
-
-		// Load jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
-		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
-		{
-			RHelperAsset::load('lib/jquery-migrate.min.js', self::EXTENSION);
 		}
 
 		static::$loaded[__METHOD__] = true;
