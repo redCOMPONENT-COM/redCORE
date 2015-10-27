@@ -60,33 +60,64 @@ class RBrowser
 	}
 
 	/**
+	 * Get Uri
+	 *
+	 * @param   string  $url  URL
+	 *
+	 * @return  JUri
+	 */
+	public function getUri($url = 'SERVER')
+	{
+		static $uriArray = array();
+
+		if (!array_key_exists($url, $uriArray))
+		{
+			// This will enable both SEF and non-SEF URI to be parsed properly
+			$router = clone JRouter::getInstance('site');
+			$uri = clone JUri::getInstance($url);
+			$langCode = JLanguageHelper::detectLanguage();
+			$lang = $uri->getVar('lang', $langCode);
+			$uri->setVar('lang', $lang);
+			$sefs = JLanguageHelper::getLanguages('lang_code');
+
+			if (isset($sefs[$lang]))
+			{
+				$lang = $sefs[$lang]->sef;
+				$uri->setVar('lang', $lang);
+			}
+
+			$router->setVars(array(), false);
+			$query = $router->parse($uri);
+			$query = array_merge($query, $uri->getQuery(true));
+			$uri->setQuery($query);
+
+			// We are removing format because of default value is csv if present and if not set
+			// and we are never going to remember csv page in a browser history anyway
+			$uri->delVar('format');
+
+			$uriArray[$url] = $uri;
+		}
+
+		return $uriArray[$url];
+	}
+
+	/**
 	 * Browse the given uri.
 	 *
-	 * @param   string   $uri            The uri
+	 * @param   string   $url            The uri
 	 * @param   boolean  $duplicateLast  True to duplicate the last element if it's the same.
 	 *
 	 * @return  void
 	 */
-	public function browse($uri = null, $duplicateLast = false)
+	public function browse($url = 'SERVER', $duplicateLast = false)
 	{
-		// This will enable both SEF and non-SEF URI to be parsed properly
-		$router = JRouter::getInstance('site');
-
-		if (null === $uri)
+		if ($url == null)
 		{
-			$uri = Juri::getInstance();
-		}
-		else
-		{
-			$uri = Juri::getInstance($uri);
+			$url = 'SERVER';
 		}
 
-		// We are removing format because of default value is csv if present and if not set
-		// and we are never going to remember csv page in a browser history anyway
-		$uri->delVar('format');
-		$parseUri = clone $uri;
-		$query = $router->parse($parseUri);
-		$url = 'index.php?' . Juri::getInstance()->buildQuery($query);
+		$uri = $this->getUri($url);
+		$url = 'index.php?' . $uri->getQuery();
 
 		$this->history->enqueue($url, $duplicateLast);
 	}
@@ -132,7 +163,7 @@ class RBrowser
 			return null;
 		}
 
-		$uri = JUri::getInstance($currentUri);
+		$uri = $this->getUri($currentUri);
 
 		return $uri->getVar('view');
 	}
@@ -161,7 +192,7 @@ class RBrowser
 			return null;
 		}
 
-		$uri = JUri::getInstance($lastUri);
+		$uri = $this->getUri($lastUri);
 
 		return $uri->getVar('view');
 	}
@@ -180,11 +211,11 @@ class RBrowser
 	 * Clear the history until the uri.
 	 * Two uris are equal if their view and id vars are the same.
 	 *
-	 * @param   mixed  $uri  The uri until
+	 * @param   mixed  $url  The uri until
 	 *
 	 * @return  void
 	 */
-	public function clearHistoryUntil($uri = null)
+	public function clearHistoryUntil($url = 'SERVER')
 	{
 		$history = $this->history->getQueue();
 
@@ -193,19 +224,14 @@ class RBrowser
 			return;
 		}
 
-		if (null === $uri)
-		{
-			$uri = str_replace(Juri::base(), '', Juri::getInstance()->toString());
-		}
-
-		$uri = new JURI($uri);
+		$uri = $this->getUri($url);
 		$view = $uri->getVar('view');
 		$id = $uri->getVar('id');
 		$newHistory = array();
 
 		foreach ($history as $oldLink)
 		{
-			$oldUri = new Juri($oldLink);
+			$oldUri = $this->getUri($oldLink);
 			$oldView = $oldUri->getVar('view');
 			$oldId = $oldUri->getVar('id');
 
