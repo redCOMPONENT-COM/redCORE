@@ -9,17 +9,5 @@
 
 defined('JPATH_REDCORE') or die;
 
-$data = (object) $displayData;
-
-$options = !empty($data->field->ajaxchildOptions) ? $data->field->ajaxchildOptions : array();
-
-// We won't load anything if it's not going to work
-if (!empty($options['ajaxUrl']))
-{
-	$options['childSelector'] = isset($options['childSelector']) ? $options['childSelector'] : '.js-childlist-child';
-
-	JHtml::_('rjquery.childlist', $options['childSelector'], $options);
-}
-
-// Render the standard select
-echo RLayoutHelper::render('fields.rlist', $data);
+// This layout is deprecated and here only for B/C
+echo RLayoutHelper::render('redcore.field.childlist', $displayData);

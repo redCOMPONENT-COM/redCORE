@@ -41,6 +41,13 @@ final class RHelperCurrency
 	 */
 	public static function getCurrency($currency = 'DKK')
 	{
+		$currency = is_numeric($currency) ? (int) $currency : trim($currency);
+
+		if (!$currency)
+		{
+			return null;
+		}
+
 		if (!isset(self::$currencies[(string) $currency]))
 		{
 			$db    = JFactory::getDbo();

@@ -131,6 +131,7 @@ class RBootstrap
 			RLoader::setup();
 
 			// Make available the redCORE fields
+			JFormHelper::addFieldPath(JPATH_REDCORE . '/form/field');
 			JFormHelper::addFieldPath(JPATH_REDCORE . '/form/fields');
 
 			// Make available the redCORE form rules
@@ -142,7 +143,7 @@ class RBootstrap
 
 			// Load library language
 			$lang = JFactory::getLanguage();
-			$lang->load('lib_redcore', JPATH_SITE);
+			$lang->load('lib_redcore', JPATH_REDCORE);
 
 			// For Joomla! 2.5 compatibility we add some core functions
 			if (version_compare(JVERSION, '3.0', '<'))
