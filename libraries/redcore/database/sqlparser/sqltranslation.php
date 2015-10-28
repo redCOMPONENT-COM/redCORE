@@ -515,8 +515,10 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							{
 								foreach ($tagValue['sub_tree'] as $subKey => $subTree)
 								{
+									// In case we have a subquery directly under the expression we handle it separately
 									if (!empty($subTree['expr_type']) && $subTree['expr_type'] == 'subquery')
 									{
+										// We need to remove brackets from the query or else the query will not be parsed properly
 										$sqlBracketLess = self::removeParenthesisFromStart($subTree['base_expr']);
 										$parsedSubQuery = self::buildTranslationQuery($sqlBracketLess);
 
