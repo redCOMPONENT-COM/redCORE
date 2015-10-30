@@ -240,15 +240,16 @@ abstract class RModelList extends JModelList
 		$app = JFactory::getApplication();
 
 		$data = array(
-			'filter' => $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'),
-			'list'   => $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array')
+			'filter' => $app->input->get('filter', array(), 'array'),
+			'list'   => $app->input->get('list', array(), 'array')
 		);
 
 		$filterForm = $this->getForm($data, false);
 
 		$data = $filterForm ? $this->validate($filterForm, $data) : array();
 
-		$app->setUserState($this->context, $data);
+		$app->setUserState($this->context . '.filter', empty($data['filter']) ? array() : $data['filter']);
+		$app->setUserState($this->context . '.list', empty($data['list']) ? array() : $data['list']);
 
 		$limit = 0;
 
