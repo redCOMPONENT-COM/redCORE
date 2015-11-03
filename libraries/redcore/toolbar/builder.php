@@ -341,7 +341,9 @@ final class RToolbarBuilder
 	{
 		if (null === $link)
 		{
-			$uri = JUri::getInstance();
+			$original = JUri::getInstance();
+
+			$uri = clone $original;
 			$uri->setVar('format', 'csv');
 			$link = $uri->toString();
 		}
