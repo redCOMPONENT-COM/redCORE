@@ -30,7 +30,7 @@ class RApiSoapHelper
 	{
 		$errorCodeMaxCharacters = 7650;
 		$message = trim((strlen($message . $faultCode) > $errorCodeMaxCharacters) ? substr($message, 0, $errorCodeMaxCharacters - 3) . '...' : $message);
-		$message = "<![CDATA[ " . $message . " ]]>";
+		$message = "<![CDATA[" . $message . "]]>";
 
 		return '<?xml version="1.0" encoding="UTF-8"?><env:Envelope xmlns:env="http://www.w3.org/2003/05/soap-envelope"><env:Body><env:Fault><env:Code>'
 		. '<env:Value>' . $faultCode . '</env:Value></env:Code><env:Reason><env:Text xml:lang="en">' . $message . '</env:Text></env:Reason><env:Detail/>'
