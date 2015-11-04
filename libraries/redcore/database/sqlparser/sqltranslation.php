@@ -81,7 +81,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						{
 							$column = array();
 
-							// If primary key we do not need to translate it
+							// If column is primary key we do not need to translate it
 							if (in_array($tableColumn, $translationTables[$foundTable['originalTableName']]->primaryKeys))
 							{
 								$column['base_expr'] = $foundTable['alias']['originalName'] . '.' . $tableColumn;
