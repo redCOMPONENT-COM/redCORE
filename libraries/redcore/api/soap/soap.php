@@ -276,7 +276,8 @@ class RApiSoapSoap extends RApi
 			{
 				// We must have status of 200 for SOAP communication even if it is fault
 				$this->setStatusCode(200);
-				$body = RApiSoapHelper::createSoapFaultResponse($this->webservice->statusCode . ' ' . $this->webservice->statusText);
+				$faultResponse = $this->prepareFaultResponseMessage($this->webservice);
+				$body = RApiSoapHelper::createSoapFaultResponse($faultResponse);
 			}
 			else
 			{
@@ -292,6 +293,33 @@ class RApiSoapSoap extends RApi
 			->setApiObject($this)
 			->setBuffer($body)
 			->render(false);
+	}
+
+	/**
+	 * Prepare Fault message from the message queue for the soap Fault error message
+	 *
+	 * @param   RApiHalHal  $webservice  Webservice object
+	 *
+	 * @return  string	The fault message prepared
+	 */
+	public function prepareFaultResponseMessage($webservice)
+	{
+		$fault = $webservice->statusCode . " " . $webservice->statusText . ". \n";
+
+		if (isset($webservice->hal))
+		{
+			$webserviceOutput = $webservice->hal->toArray();
+
+			if ($webserviceOutput['_messages'])
+			{
+				foreach ($webserviceOutput['_messages'] as $message)
+				{
+					$fault .= $message['type'] . " - " . $message['message'] . " \n";
+				}
+			}
+		}
+
+		return $fault;
 	}
 
 	/**
