@@ -10,7 +10,7 @@
     <version>1.6.11</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.6.10" defaultFramework="bootstrap3" />
+    <redcore version="1.6.11" defaultFramework="bootstrap3" />
 
     <install folder="component/admin">
         <sql>
