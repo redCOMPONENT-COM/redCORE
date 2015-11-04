@@ -446,9 +446,9 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				break;
 
 			/* These tokens set particular options for the statement.  They never stand alone.*/
-			case 'DISTINCTROW':
-				$trim = 'DISTINCT';
-			case 'DISTINCT':
+			//case 'DISTINCTROW':
+			//	$trim = 'DISTINCT';
+			//case 'DISTINCT':
 			case 'HIGH_PRIORITY':
 			case 'LOW_PRIORITY':
 			case 'DELAYED':

@@ -81,13 +81,22 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						{
 							$column = array();
 
-							$column['base_expr'] = ''
-								. 'COALESCE('
-								. $foundTable['alias']['name']
-								. '.' . $tableColumn
-								. ',' . $foundTable['alias']['originalName']
-								. '.' . $tableColumn
-								. ')';
+							// If primary key we do not need to translate it
+							if (in_array($tableColumn, $translationTables[$foundTable['originalTableName']]->primaryKeys))
+							{
+								$column['base_expr'] = $foundTable['alias']['originalName'] . '.' . $tableColumn;
+							}
+							else
+							{
+								$column['base_expr'] = ''
+										. 'COALESCE('
+										. $foundTable['alias']['name']
+										. '.' . $tableColumn
+										. ',' . $foundTable['alias']['originalName']
+										. '.' . $tableColumn
+										. ')';
+							}
+
 							$column['alias'] = $db->qn($tableColumn);
 							$column['table'] = $foundTable;
 							$column['columnName'] = $tableColumn;
