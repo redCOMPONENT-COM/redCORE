@@ -48,6 +48,14 @@
             </fileset>
         </copy>
 
+        <echo msg="Copying Webservices folder to build directory..."/>
+        <copy todir="${redcoretargetdir}/extensions/webservices">
+            <fileset dir="${redcorepath}/extensions/webservices">
+                <include name="**"/>
+                <exclude name=".*"/>
+            </fileset>
+        </copy>
+
         <echo msg="Copying MEDIA folder to build directory..."/>
         <copy todir="${redcoretargetdir}/media">
             <fileset dir="${redcorepath}/media">
