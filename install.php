@@ -879,7 +879,19 @@ class Com_RedcoreInstallerScript
 
 		$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
 
-		return $installer->copyFiles($copyFiles, true);
+		// Copy the webservice XML files
+		$return = $installer->copyFiles($copyFiles, true);
+
+		// Recreate or create new SOAP WSDL files
+		if (method_exists('RApiSoapHelper', 'generateWsdlFromFolder'))
+		{
+			foreach ($element->children() as $file)
+			{
+				RApiSoapHelper::generateWsdlFromFolder($destination . '/' . $file);
+			}
+		}
+
+		return $return;
 	}
 
 	/**
