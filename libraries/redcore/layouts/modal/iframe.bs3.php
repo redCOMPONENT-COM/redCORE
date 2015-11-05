@@ -25,7 +25,7 @@ $linkClass = !empty($modal['options']['linkClass']) ? $modal['options']['linkCla
 </a>
 <div class="modal modal-iframe-external-container" id="modalContainer_modalButton_<?php echo $id ?>"
      tabindex="-1" role="dialog" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
+	<div class="modal-dialog modal-dialog-lg modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-label="<?php echo JText::_('JTOOLBAR_CLOSE') ?>">
