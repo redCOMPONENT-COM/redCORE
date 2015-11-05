@@ -27,9 +27,13 @@ $filters = $data['view']->filterForm->getGroup('filter');
 <?php if ($filters) : ?>
 	<?php foreach ($filters as $fieldName => $field) : ?>
 		<?php if ($fieldName != $searchField) : ?>
-			<div class="js-stools-field-filter">
+			<?php if ($field->hidden) : ?>
 				<?php echo $field->input; ?>
-			</div>
+			<?php else : ?>
+				<div class="js-stools-field-filter">
+					<?php echo $field->input; ?>
+				</div>
+			<?php endif; ?>
 		<?php endif; ?>
 	<?php endforeach; ?>
 <?php endif;
