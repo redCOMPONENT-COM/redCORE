@@ -60,6 +60,9 @@
   width: 600px;
   margin: 30px auto;
 }
+.redcore .modal .modal-dialog-lg {
+  width: 80%;
+}
 .redcore .modal-content {
   -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
@@ -5741,6 +5744,7 @@
 .redcore .modal-body {
   position: relative;
   padding: 15px;
+  overflow: auto;
 }
 .redcore .modal-footer {
   padding: 15px;
