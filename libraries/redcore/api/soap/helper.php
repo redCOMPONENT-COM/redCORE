@@ -393,12 +393,6 @@ class RApiSoapHelper
 		$domWsdl->preserveWhiteSpace = false;
 		$domWsdl->formatOutput = true;
 
-		// We will delete existing WSDL file if it exists before saving the new one
-		/*if (file_exists($fullWsdlPath))
-		{
-			unlink($fullWsdlPath);
-		}*/
-
 		return $domWsdl->save($path);
 	}
 }
