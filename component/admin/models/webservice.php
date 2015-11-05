@@ -231,17 +231,9 @@ class RedcoreModelWebservice extends RModelAdmin
 			}
 
 			$wsdl = RApiSoapHelper::generateWsdl($xml);
-			$domWsdl = dom_import_simplexml($wsdl)->ownerDocument;
-			$domWsdl->preserveWhiteSpace = false;
-			$domWsdl->formatOutput = true;
 			$fullWsdlPath = substr($fullPath, 0, -4) . '.wsdl';
 
-			if ($domWsdl->save($fullWsdlPath))
-			{
-				return true;
-			}
-
-			return false;
+			return RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);
 		}
 
 		return false;
