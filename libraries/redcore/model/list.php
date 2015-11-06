@@ -174,6 +174,42 @@ abstract class RModelList extends JModelList
 	}
 
 	/**
+	 * Get a form instance
+	 *
+	 * @param   string   $name     The name of the form.
+	 * @param   string   $source   The form source. Can be XML string if file flag is set to false.
+	 * @param   array    $options  Optional array of options for the form creation.
+	 * @param   boolean  $clear    Optional argument to force load a new form.
+	 * @param   mixed    $xpath    An optional xpath to search for the fields.
+	 *
+	 * @return  mixed  JForm on success | false otherwise
+	 *
+	 * @since   1.6.10
+	 */
+	private function getFormInstance($name, $source = null, $options = array(), $clear = false, $xpath = false)
+	{
+		// Handle the optional arguments.
+		$options['control'] = JArrayHelper::getValue($options, 'control', false);
+
+		// Get the form.
+		RForm::addFormPath(JPATH_COMPONENT . '/models/forms');
+		RForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
+
+		try
+		{
+			$form = RForm::getInstance($name, $source, $options, $clear, $xpath);
+		}
+		catch (Exception $e)
+		{
+			$this->setError($e->getMessage());
+
+			return false;
+		}
+
+		return $form;
+	}
+
+	/**
 	 * Method to get the associated form name
 	 *
 	 * @return  string  The name of the form
@@ -240,11 +276,12 @@ abstract class RModelList extends JModelList
 		$app = JFactory::getApplication();
 
 		$data = array(
-			'filter' => $app->input->get('filter', array(), 'array'),
-			'list'   => $app->input->get('list', array(), 'array')
+			'filter' => $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'),
+			'list'   => $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array')
 		);
 
-		$filterForm = $this->getForm($data, false);
+		// We don't use loadForm because it may use getState() = infinite loop
+		$filterForm = $this->getFormInstance($this->context . '.filter', $this->filterFormName);
 
 		$data = $filterForm ? $this->validate($filterForm, $data) : array();
 
@@ -392,13 +429,9 @@ abstract class RModelList extends JModelList
 			return $this->forms[$hash];
 		}
 
-		// Get the form.
-		RForm::addFormPath(JPATH_COMPONENT . '/models/forms');
-		RForm::addFieldPath(JPATH_COMPONENT . '/models/fields');
-
 		try
 		{
-			$form = RForm::getInstance($name, $source, $options, false, $xpath);
+			$form = $this->getFormInstance($name, $source, $options, false, $xpath);
 
 			if (isset($options['load_data']) && $options['load_data'])
 			{

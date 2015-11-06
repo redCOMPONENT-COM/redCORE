@@ -17,9 +17,13 @@ $list = $data['view']->filterForm->getGroup('list');
 <?php if ($list) : ?>
 	<div class="ordering-select hidden-phone">
 		<?php foreach ($list as $fieldName => $field) : ?>
-			<div class="js-stools-field-list">
+			<?php if ($field->hidden) : ?>
 				<?php echo $field->input; ?>
-			</div>
+			<?php else : ?>
+				<div class="js-stools-field-list">
+					<?php echo $field->input; ?>
+				</div>
+			<?php endif; ?>
 		<?php endforeach; ?>
 	</div>
 <?php endif;
