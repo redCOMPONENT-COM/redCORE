@@ -45,8 +45,24 @@ class RApiSoapHelper
 	 *
 	 * @return  SimpleXMLElement
 	 */
-	public static function generateWsdl($webservice, $wsdlPath)
+	public static function generateWsdl($webservice, $wsdlPath = null)
 	{
+		if (empty($wsdlPath) && !empty($webservice))
+		{
+			$client = RApiHalHelper::attributeToString($webservice, 'client', 'site');
+			$version = !empty($webservice->config->version) ? (string) $webservice->config->version : '1.0.0';
+			$name = (string) $webservice->config->name;
+			$webserviceInstance = RApiHalHelper::getInstalledWebservice($client, $name, $version);
+
+			$wsdlPath = self::getWebserviceFilePath(
+					$client,
+					$name,
+					$version,
+					'wsdl',
+					$webserviceInstance['path']
+			);
+		}
+
 		$wsdl = new RApiSoapWsdl($webservice);
 
 		return $wsdl->generateWsdl($wsdlPath);
@@ -89,7 +105,7 @@ class RApiSoapHelper
 
 			foreach ($fields as $field)
 			{
-				$transformType = $field['transform'];
+				$transformType = isset($field['transform']) ? $field['transform'] : 'string';
 				$complexArrayType = '';
 				$additionalFields = isset($field['fields']) ? $field['fields'] : array();
 				$fieldValidateOptional = $validateOptional;
@@ -315,5 +331,68 @@ class RApiSoapHelper
 		}
 
 		return $fieldsArray;
+	}
+
+	/**
+	 * Recreate or create new SOAP WSDL files
+	 *
+	 * @param   string  $path  Path to the webservices folder
+	 *
+	 * @return  void
+	 */
+	public static function generateWsdlFromFolder($path)
+	{
+		if ($handle = opendir($path))
+		{
+			while (false !== ($entry = readdir($handle)))
+			{
+				if ($entry != "." && $entry != "..")
+				{
+					$file = $path . '/' . $entry;
+
+					if (is_dir($file))
+					{
+						self::generateWsdlFromFolder($file);
+					}
+					elseif (is_file($file))
+					{
+						// Only handle XML files
+						if (JFile::getExt($file) == 'xml')
+						{
+							$content = @file_get_contents($file);
+
+							if (is_string($content))
+							{
+								$webserviceXml = new SimpleXMLElement($content);
+								$wsdl = self::generateWsdl($webserviceXml);
+								$fullWsdlPath = substr($file, 0, -4) . '.wsdl';
+
+								// Save the generated WSDL file
+								self::saveWsdlContentToPath($wsdl, $fullWsdlPath);
+							}
+						}
+					}
+				}
+			}
+
+			closedir($handle);
+		}
+	}
+
+	/**
+	 * Save WSDL file in correct format
+	 *
+	 * @param   SimpleXMLElement  $wsdl  WSDL Xml element
+	 * @param   string            $path  Path to the webservices folder
+	 *
+	 * @return  boolean
+	 */
+	public static function saveWsdlContentToPath($wsdl, $path)
+	{
+		$domWsdl = dom_import_simplexml($wsdl)->ownerDocument;
+		$domWsdl->preserveWhiteSpace = false;
+		$domWsdl->formatOutput = true;
+
+		return $domWsdl->save($path);
 	}
 }
