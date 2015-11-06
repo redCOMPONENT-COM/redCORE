@@ -63,6 +63,22 @@ abstract class RModelList extends JModelList
 	protected $limitstartField = 'auto';
 
 	/**
+	 * A blacklist of filter variables to not merge into the model's state
+	 *
+	 * @var    array
+	 * @since  1.6.10
+	 */
+	protected $filterBlacklist = array();
+
+	/**
+	 * A blacklist of list variables to not merge into the model's state
+	 *
+	 * @var    array
+	 * @since  1.6.10
+	 */
+	protected $listBlacklist = array('select');
+
+	/**
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
@@ -225,29 +241,45 @@ abstract class RModelList extends JModelList
 	 * @param   string  $direction  An optional direction (asc|desc).
 	 *
 	 * @return  void
+	 *
+	 * @since   1.0.0
 	 */
 	protected function populateState($ordering = null, $direction = null)
 	{
 		// If the context is set, assume that stateful lists are used.
-		if ($this->context)
+		if (!$this->context)
 		{
-			$app = JFactory::getApplication();
+			$this->setState('list.start', 0);
+			$this->setState('list.limit', 0);
 
-			// Receive & set filters
-			if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+			return;
+		}
+
+		$app         = JFactory::getApplication();
+		$inputFilter = JFilterInput::getInstance();
+
+		// Receive & set filters
+		if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+		{
+			foreach ($filters as $name => $value)
 			{
-				foreach ($filters as $name => $value)
+				// Exclude if blacklisted
+				if (!in_array($name, $this->filterBlacklist))
 				{
 					$this->setState('filter.' . $name, $value);
 				}
 			}
+		}
 
-			$limit = 0;
+		$limit = 0;
 
-			// Receive & set list options
-			if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
+		// Receive & set list options
+		if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
+		{
+			foreach ($list as $name => $value)
 			{
-				foreach ($list as $name => $value)
+				// Exclude if blacklisted
+				if (!in_array($name, $this->listBlacklist))
 				{
 					// Extra validations
 					switch ($name)
@@ -287,8 +319,6 @@ abstract class RModelList extends JModelList
 							{
 								$value = $ordering;
 							}
-
-							$this->setState('list.' . $name, $value);
 							break;
 
 						case 'direction':
@@ -296,61 +326,83 @@ abstract class RModelList extends JModelList
 							{
 								$value = $direction;
 							}
-
-							$this->setState('list.' . $name, $value);
 							break;
 
 						case $this->limitField:
-							$limit = $value;
+							$value = $inputFilter->clean($value, 'int');
 							$this->setState('list.limit', $value);
+							$limit = $value;
 							break;
 
-						// Just to keep the default case
-						default:
-							$this->setState('list.' . $name, $value);
+						case $this->limitstartField:
+							$value = $inputFilter->clean($value, 'int');
+							break;
+
+						case 'select':
+							$explodedValue = explode(',', $value);
+
+							foreach ($explodedValue as &$field)
+							{
+								$field = $inputFilter->clean($field, 'cmd');
+							}
+
+							$value = implode(',', $explodedValue);
 							break;
 					}
+
+					$this->setState('list.' . $name, $value);
 				}
 			}
-			else
-			// Keep B/C for components previous to jform forms for filters
-			{
-				// Pre-fill the limits
-				$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $app->getCfg('list_limit'), 'uint');
-				$this->setState('list.limit', $limit);
-
-				// Check if the ordering field is in the white list, otherwise use the incoming value.
-				$value = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
-
-				if (!in_array($value, $this->filter_fields))
-				{
-					$value = $ordering;
-					$app->setUserState($this->context . '.ordercol', $value);
-				}
-
-				$this->setState('list.ordering', $value);
-
-				// Check if the ordering direction is valid, otherwise use the incoming value.
-				$value = $app->getUserStateFromRequest($this->context . '.orderdirn', 'filter_order_Dir', $direction);
-
-				if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
-				{
-					$value = $direction;
-					$app->setUserState($this->context . '.orderdirn', $value);
-				}
-
-				$this->setState('list.direction', $value);
-			}
-
-			$value = $app->getUserStateFromRequest($this->context . '.' . $this->limitstartField, $this->limitstartField, 0);
-			$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
-			$this->setState('list.start', $limitstart);
 		}
 		else
+		// Keep B/C for components previous to jform forms for filters
 		{
-			$this->setState('list.start', 0);
-			$this->setState('list.limit', 0);
+			// Pre-fill the limits
+			$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $app->get('list_limit'), 'uint');
+			$this->setState('list.limit', $limit);
+
+			// Check if the ordering field is in the white list, otherwise use the incoming value.
+			$value = $app->getUserStateFromRequest($this->context . '.ordercol', 'filter_order', $ordering);
+
+			if (!in_array($value, $this->filter_fields))
+			{
+				$value = $ordering;
+				$app->setUserState($this->context . '.ordercol', $value);
+			}
+
+			$this->setState('list.ordering', $value);
+
+			// Check if the ordering direction is valid, otherwise use the incoming value.
+			$value = $app->getUserStateFromRequest($this->context . '.orderdirn', 'filter_order_Dir', $direction);
+
+			if (!in_array(strtoupper($value), array('ASC', 'DESC', '')))
+			{
+				$value = $direction;
+				$app->setUserState($this->context . '.orderdirn', $value);
+			}
+
+			$this->setState('list.direction', $value);
 		}
+
+		// Support old ordering field
+		$oldOrdering = $app->input->get('filter_order');
+
+		if (!empty($oldOrdering) && in_array($oldOrdering, $this->filter_fields))
+		{
+			$this->setState('list.ordering', $oldOrdering);
+		}
+
+		// Support old direction field
+		$oldDirection = $app->input->get('filter_order_Dir');
+
+		if (!empty($oldDirection) && in_array(strtoupper($oldDirection), array('ASC', 'DESC', '')))
+		{
+			$this->setState('list.direction', $oldDirection);
+		}
+
+		$value = $app->getUserStateFromRequest($this->context . '.' . $this->limitstartField, $this->limitstartField, 0);
+		$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
+		$this->setState('list.start', $limitstart);
 	}
 
 	/**
