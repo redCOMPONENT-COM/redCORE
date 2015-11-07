@@ -29,9 +29,9 @@ before_script:
 
 script:
 - php vendor/bin/robo check:robo-file-version
-- php .travis/phppec.php component/ libraries/ modules/ plugins/
-- php .travis/phpcs.php
-- php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
+- php build/.travis/phppec.php component/ libraries/ modules/ plugins/
+- php build/.travis/phpcs.php
+- php build/.travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
 - mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
 - mv tests/api.suite.dist.yml tests/api.suite.yml
 - vendor/bin/robo run:tests
