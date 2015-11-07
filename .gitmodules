@@ -1,5 +1,5 @@
-[submodule ".travis/phpcs/Joomla"]
-	path = .travis/phpcs/Joomla
+[submodule "build/.travis/phpcs/Joomla"]
+	path = build/.travis/phpcs/Joomla
 	url = https://github.com/joomla/coding-standards.git
 [submodule "extensions/plugins/system/mvcoverride"]
 	path = extensions/plugins/system/mvcoverride
