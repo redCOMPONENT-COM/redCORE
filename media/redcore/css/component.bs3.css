@@ -5744,7 +5744,6 @@
 .redcore .modal-body {
   position: relative;
   padding: 15px;
-  overflow: auto;
 }
 .redcore .modal-footer {
   padding: 15px;
@@ -9144,6 +9143,9 @@
   /* Custom */
   /* Fixing chosen bug when form is inline */
   /* Chart.js */
+}
+.redcore .modal-body {
+  overflow: auto;
 }
 .redcore .content {
   margin-top: 10px;
