@@ -37,6 +37,13 @@
         <delete dir="${www.dir}/plugins/system/${extension}" quiet="yes" includeemptydirs="true"/>
         <delete dir="${www.dir}/modules/mod_redcore_language_switcher" quiet="yes" includeemptydirs="true"/>
 
+        <!-- Webservices -->
+        <copy todir="${www.dir}/media/redcore/webservices" overwrite="true">
+            <fileset dir="${redcore.src}/extensions/webservices">
+                <include name="**" />
+            </fileset>
+        </copy>
+
         <!-- Libraries -->
         <copy todir="${www.dir}/libraries" overwrite="true">
             <fileset dir="${redcore.src}/libraries">

@@ -81,13 +81,22 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						{
 							$column = array();
 
-							$column['base_expr'] = ''
-								. 'COALESCE('
-								. $foundTable['alias']['name']
-								. '.' . $tableColumn
-								. ',' . $foundTable['alias']['originalName']
-								. '.' . $tableColumn
-								. ')';
+							// If column is primary key we do not need to translate it
+							if (in_array($tableColumn, $translationTables[$foundTable['originalTableName']]->primaryKeys))
+							{
+								$column['base_expr'] = $foundTable['alias']['originalName'] . '.' . $tableColumn;
+							}
+							else
+							{
+								$column['base_expr'] = ''
+										. 'COALESCE('
+										. $foundTable['alias']['name']
+										. '.' . $tableColumn
+										. ',' . $foundTable['alias']['originalName']
+										. '.' . $tableColumn
+										. ')';
+							}
+
 							$column['alias'] = $db->qn($tableColumn);
 							$column['table'] = $foundTable;
 							$column['columnName'] = $tableColumn;
@@ -311,7 +320,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							elseif (is_array($tagColumnsValue['sub_tree']))
 							{
 								// We will not replace some aggregate functions columns
-								if (!in_array($tagColumnsValue['expr_type'], array('aggregate_function')) && strtolower($tagColumnsValue['base_expr']) != 'count')
+								if (!(in_array($tagColumnsValue['expr_type'], array('aggregate_function')) && strtolower($tagColumnsValue['base_expr']) == 'count'))
 								{
 									$keys = array_keys($tagColumnsValue['sub_tree']);
 
@@ -461,8 +470,9 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$language
 								);
 								$newTagValue['ref_clause'] = $refClause;
-								$foundTables[$newTagValue['alias']['name']] = $newTagValue;
-								$originalTables[$newTagValue['alias']['originalName']] = 1;
+								$foundTables[] = $newTagValue;
+								$originalTables[$newTagValue['alias']['originalName']] = isset($originalTables[$newTagValue['alias']['originalName']]) ?
+									$originalTables[$newTagValue['alias']['originalName']]++ : 1;
 							}
 						}
 						// There is an issue in sql parser for UNION and UNION ALL, this is a solution for it
@@ -514,7 +524,22 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							{
 								foreach ($tagValue['sub_tree'] as $subKey => $subTree)
 								{
-									if (!empty($tagValue['sub_tree'][$subKey]['sub_tree']))
+									// In case we have a Subquery directly under the expression we handle it separately
+									if (!empty($subTree['expr_type']) && $subTree['expr_type'] == 'subquery')
+									{
+										// We need to remove brackets from the query or else the query will not be parsed properly
+										$sqlBracketLess = self::removeParenthesisFromStart($subTree['base_expr']);
+										$parsedSubQuery = self::buildTranslationQuery($sqlBracketLess);
+
+										if (!empty($parsedSubQuery))
+										{
+											$sqlParser = new RDatabaseSqlparserSqlparser($parsedSubQuery);
+											$tagValue['sub_tree'][$subKey]['sub_tree'] = $sqlParser->parsed;
+											$tagValue['sub_tree'][$subKey]['base_expr'] = '(' . $parsedSubQuery . ')';
+											$subQueryFound = true;
+										}
+									}
+									elseif (!empty($tagValue['sub_tree'][$subKey]['sub_tree']))
 									{
 										$tagValue['sub_tree'][$subKey]['sub_tree'] = self::parseTableReplacements(
 											$tagValue['sub_tree'][$subKey]['sub_tree'],
@@ -589,11 +614,14 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		$string = str_replace('#__', '', $originalTableName);
 		$string .= '_' . substr(RFilesystemFile::getUniqueName($counter), 0, 4);
 
-		if (!empty($foundTables[$string]))
+		foreach ($foundTables as $foundTable)
 		{
-			$counter++;
+			if (isset($foundTable['alias']['name']) && $foundTable['alias']['name'] == $string)
+			{
+				$counter++;
 
-			return self::getUniqueAlias($originalTableName, $foundTables, $counter);
+				return self::getUniqueAlias($originalTableName, $foundTables, $counter);
+			}
 		}
 
 		return $string;

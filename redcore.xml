@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.6.7</version>
+    <version>1.6.13</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.6.7" defaultFramework="bootstrap3" />
+    <redcore version="1.6.13" defaultFramework="bootstrap3" />
 
     <install folder="component/admin">
         <sql>
@@ -76,6 +76,8 @@
         <folder>images</folder>
         <folder>js</folder>
         <folder>translations</folder>
+
+        <!-- Empty folder structure -->
         <folder>webservices</folder>
     </media>
 
@@ -113,6 +115,11 @@
         <translation name="com_users"/>
         <translation name="com_weblinks"/>
     </translations>
+
+    <!-- Webservices to install with the component -->
+    <webservices folder="extensions/webservices">
+        <folder>joomla</folder>
+    </webservices>
 
     <!-- Cli to install with the component -->
     <cli>
