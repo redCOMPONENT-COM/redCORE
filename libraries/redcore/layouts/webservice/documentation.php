@@ -19,15 +19,13 @@ $date   = new JDate;
 
 $halLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal');
 $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webserviceName, $view->webserviceVersion, 'hal', 'doc');
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1\" />
-	<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+	<link type="text/css" href="<?php echo JUri::root(true) . '/media/redcore/css/component.bs3.min.css' ?>" rel="stylesheet" />
+	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/bootstrap.min.js' ?>" />
 <?php
 	if ($print) :
 ?>
@@ -41,7 +39,7 @@ $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webservi
 	endif;
 ?>
 </head>
-<body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?>>
+<body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?> class="redcore">
 <div class="container-fluid">
 	<?php if (empty($xml)) : ?>
 		<h1><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_NONE'); ?></h1>
