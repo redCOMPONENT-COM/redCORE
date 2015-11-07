@@ -1,0 +1,48 @@
+@import "./bootstrap3/variables.less";
+
+form {
+	/* Radio buttons */
+	fieldset.radio.btn-group {
+		padding-left: 0;
+	}
+	.radio.btn-group > label:first-of-type {
+		border-bottom-left-radius: 4px;
+		border-top-left-radius: 4px;
+		margin-left: 0;
+	}
+	.radio.btn-group input[type=radio] {
+		display: none;
+	}
+	.radio input[type="radio"],
+	.checkbox input[type="checkbox"] {
+		float: left;
+		margin-left: -20px;
+	}
+
+  // Shared size and type resets
+  select,
+  textarea,
+  input[type="text"],
+  input[type="password"],
+  input[type="datetime"],
+  input[type="datetime-local"],
+  input[type="date"],
+  input[type="month"],
+  input[type="time"],
+  input[type="week"],
+  input[type="number"],
+  input[type="email"],
+  input[type="url"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="color"],
+  .uneditable-input {
+    height: @input-height-base;
+    font-size: @font-size-base;
+    line-height: @line-height-computed;
+  }
+}
+.form-group{
+  clear: both;
+  margin-bottom: 10px;
+}

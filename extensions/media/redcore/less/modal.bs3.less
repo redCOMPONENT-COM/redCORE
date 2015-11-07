@@ -1,0 +1,56 @@
+.modal {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right:0;
+  z-index: 1050;
+  margin-left: 0;
+  background-color: transparent;
+  width: inherit;
+  border: 0 solid rgba(0, 0, 0, 0.3);
+  *border: 0 solid #999;
+  /* IE6-7 */
+
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  outline: 0;
+}
+
+.modal-dialog{
+  width: 600px;
+  margin: 30px auto;
+}
+.modal .modal-dialog-lg{
+  width: 80%;
+}
+.modal-content {
+  -webkit-box-shadow: 0 5px 15px rgba(0,0,0,.5);
+  box-shadow: 0 5px 15px rgba(0,0,0,.5);
+}
+
+.modal-body iframe{
+  max-height: inherit;
+}
+
+.modal-iframe-external-container .modal-dialog{
+  width:95%;
+  height:85%;
+  padding:0;
+}
+.modal-iframe-external-container .modal-content{
+  padding:0;
+  height:100%;
+}
+.modal-iframe-external-container .modal-body{
+  width:inherit;
+  max-height: inherit;
+  height:85%;
+}

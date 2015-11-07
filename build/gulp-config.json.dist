@@ -1,0 +1,7 @@
+{
+	"wwwDir"        : "/var/www/html/yoursite",
+	"release_dir"   : "./tests/joomla-cms3/releases/",
+	"browserConfig" : {
+		"proxy" : "localhost"
+	}
+}
