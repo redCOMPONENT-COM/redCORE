@@ -14,7 +14,7 @@
   font-size: 14px;
   line-height: 1.42857143;
   color: #333333;
-  background-color: #ffffff;
+  background-color: #fff;
   /*!
  * Bootstrap v3.3.0 (http://getbootstrap.com)
  * Copyright 2011-2014 Twitter, Inc.
@@ -6650,7 +6650,7 @@
 }
 .redcore .footer {
   background: none repeat scroll 0 0 #999999;
-  box-shadow: 0 1px 0 #eeeeee inset, 0 -15px 15px rgba(255, 255, 255, 0.6);
+  box-shadow: 0 1px 0 #EEE inset, 0 -15px 15px rgba(255, 255, 255, 0.6);
   color: #ffffff;
   padding: 5px 10px;
   font-size: 90%;
@@ -7386,7 +7386,7 @@
 }
 .redcore .icon-border {
   padding: .2em .25em .15em;
-  border: solid 0.08em #eeeeee;
+  border: solid 0.08em #eee;
   border-radius: .1em;
 }
 .redcore .pull-right {
@@ -7488,7 +7488,7 @@
   font-size: 2em;
 }
 .redcore .icon-inverse {
-  color: #ffffff;
+  color: #fff;
 }
 .redcore .icon-glass:before {
   content: "\f000";
