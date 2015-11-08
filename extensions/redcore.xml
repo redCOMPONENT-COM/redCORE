@@ -47,7 +47,7 @@
             <folder>tables</folder>
             <folder>updates</folder>
             <folder>views</folder>
-            <filename>LICENSE</filename>
+            <filename>../../LICENSE</filename>
             <filename>access.xml</filename>
             <filename>controller.php</filename>
             <filename>redcore.php</filename>
@@ -117,13 +117,13 @@
     </translations>
 
     <!-- Webservices to install with the component -->
-    <webservices folder="extensions/webservices">
+    <webservices folder="webservices">
         <folder>joomla</folder>
     </webservices>
 
     <!-- Cli to install with the component -->
     <cli>
-        <folder name="com_redcore" folder="component/cli/com_redcore"/>
+        <folder name="com_redcore" folder="cli/com_redcore"/>
     </cli>
 
     <!-- Minimum requirements for extension -->

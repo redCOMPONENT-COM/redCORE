@@ -3,10 +3,10 @@ var fs   = require('fs');
 
 // Third part extension using redCORE
 try {
-	var config = require('../../../../gulp-config.json');
+	var config = require('../../../../build/gulp-config.json');
 }
 catch(err) {
-	var config = require('../../../gulp-config.json');
+	var config = require('../../../build/gulp-config.json');
 }
 
 // Dependencies
@@ -19,8 +19,8 @@ var uglify      = require('gulp-uglify');
 
 var baseTask  = 'media.redcore';
 
-var subextensionPath = './redCORE/media/redcore';
-var directPath       = './media/redcore';
+var subextensionPath = './redCORE/extensions/media/redcore';
+var directPath       = '../extensions/media/redcore';
 
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
@@ -125,6 +125,7 @@ gulp.task('watch:' + baseTask + ':less',
 	function() {
 		gulp.watch(
 			[extPath + '/less/**/*.less'],
+			{ interval: config.watchInterval },
 			['less:' + baseTask, browserSync.reload]
 		);
 });
@@ -137,6 +138,7 @@ gulp.task('watch:' + baseTask + ':scripts',
 			'!' + extPath + '/js/lib/**',
 			'!' + extPath + '/js/**/*.min.js'
 		],
+		{ interval: config.watchInterval },
 		['scripts:' + baseTask, browserSync.reload]);
 });
 
@@ -148,5 +150,6 @@ gulp.task('watch:' + baseTask + ':styles',
 			'!' + extPath + '/css/lib/**',
 			'!' + extPath + '/css/*.min.css'
 		],
+		{ interval: config.watchInterval },
 		['styles:' + baseTask, browserSync.reload]);
 });

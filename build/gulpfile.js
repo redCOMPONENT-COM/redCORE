@@ -16,7 +16,7 @@ var config      = require('./gulp-config.json');
 var jgulp   = requireDir('./node_modules/joomla-gulp', {recurse: true});
 
 // We will use local gulp repository instead of node_modules since it might be obsolete if we are making changes in this PR
-var redcore = requireDir('./gulp-redcore', {recurse: true});
+var redcore = requireDir('gulp-redcore', {recurse: true});
 
 /**
  * Function for read list folder
@@ -45,13 +45,13 @@ gulp.task('release:redcore', function (cb) {
 	fs.readFile( '../extensions/redcore.xml', function(err, data) {
 		parser.parseString(data, function (err, result) {
 			var version = result.extension.version[0];
-
 			var fileName = argv.skipVersion ? extension.name + '.zip' : extension.name + '-v' + version + '.zip';
 
 			return gulp.src([
                 '../extensions/**/*',
-                '../extensions/**/.gitkeep'
-            ],{ base: './' })
+                '../extensions/**/.gitkeep',
+				'../docs/LICENSE'
+            ])
 			.pipe(zip(fileName))
 			.pipe(gulp.dest(config.release_dir))
             .on('end', cb);

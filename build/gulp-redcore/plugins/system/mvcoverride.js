@@ -3,10 +3,10 @@ var fs   = require('fs');
 
 // Third part extension using redCORE
 try {
-	var config = require('../../../../../gulp-config.json');
+	var config = require('../../../../../build/gulp-config.json');
 }
 catch(err) {
-	var config = require('../../../../gulp-config.json');
+	var config = require('../../../../build/gulp-config.json');
 }
 
 // Dependencies
@@ -15,8 +15,8 @@ var del         = require('del');
 
 var baseTask  = 'plugins.system.mvcoverride';
 
-var subextensionPath = './redCORE/plugins/system/mvcoverride';
-var directPath       = './plugins/system/mvcoverride';
+var subextensionPath = './redCORE/extensions/plugins/system/mvcoverride';
+var directPath       = '../extensions/plugins/system/mvcoverride';
 
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
@@ -41,5 +41,7 @@ gulp.task('watch:' + baseTask,
 
 // Watch: plugin
 gulp.task('watch:' + baseTask + ':plugin', function() {
-	gulp.watch(extPath + '/**/*', ['copy:' + baseTask, browserSync.reload]);
+	gulp.watch(extPath + '/**/*',
+		{ interval: config.watchInterval },
+		['copy:' + baseTask, browserSync.reload]);
 });

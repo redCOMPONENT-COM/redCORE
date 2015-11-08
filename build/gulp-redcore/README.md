@@ -34,6 +34,7 @@ This is a sample redCORE `gulp-extensions.json` file:
 
 ```json
 {
+	"cli" 		 : ["redcore"],
 	"components" : ["redcore"],
 	"libraries"  : ["redcore"],
 	"media"      : ["redcore"],
@@ -43,7 +44,8 @@ This is a sample redCORE `gulp-extensions.json` file:
 	"plugins"    : {
 		"redpayment"     : ["paypal"],
 		"system"         : ["redcore", "mvcoverride"]
-	}
+	},
+	"webservices"      : ["redcore"]
 }
 ```
 
@@ -71,6 +73,7 @@ The end result will be something like:
 
 ```json
 {
+	"cli" 		 : ["redcore"],
 	"components" : ["redcore", "mipayway", "package"],
 	"libraries"  : ["redcore", "mipayway"],
 	"media"      : ["redcore"],
@@ -84,7 +87,8 @@ The end result will be something like:
 		"redpayment"     : ["paypal"],
 		"system"         : ["redcore", "mvcoverride", "mipayway"],
 		"user"           : ["mipayway"]
-	}
+	},
+	"webservices"      : ["redcore"]
 }
 ```
 

@@ -3,10 +3,10 @@ var fs   = require('fs');
 
 // Third part extension using redCORE
 try {
-	var config = require('../../../../../gulp-config.json');
+	var config = require('../../../../../build/gulp-config.json');
 }
 catch(err) {
-	var config = require('../../../../gulp-config.json');
+	var config = require('../../../../build/gulp-config.json');
 }
 
 // Dependencies
@@ -17,12 +17,12 @@ var del         = require('del');
 
 var baseTask  = 'modules.frontend.redcore_langswitcher';
 
-var subextensionPath = './redCORE/modules/site/mod_redcore_language_switcher';
-var directPath       = './modules/site/mod_redcore_language_switcher';
+var subextensionPath = './redCORE/extensions/modules/site/mod_redcore_language_switcher';
+var directPath       = '../extensions/modules/site/mod_redcore_language_switcher';
 
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
-var mediaPath = extPath;
+var mediaPath = extPath + '/media/mod_redcore_language_switcher';
 
 // Clean
 gulp.task('clean:' + baseTask, ['clean:' + baseTask + ':media'], function() {
@@ -38,8 +38,8 @@ gulp.task('clean:' + baseTask + ':media', function() {
 gulp.task('copy:' + baseTask, ['clean:' + baseTask, 'copy:' + baseTask + ':media'], function() {
     return gulp.src([
 	        extPath + '/**',
-	        '!' + mediaPath + '/css',
-	        '!' + mediaPath + '/css/**'
+	        '!' + extPath + '/media',
+	        '!' + extPath + '/media/**'
     	])
 		.pipe(gulp.dest(config.wwwDir + '/modules/mod_redcore_language_switcher'));
 });
@@ -83,7 +83,9 @@ gulp.task('watch:' + baseTask + ':module', function() {
     	extPath + '/**/*',
     	'!' + mediaPath + '/css',
     	'!' + mediaPath + '/css/**'
-    ], ['copy:' + baseTask, browserSync.reload]);
+		],
+		{ interval: config.watchInterval },
+		['copy:' + baseTask, browserSync.reload]);
 });
 
 // Watch: Styles
@@ -91,5 +93,7 @@ gulp.task('watch:' + baseTask + ':styles', function() {
     gulp.watch([
     	mediaPath + '/css/*.css',
     	'!' + mediaPath + '/css/*.min.css'
-    ], ['styles:' + baseTask, browserSync.reload]);
+    	],
+		{ interval: config.watchInterval },
+		['styles:' + baseTask, browserSync.reload]);
 });
