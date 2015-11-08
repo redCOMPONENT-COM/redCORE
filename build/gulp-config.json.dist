@@ -2,6 +2,7 @@
 	"wwwDir"        : "/var/www/html/yoursite",
 	"release_dir"   : "./tests/joomla-cms3/releases/",
 	"watchInterval" : "500",
+	"defaultTasks"  : ["copy", "watch", "copyRedcore", "watchRedcore", "browser-sync"],
 	"browserConfig" : {
 		"proxy" : "localhost"
 	}

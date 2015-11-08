@@ -10,5 +10,5 @@
 		"redpayment"     : ["paypal"],
 		"system"         : ["redcore", "mvcoverride"]
 	},
-	"webservices"      : ["redcore"]
+	"webservices" : ["redcore"]
 }

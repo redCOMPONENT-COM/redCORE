@@ -1,42 +1,24 @@
-var gulp       = require('gulp');
+var gulp       	= require('gulp');
 
-var extension  = require('./package.json');
-
-var argv       = require('yargs').argv;
-var requireDir = require('require-dir');
-var zip        = require('gulp-zip');
-var xml2js     = require('xml2js');
-var fs         = require('fs');
-var path       = require('path');
-
-var parser = new xml2js.Parser();
-
+var extension  	= require('./package.json');
 var config      = require('./gulp-config.json');
 
-var jgulp   = requireDir('./node_modules/joomla-gulp', {recurse: true});
+var argv       	= require('yargs').argv;
+var requireDir 	= require('require-dir');
+var zip        	= require('gulp-zip');
+var xml2js     	= require('xml2js');
+var fs         	= require('fs');
+var path       	= require('path');
 
-// We will use local gulp repository instead of node_modules since it might be obsolete if we are making changes in this PR
-var redcore = requireDir('gulp-redcore', {recurse: true});
+var parser 		= new xml2js.Parser();
+var jgulp   	= requireDir('./node_modules/joomla-gulp', {recurse: true});
 
-/**
- * Function for read list folder
- *
- * @param  string dir Path of folder
- *
- * @return array      Subfolder list.
- */
-function getFolders(dir){
-	return fs.readdirSync(dir)
-		.filter(function(file){
-			return fs.statSync(path.join(dir, file)).isDirectory();
-		}
-	);
-}
+// We will use local redcore gulp repository instead of node_modules
+var redcore 	= requireDir('gulp-redcore', {recurse: true});
 
 gulp.task('release',
 	[
-		'release:redcore',
-		//'release:plugin'
+		'release:redcore'
 	]
 );
 

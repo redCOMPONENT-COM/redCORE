@@ -31,8 +31,9 @@ gulp.task('clean:' + baseTask,
 });
 
 // Clean webservices
-gulp.task('clean:' + baseTask + ':webservices', function() {
-	return del(config.wwwDir + '/media/redcore/webservices/joomla', {force : true});
+gulp.task('clean:' + baseTask + ':webservices', ['copy:media.redcore'], function() {
+	var webserviceFolder = config.wwwDir + '/media/redcore/webservices/joomla';
+	return fs.existsSync(webserviceFolder) ? del(webserviceFolder, {force : true}) : true;
 });
 
 // Copy
@@ -45,7 +46,7 @@ gulp.task('copy:' + baseTask,
 });
 
 // Copy webservices
-gulp.task('copy:' + baseTask + ':webservices', ['clean:' + baseTask + ':webservices'], function() {
+gulp.task('copy:' + baseTask + ':webservices', ['copy:media.redcore', 'clean:' + baseTask + ':webservices'], function(cb) {
 	return gulp.src(extPath + '/**')
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/webservices'));
 });

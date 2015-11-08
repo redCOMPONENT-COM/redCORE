@@ -45,7 +45,7 @@ gulp.task('copy:' + baseTask,
 });
 
 // Copy cli
-gulp.task('copy:' + baseTask + ':cli', ['clean:' + baseTask + ':cli'], function() {
+gulp.task('copy:' + baseTask + ':cli', ['clean:' + baseTask + ':cli'], function(cb) {
 	return gulp.src(extPath + '/**')
 		.pipe(gulp.dest(config.wwwDir + '/cli'));
 });
