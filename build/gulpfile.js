@@ -14,7 +14,9 @@ var parser = new xml2js.Parser();
 var config      = require('./gulp-config.json');
 
 var jgulp   = requireDir('./node_modules/joomla-gulp', {recurse: true});
-var redcore = requireDir('./node_modules/gulp-redcore', {recurse: true});
+
+// We will use local gulp repository instead of node_modules since it might be obsolete if we are making changes in this PR
+var redcore = requireDir('./gulp-redcore', {recurse: true});
 
 /**
  * Function for read list folder
@@ -34,48 +36,21 @@ function getFolders(dir){
 gulp.task('release',
 	[
 		'release:redcore',
-		//'release:plugin',
-		//'release:rsbmedia'
+		//'release:plugin'
 	]
 );
 
 // Override of the release script @todo dodati , ['composer:libraries.redcore']
 gulp.task('release:redcore', function (cb) {
-	fs.readFile( './redcore.xml', function(err, data) {
+	fs.readFile( '../extensions/redcore.xml', function(err, data) {
 		parser.parseString(data, function (err, result) {
 			var version = result.extension.version[0];
 
 			var fileName = argv.skipVersion ? extension.name + '.zip' : extension.name + '-v' + version + '.zip';
 
 			return gulp.src([
-                './**/*',
-                './**/.gitkeep',
-                "!./**/bower.json",
-                "!./**/scss/**",
-                "!./**/less/**",
-                "!./**/build.*",
-                "!./**/build/**",
-                "!./**/*.md",
-                "!./**/docs/**",
-                "!./**/joomla-gulp/**",
-                "!./**/jgulp/**",
-                "!./**/gulp**",
-                "!./**/gulp**/**",
-                "!./**/gulpfile.js",
-                "!./**/node_modules/**",
-                "!./**/node_modules/**/.*",
-                "!./**/package.json",
-                "!./**/releases/**",
-                "!./**/releases/**/.*",
-                "!./src/**",
-                '!./**/sample/**',
-                '!./**/sample/.*',
-                '!./**/tests/**',
-                '!./**/tests/.*',
-                "!./**/*.sublime-*",
-                "!./**/*.sh",
-                "!./**/composer.json",
-                "!./**/phpunit*.xml",
+                '../extensions/**/*',
+                '../extensions/**/.gitkeep'
             ],{ base: './' })
 			.pipe(zip(fileName))
 			.pipe(gulp.dest(config.release_dir))
