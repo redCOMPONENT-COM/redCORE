@@ -17,12 +17,10 @@ var minifyCSS   = require('gulp-minify-css');
 var rename      = require('gulp-rename');
 var uglify      = require('gulp-uglify');
 
-var baseTask  = 'media.redcore';
-
-var subextensionPath = './redCORE/extensions/media/redcore';
-var directPath       = '../extensions/media/redcore';
-
-var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
+var baseTask  	= 'media.redcore';
+var baseFolder  = fs.existsSync('./redCORE') ? './redCORE' : '..';
+var extPath = baseFolder + '/extensions/media/redcore';
+var buildPath = baseFolder + '/build';
 
 // Clean
 gulp.task('clean:' + baseTask, function() {
@@ -34,17 +32,17 @@ gulp.task('copy:' + baseTask, ['clean:' + baseTask],
 	function() {
 		return gulp.src([
 				extPath + '/**',
-				extPath + '/**/.gitkeep',
-				'!' + extPath + '/less',
-				'!' + extPath + '/less/**'
+				extPath + '/**/.gitkeep'
 			])
-			.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+			.pipe(gulp.dest(config.wwwDir + '/media/redcore'))/* &&
+			gulp.src(extPath + '/../redcore.xml')
+					.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore'))*/;
 });
 
 // LESS
 gulp.task('less:' + baseTask,
 	[
-		//'less:' + baseTask + ':component',
+		'less:' + baseTask + ':component',
 		'less:' + baseTask + ':component.bs3'
 	],
 	function() {
@@ -52,8 +50,8 @@ gulp.task('less:' + baseTask,
 
 // LESS: Component
 gulp.task('less:' + baseTask + ':component', function () {
-	return gulp.src(extPath + '/less/component.less')
-		.pipe(less({paths: [extPath + '/less']}))
+	return gulp.src(buildPath + '/less/component.less')
+		.pipe(less({paths: [buildPath + '/less']}))
 		.pipe(gulp.dest(extPath + '/css'))
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'))
 		.pipe(minifyCSS())
@@ -66,8 +64,8 @@ gulp.task('less:' + baseTask + ':component', function () {
 
 // LESS: Component Bootstrap3
 gulp.task('less:' + baseTask + ':component.bs3', function () {
-	return gulp.src(extPath + '/less/component.bs3.less')
-		.pipe(less({paths: [extPath + '/less']}))
+	return gulp.src(buildPath + '/less/component.bs3.less')
+		.pipe(less({paths: [buildPath + '/less']}))
 		.pipe(gulp.dest(extPath + '/css'))
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'))
 		.pipe(minifyCSS())
@@ -124,7 +122,7 @@ gulp.task('watch:' + baseTask,
 gulp.task('watch:' + baseTask + ':less',
 	function() {
 		gulp.watch(
-			[extPath + '/less/**/*.less'],
+			[buildPath + '/less/**/*.less'],
 			{ interval: config.watchInterval },
 			['less:' + baseTask, browserSync.reload]
 		);

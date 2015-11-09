@@ -22,7 +22,7 @@ gulp.task('release',
 	]
 );
 
-// Override of the release script @todo dodati , ['composer:libraries.redcore']
+// Override of the release script
 gulp.task('release:redcore', function (cb) {
 	fs.readFile( '../extensions/redcore.xml', function(err, data) {
 		parser.parseString(data, function (err, result) {
