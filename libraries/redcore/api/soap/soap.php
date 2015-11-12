@@ -304,7 +304,7 @@ class RApiSoapSoap extends RApi
 	 */
 	public function prepareFaultResponseMessage($webservice)
 	{
-		$fault = $webservice->statusCode . " " . $webservice->statusText . ". \n";
+		$fault = $webservice->statusCode . " " . $webservice->statusText . " \n";
 
 		if (isset($webservice->hal))
 		{
