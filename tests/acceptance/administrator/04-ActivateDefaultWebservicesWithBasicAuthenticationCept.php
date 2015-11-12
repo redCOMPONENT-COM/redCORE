@@ -18,6 +18,7 @@ $I->click(['link' => 'redCORE - System plugin']);
 $I->waitForText('Plugins: redCORE - System plugin', 30, ['css' => 'h1']);
 $I->click(['link' => 'Webservice options']);
 $I->selectOptionInRadioField('Enable webservices', 'Yes');
+$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
 $I->selectOptionInChosen('Check user permission against','Joomla - Use already defined authorization checks in Joomla');
 $I->click(['xpath' => "//div[@id='toolbar-apply']/button"]);
 $I->waitForText('Plugin successfully saved.', 30, ['id' => 'system-message-container']);
