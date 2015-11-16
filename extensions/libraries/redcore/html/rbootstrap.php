@@ -92,7 +92,7 @@ abstract class JHtmlRbootstrap
 		static::framework();
 
 		RHelperAsset::load('lib/bootstrap-timepicker/css/bootstrap-timepicker.min.css', static::EXTENSION);
-		RHelperAsset::load('lib/bootstrap-timepicker.min.js', static::EXTENSION);
+		RHelperAsset::load('lib/bootstrap-timepicker/js/bootstrap-timepicker.min.js', static::EXTENSION);
 	}
 
 	/**

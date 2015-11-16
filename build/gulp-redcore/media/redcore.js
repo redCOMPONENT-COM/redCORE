@@ -50,8 +50,8 @@ gulp.task('less:' + baseTask,
 
 // LESS: Component
 gulp.task('less:' + baseTask + ':component', function () {
-	return gulp.src(buildPath + '/less/component.less')
-		.pipe(less({paths: [buildPath + '/less']}))
+	return gulp.src(buildPath + '/media/less/component.less')
+		.pipe(less({paths: [buildPath + '/media/less']}))
 		.pipe(gulp.dest(extPath + '/css'))
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'))
 		.pipe(minifyCSS())
@@ -64,8 +64,8 @@ gulp.task('less:' + baseTask + ':component', function () {
 
 // LESS: Component Bootstrap3
 gulp.task('less:' + baseTask + ':component.bs3', function () {
-	return gulp.src(buildPath + '/less/component.bs3.less')
-		.pipe(less({paths: [buildPath + '/less']}))
+	return gulp.src(buildPath + '/media/less/component.bs3.less')
+		.pipe(less({paths: [buildPath + '/media/less']}))
 		.pipe(gulp.dest(extPath + '/css'))
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'))
 		.pipe(minifyCSS())
@@ -79,9 +79,15 @@ gulp.task('less:' + baseTask + ':component.bs3', function () {
 // Scripts
 gulp.task('scripts:' + baseTask, function () {
 	return gulp.src([
-			extPath + '/js/**/*.js',
-			'!' + extPath + '/js/lib/**',
-			'!' + extPath + '/js/**/*.min.js'
+				buildPath + '/media/**/*.js',
+				'!' + buildPath + '/media/**/*.min.js',
+				'!' + buildPath + '/media/**/Gruntfile.js',
+				'!' + buildPath + '/media/**/gulpfile.js',
+				'!' + buildPath + '/media/lib/**/spec/**',
+				'!' + buildPath + '/media/lib/**/test/**',
+				'!' + buildPath + '/media/lib/**/asset*/**',
+				'!' + buildPath + '/media/lib/**/samples*/**',
+				'!' + buildPath + '/media/lib/**/src*/**'
 		])
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/js'))
 		.pipe(uglify())
@@ -122,7 +128,7 @@ gulp.task('watch:' + baseTask,
 gulp.task('watch:' + baseTask + ':less',
 	function() {
 		gulp.watch(
-			[buildPath + '/less/**/*.less'],
+			[buildPath + '/media/less/**/*.less'],
 			{ interval: config.watchInterval },
 			['less:' + baseTask, browserSync.reload]
 		);
@@ -132,9 +138,14 @@ gulp.task('watch:' + baseTask + ':less',
 gulp.task('watch:' + baseTask + ':scripts',
 	function() {
 		gulp.watch([
-			extPath + '/js/**/*.js',
-			'!' + extPath + '/js/lib/**',
-			'!' + extPath + '/js/**/*.min.js'
+			buildPath + '/media/**/*.js',
+			'!' + buildPath + '/media/**/Gruntfile.js',
+			'!' + buildPath + '/media/**/gulpfile.js',
+			'!' + buildPath + '/media/lib/**/spec/**',
+			'!' + buildPath + '/media/lib/**/test/**',
+			'!' + buildPath + '/media/lib/**/asset*/**',
+			'!' + buildPath + '/media/lib/**/samples*/**',
+			'!' + buildPath + '/media/lib/**/src*/**'
 		],
 		{ interval: config.watchInterval },
 		['scripts:' + baseTask, browserSync.reload]);

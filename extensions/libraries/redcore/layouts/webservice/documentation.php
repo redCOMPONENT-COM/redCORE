@@ -25,7 +25,7 @@ $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webservi
 <head>
 	<meta charset="utf-8" />
 	<link type="text/css" href="<?php echo JUri::root(true) . '/media/redcore/css/component.bs3.min.css' ?>" rel="stylesheet" />
-	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/bootstrap.min.js' ?>" />
+	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/js/bootstrap.min.js' ?>" />
 <?php
 	if ($print) :
 ?>

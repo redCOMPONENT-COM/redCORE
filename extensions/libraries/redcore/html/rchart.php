@@ -60,7 +60,7 @@ abstract class RHtmlRchart
 
 		JHtmlRjquery::framework();
 
-		RHelperAsset::load('lib/chart/Chart.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/Chart-js/Chart.min.js', self::EXTENSION);
 
 		static::$loaded[__METHOD__] = true;
 
