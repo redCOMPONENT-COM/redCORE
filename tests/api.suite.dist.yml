@@ -5,3 +5,8 @@ modules:
       - REST:
           depends: PhpBrowser
           url: http://localhost/tests/joomla-cms3/
+      - SOAP:
+          depends: PhpBrowser
+          endpoint: http://localhost/tests/joomla-cms3/administrator/index.php?webserviceClient=administrator&webserviceVersion=1.0.0&option=contact&api=soap
+          schema: http://localhost/tests/joomla-cms3/media/redcore/webservices/administrator.contact.1.0.0.wsdl
+
