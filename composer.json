@@ -13,6 +13,7 @@
         "joomla-projects/joomla-browser": "dev-develop",
         "codegyre/robo": "dev-master",
         "redcomponent/robo": "dev-master",
-        "flow/jsonpath": "dev-master"
+        "flow/jsonpath": "dev-master",
+        "fzaninotto/faker": "^1.5"
     }
 }

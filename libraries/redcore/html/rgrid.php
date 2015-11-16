@@ -87,12 +87,13 @@ abstract class JHtmlRgrid
 	 * @param   boolean       $translate       An optional setting for translation.
 	 * @param   string        $checkbox	       An optional prefix for checkboxes.
 	 * @param   string        $formId          An optional form id
+	 * @param   string        $buttonClass     An optional button class
 	 *
 	 * @return  string         The Html code
 	 */
 	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '',
 		$tip = false, $active_class = '',$inactive_class = '',
-		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm', $buttonClass = '')
 	{
 		if (is_array($prefix))
 		{
@@ -105,6 +106,8 @@ abstract class JHtmlRgrid
 			$enabled        = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$translate      = array_key_exists('translate', $options) ? $options['translate'] : $translate;
 			$checkbox       = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
+			$formId         = array_key_exists('formId', $options) ? $options['formId'] : $formId;
+			$buttonClass    = array_key_exists('buttonClass', $options) ? $options['buttonClass'] : $buttonClass;
 			$prefix         = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
@@ -115,24 +118,22 @@ abstract class JHtmlRgrid
 
 		if ($enabled)
 		{
-			$class = '';
-
 			// Prepare the class.
 			if ($active_class === 'plus')
 			{
-				$class = 'published';
+				$buttonClass = 'published';
 			}
 
 			elseif ($active_class === 'minus')
 			{
-				$class = 'unpublished';
+				$buttonClass = 'unpublished';
 			}
 
-			$class .= $tip ? ' hasTooltip' : '';
+			$buttonClass .= $tip ? ' hasTooltip' : '';
 
-			$html[] = '<a class="btn btn-small btn-sm ' . $class . '"';
+			$html[] = '<a class="btn btn-small btn-sm ' . $buttonClass . '"';
 			$html[] = ' href="javascript:void(0);" onclick="return listItemTaskForm(\'' . $checkbox . $i . '\',\''
-				. $prefix . $task . '\',\'' . $formId . '\')"';
+					. $prefix . $task . '\',\'' . $formId . '\')"';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($active_title) : $active_title, ENT_COMPAT, 'UTF-8')) . '">';
 			$html[] = '<i class="icon-' . $active_class . '">';
 			$html[] = '</i>';
@@ -140,7 +141,7 @@ abstract class JHtmlRgrid
 		}
 		else
 		{
-			$html[] = '<a class="btn btn-micro disabled jgrid ' . ($tip ? 'hasTooltip' : '') . '" ';
+			$html[] = '<a class="btn btn-micro disabled jgrid ' . $buttonClass . ' ' . ($tip ? 'hasTooltip' : '') . '" ';
 			$html[] = ' title="' . addslashes(htmlspecialchars($translate ? JText::_($inactive_title) : $inactive_title, ENT_COMPAT, 'UTF-8')) . '">';
 
 			if ($active_class == "protected")

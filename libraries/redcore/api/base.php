@@ -137,7 +137,7 @@ abstract class RApiBase implements RApiInterface
 	{
 		if (!empty($errors))
 		{
-			return self::$statusTexts[$errorCode] . ': ' . implode(chr('. '), $errors);
+			return self::$statusTexts[$errorCode] . ': ' . implode(". \n", $errors);
 		}
 		else
 		{
