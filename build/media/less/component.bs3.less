@@ -1,0 +1,250 @@
+/*!
+ * redCORE v1.7.x
+ *
+ * Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved
+ * Licensed under the GNU General Public License version 2 or later.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Based on Twitter Bootstrap v.3.3.0
+ * http://getbootstrap.com/
+ */
+
+.redcore {
+
+  // Core variables and mixins
+  @import "./bootstrap3/variables.less"; // Modify this for custom colors, font-sizes, etc
+
+  // redCORE - customisation & mixins
+  //@import "variables.less";
+  //@import "mixins.less";
+
+  margin: 0;
+  font-family: @font-family-base;
+  font-size: @font-size-base;
+  line-height: @line-height-base;
+  color: @text-color;
+  background-color: @body-bg;
+
+  // Import modal classes
+  @import "modal.bs3.less";
+
+  // complete bootstrap
+  @import (less) "../extensions/media/redcore/css/lib/bootstrap3/css/bootstrap.css";
+
+  // Overriding font location to "lib/bootstrap3/fonts"
+  @font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('lib/bootstrap3/fonts/glyphicons-halflings-regular.eot');
+    src: url('lib/bootstrap3/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.woff') format('woff'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  }
+
+  // Custom redCORE
+  @import "navbar.less";
+  @import "sidebar.less";
+  @import "footer.less";
+  @import "forms.less";
+
+  // Additional css to override default joomla template
+  @import "joomla.bs3.less";
+}
+
+// Modal not namespaced
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.redcore {
+  padding-top: 40px;
+
+  .modal-body {
+    overflow: auto;
+  }
+  .content {
+    margin-top: 10px;
+    padding-bottom: 40px;
+  }
+  .toolbar {
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #FAFAFA;
+    padding: 5px 5px 5px 5px;
+    border: 1px solid #F2F2F2;
+  }
+  .toolbar .btn {
+    font-size: 13px;
+    font-weight: bold;
+  }
+  div.tooltip {
+    background: transparent;
+    border: 0;
+    float: none;
+    max-width: unset;
+  }
+  h1 {
+    margin-top: 0;
+  }
+  #system-message-container .close {
+    margin-right: 5px;
+  }
+  .published {
+    color: #5BB75B;
+  }
+  .unpublished {
+    color: #DA4F49;
+  }
+  /* Force tabs to overflow visible */
+  .tab-content {
+    overflow: visible;
+  }
+  .tab-content.overauto {
+    overflow: auto;
+  }
+  .sortable-handler.inactive {
+    opacity: 0.3;
+  }
+  .element-invisible {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+  }
+  .nowrap {
+    white-space: nowrap;
+  }
+  .opacity-70 {
+    opacity: 0.7;
+    filter: alpha(opacity=70);
+  }
+  .opacity-40 {
+    opacity: 0.4;
+    filter: alpha(opacity=40);
+  }
+
+  // Set fontawesome icon settings
+  [class^="icon-"]:before,
+  [class*=" icon-"]:before {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome; // shortening font declaration
+    font-size: inherit; // can't have font-size inherit on line above, so need to override
+    text-rendering: auto; // optimizelegibility throws things off #1094
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: inherit;
+  }
+
+  .icon-stack:before {
+    content: none;
+  }
+
+  fieldset label {
+    float: inherit;
+    clear: inherit;
+  }
+  .controls .btn-group > .btn {
+    min-width: 50px;
+  }
+
+  .navbar-inverse .navbar-inner {
+    background-color: #1b1b1b;
+    background-image: -moz-linear-gradient(top, #222222, #111111);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#222222), to(#111111));
+    background-image: -webkit-linear-gradient(top, #222222, #111111);
+    background-image: -o-linear-gradient(top, #222222, #111111);
+    background-image: linear-gradient(to bottom, #222222, #111111);
+    background-repeat: repeat-x;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff222222', endColorstr='#ff111111', GradientType=0);
+    border-color: #252525;
+  }
+
+  .navbar-brand {
+    height: 40px;
+  }
+
+  .topbar{
+    min-height: 40px;
+  }
+  .topbar .nav > li > a{
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .topbar .caret{
+    vertical-align: top;
+  }
+  .sidebar .nav > li > a{
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .list-group .divider{
+    height: 1px;
+    margin: 9px 1px;
+    overflow: hidden;
+    background-color: #e5e5e5;
+    border-bottom: 1px solid #ffffff;
+  }
+  .list-group{
+    margin:0;
+  }
+
+  button.close{
+    right: 0;
+  }
+
+  .form-horizontal .input-group .radio{
+    padding-top: 0;
+  }
+  .form-inline .input-group .radio label, .redcore .form-inline .input-group .checkbox label{
+    padding-left: 20px;
+  }
+
+  /* Custom */
+  .row-stripped{
+    padding: 20px 0;
+  }
+  .row-stripped:nth-of-type(odd) {
+    background: #f9f9f9;
+  }
+  .form-group .chzn-container-single .chzn-single{
+    height: 34px;
+    line-height: 30px;
+  }
+  .input-group-sm .chzn-container-single .chzn-single{
+    height: 30px;
+    line-height: 30px;
+  }
+  .input-group-addon .chzn-results{
+    text-align: left;
+  }
+  /* Fixing chosen bug when form is inline */
+  .form-inline .input-group .chzn-container{
+    width: 100% !important;
+  }
+
+  /* Chart.js */
+  ul.chart-legend{
+    list-style-type: none;
+    margin: 0;
+    font-size: 0.8em;
+  }
+  ul.chart-legend li{
+    float:left;
+    padding: 5px;
+  }
+  ul.chart-legend li div{
+    display:inline-block;
+    margin: 5px;
+    width:20px;
+    border-radius: 5px;
+  }
+  .chart-legend-container{
+    border-radius: 5px;
+    background-color: #f5f5f5;
+  }
+  .chart-box{
+    padding: 0;
+  }
+}

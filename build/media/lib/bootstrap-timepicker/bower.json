@@ -1,0 +1,20 @@
+{
+    "name": "bootstrap-timepicker",
+    "version": "0.5.1",
+    "description": "A timepicker component for Twitter Bootstrap",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jdewit/bootstrap-timepicker"
+    },
+    "main": [
+        "js/bootstrap-timepicker.js",
+        "less/bootstrap-timepicker.less"
+    ],
+    "dependencies": {
+        "bootstrap": "~3.0",
+        "jquery": "~2.0"
+    },
+    "devDependencies": {
+        "autotype": "https://raw.github.com/mmonteleone/jquery.autotype/master/jquery.autotype.js"
+    }
+}

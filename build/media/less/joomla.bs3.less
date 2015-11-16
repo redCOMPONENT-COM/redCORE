@@ -1,0 +1,58 @@
+// Core variables and mixins
+@import "bootstrap3/variables.less";
+@import "bootstrap3/mixins.less";
+.form-horizontal{
+
+  // Extra small grid
+  //
+  // Columns, offsets, pushes, and pulls for extra small devices like
+  // smartphones.
+
+  .make-grid(xs);
+
+
+  // Small grid
+  //
+  // Columns, offsets, pushes, and pulls for the small device range, from phones
+  // to tablets.
+
+  @media (min-width: @screen-sm-min) {
+    .make-grid(sm);
+  }
+
+
+  // Medium grid
+  //
+  // Columns, offsets, pushes, and pulls for the desktop device range.
+
+  @media (min-width: @screen-md-min) {
+    .make-grid(md);
+  }
+
+
+  // Large grid
+  //
+  // Columns, offsets, pushes, and pulls for the large desktop device range.
+
+  @media (min-width: @screen-lg-min) {
+    .make-grid(lg);
+  }
+}
+
+// fontawesome 4.3.0
+@import "fontawesome4/variables.less";
+@import "fontawesome4/font-awesome.less";
+
+// Removed icons that are still in Joomla
+.icon-ok-sign:before{
+  content: @fa-var-check-circle;
+}
+
+// Fixing modal
+.modal-backdrop{
+  z-index: 0;
+}
+
+form fieldset.radio input[type="radio"] {
+  margin-left: 5px;
+}
