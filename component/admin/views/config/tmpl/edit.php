@@ -22,9 +22,17 @@ if (empty($tab))
 JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
+JHtml::_('behavior.formvalidator');
+
+JFactory::getDocument()->addScriptDeclaration(
+	'Joomla.submitbutton = function(task){
+	if (task === "config.cancel" || document.formvalidator.isValid(document.getElementById("adminRedCoreForm"))){
+		Joomla.submitform(task, document.getElementById("adminRedCoreForm"));
+	}};'
+);
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_redcore'); ?>"
-      id="adminForm" method="post" name="adminForm" autocomplete="off" class="form-validate form-horizontal" enctype="multipart/form-data">
+      id="adminRedCoreForm" method="post" name="adminRedCoreForm" autocomplete="off" class="form-validate form-horizontal" enctype="multipart/form-data">
 	<ul class="nav nav-tabs" id="mainTabs">
 		<li><a href="#mainComponentConfiguration" data-toggle="tab"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_CONFIGURATION'); ?></a></li>
 		<li><a href="#mainComponentTranslations" data-toggle="tab"><?php echo JText::_('COM_REDCORE_TRANSLATIONS'); ?></a></li>
