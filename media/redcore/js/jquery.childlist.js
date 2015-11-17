@@ -77,7 +77,7 @@
 					var options = "";
 					if (data !== null)
 					{
-						$.each(function(index, item) {
+						$.each(data, function(index, item) {
 							options += '<option value="' + item['value'] + '"';
 							if (item['value'] === self.childValue)
 							{
