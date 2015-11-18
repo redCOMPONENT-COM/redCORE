@@ -568,25 +568,21 @@ class RApiHalHal extends RApi
 
 		if ($displayTarget == 'list')
 		{
-			if (method_exists($model, 'getPagination') && method_exists($model, 'getTotal'))
-			{
-				$totalItems = $model->getTotal();
-
-				if ($model->getState('limitstart', 0) >= $totalItems)
-				{
-					$customError = $this->triggerFunction('createCustomHttpError', 204, array('No more records found'));
-					$this->setStatusCode(204, $customError);
-
-					return $this;
-				}
-			}
-
-			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
-
-			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
-
 			if (method_exists($model, 'getPagination'))
 			{
+				if (method_exists($model, 'getTotal'))
+				{
+					$totalItems = $model->getTotal();
+
+					if ($model->getState('limitstart', 0) >= $totalItems)
+					{
+						$customError = $this->triggerFunction('createCustomHttpError', 204, array('No more records found'));
+						$this->setStatusCode(204, $customError);
+
+						return $this;
+					}
+				}
+
 				$pagination = $model->getPagination();
 				$paginationPages = $pagination->getPaginationPages();
 
@@ -603,6 +599,10 @@ class RApiHalHal extends RApi
 				$this->setData('pagination.page', max($pagination->pagesCurrent, 1));
 				$this->setData('pagination.last', ((max($pagination->pagesTotal, 1) - 1) * $pagination->limit));
 			}
+
+			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+
+			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
 			$this->triggerFunction('setForRenderList', $items, $currentConfiguration);
 
