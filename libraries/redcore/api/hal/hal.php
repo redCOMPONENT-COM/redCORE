@@ -568,6 +568,19 @@ class RApiHalHal extends RApi
 
 		if ($displayTarget == 'list')
 		{
+			if (method_exists($model, 'getPagination') && method_exists($model, 'getTotal'))
+			{
+				$totalItems = $model->getTotal();
+
+				if ($model->getState('limitstart', 0) >= $totalItems)
+				{
+					$customError = $this->triggerFunction('createCustomHttpError', 404, array('No more records found'));
+					$this->setStatusCode(404, $customError);
+
+					return $this;
+				}
+			}
+
 			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
 
 			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
