@@ -574,8 +574,8 @@ class RApiHalHal extends RApi
 
 				if ($model->getState('limitstart', 0) >= $totalItems)
 				{
-					$customError = $this->triggerFunction('createCustomHttpError', 404, array('No more records found'));
-					$this->setStatusCode(404, $customError);
+					$customError = $this->triggerFunction('createCustomHttpError', 204, array('No more records found'));
+					$this->setStatusCode(204, $customError);
 
 					return $this;
 				}
