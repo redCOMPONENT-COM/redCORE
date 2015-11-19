@@ -285,6 +285,7 @@ class RApiSoapOperationOperation
 
 		// We are setting the operation of the webservice to task
 		$this->webservice->options->set('task', $taskName);
+		JFactory::getApplication()->input->set('task', $taskName);
 		$this->setOperation('task');
 		$this->webservice->options->set('data', (array) $data);
 		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
