@@ -6522,8 +6522,8 @@
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('lib/bootstrap3/fonts/glyphicons-halflings-regular.eot');
-  src: url('lib/bootstrap3/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.woff') format('woff'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('lib/bootstrap3/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('../lib/bootstrap3/fonts/glyphicons-halflings-regular.eot');
+  src: url('../lib/bootstrap3/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../lib/bootstrap3/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../lib/bootstrap3/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../lib/bootstrap3/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .redcore .navbar a.brand,
 .redcore .navbar a {
@@ -7335,8 +7335,8 @@
 }
 @font-face {
   font-family: 'FontAwesome';
-  src: url('lib/fontawesome4/fonts/fontawesome-webfont.eot?v=4.3.0');
-  src: url('lib/fontawesome4/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('lib/fontawesome4/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('lib/fontawesome4/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('lib/fontawesome4/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('lib/fontawesome4/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+  src: url('../lib/fontawesome4/fonts/fontawesome-webfont.eot?v=4.3.0');
+  src: url('../lib/fontawesome4/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../lib/fontawesome4/fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('../lib/fontawesome4/fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('../lib/fontawesome4/fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('../lib/fontawesome4/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }

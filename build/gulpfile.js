@@ -9,6 +9,7 @@ var zip        	= require('gulp-zip');
 var xml2js     	= require('xml2js');
 var fs         	= require('fs');
 var path       	= require('path');
+var ghPages 	= require('gulp-gh-pages');
 
 var parser 		= new xml2js.Parser();
 var jgulp   	= requireDir('./node_modules/joomla-gulp', {recurse: true});
@@ -39,4 +40,16 @@ gulp.task('release:redcore', function (cb) {
             .on('end', cb);
 		});
 	});
+});
+
+gulp.task('documentation', function() {
+	// Needed because it requested a username and password for github on Windows
+	process.chdir('../');
+
+	return gulp.src('docs/gh-pages/**/*')
+		.pipe(ghPages({
+			remoteUrl: 'git@github.com:redCOMPONENT-COM/redCORE.git',
+			branch: 'gh-pages',
+			cacheDir: 'docs/.gh-pages/'
+		}));
 });

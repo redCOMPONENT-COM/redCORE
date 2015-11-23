@@ -22,10 +22,14 @@
 		// Auto submit search fields
 		$('.js-enter-submits').enterSubmits();
 
-		$('*[rel=tooltip]').tooltip({
-			"animation":true,
-			"html":true
-		});
+		$('*[rel=tooltip]').each(function () {
+            if ($(this).tooltip){
+                $(this).tooltip({
+                    "animation":true,
+                    "html":true
+                });
+            }
+        });
 
         rRadioGroupButtonsSet();
         rRadioGroupButtonsEvent();

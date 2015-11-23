@@ -417,6 +417,18 @@ abstract class RHtml
 										break;
 									}
 
+									// Try to deal with classical file in a a media subfolder where pointer actually points
+									$path = JPATH_ROOT . "/media/$extension/$element/$file";
+
+									if (file_exists($path))
+									{
+										$md5 = dirname($path) . '/MD5SUM';
+										$includes[] = JUri::root(true) . "/media/$extension/$element/$file" .
+												(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+
+										break;
+									}
+
 									// Try to deal with system files in the template folder
 									$path = JPATH_THEMES . "/$template/$folder/system/$element/$file";
 

@@ -75,6 +75,7 @@
         <folder>fonts</folder>
         <folder>images</folder>
         <folder>js</folder>
+        <folder>lib</folder>
         <folder>translations</folder>
 
         <!-- Empty folder structure -->
