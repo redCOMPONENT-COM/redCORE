@@ -9,13 +9,13 @@ var zip        	= require('gulp-zip');
 var xml2js     	= require('xml2js');
 var fs         	= require('fs');
 var path       	= require('path');
-var ghPages 	= require('gulp-gh-pages');
+var ghPages     = require('gulp-gh-pages');
 
-var parser 		= new xml2js.Parser();
+var parser      = new xml2js.Parser();
 var jgulp   	= requireDir('./node_modules/joomla-gulp', {recurse: true});
 
 // We will use local redcore gulp repository instead of node_modules
-var redcore 	= requireDir('gulp-redcore', {recurse: true});
+var redcore     = requireDir('gulp-redcore', {recurse: true});
 
 gulp.task('release',
 	[

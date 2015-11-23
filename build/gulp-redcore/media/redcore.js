@@ -45,9 +45,7 @@ gulp.task('copy:' + baseTask, ['clean:' + baseTask],
 				extPath + '/**',
 				extPath + '/**/.gitkeep'
 			])
-			.pipe(gulp.dest(config.wwwDir + '/media/redcore'))/* &&
-			gulp.src(extPath + '/../redcore.xml')
-					.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore'))*/;
+			.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
 });
 
 // LESS
