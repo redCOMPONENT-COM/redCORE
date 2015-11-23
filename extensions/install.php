@@ -845,8 +845,8 @@ class Com_RedcoreInstallerScript
 	public function installWebservices($parent)
 	{
 		$installer = $this->getInstaller();
-		$manifest  = $this->getManifest($parent);
-		$src       = $parent->getParent()->getPath('source');
+		$manifest = $this->getManifest($parent);
+		$src = $parent->getParent()->getPath('source');
 
 		if (!$manifest)
 		{
@@ -862,20 +862,18 @@ class Com_RedcoreInstallerScript
 			return false;
 		}
 
-		// Here we set the folder we are going to copy the files to.
-		$destination = JPath::clean(RApiHalHelper::getWebservicesPath());
-
 		// Here we set the folder we are going to copy the files from.
 		$folder = (string) $element->attributes()->folder;
 
-		if ($folder && file_exists($src . '/' . $folder))
+		// This prevents trying to install webservice from other extension directory if webservice folder is not set
+		if (!$folder || !is_dir($src . '/' . $folder))
 		{
-			$source = $src . '/' . $folder;
+			return false;
 		}
-		else
-		{
-			$source = $src;
-		}
+
+		// Here we set the folder we are going to copy the files to.
+		$destination = JPath::clean(RApiHalHelper::getWebservicesPath());
+		$source = $src . '/' . $folder;
 
 		$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
 

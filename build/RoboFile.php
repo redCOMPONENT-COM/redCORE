@@ -89,7 +89,7 @@ class RoboFile extends \Robo\Tasks
 		 * When joomla Staging branch has a bug you can uncomment the following line as a tmp fix for the tests layer.
 		 * Use as $version value the latest tagged stable version at: https://github.com/joomla/joomla-cms/releases
 		 */
-		$version = '3.4.4';
+		$version = '3.4.5';
 
 		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git tests/joomla-cms3");
 
@@ -170,6 +170,40 @@ class RoboFile extends \Robo\Tasks
 		     ->stopOnFail();
 
 		$this->killSelenium();
+	}
+
+	/**
+	 * Preparation for running manual tests after installing Joomla/Extension and some basic configuration
+	 *
+	 * @return void
+	 */
+	public function runTestPreparation()
+	{
+		$this->prepareSiteForSystemTests();
+
+		$this->getSelenium();
+
+		$this->getComposer();
+
+		$this->taskComposerInstall()->run();
+
+		$this->runSelenium();
+
+		$this->taskWaitForSeleniumStandaloneServer()
+			->run()
+			->stopOnFail();
+
+		// Make sure to Run the Build Command to Generate AcceptanceTester
+		$this->_exec("vendor/bin/codecept build");
+
+		$this->taskCodecept()
+			->arg('--steps')
+			->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg('tests/acceptance/install/')
+			->run()
+			->stopOnFail();
 	}
 
 	/**
