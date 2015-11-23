@@ -26,7 +26,7 @@ before_script:
 - fluxbox &
 - sleep 3 # give fluxbox some time to start
 - cd tests
-- tests/composer install --prefer-dist
+- composer install --prefer-dist
 - cd ../
 
 script:
