@@ -27,6 +27,6 @@ $script = "
 $doc->addScriptDeclaration($script);
 
 // Load the common css
-RHelperAsset::load('rdatepicker.css', 'redcore');
+RHelperAsset::load('rdatepicker.min.css', 'redcore');
 
 echo $data->fieldHtml;

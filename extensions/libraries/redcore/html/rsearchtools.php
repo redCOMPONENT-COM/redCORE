@@ -51,8 +51,8 @@ abstract class JHtmlRsearchtools
 			}
 
 			// Load the jQuery plugin && CSS
-			RHelperAsset::load('jquery.searchtools.css', static::EXTENSION);
-			RHelperAsset::load('jquery.searchtools.min.js', static::EXTENSION);
+			RHelperAsset::load('lib/jquery-searchtools/jquery.searchtools.css', static::EXTENSION);
+			RHelperAsset::load('lib/jquery-searchtools/jquery.searchtools.min.js', static::EXTENSION);
 
 			static::$loaded[__METHOD__] = true;
 		}

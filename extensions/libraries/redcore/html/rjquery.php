@@ -57,9 +57,9 @@ abstract class JHtmlRjquery
 		JText::script('JGLOBAL_SELECT_AN_OPTION');
 		JText::script('JGLOBAL_SELECT_NO_RESULTS_MATCH');
 
-		RHelperAsset::load('lib/chosen.jquery.min.js', self::EXTENSION);
-		RHelperAsset::load('lib/chosen.min.css', self::EXTENSION);
-		RHelperAsset::load('lib/chosen-extra.css', self::EXTENSION);
+		RHelperAsset::load('lib/chosen/chosen.jquery.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/chosen/chosen.min.css', self::EXTENSION);
+		RHelperAsset::load('lib/chosen/chosen-extra.min.css', self::EXTENSION);
 
 		if (empty($options['disable_search_threshold']))
 		{
@@ -107,8 +107,8 @@ abstract class JHtmlRjquery
 		$langTag = JFactory::getLanguage()->getTag();
 		$langTagParts = explode('-', $langTag);
 		$mainLang = reset($langTagParts);
-		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $langTag . '.js', self::EXTENSION);
-		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $mainLang . '.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $langTag . '.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $mainLang . '.min.js', self::EXTENSION);
 
 		RHelperAsset::load('lib/jquery-ui/jquery.ui.datepicker.css', self::EXTENSION);
 
@@ -166,7 +166,7 @@ abstract class JHtmlRjquery
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
 		{
 			$jqueryMigrate = array(
-				JUri::root(true) . '/media/redcore/js/lib/jquery-migrate.min.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
+				JUri::root(true) . '/media/redcore/lib/jquery-migrate.min.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
 			);
 			$doc->_scripts = array_merge($jqueryMigrate, $doc->_scripts);
 		}
@@ -175,10 +175,10 @@ abstract class JHtmlRjquery
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
 		{
 			$jqueryLib = array(
-				JUri::root(true) . '/media/redcore/js/lib/jquery.min.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
+				JUri::root(true) . '/media/redcore/lib/jquery.min.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
 			);
 			$jqueryNoConflict = array(
-				JUri::root(true) . '/media/redcore/js/lib/jquery-noconflict.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
+				JUri::root(true) . '/media/redcore/lib/jquery-noconflict.js' => array('mime' => 'text/javascript', 'defer' => '', 'async' => '')
 			);
 
 			$doc->_scripts = array_merge($jqueryNoConflict, $doc->_scripts);
@@ -319,8 +319,8 @@ abstract class JHtmlRjquery
 		$langTag      = JFactory::getLanguage()->getTag();
 		$langTagParts = explode('-', $langTag);
 		$mainLang     = reset($langTagParts);
-		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $langTag . '.js', self::EXTENSION);
-		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $mainLang . '.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $langTag . '.min.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $mainLang . '.min.js', self::EXTENSION);
 
 		// CSS
 		RHelperAsset::load('lib/jquery-ui/jquery-ui.custom.min.css', self::EXTENSION);
@@ -348,7 +348,7 @@ abstract class JHtmlRjquery
 
 		self::framework();
 
-		RHelperAsset::load('lib/flexslider/jquery.flexslider-min.js', self::EXTENSION);
+		RHelperAsset::load('lib/flexslider/jquery.flexslider.min.js', self::EXTENSION);
 		RHelperAsset::load('lib/flexslider/flexslider.min.css', self::EXTENSION);
 
 		$options = static::options2Jregistry($options);

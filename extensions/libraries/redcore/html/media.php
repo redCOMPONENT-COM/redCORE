@@ -144,7 +144,7 @@ abstract class RHtmlMedia
 		{
 			if (self::getFramework() == 'bootstrap2')
 			{
-				RHelperAsset::load('lib/bootstrap.min.js', 'redcore');
+				RHelperAsset::load('lib/bootstrap/js/bootstrap.min.js', 'redcore');
 			}
 			elseif (self::getFramework() == 'bootstrap3')
 			{

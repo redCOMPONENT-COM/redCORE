@@ -23,5 +23,5 @@ sudo npm install uglify-js@1 -g
 To minify bootstrap `redCORE` files:
 
 ```bash
-uglifyjs -nc media/redcore/js/lib/bootstrap.js > media/redcore/js/lib/bootstrap.min.js
+uglifyjs -nc build/media/lib/bootstrap/bootstrap.js > media/redcore/lib/bootstrap/bootstrap.min.js
 ```
