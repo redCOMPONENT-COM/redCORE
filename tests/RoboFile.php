@@ -90,9 +90,9 @@ class RoboFile extends \Robo\Tasks
 	public function prepareSiteForSystemTests()
 	{
 		// Get Joomla Clean Testing sites
-		if (is_dir($this->testsFolder . 'joomla-cms3'))
+		if (is_dir('joomla-cms3'))
 		{
-			$this->taskDeleteDir($this->testsFolder . 'joomla-cms3')->run();
+			$this->taskDeleteDir('joomla-cms3')->run();
 		}
 
 		$version = 'staging';
@@ -103,9 +103,9 @@ class RoboFile extends \Robo\Tasks
 		 */
 		$version = '3.4.5';
 
-		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git ' . $this->testsFolder . 'joomla-cms3");
+		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git joomla-cms3");
 
-		$this->say("Joomla CMS ($version) site created at ' . $this->testsFolder . 'joomla-cms3");
+		$this->say("Joomla CMS ($version) site created at joomla-cms3/");
 	}
 
 	/**
