@@ -25,16 +25,17 @@ before_script:
 - sudo apt-get install fluxbox -y --force-yes
 - fluxbox &
 - sleep 3 # give fluxbox some time to start
-- cd tests
-- composer install --prefer-dist
 
 script:
+- cd tests
+- composer install --prefer-dist
 - php vendor/bin/robo check:robo-file-version
 - php ../build/.travis/phppec.php ../extensions/component/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
 - php ../build/.travis/phpcs.php
 - php ../build/.travis/misseddebugcodechecker.php ../extensions/component/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
 - mv acceptance.suite.dist.yml acceptance.suite.yml
 - mv api.suite.dist.yml api.suite.yml
+- npm install
 - vendor/bin/robo run:tests
 - if [ $TRAVIS_PHP_VERSION == 5.5 ]; then vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7; fi
 notifications:
