@@ -1,12 +1,12 @@
 actor: Tester
 paths:
-    tests: tests
-    log: tests/_output
-    data: tests/_data
-    helpers: tests/_support
+    tests: .
+    log: _output
+    data: _data
+    helpers: _support
 settings:
     bootstrap: _bootstrap.php
     colors: true
     memory_limit: 1024M
 groups:
-    installation: [tests/acceptance/01-InstallJoomlaCept.php, tests/acceptance/02-InstallExtensionCept.php, tests/acceptance/99-UninstallExtensionCept.php]
+    installation: [acceptance/01-InstallJoomlaCept.php, acceptance/02-InstallExtensionCept.php, acceptance/99-UninstallExtensionCept.php]
