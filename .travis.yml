@@ -27,6 +27,8 @@ before_script:
 - sleep 3 # give fluxbox some time to start
 - cd build
 - npm install
+- mv gulp-config.json.dist gulp-config.json
+- gulp release --skip-version
 - cd ../tests
 
 script:

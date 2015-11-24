@@ -234,7 +234,7 @@ class RoboFile extends \Robo\Tasks
 			$this->getSelenium();
 		}
 
-		$this->prepareReleasePackages();
+		//$this->prepareReleasePackages();
 
 		$this->getComposer();
 
