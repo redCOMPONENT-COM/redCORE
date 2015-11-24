@@ -47,7 +47,7 @@
             <folder>tables</folder>
             <folder>updates</folder>
             <folder>views</folder>
-            <filename>../../LICENSE</filename>
+            <filename>LICENSE</filename>
             <filename>access.xml</filename>
             <filename>controller.php</filename>
             <filename>redcore.php</filename>

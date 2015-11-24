@@ -32,8 +32,7 @@ gulp.task('release:redcore', function (cb) {
 
 			return gulp.src([
                 '../extensions/**/*',
-                '../extensions/**/.gitkeep',
-				'../docs/LICENSE'
+                '../extensions/**/.gitkeep'
             ])
 			.pipe(zip(fileName))
 			.pipe(gulp.dest(config.release_dir))
