@@ -11,7 +11,7 @@
         "codeception/codeception": "~2.0",
         "phing/phing": "2.9.*@dev",
         "joomla-projects/joomla-browser": "dev-develop",
-        "codegyre/robo": "dev-master",
+        "codegyre/robo": "~0.6",
         "redcomponent/robo": "dev-master",
         "flow/jsonpath": "dev-master",
         "fzaninotto/faker": "^1.5"

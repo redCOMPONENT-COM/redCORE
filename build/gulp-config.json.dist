@@ -1,5 +1,5 @@
 {
-	"wwwDir"        : "/var/www/html/yoursite",
+	"wwwDir"        : "/home/travis/build/redCOMPONENT-COM/redCORE/tests/joomla-cms3",
 	"release_dir"   : "../tests/joomla-cms3/releases/",
 	"watchInterval" : "500",
 	"defaultTasks"  : ["copy", "watch", "copyRedcore", "watchRedcore", "browser-sync"],
