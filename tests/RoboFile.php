@@ -25,6 +25,11 @@ class RoboFile extends \Robo\Tasks
 	private $version = '1.4';
 
 	/**
+	 * Current root folder
+	 */
+	private $testsFolder = '';
+
+	/**
 	 * Hello World example task.
 	 *
 	 * @see  https://github.com/redCOMPONENT-COM/robo/blob/master/src/HelloWorld.php
@@ -78,9 +83,9 @@ class RoboFile extends \Robo\Tasks
 	public function prepareSiteForSystemTests()
 	{
 		// Get Joomla Clean Testing sites
-		if (is_dir('tests/joomla-cms3'))
+		if (is_dir($this->testsFolder . 'joomla-cms3'))
 		{
-			$this->taskDeleteDir('tests/joomla-cms3')->run();
+			$this->taskDeleteDir($this->testsFolder . 'joomla-cms3')->run();
 		}
 
 		$version = 'staging';
@@ -91,9 +96,9 @@ class RoboFile extends \Robo\Tasks
 		 */
 		$version = '3.4.5';
 
-		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git tests/joomla-cms3");
+		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git ' . $this->testsFolder . 'joomla-cms3");
 
-		$this->say("Joomla CMS ($version) site created at tests/joomla-cms3");
+		$this->say("Joomla CMS ($version) site created at ' . $this->testsFolder . 'joomla-cms3");
 	}
 
 	/**
@@ -133,7 +138,7 @@ class RoboFile extends \Robo\Tasks
 
 			$iterator = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator(
-					'tests/' . $options['suite'],
+						$this->testsFolder . $options['suite'],
 					RecursiveDirectoryIterator::SKIP_DOTS),
 				RecursiveIteratorIterator::SELF_FIRST);
 
@@ -160,7 +165,7 @@ class RoboFile extends \Robo\Tasks
 			$options['test'] = $tests[$testNumber];
 		}
 
-		$pathToTestFile = 'tests/' . $options['suite'] . '/' . $options['test'];
+		$pathToTestFile = $this->testsFolder . $options['suite'] . '/' . $options['test'];
 
 		$this->taskCodecept()
 		     ->test($pathToTestFile)
@@ -201,7 +206,7 @@ class RoboFile extends \Robo\Tasks
 			->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
-			->arg('tests/acceptance/install/')
+			->arg($this->testsFolder . 'acceptance/install/')
 			->run()
 			->stopOnFail();
 	}
@@ -239,7 +244,7 @@ class RoboFile extends \Robo\Tasks
 		     ->arg('--steps')
 		     ->arg('--debug')
 		     ->arg('--fail-fast')
-		     ->arg('tests/acceptance/install/')
+		     ->arg($this->testsFolder . 'acceptance/install/')
 		     ->run()
 		     ->stopOnFail();
 
@@ -247,7 +252,7 @@ class RoboFile extends \Robo\Tasks
 		     ->arg('--steps')
 		     ->arg('--debug')
 		     ->arg('--fail-fast')
-		     ->arg('tests/acceptance/administrator/')
+		     ->arg($this->testsFolder . 'acceptance/administrator/')
 		     ->run()
 		     ->stopOnFail();
 
@@ -263,7 +268,7 @@ class RoboFile extends \Robo\Tasks
 		     ->arg('--steps')
 		     ->arg('--debug')
 		     ->arg('--fail-fast')
-		     ->arg('tests/acceptance/uninstall/')
+		     ->arg($this->testsFolder . 'acceptance/uninstall/')
 		     ->run()
 		     ->stopOnFail();
 
