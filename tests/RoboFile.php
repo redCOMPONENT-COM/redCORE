@@ -27,7 +27,7 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Current root folder
 	 */
-	private $testsFolder = '';
+	private $testsFolder = './';
 
 	/**
 	 * Hello World example task.
