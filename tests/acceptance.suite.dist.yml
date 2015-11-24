@@ -37,5 +37,5 @@ modules:
             admin email: 'admin@mydomain.com'      # email Id of the Admin
             language: 'English (United Kingdom)'   # Language in which you want the Application to be Installed
         AcceptanceHelper:
-            repo_folder: '/home/travis/build/redCOMPONENT-COM/redCORE/' # Path to the Extension to be installed via Install from folder
+            repo_folder: '/home/travis/build/redCOMPONENT-COM/redCORE/extensions' # Path to the Extension to be installed via Install from folder
 error_level: "E_ALL & ~E_STRICT & ~E_DEPRECATED"
