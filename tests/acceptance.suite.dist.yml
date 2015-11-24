@@ -37,5 +37,5 @@ modules:
             admin email: 'admin@mydomain.com'      # email Id of the Admin
             language: 'English (United Kingdom)'   # Language in which you want the Application to be Installed
         AcceptanceHelper:
-            install packages url: 'http://localhost/tests/joomla-cms3/tests/releases/'     # the url that points to the extension .zip package defined in your gulp-config.json file at the /build/ folder
+            install packages url: 'http://localhost/tests/releases/'     # the url that points to the extension .zip package defined in your gulp-config.json file at the /build/ folder
 error_level: "E_ALL & ~E_STRICT & ~E_DEPRECATED"
