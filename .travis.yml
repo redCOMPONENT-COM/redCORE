@@ -25,11 +25,11 @@ before_script:
 - sudo apt-get install fluxbox -y --force-yes
 - fluxbox &
 - sleep 3 # give fluxbox some time to start
-
-script:
 - cd build
 - npm install
 - cd ../tests
+
+script:
 - composer install --prefer-dist
 - php vendor/bin/robo check:robo-file-version
 - php ../build/.travis/phppec.php ../extensions/component/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
