@@ -11,5 +11,5 @@ $I = new \AcceptanceTester($scenario);
 
 $I->wantToTest('redCORE installation in Joomla 3');
 $I->doAdministratorLogin();
-$path = $I->getConfiguration('repo_folder');
-$I->installExtensionFromDirectory($path);
+$path = $I->getConfiguration('install packages url');
+$I->installExtensionFromUrl($path . 'redCORE.zip');

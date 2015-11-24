@@ -234,6 +234,8 @@ class RoboFile extends \Robo\Tasks
 			$this->getSelenium();
 		}
 
+		$this->prepareReleasePackages();
+
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
@@ -241,8 +243,8 @@ class RoboFile extends \Robo\Tasks
 		$this->runSelenium($options['selenium_path']);
 
 		$this->taskWaitForSeleniumStandaloneServer()
-		     ->run()
-		     ->stopOnFail();
+			->run()
+			->stopOnFail();
 
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
@@ -353,5 +355,16 @@ class RoboFile extends \Robo\Tasks
 
 		// Running Selenium server
 		$this->_exec("java -jar $path >> selenium.log 2>&1 &");
+	}
+
+	/**
+	 * Prepares the .zip packages of the extension to be installed in Joomla
+	 */
+	public function prepareReleasePackages()
+	{
+		$this->taskGulpRun('release')
+			->arg('--skip-version')
+			->dir('../build')
+			->run();
 	}
 }
