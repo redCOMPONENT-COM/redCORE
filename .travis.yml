@@ -30,9 +30,9 @@ before_script:
 
 script:
 - php vendor/bin/robo check:robo-file-version
-- php ../build/.travis/phppec.php component/ libraries/ modules/ plugins/
+- php ../build/.travis/phppec.php ../extensions/component/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
 - php ../build/.travis/phpcs.php
-- php ../build/.travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
+- php ../build/.travis/misseddebugcodechecker.php ../extensions/component/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
 - mv acceptance.suite.dist.yml acceptance.suite.yml
 - mv api.suite.dist.yml api.suite.yml
 - vendor/bin/robo run:tests
