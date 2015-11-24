@@ -38,4 +38,5 @@ modules:
             language: 'English (United Kingdom)'   # Language in which you want the Application to be Installed
         AcceptanceHelper:
             install packages url: 'http://localhost/tests/joomla-cms3/tests/joomla-cms3/releases/'     # the url that points to the extension .zip package defined in your gulp-config.json file at the /build/ folder
+            repo folder: '/home/travis/build/redCOMPONENT-COM/redCORE/tests/joomla-cms3/releases/' # Path to the Extension to be installed via Install from folder
 error_level: "E_ALL & ~E_STRICT & ~E_DEPRECATED"
