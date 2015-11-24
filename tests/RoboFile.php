@@ -64,6 +64,11 @@ class RoboFile extends \Robo\Tasks
 			$slackToken = getenv('SLACK_ENCRYPTED_TOKEN');
 		}
 
+		if (is_null($codeceptionOutputFolder))
+		{
+			$this->codeceptionOutputFolder = '_output';
+		}
+
 		$this->say($codeceptionOutputFolder);
 
 		$result = $this
