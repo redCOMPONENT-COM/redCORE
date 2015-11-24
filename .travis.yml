@@ -39,10 +39,9 @@ script:
 - php ../build/.travis/misseddebugcodechecker.php ../extensions/component/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
 - mv acceptance.suite.dist.yml acceptance.suite.yml
 - mv api.suite.dist.yml api.suite.yml
-- mv ../build/gulp-config.json.dist ../build/gulp-config.json
 - vendor/bin/robo run:tests
 - ls _output/
-- cat _output/install02-InstallExtensionCept.fail.html
+- cat _output/02-InstallExtensionCept.fail.html
 - if [ $TRAVIS_PHP_VERSION == 5.5 ]; then vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7; fi
 notifications:
   slack:
