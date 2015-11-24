@@ -10,15 +10,16 @@
 (php_sapi_name() == 'cli' ?: die('CLI only'));
 
 // Script defines
-define('REPO_BASE', dirname(__DIR__));
+define('ROOT_BASE', dirname(__DIR__) . '/..');
+define('REPO_BASE', ROOT_BASE . '/extensions');
 
 // Require Composer autoloader
-if (!file_exists(REPO_BASE . '/vendor/autoload.php'))
+if (!file_exists(ROOT_BASE . '/tests/vendor/autoload.php'))
 {
 	fwrite(STDOUT, "\033[37;41mThis script requires Composer to be set up, please run 'composer install' first.\033[0m\n");
 }
 
-require REPO_BASE . '/vendor/autoload.php';
+require ROOT_BASE . '/tests/vendor/autoload.php';
 
 // Welcome message
 fwrite(STDOUT, "\033[32;1mInitializing PHP_CodeSniffer checks.\033[0m\n");
@@ -59,7 +60,7 @@ $options = array(
 		REPO_BASE . '/modules',
 		REPO_BASE . '/libraries',
 	),
-	'standard'     => array( REPO_BASE . '/.travis/phpcs/Joomla'),
+	'standard'     => array( ROOT_BASE . '/build/.travis/phpcs/Joomla'),
 	'ignored'      => $ignored,
 	'showProgress' => true,
 	'verbosity' => false,
