@@ -362,8 +362,6 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function prepareReleasePackages()
 	{
-		$this->taskGulpRun('release')
-			->arg('--skip-version --gulpfile ../build/gulpfile.js')
-			->run();
+		$this->_exec("gulp release --skip-version --gulpfile ../build/gulpfile.js");
 	}
 }
