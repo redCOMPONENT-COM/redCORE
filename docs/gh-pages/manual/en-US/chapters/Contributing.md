@@ -1,10 +1,3 @@
-Tools we use in redCORE
-======
-
-
-
-
-
 Contributing to redCORE
 ======
 
@@ -20,3 +13,8 @@ Commit messages must be in English and has to be formatted like this:
 
 ### Examples 
 <code>#RR-13 fix Undefined variable at Dashboard view</code>
+
+Tools for redCORE
+======
+
+To see which tools you can use to quickly and easily contribute to redCORE please read this article: [Tools for redCORE](chapters/Tools.md)

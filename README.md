@@ -30,7 +30,7 @@ Director and Founder of redCOMPONENT.com
 CEO, redWEB ApS
 
 ## Contributing
-See: [setting up and contributing to redCORE](./build/README.md)
+See: [Contributing to redCORE](http://redcomponent-com.github.io/redCORE/?chapters/Contributing.md)
 
 ## Documentation
 See: [redCORE Documentation](http://redcomponent-com.github.io/redCORE/)
@@ -42,7 +42,9 @@ See: [testing redCORE](./tests/README.md)
 
 Structure is based on maximum simplicity for developers and for end users:
 
-- build - This is a folder where we keep all our tools that we use in this repository (PHING, Gulp, CodeSniffer, LESS, JS files, ...). Additionally here is where we keep uncompressed media files which we can compress (minify) and move to the extension folder
-- docs - Documentation folder is where we keep all information for support and is a place where we keep github documentation pages
-- extensions - In this folder we keep all the files that will be installed with the package already minified and ready to be installed. If pointed to that folder one could install extension from that folder
-- tests - This folder is a used for automated testing of the extension
+- build - Folder where we keep all our tools that we use in this repository (PHING, Gulp, CodeSniffer, LESS, JS files, ...). Additionally here is where we keep uncompressed media files which we can compress (minify) and move to the extensions folder
+- docs - Folder is where we keep all information for support and is a place where we keep github documentation pages
+- extensions - Folder where we keep all the files that will be installed with the package already minified and ready to be installed. If pointed to that folder one could install extension from that folder
+- tests - Folder that is used for automated testing of the redCORE
+
+See more information in: [redCORE Folder Structure](http://redcomponent-com.github.io/redCORE/?chapters/folder-structure.md)
