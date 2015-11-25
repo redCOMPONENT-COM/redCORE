@@ -20,7 +20,7 @@ These scripts can be used for standalone redCORE development or in projects that
 
 ### <a name="standalone-setup"></a>2.1. Standalone redCORE setup
 
-See [redCORE contributing guidelines](https://github.com/redCOMPONENT-COM/redCORE/blob/develop/CONTRIBUTING.md).
+See [redCORE contributing guidelines](https://github.com/redCOMPONENT-COM/redCORE/blob/develop/build/README.md).
 
 ### <a name="third-part-setup"></a>2.2. Integration with third part extensions
 
