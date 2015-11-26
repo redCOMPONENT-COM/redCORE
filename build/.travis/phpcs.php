@@ -26,10 +26,10 @@ fwrite(STDOUT, "\033[32;1mInitializing PHP_CodeSniffer checks.\033[0m\n");
 
 // Ignored files
 $ignored = array(
-	REPO_BASE . '/component/admin/views/*/tmpl/*',
-	REPO_BASE . '/component/admin/layouts/*',
-	REPO_BASE . '/component/site/views/*/tmpl/*',
-	REPO_BASE . '/component/site/layouts/*',
+	REPO_BASE . '/components/com_redcore/admin/views/*/tmpl/*',
+	REPO_BASE . '/components/com_redcore/admin/layouts/*',
+	REPO_BASE . '/components/com_redcore/site/views/*/tmpl/*',
+	REPO_BASE . '/components/com_redcore/site/layouts/*',
 	REPO_BASE . '/libraries/redcore/api/hal/document/resource.php',
 	REPO_BASE . '/libraries/redcore/api/hal/document/link.php',
 	REPO_BASE . '/libraries/redcore/api/oauth2/*',
@@ -55,7 +55,7 @@ $ignored = array(
 $options = array(
 	'files'        => array(
 		REPO_BASE . '/plugins',
-		REPO_BASE . '/component',
+		REPO_BASE . '/components',
 		REPO_BASE . '/modules',
 		REPO_BASE . '/libraries',
 	),

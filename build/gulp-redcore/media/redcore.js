@@ -116,7 +116,7 @@ gulp.task('watch:' + baseTask,
 gulp.task('watch:' + baseTask + ':less',
 	function() {
 		gulp.watch(
-			[buildPath + '/media/less/**/*.less'],
+			[buildPath + '/media/**/less/**/*.less'],
 			{ interval: config.watchInterval },
 			['less:' + baseTask, browserSync.reload]
 		);

@@ -12,7 +12,7 @@
     <scriptfile>install.php</scriptfile>
     <redcore version="1.7.0" defaultFramework="bootstrap3" />
 
-    <install folder="component/admin">
+    <install folder="components/com_redcore/admin">
         <sql>
             <file driver="mysql" charset="utf8">sql/install/mysql/install.sql</file>
             <file driver="mysqli" charset="utf8">sql/install/mysql/install.sql</file>
@@ -21,13 +21,13 @@
             <file driver="mysql" charset="utf8">sql/install/mysql/country.sql</file>
         </sql>
     </install>
-    <uninstall folder="component/admin">
+    <uninstall folder="components/com_redcore/admin">
         <sql>
             <file driver="mysql" charset="utf8">sql/install/mysql/uninstall.sql</file>
             <file driver="mysqli" charset="utf8">sql/install/mysql/uninstall.sql</file>
         </sql>
     </uninstall>
-    <update folder="component/admin">
+    <update folder="components/com_redcore/admin">
         <schemas>
             <schemapath type="mysql">sql/updates/mysql</schemapath>
             <schemapath type="mysqli">sql/updates/mysql</schemapath>
@@ -38,7 +38,7 @@
     </update>
 
     <administration>
-        <files folder="component/admin">
+        <files folder="components/com_redcore/admin">
             <folder>controllers</folder>
             <folder>helpers</folder>
             <folder>layouts</folder>
@@ -52,7 +52,7 @@
             <filename>controller.php</filename>
             <filename>redcore.php</filename>
         </files>
-        <languages folder="component/admin/language">
+        <languages folder="components/com_redcore/admin/language">
             <language tag="en-GB">en-GB/en-GB.com_redcore.ini</language>
             <language tag="en-GB">en-GB/en-GB.com_redcore.sys.ini</language>
             <language tag="da-DK">da-DK/da-DK.com_redcore.ini</language>
@@ -70,7 +70,7 @@
     </administration>
 
     <!-- Medias -->
-    <media destination="redcore" folder="libraries/redcore/media">
+    <media destination="redcore" folder="libraries/redcore/media/redcore">
         <folder>css</folder>
         <folder>fonts</folder>
         <folder>images</folder>

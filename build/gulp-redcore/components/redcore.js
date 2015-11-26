@@ -16,8 +16,8 @@ var del         = require('del');
 
 var baseTask  = 'components.redcore';
 
-var subextensionPath = './redCORE/extensions/component';
-var directPath       = '../extensions/component';
+var subextensionPath = './redCORE/extensions/components/com_redcore';
+var directPath       = '../extensions/components/com_redcore';
 
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
@@ -49,11 +49,9 @@ gulp.task('copy:' + baseTask + ':backend', ['clean:' + baseTask + ':backend'], f
 	return (
 		gulp.src(extPath + '/admin/**')
 		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore')) &&
-		gulp.src(extPath + '/../redcore.xml')
+		gulp.src(extPath + '/../../redcore.xml')
 		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore')) &&
-		gulp.src(extPath + '/../install.php')
-		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore')) &&
-		gulp.src(extPath + '/../LICENSE')
+		gulp.src(extPath + '/../../install.php')
 		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore'))
 	);
 });

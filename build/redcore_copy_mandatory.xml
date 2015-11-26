@@ -41,8 +41,8 @@
         </copy>
 
         <echo msg="Copying COMPONENT folder to build directory..."/>
-        <copy todir="${redcoretargetdir}/component">
-            <fileset dir="${redcorepath}/component">
+        <copy todir="${redcoretargetdir}/components/com_redcore">
+            <fileset dir="${redcorepath}/components/com_redcore">
                 <include name="**"/>
                 <exclude name=".*"/>
             </fileset>

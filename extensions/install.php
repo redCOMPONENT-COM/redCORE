@@ -1557,7 +1557,7 @@ class Com_RedcoreInstallerScript
 		// Load language file
 		$lang->load('com_redcore', $path, null, true, true)
 		|| $lang->load('com_redcore', $path . "/components/com_redcore", null, true, true)
-		|| $lang->load('com_redcore', $path . "/component/admin", null, true, true);
+		|| $lang->load('com_redcore', $path . "/components/com_redcore/admin", null, true, true);
 	}
 
 	/**

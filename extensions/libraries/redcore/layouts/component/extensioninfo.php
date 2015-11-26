@@ -91,7 +91,7 @@ JHtml::_('rbootstrap.tooltip');
 			<?php if (!empty($xml->media['folder'])) : ?>
 				<tr>
 					<td>
-						<strong><?php echo $xml->media['folder']; ?></strong><br/>
+						<strong>media/<?php echo $xml->media['destination']; ?></strong><br/>
 					</td>
 					<td>
 						<span class="badge badge-success">
@@ -101,13 +101,13 @@ JHtml::_('rbootstrap.tooltip');
 						</span>
 					</td>
 					<td>
-						<?php if (@!is_dir(JPATH_SITE . '/' . $xml->media['folder'])) : ?>
+						<?php if (@!is_dir(JPATH_SITE . '/media/' . $xml->media['destination'])) : ?>
 							<span class="badge badge-important"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JNO') . ')'; ?></span>
 						<?php else : ?>
 							<span class="badge badge-success"><?php echo JText::_('JGLOBAL_CREATED') . ' (' . JText::_('JYES') . ')'; ?></span>
 						<?php endif; ?>
 						/
-						<?php if (@!is_writeable(JPATH_SITE . '/' . $xml->media['folder'])) : ?>
+						<?php if (@!is_writeable(JPATH_SITE . '/media/' . $xml->media['destination'])) : ?>
 							<span class="badge badge-important"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JNO') . ')'; ?></span>
 						<?php else : ?>
 							<span class="badge badge-success"><?php echo JText::_('COM_REDCORE_CONFIG_WRITABLE') . ' (' . JText::_('JYES') . ')'; ?></span>

@@ -25,21 +25,15 @@ var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 gulp.task('clean:' + baseTask,
 	[
 		'clean:' + baseTask + ':library',
-		'clean:' + baseTask + ':languages',
 		'clean:' + baseTask + ':manifest'
 	],
 	function() {
 		return true;
 });
 
-// Clean: languages
+// Clean: library
 gulp.task('clean:' + baseTask + ':library', function() {
 	return del(config.wwwDir + '/libraries/redcore', {force : true});
-});
-
-// Clean: languages
-gulp.task('clean:' + baseTask + ':languages', function() {
-	return del(config.wwwDir + '/language/**/*.lib_redcore.ini', {force : true});
 });
 
 // Clean: manifest
@@ -51,7 +45,6 @@ gulp.task('clean:' + baseTask + ':manifest', function() {
 gulp.task('copy:' + baseTask,
 	[
 		'copy:' + baseTask + ':library',
-		'copy:' + baseTask + ':languages',
 		'copy:' + baseTask + ':manifest',
 		'copy:' + baseTask + ':media'
 	],
@@ -61,22 +54,14 @@ gulp.task('copy:' + baseTask,
 
 // Copy: library
 gulp.task('copy:' + baseTask + ':library',
-	['clean:' + baseTask + ':library', 'copy:' + baseTask + ':languages', 'copy:' + baseTask + ':manifest'], function() {
+	['clean:' + baseTask + ':library', 'copy:' + baseTask + ':manifest'], function() {
 	return gulp.src([
 		extPath + '/**',
 		'!' + extPath + '/**/*.md',
-		'!' + extPath + '/language',
-		'!' + extPath + '/language/**',
 		'!' + extPath + '/media',
 		'!' + extPath + '/media/**'
 	])
 	.pipe(gulp.dest(config.wwwDir + '/libraries/redcore'));
-});
-
-// Copy: languages
-gulp.task('copy:' + baseTask + ':languages', ['clean:' + baseTask + ':languages'], function() {
-	return gulp.src(extPath + '/language/**')
-		.pipe(gulp.dest(config.wwwDir + '/language'));
 });
 
 // Copy: manifest
@@ -97,7 +82,6 @@ gulp.task('copy:' + baseTask + ':media', function() {
 gulp.task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':library',
-		'watch:' + baseTask + ':languages',
 		'watch:' + baseTask + ':manifest',
 		'watch:' + baseTask + ':media'
 	],
@@ -109,20 +93,11 @@ gulp.task('watch:' +  baseTask + ':library', function() {
 	gulp.watch([
 			extPath + '/**/*',
 			'!' + extPath + '/redcore.xml',
-			'!' + extPath + '/language',
-			'!' + extPath + '/language/**',
 			'!' + extPath + '/media',
 			'!' + extPath + '/media/**'
 		],
 		{ interval: config.watchInterval },
 		['copy:' + baseTask + ':library', browserSync.reload]);
-});
-
-// Watch: languages
-gulp.task('watch:' +  baseTask + ':languages', function() {
-	gulp.watch(extPath + '/language/**/*',
-		{ interval: config.watchInterval },
-		['copy:' + baseTask + ':languages', browserSync.reload]);
 });
 
 // Watch: manifest

@@ -135,7 +135,7 @@
 
         <!-- Backend component -->
         <copy todir="${www.dir}/administrator/components/com_redcore" overwrite="true">
-            <fileset dir="${redcore.src}/component/admin">
+            <fileset dir="${redcore.src}/components/com_redcore/admin">
                 <include name="**"/>
                 <!-- Exclude the manifest to avoid overwriting the previously copied -->
                 <exclude name="redcore.xml"/>
@@ -144,7 +144,7 @@
 
         <!-- Backend languages -->
         <copy todir="${www.dir}/administrator/language" overwrite="true">
-            <fileset dir="${redcore.src}/component/admin/language">
+            <fileset dir="${redcore.src}/components/com_redcore/admin/language">
                 <include name="**"/>
             </fileset>
         </copy>
