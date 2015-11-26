@@ -19,7 +19,7 @@
 	            value="."
 	            override="true"/>
 
-	    <xmlproperty file="${extpath}/${extension}.xml" prefix="extensionDetails" keepRoot="false" />
+	    <xmlproperty file="${extpath}/../extensions/${extension}.xml" prefix="extensionDetails" keepRoot="false" />
 
 	    <property
 				name="version"
@@ -56,7 +56,7 @@
                target="copyframework"
                haltonfailure="true">
             <property name="redcoretargetdir" value="${tmpdir}/${extension}" />
-            <property name="redcorepath" value="${project.basedir}" />
+            <property name="redcorepath" value="${project.basedir}/.." />
         </phing>
 
 	</target>
@@ -84,7 +84,7 @@
 
         <copy file="${tmpdir}/${extension}-v${version}.zip" tofile="${package.dir}/${extension}-v${version}.zip" />
 
-		<echo msg="Files copied and compressed in build directory OK!"/>
+		<echo msg="Files copied and compressed in build directory: ${package.dir}/${extension}-v${version}.zip" />
 
         <delete dir="${tmpdir}" />
 	</target>

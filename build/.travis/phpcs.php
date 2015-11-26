@@ -47,6 +47,7 @@ $ignored = array(
 	REPO_BASE . '/libraries/redcore/database/sqlparser/sqlparserutils.php',
 	REPO_BASE . '/libraries/redcore/database/driver.php',
 	REPO_BASE . '/libraries/redcore/table/*',
+	REPO_BASE . '/libraries/redcore/media/redcore/lib/*',
 	REPO_BASE . '/modules/site/mod_redcore_language_switcher/tmpl/*',
 	REPO_BASE . '/plugins/redpayment/paypal/form/*',
 );

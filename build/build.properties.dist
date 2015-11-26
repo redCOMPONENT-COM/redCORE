@@ -5,10 +5,10 @@
 # Extension details:
 comp.name=redcore
 
-# Folder to create the extension .zip build package used by extension_packager.xml
+# Folder to create the extension .zip build package used by extension_packager.xml  (ex: c:\sites\releases)
 package.dir=
 
-# Testing Joomla site at a localhost folder. Only needed when using build.xml
+# Testing Joomla site at a localhost folder. Only needed when using build.xml (ex: c:\sites\testsite)
 www.dir=
 
 # For unit testing. Only needed when using build.xml
