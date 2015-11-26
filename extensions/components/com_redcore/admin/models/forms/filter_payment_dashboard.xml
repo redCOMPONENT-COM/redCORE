@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter" addfieldpath="/libraries/redcore/form/fields">
+        <field
+                name="search_payment_dashboard"
+                type="text"
+                label="COM_REDCORE_FILTER_SEARCH_DESC"
+                placeholder="JSEARCH_FILTER"
+                class="js-enter-submits"
+                />
+        <field
+                name="extension_name"
+                type="paymentextensions"
+                showFullName="true"
+                label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
+                description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_PAYMENT_SELECT_EXTENSION</option>
+        </field>
+        <field
+                name="payment_name"
+                type="paymentplugins"
+                label="COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_NAME_LABEL"
+                description="COM_REDCORE_PAYMENT_CONFIGURATION_PAYMENT_NAME_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_PAYMENT_SELECT_PAYMENT</option>
+        </field>
+        <field
+                name="chart_type"
+                type="rchart"
+                label="LIB_REDCORE_CHART_NAME_LABEL"
+                description="LIB_REDCORE_CHART_NAME_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">LIB_REDCORE_CHART_NAME_SELECT_CHART</option>
+        </field>
+        <field
+                name="dashboard_view_type"
+                type="rlist"
+                label="COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_LABEL"
+                description="COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_SELECT</option>
+            <option value="extension_name">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_EXTENSION</option>
+            <option value="payment_name">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_PAYMENT</option>
+            <option value="status">COM_REDCORE_PAYMENT_DASHBOARD_VIEW_TYPE_STATUS</option>
+        </field>
+        <field
+                name="start_date"
+                type="rdatepicker"
+                label="COM_REDCORE_PAYMENT_STARTTIME"
+                placeholder="COM_REDCORE_PAYMENT_STARTTIME"
+                description="COM_REDCORE_PAYMENT_STARTTIME"
+                onchange="this.form.submit();"
+                buttonText="&lt;i class='icon-calendar'&gt;&lt;/i&gt;"
+            />
+        <field
+                name="end_date"
+                type="rdatepicker"
+                label="COM_REDCORE_PAYMENT_ENDTIME"
+                placeholder="COM_REDCORE_PAYMENT_ENDTIME"
+                description="COM_REDCORE_PAYMENT_ENDTIME"
+                onchange="this.form.submit();"
+                buttonText="&lt;i class='icon-calendar'&gt;&lt;/i&gt;"
+                />
+    </fields>
+    <fields name="list">
+        <field
+                name="payment_dashboard_limit"
+                type="rlimitbox"
+                class="inputbox input-mini chzn"
+                default="25"
+                label="JGLOBAL_ORDERING_LIST_LIMIT"
+                description="JGLOBAL_ORDERING_LIST_LIMIT_DESC"
+                onchange="this.form.submit();"
+                />
+    </fields>
+</form>
