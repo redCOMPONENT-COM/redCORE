@@ -70,7 +70,7 @@
     </administration>
 
     <!-- Medias -->
-    <media destination="redcore" folder="media/redcore">
+    <media destination="redcore" folder="libraries/redcore/media">
         <folder>css</folder>
         <folder>fonts</folder>
         <folder>images</folder>

@@ -19,14 +19,14 @@ var uglify      = require('gulp-uglify');
 
 var baseTask  	= 'media.redcore';
 var baseFolder  = fs.existsSync('./redCORE') ? './redCORE' : '..';
-var extPath = baseFolder + '/extensions/media/redcore';
+var extPath = baseFolder + '/extensions';
 var buildPath = baseFolder + '/build';
 
 var excludedMediaScriptFolders = [
 	'!' + buildPath + '/media/**/*.min.js',
 	'!' + buildPath + '/media/**/Gruntfile.js',
 	'!' + buildPath + '/media/**/gulpfile.js',
-	'!' + buildPath + '/media/lib/jquery-noconflict.js'
+	'!' + buildPath + '/media/**/lib/jquery-noconflict.js'
 ];
 
 var excludedMediaStypeFolders = [
@@ -35,17 +35,13 @@ var excludedMediaStypeFolders = [
 
 // Clean
 gulp.task('clean:' + baseTask, function() {
-	return del(config.wwwDir + '/media/redcore', {force: true});
+	return true;
 });
 
 // Copy
 gulp.task('copy:' + baseTask, ['clean:' + baseTask],
 	function() {
-		return gulp.src([
-				extPath + '/**',
-				extPath + '/**/.gitkeep'
-			])
-			.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+		return true;
 });
 
 // LESS
@@ -59,44 +55,28 @@ gulp.task('less:' + baseTask,
 
 // LESS: Component
 gulp.task('less:' + baseTask + ':component', function () {
-	return gulp.src(buildPath + '/media/less/component.less')
-		.pipe(less({paths: [buildPath + '/media/less']}))
-		.pipe(gulp.dest(buildPath + '/media/css'))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'))
-		.pipe(minifyCSS())
-		.pipe(rename(function (path) {
-				path.basename += '.min';
-		}))
-		.pipe(gulp.dest(extPath + '/css'))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'));
+	return gulp.src(buildPath + '/media/libraries/redcore/media/redcore/less/component.less')
+		.pipe(less({paths: [buildPath + '/media/libraries/redcore/media/redcore/less']}))
+		.pipe(gulp.dest(buildPath + '/media/libraries/redcore/media/redcore/css'));
 });
 
 // LESS: Component Bootstrap3
 gulp.task('less:' + baseTask + ':component.bs3', function () {
-	return gulp.src(buildPath + '/media/less/component.bs3.less')
-		.pipe(less({paths: [buildPath + '/media/less']}))
-		.pipe(gulp.dest(buildPath + '/media/css'))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'))
-		.pipe(minifyCSS())
-		.pipe(rename(function (path) {
-				path.basename += '.min';
-		}))
-		.pipe(gulp.dest(extPath + '/css'))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore/css'));
+	return gulp.src(buildPath + '/media/libraries/redcore/media/redcore/less/component.bs3.less')
+		.pipe(less({paths: [buildPath + '/media/libraries/redcore/media/redcore/less']}))
+		.pipe(gulp.dest(buildPath + '/media/libraries/redcore/media/redcore/css'));
 });
 
 // Scripts
 gulp.task('scripts:' + baseTask, function () {
 	return gulp.src(excludedMediaScriptFolders.concat([
-				buildPath + '/media/**/*.js'
+			buildPath + '/media/**/*.js'
 		]))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore'))
 		.pipe(uglify())
 		.pipe(rename(function (path) {
 				path.basename += '.min';
 		}))
-		.pipe(gulp.dest(extPath + ''))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+		.pipe(gulp.dest(extPath + ''));
 });
 
 // Styles
@@ -104,24 +84,21 @@ gulp.task('styles:' + baseTask, function () {
 	return gulp.src(excludedMediaStypeFolders.concat([
 			buildPath + '/media/**/*.css'
 		]))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore'))
 		.pipe(minifyCSS())
 		.pipe(rename(function (path) {
 				path.basename += '.min';
 		}))
-		.pipe(gulp.dest(extPath + ''))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+		.pipe(gulp.dest(extPath + ''));
 });
 
 // Library files (fonts, images, ...)
 gulp.task('libraries:' + baseTask, function () {
-	return gulp.src([buildPath + '/media/lib/**',
-				'!' + buildPath + '/media/lib/**/*.css',
-				'!' + buildPath + '/media/lib/**/*.js',
-				'!' + buildPath + '/media/lib/**/*.md'
+	return gulp.src([buildPath + '/media/**/lib/**',
+				'!' + buildPath + '/media/**/lib/**/*.css',
+				'!' + buildPath + '/media/**/lib/**/*.js',
+				'!' + buildPath + '/media/**/lib/**/*.md'
 		])
-		.pipe(gulp.dest(extPath + '/lib'))
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore/lib'));
+		.pipe(gulp.dest(extPath + ''));
 });
 
 // Watch
@@ -170,9 +147,9 @@ gulp.task('watch:' + baseTask + ':libraries',
 	function() {
 		gulp.watch([
 			buildPath + '/media/lib/**',
-			'!' + buildPath + '/media/lib/**/*.css',
-			'!' + buildPath + '/media/lib/**/*.js',
-			'!' + buildPath + '/media/lib/**/*.md'
+			'!' + buildPath + '/media/**/lib/**/*.css',
+			'!' + buildPath + '/media/**/lib/**/*.js',
+			'!' + buildPath + '/media/**/lib/**/*.md'
 		],
 		{ interval: config.watchInterval },
 		['libraries:' + baseTask, browserSync.reload]);

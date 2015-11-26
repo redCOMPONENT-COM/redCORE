@@ -11,7 +11,6 @@ catch(err) {
 
 // Dependencies
 var browserSync = require('browser-sync');
-var minifyCSS   = require('gulp-minify-css');
 var rename      = require('gulp-rename');
 var del         = require('del');
 
@@ -47,32 +46,16 @@ gulp.task('copy:' + baseTask, ['clean:' + baseTask, 'copy:' + baseTask + ':media
 // Copy: media
 gulp.task('copy:' + baseTask + ':media', ['clean:' + baseTask + ':media'], function() {
     return gulp.src([
-	        mediaPath + '/css/**'
+	        mediaPath + '/**'
     	])
-		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher/css'));
+		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher'));
 });
-
-// Styles
-gulp.task('styles:' + baseTask, function () {
-	return gulp.src([
-			mediaPath + '/css/*.css',
-			'!' + mediaPath + '/css/*.min.css'
-		])
-		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher/css'))
-		.pipe(minifyCSS())
-		.pipe(rename(function (path) {
-				path.basename += '.min';
-		}))
-		.pipe(gulp.dest(mediaPath + '/css'))
-		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher/css'));
-});
-
 
 // Watch
 gulp.task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':module',
-		'watch:' + baseTask + ':styles'
+		'watch:' + baseTask + ':media'
 	],
 	function() {
 });
@@ -88,12 +71,11 @@ gulp.task('watch:' + baseTask + ':module', function() {
 		['copy:' + baseTask, browserSync.reload]);
 });
 
-// Watch: Styles
-gulp.task('watch:' + baseTask + ':styles', function() {
-    gulp.watch([
-    	mediaPath + '/css/*.css',
-    	'!' + mediaPath + '/css/*.min.css'
-    	],
-		{ interval: config.watchInterval },
-		['styles:' + baseTask, browserSync.reload]);
+// Watch: media
+gulp.task('watch:' +  baseTask + ':media', function() {
+	gulp.watch([
+		mediaPath + '/**'
+	],
+	{ interval: config.watchInterval },
+	['copy:' + baseTask + ':media', browserSync.reload]);
 });

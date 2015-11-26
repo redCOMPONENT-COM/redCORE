@@ -21,7 +21,7 @@ $app = JFactory::getApplication();
 require_once dirname(__FILE__) . '/helper.php';
 $helper = new ModRedCORELanguageSwitcherHelper;
 
-RHelperAsset::load('mod_redcore_language_switcher.css', 'mod_redcore_language_switcher');
+RHelperAsset::load('mod_redcore_language_switcher.min.css', 'mod_redcore_language_switcher');
 
 // Module specific variables
 $headerText	= JString::trim($params->get('header_text'));

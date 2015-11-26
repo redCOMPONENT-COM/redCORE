@@ -22,7 +22,18 @@ var directPath       = '../extensions/libraries/redcore';
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
 // Clean
-gulp.task('clean:' + baseTask, ['clean:' + baseTask + ':languages', 'clean:' + baseTask + ':manifest'], function() {
+gulp.task('clean:' + baseTask,
+	[
+		'clean:' + baseTask + ':library',
+		'clean:' + baseTask + ':languages',
+		'clean:' + baseTask + ':manifest'
+	],
+	function() {
+		return true;
+});
+
+// Clean: languages
+gulp.task('clean:' + baseTask + ':library', function() {
 	return del(config.wwwDir + '/libraries/redcore', {force : true});
 });
 
@@ -41,19 +52,23 @@ gulp.task('copy:' + baseTask,
 	[
 		'copy:' + baseTask + ':library',
 		'copy:' + baseTask + ':languages',
-		'copy:' + baseTask + ':manifest'
+		'copy:' + baseTask + ':manifest',
+		'copy:' + baseTask + ':media'
 	],
 	function() {
+		return true;
 });
 
 // Copy: library
 gulp.task('copy:' + baseTask + ':library',
-	['clean:' + baseTask, 'copy:' + baseTask + ':languages', 'copy:' + baseTask + ':manifest'], function() {
+	['clean:' + baseTask + ':library', 'copy:' + baseTask + ':languages', 'copy:' + baseTask + ':manifest'], function() {
 	return gulp.src([
 		extPath + '/**',
 		'!' + extPath + '/**/*.md',
 		'!' + extPath + '/language',
-		'!' + extPath + '/language/**'
+		'!' + extPath + '/language/**',
+		'!' + extPath + '/media',
+		'!' + extPath + '/media/**'
 	])
 	.pipe(gulp.dest(config.wwwDir + '/libraries/redcore'));
 });
@@ -70,12 +85,21 @@ gulp.task('copy:' + baseTask + ':manifest', ['clean:' + baseTask + ':manifest'],
 		.pipe(gulp.dest(config.wwwDir + '/administrator/manifests/libraries'));
 });
 
+// Copy: media
+gulp.task('copy:' + baseTask + ':media', function() {
+	del.sync([config.wwwDir + '/media/redcore'], {force: true});
+
+	return gulp.src([extPath + '/media/redcore/**'])
+		.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+});
+
 // Watch
 gulp.task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':library',
 		'watch:' + baseTask + ':languages',
-		'watch:' + baseTask + ':manifest'
+		'watch:' + baseTask + ':manifest',
+		'watch:' + baseTask + ':media'
 	],
 	function() {
 });
@@ -86,7 +110,9 @@ gulp.task('watch:' +  baseTask + ':library', function() {
 			extPath + '/**/*',
 			'!' + extPath + '/redcore.xml',
 			'!' + extPath + '/language',
-			'!' + extPath + '/language/**'
+			'!' + extPath + '/language/**',
+			'!' + extPath + '/media',
+			'!' + extPath + '/media/**'
 		],
 		{ interval: config.watchInterval },
 		['copy:' + baseTask + ':library', browserSync.reload]);
@@ -104,4 +130,13 @@ gulp.task('watch:' +  baseTask + ':manifest', function() {
 	gulp.watch(extPath + '/redcore.xml',
 		{ interval: config.watchInterval },
 		['copy:' + baseTask + ':manifest',browserSync.reload]);
+});
+
+// Watch: media
+gulp.task('watch:' +  baseTask + ':media', function() {
+	gulp.watch([
+		extPath + '/media/redcore/**'
+	],
+	{ interval: config.watchInterval },
+	['copy:' + baseTask + ':media', browserSync.reload]);
 });

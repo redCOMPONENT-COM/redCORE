@@ -45,7 +45,7 @@ gulp.task('copy:' + baseTask,
 });
 
 // Copy webservices
-gulp.task('copy:' + baseTask + ':webservices', ['copy:media.redcore', 'clean:' + baseTask + ':webservices'], function(cb) {
+gulp.task('copy:' + baseTask + ':webservices', ['copy:libraries.redcore', 'clean:' + baseTask + ':webservices'], function(cb) {
 	return gulp.src(extPath + '/**')
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/webservices'));
 });
