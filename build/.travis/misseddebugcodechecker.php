@@ -40,7 +40,7 @@ for($i=1;$i < count($argv);$i++)
     fwrite(STDOUT, "\033[32;1m- Checking missed debug code at: " . $argv[$i] . "\033[0m\n");
 
     // In case of media we dont want to check media library folder
-    if ($folderToCheck == '../extensions/libraries/')
+    if ($argv[$i] == '../extensions/libraries/')
     {
         $folderToCheck .= ' --exclude=*redcore/lib/*';
     }
