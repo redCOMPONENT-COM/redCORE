@@ -40,10 +40,10 @@ for($i=1;$i < count($argv);$i++)
     // In case of media we dont want to check media library folder
     if ($argv[$i] == '../extensions/libraries/')
     {
-        $folderToCheck .= ' --exclude-dir=*redcore/lib/*';
+        $folderToCheck .= ' | grep -v media/redcore/lib';
     }
 
-    fwrite(STDOUT, "\033[32;1m- Checking missed debug code at: " . $folderToCheck . "\033[0m\n");
+    fwrite(STDOUT, "\033[32;1m- Checking missed debug code at: " . $argv[$i] . "\033[0m\n");
 
     $vardumpCheck = shell_exec('grep -r --include "*.php" var_dump ' . $folderToCheck);
     $consolelogCheck = shell_exec('grep -r --include "*.js" console.log ' . $folderToCheck);
