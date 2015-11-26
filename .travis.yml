@@ -30,7 +30,6 @@ before_script:
 - mv gulp-config.json.dist gulp-config.json
 - gulp release --skip-version
 - cd ../tests
-- ls releases/
 
 script:
 - composer install --prefer-dist
