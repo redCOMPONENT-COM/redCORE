@@ -16,10 +16,12 @@ var del         = require('del');
 
 var baseTask  = 'libraries.redcore';
 
-var subextensionPath = './redCORE/extensions/libraries/redcore';
-var directPath       = '../extensions/libraries/redcore';
-
-var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
+var baseFolder  = fs.existsSync('./redCORE') ? './redCORE' : '..';
+var extSubPath = 'libraries/redcore';
+var mediaSubPath = 'media/redcore';
+var extPath = baseFolder + '/extensions/' + extSubPath;
+var mediaPath = extPath + '/' + mediaSubPath;
+var buildPathMedia = baseFolder + '/build/media/' + extSubPath + '/' + mediaSubPath;
 
 // Clean
 gulp.task('clean:' + baseTask,
@@ -74,7 +76,11 @@ gulp.task('copy:' + baseTask + ':manifest', ['clean:' + baseTask + ':manifest'],
 gulp.task('copy:' + baseTask + ':media', function() {
 	del.sync([config.wwwDir + '/media/redcore'], {force: true});
 
-	return gulp.src([extPath + '/media/redcore/**'])
+	return gulp.src([mediaPath + '/**'])
+		.pipe(gulp.dest(config.wwwDir + '/media/redcore'))
+		// Copy original uncompressed files to the testing site too
+		&&
+		gulp.src([buildPathMedia + '/**'])
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
 });
 

@@ -1,5 +1,5 @@
 /*
- This is required to avoid a z-index issue with datepicker  fields
+ This is required to avoid a z-index issue with datepicker field
  */
 .rdatepicker {
 	position: relative;

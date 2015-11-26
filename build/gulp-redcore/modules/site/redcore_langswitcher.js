@@ -11,17 +11,17 @@ catch(err) {
 
 // Dependencies
 var browserSync = require('browser-sync');
-var rename      = require('gulp-rename');
 var del         = require('del');
 
 var baseTask  = 'modules.frontend.redcore_langswitcher';
 
-var subextensionPath = './redCORE/extensions/modules/site/mod_redcore_language_switcher';
-var directPath       = '../extensions/modules/site/mod_redcore_language_switcher';
+var baseFolder  = fs.existsSync('./redCORE') ? './redCORE' : '..';
 
-var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
-
-var mediaPath = extPath + '/media/mod_redcore_language_switcher';
+var extSubPath = 'modules/site/mod_redcore_language_switcher';
+var mediaSubPath = 'media/mod_redcore_language_switcher';
+var extPath = baseFolder + '/extensions/' + extSubPath;
+var mediaPath = extPath + '/' + mediaSubPath;
+var buildPathMedia = baseFolder + '/build/media/' + extSubPath + '/' + mediaSubPath;
 
 // Clean
 gulp.task('clean:' + baseTask, ['clean:' + baseTask + ':media'], function() {
@@ -48,6 +48,12 @@ gulp.task('copy:' + baseTask + ':media', ['clean:' + baseTask + ':media'], funct
     return gulp.src([
 	        mediaPath + '/**'
     	])
+		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher'))
+		// Copy original uncompressed files to the testing site too
+		&&
+		gulp.src([
+					buildPathMedia + '/**'
+		])
 		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher'));
 });
 
