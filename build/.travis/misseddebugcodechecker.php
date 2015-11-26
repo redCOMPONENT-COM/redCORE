@@ -42,7 +42,7 @@ for($i=1;$i < count($argv);$i++)
     // In case of media we dont want to check media library folder
     if ($folderToCheck == '../extensions/libraries/')
     {
-        $folderToCheck .= ' --exclude-dir=\redcore/media/redcore/lib';
+        $folderToCheck .= ' --exclude=*redcore/lib/*';
     }
 
     $vardumpCheck = shell_exec('grep -r --include "*.php" var_dump ' . $folderToCheck);
