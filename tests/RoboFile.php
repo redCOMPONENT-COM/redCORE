@@ -364,4 +364,34 @@ class RoboFile extends \Robo\Tasks
 	{
 		$this->_exec("gulp release --skip-version --gulpfile ../build/gulpfile.js");
 	}
+
+	/**
+	 * Looks for PHP Parse errors in core
+	 */
+	public function checkForParseErrors()
+	{
+		$this->_exec('php checkers/phppec.php ../extensions/components/com_redcore/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/');
+	}
+
+	/**
+	 * Looks for missed debug code like var_dump or console.log
+	 */
+	public function checkForMissedDebugCode()
+	{
+		$this->_exec('php checkers/misseddebugcodechecker.php ../extensions/components/com_redcore/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/');
+	}
+
+	/**
+	 * Check the code style of the project against a passed sniffers
+	 */
+	public function checkCodestyle()
+	{
+		if (!is_dir('checkers/phpcs/Joomla'))
+		{
+			$this->say('Downloading Joomla Coding Standards Sniffers');
+			$this->_exec("git clone -b master --single-branch --depth 1 https://github.com/joomla/coding-standards.git checkers/phpcs/Joomla");
+		}
+
+		$this->_exec('php checkers/phpcs.php');
+	}
 }

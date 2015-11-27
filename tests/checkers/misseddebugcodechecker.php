@@ -8,7 +8,7 @@
  * @copyright  Copyright (C) 2008 - 2015 redCOMPONENT.com, Inc. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  *
- * @example: php .travis/phpmd.php component/ libraries/
+ * @example: php checkers/phpmd.php component/ libraries/
  */
 
 // Only run on the CLI SAPI
