@@ -33,9 +33,9 @@ before_script:
 
 script:
 - composer install --prefer-dist
-- php checkers/phppec.php ../extensions/components/com_redcore/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
-- php checkers/phpcs.php
-- php checkers/misseddebugcodechecker.php ../extensions/components/com_redcore/ ../extensions/libraries/ ../extensions/modules/ ../extensions/plugins/
+- vendor/bin/robo check:for-missed-debug-code
+- vendor/bin/robo check:for-parse-errors
+- vendor/bin/robo check:codestyle
 - mv acceptance.suite.dist.yml acceptance.suite.yml
 - mv api.suite.dist.yml api.suite.yml
 - vendor/bin/robo run:tests

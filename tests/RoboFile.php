@@ -392,6 +392,8 @@ class RoboFile extends \Robo\Tasks
 			$this->_exec("git clone -b master --single-branch --depth 1 https://github.com/joomla/coding-standards.git checkers/phpcs/Joomla");
 		}
 
-		$this->_exec('php checkers/phpcs.php');
+		$this->taskExec('php checkers/phpcs.php')
+				->printed(true)
+				->run();
 	}
 }
