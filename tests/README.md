@@ -7,6 +7,7 @@ We have prepared scripts to run the tests automatically (only for Linux and MacO
 The first step to execute the System tests at redCORE is to get a Joomla CMS 3.x. site To do it automatically you can execute the following command from the root of the repository:
 
 ```
+composer install
 vendor/bin/robo prepare:site-for-system-tests
 ```
 

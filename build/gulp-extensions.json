@@ -1,0 +1,14 @@
+{
+	"cli" 		 : ["redcore"],
+	"components" : ["redcore"],
+	"libraries"  : ["redcore"],
+	"media"      : ["redcore"],
+	"modules"    : {
+		"frontend"       : ["redcore_langswitcher"]
+	},
+	"plugins"    : {
+		"redpayment"     : ["paypal"],
+		"system"         : ["redcore", "mvcoverride"]
+	},
+	"webservices" : ["redcore"]
+}

@@ -1,0 +1,98 @@
+- [Introduction](chapters/introduction.md)
+- [Download redCORE](https://github.com/redCOMPONENT-COM/redCORE/releases/latest)
+- [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
+- [Contributing to redCORE](chapters/Contributing.md)
+- **Translation feature:**
+	- [Overview](chapters/translation/overview.md)
+	- [Activate redCORE translations](chapters/translation/activate.md)
+	- [Create content languages in Joomla](chapters/translation/joomla-content-language.md)
+	- [Publish language switcher module](chapters/translation/language-switcher.md)
+	- [Translate content](chapters/translation/translate-content.md)
+	- Translating Joomla extensions:
+    	- [- Create translation elements](chapters/translation/create-elements.md)
+    	- [- Add translation elements](chapters/translation/add-elements.md)
+    - [Advanced Configuration](chapters/translation/advanced-configuration.md)
+- **Webservices and HAL**
+	- [Overview](chapters/webservices/overview.md)
+		- [- Breakdown Step-by-step](chapters/webservices/breakdown.md)
+	- [HAL](chapters/webservices/hal.md)
+	- [Creating Webservice](chapters/webservices/creating_webservice.md)
+		- [- XML mapping file](chapters/webservices/xml_file.md)
+		- [- Helper file](chapters/webservices/helper_file.md)
+		- [- Plugin methods](chapters/webservices/plugin_methods.md)
+		- [- Transform fields](chapters/webservices/transform.md)
+	- [Deploy Webservice XML files](chapters/webservices/deploy.md)
+		- [- Installing webservice](chapters/webservices/installation.md)
+	- Sample Output:
+		- [- Read List](chapters/webservices/output_read_list.md)
+		- [- Read Item](chapters/webservices/output_read_item.md)
+- **OAuth2 Server:**
+	- [Overview](chapters/oauth2/overview.md)
+		- [- Breakdown Step-by-step](chapters/oauth2/breakdown.md)
+	- [OAuth2 Clients](chapters/oauth2/clients.md)
+	- [Authorization Grant types](chapters/oauth2/grant_types.md)
+		- [- Authorization code flow](chapters/oauth2/grant_type_authorization_code.md)
+		- [- User credentials flow](chapters/oauth2/grant_type_password.md)
+		- [- Implicit flow](chapters/oauth2/grant_type_implicit.md)
+		- [- Client credentials flow](chapters/oauth2/grant_type_client_credentials.md)
+		- [- Refresh token flow](chapters/oauth2/grant_type_refresh_token.md)
+		- [- JWT Bearer flow](chapters/oauth2/grant_type_jwt_bearer.md)
+	- [Access token](chapters/oauth2/token.md)
+	- [Joomla user connection](chapters/oauth2/joomla_user_connection.md)
+	- [Scope](chapters/oauth2/scope.md)
+- **The Override plugin:**
+	- [Overview](chapters/mvcoverride/overview.md)
+- **redCORE Framework:**
+	- [Overview](chapters/framework/overview.md)
+	- [redCORE Folder Structure](chapters/folder-structure.md)
+	- [Tools for redCORE](chapters/Tools.md)
+		- [- Gulp](chapters/tools/gulp.md)
+		- [- PHING packager](chapters/tools/phing.md)
+		- [- CSS minified files](chapters/tools/Css-minified-files.md)
+		- [- JS minified files](chapters/tools/JS-minified-files.md)
+	- Extension Development
+		- [Installer](chapters/Installer.md)
+		- [in your extension](chapters/add-to-your-extension.md)
+	- MVC
+		- [Model](chapters/Model.md)
+		- [View and CSV](chapters/View.md)
+		- [Table](chapters/Table.md)
+		- [Controllers](chapters/Controllers.md)
+	- Forms
+		- [Forms](chapters/Forms.md)
+		   - [- Fields](chapters/Fields.md)
+			  - [· RChildlist](chapters/RChildlist.md)
+			  - [· RCountry](chapters/RCountry.md)
+			  - [· RCurrency](chapters/RCurrency.md)
+			  - [· RDatepicker](chapters/RDatepicker.md)
+			  - [· RPublished](chapters/RPublished.md)
+			  - [· Checkbox](chapters/Checkbox.md)
+		   - [- Rules](chapters/Rules.md)
+	- Helpers
+		- [- File Upload](chapters/framework/fileupload.md)
+		- [- Currency](chapters/Currency.md)
+		- [- Country](chapters/Country.md)
+		- [- List](chapters/List.md)
+	- Widgets
+		- [Widgets](chapters/Widgets.md)
+		   - Tooltip
+	- Menu
+		- [Menu](chapters/Menu.md)
+	- HTML
+		- [Html](chapters/Html.md)
+		   - [- Sorting](chapters/Sorting.md)
+	- Layouts
+		- [Layouts](chapters/Layouts.md)
+		   - Topbar
+		   - Modal
+	- Assets
+		- [Assets](chapters/Assets.md)
+		   - [- Chosen](chapters/Chosen.md)
+		   - [- Select2](chapters/Select2.md)
+		   - [- Holder](chapters/Holder.md)
+		   - [- Flexslider](chapters/Flexslider.md)
+		- [Browser](chapters/Browser.md)
+	- Media
+		- [Icons](chapters/Icons.md)
+	- Appendices
+		- [Examples](appendices/examples.md)

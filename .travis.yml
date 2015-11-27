@@ -25,15 +25,19 @@ before_script:
 - sudo apt-get install fluxbox -y --force-yes
 - fluxbox &
 - sleep 3 # give fluxbox some time to start
-- composer install --prefer-dist
+- cd build
+- npm install
+- mv gulp-config.json.dist gulp-config.json
+- gulp release --skip-version
+- cd ../tests
 
 script:
-- php vendor/bin/robo check:robo-file-version
-- php .travis/phppec.php component/ libraries/ modules/ plugins/
-- php .travis/phpcs.php
-- php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
-- mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
-- mv tests/api.suite.dist.yml tests/api.suite.yml
+- composer install --prefer-dist
+- vendor/bin/robo check:for-missed-debug-code
+- vendor/bin/robo check:for-parse-errors
+- vendor/bin/robo check:codestyle
+- mv acceptance.suite.dist.yml acceptance.suite.yml
+- mv api.suite.dist.yml api.suite.yml
 - vendor/bin/robo run:tests
 - if [ $TRAVIS_PHP_VERSION == 5.5 ]; then vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7; fi
 notifications:

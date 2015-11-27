@@ -27,7 +27,7 @@ Desktop.ini
 *~
 
 # Phing
-build.properties
+build/build.properties
 phing-latest.phar
 .dist
 
@@ -41,7 +41,7 @@ tests/unit/phpunit.xml
 
 # composer
 composer.phar
-vendor/*
+tests/vendor/*
 
 # Robo
 robo.phar
@@ -67,6 +67,7 @@ codecept.phar
 selenium.log
 selenium-errors.log
 tests/_support/_generated/*
+tests/checkers/phpcs/*
 
 # Never ignore
 !.gitignore
