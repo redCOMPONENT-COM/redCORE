@@ -1,6 +1,3 @@
-[submodule "build/.travis/phpcs/Joomla"]
-	path = build/.travis/phpcs/Joomla
-	url = https://github.com/joomla/coding-standards.git
 [submodule "extensions/plugins/system/mvcoverride"]
 	path = extensions/plugins/system/mvcoverride
 	url = https://github.com/redCOMPONENT-COM/mvcOverride.git
