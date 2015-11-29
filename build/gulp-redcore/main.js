@@ -1,10 +1,10 @@
 var gulp = require('gulp');
 
-// Third part extension using redCORE
+// Third part extension using redCORE / redCORE build folder
 try {
-	var config = require('../../../build/gulp-config.json');
+	var config = require(process.cwd() + '/gulp-config.json');
 }
-// redCORE repo
+// redCORE repo relative
 catch(err) {
 	var config = require('../../build/gulp-config.json');
 }
