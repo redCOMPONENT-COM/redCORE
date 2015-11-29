@@ -1,1 +1,1 @@
-Version 1.6.14
+Version 1.7.0

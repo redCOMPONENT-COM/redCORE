@@ -1,6 +1,7 @@
 - [Introduction](chapters/introduction.md)
 - [Download redCORE](https://github.com/redCOMPONENT-COM/redCORE/releases/latest)
 - [Source Code](https://github.com/redCOMPONENT-COM/redCORE/)
+- [Contributing to redCORE](chapters/Contributing.md)
 - **Translation feature:**
 	- [Overview](chapters/translation/overview.md)
 	- [Activate redCORE translations](chapters/translation/activate.md)
@@ -43,10 +44,15 @@
 	- [Overview](chapters/mvcoverride/overview.md)
 - **redCORE Framework:**
 	- [Overview](chapters/framework/overview.md)
+	- [redCORE Folder Structure](chapters/folder-structure.md)
+	- [Tools for redCORE](chapters/Tools.md)
+		- [- Gulp](chapters/tools/gulp.md)
+		- [- PHING packager](chapters/tools/phing.md)
+		- [- CSS minified files](chapters/tools/Css-minified-files.md)
+		- [- JS minified files](chapters/tools/JS-minified-files.md)
 	- Extension Development
 		- [Installer](chapters/Installer.md)
 		- [in your extension](chapters/add-to-your-extension.md)
-		- [The PHING packager](chapters/phing.md)
 	- MVC
 		- [Model](chapters/Model.md)
 		- [View and CSV](chapters/View.md)
@@ -81,8 +87,6 @@
 		   - Modal
 	- Assets
 		- [Assets](chapters/Assets.md)
-		   - [- CSS minified files](chapters/Css-minified-files.md)
-		   - [- JS minified files](chapters/JS-minified-files.md)
 		   - [- Chosen](chapters/Chosen.md)
 		   - [- Select2](chapters/Select2.md)
 		   - [- Holder](chapters/Holder.md)

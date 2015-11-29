@@ -1,4 +1,10 @@
-This uses [UglifyJS](https://github.com/mishoo/UglifyJS) to create minified files.  
+# JS minified files
+
+We recommend using Gulp for redCORE development instead of minifying files manually but if you cannot use Gulp for some reason, you can create minified JS files by running standalone tool.
+
+## UglifyJS
+
+This uses [UglifyJS](https://github.com/mishoo/UglifyJS) to create minified files.
 
 ## Install node:
 
