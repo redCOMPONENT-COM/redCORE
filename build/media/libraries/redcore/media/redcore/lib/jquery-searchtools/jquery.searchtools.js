@@ -1,4 +1,4 @@
-(function ($, window, document, undefined) {
+;(function ($, window, document, undefined) {
 
 	// Create the defaults once
 	var pluginName = "searchtools";
@@ -61,7 +61,7 @@
 		this.listHidden    = this.options.listHidden;
 
 		// Main container
-		this.mainContainer = $(this.options.mainContainerSelector);
+		this.mainContainer = $(this.options.formSelector + ' ' + this.options.mainContainerSelector);
 
 		// Search
 		this.searchButton = $(this.options.formSelector + ' ' + this.options.searchBtnSelector);
@@ -148,9 +148,9 @@
 			this.orderCols.click(function() {
 
 				// Order to set
-				var newOrderCol  = $(this).attr('data-order');
+				var newOrderCol = $(this).attr('data-order');
 				var newDirection = $(this).attr('data-direction');
-				var newOrdering  = newOrderCol + ' ' + newDirection;
+				var newOrdering = newOrderCol + ' ' + newDirection;
 
 				// The data-order attrib is required
 				if (newOrderCol.length)
@@ -221,15 +221,23 @@
 			var self = this;
 
 			$(element).addClass('active');
-			var chosenId = '#' + $(element).attr('id') + '_chzn';
-			$(chosenId).addClass('active');
+
+			if (self.chosenSupport) {
+				$(element).chosen();
+				var chosenId = '#' + $(element).attr('id') + '_chzn';
+				$(chosenId).addClass('active');
+			}
 		},
 		deactiveFilter: function (element) {
 			var self = this;
 
 			$(element).removeClass('active');
-			var chosenId = '#' + $(element).attr('id') + '_chzn';
-			$(chosenId).removeClass('active');
+
+			if (self.chosenSupport) {
+				$(element).chosen();
+				var chosenId = '#' + $(element).attr('id') + '_chzn';
+				$(chosenId).removeClass('active');
+			}
 		},
 		getFilterFields: function () {
 			return this.filterContainer.find('select');
@@ -311,11 +319,11 @@
 			if (!this.orderField.length)
 			{
 				this.orderField = $('<input>').attr({
-				    type: 'hidden',
-				    id: 'js-stools-field-order',
-				    'class': 'js-stools-field-order',
-				    name: self.options.orderFieldName,
-				    value: self.activeOrder + ' ' + this.activeDirection
+					'type': 'hidden',
+					'id': 'js-stools-field-order',
+					'class': 'js-stools-field-order',
+					'name': self.options.orderFieldName,
+					'value': self.activeOrder + ' ' + this.activeDirection
 				});
 
 				this.orderField.appendTo(this.theForm);
