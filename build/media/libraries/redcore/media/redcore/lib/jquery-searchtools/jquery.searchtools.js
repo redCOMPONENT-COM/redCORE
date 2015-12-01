@@ -67,7 +67,7 @@
 		this.searchButton = $(this.options.formSelector + ' ' + this.options.searchBtnSelector);
 		this.searchField  = $(this.options.formSelector + ' ' + this.options.searchFieldSelector);
 		this.searchString = null;
-		this.clearButton  = $(this.options.clearBtnSelector);
+		this.clearButton  = $(this.options.formSelector + ' ' + this.options.clearBtnSelector);
 
 		// Ordering
 		this.orderCols  = $(this.options.formSelector + ' ' + this.options.orderColumnSelector);
