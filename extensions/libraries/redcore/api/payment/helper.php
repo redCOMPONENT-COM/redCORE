@@ -1067,6 +1067,7 @@ class RApiPaymentHelper
 		$paymentLog['message_post'] = json_encode($data);
 		$paymentLog['message_text'] = !is_null($message) ?
 			$message : JText::sprintf('LIB_REDCORE_PAYMENT_LOG_DEFAULT_MESSAGE', $data['extension_name'], $data['payment_name']);
+		$paymentLog['coupon_code'] = !empty($data['coupon_code']) ? $data['coupon_code'] : '';
 
 		return $paymentLog;
 	}
