@@ -270,14 +270,12 @@ class RApiSoapHelper
 			foreach ($items as $item)
 			{
 				$object = new stdClass;
-				$i = 0;
 
 				foreach ($item as $field => $value)
 				{
 					if (in_array($field, $outputResources))
 					{
 						$object->$field = $value;
-						$i++;
 					}
 				}
 
