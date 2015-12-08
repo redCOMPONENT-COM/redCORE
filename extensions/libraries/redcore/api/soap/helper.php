@@ -271,7 +271,7 @@ class RApiSoapHelper
 			{
 				$object = new stdClass;
 
-				foreach ($item['fields'] as $field => $value)
+				foreach ($item as $field => $value)
 				{
 					if (in_array($field, $outputResources))
 					{
