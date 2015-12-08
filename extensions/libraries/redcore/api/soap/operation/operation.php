@@ -140,11 +140,6 @@ class RApiSoapOperationOperation
 		$arr = $this->webservice->hal->toArray();
 		$outputResources = RApiSoapHelper::getOutputResources($this->webservice->configuration->operations->read->item, '', true);
 
-		if (array_key_exists('fields', $arr))
-		{
-			$arr = $arr['fields'];
-		}
-
 		$response = RApiSoapHelper::selectListResources($outputResources, array($arr));
 
 		$final = new stdClass;
