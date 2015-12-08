@@ -117,7 +117,9 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 	function printDocumentation()
 	{
 		url = jQuery('#webservicePreview').data('url') + '&print';
-		window.open(url);
+		var iframe = jQuery('#redcore-print');
+		iframe.attr('src', url);
+		iframe.window.print();
 	}
 </script>
 <style>
@@ -429,3 +431,6 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 	</div>
 	<?php echo JHtml::_('form.token'); ?>
 </form>
+<div style="display:none">
+	<iframe id="redcore-print"></iframe>
+</div>
