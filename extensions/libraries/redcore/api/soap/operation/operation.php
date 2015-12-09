@@ -82,13 +82,11 @@ class RApiSoapOperationOperation
 
 		$outputResources = RApiSoapHelper::getOutputResources($this->webservice->configuration->operations->read->list, 'listItem', true);
 
+		$response = array();
+
 		if ($arr['_embedded'] && $arr['_embedded']['item'])
 		{
 			$response = RApiSoapHelper::selectListResources($outputResources, $arr['_embedded']['item']);
-		}
-		else
-		{
-			$response = array();
 		}
 
 		$final = new stdClass;
@@ -344,10 +342,10 @@ class RApiSoapOperationOperation
 		if (!empty($language) && isset($languages[$language]))
 		{
 			$languageObject->setLanguage($languages[$language]->lang_code);
+
+			return;
 		}
-		else
-		{
-			$languageObject->setLanguage($languages[RTranslationHelper::getSiteLanguage()]->lang_code);
-		}
+
+		$languageObject->setLanguage($languages[RTranslationHelper::getSiteLanguage()]->lang_code);
 	}
 }

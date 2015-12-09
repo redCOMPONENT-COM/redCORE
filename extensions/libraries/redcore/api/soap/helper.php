@@ -356,30 +356,32 @@ class RApiSoapHelper
 
 		while (false !== ($entry = readdir($handle)))
 		{
-			if ($entry != "." && $entry != "..")
+			if ($entry == "." || $entry == "..")
 			{
-				$file = $path . '/' . $entry;
+				continue;
+			}
 
-				if (is_dir($file))
+			$file = $path . '/' . $entry;
+
+			if (is_dir($file))
+			{
+				self::generateWsdlFromFolder($file);
+			}
+			elseif (is_file($file))
+			{
+				// Only handle XML files
+				if (JFile::getExt($file) == 'xml')
 				{
-					self::generateWsdlFromFolder($file);
-				}
-				elseif (is_file($file))
-				{
-					// Only handle XML files
-					if (JFile::getExt($file) == 'xml')
+					$content = @file_get_contents($file);
+
+					if (is_string($content))
 					{
-						$content = @file_get_contents($file);
+						$webserviceXml = new SimpleXMLElement($content);
+						$wsdl = self::generateWsdl($webserviceXml);
+						$fullWsdlPath = substr($file, 0, -4) . '.wsdl';
 
-						if (is_string($content))
-						{
-							$webserviceXml = new SimpleXMLElement($content);
-							$wsdl = self::generateWsdl($webserviceXml);
-							$fullWsdlPath = substr($file, 0, -4) . '.wsdl';
-
-							// Save the generated WSDL file
-							self::saveWsdlContentToPath($wsdl, $fullWsdlPath);
-						}
+						// Save the generated WSDL file
+						self::saveWsdlContentToPath($wsdl, $fullWsdlPath);
 					}
 				}
 			}
