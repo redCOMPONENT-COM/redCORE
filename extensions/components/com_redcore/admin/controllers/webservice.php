@@ -95,36 +95,40 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = explode(',', $fieldList);
 		$tableName = $input->getCmd('tableName', '');
 
-		if (!empty($tableName))
+		if (empty($tableName))
 		{
-			$db = JFactory::getDbo();
-			$columns = $db->getTableColumns('#__' . $tableName, false);
+			$app->close();
+		}
 
-			if ($columns)
-			{
-				foreach ($columns as $columnKey => $column)
-				{
-					$form = array(
-						'name' => $column->Field,
-						'transform' => RApiHalHelper::getTransformElementByDbType($column->Type),
-						'defaultValue' => $column->Default,
-						'isPrimaryField' => $column->Key == 'PRI' ? 'true' : 'false',
-						'description' => $column->Comment,
-					);
+		$db = JFactory::getDbo();
+		$columns = $db->getTableColumns('#__' . $tableName, false);
 
-					echo RLayoutHelper::render(
-						'webservice.fields.field',
-						array(
-							'view' => $this,
-							'options' => array(
-								'operation' => $operation,
-								'fieldList' => $fieldList,
-								'form' => $form,
-							)
-						)
-					);
-				}
-			}
+		if (!$columns)
+		{
+			$app->close();
+		}
+
+		foreach ($columns as $columnKey => $column)
+		{
+			$form = array(
+				'name' => $column->Field,
+				'transform' => RApiHalHelper::getTransformElementByDbType($column->Type),
+				'defaultValue' => $column->Default,
+				'isPrimaryField' => $column->Key == 'PRI' ? 'true' : 'false',
+				'description' => $column->Comment,
+			);
+
+			echo RLayoutHelper::render(
+				'webservice.fields.field',
+				array(
+					'view' => $this,
+					'options' => array(
+						'operation' => $operation,
+						'fieldList' => $fieldList,
+						'form' => $form,
+					)
+				)
+			);
 		}
 
 		$app->close();
@@ -145,36 +149,40 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = explode(',', $fieldList);
 		$tableName = $input->getCmd('tableName', '');
 
-		if (!empty($tableName))
+		if (empty($tableName))
 		{
-			$db = JFactory::getDbo();
-			$columns = $db->getTableColumns('#__' . $tableName, false);
+			$app->close();
+		}
 
-			if ($columns)
-			{
-				foreach ($columns as $columnKey => $column)
-				{
-					$form = array(
-						'displayName' => $column->Field,
-						'transform' => RApiHalHelper::getTransformElementByDbType($column->Type),
-						'resourceSpecific' => 'rcwsGlobal',
-						'fieldFormat' => '{' . $column->Field . '}',
-						'description' => $column->Comment,
-					);
+		$db = JFactory::getDbo();
+		$columns = $db->getTableColumns('#__' . $tableName, false);
 
-					echo RLayoutHelper::render(
-						'webservice.resources.resource',
-						array(
-							'view' => $this,
-							'options' => array(
-								'operation' => $operation,
-								'fieldList' => $fieldList,
-								'form' => $form,
-							)
-						)
-					);
-				}
-			}
+		if (!$columns)
+		{
+			$app->close();
+		}
+
+		foreach ($columns as $columnKey => $column)
+		{
+			$form = array(
+				'displayName' => $column->Field,
+				'transform' => RApiHalHelper::getTransformElementByDbType($column->Type),
+				'resourceSpecific' => 'rcwsGlobal',
+				'fieldFormat' => '{' . $column->Field . '}',
+				'description' => $column->Comment,
+			);
+
+			echo RLayoutHelper::render(
+				'webservice.resources.resource',
+				array(
+					'view' => $this,
+					'options' => array(
+						'operation' => $operation,
+						'fieldList' => $fieldList,
+						'form' => $form,
+					)
+				)
+			);
 		}
 
 		$app->close();
@@ -194,39 +202,41 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = $input->getString('fieldList', '');
 		$webserviceId = $input->getString('webserviceId', '');
 
-		if (!empty($webserviceId))
+		if (empty($webserviceId))
 		{
-			$model = $this->getModel();
-			$item = $model->getItem($webserviceId);
-
-			$link = '/index.php?option=' . $item->name;
-			$link .= '&amp;webserviceVersion=' . $item->version;
-			$link .= '&amp;webserviceClient=' . $item->client;
-			$link .= '&amp;id={' . $item->name . '_id}';
-
-			$form = array(
-				'displayName' => $item->name,
-				'linkTitle' => $item->title,
-				'transform' => 'string',
-				'resourceSpecific' => 'rcwsGlobal',
-				'displayGroup' => '_links',
-				'linkTemplated' => 'true',
-				'fieldFormat' => $link,
-				'description' => JText::sprintf('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_CONNECTION_DESCRIPTION_LABEL', $item->name, '{' . $item->name . '_id}'),
-			);
-
-			echo RLayoutHelper::render(
-				'webservice.resources.resource',
-				array(
-					'view' => $this,
-					'options' => array(
-						'operation' => $operation,
-						'fieldList' => $fieldList,
-						'form' => $form,
-					)
-				)
-			);
+			$app->close();
 		}
+
+		$model = $this->getModel();
+		$item = $model->getItem($webserviceId);
+
+		$link = '/index.php?option=' . $item->name;
+		$link .= '&amp;webserviceVersion=' . $item->version;
+		$link .= '&amp;webserviceClient=' . $item->client;
+		$link .= '&amp;id={' . $item->name . '_id}';
+
+		$form = array(
+			'displayName' => $item->name,
+			'linkTitle' => $item->title,
+			'transform' => 'string',
+			'resourceSpecific' => 'rcwsGlobal',
+			'displayGroup' => '_links',
+			'linkTemplated' => 'true',
+			'fieldFormat' => $link,
+			'description' => JText::sprintf('COM_REDCORE_WEBSERVICE_RESOURCE_ADD_CONNECTION_DESCRIPTION_LABEL', $item->name, '{' . $item->name . '_id}'),
+		);
+
+		echo RLayoutHelper::render(
+			'webservice.resources.resource',
+			array(
+				'view' => $this,
+				'options' => array(
+					'operation' => $operation,
+					'fieldList' => $fieldList,
+					'form' => $form,
+				)
+			)
+		);
 
 		$app->close();
 	}
