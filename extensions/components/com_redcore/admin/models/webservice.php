@@ -207,6 +207,9 @@ class RedcoreModelWebservice extends RModelAdmin
 			$this->getResourcesFromPost($operationXml, $data, $operationName);
 		}
 
+		$originalXml = simplexml_load_file($fullPath);
+		$this->addComplexArrays($xml, $originalXml);
+
 		// Needed for formatting
 		$dom = dom_import_simplexml($xml)->ownerDocument;
 		$dom->preserveWhiteSpace = false;
@@ -262,7 +265,6 @@ class RedcoreModelWebservice extends RModelAdmin
 			{
 				continue;
 			}
-
 
 			if ($attributeKey != 'description')
 			{
@@ -415,6 +417,71 @@ class RedcoreModelWebservice extends RModelAdmin
 		$node->appendChild($no->createCDATASection($value));
 
 		return $newChild;
+	}
+
+	/**
+	 * Method to transfer the orignal complexArray xml to the new WS xml
+	 *
+	 * @param   SimpleXMLElement  $xml          the new xml definition
+	 * @param   SimpleXMLElement  $originalXml  the original definition
+	 *
+	 * @return void
+	 */
+	private function addComplexArrays($xml, $originalXml)
+	{
+		$nodes = $originalXml->xpath('////complexArrays/*');
+
+		if (!$nodes)
+		{
+			return;
+		}
+
+		$complexArrays = $xml->addChild('complexArrays');
+
+		foreach ($nodes AS $node)
+		{
+			$this->appendXML($complexArrays, $node);
+		}
+	}
+
+	/**
+	 * Add SimpleXMLElement fragment to another SimpleXMLElement
+	 *
+	 * @param   SimpleXMLElement  $targetXml    the xml to append to
+	 * @param   SimpleXMLElement  $originalXml  the xml to append to targetXml
+	 *
+	 * @return void
+	 */
+	private function appendXML(SimpleXMLElement $targetXml, SimpleXMLElement $originalXml)
+	{
+		if ($originalXml && strlen(trim((string) $originalXml)) == 0)
+		{
+			$xml = $targetXml->addChild($originalXml->getName());
+
+			foreach ($originalXml->children() as $child)
+			{
+				$this->appendXML($xml, $child);
+			}
+		}
+		elseif($originalXml->getName() == 'description')
+		{
+			$xml = $this->addChildWithCDATA($targetXml, $originalXml->getName(), (string) $originalXml);
+		}
+		else
+		{
+			$xml = $targetXml->addChild($originalXml->getName(), (string) $originalXml);
+		}
+
+		foreach ($originalXml->attributes() as $name => $value)
+		{
+			// If it is not set then we just set it.
+			if (!isset($xml[$name]))
+			{
+				$xml->addAttribute($name, '');
+			}
+
+			$xml[$name] = trim($value);
+		}
 	}
 
 	/**
