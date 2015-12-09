@@ -156,33 +156,35 @@ class RApiSoapHelper
 	{
 		$outputResources = array();
 
-		if (isset($xmlElement->resources->resource))
+		if (!isset($xmlElement->resources->resource))
 		{
-			foreach ($xmlElement->resources->resource as $resource)
+			return $outputResources;
+		}
+
+		foreach ($xmlElement->resources->resource as $resource)
+		{
+			$displayGroup = RApiHalHelper::attributeToString($resource, 'displayGroup');
+
+			switch ($displayGroup)
 			{
-				$displayGroup = RApiHalHelper::attributeToString($resource, 'displayGroup');
+				case '_links':
+				case '_messages':
+					break;
 
-				switch ($displayGroup)
-				{
-					case '_links':
-					case '_messages':
-						break;
-
-					default:
-						if (($resourceSpecific != '' && RApiHalHelper::attributeToString($resource, 'resourceSpecific') == $resourceSpecific)
-							|| $resourceSpecific == '')
+				default:
+					if (($resourceSpecific != '' && RApiHalHelper::attributeToString($resource, 'resourceSpecific') == $resourceSpecific)
+						|| $resourceSpecific == '')
+					{
+						if ($namesOnly)
 						{
-							if ($namesOnly)
-							{
-								$outputResources[] = RApiHalHelper::attributeToString($resource, 'displayName');
-							}
-							else
-							{
-								$resource->addAttribute('name', $resource['displayName']);
-								$outputResources[] = $resource;
-							}
+							$outputResources[] = RApiHalHelper::attributeToString($resource, 'displayName');
 						}
-				}
+						else
+						{
+							$resource->addAttribute('name', $resource['displayName']);
+							$outputResources[] = $resource;
+						}
+					}
 			}
 		}
 
@@ -198,23 +200,26 @@ class RApiSoapHelper
 	 */
 	public static function getResultResource($xmlElement)
 	{
-		if (isset($xmlElement->resources->resource))
+		$resource = new SimpleXMLElement('<resource name="result" displayName="result" transform="boolean" fieldFormat="{result}" />');
+
+		if (!isset($xmlElement->resources->resource))
 		{
-			foreach ($xmlElement->resources->resource as $resource)
-			{
-				$displayName = RApiHalHelper::attributeToString($resource, 'displayName');
-				$resourceSpecific = RApiHalHelper::attributeToString($resource, 'resourceSpecific');
-
-				if ($displayName == 'result' && $resourceSpecific == 'rcwsGlobal')
-				{
-					$resource->addAttribute('name', $resource['displayName']);
-
-					return $resource;
-				}
-			}
+			return $resource;
 		}
 
-		$resource = new SimpleXMLElement('<resource name="result" displayName="result" transform="boolean" fieldFormat="{result}" />');
+		foreach ($xmlElement->resources->resource as $xmlResource)
+		{
+			$displayName = RApiHalHelper::attributeToString($xmlResource, 'displayName');
+			$resourceSpecific = RApiHalHelper::attributeToString($xmlResource, 'resourceSpecific');
+
+			if ($displayName != 'result' || $resourceSpecific != 'rcwsGlobal')
+			{
+				continue;
+			}
+
+			$xmlResource->addAttribute('name', $resource['displayName']);
+			$resource = $xmlResource;
+		}
 
 		return $resource;
 	}
@@ -236,19 +241,19 @@ class RApiSoapHelper
 	{
 		JLoader::import('joomla.filesystem.path');
 
-		if (!empty($webserviceName))
+		if (empty($webserviceName))
 		{
-			$version = !empty($version) ? JPath::clean($version) : '1.0.0';
-			$webservicePath = !empty($path) ? RApiHalHelper::getWebservicesRelativePath() . '/' . $path : RApiHalHelper::getWebservicesRelativePath();
-
-			$rawPath = $webserviceName . '.' . $version;
-			$rawPath = !empty($extension) ? $rawPath . '.' . $extension : $rawPath;
-			$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
-
-			return $webservicePath . '/' . $rawPath;
+			return '';
 		}
 
-		return '';
+		$version = !empty($version) ? JPath::clean($version) : '1.0.0';
+		$webservicePath = !empty($path) ? RApiHalHelper::getWebservicesRelativePath() . '/' . $path : RApiHalHelper::getWebservicesRelativePath();
+
+		$rawPath = $webserviceName . '.' . $version;
+		$rawPath = !empty($extension) ? $rawPath . '.' . $extension : $rawPath;
+		$rawPath = !empty($client) ? $client . '.' . $rawPath : $rawPath;
+
+		return $webservicePath . '/' . $rawPath;
 	}
 
 	/**
@@ -265,22 +270,24 @@ class RApiSoapHelper
 	{
 		$response = array();
 
-		if ($items)
+		if (empty($items))
 		{
-			foreach ($items as $item)
+			return $response;
+		}
+
+		foreach ($items as $item)
+		{
+			$object = new stdClass;
+
+			foreach ($item as $field => $value)
 			{
-				$object = new stdClass;
-
-				foreach ($item as $field => $value)
+				if (in_array($field, $outputResources))
 				{
-					if (in_array($field, $outputResources))
-					{
-						$object->$field = $value;
-					}
+					$object->$field = $value;
 				}
-
-				$response[] = $object;
 			}
+
+			$response[] = $object;
 		}
 
 		return $response;
@@ -301,31 +308,33 @@ class RApiSoapHelper
 	{
 		$fieldsArray = array();
 
-		if ($fields && is_array($fields))
+		if (empty($fields) || !is_array($fields))
 		{
-			foreach ($fields as $field)
+			return $fieldsArray;
+		}
+
+		foreach ($fields as $field)
+		{
+			$transform = RApiHalHelper::attributeToString($field, 'transform', 'string');
+			$defaultValue = RApiHalHelper::attributeToString($field, 'defaultValue', 'null');
+
+			if ($defaultValue == 'null' && ($allRequired || RApiHalHelper::isAttributeTrue($field, 'isRequiredField')))
 			{
-				$transform = RApiHalHelper::attributeToString($field, 'transform', 'string');
-				$defaultValue = RApiHalHelper::attributeToString($field, 'defaultValue', 'null');
+				$transformClass = 'RApiSoapTransform' . ucfirst($transform);
 
-				if ($defaultValue == 'null' && ($allRequired || RApiHalHelper::isAttributeTrue($field, 'isRequiredField')))
+				if (!class_exists($transformClass))
 				{
-					$transformClass = 'RApiSoapTransform' . ucfirst($transform);
-
-					if (!class_exists($transformClass))
-					{
-						$transformClass = 'RApiSoapTransformBase';
-					}
-
-					$transformObject = new $transformClass;
-					$defaultValue = $transformObject->defaultValue;
+					$transformClass = 'RApiSoapTransformBase';
 				}
 
-				$fieldsArray[] = '$' .
-					RApiHalHelper::attributeToString($field, 'name') .
-					' ' . $assignation . ' (' . $transform . ') ' .
-					$defaultValue;
+				$transformObject = new $transformClass;
+				$defaultValue = $transformObject->defaultValue;
 			}
+
+			$fieldsArray[] = '$' .
+				RApiHalHelper::attributeToString($field, 'name') .
+				' ' . $assignation . ' (' . $transform . ') ' .
+				$defaultValue;
 		}
 
 		return $fieldsArray;
@@ -340,41 +349,43 @@ class RApiSoapHelper
 	 */
 	public static function generateWsdlFromFolder($path)
 	{
-		if ($handle = opendir($path))
+		if (!$handle = opendir($path))
 		{
-			while (false !== ($entry = readdir($handle)))
+			return;
+		}
+
+		while (false !== ($entry = readdir($handle)))
+		{
+			if ($entry != "." && $entry != "..")
 			{
-				if ($entry != "." && $entry != "..")
+				$file = $path . '/' . $entry;
+
+				if (is_dir($file))
 				{
-					$file = $path . '/' . $entry;
+					self::generateWsdlFromFolder($file);
+				}
+				elseif (is_file($file))
+				{
+					// Only handle XML files
+					if (JFile::getExt($file) == 'xml')
+					{
+						$content = @file_get_contents($file);
 
-					if (is_dir($file))
-					{
-						self::generateWsdlFromFolder($file);
-					}
-					elseif (is_file($file))
-					{
-						// Only handle XML files
-						if (JFile::getExt($file) == 'xml')
+						if (is_string($content))
 						{
-							$content = @file_get_contents($file);
+							$webserviceXml = new SimpleXMLElement($content);
+							$wsdl = self::generateWsdl($webserviceXml);
+							$fullWsdlPath = substr($file, 0, -4) . '.wsdl';
 
-							if (is_string($content))
-							{
-								$webserviceXml = new SimpleXMLElement($content);
-								$wsdl = self::generateWsdl($webserviceXml);
-								$fullWsdlPath = substr($file, 0, -4) . '.wsdl';
-
-								// Save the generated WSDL file
-								self::saveWsdlContentToPath($wsdl, $fullWsdlPath);
-							}
+							// Save the generated WSDL file
+							self::saveWsdlContentToPath($wsdl, $fullWsdlPath);
 						}
 					}
 				}
 			}
-
-			closedir($handle);
 		}
+
+		closedir($handle);
 	}
 
 	/**
