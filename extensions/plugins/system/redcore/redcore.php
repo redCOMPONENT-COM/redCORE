@@ -85,10 +85,10 @@ class PlgSystemRedcore extends JPlugin
 						$version = $input->getString('webserviceVersion', '');
 						$token = $input->getString(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), '');
 						$apiName = ucfirst($apiName);
-						$method = strtoupper($input->getMethod());
+						$method = strtoupper($input->getCmd('method', $input->getMethod()));
 						$task = RApiHalHelper::getTask();
 						$data = RApi::getPostedData();
-						$dataGet = $input->get->getArray();
+						$dataGet = $input->getArray();
 
 						if (empty($webserviceClient))
 						{
