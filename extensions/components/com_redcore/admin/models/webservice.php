@@ -917,7 +917,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	 *
 	 * @return array
 	 */
-	public function getTransforms()
+	public function getTransformTypes()
 	{
 		$transforms = RApiHalHelper::getTransformElements();
 		$complexArrayItems = $this->xmlFile->xpath('//complexArrays/*');

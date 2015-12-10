@@ -90,7 +90,7 @@ $id = RFilesystemFile::getUniqueName($operation);
 				</div>
 				<?php echo JHtml::_(
 					'select.genericlist',
-					$view->get('getTransforms'),
+					$view->get('TransformTypes'),
 					'transform',
 					' class="required form-control" ',
 					'value',
