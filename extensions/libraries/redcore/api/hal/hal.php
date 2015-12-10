@@ -298,10 +298,11 @@ class RApiHalHal extends RApi
 			case 'DELETE':
 				$method = 'DELETE';
 				break;
+		}
 
-			default:
-				$method = 'READ';
-				break;
+		if (!$method)
+		{
+			$method = 'READ';
 		}
 
 		// If task is pointing to some other operation like apply, update or delete
