@@ -39,15 +39,6 @@ if ($fieldList == 'link')
 }
 
 $id = RFilesystemFile::getUniqueName($operation);
-
-$transformTypes = RApiHalHelper::getTransformElements();
-$complexTypes = $view->get('ComplexTransforms');
-
-foreach ($complexTypes AS $complexType)
-{
-	$transformTypes[] = $complexType;
-}
-
 ?>
 <div class="row row-stripped">
 	<div class="col-xs-2">
@@ -104,7 +95,7 @@ foreach ($complexTypes AS $complexType)
 				</div>
 				<?php echo JHtml::_(
 					'select.genericlist',
-					$transformTypes,
+					$view->get('getTransform'),
 					'transform',
 					' class="required form-control" ',
 					'value',

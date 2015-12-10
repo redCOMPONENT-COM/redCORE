@@ -207,6 +207,11 @@ JHtml::_('rjquery.chosen', 'select');
 					<?php echo JText::_('COM_REDCORE_WEBSERVICE_DOCUMENTATION_LABEL'); ?>
 				</a>
 			</li>
+			<li role="presentation">
+				<a href="#webserviceTabComplexTypes" id="complex-type-tab" role="tab" data-toggle="tab">
+					<?php echo JText::_('COM_REDCORE_WEBSERVICE_COMPLEX_TYPES_LABEL'); ?>
+				</a>
+			</li>
 		</ul>
 	</div>
 
@@ -237,6 +242,10 @@ JHtml::_('rjquery.chosen', 'select');
 
 		<div role="tabpanel" class="tab-pane" id="webserviceTabDocumentation">
 			<?php echo $this->loadTemplate('documentation'); ?>
+		</div>
+
+		<div role="tabpanel" class="tab-pane" id="webserviceTabComplexTypes">
+			<?php echo $this->loadTemplate('complex_types'); ?>
 		</div>
 	</div>
 
