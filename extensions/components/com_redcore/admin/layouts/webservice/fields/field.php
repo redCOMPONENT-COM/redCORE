@@ -24,6 +24,13 @@ $isPrimaryField = !empty($displayData['options']['form']['isPrimaryField']) ? $d
 $displayData['options']['form'] = !empty($displayData['options']['form']) ? $displayData['options']['form'] : array();
 
 $id = RFilesystemFile::getUniqueName($operation);
+$transformTypes = RApiHalHelper::getTransformElements();
+$complexTypes = $view->get('ComplexTransforms');
+
+foreach ($complexTypes AS $complexType)
+{
+	$transformTypes[] = $complexType;
+}
 ?>
 <div class="row row-stripped">
 	<div class="col-xs-2">
@@ -90,7 +97,7 @@ $id = RFilesystemFile::getUniqueName($operation);
 				</div>
 				<?php echo JHtml::_(
 					'select.genericlist',
-					RApiHalHelper::getTransformElements(),
+					$transformTypes,
 					'transform',
 					' class="required form-control" ',
 					'value',

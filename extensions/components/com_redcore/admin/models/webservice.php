@@ -429,7 +429,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	 */
 	private function addComplexArrays($xml, $originalXml)
 	{
-		$nodes = $originalXml->xpath('////complexArrays/*');
+		$nodes = $originalXml->xpath('//complexArrays/*');
 
 		if (!$nodes)
 		{
@@ -917,5 +917,24 @@ class RedcoreModelWebservice extends RModelAdmin
 		$data['main'] = array_merge($dataArray, $data['main']);
 
 		return $data;
+	}
+
+	/**
+	 * Method to get the additional complex transform types from the WS xml complexArray
+	 *
+	 * @return array
+	 */
+	public function getComplexTransforms()
+	{
+		$complexArrayItems = $this->xmlFile->xpath('//complexArrays/*');
+		$transforms = array();
+
+		foreach ($complexArrayItems AS $transformType)
+		{
+			$value = 'array[' . $transformType->getName() . ']';
+			$transforms[] = array('value' => $value, 'text' => $value);
+		}
+
+		return $transforms;
 	}
 }
