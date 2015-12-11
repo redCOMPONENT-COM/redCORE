@@ -65,11 +65,14 @@ class RedcoreControllerWebservice extends RControllerForm
 		$operation = $input->getString('operation', 'read');
 		$fieldList = $input->getString('fieldList', '');
 		$fieldList = explode(',', $fieldList);
+		$view = $this->getView('webservice', 'html');
+		$model = $this->getModel('Webservice');
+		$view->setModel($model, true);
 
 		echo RLayoutHelper::render(
 			'webservice.fields.field',
 			array(
-				'view' => $this,
+				'view' => $view,
 				'options' => array(
 					'operation' => $operation,
 					'fieldList' => $fieldList,

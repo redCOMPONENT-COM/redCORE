@@ -24,6 +24,7 @@ $isPrimaryField = !empty($displayData['options']['form']['isPrimaryField']) ? $d
 $displayData['options']['form'] = !empty($displayData['options']['form']) ? $displayData['options']['form'] : array();
 
 $id = RFilesystemFile::getUniqueName($operation);
+$model = $view->getModel();
 ?>
 <div class="row row-stripped">
 	<div class="col-xs-2">
@@ -90,7 +91,7 @@ $id = RFilesystemFile::getUniqueName($operation);
 				</div>
 				<?php echo JHtml::_(
 					'select.genericlist',
-					$view->get('TransformTypes'),
+					$model->getTransformTypes($operation),
 					'transform',
 					' class="required form-control" ',
 					'value',

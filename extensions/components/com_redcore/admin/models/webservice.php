@@ -36,6 +36,11 @@ class RedcoreModelWebservice extends RModelAdmin
 	public $operationXml;
 
 	/**
+	 * @var string
+	 */
+	public $complexTypeXml;
+
+	/**
 	 * @var array
 	 */
 	public $formData = array();
@@ -172,7 +177,8 @@ class RedcoreModelWebservice extends RModelAdmin
 		foreach ($data as $operationName => $operation)
 		{
 			if ($operationName == 'main'
-				|| empty($operation['isEnabled']))
+				|| empty($operation['isEnabled'])
+				|| substr($operationName, 0, strlen('type-')) == 'type-')
 			{
 				continue;
 			}
@@ -207,8 +213,22 @@ class RedcoreModelWebservice extends RModelAdmin
 			$this->getResourcesFromPost($operationXml, $data, $operationName);
 		}
 
-		$originalXml = simplexml_load_file($fullPath);
-		$this->addComplexArrays($xml, $originalXml);
+		$complexArrays = $xml->addChild('complexArrays');
+
+		foreach ($data as $typeName => $typeData)
+		{
+			if (substr($typeName, 0, strlen('type-')) != 'type-')
+			{
+				continue;
+			}
+
+			$typeNameSplit = explode('-', $typeName);
+
+			$typeXml = $complexArrays->addChild($typeNameSplit[1]);
+			$this->getOperationAttributesFromPost($typeXml, $data, $typeName);
+			$this->getFieldsFromPost($typeXml, $data, $typeName);
+		}
+
 
 		// Needed for formatting
 		$dom = dom_import_simplexml($xml)->ownerDocument;
@@ -420,31 +440,6 @@ class RedcoreModelWebservice extends RModelAdmin
 	}
 
 	/**
-	 * Method to transfer the orignal complexArray xml to the new WS xml
-	 *
-	 * @param   SimpleXMLElement  $xml          the new xml definition
-	 * @param   SimpleXMLElement  $originalXml  the original definition
-	 *
-	 * @return void
-	 */
-	private function addComplexArrays($xml, $originalXml)
-	{
-		$nodes = $originalXml->xpath('//complexArrays/*');
-
-		if (!$nodes)
-		{
-			return;
-		}
-
-		$complexArrays = $xml->addChild('complexArrays');
-
-		foreach ($nodes AS $node)
-		{
-			$this->appendXML($complexArrays, $node);
-		}
-	}
-
-	/**
 	 * Add SimpleXMLElement fragment to another SimpleXMLElement
 	 *
 	 * @param   SimpleXMLElement  $targetXml    the xml to append to
@@ -553,6 +548,11 @@ class RedcoreModelWebservice extends RModelAdmin
 				{
 					$form->load(str_replace('"operation"', '"' . $operationName . '"', $this->loadFormOperationXml()));
 				}
+
+				if (substr($operationName, 0, strlen('type-')) == 'type-')
+				{
+					$form->load(str_replace('"operation"', '"' . $operationName . '"', $this->loadFormComplexTypeXml()));
+				}
 			}
 		}
 
@@ -563,6 +563,16 @@ class RedcoreModelWebservice extends RModelAdmin
 			foreach ($tasks as $taskName => $task)
 			{
 				$form->load(str_replace('"operation"', '"task-' . $taskName . '"', $this->loadFormOperationXml()));
+			}
+		}
+
+		if (!empty($this->xmlFile) && $complexTypes = $this->xmlFile->xpath('//complexArrays'))
+		{
+			$complexTypes = $complexTypes[0];
+
+			foreach ($complexTypes AS $typeName => $type)
+			{
+				$form->load(str_replace('"operation"', '"type-' . $typeName . '"', $this->loadFormComplexTypeXml()));
 			}
 		}
 
@@ -584,6 +594,21 @@ class RedcoreModelWebservice extends RModelAdmin
 		}
 
 		return $this->operationXml;
+	}
+
+	/**
+	 * Method to load a complex type form template.
+	 *
+	 * @return  string  Xml
+	 */
+	public function loadFormComplexTypeXml()
+	{
+		if (is_null($this->complexTypeXml))
+		{
+			$this->complexTypeXml = @file_get_contents(JPATH_COMPONENT_ADMINISTRATOR . '/models/forms/webservice_complex_type.xml');
+		}
+
+		return $this->complexTypeXml;
 	}
 
 	/**
@@ -714,7 +739,7 @@ class RedcoreModelWebservice extends RModelAdmin
 			}
 
 			$this->formData['type-' . $typeName] = $this->bindPathToArray('//complexArrays/' . $typeName, $xml);
-			$this->setPropertyByXpath('fields', 'type-' . $typeName, '//complexArrays/' . $typeName . '/field', $xml);
+			$this->setPropertyByXpath('fields', 'type-' . $typeName, '//complexArrays/' . $typeName . '/fields/field', $xml);
 		}
 	}
 
@@ -915,16 +940,32 @@ class RedcoreModelWebservice extends RModelAdmin
 	/**
 	 * Method to get the additional complex transform types from the WS xml complexArray
 	 *
+	 * @param   string  $operation  the name of current operation or complexArray requesting the list of transforms
+	 *
 	 * @return array
 	 */
-	public function getTransformTypes()
+	public function getTransformTypes($operation = null)
 	{
 		$transforms = RApiHalHelper::getTransformElements();
+
+		if (!($this->xmlFile instanceof SimpleXMLElement))
+		{
+			$this->loadFormData();
+		}
+
 		$complexArrayItems = $this->xmlFile->xpath('//complexArrays/*');
 
 		foreach ($complexArrayItems AS $transformType)
 		{
-			$value = 'array[' . $transformType->getName() . ']';
+			$transformTypeName = $transformType->getName();
+
+			if ('type-' . $transformTypeName == $operation)
+			{
+				// Do not allow recursive transforms at this time
+				continue;
+			}
+
+			$value = 'array[' . $transformTypeName . ']';
 			$transforms[] = array('value' => $value, 'text' => $value);
 		}
 
