@@ -1005,7 +1005,7 @@ class RTable extends JTable
 		// Optional created_date field updated when present
 		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedDate))
 		{
-			$tableInstance->{$tableFieldCreatedDate} = date($auditDateFormat);
+			$tableInstance->{$tableFieldCreatedDate} = JFactory::getDate()->format($auditDateFormat);
 		}
 
 		// Optional modified_by field updated when present
@@ -1029,7 +1029,7 @@ class RTable extends JTable
 		// Optional modified_date field updated when present
 		if (property_exists($tableInstance, $tableFieldModifiedDate))
 		{
-			$tableInstance->{$tableFieldModifiedDate} = date($auditDateFormat);
+			$tableInstance->{$tableFieldModifiedDate} = JFactory::getDate()->format($auditDateFormat);
 		}
 	}
 }
