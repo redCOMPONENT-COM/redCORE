@@ -18,7 +18,8 @@ $firstContentActive = true;
 			<input type="text" class="form-control" name="newType" onblur="this.value = this.value.replace(/[^\w]/g,'')"
 			       placeholder="<?php echo JText::_('COM_REDCORE_WEBSERVICE_COMPLEX_TYPES_ADD_NEW_COMPLEX_TYPE_PLACEHOLDER'); ?>" />
 			<span class="input-group-btn">
-				<button type="button" class="btn btn-default btn-success fields-add-new-type">
+				<button type="button" class="btn btn-default btn-success fields-add-new-type"
+				        data-no-type-msg="<?php echo JText::_('COM_REDCORE_WEBSERVICE_TASK_ADD_NEW_TYPE_ERROR', true, true);?>">
 					<i class="icon-plus"></i>
 					<?php echo JText::_('COM_REDCORE_WEBSERVICE_COMPLEX_TYPES_ADD_NEW_COMPLEX_TYPE'); ?>
 				</button>

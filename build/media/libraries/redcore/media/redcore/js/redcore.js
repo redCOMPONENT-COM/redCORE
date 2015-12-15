@@ -99,7 +99,7 @@ redCORE.ws =
 
         if (getData.typeName == '')
         {
-            var msg = targ.attr('data-no-task-msg');
+            var msg = targ.attr('data-no-type-msg');
             alert(msg);
 
             return false;
