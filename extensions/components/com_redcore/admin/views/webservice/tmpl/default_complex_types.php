@@ -12,13 +12,13 @@ $firstContentActive = true;
 
 ?>
 <br/>
-<div class="row fields-add-new-complex-type-row">
+<div class="row fields-add-new-type-row">
 	<div class="col-lg-4">
 		<div class="input-group">
 			<input type="text" class="form-control" name="newType" onblur="this.value = this.value.replace(/[^\w]/g,'')"
 			       placeholder="<?php echo JText::_('COM_REDCORE_WEBSERVICE_COMPLEX_TYPES_ADD_NEW_COMPLEX_TYPE_PLACEHOLDER'); ?>" />
 			<span class="input-group-btn">
-				<button type="button" class="btn btn-default btn-success fields-add-new-task">
+				<button type="button" class="btn btn-default btn-success fields-add-new-type">
 					<i class="icon-plus"></i>
 					<?php echo JText::_('COM_REDCORE_WEBSERVICE_COMPLEX_TYPES_ADD_NEW_COMPLEX_TYPE'); ?>
 				</button>
@@ -28,7 +28,7 @@ $firstContentActive = true;
 </div>
 <br/>
 <div role="tabpanel">
-	<ul class="nav nav-tabs" id="taskTabs" role="tablist">
+	<ul class="nav nav-tabs" id="typeTabs" role="tablist">
 		<?php foreach ($this->formData as $operation => $operationData): ?>
 			<?php if (substr($operation, 0, strlen('type-')) === 'type-') : ?>
 				<li role="presentation" <?php echo $firstTabActive ? ' class="active" ' : ''; ?>>
@@ -41,14 +41,13 @@ $firstContentActive = true;
 		<?php endforeach; ?>
 	</ul>
 </div>
-<div class="tab-content">
+<div class="tab-content" id="typeTabContent">
 	<?php foreach ($this->formData as $operation => $operationData): ?>
 		<?php $tabActive = $firstContentActive ? ' active in ' : '';?>
-	<div role="tabpanel" class="tab-pane <?php echo $tabActive; ?>" id="operationTab<?php echo $operation; ?>">
 		<?php
 		if (substr($operation, 0, strlen('type-')) === 'type-') :
 			echo RLayoutHelper::render(
-				'webservice.fields',
+				'webservice.complextype',
 				array(
 					'view' => $this,
 					'options' => array(
@@ -63,6 +62,5 @@ $firstContentActive = true;
 			$firstContentActive = false;
 		endif;
 		?>
-	</div>
 	<?php endforeach;?>
 </div>

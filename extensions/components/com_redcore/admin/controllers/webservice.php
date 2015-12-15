@@ -29,25 +29,67 @@ class RedcoreControllerWebservice extends RControllerForm
 		$input = $app->input;
 
 		$taskName = $input->getString('taskName', '');
+
+		if (empty($taskName))
+		{
+			$app->close();
+		}
+
 		$model = $this->getModel();
 		$model->formData['task-' . $taskName] = $model->bindPathToArray('//operations/taskResources', $model->defaultXmlFile);
 		$model->setFieldsAndResources('task-' . $taskName, '//operations/taskResources', $model->defaultXmlFile);
 
-		if (!empty($taskName))
-		{
-			echo RLayoutHelper::render(
-				'webservice.operation',
-				array(
-					'view' => $model,
-					'options' => array(
-						'operation' => 'task-' . $taskName,
-						'form'      => $model->getForm($model->formData, false),
-						'tabActive' => ' active in ',
-						'fieldList' => array('defaultValue', 'isRequiredField', 'isPrimaryField'),
-					)
+		echo RLayoutHelper::render(
+			'webservice.operation',
+			array(
+				'view' => $model,
+				'options' => array(
+					'operation' => 'task-' . $taskName,
+					'form'      => $model->getForm($model->formData, false),
+					'tabActive' => ' active in ',
+					'fieldList' => array('defaultValue', 'isRequiredField', 'isPrimaryField'),
 				)
-			);
+			)
+		);
+
+		$app->close();
+	}
+
+	public function ajaxAddComplexType()
+	{
+		$app = JFactory::getApplication();
+		$input = $app->input;
+
+		$typeName = $input->getString('typeName', '');
+
+		if (empty($typeName))
+		{
+			$app->close();
 		}
+
+		/** @var RedcoreModelWebservice $model */
+		$model = $this->getModel();
+		$xml = simplexml_load_string(str_replace('"operation"', '"type-' . $typeName . '"', $model->loadFormComplexTypeXml()));
+
+		$model->formData['type-' . $typeName] = $model->bindPathToArray('//complexArrays/' . $typeName, $xml);
+		$model->setPropertyByXpath('fields', 'type-' . $typeName, '//complexArrays/' . $typeName . '/fields/field', $xml);
+
+		$view = $this->getView('Webservice', 'html');
+		$view->setModel($model, true);
+
+
+		echo RLayoutHelper::render(
+			'webservice.complextype',
+			array(
+				'view' => $model,
+				'options' => array(
+					'operation' => 'type-' . $typeName,
+					'form'      => $model->getForm($model->formData, false),
+					'tabActive' => ' active in ',
+					'fieldList' => array('defaultValue', 'isRequiredField', 'isPrimaryField'),
+				)
+			)
+		);
 
 		$app->close();
 	}

@@ -815,7 +815,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	 *
 	 * @since   1.7
 	 */
-	private function setPropertyByXpath($propertyName, $name, $path, $xml)
+	public function setPropertyByXpath($propertyName, $name, $path, $xml)
 	{
 		if (!$nodes = $xml->xpath($path))
 		{
