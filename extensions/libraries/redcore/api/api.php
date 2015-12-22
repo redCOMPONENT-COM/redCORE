@@ -222,9 +222,20 @@ class RApi extends RApiBase
 				}
 			}
 
-			// We try to transform it into XML
-			if (is_null($parsedData) && $xml = @simplexml_load_string($inputData))
+			$xml = @simplexml_load_string($inputData);
+
+			// We try to transform soap XML
+			if (is_null($parsedData) && $xml !== false)
 			{
+				$inputData = preg_replace('/<(\/)?([a-z0-9]+):([a-z0-9]+)/i', '<$1$3', $inputData);
+				$xml = @simplexml_load_string($inputData);
+
+				// Then we are dealing with soap
+				if ($xml->getName() == 'Envelope')
+				{
+					$xml = $xml->Body->children()[0];
+				}
+
 				$json = json_encode((array) $xml);
 				$parsedData = json_decode($json, true);
 			}
