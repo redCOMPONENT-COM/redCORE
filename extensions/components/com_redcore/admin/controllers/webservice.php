@@ -77,7 +77,6 @@ class RedcoreControllerWebservice extends RControllerForm
 		$view = $this->getView('Webservice', 'html');
 		$view->setModel($model, true);
 
-
 		echo RLayoutHelper::render(
 			'webservice.complextype',
 			array(
