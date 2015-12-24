@@ -14,7 +14,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservice');
 JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
-JHtml::script(JUri::root() . '/media/redcore/js/redcore.js');
+RHelperAsset::load('redcore.min.js', 'redcore');
 
 ?>
 <script type="text/javascript">
