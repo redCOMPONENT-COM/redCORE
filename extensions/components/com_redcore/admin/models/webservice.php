@@ -36,6 +36,11 @@ class RedcoreModelWebservice extends RModelAdmin
 	public $operationXml;
 
 	/**
+	 * @var string
+	 */
+	public $complexTypeXml;
+
+	/**
 	 * @var array
 	 */
 	public $formData = array();
@@ -171,72 +176,88 @@ class RedcoreModelWebservice extends RModelAdmin
 
 		foreach ($data as $operationName => $operation)
 		{
-			if ($operationName != 'main')
+			if ($operationName == 'main'
+				|| empty($operation['isEnabled'])
+				|| substr($operationName, 0, strlen('type-')) == 'type-')
 			{
-				if (empty($operation['isEnabled']))
-				{
-					continue;
-				}
-
-				$operationNameSplit = explode('-', $operationName);
-
-				if ($operationNameSplit[0] == 'read' && count($operationNameSplit) > 1)
-				{
-					if (is_null($readXml))
-					{
-						$readXml = $operationsXml->addChild('read');
-					}
-
-					$operationXml = $readXml->addChild($operationNameSplit[1]);
-				}
-				elseif ($operationNameSplit[0] == 'task' && count($operationNameSplit) > 1)
-				{
-					if (is_null($taskXml))
-					{
-						$taskXml = $operationsXml->addChild('task');
-					}
-
-					$operationXml = $taskXml->addChild($operationNameSplit[1]);
-				}
-				else
-				{
-					$operationXml = $operationsXml->addChild($operationNameSplit[0]);
-				}
-
-				$this->getOperationAttributesFromPost($operationXml, $data, $operationName);
-				$this->getFieldsFromPost($operationXml, $data, $operationName);
-				$this->getResourcesFromPost($operationXml, $data, $operationName);
+				continue;
 			}
+
+			$operationNameSplit = explode('-', $operationName);
+
+			if ($operationNameSplit[0] == 'read' && count($operationNameSplit) > 1)
+			{
+				if (is_null($readXml))
+				{
+					$readXml = $operationsXml->addChild('read');
+				}
+
+				$operationXml = $readXml->addChild($operationNameSplit[1]);
+			}
+			elseif ($operationNameSplit[0] == 'task' && count($operationNameSplit) > 1)
+			{
+				if (is_null($taskXml))
+				{
+					$taskXml = $operationsXml->addChild('task');
+				}
+
+				$operationXml = $taskXml->addChild($operationNameSplit[1]);
+			}
+			else
+			{
+				$operationXml = $operationsXml->addChild($operationNameSplit[0]);
+			}
+
+			$this->getOperationAttributesFromPost($operationXml, $data, $operationName);
+			$this->getFieldsFromPost($operationXml, $data, $operationName);
+			$this->getResourcesFromPost($operationXml, $data, $operationName);
 		}
+
+		$complexArrays = $xml->addChild('complexArrays');
+
+		foreach ($data as $typeName => $typeData)
+		{
+			if (substr($typeName, 0, strlen('type-')) != 'type-')
+			{
+				continue;
+			}
+
+			$typeNameSplit = explode('-', $typeName);
+
+			$typeXml = $complexArrays->addChild($typeNameSplit[1]);
+			$this->getOperationAttributesFromPost($typeXml, $data, $typeName);
+			$this->getFieldsFromPost($typeXml, $data, $typeName);
+		}
+
 
 		// Needed for formatting
 		$dom = dom_import_simplexml($xml)->ownerDocument;
 		$dom->preserveWhiteSpace = false;
 		$dom->formatOutput = true;
 
-		if ($dom->save($fullPath))
+		if (!$dom->save($fullPath))
 		{
-			if (!empty($item->id))
-			{
-				$folder = !empty($item->path) ? '/' . $item->path : '';
-				$oldPath = JPath::clean(RApiHalHelper::getWebservicesPath() . $folder . '/' . $item->xmlFile);
-
-				if ($oldPath != $fullPath)
-				{
-					if (JFile::exists($oldPath))
-					{
-						JFile::delete($oldPath);
-					}
-				}
-			}
-
-			$wsdl = RApiSoapHelper::generateWsdl($xml);
-			$fullWsdlPath = substr($fullPath, 0, -4) . '.wsdl';
-
-			return RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);
+			return false;
 		}
 
-		return false;
+		if (!empty($item->id))
+		{
+			$folder = !empty($item->path) ? '/' . $item->path : '';
+			$oldPath = JPath::clean(RApiHalHelper::getWebservicesPath() . $folder . '/' . $item->xmlFile);
+
+			if ($oldPath != $fullPath)
+			{
+				if (JFile::exists($oldPath))
+				{
+					JFile::delete($oldPath);
+				}
+			}
+		}
+
+		$wsdl = RApiSoapHelper::generateWsdl($xml);
+		$fullWsdlPath = substr($fullPath, 0, -4) . '.wsdl';
+
+		return RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);
 	}
 
 	/**
@@ -252,29 +273,29 @@ class RedcoreModelWebservice extends RModelAdmin
 	 */
 	public function getOperationAttributesFromPost(&$xml, $data, $name)
 	{
-		if (!empty($data[$name]))
+		if (empty($data[$name]))
 		{
-			foreach ($data[$name] as $attributeKey => $attributeValue)
-			{
-				if (in_array($attributeKey, array('isEnabled')))
-				{
-					continue;
-				}
+			return;
+		}
 
-				if (!is_array($attributeValue))
-				{
-					if ($attributeKey != 'description')
-					{
-						$xml->addAttribute($attributeKey, $attributeValue);
-					}
-					else
-					{
-						if (!empty($attributeValue))
-						{
-							$this->addChildWithCDATA($xml, $attributeKey, $attributeValue);
-						}
-					}
-				}
+		foreach ($data[$name] as $attributeKey => $attributeValue)
+		{
+			if (in_array($attributeKey, array('isEnabled'))
+				|| is_array($attributeValue))
+			{
+				continue;
+			}
+
+			if ($attributeKey != 'description')
+			{
+				$xml->addAttribute($attributeKey, $attributeValue);
+
+				continue;
+			}
+
+			if (!empty($attributeValue))
+			{
+				$this->addChildWithCDATA($xml, $attributeKey, $attributeValue);
 			}
 		}
 	}
@@ -305,23 +326,25 @@ class RedcoreModelWebservice extends RModelAdmin
 			{
 				$field = json_decode($fieldJson, true);
 
-				if (!empty($field))
+				if (empty($field))
 				{
-					$fieldChild = $mainFieldsXml->addChild('field');
+					continue;
+				}
 
-					foreach ($field as $attributeKey => $attributeValue)
+				$fieldChild = $mainFieldsXml->addChild('field');
+
+				foreach ($field as $attributeKey => $attributeValue)
+				{
+					if ($attributeKey != 'description')
 					{
-						if ($attributeKey != 'description')
-						{
-							$fieldChild->addAttribute($attributeKey, $attributeValue);
-						}
-						else
-						{
-							if (!empty($attributeValue))
-							{
-								$this->addChildWithCDATA($fieldChild, 'description', $attributeValue);
-							}
-						}
+						$fieldChild->addAttribute($attributeKey, $attributeValue);
+
+						continue;
+					}
+
+					if (!empty($attributeValue))
+					{
+						$this->addChildWithCDATA($fieldChild, 'description', $attributeValue);
 					}
 				}
 			}
@@ -359,23 +382,25 @@ class RedcoreModelWebservice extends RModelAdmin
 			{
 				$resource = json_decode($resourceJson, true);
 
-				if (!empty($resource))
+				if (empty($resource))
 				{
-					$resourceChild = $mainResourcesXml->addChild('resource');
+					continue;
+				}
 
-					foreach ($resource as $attributeKey => $attributeValue)
+				$resourceChild = $mainResourcesXml->addChild('resource');
+
+				foreach ($resource as $attributeKey => $attributeValue)
+				{
+					if ($attributeKey != 'description')
 					{
-						if ($attributeKey != 'description')
-						{
-							$resourceChild->addAttribute($attributeKey, $attributeValue);
-						}
-						else
-						{
-							if (!empty($attributeValue))
-							{
-								$this->addChildWithCDATA($resourceChild, 'description', $attributeValue);
-							}
-						}
+						$resourceChild->addAttribute($attributeKey, $attributeValue);
+
+						continue;
+					}
+
+					if (!empty($attributeValue))
+					{
+						$this->addChildWithCDATA($resourceChild, 'description', $attributeValue);
 					}
 				}
 			}
@@ -402,14 +427,56 @@ class RedcoreModelWebservice extends RModelAdmin
 	{
 		$newChild = $xml->addChild($name);
 
-		if (!is_null($newChild))
+		if (is_null($newChild))
 		{
-			$node = dom_import_simplexml($newChild);
-			$no   = $node->ownerDocument;
-			$node->appendChild($no->createCDATASection($value));
+			return $newChild;
 		}
 
+		$node = dom_import_simplexml($newChild);
+		$no   = $node->ownerDocument;
+		$node->appendChild($no->createCDATASection($value));
+
 		return $newChild;
+	}
+
+	/**
+	 * Add SimpleXMLElement fragment to another SimpleXMLElement
+	 *
+	 * @param   SimpleXMLElement  $targetXml    the xml to append to
+	 * @param   SimpleXMLElement  $originalXml  the xml to append to targetXml
+	 *
+	 * @return void
+	 */
+	private function appendXML(SimpleXMLElement $targetXml, SimpleXMLElement $originalXml)
+	{
+		if ($originalXml && strlen(trim((string) $originalXml)) == 0)
+		{
+			$xml = $targetXml->addChild($originalXml->getName());
+
+			foreach ($originalXml->children() as $child)
+			{
+				$this->appendXML($xml, $child);
+			}
+		}
+		elseif($originalXml->getName() == 'description')
+		{
+			$xml = $this->addChildWithCDATA($targetXml, $originalXml->getName(), (string) $originalXml);
+		}
+		else
+		{
+			$xml = $targetXml->addChild($originalXml->getName(), (string) $originalXml);
+		}
+
+		foreach ($originalXml->attributes() as $name => $value)
+		{
+			// If it is not set then we just set it.
+			if (!isset($xml[$name]))
+			{
+				$xml->addAttribute($name, '');
+			}
+
+			$xml[$name] = trim($value);
+		}
 	}
 
 	/**
@@ -452,6 +519,129 @@ class RedcoreModelWebservice extends RModelAdmin
 	}
 
 	/**
+	 * Method to get a form object.
+	 *
+	 * @param   array    $data      Data for the form.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  mixed  A JForm object on success, false on failure
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		if (!$form = parent::getForm($data, $loadData))
+		{
+			return false;
+		}
+
+		// Load dynamic form for operations
+		$form->load(str_replace('"operation"', '"create"', $this->loadFormOperationXml()));
+		$form->load(str_replace('"operation"', '"read-list"', $this->loadFormOperationXml()));
+		$form->load(str_replace('"operation"', '"read-item"', $this->loadFormOperationXml()));
+		$form->load(str_replace('"operation"', '"update"', $this->loadFormOperationXml()));
+		$form->load(str_replace('"operation"', '"delete"', $this->loadFormOperationXml()));
+
+		if (!empty($data))
+		{
+			foreach ($data as $operationName => $operation)
+			{
+				if (substr($operationName, 0, strlen('task-')) === 'task-')
+				{
+					$form->load(str_replace('"operation"', '"' . $operationName . '"', $this->loadFormOperationXml()));
+				}
+
+				if (substr($operationName, 0, strlen('type-')) == 'type-')
+				{
+					$form->load(str_replace('"operation"', '"' . $operationName . '"', $this->loadFormComplexTypeXml()));
+				}
+			}
+		}
+
+		if (!empty($this->xmlFile) && $tasks = $this->xmlFile->xpath('//operations/task'))
+		{
+			$tasks = $tasks[0];
+
+			foreach ($tasks as $taskName => $task)
+			{
+				$form->load(str_replace('"operation"', '"task-' . $taskName . '"', $this->loadFormOperationXml()));
+			}
+		}
+
+		if (!empty($this->xmlFile) && $complexTypes = $this->xmlFile->xpath('//complexArrays'))
+		{
+			$complexTypes = $complexTypes[0];
+
+			foreach ($complexTypes AS $typeName => $type)
+			{
+				$form->load(str_replace('"operation"', '"type-' . $typeName . '"', $this->loadFormComplexTypeXml()));
+			}
+		}
+
+		$form->bind($this->formData);
+
+		return $form;
+	}
+
+	/**
+	 * Method to load a operation form template.
+	 *
+	 * @return  string  Xml
+	 */
+	public function loadFormOperationXml()
+	{
+		if (is_null($this->operationXml))
+		{
+			$this->operationXml = @file_get_contents(JPATH_COMPONENT_ADMINISTRATOR . '/models/forms/webservice_operation.xml');
+		}
+
+		return $this->operationXml;
+	}
+
+	/**
+	 * Method to load a complex type form template.
+	 *
+	 * @return  string  Xml
+	 */
+	public function loadFormComplexTypeXml()
+	{
+		if (is_null($this->complexTypeXml))
+		{
+			$this->complexTypeXml = @file_get_contents(JPATH_COMPONENT_ADMINISTRATOR . '/models/forms/webservice_complex_type.xml');
+		}
+
+		return $this->complexTypeXml;
+	}
+
+	/**
+	 * Method to get the data that should be injected in the form.
+	 *
+	 * @return  array  The default data is an empty array.
+	 */
+	protected function loadFormData()
+	{
+		// Check the session for previously entered form data.
+		$data = JFactory::getApplication()->getUserState(
+			$this->context . '.data',
+			array()
+		);
+
+		if (!empty($data))
+		{
+			return $data;
+		}
+
+		$dataDb = $this->getItem();
+		$data = $this->bindXMLToForm();
+
+		$dataArray = JArrayHelper::fromObject($dataDb);
+		$dataEmpty = array('main' => array());
+		$data = array_merge($dataEmpty, $data);
+
+		$data['main'] = array_merge($dataArray, $data['main']);
+
+		return $data;
+	}
+
+	/**
 	 * Return mapped array for the form data
 	 *
 	 * @return  array
@@ -476,98 +666,81 @@ class RedcoreModelWebservice extends RModelAdmin
 		);
 
 		// Get attributes and descriptions
-		if ($operations = $this->xmlFile->xpath('//operations'))
-		{
-			$operations = $operations[0];
-
-			foreach ($operations as $name => $operation)
-			{
-				if ($name == 'read')
-				{
-					$this->formData[$name . '-list'] = $this->bindPathToArray('//operations/' . $name . '/list', $this->xmlFile);
-					$this->formData[$name . '-item'] = $this->bindPathToArray('//operations/' . $name . '/item', $this->xmlFile);
-
-					$this->setFieldsAndResources($name . '-list', '//operations/' . $name . '/list', $this->xmlFile);
-					$this->setFieldsAndResources($name . '-item', '//operations/' . $name . '/item', $this->xmlFile);
-
-					if (!empty($this->formData[$name . '-list']) && !isset($this->formData[$name . '-list']['isEnabled']))
-					{
-						// Since this operation exists in XML file we are enabling it by default
-						$this->formData[$name . '-list']['isEnabled'] = 1;
-					}
-
-					if (!empty($this->formData[$name . '-item']) && !isset($this->formData[$name . '-item']['isEnabled']))
-					{
-						// Since this operation exists in XML file we are enabling it by default
-						$this->formData[$name . '-item']['isEnabled'] = 1;
-					}
-				}
-				elseif ($name == 'task')
-				{
-					if ($tasks = $this->xmlFile->xpath('//operations/task'))
-					{
-						$tasks = $tasks[0];
-
-						foreach ($tasks as $taskName => $task)
-						{
-							$this->formData['task-' . $taskName] = $this->bindPathToArray('//operations/task/' . $taskName, $this->xmlFile);
-							$this->setFieldsAndResources('task-' . $taskName, '//operations/task/' . $taskName, $this->xmlFile);
-
-							if (!empty($this->formData['task-' . $taskName]) && !isset($this->formData['task-' . $taskName]['isEnabled']))
-							{
-								// Since this operation exists in XML file we are enabling it by default
-								$this->formData['task-' . $taskName]['isEnabled'] = 1;
-							}
-						}
-					}
-				}
-				else
-				{
-					$this->formData[$name] = $this->bindPathToArray('//operations/' . $name, $this->xmlFile);
-					$this->setFieldsAndResources($name, '//operations/' . $name, $this->xmlFile);
-
-					if (!empty($this->formData[$name]) && !isset($this->formData[$name]['isEnabled']))
-					{
-						// Since this operation exists in XML file we are enabling it by default
-						$this->formData[$name]['isEnabled'] = 1;
-					}
-				}
-			}
-		}
-
-		// Set default operations if not present in loaded XML file
-		if ($operations = $this->defaultXmlFile->xpath('//operations'))
-		{
-			$operations = $operations[0];
-
-			foreach ($operations as $name => $operation)
-			{
-				if (empty($this->formData[$name]))
-				{
-					if ($name == 'read')
-					{
-						if (empty($this->formData[$name . '-list']))
-						{
-							$this->formData[$name . '-list'] = $this->bindPathToArray('//operations/' . $name . '/list', $this->defaultXmlFile);
-							$this->setFieldsAndResources($name . '-list', '//operations/' . $name . '/list', $this->defaultXmlFile);
-						}
-
-						if (empty($this->formData[$name . '-item']))
-						{
-							$this->formData[$name . '-item'] = $this->bindPathToArray('//operations/' . $name . '/item', $this->defaultXmlFile);
-							$this->setFieldsAndResources($name . '-item', '//operations/' . $name . '/item', $this->defaultXmlFile);
-						}
-					}
-					else
-					{
-						$this->formData[$name] = $this->bindPathToArray('//operations/' . $name, $this->defaultXmlFile);
-						$this->setFieldsAndResources($name, '//operations/' . $name, $this->defaultXmlFile);
-					}
-				}
-			}
-		}
+		$this->bindAttributesToFormData($this->defaultXmlFile);
+		$this->bindAttributesToFormData($this->xmlFile, true);
 
 		return $this->formData;
+	}
+
+	/**
+	 * Method to bind attributes to $this->formData
+	 *
+	 * @param   SimpleXMLElement  $xml        the xml file to bind
+	 * @param   bool              $overwrite  should be overwrite existing operations in the form data
+	 *
+	 * @return void
+	 */
+	private function bindAttributesToFormData($xml, $overwrite = false)
+	{
+		// Bind complex types first
+		$this->bindComplexTypesToFormData($xml, $overwrite);
+
+		if (!$operations = $xml->xpath('//operations'))
+		{
+			return;
+		}
+
+		$operations = $operations[0];
+
+		foreach ($operations as $name => $operation)
+		{
+			if (!empty($this->formData[$name]) && !$overwrite)
+			{
+				continue;
+			}
+
+			switch ($name)
+			{
+				case 'read':
+					$this->bindReadAttributesToFormData($xml);
+					break;
+				case 'task':
+					$this->bindTaskAttributesToFormData($xml);
+					break;
+				default:
+					$this->bindDefaultAttributesToFormData($xml, $name);
+					break;
+			}
+		}
+	}
+
+	/**
+	 * Method to bind complex type attributes to $this->formData
+	 *
+	 * @param   SimpleXMLElement  $xml        the xml file to read from
+	 * @param   bool              $overwrite  should be overwrite existing operations in the form data
+	 *
+	 * @return void
+	 */
+	private function bindComplexTypesToFormData($xml, $overwrite = false)
+	{
+		if (!$complexTypes = $xml->xpath('//complexArrays/*'))
+		{
+			return;
+		}
+
+		foreach ($complexTypes as $type)
+		{
+			$typeName = (string) $type->getName();
+
+			if (!empty($this->formData['type-' . $typeName]) && !$overwrite)
+			{
+				continue;
+			}
+
+			$this->formData['type-' . $typeName] = $this->bindPathToArray('//complexArrays/' . $typeName, $xml);
+			$this->setPropertyByXpath('fields', 'type-' . $typeName, '//complexArrays/' . $typeName . '/fields/field', $xml);
+		}
 	}
 
 	/**
@@ -582,14 +755,14 @@ class RedcoreModelWebservice extends RModelAdmin
 	 */
 	public function bindPathToArray($path, $xml)
 	{
-		if ($element = $xml->xpath($path))
+		if (!$element = $xml->xpath($path))
 		{
-			$element = $element[0];
-
-			return $this->bindElementToArray($element);
+			return array();
 		}
 
-		return array();
+		$element = $element[0];
+
+		return $this->bindElementToArray($element);
 	}
 
 	/**
@@ -605,27 +778,94 @@ class RedcoreModelWebservice extends RModelAdmin
 	{
 		$data = array();
 
-		if (!empty($element))
+		if (empty($element))
 		{
-			foreach ($element->attributes() as $key => $val)
-			{
-				$data[$key] = (string) $val;
-			}
+			return $data;
+		}
 
-			$data['description'] = !empty($element->description) ? (string) $element->description : '';
+		foreach ($element->attributes() as $key => $val)
+		{
+			$data[$key] = (string) $val;
+		}
 
-			if (!empty($element->fields->description))
-			{
-				$data['fields']['description'] = (string) $element->fields->description;
-			}
+		$data['description'] = !empty($element->description) ? (string) $element->description : '';
 
-			if (!empty($element->resources->description))
-			{
-				$data['resources']['description'] = (string) $element->resources->description;
-			}
+		if (!empty($element->fields->description))
+		{
+			$data['fields']['description'] = (string) $element->fields->description;
+		}
+
+		if (!empty($element->resources->description))
+		{
+			$data['resources']['description'] = (string) $element->resources->description;
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Method to set a property from a given path to $this->{$propertyName}[name]
+	 *
+	 * @param   string            $propertyName  The name of the model property (I.E. fields,resources, types
+	 * @param   string            $name          Operation or task name
+	 * @param   string            $path          Path to the operation or the task
+	 * @param   SimpleXMLElement  $xml           XML file
+	 *
+	 * @return  void
+	 *
+	 * @since   1.7
+	 */
+	public function setPropertyByXpath($propertyName, $name, $path, $xml)
+	{
+		if (!$nodes = $xml->xpath($path))
+		{
+			return;
+		}
+
+		foreach ($nodes as $node)
+		{
+			$properties = $this->bindElementToArray($node);
+
+			if ($propertyName == 'resources')
+			{
+				$displayName = (string) $properties['displayName'];
+				$resourceSpecific = !empty($properties['resourceSpecific']) ? (string) $properties['resourceSpecific'] : 'rcwsGlobal';
+				$this->{$propertyName}[$name][$resourceSpecific][$displayName] = $properties;
+
+				continue;
+			}
+
+			$displayName = (string) $properties['name'];
+			$this->{$propertyName}[$name][$displayName] = $properties;
+		}
+	}
+
+	/**
+	 * Method to bind read operation attributes to $this->formData
+	 *
+	 * @param   SimpleXMLElement  $xml  the xml file to read from
+	 *
+	 * @return void
+	 */
+	private function bindReadAttributesToFormData($xml)
+	{
+		$this->formData['read-list'] = $this->bindPathToArray('//operations/read/list', $xml);
+		$this->formData['read-item'] = $this->bindPathToArray('//operations/read/item', $xml);
+
+		$this->setFieldsAndResources('read-list', '//operations/read/list', $xml);
+		$this->setFieldsAndResources('read-item', '//operations/read/item', $xml);
+
+		if (!empty($this->formData['read-list']) && !isset($this->formData['read-list']['isEnabled']))
+		{
+			// Since this operation exists in XML file we are enabling it by default
+			$this->formData['read-list']['isEnabled'] = 1;
+		}
+
+		if (!empty($this->formData['read-item']) && !isset($this->formData['read-item']['isEnabled']))
+		{
+			// Since this operation exists in XML file we are enabling it by default
+			$this->formData['read-item']['isEnabled'] = 1;
+		}
 	}
 
 	/**
@@ -642,118 +882,93 @@ class RedcoreModelWebservice extends RModelAdmin
 	public function setFieldsAndResources($name, $path, $xml)
 	{
 		// Get fields
-		if ($fields = $xml->xpath($path . '/fields/field'))
-		{
-			foreach ($fields as $field)
-			{
-				$fieldArray = $this->bindElementToArray($field);
-				$displayName = (string) $fieldArray['name'];
-				$this->fields[$name][$displayName] = $fieldArray;
-			}
-		}
+		$this->setPropertyByXpath('fields', $name, $path . '/fields/field', $xml);
 
 		// Get resources
-		if ($resources = $xml->xpath($path . '/resources/resource'))
-		{
-			foreach ($resources as $resource)
-			{
-				$resourceArray = $this->bindElementToArray($resource);
-				$displayName = (string) $resourceArray['displayName'];
-				$resourceSpecific = !empty($resourceArray['resourceSpecific']) ? (string) $resourceArray['resourceSpecific'] : 'rcwsGlobal';
+		$this->setPropertyByXpath('resources', $name, $path . '/resources/resource', $xml);
+	}
 
-				$this->resources[$name][$resourceSpecific][$displayName] = $resourceArray;
+	/**
+	 * Method to bind task operation attributes to $this->formData
+	 *
+	 * @param   SimpleXMLElement  $xml  the xml file to read from
+	 *
+	 * @return void
+	 */
+	private function bindTaskAttributesToFormData($xml)
+	{
+		if (!$tasks = $xml->xpath('//operations/task'))
+		{
+			return;
+		}
+
+		$tasks = $tasks[0];
+
+		foreach ($tasks as $taskName => $task)
+		{
+			$this->formData['task-' . $taskName] = $this->bindPathToArray('//operations/task/' . $taskName, $xml);
+			$this->setFieldsAndResources('task-' . $taskName, '//operations/task/' . $taskName, $xml);
+
+			if (!empty($this->formData['task-' . $taskName]) && !isset($this->formData['task-' . $taskName]['isEnabled']))
+			{
+				// Since this operation exists in XML file we are enabling it by default
+				$this->formData['task-' . $taskName]['isEnabled'] = 1;
 			}
 		}
 	}
 
 	/**
-	 * Method to load a operation form template.
+	 * Method to bind all other operation attributes to $this->formData
 	 *
-	 * @return  string  Xml
+	 * @param   SimpleXMLElement  $xml   the xml file to read from
+	 * @param   string            $name  of the operation
+	 *
+	 * @return void
 	 */
-	public function loadFormOperationXml()
+	private function bindDefaultAttributesToFormData($xml, $name)
 	{
-		if (is_null($this->operationXml))
-		{
-			$this->operationXml = @file_get_contents(JPATH_COMPONENT_ADMINISTRATOR . '/models/forms/webservice_operation.xml');
-		}
+		$this->formData[$name] = $this->bindPathToArray('//operations/' . $name, $xml);
+		$this->setFieldsAndResources($name, '//operations/' . $name, $xml);
 
-		return $this->operationXml;
+		if (!empty($this->formData[$name]) && !isset($this->formData[$name]['isEnabled']))
+		{
+			// Since this operation exists in XML file we are enabling it by default
+			$this->formData[$name]['isEnabled'] = 1;
+		}
 	}
 
 	/**
-	 * Method to get a form object.
+	 * Method to get the additional complex transform types from the WS xml complexArray
 	 *
-	 * @param   array    $data      Data for the form.
-	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 * @param   string  $operation  the name of current operation or complexArray requesting the list of transforms
 	 *
-	 * @return  mixed  A JForm object on success, false on failure
+	 * @return array
 	 */
-	public function getForm($data = array(), $loadData = true)
+	public function getTransformTypes($operation = null)
 	{
-		$form = parent::getForm($data, $loadData);
+		$transforms = RApiHalHelper::getTransformElements();
 
-		if ($form)
+		if (!($this->xmlFile instanceof SimpleXMLElement))
 		{
-			// Load dynamic form for operations
-			$form->load(str_replace('"operation"', '"create"', $this->loadFormOperationXml()));
-			$form->load(str_replace('"operation"', '"read-list"', $this->loadFormOperationXml()));
-			$form->load(str_replace('"operation"', '"read-item"', $this->loadFormOperationXml()));
-			$form->load(str_replace('"operation"', '"update"', $this->loadFormOperationXml()));
-			$form->load(str_replace('"operation"', '"delete"', $this->loadFormOperationXml()));
-
-			if (!empty($data))
-			{
-				foreach ($data as $operationName => $operation)
-				{
-					if (substr($operationName, 0, strlen('task-')) === 'task-')
-					{
-						$form->load(str_replace('"operation"', '"' . $operationName . '"', $this->loadFormOperationXml()));
-					}
-				}
-			}
-
-			if (!empty($this->xmlFile) && $tasks = $this->xmlFile->xpath('//operations/task'))
-			{
-				$tasks = $tasks[0];
-
-				foreach ($tasks as $taskName => $task)
-				{
-					$form->load(str_replace('"operation"', '"task-' . $taskName . '"', $this->loadFormOperationXml()));
-				}
-			}
-
-			$form->bind($this->formData);
+			$this->loadFormData();
 		}
 
-		return $form;
-	}
+		$complexArrayItems = $this->xmlFile->xpath('//complexArrays/*');
 
-	/**
-	 * Method to get the data that should be injected in the form.
-	 *
-	 * @return  array  The default data is an empty array.
-	 */
-	protected function loadFormData()
-	{
-		// Check the session for previously entered form data.
-		$data = JFactory::getApplication()->getUserState(
-			$this->context . '.data',
-			array()
-		);
-
-		if (empty($data))
+		foreach ($complexArrayItems AS $transformType)
 		{
-			$dataDb = $this->getItem();
-			$data = $this->bindXMLToForm();
+			$transformTypeName = $transformType->getName();
 
-			$dataArray = JArrayHelper::fromObject($dataDb);
-			$dataEmpty = array('main' => array());
-			$data = array_merge($dataEmpty, $data);
+			if ('type-' . $transformTypeName == $operation)
+			{
+				// Do not allow recursive transforms at this time
+				continue;
+			}
 
-			$data['main'] = array_merge($dataArray, $data['main']);
+			$value = 'array[' . $transformTypeName . ']';
+			$transforms[] = array('value' => $value, 'text' => $value);
 		}
 
-		return $data;
+		return $transforms;
 	}
 }

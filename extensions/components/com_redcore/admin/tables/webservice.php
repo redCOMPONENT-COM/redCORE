@@ -99,11 +99,9 @@ class RedcoreTableWebservice extends RTable
 		$this->name = trim($this->name);
 		$this->version = trim($this->version);
 
-		if (empty($this->version))
-		{
-			$this->version = '1.0.0';
-		}
-		else
+		$version = '1.0.0';
+
+		if (!empty($this->version))
 		{
 			$matches = array();
 
@@ -125,8 +123,10 @@ class RedcoreTableWebservice extends RTable
 				return false;
 			}
 
-			$this->version = $matches['version'];
+			$version = $matches['version'];
 		}
+
+		$this->version = $version;
 
 		if (empty($this->name))
 		{

@@ -68,30 +68,32 @@ class RApi extends RApiBase
 		$signature = md5(serialize($options));
 
 		// If we already have a api connector instance for these options then just use that.
-		if (empty(self::$instances[$signature]))
+		if (!empty(self::$instances[$signature]))
 		{
-			// Derive the class name from the driver.
-			$class = 'RApi' . ucfirst(strtolower($options['api'])) . ucfirst(strtolower($options['api']));
-
-			// If the class still doesn't exist we have nothing left to do but throw an exception.
-			if (!class_exists($class))
-			{
-				throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_UNABLE_TO_LOAD_API', $options['api']));
-			}
-
-			// Create our new RApi connector based on the options given.
-			try
-			{
-				$instance = new $class($options);
-			}
-			catch (RuntimeException $e)
-			{
-				throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_UNABLE_TO_CONNECT_TO_API', $e->getMessage()));
-			}
-
-			// Set the new connector to the global instances based on signature.
-			self::$instances[$signature] = $instance;
+			return self::$instances[$signature];
 		}
+
+		// Derive the class name from the driver.
+		$class = 'RApi' . ucfirst(strtolower($options['api'])) . ucfirst(strtolower($options['api']));
+
+		// If the class still doesn't exist we have nothing left to do but throw an exception.
+		if (!class_exists($class))
+		{
+			throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_UNABLE_TO_LOAD_API', $options['api']));
+		}
+
+		// Create our new RApi connector based on the options given.
+		try
+		{
+			$instance = new $class($options);
+		}
+		catch (RuntimeException $e)
+		{
+			throw new RuntimeException(JText::sprintf('LIB_REDCORE_API_UNABLE_TO_CONNECT_TO_API', $e->getMessage()));
+		}
+
+		// Set the new connector to the global instances based on signature.
+		self::$instances[$signature] = $instance;
 
 		return self::$instances[$signature];
 	}
@@ -129,31 +131,6 @@ class RApi extends RApiBase
 	public function setApi($apiName)
 	{
 		$this->apiName = $apiName;
-	}
-
-	/**
-	 * Execute the Api operation.
-	 *
-	 * @return  mixed  RApi object with information on success, boolean false on failure.
-	 *
-	 * @since   1.2
-	 * @throws  RuntimeException
-	 */
-	public function execute()
-	{
-		return null;
-	}
-
-	/**
-	 * Method to render the api call output.
-	 *
-	 * @return  string  Api call output
-	 *
-	 * @since   1.2
-	 */
-	public function render()
-	{
-		return '';
 	}
 
 	/**
@@ -246,5 +223,30 @@ class RApi extends RApiBase
 		$postedData = new JInput($inputData);
 
 		return $postedData->getArray();
+	}
+
+	/**
+	 * Execute the Api operation.
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.2
+	 * @throws  RuntimeException
+	 */
+	public function execute()
+	{
+		return null;
+	}
+
+	/**
+	 * Method to render the api call output.
+	 *
+	 * @return  string  Api call output
+	 *
+	 * @since   1.2
+	 */
+	public function render()
+	{
+		return '';
 	}
 }
