@@ -9,6 +9,9 @@
 
 defined('_JEXEC') or die;
 
+$view = $displayData['view'];
+$model = $view->getModel();
+
 $operation = !empty($displayData['options']['operation']) ? $displayData['options']['operation'] : 'read';
 $fieldList = !empty($displayData['options']['fieldList']) ? $displayData['options']['fieldList'] : '';
 $displayName = !empty($displayData['options']['form']['displayName']) ? $displayData['options']['form']['displayName'] : '';
@@ -93,7 +96,7 @@ $id = RFilesystemFile::getUniqueName($operation);
 				</div>
 				<?php echo JHtml::_(
 					'select.genericlist',
-					RApiHalHelper::getTransformElements(),
+					$model->getTransformTypes($operation),
 					'transform',
 					' class="required form-control" ',
 					'value',

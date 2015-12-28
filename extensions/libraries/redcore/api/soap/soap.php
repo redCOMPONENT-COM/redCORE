@@ -72,6 +72,40 @@ class RApiSoapSoap extends RApi
 	}
 
 	/**
+	 * Calls method from method from this class,
+	 * Additionally it Triggers plugin call for specific function in a format RApiHalFunctionName
+	 *
+	 * @param   string  $functionName  Field type.
+	 *
+	 * @return mixed Result from callback function
+	 */
+	public function triggerFunction($functionName)
+	{
+		$args = func_get_args();
+
+		// Remove function name from arguments
+		array_shift($args);
+
+		// PHP 5.3 workaround
+		$temp = array();
+
+		foreach ($args as &$arg)
+		{
+			$temp[] = &$arg;
+		}
+
+		// We will add this instance of the object as last argument for manipulation in plugin and helper
+		$temp[] = &$this;
+
+		// Checks if that method exists in helper file and executes it
+		$result = call_user_func_array(array($this, $functionName), $temp);
+
+		JFactory::getApplication()->triggerEvent('RApiSoapAfter' . $functionName, $temp);
+
+		return $result;
+	}
+
+	/**
 	 * Set Method for Api to be performed
 	 *
 	 * @return  RApi
@@ -148,6 +182,42 @@ class RApiSoapSoap extends RApi
 	}
 
 	/**
+	 * Checks and ensures that a static WSDL file exist and is in place
+	 *
+	 * @return  string  WSDL path
+	 *
+	 * @since   1.4
+	 */
+	public function checkWSDL()
+	{
+		try
+		{
+			// Wet wsdl from webservice location
+			$this->wsdlPath = RApiSoapHelper::getWebserviceFilePath(
+				$this->webservice->client,
+				strtolower($this->webservice->webserviceName),
+				$this->webservice->webserviceVersion,
+				'wsdl',
+				$this->webservice->webservicePath
+			);
+
+			if (is_readable(JPATH_SITE . '/' . $this->wsdlPath))
+			{
+				return $this->wsdlPath;
+			}
+		}
+		catch (Exception $e)
+		{
+		}
+
+		// WSDL file is not present, we are going to generate it on the fly
+		$this->wsdl = RApiSoapHelper::generateWsdl($this->webservice->configuration, $this->wsdlPath);
+		RApiSoapHelper::saveWsdlContentToPath($this->wsdl, JPATH_SITE . '/' . $this->wsdlPath);
+
+		return $this->wsdlPath;
+	}
+
+	/**
 	 * Main Soap server
 	 *
 	 * @return  string  Full URL to the webservice
@@ -187,17 +257,15 @@ class RApiSoapSoap extends RApi
 		{
 			$content = @file_get_contents(JPATH_SITE . '/' . $this->wsdlPath);
 
-			if (is_string($content))
-			{
-				$this->wsdl = new SimpleXMLElement($content);
-			}
-			else
+			if (!is_string($content))
 			{
 				unlink(JPATH_SITE . '/' . $this->wsdlPath);
 				$this->checkWSDL();
 
 				return $this->apiWsdl();
 			}
+
+			$this->wsdl = new SimpleXMLElement($content);
 		}
 		catch (Exception $e)
 		{
@@ -208,42 +276,6 @@ class RApiSoapSoap extends RApi
 		}
 
 		return $this->wsdl;
-	}
-
-	/**
-	 * Checks and ensures that a static WSDL file exist and is in place
-	 *
-	 * @return  string  WSDL path
-	 *
-	 * @since   1.4
-	 */
-	public function checkWSDL()
-	{
-		try
-		{
-			// Wet wsdl from webservice location
-			$this->wsdlPath = RApiSoapHelper::getWebserviceFilePath(
-				$this->webservice->client,
-				strtolower($this->webservice->webserviceName),
-				$this->webservice->webserviceVersion,
-				'wsdl',
-				$this->webservice->webservicePath
-			);
-
-			if (is_readable(JPATH_SITE . '/' . $this->wsdlPath))
-			{
-				return $this->wsdlPath;
-			}
-		}
-		catch (Exception $e)
-		{
-		}
-
-		// WSDL file is not present, we are going to generate it on the fly
-		$this->wsdl = RApiSoapHelper::generateWsdl($this->webservice->configuration, $this->wsdlPath);
-		RApiSoapHelper::saveWsdlContentToPath($this->wsdl, JPATH_SITE . '/' . $this->wsdlPath);
-
-		return $this->wsdlPath;
 	}
 
 	/**
@@ -346,39 +378,5 @@ class RApiSoapSoap extends RApi
 	public function prepareBody($message)
 	{
 		return $message;
-	}
-
-	/**
-	 * Calls method from method from this class,
-	 * Additionally it Triggers plugin call for specific function in a format RApiHalFunctionName
-	 *
-	 * @param   string  $functionName  Field type.
-	 *
-	 * @return mixed Result from callback function
-	 */
-	public function triggerFunction($functionName)
-	{
-		$args = func_get_args();
-
-		// Remove function name from arguments
-		array_shift($args);
-
-		// PHP 5.3 workaround
-		$temp = array();
-
-		foreach ($args as &$arg)
-		{
-			$temp[] = &$arg;
-		}
-
-		// We will add this instance of the object as last argument for manipulation in plugin and helper
-		$temp[] = &$this;
-
-		// Checks if that method exists in helper file and executes it
-		$result = call_user_func_array(array($this, $functionName), $temp);
-
-		JFactory::getApplication()->triggerEvent('RApiSoapAfter' . $functionName, $temp);
-
-		return $result;
 	}
 }
