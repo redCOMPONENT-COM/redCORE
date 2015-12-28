@@ -227,12 +227,19 @@ class RApi extends RApiBase
 			// We try to transform soap XML
 			if (is_null($parsedData) && $xml !== false)
 			{
-				$inputData = preg_replace('/<(\/)?([a-z0-9]+):([a-z0-9]+)/i', '<$1$3', $inputData);
-				$xml = @simplexml_load_string($inputData);
+				/*
+					XML Namespaces suck and I couldn't get it to read the data accurately for SOAP
+					So I'm stripping everything between < and : in the xml and re-rendering it
+				    I know. I know. My skin is crawling too, but its the best I could do at the moment.
+				    If someone can make this work with namespaces that would be B-E-A-UTIFUL!
+				*/
+				$cleanData = preg_replace('/<(\/)?([a-z0-9]+):([a-z0-9]+)/i', '<$1$3', $inputData);
+				$xml = @simplexml_load_string($cleanData);
 
 				// Then we are dealing with soap
 				if ($xml->getName() == 'Envelope')
 				{
+					/** @var SimpleXMLElement $xml */
 					$xml = $xml->Body->children()[0];
 				}
 
