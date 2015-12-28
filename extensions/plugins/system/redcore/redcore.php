@@ -90,11 +90,6 @@ class PlgSystemRedcore extends JPlugin
 						$data = RApi::getPostedData();
 						$dataGet = $input->get->getArray();
 
-						if (!empty($data['language']) && empty($dataGet['language']))
-						{
-							JFactory::getDbo()->translate = true;
-						}
-
 						if (empty($webserviceClient))
 						{
 							$webserviceClient = JFactory::getApplication()->isAdmin() ? 'administrator' : 'site';

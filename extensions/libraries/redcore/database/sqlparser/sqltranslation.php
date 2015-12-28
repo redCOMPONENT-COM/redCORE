@@ -164,10 +164,8 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		// If the language is the default, there is no reason to translate
 		$isDefaultLanguage = (RTranslationHelper::getSiteLanguage() == $selectedLanguage);
 
-		// If this is the admin, but no a SOAP request we shouldn't translate
-		$app = JFactory::getApplication();
-		$isSoapApi = (strtolower($app->input->getString('api')) == 'soap');
-		$isAdmin = ($app->isAdmin() && !$isSoapApi);
+		// If this is the admin, but no an API request we shouldn't translate
+		$isAdmin = RHelperDatabase::isAdmin();
 
 		/**
 		 * Basic check for translations, translation will not be inserted if:
