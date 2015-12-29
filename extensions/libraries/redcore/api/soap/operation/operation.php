@@ -343,7 +343,7 @@ class RApiSoapOperationOperation
 
 		if (!empty($languageKeys[0]) && !empty($languages[$languageKeys[0]]->lang_code))
 		{
-			JFactory::getApplication()->input->set('language', $language);
+			JFactory::getApplication()->input->set('lang', $language);
 			$languageObject->setLanguage($languages[$languageKeys[0]]->lang_code);
 
 			return;
