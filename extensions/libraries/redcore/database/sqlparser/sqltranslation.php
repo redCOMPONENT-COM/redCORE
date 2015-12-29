@@ -165,7 +165,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		$isDefaultLanguage = (RTranslationHelper::getSiteLanguage() == $selectedLanguage);
 
 		// If this is the admin, but no an API request we shouldn't translate
-		$isAdmin = RHelperDatabase::isAdmin();
+		$isAdmin = RTranslationHelper::isAdmin();
 
 		/**
 		 * Basic check for translations, translation will not be inserted if:

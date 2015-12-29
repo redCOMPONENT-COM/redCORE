@@ -161,7 +161,7 @@ class RBootstrap
 			JFactory::$database = null;
 			JFactory::$database = RFactory::getDbo();
 
-			if (self::getConfig('enable_translations', 0) == 1 && !RHelperDatabase::isAdmin())
+			if (self::getConfig('enable_translations', 0) == 1 && !RTranslationHelper::isAdmin())
 			{
 				// This is our object now
 				$db = JFactory::getDbo();
