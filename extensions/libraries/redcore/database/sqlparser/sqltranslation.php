@@ -158,16 +158,24 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			}
 		}
 
+		// If we have a SELECT in the query then we check the reset of the params
+		$validSelect = (!empty($sql) && stristr(mb_strtolower($sql), 'select'));
+
+		// If the language is the default, there is no reason to translate
+		$isDefaultLanguage = (RTranslationHelper::getSiteLanguage() == $selectedLanguage);
+
+		// If this is the admin, but no an API request we shouldn't translate
+		$isAdmin = RTranslationHelper::isAdmin();
+
 		/**
 		 * Basic check for translations, translation will not be inserted if:
 		 * If we do not have SELECT anywhere in query
 		 * If current language is site default language
 		 * If we are in administration
 		 */
-		if (empty($sql)
-			|| JFactory::getApplication()->isAdmin()
-			|| !stristr(mb_strtolower($sql), 'select')
-			|| RTranslationHelper::getSiteLanguage() == $selectedLanguage)
+		if (!$validSelect
+			|| $isDefaultLanguage
+			|| $isAdmin)
 		{
 			if (empty($db->parseTablesBefore) && empty($db->parseTablesAfter))
 			{
