@@ -566,6 +566,12 @@ class RApiHalHal extends RApi
 		$model = $this->triggerFunction('loadModel', $this->elementName, $currentConfiguration);
 		$this->assignFiltersList($model);
 
+		if (method_exists($model, 'getState'))
+		{
+			$model->getState();
+			$model->setState('list.ws', true);
+		}
+
 		if ($displayTarget == 'list')
 		{
 			if (method_exists($model, 'getPagination'))
