@@ -566,14 +566,12 @@ class RApiHalHal extends RApi
 		$model = $this->triggerFunction('loadModel', $this->elementName, $currentConfiguration);
 		$this->assignFiltersList($model);
 
-		if (method_exists($model, 'getState'))
-		{
-			$model->getState();
-			$model->setState('list.ws', true);
-		}
-
 		if ($displayTarget == 'list')
 		{
+			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+
+			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
+
 			if (method_exists($model, 'getPagination'))
 			{
 				if (method_exists($model, 'getTotal'))
@@ -605,10 +603,6 @@ class RApiHalHal extends RApi
 				$this->setData('pagination.page', max($pagination->pagesCurrent, 1));
 				$this->setData('pagination.last', ((max($pagination->pagesTotal, 1) - 1) * $pagination->limit));
 			}
-
-			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
-
-			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
 			$this->triggerFunction('setForRenderList', $items, $currentConfiguration);
 
