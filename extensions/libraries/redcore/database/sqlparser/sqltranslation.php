@@ -89,7 +89,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							$column = array();
 							$fallbackValue = $foundTable['alias']['originalName'] . '.' . $tableColumn;
 
-							// Check to see if fallback is turned on, if not we set empty string as value
+							// Check to see if fallback option is turned on, if not we set empty string as value
 							if (!self::getOption('translationFallback', true))
 							{
 								// We check for columns that must have a fallback (ex. state, publish, etc.)
