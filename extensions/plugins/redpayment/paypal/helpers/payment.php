@@ -137,6 +137,9 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 			   check that receiver_email is your Primary PayPal email
 			   check that payment_amount/payment_currency are correct */
 
+			// Remap order_id
+			$data['order_id'] = $data['invoice'];
+
 			$payment = $this->getPaymentByExtensionOrderData($extensionName, $data);
 
 			if ($post['mc_gross'] != $payment->amount_total)
