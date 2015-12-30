@@ -92,7 +92,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							// Check to see if fallback option is turned on, if it is not then we set empty string as value
 							if (!self::getOption('translationFallback', true))
 							{
-								// We check for columns that must have a fallback (ex. state, publish, etc.)
+								// Additionally we check for columns that must have a fallback (ex. state, publish, etc.)
 								if (empty($translationTables[$foundTable['originalTableName']]->fallbackColumns)
 									|| !in_array($tableColumn, $translationTables[$foundTable['originalTableName']]->fallbackColumns))
 								{
