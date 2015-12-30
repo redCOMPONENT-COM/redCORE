@@ -743,4 +743,20 @@ class RTranslationHelper
 			$joomlaPlugin->params = $plugin->params;
 		}
 	}
+
+	/**
+	 * Method to check if the current application instance is an administrator instance
+	 * and that this is not an API call.
+	 *
+	 * @return bool true if this is admin and is not an API call
+	 *
+	 * @throws Exception
+	 */
+	public static function isAdmin()
+	{
+		$app = JFactory::getApplication();
+		$isApi = ($app->input->get('api') != null);
+
+		return ($app->isAdmin() && !$isApi);
+	}
 }

@@ -372,7 +372,29 @@ class Com_RedcoreInstallerScript
 
 				if ($updatePath != '')
 				{
-					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
+					switch ((string) $manifest['type'])
+					{
+						case 'plugin':
+							$sourcePath = JPATH_PLUGINS . '/' . (string) $manifest['group'] . '/' . $this->extensionElement;
+							break;
+						case 'module':
+							if ((string) $manifest['client'] == 'administrator')
+							{
+								$sourcePath = JPATH_ADMINISTRATOR . '/modules/' . $this->extensionElement;
+							}
+							else
+							{
+								$sourcePath = JPATH_SITE . '/modules/' . $this->extensionElement;
+							}
+							break;
+						case 'library':
+							$sourcePath = JPATH_BASE . '/libraries/' . $this->extensionElement;
+							break;
+						case 'component':
+						default:
+							$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
+							break;
+					}
 
 					if (is_dir($sourcePath . '/' . $updatePath))
 					{
