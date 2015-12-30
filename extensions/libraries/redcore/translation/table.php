@@ -248,7 +248,7 @@ final class RTranslationTable
 
 			if (isset($field['alwaysFallback']) && (string) $field['alwaysFallback'] == 'true')
 			{
-				$contentElement->allFallbackColumns[$filedName] = $filedName;
+				$contentElement->allFallbackColumns[] = $filedName;
 			}
 
 			if ((string) $field['type'] == 'referenceid')
