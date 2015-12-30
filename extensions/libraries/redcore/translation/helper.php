@@ -260,6 +260,7 @@ class RTranslationHelper
 				'name' => $contentElement->name,
 				'columns' => $contentElement->allContentElementsFields,
 				'primaryKeys' => $contentElement->allPrimaryKeys,
+				'fallbackColumns' => $contentElement->allFallbackColumns,
 				'xml' => $contentElement->contentElementXml,
 				'path' => $contentElement->contentElementXmlPath,
 				'formLinks' => $contentElement->getEditForms(),

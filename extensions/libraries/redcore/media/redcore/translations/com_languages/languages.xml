@@ -3,13 +3,13 @@
     <name>Languages</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.1.0</version>
+    <version>1.7.2</version>
     <description>Translation definition for Joomla Languages</description>
     <reference type="content">
         <table name="languages">
             <field type="referenceid" name="lang_id" translate="0">ID</field>
             <field type="titletext" name="title" translate="1">Title</field>
-            <field type="state" name="published" translate="1">State</field>
+            <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
         </table>
     </reference>
 </contentelement>

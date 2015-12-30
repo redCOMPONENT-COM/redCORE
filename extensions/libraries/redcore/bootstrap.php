@@ -169,6 +169,9 @@ class RBootstrap
 				// Enable translations
 				$db->translate = self::getConfig('enable_translations', 0) == 1;
 
+				// Setting default option for translation fallback
+				RDatabaseSqlparserSqltranslation::setTranslationFallback(self::getConfig('enable_translation_fallback', '1') == '1');
+
 				// Reset plugin translations params if needed
 				RTranslationHelper::resetPluginTranslation();
 			}

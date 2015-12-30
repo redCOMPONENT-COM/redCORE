@@ -3,12 +3,12 @@
   <name>Redcore Country</name>
   <author>redCOMPONENT</author>
   <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-  <version>1.5</version>
+  <version>1.7.2</version>
   <description>Country Table Definition for the redCORE extension</description>
   <reference>
   	<table name="redcore_country">
 		<field type="referenceid" name="id" translate="0">ID</field>
-		<field type="text" name="name" translate="1">Country Name</field>
+		<field type="text" name="name" translate="1" alwaysFallback="true">Country Name</field>
 		<field type="text" disabled="true" translate="0" name="alpha2">Alpha 2</field>
   	</table>
     <component>

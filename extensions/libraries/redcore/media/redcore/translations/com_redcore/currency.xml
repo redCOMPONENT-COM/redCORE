@@ -3,12 +3,12 @@
   <name>Redcore Currency</name>
   <author>redCOMPONENT</author>
   <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-  <version>1.5</version>
+  <version>1.7.2</version>
   <description>Currency Table Definition for the redCORE extension</description>
   <reference>
   	<table name="redcore_currency">
 		<field type="referenceid" name="id" translate="0">ID</field>
-		<field type="text" name="name" translate="1">Currency Name</field>
+		<field type="text" name="name" translate="1" alwaysFallback="true">Currency Name</field>
 		<field type="text" disabled="true" translate="0" name="alpha3">Alpha 3</field>
   	</table>
     <component>

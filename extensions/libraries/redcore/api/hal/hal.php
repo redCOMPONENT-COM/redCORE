@@ -205,6 +205,9 @@ class RApiHalHal extends RApi
 		{
 			$this->authorizationCheck = 'joomla';
 		}
+
+		// Setting default option for webservices translation fallback
+		RDatabaseSqlparserSqltranslation::setTranslationFallback(RBootstrap::getConfig('enable_translation_fallback_webservices', '1') == '1');
 	}
 
 	/**
