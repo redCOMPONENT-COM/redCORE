@@ -3,7 +3,7 @@
     <name>Menus</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.1.0</version>
+    <version>1.7.2</version>
     <description>Translation definition for Joomla Menu Manager</description>
     <reference>
         <table name="menu">
@@ -16,8 +16,8 @@
             <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
             <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
             <field type="hiddentext" name="home" translate="1">Homepage</field>
-            <field type="params" name="params" formname="item" fieldsname="params" xpath="true" translate="1" >Params</field>
-            <field type="state" name="published" translate="1">State</field>
+            <field type="params" name="params" formname="item" fieldsname="params" xpath="true" translate="1" alwaysFallback="true">Params</field>
+            <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
             <filter>o.client_id = 0 AND o.lft > 0</filter>
         </table>
         <component>

@@ -214,6 +214,7 @@ final class RTranslationTable
 
 		// Check if that table is already installed
 		$columns = self::getTranslationsTableColumns($contentElement->table);
+		$contentElement->allFallbackColumns = array();
 		$fields = array();
 		$primaryKeys = array();
 		$fieldsXml = $contentElement->getTranslateFields();
@@ -242,11 +243,17 @@ final class RTranslationTable
 				continue;
 			}
 
-			$fields[(string) $field['name']] = $db->qn((string) $field['name']);
+			$filedName = (string) $field['name'];
+			$fields[$filedName] = $db->qn($filedName);
+
+			if (isset($field['alwaysFallback']) && (string) $field['alwaysFallback'] == 'true')
+			{
+				$contentElement->allFallbackColumns[$filedName] = $filedName;
+			}
 
 			if ((string) $field['type'] == 'referenceid')
 			{
-				$fieldName = (string) $field['name'];
+				$fieldName = $filedName;
 
 				$primaryKeys[$fieldName] = $db->qn($fieldName);
 			}
