@@ -25,7 +25,7 @@ $availableLanguages = array();
 
 foreach ($languages as $language)
 {
-	$availableLanguages[] = '' . $language->sef . '' . ' <em>(' . $language->title . ')</em>';
+	$availableLanguages[] = $language->sef . ' <em>(' . $language->title . ')</em>';
 }
 
 $availableLanguages = implode(', ', $availableLanguages);
