@@ -48,6 +48,14 @@ http://YOUR-SITE/index.php?api=Hal
 
 Note. _Default page is the page without `option` parameter._
 
+### Request Header Options
+
+While sending the operation request there are several options that can be set using the HTTP Headers for any operation.
+
+`Accept-Language` - (Optional) Set the language for your request result (ex. en). Default language is da-DK. Allowed languages are: da (Danish (da-DK)), en (English (UK)).
+`X-Webservice-Translation-Fallback` - (Optional) Set Translation fallback option to override default API behavior. Default Translation fallback is Disabled. Allowed options are: true, false
+`X-Webservice-Output-Format` - (Optional) Output format option can be changed through this server setting. Default Output format is json. Allowed formats are: json, xml, doc.
+
 ### Different Versions of the same webservice
 
 You can have multiple webservices installed and working on the same time. 

@@ -89,22 +89,27 @@ class RApiPaymentDocumentDocument extends JDocument
 	 */
 	public function render($cache = false, $params = array())
 	{
+		$app = JFactory::getApplication();
 		$runtime = microtime(true) - $this->payment->startTime;
-
-		JFactory::getApplication()->setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
-		JFactory::getApplication()->setHeader('Server', '', true);
-		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
-		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);
-		JFactory::getApplication()->setHeader('Pragma', 'public', true);
-		JFactory::getApplication()->setHeader('Expires', '0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'private', false);
-		JFactory::getApplication()->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-
-		JFactory::getApplication()->sendHeaders();
+		$language = explode('-', $app->input->get('lang', RTranslationHelper::getSiteLanguage()));
+		$language = $language[0];
 
 		// Get the payment string from the buffer.
 		$content = $this->getBuffer();
+
+		$app->setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
+		$app->setHeader('Server', '', true);
+		$app->setHeader('X-Runtime', $runtime, true);
+		$app->setHeader('Access-Control-Allow-Origin', '*', true);
+		$app->setHeader('Pragma', 'public', true);
+		$app->setHeader('Expires', '0', true);
+		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		$app->setHeader('Cache-Control', 'private', false);
+		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+		$app->setHeader('Content-length', strlen($content), true);
+		$app->setHeader('Content-Language', $language, true);
+
+		$app->sendHeaders();
 
 		// Check for defined constants
 		if (!defined('JSON_UNESCAPED_SLASHES'))

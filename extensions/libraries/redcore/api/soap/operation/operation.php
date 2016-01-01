@@ -336,19 +336,6 @@ class RApiSoapOperationOperation
 	 */
 	protected function setLanguage($language)
 	{
-		$languageObject = JFactory::getLanguage();
-		$languages = JLanguageHelper::getLanguages('sef');
-
-		$languageKeys = explode('-', $language);
-
-		if (!empty($languageKeys[0]) && !empty($languages[$languageKeys[0]]->lang_code))
-		{
-			JFactory::getApplication()->input->set('lang', $language);
-			$languageObject->setLanguage($languages[$languageKeys[0]]->lang_code);
-
-			return;
-		}
-
-		$languageObject->setLanguage($languages[RTranslationHelper::getSiteLanguage()]->lang_code);
+		RTranslationHelper::setLanguage($language);
 	}
 }

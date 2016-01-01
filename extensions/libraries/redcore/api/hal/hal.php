@@ -211,6 +211,43 @@ class RApiHalHal extends RApi
 	}
 
 	/**
+	 * Set options received from Headers of the request
+	 *
+	 * @return  RApi
+	 *
+	 * @since   1.7
+	 */
+	public function setOptionsFromHeader()
+	{
+		parent::setOptionsFromHeader();
+		$headers = self::getHeaderVariablesFromGlobals();
+
+		if (isset($headers['X_WEBSERVICE_TRANSLATION_FALLBACK']))
+		{
+			$fallbackEnabled = $headers['X_WEBSERVICE_TRANSLATION_FALLBACK'] == 'true' ? '1' : '0';
+
+			// This will force configuration of the redCORE to user defined option
+			RBootstrap::$config->set('enable_translation_fallback_webservices', $fallbackEnabled);
+		}
+
+		if (isset($headers['X_WEBSERVICE_OUTPUT_FORMAT']))
+		{
+			$outputFormat = strtolower($headers['X_WEBSERVICE_OUTPUT_FORMAT']);
+
+			if (!in_array($outputFormat, array('json', 'xml', 'doc')))
+			{
+				$outputFormat = RBootstrap::getConfig('webservices_default_format', 'json');
+			}
+
+			// This will force configuration of the redCORE to user defined option
+			RBootstrap::$config->set('webservices_default_format', $outputFormat);
+			$this->options->set('format', $outputFormat);
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Sets default Base Data Values for resource binding
 	 *
 	 * @return  RApi
