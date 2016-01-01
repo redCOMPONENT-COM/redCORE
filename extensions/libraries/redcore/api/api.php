@@ -134,15 +134,23 @@ class RApi extends RApiBase
 		$app = JFactory::getApplication();
 		$headers = self::getHeaderVariablesFromGlobals();
 
+		// Setting the language from the header options information
 		if (isset($headers['ACCEPT_LANGUAGE']))
 		{
-			$acceptLanguage = explode('-', $headers['ACCEPT_LANGUAGE']);
+			$acceptLanguages = explode(',', $headers['ACCEPT_LANGUAGE']);
 
-			// Setting the language from the header options information
-			if (RTranslationHelper::setLanguage($acceptLanguage[0]))
+			// We go through all proposed languages. First language that is found installed on the website is used
+			foreach ($acceptLanguages as $acceptLanguage)
 			{
-				$this->options->set('lang', $acceptLanguage[0]);
-				$app->input->set('lang', $acceptLanguage[0]);
+				$acceptLanguage = explode(';', $acceptLanguage);
+
+				if (RTranslationHelper::setLanguage($acceptLanguage[0]))
+				{
+					$this->options->set('lang', $acceptLanguage[0]);
+					$app->input->set('lang', $acceptLanguage[0]);
+
+					break;
+				}
 			}
 		}
 
