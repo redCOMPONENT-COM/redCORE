@@ -48,7 +48,7 @@ http://YOUR-SITE/index.php?api=Hal
 
 Note. _Default page is the page without `option` parameter._
 
-### Request Header Options
+### Request HTTP Header Options
 
 While sending the operation request there are several options that can be set using the HTTP Headers for any operation.
 
