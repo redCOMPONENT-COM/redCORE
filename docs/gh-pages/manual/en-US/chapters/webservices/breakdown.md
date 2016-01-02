@@ -50,11 +50,11 @@ Note. _Default page is the page without `option` parameter._
 
 ### Request HTTP Header Options
 
-While sending the operation request there are several options that can be set using the HTTP Headers for any operation.
+While sending the operation request there are several options that can be set using the HTTP Headers for any operation. Note that if URI parameters are used, then they have higher priority. URI `lang` parameter have higher priority than Accept-Language header and URI `format` parameter have higher priority than Accept header.
 
-`Accept-Language` - (Optional) Set the language for your request result (ex. en). Default language is da-DK. Allowed languages are: da (Danish (da-DK)), en (English (UK)).
+`Accept` - (Optional) Output format option can be changed through this server setting. Default Output format is application/hal+json. Allowed formats are: application/hal+json, application/hal+xml, application/hal+doc
+`Accept-Language` - (Optional) Set the language for your request result (ex. en). Default language is da-DK. Allowed languages are: da (Danish (da-DK)), en (English (UK))
 `X-Webservice-Translation-Fallback` - (Optional) Set Translation fallback option to override default API behavior. Default Translation fallback is Disabled. Allowed options are: true, false
-`X-Webservice-Output-Format` - (Optional) Output format option can be changed through this server setting. Default Output format is json. Allowed formats are: json, xml, doc.
 
 ### Different Versions of the same webservice
 
