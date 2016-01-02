@@ -219,6 +219,7 @@ class RApiHalHal extends RApi
 	 */
 	public function setOptionsFromHeader()
 	{
+		$app = JFactory::getApplication();
 		parent::setOptionsFromHeader();
 		$headers = self::getHeaderVariablesFromGlobals();
 
@@ -230,18 +231,42 @@ class RApiHalHal extends RApi
 			RBootstrap::$config->set('enable_translation_fallback_webservices', $fallbackEnabled);
 		}
 
-		if (isset($headers['X_WEBSERVICE_OUTPUT_FORMAT']))
+		if (isset($headers['ACCEPT']))
 		{
-			$outputFormat = strtolower($headers['X_WEBSERVICE_OUTPUT_FORMAT']);
-
-			if (!in_array($outputFormat, array('json', 'xml', 'doc')))
+			// We are only using header options if the URI does not contain format parameter as it have higher priority
+			if ($app->input->get('format', '') == '')
 			{
-				$outputFormat = RBootstrap::getConfig('webservices_default_format', 'json');
-			}
+				$outputFormats = explode(',', $headers['ACCEPT']);
 
-			// This will force configuration of the redCORE to user defined option
-			RBootstrap::$config->set('webservices_default_format', $outputFormat);
-			$this->options->set('format', $outputFormat);
+				// We go through all proposed Content Types. First Content Type that is accepted by API is used
+				foreach ($outputFormats as $outputFormat)
+				{
+					$outputFormat = strtolower($outputFormat);
+					$format = '';
+
+					switch ($outputFormat)
+					{
+						case 'application/hal+json':
+							$format = 'json';
+							break;
+						case 'application/hal+xml':
+							$format = 'xml';
+							break;
+						case 'application/hal+doc':
+							$format = 'doc';
+							break;
+					}
+
+					if ($format)
+					{
+						// This will force configuration of the redCORE to user defined option
+						RBootstrap::$config->set('webservices_default_format', $format);
+						$this->options->set('format', $format);
+
+						break;
+					}
+				}
+			}
 		}
 
 		return $this;

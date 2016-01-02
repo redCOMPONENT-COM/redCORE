@@ -146,6 +146,14 @@ $availableLanguages = implode(', ', $availableLanguages);
 		</p>
 		<table class="table table-striped table-hover table-nonfluid">
 			<tr>
+				<th>Accept</th>
+				<td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_OUTPUT_FORMAT',
+						'<strong>application/hal+' . $defaultFormat . '</strong>',
+						'application/hal+json, application/hal+xml, application/hal+doc'
+					); ?></td>
+			</tr>
+			<tr>
 				<th>Accept-Language</th>
 				<td><?php echo JText::sprintf(
 						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_ACCEPT_LANGUAGE',
@@ -158,14 +166,6 @@ $availableLanguages = implode(', ', $availableLanguages);
 				<td><?php echo JText::sprintf(
 						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_TRANSLATION_FALLBACK',
 						'<strong>' . $translationFallback . '</strong>'
-					); ?></td>
-			</tr>
-			<tr>
-				<th>X-Webservice-Output-Format</th>
-				<td><?php echo JText::sprintf(
-						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_OUTPUT_FORMAT',
-						'<strong>' . $defaultFormat . '</strong>',
-						'json, xml, doc'
 					); ?></td>
 			</tr>
 		</table>

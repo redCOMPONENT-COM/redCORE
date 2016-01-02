@@ -137,19 +137,23 @@ class RApi extends RApiBase
 		// Setting the language from the header options information
 		if (isset($headers['ACCEPT_LANGUAGE']))
 		{
-			$acceptLanguages = explode(',', $headers['ACCEPT_LANGUAGE']);
-
-			// We go through all proposed languages. First language that is found installed on the website is used
-			foreach ($acceptLanguages as $acceptLanguage)
+			// We are only using header options if the URI does not contain lang parameter as it have higher priority
+			if ($app->input->get('lang', '') == '')
 			{
-				$acceptLanguage = explode(';', $acceptLanguage);
+				$acceptLanguages = explode(',', $headers['ACCEPT_LANGUAGE']);
 
-				if (RTranslationHelper::setLanguage($acceptLanguage[0]))
+				// We go through all proposed languages. First language that is found installed on the website is used
+				foreach ($acceptLanguages as $acceptLanguage)
 				{
-					$this->options->set('lang', $acceptLanguage[0]);
-					$app->input->set('lang', $acceptLanguage[0]);
+					$acceptLanguage = explode(';', $acceptLanguage);
 
-					break;
+					if (RTranslationHelper::setLanguage($acceptLanguage[0]))
+					{
+						$this->options->set('lang', $acceptLanguage[0]);
+						$app->input->set('lang', $acceptLanguage[0]);
+
+						break;
+					}
 				}
 			}
 		}
