@@ -180,6 +180,9 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 			}
 
 			// We are clear to log successful payment log now
+			// Update logData with payment id
+			$logData['payment_id'] = $payment->id;
+
 			// Paypal have very similar structure of Status response so we can actually get them directly
 			$logData['status'] = RApiPaymentStatus::getStatus($post['payment_status']);
 
