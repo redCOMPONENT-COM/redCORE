@@ -108,19 +108,23 @@ class RApiHalDocumentDocument extends JDocument
 
 		$runtime = microtime(true) - $this->hal->startTime;
 		$app = JFactory::getApplication();
+		$language = explode('-', $app->input->get('lang', RTranslationHelper::getSiteLanguage()));
+		$language = $language[0];
 
 		$app->setHeader('Status', $this->hal->statusCode . ' ' . $this->hal->statusText, true);
 		$app->setHeader('Server', '', true);
-		$app->setHeader('X-Runtime', $runtime, true);
 		$app->setHeader('Access-Control-Allow-Origin', '*', true);
 		$app->setHeader('Pragma', 'public', true);
 		$app->setHeader('Expires', '0', true);
 		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
 		$app->setHeader('Cache-Control', 'private', false);
 		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-		$app->setHeader('Webservice-name', $this->hal->webserviceName, true);
-		$app->setHeader('Webservice-version', $this->hal->webserviceVersion, true);
+		$app->setHeader('X-Runtime', $runtime, true);
+		$app->setHeader('X-Webservice-name', $this->hal->webserviceName, true);
+		$app->setHeader('X-Webservice-version', $this->hal->webserviceVersion, true);
+		$app->setHeader('X-Webservice-Output-Format', $this->documentFormat, true);
 		$app->setHeader('Content-length', strlen($content), true);
+		$app->setHeader('Content-Language', $language, true);
 
 		$app->sendHeaders();
 

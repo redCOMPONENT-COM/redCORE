@@ -32,8 +32,8 @@ class AdministratorContacts1Cest
 		// Checking for 204 code since there are no contacts before inserting them
 		$I->seeResponseCodeIs(204);
 		$I->seeResponseIsJson();
-		$I->seeHttpHeader('Webservice-name', 'contact');
-		$I->seeHttpHeader('Webservice-version', '1.0.0');
+		$I->seeHttpHeader('X-Webservice-name', 'contact');
+		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
 	}
 
 	/**
@@ -76,8 +76,8 @@ class AdministratorContacts1Cest
 
 		$I->seeResponseCodeIs(200);
 		$I->seeResponseIsJson();
-		$I->seeHttpHeader('Webservice-name', 'contact');
-		$I->seeHttpHeader('Webservice-version', '1.0.0');
+		$I->seeHttpHeader('X-Webservice-name', 'contact');
+		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
 	}
 
 	/**

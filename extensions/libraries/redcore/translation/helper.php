@@ -759,4 +759,34 @@ class RTranslationHelper
 
 		return ($app->isAdmin() && !$isApi);
 	}
+
+	/**
+	 * Checks to see if the language exists and then load it
+	 *
+	 * @param   string  $language      Language name
+	 * @param   bool    $loadLanguage  Loads the language if it exists
+	 *
+	 * @return  boolean  Returns true if language exists and we have switched to new language
+	 */
+	public static  function setLanguage($language, $loadLanguage = true)
+	{
+		$languageObject = JFactory::getLanguage();
+		$languages = JLanguageHelper::getLanguages('sef');
+		$languageKeys = explode('-', $language);
+
+		if (!empty($languageKeys[0]) && !empty($languages[$languageKeys[0]]->lang_code))
+		{
+			JFactory::getApplication()->input->set('lang', $language);
+			$languageObject->setLanguage($languages[$languageKeys[0]]->lang_code);
+
+			if ($loadLanguage)
+			{
+				$languageObject->load();
+			}
+
+			return true;
+		}
+
+		return false;
+	}
 }
