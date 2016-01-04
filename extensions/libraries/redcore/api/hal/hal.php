@@ -211,6 +211,68 @@ class RApiHalHal extends RApi
 	}
 
 	/**
+	 * Set options received from Headers of the request
+	 *
+	 * @return  RApi
+	 *
+	 * @since   1.7
+	 */
+	public function setOptionsFromHeader()
+	{
+		$app = JFactory::getApplication();
+		parent::setOptionsFromHeader();
+		$headers = self::getHeaderVariablesFromGlobals();
+
+		if (isset($headers['X_WEBSERVICE_TRANSLATION_FALLBACK']))
+		{
+			$fallbackEnabled = $headers['X_WEBSERVICE_TRANSLATION_FALLBACK'] == 'true' ? '1' : '0';
+
+			// This will force configuration of the redCORE to user defined option
+			RBootstrap::$config->set('enable_translation_fallback_webservices', $fallbackEnabled);
+		}
+
+		if (isset($headers['ACCEPT']))
+		{
+			// We are only using header options if the URI does not contain format parameter as it have higher priority
+			if ($app->input->get('format', '') == '')
+			{
+				$outputFormats = explode(',', $headers['ACCEPT']);
+
+				// We go through all proposed Content Types. First Content Type that is accepted by API is used
+				foreach ($outputFormats as $outputFormat)
+				{
+					$outputFormat = strtolower($outputFormat);
+					$format = '';
+
+					switch ($outputFormat)
+					{
+						case 'application/hal+json':
+							$format = 'json';
+							break;
+						case 'application/hal+xml':
+							$format = 'xml';
+							break;
+						case 'application/hal+doc':
+							$format = 'doc';
+							break;
+					}
+
+					if ($format)
+					{
+						// This will force configuration of the redCORE to user defined option
+						RBootstrap::$config->set('webservices_default_format', $format);
+						$this->options->set('format', $format);
+
+						break;
+					}
+				}
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Sets default Base Data Values for resource binding
 	 *
 	 * @return  RApi
