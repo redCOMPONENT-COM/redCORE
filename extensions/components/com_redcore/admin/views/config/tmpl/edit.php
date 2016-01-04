@@ -20,16 +20,30 @@ if (empty($tab))
 
 // HTML helpers
 JHtml::_('behavior.keepalive');
-JHtml::_('rbootstrap.tooltip');
-JHtml::_('rjquery.chosen', 'select');
-JHtml::_('behavior.formvalidator');
 
-JFactory::getDocument()->addScriptDeclaration(
-	'Joomla.submitbutton = function(task){
+if (version_compare(JVERSION, '3.4') >= 0)
+{
+	JHtml::_('rbootstrap.tooltip');
+	JHtml::_('rjquery.chosen', 'select');
+	JHtml::_('behavior.formvalidator');
+
+
+	JFactory::getDocument()->addScriptDeclaration(
+			'Joomla.submitbutton = function(task){
 	if (task === "config.cancel" || document.formvalidator.isValid(document.getElementById("adminRedCoreForm"))){
 		Joomla.submitform(task, document.getElementById("adminRedCoreForm"));
 	}};'
-);
+	);
+}
+else
+{
+	//JHTML::_('behavior.formvalidation');
+	JFactory::getDocument()->addScriptDeclaration(
+			'Joomla.submitbutton = function(task){
+		Joomla.submitform(task, document.getElementById("adminRedCoreForm"));
+	};'
+	);
+}
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_redcore'); ?>"
       id="adminRedCoreForm" method="post" name="adminRedCoreForm" autocomplete="off" class="form-validate form-horizontal" enctype="multipart/form-data">

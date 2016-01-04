@@ -222,7 +222,16 @@ class RApi extends RApiBase
 		// Filter data with JInput default filter
 		$postedData = new JInput($inputData);
 
-		return $postedData->getArray();
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			return $postedData->getArray();
+		}
+		elseif ($inputData)
+		{
+			return $postedData->getArray($inputData);
+		}
+
+		return array();
 	}
 
 	/**
