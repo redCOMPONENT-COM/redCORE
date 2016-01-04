@@ -97,19 +97,38 @@ class RApiPaymentDocumentDocument extends JDocument
 		// Get the payment string from the buffer.
 		$content = $this->getBuffer();
 
-		$app->setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
-		$app->setHeader('Server', '', true);
-		$app->setHeader('X-Runtime', $runtime, true);
-		$app->setHeader('Access-Control-Allow-Origin', '*', true);
-		$app->setHeader('Pragma', 'public', true);
-		$app->setHeader('Expires', '0', true);
-		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
-		$app->setHeader('Cache-Control', 'private', false);
-		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-		$app->setHeader('Content-length', strlen($content), true);
-		$app->setHeader('Content-Language', $language, true);
+		if (version_compare(JVERSION, '3.1') >= 0)
+		{
+			$app->setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
+			$app->setHeader('Server', '', true);
+			$app->setHeader('X-Runtime', $runtime, true);
+			$app->setHeader('Access-Control-Allow-Origin', '*', true);
+			$app->setHeader('Pragma', 'public', true);
+			$app->setHeader('Expires', '0', true);
+			$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+			$app->setHeader('Cache-Control', 'private', false);
+			$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+			$app->setHeader('Content-length', strlen($content), true);
+			$app->setHeader('Content-Language', $language, true);
 
-		$app->sendHeaders();
+			$app->sendHeaders();
+		}
+		else
+		{
+			JResponse::setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText);
+			JResponse::setHeader('Server', '');
+			JResponse::setHeader('X-Runtime', $runtime);
+			JResponse::setHeader('Access-Control-Allow-Origin', '*');
+			JResponse::setHeader('Pragma', 'public');
+			JResponse::setHeader('Expires', '0');
+			JResponse::setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0');
+			JResponse::setHeader('Cache-Control', 'private', false);
+			JResponse::setHeader('Content-type', $this->_mime . '; charset=UTF-8');
+			JResponse::setHeader('Content-length', strlen($content));
+			JResponse::setHeader('Content-Language', $language);
+
+			JResponse::sendHeaders();
+		}
 
 		// Check for defined constants
 		if (!defined('JSON_UNESCAPED_SLASHES'))

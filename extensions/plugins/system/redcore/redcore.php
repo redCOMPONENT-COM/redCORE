@@ -74,9 +74,9 @@ class PlgSystemRedcore extends JPlugin
 					try
 					{
 						// We will disable all error messaging from PHP from the output
-//						error_reporting(0);
-//						ini_set('display_errors', 0);
-//						JError::setErrorHandling(E_ERROR, 'message');
+						error_reporting(0);
+						ini_set('display_errors', 0);
+						JError::setErrorHandling(E_ERROR, 'message');
 
 						if (version_compare(JVERSION, '3') >= 0)
 						{
