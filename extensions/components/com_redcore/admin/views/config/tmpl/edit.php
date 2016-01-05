@@ -22,13 +22,22 @@ if (empty($tab))
 JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
-JHtml::_('behavior.formvalidator');
+
+if (version_compare(JVERSION, '3.4') >= 0)
+{
+	JHtml::_('behavior.formvalidator');
+}
+else
+{
+	JHTML::_('behavior.formvalidation');
+}
 
 JFactory::getDocument()->addScriptDeclaration(
 	'Joomla.submitbutton = function(task){
-	if (task === "config.cancel" || document.formvalidator.isValid(document.getElementById("adminRedCoreForm"))){
-		Joomla.submitform(task, document.getElementById("adminRedCoreForm"));
-	}};'
+		if (task === "config.cancel" || document.formvalidator.isValid(document.getElementById("adminRedCoreForm"))){
+			Joomla.submitform(task, document.getElementById("adminRedCoreForm"));
+		}
+	};'
 );
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_redcore'); ?>"

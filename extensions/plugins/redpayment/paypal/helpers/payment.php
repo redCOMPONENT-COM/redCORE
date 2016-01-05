@@ -113,7 +113,14 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 	 */
 	public function handleCallback($extensionName, $ownerName, $data, &$logData)
 	{
-		$post = JFactory::getApplication()->input->post->getArray();
+		if (version_compare(JVERSION, 3) >= 0)
+		{
+			$post = JFactory::getApplication()->input->post->getArray();
+		}
+		else
+		{
+			$post = JRequest::get('post');
+		}
 
 		$postData = array();
 

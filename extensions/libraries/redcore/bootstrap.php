@@ -175,6 +175,12 @@ class RBootstrap
 				// Reset plugin translations params if needed
 				RTranslationHelper::resetPluginTranslation();
 			}
+			else
+			{
+				// We still need to set translate property to avoid notices as we check it from other functions
+				$db = JFactory::getDbo();
+				$db->translate = 0;
+			}
 		}
 	}
 }
