@@ -77,12 +77,7 @@ class PlgSystemRedcore extends JPlugin
 						error_reporting(0);
 						ini_set('display_errors', 0);
 						JError::setErrorHandling(E_ERROR, 'message');
-
-						if (version_compare(JVERSION, '3') >= 0)
-						{
-							JFactory::getApplication()->clearHeaders();
-						}
-
+						RApi::clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
 						$optionName = $input->get->getString('option', '');
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
