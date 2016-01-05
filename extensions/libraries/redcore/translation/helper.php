@@ -260,6 +260,7 @@ class RTranslationHelper
 				'name' => $contentElement->name,
 				'columns' => $contentElement->allContentElementsFields,
 				'primaryKeys' => $contentElement->allPrimaryKeys,
+				'fallbackColumns' => $contentElement->allFallbackColumns,
 				'xml' => $contentElement->contentElementXml,
 				'path' => $contentElement->contentElementXmlPath,
 				'formLinks' => $contentElement->getEditForms(),
@@ -741,5 +742,51 @@ class RTranslationHelper
 			$joomlaPlugin = JPluginHelper::getPlugin($plugin->type, $plugin->name);
 			$joomlaPlugin->params = $plugin->params;
 		}
+	}
+
+	/**
+	 * Method to check if the current application instance is an administrator instance
+	 * and that this is not an API call.
+	 *
+	 * @return bool true if this is admin and is not an API call
+	 *
+	 * @throws Exception
+	 */
+	public static function isAdmin()
+	{
+		$app = JFactory::getApplication();
+		$isApi = ($app->input->get('api') != null);
+
+		return ($app->isAdmin() && !$isApi);
+	}
+
+	/**
+	 * Checks to see if the language exists and then load it
+	 *
+	 * @param   string  $language      Language name
+	 * @param   bool    $loadLanguage  Loads the language if it exists
+	 *
+	 * @return  boolean  Returns true if language exists and we have switched to new language
+	 */
+	public static  function setLanguage($language, $loadLanguage = true)
+	{
+		$languageObject = JFactory::getLanguage();
+		$languages = JLanguageHelper::getLanguages('sef');
+		$languageKeys = explode('-', $language);
+
+		if (!empty($languageKeys[0]) && !empty($languages[$languageKeys[0]]->lang_code))
+		{
+			JFactory::getApplication()->input->set('lang', $language);
+			$languageObject->setLanguage($languages[$languageKeys[0]]->lang_code);
+
+			if ($loadLanguage)
+			{
+				$languageObject->load();
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 }

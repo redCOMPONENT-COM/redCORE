@@ -137,6 +137,9 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 			   check that receiver_email is your Primary PayPal email
 			   check that payment_amount/payment_currency are correct */
 
+			// Remap order_id
+			$data['order_id'] = $data['invoice'];
+
 			$payment = $this->getPaymentByExtensionOrderData($extensionName, $data);
 
 			if ($post['mc_gross'] != $payment->amount_total)
@@ -177,6 +180,9 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 			}
 
 			// We are clear to log successful payment log now
+			// Update logData with payment id
+			$logData['payment_id'] = $payment->id;
+
 			// Paypal have very similar structure of Status response so we can actually get them directly
 			$logData['status'] = RApiPaymentStatus::getStatus($post['payment_status']);
 

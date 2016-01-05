@@ -161,13 +161,16 @@ class RBootstrap
 			JFactory::$database = null;
 			JFactory::$database = RFactory::getDbo();
 
-			if (self::getConfig('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
+			if (self::getConfig('enable_translations', 0) == 1 && !RTranslationHelper::isAdmin())
 			{
 				// This is our object now
 				$db = JFactory::getDbo();
 
 				// Enable translations
 				$db->translate = self::getConfig('enable_translations', 0) == 1;
+
+				// Setting default option for translation fallback
+				RDatabaseSqlparserSqltranslation::setTranslationFallback(self::getConfig('enable_translation_fallback', '1') == '1');
 
 				// Reset plugin translations params if needed
 				RTranslationHelper::resetPluginTranslation();

@@ -3,7 +3,7 @@
     <name>Plugins</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.4.18</version>
+    <version>1.7.2</version>
     <description>Translation definition for Joomla Plugin Management</description>
     <reference>
         <table name="extensions">
@@ -11,8 +11,8 @@
             <field type="titletext" name="name" translate="0">Name</field>
             <field type="titletext" name="element" translate="0">Element</field>
             <field type="titletext" name="folder" translate="0">Folder</field>
-            <field type="params" name="params" formname="plugin" formname25="plugin" fieldsname="params" translate="1">Parameters</field>
-            <field type="state" name="enabled" translate="1">Enabled</field>
+            <field type="params" name="params" formname="plugin" formname25="plugin" fieldsname="params" translate="1" alwaysFallback="true">Parameters</field>
+            <field type="state" name="enabled" translate="1" alwaysFallback="true">Enabled</field>
             <filter>o.type = 'plugin'</filter>
         </table>
         <component>

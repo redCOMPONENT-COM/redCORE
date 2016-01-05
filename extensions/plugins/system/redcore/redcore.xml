@@ -80,6 +80,26 @@
                     <option value="triggers">PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_TRIGGERS</option>
                     <option value="none">PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_NONE</option>
                 </field>
+                <field
+                        name="enable_translation_fallback"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_BUTTON"
+                        description="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_BUTTON_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="enable_translation_fallback_webservices"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_WEBSERVICES_BUTTON"
+                        description="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_WEBSERVICES_BUTTON_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
                 <!--<field
                         name="show_edit_button_on_all_forms"
                         type="list"

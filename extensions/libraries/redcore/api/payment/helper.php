@@ -1060,7 +1060,7 @@ class RApiPaymentHelper
 
 		$paymentLog['payment_id'] = !empty($data['payment_id']) ? $data['payment_id'] : @$data['id'];
 		$paymentLog['ip_address'] = $_SERVER['REMOTE_ADDR'];
-		$paymentLog['referrer'] = $_SERVER['HTTP_REFERER'];
+		$paymentLog['referrer'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
 		$paymentLog['transaction_id'] = !empty($data['transaction_id']) ? $data['transaction_id'] : '';
 		$paymentLog['status'] = RApiPaymentStatus::getStatus($status);
 		$paymentLog['message_uri'] = JUri::getInstance()->toString();
@@ -1153,6 +1153,11 @@ class RApiPaymentHelper
 	 */
 	public static function getExtensionHelperObject($extensionName)
 	{
+		if (!$extensionName)
+		{
+			return false;
+		}
+
 		if (isset(self::$extensionHelperClasses[$extensionName]))
 		{
 			return self::$extensionHelperClasses[$extensionName];
