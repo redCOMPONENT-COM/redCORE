@@ -266,7 +266,16 @@ class RApi extends RApiBase
 		// Filter data with JInput default filter in blacklist mode
 		$postedData = new JInput($inputData, array('filter' => $filter));
 
-		return $postedData->getArray(array(), null, 'HTML');
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			return $postedData->getArray(array(), null, 'HTML');
+		}
+		elseif ($inputData)
+		{
+			return $postedData->getArray(array(), $inputData, 'HTML');
+		}
+
+		return array();
 	}
 
 	/**
@@ -382,5 +391,62 @@ class RApi extends RApiBase
 		}
 
 		return $headers;
+	}
+
+	/**
+	 * Method to clear any set response headers.
+	 *
+	 * @return  void
+	 */
+	public static function clearHeaders()
+	{
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			JFactory::getApplication()->clearHeaders();
+		}
+		else
+		{
+			JResponse::clearHeaders();
+		}
+	}
+
+	/**
+	 * Send the response headers.
+	 *
+	 * @return  void
+	 */
+	public static function sendHeaders()
+	{
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			JFactory::getApplication()->sendHeaders();
+		}
+		else
+		{
+			JResponse::sendHeaders();
+		}
+	}
+
+	/**
+	 * Method to set a response header.  If the replace flag is set then all headers
+	 * with the given name will be replaced by the new one.  The headers are stored
+	 * in an internal array to be sent when the site is sent to the browser.
+	 *
+	 * @param   string   $name     The name of the header to set.
+	 * @param   string   $value    The value of the header to set.
+	 * @param   boolean  $replace  True to replace any headers with the same name.
+	 *
+	 * @return  void
+	 */
+	public static function setHeader($name, $value, $replace = false)
+	{
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			JFactory::getApplication()->setHeader($name, $value, $replace);
+		}
+		else
+		{
+			JResponse::setHeader($name, $value, $replace);
+		}
 	}
 }
