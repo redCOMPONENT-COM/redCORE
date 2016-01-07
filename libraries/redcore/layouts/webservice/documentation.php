@@ -26,18 +26,18 @@ $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webservi
 	<meta charset="utf-8" />
 	<link type="text/css" href="<?php echo JUri::root(true) . '/media/redcore/css/component.bs3.min.css' ?>" rel="stylesheet" />
 	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/bootstrap.min.js' ?>" />
-<?php
+	<?php
 	if ($print) :
-?>
-	<script type="text/javascript">
-		function printWindow() {
-			window.print();
-			window.close();
-		};
-	</script>
-<?php
+		?>
+		<script type="text/javascript">
+			function printWindow() {
+				window.print();
+				window.close();
+			};
+		</script>
+		<?php
 	endif;
-?>
+	?>
 </head>
 <body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?> class="redcore">
 <div class="container-fluid">
@@ -95,10 +95,10 @@ $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webservi
 				<p><?php echo (string) $xml->description; ?></p>
 			</div>
 			<?php endif; ?>
-
 		<h2><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ALLOWED_OPERATIONS'); ?></h2>
 		<p>
 			<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ALLOWED_OPERATIONS_DESC'); ?>
+			<div class="before"></div>
 		</p>
 		<?php foreach ($xml->operations as $operations) : ?>
 			<?php foreach ($operations as $operationName => $operation) : ?>
