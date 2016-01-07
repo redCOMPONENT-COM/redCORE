@@ -22,7 +22,7 @@ $authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtol
 ?>
 <div class="container-fluid">
 	<div class="page-header">
-		<h3>
+		<h3 id="<?php echo (ucfirst($operationName)) ?>">
 			<span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span>
 			<?php if (!$authorizationNotNeeded) : ?>
 				<span class="label label-warning"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_AUTHORIZATION_NEEDED') ?></span>
@@ -44,41 +44,41 @@ $authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtol
 			<?php endif; ?>
 			<?php foreach ($resources as $resourceGroupName => $resourceGroup) : ?>
 				<?php
-					$i = 0;
+				$i = 0;
 
-					foreach ($resourceGroup as $resName => $res)
-					{
-						$resourceGroup[$resName]['original_order'] = $i;
-						$i++;
-					}
+				foreach ($resourceGroup as $resName => $res)
+				{
+					$resourceGroup[$resName]['original_order'] = $i;
+					$i++;
+				}
 
-					usort($resourceGroup, array($view, "sortResourcesByDisplayGroup"));
-					$currentDisplayGroup = '--';
+				usort($resourceGroup, array($view, "sortResourcesByDisplayGroup"));
+				$currentDisplayGroup = '--';
 				?>
 				<h4><?php echo $resourceGroupName == 'rcwsGlobal' ? JText::_('JDEFAULT') : ucfirst($resourceGroupName); ?>
-					 <?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCES'); ?></h4>
+					<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCES'); ?></h4>
 
 				<div class="container-fluid">
 					<?php
-						foreach ($resourceGroup as $resource) :
-							unset($resource['original_order']);
+					foreach ($resourceGroup as $resource) :
+					unset($resource['original_order']);
 					?>
-						<?php if ($currentDisplayGroup != $resource['displayGroup']) : ?>
-							<?php if ($currentDisplayGroup != '--') : ?>
+					<?php if ($currentDisplayGroup != $resource['displayGroup']) : ?>
+					<?php if ($currentDisplayGroup != '--') : ?>
 								</table>
 							<?php endif; ?>
-							<?php $currentDisplayGroup = $resource['displayGroup']; ?>
-							<h4><?php echo $currentDisplayGroup == '' ? JText::_('JDEFAULT') : $currentDisplayGroup; ?></h4>
-							<table class="table table-striped table-hover">
-								<thead>
-								<tr>
-									<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_NAME'); ?></th>
-									<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_FORMAT'); ?></th>
-									<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_TRANSFORM'); ?></th>
-									<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_PARAMETERS'); ?></th>
-									<th><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?></th>
-								</tr>
-								</thead>
+					<?php $currentDisplayGroup = $resource['displayGroup']; ?>
+					<h4><?php echo $currentDisplayGroup == '' ? JText::_('JDEFAULT') : $currentDisplayGroup; ?></h4>
+					<table class="table table-striped table-hover">
+						<thead>
+						<tr>
+							<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_NAME'); ?></th>
+							<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_FORMAT'); ?></th>
+							<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_TRANSFORM'); ?></th>
+							<th><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESOURCE_PARAMETERS'); ?></th>
+							<th><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?></th>
+						</tr>
+						</thead>
 						<?php endif; ?>
 						<tr>
 							<td><?php echo $view->assignGlobalValueToResource($resource['displayName']); ?></td>
@@ -95,7 +95,7 @@ $authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtol
 							</td>
 							<td><?php echo $resource['description']; ?></td>
 						</tr>
-					<?php endforeach; ?>
+						<?php endforeach; ?>
 					</table>
 				</div>
 			<?php endforeach; ?>

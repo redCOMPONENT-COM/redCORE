@@ -18,6 +18,7 @@ $listDirn = $this->state->get('list.direction');
 $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 ?>
 <script type="text/javascript">
+
 	function setWebservice(client, webservice, version, folder, task)
 	{
 		document.getElementById('client').value = client;
@@ -49,8 +50,12 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 			var url = jQuery(this).attr('data-remote');
 			var format = jQuery(this).attr('data-remote-format');
 			var dataType = format == 'json' ? 'json' : 'text';
+			var ToC =
+				"<nav role='navigation' class='table-of-contents'>" +
+				"<ul>";
 
 			jQuery.get(url, null, function(data){
+
 				if (format == 'json')
 				{
 					data = syntaxHighlight(data);
@@ -64,6 +69,33 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 				jQuery('#webservicePreview .modal-body').html(data);
 				jQuery('#webservicePreview').modal('show');
 				jQuery('#webservicePreview').data('url', url);
+
+				jQuery(document).ready(function(){
+
+					jQuery(".modal-content h3").each(function() {
+
+						el = jQuery(this);
+						title = el.text();
+						link = "#" + el.attr("id");
+
+						newLine =
+							"<li>" +
+							"<a href='" + link + "'>" +
+							title +
+							"</a>" +
+							"</li>";
+
+						ToC += newLine;
+
+					});
+
+					ToC +=
+						"</ul>" +
+						"</nav>";
+
+					jQuery(".before").prepend(ToC);
+				});
+
 			}, dataType);
 
 		});
@@ -119,6 +151,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 		url = jQuery('#webservicePreview').data('url') + '&print';
 		window.open(url);
 	}
+
 </script>
 <style>
 	pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
@@ -131,7 +164,55 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 		width: 80%;
 		margin-left:-40%;
 	}
+
+
+
+
+	body {
+		background: #eee;
+		padding: 20px;
+	}
+
+	article {
+		max-width: 50em;
+		background: white;
+		padding: 2em;
+		margin: 1em auto;
+	}
+
+	.table-of-contents {
+		float: right;
+		width: 100%;
+		background: #eee;
+		font-size: 0.8em;
+		padding: 1em 2em;
+		margin: 0 0 0.5em 0.5em;
+
+	}
+	.table-of-contents ul {
+		padding: 0;
+	}
+	.table-of-contents li {
+		margin: 0 0 0.25em 0;
+	}
+	.table-of-contents a {
+		text-decoration: none;
+	}
+	.table-of-contents a:hover,
+	.table-of-contents a:active {
+		text-decoration: underline;
+	}
+
+	h3:target {
+		animation: highlight 1s ease;
+	}
+
+	@keyframes highlight {
+		from { background: yellow; }
+		to { background: white; }
+	}
 </style>
+
 <form action="<?php echo $action; ?>" id="adminForm" method="post" name="adminForm" autocomplete="off" class="adminForm form-validate form-horizontal" enctype="multipart/form-data">
 	<?php
 	echo RLayoutHelper::render(
@@ -150,12 +231,13 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 	);
 	?>
 	<hr/>
+
 	<div class="modal fade"
-	     id="webservicePreview"
-	     tabindex="-1"
-	     role="dialog"
-	     aria-labelledby="webservicePreview"
-	     aria-hidden="true">
+		 id="webservicePreview"
+		 tabindex="-1"
+		 role="dialog"
+		 aria-labelledby="webservicePreview"
+		 aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-lg">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -171,6 +253,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 			</div>
 		</div>
 	</div>
+
 	<ul class="nav nav-tabs" id="mainTabs">
 		<li role="presentation" class="active">
 			<a href="#mainComponentWebservices" data-toggle="tab"><?php echo JText::_('COM_REDCORE_WEBSERVICES_INSTALLED_WEBSERVICES'); ?></a>
@@ -191,7 +274,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 					<tr>
 						<th class="hidden-xs">
 							<input type="checkbox" name="checkall-toggle" value=""
-							       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
+								   title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 						</th>
 						<th class="nowrap center">
 							<?php echo JHtml::_('rsearchtools.sort', 'JSTATUS', 'w.state', $listDirn, $listOrder); ?>
@@ -231,6 +314,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 										<?php  $webserviceClientUri = '&webserviceClient=' . $item->client; ?>
 										<em><?php echo $item->xml->description; ?></em>
 										<br />
+
 										<button
 											class="btn btn-xs btn-primary"
 											type="button"
@@ -243,6 +327,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 											<i class="icon-file-text"></i>
 											<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DOCUMENTATION') ?>
 										</button>
+
 										<button
 											class="btn btn-xs btn-primary"
 											type="button"
@@ -406,18 +491,18 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 									</button>
 								</div>
 								<?php if ((++$column) % 3 == 0 ) : ?>
-									</div>
-									<div class="row">
-								<?php endif; ?>
+								</div>
+								<div class="row">
+							<?php endif; ?>
 							<?php endforeach; ?>
 						<?php endforeach; ?>
 					<?php endforeach; ?>
 				<?php endif; ?>
 				</div>
-				<?php endif; ?>
-				<div class="clearfix"></div>
-			</div>
+			<?php endif; ?>
+			<div class="clearfix"></div>
 		</div>
+	</div>
 	<div>
 		<input type="hidden" name="return" value="<?php echo $this->return; ?>" />
 		<input type="hidden" name="task" value="" />
