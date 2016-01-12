@@ -97,19 +97,19 @@ class RApiPaymentDocumentDocument extends JDocument
 		// Get the payment string from the buffer.
 		$content = $this->getBuffer();
 
-		$app->setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
-		$app->setHeader('Server', '', true);
-		$app->setHeader('X-Runtime', $runtime, true);
-		$app->setHeader('Access-Control-Allow-Origin', '*', true);
-		$app->setHeader('Pragma', 'public', true);
-		$app->setHeader('Expires', '0', true);
-		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
-		$app->setHeader('Cache-Control', 'private', false);
-		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-		$app->setHeader('Content-length', strlen($content), true);
-		$app->setHeader('Content-Language', $language, true);
+		RApi::setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
+		RApi::setHeader('Server', '', true);
+		RApi::setHeader('X-Runtime', $runtime, true);
+		RApi::setHeader('Access-Control-Allow-Origin', '*', true);
+		RApi::setHeader('Pragma', 'public', true);
+		RApi::setHeader('Expires', '0', true);
+		RApi::setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		RApi::setHeader('Cache-Control', 'private', false);
+		RApi::setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+		RApi::setHeader('Content-length', strlen($content), true);
+		RApi::setHeader('Content-Language', $language, true);
 
-		$app->sendHeaders();
+		RApi::sendHeaders();
 
 		// Check for defined constants
 		if (!defined('JSON_UNESCAPED_SLASHES'))
