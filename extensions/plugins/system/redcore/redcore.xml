@@ -122,7 +122,7 @@
                     <option value="0">JNO</option>
                 </field>
                 <field
-                        name="stateful_webservice"
+                        name="webservice_stateful"
                         class="btn-group"
                         type="radio"
                         default="0"

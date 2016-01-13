@@ -180,7 +180,7 @@ class PlgSystemRedcore extends JPlugin
 		$input = JFactory::getApplication()->input;
 		$params = $this->params;
 
-		if ($input->get('stateful', $params->get('stateful_webservice', 0)) == 1)
+		if ($input->get('webservice_stateful', $params->get('webservice_stateful', 0)) == 1)
 		{
 			return;
 		}
