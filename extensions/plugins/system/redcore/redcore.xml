@@ -122,6 +122,16 @@
                     <option value="0">JNO</option>
                 </field>
                 <field
+                        name="stateful_webservice"
+                        class="btn-group"
+                        type="radio"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_WEBSERVICES_STATEFUL_WEBSERVICE"
+                        description="PLG_SYSTEM_REDCORE_WEBSERVICES_STATEFUL_WEBSERVICE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
                         name="webservices_default_format"
                         class="btn-group"
                         type="radio"

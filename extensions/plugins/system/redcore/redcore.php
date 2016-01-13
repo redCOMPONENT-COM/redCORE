@@ -119,6 +119,8 @@ class PlgSystemRedcore extends JPlugin
 							'absoluteHrefs'     => $input->get->getBool('absoluteHrefs', true),
 						);
 
+						$this->cleanCache();
+
 						// Create instance of Api and fill all required options
 						$api = RApi::getInstance($options);
 
@@ -161,6 +163,43 @@ class PlgSystemRedcore extends JPlugin
 				}
 			}
 		}
+	}
+
+	/**
+	 * Method to clear the cache and any session state
+	 * related to API requests
+	 *
+	 * @param   string   $group      The cache group
+	 * @param   integer  $client_id  The ID of the client
+	 *
+	 * @throws Exception
+	 * @return void
+	 */
+	private function cleanCache($group = null, $client_id = 0)
+	{
+		$input = JFactory::getApplication()->input;
+		$params = $this->params;
+
+		if ($input->get('stateful', $params->get('stateful_webservice', 0)) == 1)
+		{
+			return;
+		}
+
+		$option = $input->get->getString('option', '');
+		$option = strpos($option, 'com_') === false ? 'com_' . $option : $option;
+		$conf = JFactory::getConfig();
+
+		$options = array(
+			'defaultgroup' => ($group) ? $group : $option,
+			'cachebase' => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache'));
+
+		$cache = JCache::getInstance('callback', $options);
+		$cache->clean();
+
+		$session = JFactory::getSession();
+		$registry = $session->get('registry');
+		$registry->set($option, null);
+
 	}
 
 	/**
