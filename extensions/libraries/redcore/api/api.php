@@ -261,16 +261,18 @@ class RApi extends RApiBase
 			$inputData = $input->post->getArray();
 		}
 
-		// Filter data with JInput default filter
-		$postedData = new JInput($inputData);
+		$filter = JFilterInput::getInstance(array(), array(), 1, 1);
+
+		// Filter data with JInput default filter in blacklist mode
+		$postedData = new JInput($inputData, array('filter' => $filter));
 
 		if (version_compare(JVERSION, '3') >= 0)
 		{
-			return $postedData->getArray();
+			return $postedData->getArray(array(), null, 'HTML');
 		}
 		elseif ($inputData)
 		{
-			return $postedData->getArray($inputData);
+			return $postedData->getArray(array(), $inputData, 'HTML');
 		}
 
 		return array();
