@@ -20,6 +20,7 @@ $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webservi
 $translationFallback = RBootstrap::getConfig('enable_translation_fallback_webservices', '1') == '1' ? JText::_('JENABLED') : JText::_('JDISABLED');
 $defaultLanguage = RTranslationHelper::getSiteLanguage();
 $defaultFormat = RBootstrap::getConfig('webservices_default_format', 'json');
+$defaultStatefulness = RBootstrap::getConfig('webservices_stateful', '1') == '1' ? JText::_('JENABLED') : JText::_('JDISABLED');
 $languages = JLanguageHelper::getLanguages();
 $availableLanguages = array();
 
@@ -159,6 +160,13 @@ $availableLanguages = implode(', ', $availableLanguages);
 						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_ACCEPT_LANGUAGE',
 						'<strong>' . $defaultLanguage . '</strong>',
 						$availableLanguages
+					); ?></td>
+			</tr>
+			<tr>
+				<th>X-Webservice-Stateful</th>
+				<td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_STATEFUL',
+						'<strong>' . $defaultStatefulness . '</strong>'
 					); ?></td>
 			</tr>
 			<tr>
