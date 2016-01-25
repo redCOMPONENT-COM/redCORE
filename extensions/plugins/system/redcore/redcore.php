@@ -45,7 +45,7 @@ class PlgSystemRedcore extends JPlugin
 			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
 			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
-			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
+			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_mootools_disable', false);
 
 			if (!$this->isInstaller())
 			{
