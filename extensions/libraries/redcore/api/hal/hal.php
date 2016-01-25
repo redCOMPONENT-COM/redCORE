@@ -235,6 +235,7 @@ class RApiHalHal extends RApi
 		{
 			$useState = (int) $headers['X_WEBSERVICE_STATEFUL'] == 1 ? 1 : 0;
 			$this->options->set('webservice_stateful', $useState);
+			RBootstrap::$config->set('webservice_stateful', $useState);
 		}
 
 		if (isset($headers['ACCEPT']))
