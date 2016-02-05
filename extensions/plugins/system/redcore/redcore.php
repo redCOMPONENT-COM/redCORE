@@ -117,7 +117,7 @@ class PlgSystemRedcore extends JPlugin
 							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
 							'id'                => $input->getString('id', ''),
 							'absoluteHrefs'     => $input->get->getBool('absoluteHrefs', true),
-							'webservice_stateful' => $this->params->get('webservice_stateful', 0)
+							'webservice_stateful' => $this->params->get('webservice_stateful', 1)
 						);
 
 						// Create instance of Api and fill all required options
