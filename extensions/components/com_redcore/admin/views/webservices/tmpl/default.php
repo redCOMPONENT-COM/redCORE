@@ -119,7 +119,6 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 		url = jQuery('#webservicePreview').data('url') + '&print';
 		var iframe = jQuery('#redcore-print');
 		iframe.attr('src', url);
-		iframe.window.print();
 	}
 </script>
 <style>
