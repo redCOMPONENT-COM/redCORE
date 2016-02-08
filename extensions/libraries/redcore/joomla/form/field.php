@@ -587,6 +587,23 @@ abstract class JFormField
 		if ($this->required)
 		{
 			$this->class = trim($this->class . ' required');
+
+			if (version_compare(JVERSION, '3.0', 'lt'))
+			{
+				$elementClass = (string) $element['class'];
+
+				if ($elementClass)
+				{
+					if (strpos($elementClass, 'required') === false)
+					{
+						$this->element['class'] = $elementClass . ' required';
+					}
+				}
+				else
+				{
+					$this->element->addAttribute('class', 'required');
+				}
+			}
 		}
 
 		return true;

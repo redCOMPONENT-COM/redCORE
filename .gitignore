@@ -50,7 +50,7 @@ robo.phar
 npm-debug.log
 
 # Build config
-build/gulp-config.json
+gulp-config.json
 node_modules
 releases
 
