@@ -633,18 +633,18 @@ class RApiHalHal extends RApi
 
 		if ($displayTarget == 'list')
 		{
-			$functionName  = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
-			$pFunctionName = RApiHalHelper::attributeToString($currentConfiguration, 'paginationName', '');
-			$tFunctionName = RApiHalHelper::attributeToString($currentConfiguration, 'totalName', '');
+			$functionName       = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+			$paginationFunction = RApiHalHelper::attributeToString($currentConfiguration, 'paginationName', 'getPagination');
+			$totalFunction      = RApiHalHelper::attributeToString($currentConfiguration, 'totalName', 'getTotal');
 
 			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
-			if (!empty($pFunctionName) && method_exists($model, $pFunctionName))
+			if (!empty($paginationFunction) && method_exists($model, $paginationFunction))
 			{
 				// Get total count to check if we have reached the limit
-				if (!empty($tFunctionName) && method_exists($model, $tFunctionName))
+				if (!empty($totalFunction) && method_exists($model, $totalFunction))
 				{
-					$totalItems = $model->{$tFunctionName}();
+					$totalItems = $model->{$totalFunction}();
 
 					if ($model->getState('limitstart', 0) >= $totalItems)
 					{
@@ -655,7 +655,7 @@ class RApiHalHal extends RApi
 					}
 				}
 
-				$pagination = $model->{$pFunctionName}();
+				$pagination = $model->{$paginationFunction}();
 				$paginationPages = $pagination->getPaginationPages();
 
 				$this->setData(
