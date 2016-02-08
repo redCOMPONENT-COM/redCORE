@@ -36,23 +36,20 @@ $availableLanguages = implode(', ', $availableLanguages);
 	<meta charset="utf-8" />
 	<link type="text/css" href="<?php echo JUri::root(true) . '/media/redcore/css/component.bs3.min.css' ?>" rel="stylesheet" />
 	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/js/bootstrap.min.js' ?>" />
-	<style type="text/css">
-		.table-nonfluid {
-			width: auto !important;
-		}
-	</style>
-<?php
-	if ($print) :
-?>
-	<script type="text/javascript">
-		function printWindow() {
-			window.print();
-			window.close();
-		};
-	</script>
-<?php
-	endif;
-?>
+	<?php if ($print) :?>
+		<style type="text/css">
+			.table-nonfluid {
+				width: auto !important;
+			}
+		</style>
+
+		<script type="text/javascript">
+			function printWindow()
+			{
+				window.print();
+			}
+		</script>
+	<?php endif; ?>
 </head>
 <body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?> class="redcore">
 <div class="container-fluid">
