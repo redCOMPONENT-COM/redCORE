@@ -100,15 +100,15 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 		</div>
 		<?php if ($operation === 'read-list') : ?>
 		<div class="form-group">
-			<?php echo $form->getLabel('paginationName', $operation); ?>
+			<?php echo $form->getLabel('paginationFunction', $operation); ?>
 			<div class="col-sm-10">
-				<?php echo $form->getInput('paginationName', $operation); ?>
+				<?php echo $form->getInput('paginationFunction', $operation); ?>
 			</div>
 		</div>
 		<div class="form-group">
-			<?php echo $form->getLabel('totalName', $operation); ?>
+			<?php echo $form->getLabel('totalFunction', $operation); ?>
 			<div class="col-sm-10">
-				<?php echo $form->getInput('totalName', $operation); ?>
+				<?php echo $form->getInput('totalFunction', $operation); ?>
 			</div>
 		</div>
 		<?php endif; ?>
