@@ -637,7 +637,7 @@ class RApiHalHal extends RApi
 
 			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
-			if (method_exists($model, 'getPagination'))
+			if (method_exists($model, 'getPagination') && $functionName == 'getItems')
 			{
 				if (method_exists($model, 'getTotal'))
 				{
