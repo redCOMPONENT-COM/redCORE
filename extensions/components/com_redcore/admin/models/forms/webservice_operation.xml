@@ -123,6 +123,24 @@
                     default=""
                     />
             <field
+                    name="paginationName"
+                    labelclass="col-sm-2 control-label"
+                    type="text"
+                    label="COM_REDCORE_WEBSERVICE_PAGINATION_FUNCTION_NAME_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_PAGINATION_FUNCTION_NAME_DESCRIPTION"
+                    class="form-control"
+                    default="getPagination"
+            />
+            <field
+                    name="totalName"
+                    labelclass="col-sm-2 control-label"
+                    type="text"
+                    label="COM_REDCORE_WEBSERVICE_TOTAL_FUNCTION_NAME_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_TOTAL_FUNCTION_NAME_DESCRIPTION"
+                    class="form-control"
+                    default="getTotal"
+            />
+            <field
                     name="functionArgs"
                     labelclass="col-sm-2 control-label"
                     type="text"

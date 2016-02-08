@@ -633,15 +633,18 @@ class RApiHalHal extends RApi
 
 		if ($displayTarget == 'list')
 		{
-			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+			$functionName  = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+			$pFunctionName = RApiHalHelper::attributeToString($currentConfiguration, 'paginationName', '');
+			$tFunctionName = RApiHalHelper::attributeToString($currentConfiguration, 'totalName', '');
 
 			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
-			if (method_exists($model, 'getPagination') && $functionName == 'getItems')
+			if (!empty($pFunctionName) && method_exists($model, $pFunctionName))
 			{
-				if (method_exists($model, 'getTotal'))
+				// Get total count to check if we have reached the limit
+				if (!empty($tFunctionName) && method_exists($model, $tFunctionName))
 				{
-					$totalItems = $model->getTotal();
+					$totalItems = $model->{$tFunctionName}();
 
 					if ($model->getState('limitstart', 0) >= $totalItems)
 					{
@@ -652,7 +655,7 @@ class RApiHalHal extends RApi
 					}
 				}
 
-				$pagination = $model->getPagination();
+				$pagination = $model->{$pFunctionName}();
 				$paginationPages = $pagination->getPaginationPages();
 
 				$this->setData(

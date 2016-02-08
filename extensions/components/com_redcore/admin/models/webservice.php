@@ -229,7 +229,6 @@ class RedcoreModelWebservice extends RModelAdmin
 			$this->getFieldsFromPost($typeXml, $data, $typeName);
 		}
 
-
 		// Needed for formatting
 		$dom = dom_import_simplexml($xml)->ownerDocument;
 		$dom->preserveWhiteSpace = false;

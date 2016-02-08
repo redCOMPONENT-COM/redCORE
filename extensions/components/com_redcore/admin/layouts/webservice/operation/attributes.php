@@ -98,6 +98,20 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 				<?php echo $form->getInput('functionName', $operation); ?>
 			</div>
 		</div>
+		<?php if ($operation === 'read-list') : ?>
+		<div class="form-group">
+			<?php echo $form->getLabel('paginationName', $operation); ?>
+			<div class="col-sm-10">
+				<?php echo $form->getInput('paginationName', $operation); ?>
+			</div>
+		</div>
+		<div class="form-group">
+			<?php echo $form->getLabel('totalName', $operation); ?>
+			<div class="col-sm-10">
+				<?php echo $form->getInput('totalName', $operation); ?>
+			</div>
+		</div>
+		<?php endif; ?>
 		<div class="form-group">
 			<?php echo $form->getLabel('functionArgs', $operation); ?>
 			<div class="col-sm-10">
