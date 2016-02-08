@@ -634,8 +634,8 @@ class RApiHalHal extends RApi
 		if ($displayTarget == 'list')
 		{
 			$functionName       = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
-			$paginationFunction = RApiHalHelper::attributeToString($currentConfiguration, 'paginationName', 'getPagination');
-			$totalFunction      = RApiHalHelper::attributeToString($currentConfiguration, 'totalName', 'getTotal');
+			$paginationFunction = RApiHalHelper::attributeToString($currentConfiguration, 'paginationFunction', 'getPagination');
+			$totalFunction      = RApiHalHelper::attributeToString($currentConfiguration, 'totalFunction', 'getTotal');
 
 			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
