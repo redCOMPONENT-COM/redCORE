@@ -6,9 +6,6 @@
 * @license     GNU General Public License version 2 or later; see LICENSE.txt
 */
 
-// Load the Step Object Page
-$I = new \AcceptanceTester($scenario);
-
 $I = new AcceptanceTester($scenario);
 $I->wantTo('Uninstall redCORE Extension');
 $I->doAdministratorLogin();
