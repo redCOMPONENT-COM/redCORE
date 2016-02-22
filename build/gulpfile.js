@@ -4,6 +4,12 @@ var extension  	= require('./package.json');
 var config      = require('./gulp-config.json');
 
 var argv       	= require('yargs').argv;
+
+if (argv.wwwDir)
+{
+	config.wwwDir = argv.wwwDir;
+}
+
 var requireDir 	= require('require-dir');
 var zip        	= require('gulp-zip');
 var xml2js     	= require('xml2js');

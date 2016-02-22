@@ -1,5 +1,5 @@
 <phpunit
-    bootstrap="_bootstrap.php"
+    bootstrap="unit/_bootstrap.php"
     colors="false"
     stopOnFailure="false"
     testdox="true"
@@ -7,9 +7,6 @@
     backupStaticAttributes="false"
     backupGlobals="false">
     <testsuite name="library">
-        <directory>suite/library</directory>
-    </testsuite>
-    <testsuite name="site">
-        <directory>suite/site</directory>
+        <directory>unit/suite/library</directory>
     </testsuite>
 </phpunit>
