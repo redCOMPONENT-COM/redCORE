@@ -410,7 +410,7 @@ class RApiHalHal extends RApi
 		// Set initial status code to OK
 		$this->setStatusCode(200);
 
-		// prepare the application state
+		// Prepare the application state
 		$this->cleanCache();
 
 		// We do not want some unwanted text to appear before output
@@ -544,7 +544,6 @@ class RApiHalHal extends RApi
 		$session = JFactory::getSession();
 		$registry = $session->get('registry');
 		$registry->set($option, null);
-
 	}
 
 	/**
