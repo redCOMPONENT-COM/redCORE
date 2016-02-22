@@ -12,7 +12,7 @@ class InstallJoomlaCest
 	{
 
 		$I->wantToTest('Joomla 3 Installation');
-		$I->installJoomlaRemovingInstallationFolder();
+		$I->installJoomlaMultilingualSite();
 		$I->doAdministratorLogin();
 		$I->setErrorReportingToDevelopment();
 	}
