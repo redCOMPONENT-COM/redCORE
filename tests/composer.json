@@ -10,10 +10,12 @@
         "phpmd/phpmd": "*",
         "codeception/codeception": "~2.0",
         "phing/phing": "2.9.*@dev",
-        "joomla-projects/joomla-browser": "dev-develop",
+        "joomla-projects/joomla-browser": "v3.4.8.2",
         "codegyre/robo": "~0.6",
         "redcomponent/robo": "dev-master",
         "flow/jsonpath": "dev-master",
-        "fzaninotto/faker": "^1.5"
+        "fzaninotto/faker": "^1.5",
+        "joomla-projects/selenium-server-standalone": "v2.51.0",
+        "nette/reflection": "~2"
     }
 }
