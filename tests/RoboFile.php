@@ -108,7 +108,8 @@ class RoboFile extends \Robo\Tasks
 
 		if (!is_dir('joomla-cms3/libraries/vendor/phpunit'))
 		{
-			$this->_exec('cd joomla-cms3 && composer install && cd ..');
+			$this->getComposer();
+			$this->taskComposerInstall('../composer.phar')->dir('joomla-cms3')->run();
 		}
 
 		// Copy extension. No need to install, as we don't use mysql db for unit tests
