@@ -368,11 +368,6 @@ class RoboFile extends \Robo\Tasks
 	public function prepareReleasePackages()
 	{
 		$this->_exec("gulp release --skip-version --gulpfile ../build/gulpfile.js");
-
-		if (getenv('TRAVIS_PULL_REQUEST'))
-		{
-			$this->yell('previous command will raise an error in Travis "gulp: not found" but Tavis is covered by travis.yml line 43, where Gulp is manually executed');
-		}
 	}
 
 	/**
