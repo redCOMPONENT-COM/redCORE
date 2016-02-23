@@ -112,10 +112,8 @@ class RoboFile extends \Robo\Tasks
 		}
 
 		// Copy extension. No need to install, as we don't use mysql db for unit tests
-		$this->taskGulpRun('copy')
-			->dir('../build')
-			->option('wwwDir', __DIR__ . '/joomla-cms3')
-			->run();
+		$joomlaPath = __DIR__ . '/joomla-cms3';
+		$this->_exec("gulp copy --wwwDir=$joomlaPath --gulpfile ../build/gulpfile.js");
 	}
 
 	/**
