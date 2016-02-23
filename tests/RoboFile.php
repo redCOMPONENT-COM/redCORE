@@ -324,7 +324,8 @@ class RoboFile extends \Robo\Tasks
 	public function runUnitTests()
 	{
 		$this->prepareSiteForUnitTests();
-		$this->_exec("joomla-cms3/libraries/vendor/phpunit/phpunit/phpunit");
+		$this->_exec("joomla-cms3/libraries/vendor/phpunit/phpunit/phpunit")
+			->stopOnFail();
 	}
 
 	/**
