@@ -55,6 +55,11 @@ class RedcoreControllerWebservice extends RControllerForm
 		$app->close();
 	}
 
+	/**
+	 * Method to get new Complex Type HTML
+	 *
+	 * @return  void
+	 */
 	public function ajaxAddComplexType()
 	{
 		$app = JFactory::getApplication();
