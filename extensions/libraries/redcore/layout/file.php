@@ -76,7 +76,7 @@ class RLayoutFile extends JLayoutFile
 		parent::refreshIncludePaths();
 
 		// If method getDefaultIncludePaths does not exists we are in old Layout system
-		if (version_compare(JVERSION, '3.0', '>'))
+		if (version_compare(JVERSION, '3.0', '>') && version_compare(JVERSION, '3.5', '<'))
 		{
 			$redCORELayoutPath = JPATH_LIBRARIES . '/redcore/layouts';
 
@@ -87,6 +87,5 @@ class RLayoutFile extends JLayoutFile
 				array_splice($this->includePaths, count($this->includePaths) - 1, 0, $redCORELayoutPath);
 			}
 		}
-
 	}
 }

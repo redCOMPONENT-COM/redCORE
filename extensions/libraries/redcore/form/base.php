@@ -97,6 +97,28 @@ abstract class RFormBase extends JForm
 	}
 
 	/**
+	 * Returns the value of an attribute of the form itself
+	 *
+	 * @param   string  $attribute  The name of the attribute
+	 * @param   mixed   $default    Optional default value to return
+	 *
+	 * @return  mixed  The attribute value.
+	 */
+	public function getAttribute($attribute, $default = null)
+	{
+		$value = $this->xml->attributes()->$attribute;
+
+		if (is_null($value))
+		{
+			return $default;
+		}
+		else
+		{
+			return (string) $value;
+		}
+	}
+
+	/**
 	 * Method to get the XML form object
 	 *
 	 * @return  SimpleXMLElement  The form XML object

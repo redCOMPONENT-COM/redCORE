@@ -29,13 +29,12 @@ $title = '';
 
 if (!empty($description))
 {
-	$className = 'hasTooltip';
+	$classes[] = 'hasTooltip';
 
 	if (defined('REDCORE_BOOTSTRAPPED') && version_compare(JVERSION, '3.0', '<'))
 	{
-		JHtml::_('rbootstrap.tooltip', '.hasTooltipRedCORE');
+		JHtml::_('rbootstrap.tooltip', '.hasTooltip');
 		$title = ' title="' . RHtml::tooltipText(trim($text, ':'), $description, 0) . '"';
-		$className = 'hasTooltipRedCORE';
 	}
 	elseif (version_compare(JVERSION, '3.0', '<'))
 	{
