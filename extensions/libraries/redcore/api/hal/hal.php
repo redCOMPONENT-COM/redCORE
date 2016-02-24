@@ -231,6 +231,13 @@ class RApiHalHal extends RApi
 			RBootstrap::$config->set('enable_translation_fallback_webservices', $fallbackEnabled);
 		}
 
+		if (isset($headers['X_WEBSERVICE_STATEFUL']))
+		{
+			$useState = (int) $headers['X_WEBSERVICE_STATEFUL'] == 1 ? 1 : 0;
+			$this->options->set('webservice_stateful', $useState);
+			RBootstrap::$config->set('webservice_stateful', $useState);
+		}
+
 		if (isset($headers['ACCEPT']))
 		{
 			// We are only using header options if the URI does not contain format parameter as it have higher priority
@@ -403,6 +410,9 @@ class RApiHalHal extends RApi
 		// Set initial status code to OK
 		$this->setStatusCode(200);
 
+		// Prepare the application state
+		$this->cleanCache();
+
 		// We do not want some unwanted text to appear before output
 		ob_start();
 
@@ -501,6 +511,39 @@ class RApiHalHal extends RApi
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Method to clear the cache and any session state
+	 * related to API requests
+	 *
+	 * @param   string   $group      The cache group
+	 * @param   integer  $client_id  The ID of the client
+	 *
+	 * @throws Exception
+	 * @return void
+	 */
+	private function cleanCache($group = null, $client_id = 0)
+	{
+		if ($this->options->get('webservice_stateful', 0) == 1)
+		{
+			return;
+		}
+
+		$option = $this->options->get('optionName', '');
+		$option = strpos($option, 'com_') === false ? 'com_' . $option : $option;
+		$conf = JFactory::getConfig();
+
+		$options = array(
+			'defaultgroup' => ($group) ? $group : $option,
+			'cachebase' => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache'));
+
+		$cache = JCache::getInstance('callback', $options);
+		$cache->clean();
+
+		$session = JFactory::getSession();
+		$registry = $session->get('registry');
+		$registry->set($option, null);
 	}
 
 	/**
@@ -633,15 +676,18 @@ class RApiHalHal extends RApi
 
 		if ($displayTarget == 'list')
 		{
-			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+			$functionName       = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+			$paginationFunction = RApiHalHelper::attributeToString($currentConfiguration, 'paginationFunction', 'getPagination');
+			$totalFunction      = RApiHalHelper::attributeToString($currentConfiguration, 'totalFunction', 'getTotal');
 
 			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
-			if (method_exists($model, 'getPagination'))
+			if (!empty($paginationFunction) && method_exists($model, $paginationFunction))
 			{
-				if (method_exists($model, 'getTotal'))
+				// Get total count to check if we have reached the limit
+				if (!empty($totalFunction) && method_exists($model, $totalFunction))
 				{
-					$totalItems = $model->getTotal();
+					$totalItems = $model->{$totalFunction}();
 
 					if ($model->getState('limitstart', 0) >= $totalItems)
 					{
@@ -652,7 +698,7 @@ class RApiHalHal extends RApi
 					}
 				}
 
-				$pagination = $model->getPagination();
+				$pagination = $model->{$paginationFunction}();
 				$paginationPages = $pagination->getPaginationPages();
 
 				$this->setData(

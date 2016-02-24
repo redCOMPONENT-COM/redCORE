@@ -56,9 +56,9 @@ class RedcoreControllerWebservice extends RControllerForm
 	}
 
 	/**
-	 * Method to get new Complex Type HTML
+	 * Ajax webservice add complex type function.
 	 *
-	 * @return  void
+	 * @return void
 	 */
 	public function ajaxAddComplexType()
 	{
