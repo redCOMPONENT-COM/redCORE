@@ -46,8 +46,6 @@ if (!empty($description))
 		JHtml::_('rbootstrap.tooltip', '.hasTooltip');
 		$title     = ' title="' . JHtml::tooltipText(trim($text, ':'), $description, 0) . '"';
 	}
-
-	$classes[] = $className;
 }
 
 if ($required)
