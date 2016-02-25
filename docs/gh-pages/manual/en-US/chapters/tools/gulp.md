@@ -64,7 +64,7 @@ Either of those commands till trigger several things:
 
 #### <a name="use-gulp-for-release"></a>2.1.1. Use Gulp for creating release package
 
-When creating new release package you can have a flag to omit the version number, otherwise it will create a file with the redCORE version number in the file name (ex: redCORE-v1.7.0.zip). To omit the version number you can set argument `--skip-version` when calling gulp release build.
+When creating new release package you can have a flag to omit the version number, otherwise it will create a file with the redCORE version number in the file name (ex: redCORE-v1.8.0.zip). To omit the version number you can set argument `--skip-version` when calling gulp release build.
 Running gulp release for redCORE can be done in two ways
 
 You can go into the build folder and run it from there:

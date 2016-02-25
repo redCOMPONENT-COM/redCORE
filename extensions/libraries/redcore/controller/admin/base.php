@@ -122,15 +122,15 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		// Get items to remove from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
 
-		// Get the model.
-		$model = $this->getModel();
-
 		if (!is_array($cid) || count($cid) < 1)
 		{
 			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
 		}
 		else
 		{
+			// Get the model.
+			$model = $this->getModel();
+
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
 			JArrayHelper::toInteger($cid);
@@ -144,10 +144,10 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			{
 				$this->setMessage($model->getError(), 'error');
 			}
-		}
 
-		// Invoke the postDelete method to allow for the child class to access the model.
-		$this->postDeleteHook($model, $cid);
+			// Invoke the postDelete method to allow for the child class to access the model.
+			$this->postDeleteHook($model, $cid);
+		}
 
 		// Set redirect
 		$this->setRedirect($this->getRedirectToListRoute());
@@ -274,7 +274,6 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
 		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
-
 		$inc = ($this->getTask() == 'orderup') ? -1 : 1;
 
 		$model = $this->getModel();

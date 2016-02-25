@@ -532,8 +532,9 @@ class RControllerForm extends JControllerForm
 				return false;
 			}
 
-			// Reset the ID and then treat the request as for Apply.
+			// Reset the ID, the multilingual associations and then treat the request as for Apply.
 			$data[$key] = 0;
+			$data['associations'] = array();
 			$task = 'apply';
 		}
 
