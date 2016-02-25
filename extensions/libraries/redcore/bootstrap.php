@@ -113,14 +113,10 @@ class RBootstrap
 			// Sets bootstrapped variable, to avoid bootstrapping redCORE twice
 			define('REDCORE_LIBRARY_LOADED', 1);
 
-			if (version_compare(JVERSION, '3.0', '<'))
+			// We are still in Joomla 2.5 or another version so we use alias to prevent errors
+			if (!class_exists('Joomla\Registry\Registry'))
 			{
-				// We are still in Joomla 2.5 or another version so we use alias to prevent errors
-				if (!class_exists('Joomla\Registry\Registry'))
-				{
-					class_alias('JRegistry', 'Joomla\Registry\Registry');
-					class_alias('JRegistry', 'Registry');
-				}
+				class_alias('JRegistry', 'Joomla\Registry\Registry');
 			}
 
 			// Use our own base field
