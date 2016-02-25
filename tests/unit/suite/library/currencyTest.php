@@ -13,13 +13,10 @@ require_once JPATH_LIBRARIES . '/redcore/bootstrap.php';
 // Register the classes for autoload.
 JLoader::registerPrefix('R', JPATH_REDCORE);
 
-// Bootstraps redCORE
-//RBootstrap::bootstrap(false);
-
 /**
- * Test class for Redevent lib helper class
+ * Test class for currency lib helper class
  *
- * @package  Redevent.UnitTest
+ * @package  Redcore.UnitTest
  * @since    1.2.0
  */
 class currencyTest extends TestCaseDatabase
