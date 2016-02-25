@@ -449,7 +449,7 @@ class RApiOauth2Oauth2 extends RApi
 
 			json_decode((string) $body);
 
-			if (json_last_error() != JSON_ERROR_NONE)
+			if (json_last_error() == JSON_ERROR_NONE)
 			{
 				$app->setHeader('Content-length', strlen($body), true);
 				$app->setHeader('Content-type', 'application/json; charset=UTF-8', true);
