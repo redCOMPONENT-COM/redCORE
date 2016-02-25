@@ -67,13 +67,28 @@ gulp.task('copy:' + baseTask + ':manifest', ['clean:' + baseTask + ':manifest'],
 
 // Copy: media
 gulp.task('copy:' + baseTask + ':media', function() {
-	del.sync([config.wwwDir + '/media/redcore'], {force: true});
+	// Delete all except for webservices folder
+	del.sync([
+		config.wwwDir + '/media/redcore/css',
+		config.wwwDir + '/media/redcore/fonts',
+		config.wwwDir + '/media/redcore/images',
+		config.wwwDir + '/media/redcore/js',
+		config.wwwDir + '/media/redcore/lib',
+		config.wwwDir + '/media/redcore/translations',
+		config.wwwDir + '/media/redcore/webservices/joomla'
+	], {force: true});
 
 	return gulp.src([mediaPath + '/**'])
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore'))
 		// Copy original uncompressed files to the testing site too
 		&&
-		gulp.src([buildPathMedia + '/**'])
+		gulp.src([
+			buildPathMedia + '/**',
+			'!' + buildPathMedia + '/less',
+			'!' + buildPathMedia + '/less/**',
+			'!' + buildPathMedia + '/sass',
+			'!' + buildPathMedia + '/sass/**'
+		])
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
 });
 
