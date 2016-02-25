@@ -90,17 +90,31 @@ class RoboFile extends \Robo\Tasks
 			$this->taskDeleteDir('joomla-cms3')->run();
 		}
 
-		$version = 'staging';
+		$this->cloneJoomla();
+	}
 
-		/*
-		 * When joomla Staging branch has a bug you can uncomment the following line as a tmp fix for the tests layer.
-		 * Use as $version value the latest tagged stable version at: https://github.com/joomla/joomla-cms/releases
-		 */
-		$version = '3.4.8';
+	/**
+	 * Downloads and prepares a Joomla CMS site for testing
+	 *
+	 * @return mixed
+	 */
+	public function prepareSiteForUnitTests()
+	{
+		// Make sure we have joomla
+		if (!is_dir('joomla-cms3'))
+		{
+			$this->cloneJoomla();
+		}
 
-		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git joomla-cms3");
+		if (!is_dir('joomla-cms3/libraries/vendor/phpunit'))
+		{
+			$this->getComposer();
+			$this->taskComposerInstall('../composer.phar')->dir('joomla-cms3')->run();
+		}
 
-		$this->say("Joomla CMS ($version) site created at joomla-cms3/");
+		// Copy extension. No need to install, as we don't use mysql db for unit tests
+		$joomlaPath = __DIR__ . '/joomla-cms3';
+		$this->_exec("gulp copy --wwwDir=$joomlaPath --gulpfile ../build/gulpfile.js");
 	}
 
 	/**
@@ -304,6 +318,18 @@ class RoboFile extends \Robo\Tasks
 	}
 
 	/**
+	 * Function to run unit tests
+	 *
+	 * @return void
+	 */
+	public function runUnitTests()
+	{
+		$this->prepareSiteForUnitTests();
+		$this->_exec("joomla-cms3/libraries/vendor/phpunit/phpunit/phpunit")
+			->stopOnFail();
+	}
+
+	/**
 	 * Stops Selenium Standalone Server
 	 *
 	 * @return void
@@ -343,11 +369,6 @@ class RoboFile extends \Robo\Tasks
 	public function prepareReleasePackages()
 	{
 		$this->_exec("gulp release --skip-version --gulpfile ../build/gulpfile.js");
-
-		if (getenv('TRAVIS_PULL_REQUEST'))
-		{
-			$this->yell('previous command will raise an error in Travis "gulp: not found" but Tavis is covered by travis.yml line 43, where Gulp is manually executed');
-		}
 	}
 
 	/**
@@ -380,5 +401,25 @@ class RoboFile extends \Robo\Tasks
 		$this->taskExec('php checkers/phpcs.php')
 				->printed(true)
 				->run();
+	}
+
+	/**
+	 * Clone joomla from official repo
+	 *
+	 * @return void
+	 */
+	private function cloneJoomla()
+	{
+		$version = 'staging';
+
+		/*
+		 * When joomla Staging branch has a bug you can uncomment the following line as a tmp fix for the tests layer.
+		 * Use as $version value the latest tagged stable version at: https://github.com/joomla/joomla-cms/releases
+		 */
+		$version = '3.4.8';
+
+		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git joomla-cms3");
+
+		$this->say("Joomla CMS ($version) site created at joomla-cms3/");
 	}
 }

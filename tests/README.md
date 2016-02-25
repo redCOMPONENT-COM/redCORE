@@ -77,5 +77,11 @@ Then, run the tests executing the following CLI command:
 vendor/bin/robo run:tests
 ```
 
+And for unit tests:
+```
+vendor/bin/robo run:unit-tests
+```
+Note: make sure you have PDO_SQLite extension installed on apache (ubuntu: sudo apt-get install php5-sqlite)
+
 ## Running the tests manually
 You can also run tests manually in any platform. See detailed instructions at: https://docs.joomla.org/Testing_Joomla_Extensions_with_Codeception

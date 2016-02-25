@@ -10,8 +10,11 @@
 // Register library prefix
 require_once JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
+// Register the classes for autoload.
+JLoader::registerPrefix('R', JPATH_REDCORE);
+
 // Bootstraps redCORE
-RBootstrap::bootstrap(false);
+//RBootstrap::bootstrap(false);
 
 /**
  * Test class for Redevent lib helper class
@@ -19,8 +22,31 @@ RBootstrap::bootstrap(false);
  * @package  Redevent.UnitTest
  * @since    1.2.0
  */
-class currencyTest extends JoomlaTestCase
+class currencyTest extends TestCaseDatabase
 {
+	/**
+	 * This method is called before the first test of this test class is run.
+	 *
+	 * @return  void
+	 *
+	 * @since   12.1
+	 */
+	public static function setUpBeforeClass()
+	{
+		parent::setUpBeforeClass();
+
+		$db = JFactory::getDbo();
+
+		foreach (JDatabaseDriver::splitSql(file_get_contents(REDCORE_UNIT_PATH . '/schema/currency.sql')) as $query)
+		{
+			if (trim($query))
+			{
+				$db->setQuery($query);
+				$db->execute();
+			}
+		}
+	}
+
 	/**
 	 * Test GetIsoCode
 	 *
@@ -43,16 +69,7 @@ class currencyTest extends JoomlaTestCase
 	public function testGetIsoNumber()
 	{
 		$this->assertEquals(RHelperCurrency::getIsoNumber('EUR'), 978);
-
-		try
-		{
-			RHelperCurrency::getIsoNumber('A');
-			throw new Exception('there should have been another exception');
-		}
-		catch (OutOfRangeException $e)
-		{
-			// It was expected
-		}
+		$this->assertEquals(RHelperCurrency::getIsoNumber('A'), 'A');
 	}
 
 	/**
@@ -65,16 +82,7 @@ class currencyTest extends JoomlaTestCase
 	public function testGetPrecision()
 	{
 		$this->assertEquals(RHelperCurrency::getPrecision('EUR'), 2);
-
-		try
-		{
-			RHelperCurrency::getPrecision('A');
-			throw new Exception('there should have been another exception');
-		}
-		catch (OutOfRangeException $e)
-		{
-			// It was expected
-		}
+		$this->assertEquals(RHelperCurrency::getPrecision('A'), 0);
 	}
 
 	/**
