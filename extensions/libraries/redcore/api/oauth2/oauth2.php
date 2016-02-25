@@ -368,13 +368,14 @@ class RApiOauth2Oauth2 extends RApi
 		}
 
 		// Print the authorization code if the user has authorized your client
-		$is_authorized = $request->request('authorized', '') === JText::_('LIB_REDCORE_API_OAUTH2_SERVER_AUTHORIZE_CLIENT_YES');
+		$is_authorized = $request->request('authorized', '') === JText::_('LIB_REDCORE_API_OAUTH2_SERVER_AUTHORIZE_CLIENT_YES')
+			|| $request->request('authorized', '') == '1';
 
 		// We are setting client scope instead of requesting scope from user request
 		$request->request['scope'] = $scopes;
-
 		$this->server->handleAuthorizeRequest($request, $response, $is_authorized, $user->id);
 
+		//var_dump($response);die();
 		$this->response = $response;
 
 		return $this;
@@ -447,16 +448,14 @@ class RApiOauth2Oauth2 extends RApi
 			// Check if the request is CORS ( Cross-origin resource sharing ) and change the body if true
 			$body = $this->prepareBody($body);
 
-			json_decode($body);
+			json_decode((string) $body);
 
 			if (json_last_error() != JSON_ERROR_NONE)
 			{
-				$body = json_encode($body);
+				$app->setHeader('Content-length', strlen($body), true);
+				$app->setHeader('Content-type', 'application/json; charset=UTF-8', true);
+				$app->sendHeaders();
 			}
-
-			$app->setHeader('Content-length', strlen($body), true);
-			$app->setHeader('Content-type', 'application/json; charset=UTF-8', true);
-			$app->sendHeaders();
 
 			echo (string) $body;
 		}
