@@ -1,13 +1,6 @@
 var gulp = require('gulp');
 
-// Third part extension using redCORE / redCORE build folder
-try {
-	var config = require(process.cwd() + '/gulp-config.json');
-}
-// redCORE repo relative
-catch(err) {
-	var config = require('../../build/gulp-config.json');
-}
+var config = require('./config.js');
 
 // Check if config has defaultTasks defined
 var defaultTasks = config.hasOwnProperty('defaultTasks') ? config.defaultTasks : ["copy", "watch", "copyRedcore", "watchRedcore", "browser-sync"];

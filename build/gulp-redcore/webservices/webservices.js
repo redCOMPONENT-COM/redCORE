@@ -1,15 +1,6 @@
 var gulp = require('gulp');
 
-// Third part extension using redCORE / redCORE build folder
-try {
-	var config = require(process.cwd() + '/gulp-config.json');
-	var extensions = require(process.cwd() + '/gulp-extensions.json');
-}
-// redCORE repo relative
-catch(err) {
-	var config = require('../../build/gulp-config.json');
-	var extensions = require('../../build/gulp-extensions.json');
-}
+var config = require('../config.js');
 
 /**
  * Get the list of the webservices from paths
