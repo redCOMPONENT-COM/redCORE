@@ -199,6 +199,11 @@ class RApiOauth2Oauth2 extends RApi
 		// We can take token and add more data to it
 		$token = $this->server->getResourceController()->getToken();
 
+		if (!empty($token['user_id']))
+		{
+			$this->loadUserIdentity($token['user_id']);
+		}
+
 		// Add expire Time
 		$token['expireTimeFormatted'] = date('Y-m-d H:i:s', $token['expires']);
 
@@ -206,6 +211,29 @@ class RApiOauth2Oauth2 extends RApi
 		$token['profile'] = RApiOauth2Helper::getUserProfileInformation();
 
 		$this->response = json_encode($token);
+
+		return $this;
+	}
+
+	/**
+	 * Loads up user identity when requested
+	 *
+	 * @param   int  $userId  User ID
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.8
+	 */
+	public function loadUserIdentity($userId)
+	{
+		if (!empty($userId))
+		{
+			$user = JFactory::getUser($userId);
+
+			// Load the JUser class on application for this client
+			JFactory::getApplication()->loadIdentity($user);
+			JFactory::getSession()->set('user', $user);
+		}
 
 		return $this;
 	}
