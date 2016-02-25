@@ -1,4 +1,4 @@
-oauth2-server-php v1.6 develop 16.01.2015
+oauth2-server-php v1.8 develop 18.09.2015
 =================
 
 [![Build Status](https://travis-ci.org/bshaffer/oauth2-server-php.svg?branch=develop)](https://travis-ci.org/bshaffer/oauth2-server-php)

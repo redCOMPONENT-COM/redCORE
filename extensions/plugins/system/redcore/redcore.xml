@@ -313,6 +313,16 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
+                <field
+                        name="oauth2_unset_refresh_token_after_use"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_UNSET_REFRESH_TOKEN_AFTER_USE"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_UNSET_REFRESH_TOKEN_AFTER_USE_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
             </fieldset>
             <fieldset name="PLG_SYSTEM_REDCORE_PAYMENT_API_OPTIONS">
                 <field
