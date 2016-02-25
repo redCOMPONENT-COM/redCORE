@@ -375,7 +375,6 @@ class RApiOauth2Oauth2 extends RApi
 		$request->request['scope'] = $scopes;
 		$this->server->handleAuthorizeRequest($request, $response, $is_authorized, $user->id);
 
-		//var_dump($response);die();
 		$this->response = $response;
 
 		return $this;
