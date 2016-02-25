@@ -73,6 +73,7 @@ class RApiOauth2Oauth2 extends RApi
 			'allow_credentials_in_request_body' => (boolean) RBootstrap::getConfig('oauth2_allow_credentials_in_request_body', true),
 			'allow_public_clients'     => (boolean) RBootstrap::getConfig('oauth2_allow_public_clients', true),
 			'always_issue_new_refresh_token' => (boolean) RBootstrap::getConfig('oauth2_always_issue_new_refresh_token', false),
+			'unset_refresh_token_after_use' => (boolean) RBootstrap::getConfig('oauth2_unset_refresh_token_after_use', true),
 		);
 
 		// Set database names to Redcore DB tables
@@ -170,7 +171,41 @@ class RApiOauth2Oauth2 extends RApi
 			case 'authorize':
 				$this->apiAuthorize();
 				break;
+			case 'profile':
+				$this->apiProfile();
+				break;
 		}
+
+		return $this;
+	}
+
+	/**
+	 * Execute the Api Profile operation.
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.7
+	 */
+	public function apiProfile()
+	{
+		// Handle a request for an OAuth2.0 Access Token and send the response to the client if the token has expired
+		if (!$this->server->verifyResourceRequest(OAuth2\Request::createFromGlobals(), null, $scopeToCheck = ''))
+		{
+			$this->response = $this->server->getResponse();
+
+			return $this;
+		}
+
+		// We can take token and add more data to it
+		$token = $this->server->getResourceController()->getToken();
+
+		// Add expire Time
+		$token['expireTimeFormatted'] = date('Y-m-d H:i:s', $token['expires']);
+
+		// Add user Profile info
+		$token['profile'] = RApiOauth2Helper::getUserProfileInformation();
+
+		$this->response = json_encode($token);
 
 		return $this;
 	}
@@ -194,6 +229,19 @@ class RApiOauth2Oauth2 extends RApi
 		}
 
 		$this->response = $this->server->handleTokenRequest($request);
+
+		if ($this->response instanceof OAuth2\Response)
+		{
+			$expires = $this->response->getParameter('expires_in');
+
+			if ($expires)
+			{
+				// Add expire Time
+				$this->response->setParameter('expireTimeFormatted', date('Y-m-d H:i:s', $expires + time()));
+			}
+
+			$this->response->setParameter('profile', RApiOauth2Helper::getUserProfileInformation());
+		}
 
 		return $this;
 	}
@@ -392,20 +440,25 @@ class RApiOauth2Oauth2 extends RApi
 		}
 		else
 		{
+			$app = JFactory::getApplication();
+
 			$body = $this->response;
 
 			// Check if the request is CORS ( Cross-origin resource sharing ) and change the body if true
 			$body = $this->prepareBody($body);
 
-			if ($body_json = json_decode($body))
+			json_decode($body);
+
+			if (json_last_error() != JSON_ERROR_NONE)
 			{
-				if (json_last_error() == JSON_ERROR_NONE)
-				{
-					$body = json_encode($body);
-				}
+				$body = json_encode($body);
 			}
 
-			echo $body;
+			$app->setHeader('Content-length', strlen($body), true);
+			$app->setHeader('Content-type', 'application/json; charset=UTF-8', true);
+			$app->sendHeaders();
+
+			echo (string) $body;
 		}
 	}
 
