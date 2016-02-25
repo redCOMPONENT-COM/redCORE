@@ -2,7 +2,7 @@
 <extension type="module" version="2.5" client="site" method="upgrade">
 	<name>MOD_REDCORE_LANGUAGE_SWITCHER</name>
 	<version>1.8.0</version>
-	<creationDate>April 2015</creationDate>
+	<creationDate>February 2016</creationDate>
 	<author>redCOMPONENT.com</author>
 	<authorEmail>email@redcomponent.com</authorEmail>
 	<copyright>redCOMPONENT</copyright>
