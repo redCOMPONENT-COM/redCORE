@@ -31,6 +31,25 @@
             }
         });
 
+        // Old Joomla tooltip
+        $('*[rel=tooltip]').each(function () {
+            if ($(this).tooltip){
+                $(this).tooltip({
+                    "animation":true,
+                    "html":true
+                });
+            }
+        });
+
+        $('.hasTooltip').each(function () {
+            if ($(this).tooltip){
+                $(this).tooltip({
+                    "animation":true,
+                    "html":true
+                });
+            }
+        });
+
         rRadioGroupButtonsSet();
         rRadioGroupButtonsEvent();
 

@@ -71,6 +71,11 @@ abstract class JHtmlRjquery
 			$options['allow_single_deselect'] = true;
 		}
 
+		if (empty($options['width']))
+		{
+			$options['width'] = 'auto';
+		}
+
 		$options = static::options2Jregistry($options);
 
 		JFactory::getDocument()->addScriptDeclaration("
