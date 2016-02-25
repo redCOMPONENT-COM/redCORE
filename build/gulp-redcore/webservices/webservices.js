@@ -10,8 +10,8 @@ var config = require('../config.js');
 function getWebservices() {
 	var results = [];
 
-	if (extensions && extensions.hasOwnProperty('webservices')) {
-		var sourceArray = extensions.webservices;
+	if (config.extensions.hasOwnProperty('webservices')) {
+		var sourceArray = config.extensions.webservices;
 
 		for (index = 0; index < sourceArray.length; ++index) {
 		    results.push(sourceArray[index]);
