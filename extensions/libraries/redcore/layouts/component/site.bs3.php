@@ -60,7 +60,7 @@ if ($comOption = $input->get('option', null))
 if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
 {
 	// Require the message renderer as it doesn't respect the naming convention.
-	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/message.php';
+	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/html/message.php';
 
 	if (file_exists($messageRendererPath))
 	{
