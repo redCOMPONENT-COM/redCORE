@@ -70,12 +70,11 @@ final class RHelperCurrency
 			if ($item)
 			{
 				$item->precision = $item->decimals;
+				self::$currencies[$currency] = $item;
 			}
-
-			self::$currencies[$currency] = $item;
 		}
 
-		return self::$currencies[$currency];
+		return isset(self::$currencies[$currency]) ? self::$currencies[$currency] : null;
 	}
 
 	/**
