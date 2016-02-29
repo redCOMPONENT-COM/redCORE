@@ -110,6 +110,7 @@ class RApiOauth2Oauth2 extends RApi
 
 		// Add the "Refresh Token" grant type (this is great for extending expiration time on tokens)
 		$this->server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, $this->serverConfig));
+
 		/*
 		 * @todo Implement JwtBearer Grant type with public_key
 		// Typically, the URI of the oauth server
