@@ -41,6 +41,7 @@
         <files folder="components/com_redcore/admin">
             <folder>controllers</folder>
             <folder>helpers</folder>
+            <folder>language</folder>
             <folder>layouts</folder>
             <folder>models</folder>
             <folder>sql</folder>
