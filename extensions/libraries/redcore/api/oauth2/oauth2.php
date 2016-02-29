@@ -110,7 +110,6 @@ class RApiOauth2Oauth2 extends RApi
 
 		// Add the "Refresh Token" grant type (this is great for extending expiration time on tokens)
 		$this->server->addGrantType(new OAuth2\GrantType\RefreshToken($storage, $this->serverConfig));
-
 		/*
 		 * @todo Implement JwtBearer Grant type with public_key
 		// Typically, the URI of the oauth server
@@ -402,6 +401,36 @@ class RApiOauth2Oauth2 extends RApi
 		// We are setting client scope instead of requesting scope from user request
 		$request->request['scope'] = $scopes;
 		$this->server->handleAuthorizeRequest($request, $response, $is_authorized, $user->id);
+
+		// We add access_token directly to the URI of the redirect string (default is after the # character)
+		if (RBootstrap::getConfig('oauth2_redirect_with_token', 0))
+		{
+			if ($response->isRedirection())
+			{
+				$location = $response->getHttpHeader('Location');
+				$location = explode('#', $location);
+
+				// Get access token
+				if (isset($location[1]))
+				{
+					$location[1] = str_replace('&amp;', '&', $location[1]);
+					$uris = explode('&', $location[1]);
+
+					// We search for access_token parameter
+					foreach ($uris as $uri)
+					{
+						if (strpos($uri, RBootstrap::getConfig('oauth2_token_param_name', 'access_token')) === 0)
+						{
+							$location[0] .= '&' . $uri;
+							break;
+						}
+					}
+
+					$location = implode('#', $location);
+					$response->setHttpHeader('Location', $location);
+				}
+			}
+		}
 
 		$this->response = $response;
 
