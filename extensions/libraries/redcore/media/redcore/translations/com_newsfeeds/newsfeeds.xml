@@ -15,7 +15,7 @@
             <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
         </table>
         <component>
-            <form>com_newsfeeds#newsfeeds#cid#task#!edit</form>
+            <form>com_newsfeeds#newsfeed#cid#task#!edit</form>
         </component>
     </reference>
 </contentelement>

@@ -7938,3 +7938,18 @@
 .redcore .chart-box {
   padding: 0;
 }
+.redcore .redcore .modal-body {
+  overflow: auto;
+}
+.redcore .original-field {
+  display:inline-block;
+  width:30%;
+  min-width:300px;
+  vertical-align: top;
+}
+
+.redcore .translate-field {
+  display:inline-block;
+  min-width:750px;
+  vertical-align: top;
+}

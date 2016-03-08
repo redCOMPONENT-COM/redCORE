@@ -25,7 +25,7 @@ class RedcoreModelTranslation extends RModelAdmin
 	 *
 	 * @return  mixed  Object on success, false on failure.
 	 */
-	public function getItem($pk = null)
+	public function getItem($pk = null, $tid = null)
 	{
 		$ids = JFactory::getApplication()->input->getString('id', '');
 		$id = JFactory::getApplication()->input->getString('rctranslations_id', '');
@@ -135,6 +135,13 @@ class RedcoreModelTranslation extends RModelAdmin
 	 */
 	public function save($data)
 	{
+
+		JLog::add(
+			"debug et",
+			JLog::INFO,
+			'debug'
+		);
+
 		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
 		$contentElement = RTranslationHelper::getContentElement($translationTable->option, $translationTable->xml);
 		$translation = JFactory::getApplication()->input->get('translation', array(), 'array');
@@ -143,6 +150,7 @@ class RedcoreModelTranslation extends RModelAdmin
 
 		//Check if the form is completely empty, and return an error if it is.
 		$dataFilled = RedcoreHelpersTranslation::validateEmptyTranslationData($translation, $translationTable->primaryKeys);
+
 		if(!$dataFilled)
 		{
 			$this->setError(JText::_('COM_REDCORE_TRANSLATIONS_SAVE_ERROR_EMPTY'));
@@ -201,12 +209,6 @@ class RedcoreModelTranslation extends RModelAdmin
 				->from($db->qn(RTranslationTable::getTranslationsTableName($translationTable->table, '')))
 				->where('rctranslations_language = ' . $db->q($data['rctranslations_language']));
 
-		JLog::add(
-			str_replace("\n", ' ', print_r($data, 1)),
-			JLog::INFO,
-			'debug translation table'
-		);
-		
 			foreach ($translationTable->primaryKeys as $primaryKey)
 			{
 				if (!empty($data[$primaryKey]))

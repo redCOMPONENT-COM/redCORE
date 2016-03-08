@@ -3,7 +3,7 @@
  * @package     Joomla.Plugin
  * @subpackage  System.Redcore
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -341,6 +341,22 @@ class PlgSystemRedcore extends JPlugin
 			return;
 		}
 	}
+
+	/**
+	 * Called before a JForm is rendered. It can be used to modify the JForm object in memory before rendering.
+	 * https://docs.joomla.org/Plugin/Events/Content
+	 *
+	 * @return  void
+	 */
+	public function onContentPrepareForm()
+	{
+		//If the options to do so are turned on, create a button for opening a modal window to edit translations directly from a translatable form
+		if ($this->params->get('enable_translations') == 1 && $this->params->get('show_edit_button_on_all_forms') == 1)
+		{
+			RTranslationHelper::isTranslatableForm();
+		}
+	}
+
 
 	/**
 	 * Check is is a redCORE view

@@ -21,7 +21,7 @@
             <filter>o.client_id = 0 AND o.lft > 0</filter>
         </table>
         <component>
-            <form>com_menus#menu#cid#task#!edit</form>
+            <form>com_menus#item#cid#task#!edit</form>
         </component>
     </reference>
 </contentelement>

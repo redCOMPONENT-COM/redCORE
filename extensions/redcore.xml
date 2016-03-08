@@ -5,7 +5,7 @@
     <author>redCOMPONENT</author>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
     <version>1.7.3</version>
     <description>COM_REDCORE_DESC</description>
@@ -68,6 +68,26 @@
             <menu link="option=com_redcore&amp;view=payment_dashboard" view="payment_dashboard">COM_REDCORE_PAYMENTS</menu>
         </submenu>
     </administration>
+
+    <files folder="components/com_redcore/site">
+        <folder>controllers</folder>
+        <folder>helpers</folder>
+        <folder>layouts</folder>
+        <folder>models</folder>
+        <folder>tables</folder>
+        <folder>views</folder>
+        <filename>LICENSE</filename>
+        <filename>controller.php</filename>
+        <filename>redcore.php</filename>
+    </files>
+    
+    <languages folder="components/com_redcore/site/language">
+        <language tag="en-GB">en-GB/en-GB.com_redcore.ini</language>
+        <language tag="en-GB">en-GB/en-GB.com_redcore.sys.ini</language>
+        <language tag="da-DK">da-DK/da-DK.com_redcore.ini</language>
+        <language tag="da-DK">da-DK/da-DK.com_redcore.sys.ini</language>
+    </languages>
+    
 
     <!-- Medias -->
     <media destination="redcore" folder="libraries/redcore/media/redcore">

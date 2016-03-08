@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Translation
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -788,5 +788,143 @@ class RTranslationHelper
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if the current page is a translatable form.
+	 *
+	 * @return void
+	 */
+	public static function isTranslatableForm()
+	{
+		$input = JFactory::getApplication()->input;
+		$option = $input->getString('option', '');
+		$view = $input->getString('view', '');
+		$layout = $input->getString('layout', '');
+		$task = $input->getString('task', '');
+
+		$translationTables = self::getInstalledTranslationTables();
+
+		if ($layout == 'edit' || $task == 'edit')
+		{
+			//Go through all installed translation tables
+			foreach ($translationTables as $tableKey => $translationTable)
+			{
+				if (!empty($translationTable->formLinks))
+				{
+					//Go through all form links
+					foreach ($translationTable->formLinks as $formLink)
+					{
+						$formLinks = explode('#', $formLink);
+
+						//Check whether the form link values matches the current page
+						if ($formLinks[0] == $option && $formLinks[1] == $view)
+						{
+							//Get id of item based on the name of the primary key gotten from the XML file.
+							$itemid = $input->getInt($formLinks[2], '');
+
+							//If the item doesn't have an ID, tell the user that they have to save the item first.
+							if (empty($itemid))
+							{
+								self::renderTranslationModal(false, false, false);
+								return;
+							}
+
+							if ($option == 'com_reditem')
+							{
+								//Call specific method for checking redITEM translation elements
+								self::isReditemElementTranslatable($translationTable->table, $translationTable->primaryKeys, $itemid, $translationTable->name);
+							}
+							else
+							{
+								//Render modal button & window in the toolbar
+								$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->name;
+								$contentelement = str_replace('#__', '', $translationTable->table);
+
+								self::renderTranslationModal($itemid, $linkname, $contentelement);
+							}							
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Checks if a translation element for redITEM should be translatable on the current page.
+	 * It's necessary because of the way redITEM's custom fields are set up.
+	 * If the database structure of the redITEM component changes, the code will have to be changed too.
+	 *
+	 * @param   string  $table       The database table of the translation element
+	 * @param   array   $primarykey  The name of the columns of the translation element's reference IDs
+	 * @param   int     $itemid      The id of the current item being shown
+	 *                             
+	 * @return  void 
+	 */
+	public static function isReditemElementTranslatable($table, $primaryKeys, $itemid, $elementName)
+	{
+		//Check whether there's a relation between the current item and the translation element
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+		->select($db->qn($primaryKeys[0]))
+		->from($db->qn($table))
+		->where($db->qn($primaryKeys[0]) . '=' . $db->q($itemid));
+
+		$db->setQuery($query);
+		$results = $db->loadObjectList();
+ 
+ 		//If there is, render a modal button & window in the toolbar
+		if (!empty($results))
+		{
+			$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $elementName;
+			$contentelement = str_replace('#__', '', $table);
+
+			self::renderTranslationModal($itemid, $linkname, $contentelement);
+		}		
+	}
+
+	/**
+	 * Renders a modal button & window for a translation element 
+	 *
+	 * @param   string  $itemid             The id of the current item being shown
+	 * @param   array   $linkname           The text to be shown on the modal button
+	 * @param   int     $contentelement     The current translation element
+	 * @param   string  $containingelement  The containing element that the modal button should be appended to
+	 *                             
+	 * @return  void
+	 */
+	public static function renderTranslationModal($itemid, $linkname, $contentelement)
+	{
+		RHelperAsset::load('full-page-modal.min.css', 'redcore');
+
+		if (!empty($itemid))
+		{
+			$modal = RLayoutHelper::render(
+				'modal.iframe-full-page',
+				array(
+					'options' => array(
+						'id' => $itemid,
+						'header' => '',
+						'linkName' => $linkname,
+						'link' => JRoute::_('index.php?option=com_redcore&view=translation&task=translation.edit&layout=modal-edit&contentelement=' . $contentelement . '&id=' . $itemid . '&tmpl=component'),
+						'linkClass' => 'btn btn-primary',
+					)
+				)
+			);
+		}
+		else 
+		{
+			$modal = '<button type="button" class="btn btn-primary disabled">' . JText::_('LIB_REDCORE_TRANSLATION_SAVE_ITEM_TO_TRANSLATE') . '</button>';
+		}
+		
+
+		//Render modal button & window, and move it to the end of the toolbar
+		echo '<div class="modalContainer" style="display:none;">' . $modal . '</div>';
+		$content = "jQuery( document ).ready(function() {
+						jQuery('.btn-toolbar').first().append(jQuery('.modalContainer'));
+						jQuery('.modalContainer').show();
+					});";
+		$document = JFactory::getDocument();
+		$document->addScriptDeclaration( $content );
 	}
 }

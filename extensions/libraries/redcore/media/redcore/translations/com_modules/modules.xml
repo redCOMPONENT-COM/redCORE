@@ -19,7 +19,7 @@
             <filter>o.client_id = 0</filter>
         </table>
         <component>
-            <form>com_modules#modules#cid#task#!edit#client#!1</form>
+            <form>com_modules#module#cid#task#!edit#client#!1</form>
         </component>
     </reference>
 </contentelement>

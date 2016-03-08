@@ -18,7 +18,7 @@
             <filter>o.level > 0</filter>
 		</table>
 		<component>
-			<form>com_categories#categories#cid#task#!edit</form>
+			<form>com_categories#category#cid#task#!edit</form>
 		</component>
 	</reference>
 </contentelement>

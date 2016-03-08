@@ -25,8 +25,8 @@
             <field type="params" name="attribs" formname="article" fieldsname="attribs" fieldsets="basic,editorConfig" translate="1" alwaysFallback="true">Attributes</field>
         </table>
         <component>
-            <form>com_content#content#cid#task#!edit</form>
-            <form>com_frontpage#content#cid#task#!edit</form>
+            <form>com_content#article#id#task#!edit</form>
+            <form>com_content#form#a_id#task#!edit</form>
         </component>
     </reference>
 </contentelement>

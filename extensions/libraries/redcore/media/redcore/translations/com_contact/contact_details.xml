@@ -26,7 +26,7 @@
             <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
         </table>
         <component>
-            <form>com_contact#contact_details#cid#!edit</form>
+            <form>com_contact#contact#cid#!edit</form>
         </component>
     </reference>
 </contentelement>

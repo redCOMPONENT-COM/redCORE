@@ -14,7 +14,7 @@
             <field type="state" name="state" translate="1" alwaysFallback="true">State</field>
         </table>
         <component>
-            <form>com_banners#banners#id#task#!edit</form>
+            <form>com_banners#banner#id#task#!edit</form>
         </component>
     </reference>
 </contentelement>
