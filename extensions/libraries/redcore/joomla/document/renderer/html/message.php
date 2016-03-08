@@ -3,7 +3,7 @@
  * @package     Joomla.Platform
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2016 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
@@ -12,11 +12,9 @@ defined('JPATH_PLATFORM') or die;
 /**
  * JDocument system message renderer
  *
- * @package     Joomla.Platform
- * @subpackage  Document
- * @since       11.1
+ * @since  3.5
  */
-class JDocumentRendererMessage extends JDocumentRenderer
+class JDocumentRendererHtmlMessage extends JDocumentRenderer
 {
 	/**
 	 * Renders the error stack and returns the results as a string
@@ -27,19 +25,19 @@ class JDocumentRendererMessage extends JDocumentRenderer
 	 *
 	 * @return  string  The output of the script
 	 *
-	 * @since   11.1
+	 * @since   3.5
 	 */
 	public function render($name, $params = array(), $content = null)
 	{
-		$msgList = $this->getData();
+		$msgList     = $this->getData();
 		$displayData = array(
 			'msgList' => $msgList,
-			'name' => $name,
-			'params' => $params,
+			'name'    => $name,
+			'params'  => $params,
 			'content' => $content
 		);
 
-		$app = JFactory::getApplication();
+		$app        = JFactory::getApplication();
 		$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/message.php';
 
 		if (file_exists($chromePath))
@@ -54,7 +52,7 @@ class JDocumentRendererMessage extends JDocumentRenderer
 			return renderMessage($msgList);
 		}
 
-		return RLayoutHelper::render('joomla.system.message', $displayData);
+		return JLayoutHelper::render('joomla.system.message', $displayData);
 	}
 
 	/**
@@ -62,7 +60,7 @@ class JDocumentRendererMessage extends JDocumentRenderer
 	 *
 	 * @return  array  An array contains system message
 	 *
-	 * @since   12.2
+	 * @since   3.5
 	 */
 	private function getData()
 	{

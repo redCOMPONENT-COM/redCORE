@@ -43,6 +43,8 @@ $linkClass = !empty($modal['options']['linkClass']) ? $modal['options']['linkCla
 	{
 		var url = jQuery(el).attr('data-href');
 
+		jQuery('.translation-message').remove();
+
 		jQuery('#modalContainer_modalButton_<?php echo $id; ?> .modal-body')
 		.html('<iframe id="modal_iframe_<?php echo $id; ?>" width="100%" height="100%" frameborder="0" scrolling="yes" allowtransparency="true" src="' + url + '"></iframe>');
 	}
@@ -50,5 +52,7 @@ $linkClass = !empty($modal['options']['linkClass']) ? $modal['options']['linkCla
 	function saveIframe() 
 	{
 		jQuery('#modal_iframe_<?php echo $id; ?>')[0].contentWindow.Joomla.submitbutton('translation.apply');
+		var savedIframe = '<div class="alert alert-success translation-message"><?php echo JTEXT::_('LIB_REDCORE_TRANSLATION_SAVE_SUCESS'); ?></div>';
+		jQuery('#system-message-container').append(savedIframe);
 	}
 </script>

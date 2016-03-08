@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -20,6 +20,7 @@ $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webservi
 $translationFallback = RBootstrap::getConfig('enable_translation_fallback_webservices', '1') == '1' ? JText::_('JENABLED') : JText::_('JDISABLED');
 $defaultLanguage = RTranslationHelper::getSiteLanguage();
 $defaultFormat = RBootstrap::getConfig('webservices_default_format', 'json');
+$defaultStatefulness = RBootstrap::getConfig('webservices_stateful', '1') == '1' ? JText::_('JENABLED') : JText::_('JDISABLED');
 $languages = JLanguageHelper::getLanguages();
 $availableLanguages = array();
 
@@ -36,23 +37,20 @@ $availableLanguages = implode(', ', $availableLanguages);
 	<meta charset="utf-8" />
 	<link type="text/css" href="<?php echo JUri::root(true) . '/media/redcore/css/component.bs3.min.css' ?>" rel="stylesheet" />
 	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/js/bootstrap.min.js' ?>" />
-	<style type="text/css">
-		.table-nonfluid {
-			width: auto !important;
-		}
-	</style>
-<?php
-	if ($print) :
-?>
-	<script type="text/javascript">
-		function printWindow() {
-			window.print();
-			window.close();
-		};
-	</script>
-<?php
-	endif;
-?>
+	<?php if ($print) :?>
+		<style type="text/css">
+			.table-nonfluid {
+				width: auto !important;
+			}
+		</style>
+
+		<script type="text/javascript">
+			function printWindow()
+			{
+				window.print();
+			}
+		</script>
+	<?php endif; ?>
 </head>
 <body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?> class="redcore">
 <div class="container-fluid">
@@ -159,6 +157,13 @@ $availableLanguages = implode(', ', $availableLanguages);
 						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_ACCEPT_LANGUAGE',
 						'<strong>' . $defaultLanguage . '</strong>',
 						$availableLanguages
+					); ?></td>
+			</tr>
+			<tr>
+				<th>X-Webservice-Stateful</th>
+				<td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_STATEFUL',
+						'<strong>' . $defaultStatefulness . '</strong>'
 					); ?></td>
 			</tr>
 			<tr>

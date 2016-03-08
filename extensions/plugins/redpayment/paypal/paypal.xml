@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="redpayment" method="upgrade">
 	<name>PLG_REDPAYMENT_PAYPAL</name>
-    <creationDate>March 2015</creationDate>
+    <creationDate>February 2016</creationDate>
     <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
 	<description>PLG_REDPAYMENT_PAYPAL_XML_DESCRIPTION</description>
 
 	<files>

@@ -200,12 +200,6 @@ class RedcoreModelTranslation extends RModelAdmin
 				->select('rctranslations_id')
 				->from($db->qn(RTranslationTable::getTranslationsTableName($translationTable->table, '')))
 				->where('rctranslations_language = ' . $db->q($data['rctranslations_language']));
-
-		JLog::add(
-			str_replace("\n", ' ', print_r($data, 1)),
-			JLog::INFO,
-			'debug translation table'
-		);
 		
 			foreach ($translationTable->primaryKeys as $primaryKey)
 			{

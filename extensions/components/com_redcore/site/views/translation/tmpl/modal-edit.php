@@ -11,8 +11,6 @@ defined('_JEXEC') or die;
 jimport('joomla.html.editor');
 RHelperAsset::load('component.bs3.min.css', 'redcore');
 
-
-
 $status = RedcoreHelpersTranslation::getTranslationItemStatus($this->item->original, array_keys($this->columns));
 $hiddenFields = array();
 
@@ -47,6 +45,24 @@ $currentEditor = JFactory::getConfig()->get('editor');
 	</div>
 
 <script type="text/javascript">
+	function setTranslationValue(elementName, elementOriginal, langCode)
+	{
+		var tabArea = jQuery('#'+langCode);
+		var val = elementOriginal != '' ? tabArea.find('[name="original[' + elementOriginal + ']"]').val() : '';
+		var targetElement = tabArea.find('[name="translation[' + elementName + ']"]');
+
+		if (tabArea.find(targetElement).is('textarea'))
+		{
+			tabArea.find(targetElement).val(val);
+			tabArea.find(targetElement).parent().find('iframe').contents().find('body').html(val);
+		}
+		else
+		{
+			tabArea.find(targetElement).val(val);
+		}
+
+	}
+	
 	Joomla.submitbutton = function(task)
 	{
 		//Go through each form and submit them individually

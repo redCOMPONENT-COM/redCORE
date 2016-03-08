@@ -135,13 +135,6 @@ class RedcoreModelTranslation extends RModelAdmin
 	 */
 	public function save($data)
 	{
-
-		JLog::add(
-			"debug et",
-			JLog::INFO,
-			'debug'
-		);
-
 		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
 		$contentElement = RTranslationHelper::getContentElement($translationTable->option, $translationTable->xml);
 		$translation = JFactory::getApplication()->input->get('translation', array(), 'array');
@@ -158,7 +151,7 @@ class RedcoreModelTranslation extends RModelAdmin
 		}
 
 		$data = array_merge($data, $translation);
-
+		
 		$fieldsXml = $contentElement->getTranslateFields();
 
 		foreach ($fieldsXml as $field)

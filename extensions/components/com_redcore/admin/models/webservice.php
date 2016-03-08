@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -97,7 +97,7 @@ class RedcoreModelWebservice extends RModelAdmin
 		}
 
 		/** @var RedcoreModelWebservices $model */
-		$model = RModelAdmin::getAdminInstance('Webservices', array(), 'com_redcore');
+		$model = RModelAdmin::getAdminInstance('Webservices', array('ignore_request' => true), 'com_redcore');
 
 		if ($id = $model->installWebservice(
 				$data['main']['client'],
@@ -228,7 +228,6 @@ class RedcoreModelWebservice extends RModelAdmin
 			$this->getOperationAttributesFromPost($typeXml, $data, $typeName);
 			$this->getFieldsFromPost($typeXml, $data, $typeName);
 		}
-
 
 		// Needed for formatting
 		$dom = dom_import_simplexml($xml)->ownerDocument;

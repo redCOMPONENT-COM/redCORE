@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -98,6 +98,20 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 				<?php echo $form->getInput('functionName', $operation); ?>
 			</div>
 		</div>
+		<?php if ($operation === 'read-list') : ?>
+		<div class="form-group">
+			<?php echo $form->getLabel('paginationFunction', $operation); ?>
+			<div class="col-sm-10">
+				<?php echo $form->getInput('paginationFunction', $operation); ?>
+			</div>
+		</div>
+		<div class="form-group">
+			<?php echo $form->getLabel('totalFunction', $operation); ?>
+			<div class="col-sm-10">
+				<?php echo $form->getInput('totalFunction', $operation); ?>
+			</div>
+		</div>
+		<?php endif; ?>
 		<div class="form-group">
 			<?php echo $form->getLabel('functionArgs', $operation); ?>
 			<div class="col-sm-10">

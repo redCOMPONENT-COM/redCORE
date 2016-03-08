@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Pagination
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -59,7 +59,7 @@ class RPaginationObject
 	 * Class constructor.
 	 *
 	 * @param   string   $text      The link text.
-	 * @param   integer  $prefix    The prefix used for request variables.
+	 * @param   string   $prefix    The prefix used for request variables.
 	 * @param   integer  $base      The number of rows as a base offset.
 	 * @param   string   $link      The link URL.
 	 * @param   boolean  $active    Flag whether the object is the 'active' page

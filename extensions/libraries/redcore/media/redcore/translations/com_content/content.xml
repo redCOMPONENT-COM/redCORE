@@ -2,7 +2,7 @@
 <contentelement type="contentelement">
     <name>Contents</name>
     <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <version>1.7.2</version>
     <description>Translation definition for Joomla Content component</description>
     <reference type="content">
