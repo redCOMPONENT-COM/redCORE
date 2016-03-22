@@ -1,0 +1,1 @@
+redCORE includes a list of new fields available for developers. Some are enhaced Joomla! fields and some are new fields.

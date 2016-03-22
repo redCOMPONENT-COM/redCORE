@@ -2,7 +2,7 @@
 /**
  * @package     redCORE
  * @subpackage  Cept
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 // Load the Step Object Page
@@ -12,7 +12,8 @@ $I->doAdministratorLogin();
 $I->wantTo('Activate redCORE system plugin features');
 $I->amOnPage('administrator/index.php?option=com_plugins');
 $I->fillField(['id' => 'filter_search'], 'redcore - system plugin');
-$I->click(['xpath' => "//div[@id='filter-bar']/div[2]/button"]); // search button
+$I->click(['css' => "button[data-original-title='Search']"]);
+$I->waitForElement(['link' => 'redCORE - System plugin'], 60);
 $I->click(['link' => 'redCORE - System plugin']);
 $I->waitForText('Plugins: redCORE - System plugin', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);

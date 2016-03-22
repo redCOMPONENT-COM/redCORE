@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="redpayment" method="upgrade">
+	<name>PLG_REDPAYMENT_PAYPAL</name>
+    <creationDate>February 2016</creationDate>
+    <author>redCOMPONENT</author>
+    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>email@redcomponent.com</authorEmail>
+    <authorUrl>www.redcomponent.com</authorUrl>
+    <version>1.8.0</version>
+	<description>PLG_REDPAYMENT_PAYPAL_XML_DESCRIPTION</description>
+
+	<files>
+		<folder>form</folder>
+        <folder>helpers</folder>
+		<folder>language</folder>
+        <filename plugin="paypal">paypal.php</filename>
+	</files>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+                        name="merchant_id"
+                        type="text"
+                        default=""
+                        label="PLG_REDPAYMENT_PAYPAL_ACCOUNT"
+                        description="PLG_REDPAYMENT_PAYPAL_ACCOUNT_DESC"
+                        />
+				<field
+                        name="allowed_currencies"
+                        type="textarea"
+                        label="PLG_REDPAYMENT_PAYPAL_ALLOWED_CURRENCIES"
+                        description="PLG_REDPAYMENT_PAYPAL_ALLOWED_CURRENCIES_DESC"
+                        rows="10"
+                        />
+
+                <field
+                        name="sandbox"
+                        type="radio"
+                        default="1"
+                        label="PLG_REDPAYMENT_PAYPAL_USE_SANDBOX"
+                        description="PLG_REDPAYMENT_PAYPAL_USE_SANDBOX_DESC">
+                    <option value="0">JNO</option>
+                    <option value="1">JYES</option>
+                </field>
+                <field
+                        name="merchant_id_sandbox"
+                        type="text"
+                        default=""
+                        label="PLG_REDPAYMENT_PAYPAL_ACCOUNT_SANDBOX"
+                        description="PLG_REDPAYMENT_PAYPAL_ACCOUNT_DESC"
+                        />
+			</fieldset>
+            <fieldset name="extra" label="PLG_REDPAYMENT_PAYPAL_XML_FIELDSET_EXTRA">
+                <field
+                        name="payment_title"
+                        type="text"
+                        default="Paypal"
+                        label="PLG_REDPAYMENT_EPAY_FIELD_TITLE_LABEL"
+                        description="PLG_REDPAYMENT_EPAY_FIELD_TITLE_DESC"
+                        />
+                <field
+                        name="payment_logo"
+                        type="text"
+                        default=""
+                        label="PLG_REDPAYMENT_EPAY_FIELD_LOGO_LABEL"
+                        description="PLG_REDPAYMENT_EPAY_FIELD_LOGO_DESC"
+                        />
+                <field
+                        name="retry_counter"
+                        type="text"
+                        default="30"
+                        label="PLG_REDPAYMENT_EPAY_RETRY_COUNTER_LABEL"
+                        description="PLG_REDPAYMENT_EPAY_RETRY_COUNTER_DESC"
+                        />
+            </fieldset>
+		</fields>
+	</config>
+</extension>

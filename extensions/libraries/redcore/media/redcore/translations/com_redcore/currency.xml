@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" ?>
+<contentelement type="contentelement">
+  <name>Redcore Currency</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+  <version>1.7.2</version>
+  <description>Currency Table Definition for the redCORE extension</description>
+  <reference>
+  	<table name="redcore_currency">
+		<field type="referenceid" name="id" translate="0">ID</field>
+		<field type="text" name="name" translate="1" alwaysFallback="true">Currency Name</field>
+		<field type="text" disabled="true" translate="0" name="alpha3">Alpha 3</field>
+  	</table>
+    <component>
+        <form>com_redcore#currency#cid#task#!edit</form>
+    </component>
+   </reference>
+</contentelement>

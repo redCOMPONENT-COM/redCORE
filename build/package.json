@@ -1,0 +1,45 @@
+{
+  "name": "redCORE",
+  "version": "1.8.0",
+  "description": "Rapid application development layer for Joomla!",
+  "main": "gulpfile.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "browser-sync": "^2.9.6",
+    "del": "^2.0.2",
+    "fs": "0.0.2",
+    "gulp": "^3.9.0",
+    "gulp-composer": "^0.1.0",
+    "gulp-gh-pages": "^0.5.4",
+    "gulp-less": "^3.0.3",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.4.1",
+    "gulp-zip": "^3.0.2",
+    "joomla-gulp": "^1.1.1",
+    "require-dir": "^0.3.0",
+    "xml2js": "^0.4.12",
+    "yargs": "^3.27.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:redCOMPONENT-COM/redCORE.git"
+  },
+  "bugs": {
+    "url": "https://github.com/redCOMPONENT-COM/redCORE/issues"
+  },
+  "keywords": [
+    "rad",
+    "joomla",
+    "library"
+  ],
+  "author": "redCOMPONENT <email@redcomponent.com>",
+  "license": "GPL-2.0"
+}

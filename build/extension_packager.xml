@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ==================================================================  -->
+<!-- redCORE packager                                                    -->
+<!-- This PHING build file generates the redCORE extension package       -->
+<!-- To use in your environment do the following steps:                  -->
+<!--    Change the following variables in build.properties file          -->
+<!--            (copy variables from build.properties.dist )             -->
+<!--    - change the package folder path in variable package.dir         -->
+<!--    - execute this PHING build file                                  -->
+<!-- ==================================================================  -->
+<project name="com_redcore" default="pack">
+	<!-- ============================================  -->
+	<!-- Create packages folder                        -->
+	<!-- ============================================  -->
+	<target name="prepare">
+	    <!-- Folder where the redCORE repository is located  -->
+	    <property
+	            name="extpath"
+	            value="."
+	            override="true"/>
+
+	    <xmlproperty file="${extpath}/../extensions/${extension}.xml" prefix="extensionDetails" keepRoot="false" />
+
+	    <property
+				name="version"
+				value="${extensionDetails.version}"
+				override="true"/>
+
+		<!-- Temp dir to create packages -->
+		<property
+				name="tmpdir"
+				value=".tmp"
+				override="true"/>
+
+		<!-- Check if the temp folder exists. If not, create it -->
+		<if>
+			<available file="${tmpdir}" type="dir"/>
+			<then>
+				<echo msg="Removing old ${tmpdir}"/>
+				<delete dir="${tmpdir}"/>
+			</then>
+		</if>
+		<echo msg="Making directory to store the temporary packages at ${tmpdir}"/>
+		<mkdir dir="${tmpdir}"/>
+	</target>
+
+	<!-- ============================================  -->
+	<!-- Target: build                                 -->
+	<!-- ============================================  -->
+	<!-- Copy the source files to the target folder -->
+
+	<target name="build" depends="prepare">
+
+		<echo msg="Copying INSTALLER files to build directory..."/>
+        <phing phingfile="redcore_copy_mandatory.xml"
+               target="copyframework"
+               haltonfailure="true">
+            <property name="redcoretargetdir" value="${tmpdir}/${extension}" />
+            <property name="redcorepath" value="${project.basedir}/.." />
+        </phing>
+
+	</target>
+
+	<!-- ============================================  -->
+	<!-- (DEFAULT)  Target: dist                       -->
+	<!-- ============================================  -->
+	<target name="dist" depends="build">
+		<echo msg="Creating ZIP archive..."/>
+
+		<zip destfile="${tmpdir}/${extension}-v${version}.zip">
+			<fileset dir="${tmpdir}/${extension}">
+				<include name="**"/>
+				<exclude name=".*"/>
+			</fileset>
+		</zip>
+
+		<if>
+			<available file="${package.dir}/${extension}-v${version}.zip" property="test_zip_exists" value="Yes"/>
+			<then>
+				<echo msg="Removing old ZIP"/>
+				<delete file="${package.dir}/${extension}-v${version}.zip" />
+			</then>
+		</if>
+
+        <copy file="${tmpdir}/${extension}-v${version}.zip" tofile="${package.dir}/${extension}-v${version}.zip" />
+
+		<echo msg="Files copied and compressed in build directory: ${package.dir}/${extension}-v${version}.zip" />
+
+        <delete dir="${tmpdir}" />
+	</target>
+
+	<target name="pack">
+		<if>
+			<not>
+				<available file="build.properties" type="file" />
+			</not>
+			<then>
+				<fail msg="File not found: build.properties" />
+			</then>
+		</if>
+
+		<!-- Do initialization stuff -->
+		<property file="build.properties" override="true"/>
+
+		<property
+				name="extension"
+				value="${comp.name}"
+				override="true"/>
+
+		<phingcall target="dist" />
+	</target>
+
+	<target name="autopack">
+		<property
+				name="extension"
+				value="redcore"
+				override="true"/>
+		<property
+				name="package.dir"
+				value=".dist"
+				override="true"/>
+
+		<if>
+			<available file="${package.dir}" type="dir"/>
+			<then>
+				<echo msg="Removing old autopack folder"/>
+				<delete dir="${package.dir}"/>
+			</then>
+		</if>
+
+		<phingcall target="dist" />
+	</target>
+</project>

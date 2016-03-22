@@ -4,13 +4,15 @@ php:
 - 5.5
 - 5.6
 - 7.0
+addons:
+  firefox: "44.0.2"
 matrix:
   allow_failures:
     - php: 5.6
     - php: 7.0
 before_script:
 - sudo apt-get update -qq
-- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
+- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd php5-sqlite > /dev/null
 - sudo /etc/init.d/apache2 stop
 - sudo sed -i -e "s,APACHE_RUN_USER=www-data,APACHE_RUN_USER=$USER,g" /etc/apache2/envvars
 - sudo sed -i -e "s,APACHE_RUN_GROUP=www-data,APACHE_RUN_GROUP=$USER,g" /etc/apache2/envvars
@@ -25,17 +27,22 @@ before_script:
 - sudo apt-get install fluxbox -y --force-yes
 - fluxbox &
 - sleep 3 # give fluxbox some time to start
-- composer install --prefer-dist
+- cd build
+- npm install gulp -g # install globally so that it's available to robo
+- npm install
+- mv gulp-config.json.dist gulp-config.json
+- gulp release --skip-version
+- cd ../tests
 
 script:
-- php vendor/bin/robo check:robo-file-version
-- php .travis/phppec.php component/ libraries/ modules/ plugins/
-- php .travis/phpcs.php
-- php .travis/misseddebugcodechecker.php component/ libraries/ modules/ plugins/
-- mv tests/acceptance.suite.dist.yml tests/acceptance.suite.yml
-- mv tests/api.suite.dist.yml tests/api.suite.yml
+- composer install --prefer-dist
+- vendor/bin/robo check:for-missed-debug-code
+- vendor/bin/robo check:for-parse-errors
+- vendor/bin/robo check:codestyle
+- mv acceptance.suite.dist.yml acceptance.suite.yml
+- mv api.suite.dist.yml api.suite.yml
 - vendor/bin/robo run:tests
-- if [ $TRAVIS_PHP_VERSION == 5.5 ]; then vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7; fi
+- vendor/bin/robo run:unit-tests
 notifications:
   slack:
     secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=

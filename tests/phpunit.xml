@@ -1,0 +1,12 @@
+<phpunit
+    bootstrap="unit/_bootstrap.php"
+    colors="false"
+    stopOnFailure="false"
+    testdox="true"
+    verbose="true"
+    backupStaticAttributes="false"
+    backupGlobals="false">
+    <testsuite name="library">
+        <directory>unit/suite/library</directory>
+    </testsuite>
+</phpunit>

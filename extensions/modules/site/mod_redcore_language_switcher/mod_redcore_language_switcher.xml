@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="2.5" client="site" method="upgrade">
+	<name>MOD_REDCORE_LANGUAGE_SWITCHER</name>
+	<version>1.8.0</version>
+	<creationDate>February 2016</creationDate>
+	<author>redCOMPONENT.com</author>
+	<authorEmail>email@redcomponent.com</authorEmail>
+	<copyright>redCOMPONENT</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<description>MOD_REDCORE_LANGUAGE_SWITCHER_XML_DESCRIPTION</description>
+	<files>
+		<folder>language</folder>
+		<folder>tmpl</folder>
+		<filename>helper.php</filename>
+		<filename module="mod_redcore_language_switcher">mod_redcore_language_switcher.php</filename>
+	</files>
+    <media folder="media">
+        <folder>mod_redcore_language_switcher</folder>
+    </media>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="header_text"
+					type="textarea"
+					filter="safehtml"
+					rows="3"
+					cols="40"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_HEADER_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_HEADER_DESC" />
+
+				<field
+					name="footer_text"
+					type="textarea"
+					filter="safehtml"
+					rows="3"
+					cols="40"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_FOOTER_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_FOOTER_DESC" />
+
+				<field
+					name="dropdown"
+					type="radio"
+					class="btn-group"
+					default="0"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_DROPDOWN_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_DROPDOWN_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="spacer1" type="spacer" class="text"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_SPACERDROP_LABEL"
+				/>
+				<field
+					name="image"
+					type="radio"
+					class="btn-group"
+					default="1"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_USEIMAGE_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_USEIMAGE_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field
+					name="inline"
+					type="radio"
+					class="btn-group"
+					default="1"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_INLINE_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_INLINE_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field
+					name="show_active"
+					type="radio"
+					class="btn-group"
+					default="1"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_ACTIVE_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_ACTIVE_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="spacer2" type="spacer" class="text"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_SPACERNAME_LABEL"
+				/>
+				<field
+					name="full_name"
+					type="radio"
+					class="btn-group"
+					default="1"
+					label="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_FULL_NAME_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_FULL_NAME_DESC" >
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+			</fieldset>
+			<fieldset name="advanced">
+				<field
+					name="layout"
+					type="modulelayout"
+					label="JFIELD_ALT_LAYOUT_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_MODULE_LAYOUT_DESC" />
+
+				<field
+					name="moduleclass_sfx"
+					type="textarea" rows="3"
+					label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL"
+					description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
+
+				<field
+					name="cache"
+					type="list"
+					default="0"
+					label="COM_MODULES_FIELD_CACHING_LABEL"
+					description="MOD_REDCORE_LANGUAGE_SWITCHER_FIELD_CACHING_DESC">
+					<option
+						value="1">JGLOBAL_USE_GLOBAL</option>
+					<option
+						value="0">COM_MODULES_FIELD_VALUE_NOCACHING</option>
+				</field>
+
+				<field
+					name="cache_time"
+					type="text"
+					default="900"
+					label="COM_MODULES_FIELD_CACHE_TIME_LABEL"
+					description="COM_MODULES_FIELD_CACHE_TIME_DESC" />
+
+				<field
+					name="cachemode"
+					type="hidden"
+					default="itemid">
+					<option
+						value="itemid"></option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+</extension>
