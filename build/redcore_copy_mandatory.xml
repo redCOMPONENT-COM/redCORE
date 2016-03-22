@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ==================================================================         -->
+<!-- redCORE copier (adding redCORE to your extension package)                  -->
+<!-- Use PHING script to copy redCORE submodule into your extension             -->
+<!-- To use in your environment do the following steps:                         -->
+<!--    Call this script from your extension packager using:                    -->
+<!--                                                                            -->
+<!--    [...]                                                                   -->
+<!--    <target name="copyredcore">                                             -->
+<!--     <phing phingfile="redCORE/build/redcore_copy_mandatory.xml"            -->
+<!--            target="copyframework"                                          -->
+<!--            haltonfailure="true">                                           -->
+<!--         <property name="redcoretargetdir" value="${targetdir}/redCORE" />  -->
+<!--         <property name="redcorepath" value="${project.basedir}/redCORE" /> -->
+<!--        </phing>                                                            -->
+<!--    </target>                                                               -->
+<!--                                                                            -->
+<!--    ============================================                            -->
+<!--    (DEFAULT)  Target: dist                                                 -->
+<!--    ============================================                            -->
+<!--    <target name="dist" depends="build, copyredcore">                       -->
+<!--    [...]                                                                   -->
+<!--                                                                            -->
+<!--  See the example of this code in use at redSLIDER2 project:                -->
+<!--  https://github.com/redCOMPONENT-COM/redSLIDER2                            -->
+<!-- ==================================================================         -->
+<project name="com_redcore" default="copyframework">
+
+    <!-- ============================================  -->
+    <!-- Create packages folder                        -->
+    <!-- ============================================  -->
+    <target name="copyframework">
+        <echo msg="Copying all redCORE framework folder to build directory..."/>
+        <copy todir="${redcoretargetdir}">
+            <fileset dir="${redcorepath}/extensions">
+                <include name="**"/>
+            </fileset>
+        </copy>
+    </target>
+</project>

@@ -3,8 +3,8 @@
  * @package     Joomla.Administrator
  * @subpackage  com_weblinks
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 class AdministratorContacts1Cest
@@ -29,10 +29,11 @@ class AdministratorContacts1Cest
 			. '&webserviceVersion=1.0.0'
 		);
 
-		$I->seeResponseCodeIs(200);
+		// Checking for 204 code since there are no contacts before inserting them
+		$I->seeResponseCodeIs(204);
 		$I->seeResponseIsJson();
-		$I->seeHttpHeader('Webservice-name', 'contact');
-		$I->seeHttpHeader('Webservice-version', '1.0.0');
+		$I->seeHttpHeader('X-Webservice-name', 'contact');
+		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
 	}
 
 	/**
@@ -57,6 +58,26 @@ class AdministratorContacts1Cest
 		$contactIDs = $I->grabDataFromResponseByJsonPath('$.id');
 		$this->id = $contactIDs[0];
 		$I->comment("The id of the new created user is: $this->id");
+	}
+
+	/**
+	 * @depends create
+	 */
+	public function readList(ApiTester $I)
+	{
+		$I->wantTo("check the read list operation of the webservice");
+		$I->amHttpAuthenticated('admin', 'admin');
+		$I->sendGET('index.php'
+			. '?option=contact'
+			. '&api=Hal'
+			. '&webserviceClient=administrator'
+			. '&webserviceVersion=1.0.0'
+		);
+
+		$I->seeResponseCodeIs(200);
+		$I->seeResponseIsJson();
+		$I->seeHttpHeader('X-Webservice-name', 'contact');
+		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
 	}
 
 	/**

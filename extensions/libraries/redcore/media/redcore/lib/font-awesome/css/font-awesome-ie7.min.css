@@ -1,0 +1,25 @@
+/*!
+ *  Font Awesome 3.2.1
+ *  the iconic font designed for Bootstrap
+ *  ------------------------------------------------------------------------------
+ *  The full suite of pictographic icons, examples, and documentation can be
+ *  found at http://fontawesome.io.  Stay up to date on Twitter at
+ *  http://twitter.com/fontawesome.
+ *
+ *  License
+ *  ------------------------------------------------------------------------------
+ *  - The Font Awesome font is licensed under SIL OFL 1.1 -
+ *    http://scripts.sil.org/OFL
+ *  - Font Awesome CSS, LESS, and SASS files are licensed under MIT License -
+ *    http://opensource.org/licenses/mit-license.html
+ *  - Font Awesome documentation licensed under CC BY 3.0 -
+ *    http://creativecommons.org/licenses/by/3.0/
+ *  - Attribution is no longer required in Font Awesome 3.0, but much appreciated:
+ *    "Font Awesome by Dave Gandy - http://fontawesome.io"
+ *
+ *  Author - Dave Gandy
+ *  ------------------------------------------------------------------------------
+ *  Email: dave@fontawesome.io
+ *  Twitter: http://twitter.com/davegandy
+ *  Work: Lead Product Designer @ Kyruus - http://kyruus.com
+ */.icon-large{font-size:1.3333333333333333em;margin-top:-4px;padding-top:3px;margin-bottom:-4px;padding-bottom:3px;vertical-align:middle}.nav [class*=" icon-"],.nav [class^=icon-]{vertical-align:inherit;margin-top:-4px;padding-top:3px;margin-bottom:-4px;padding-bottom:3px}.nav [class*=" icon-"].icon-large,.nav [class^=icon-].icon-large{vertical-align:-25%}.nav-pills [class*=" icon-"].icon-large,.nav-pills [class^=icon-].icon-large,.nav-tabs [class*=" icon-"].icon-large,.nav-tabs [class^=icon-].icon-large{line-height:.75em;margin-top:-7px;padding-top:5px;margin-bottom:-5px;padding-bottom:4px}.btn [class*=" icon-"].pull-left,.btn [class*=" icon-"].pull-right,.btn [class^=icon-].pull-left,.btn [class^=icon-].pull-right{vertical-align:inherit}.btn [class*=" icon-"].icon-large,.btn [class^=icon-].icon-large{margin-top:-.5em}a [class*=" icon-"],a [class^=icon-]{cursor:pointer}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="library" method="upgrade" version="2.5">
+    <name>redCORE - Libraries</name>
+    <libraryname>redcore</libraryname>
+    <creationDate>February 2016</creationDate>
+    <author>redCOMPONENT</author>
+    <authorEmail>email@redcomponent.com</authorEmail>
+    <authorUrl>www.redcomponent.com</authorUrl>
+    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later, see LICENSE.</license>
+    <version>1.8.0</version>
+    <description>redCORE Libraries</description>
+
+    <files>
+        <folder>api</folder>
+        <folder>browser</folder>
+        <folder>component</folder>
+        <folder>controller</folder>
+        <folder>database</folder>
+        <folder>dom</folder>
+        <folder>factory</folder>
+        <folder>filesystem</folder>
+        <folder>form</folder>
+        <folder>helper</folder>
+        <folder>html</folder>
+        <folder>inflector</folder>
+        <folder>joomla</folder>
+        <folder>language</folder>
+        <folder>layout</folder>
+        <folder>layouts</folder>
+        <folder>loader</folder>
+        <folder>menu</folder>
+        <folder>modal</folder>
+        <folder>model</folder>
+        <folder>pagination</folder>
+        <folder>plugin</folder>
+        <folder>route</folder>
+        <folder>table</folder>
+        <folder>text</folder>
+        <folder>toolbar</folder>
+        <folder>translation</folder>
+        <folder>user</folder>
+        <folder>view</folder>
+        <filename>bootstrap.php</filename>
+        <filename>functions.php</filename>
+        <filename>redcore.xml</filename>
+    </files>
+</extension>

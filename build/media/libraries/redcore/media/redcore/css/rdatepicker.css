@@ -1,0 +1,11 @@
+/*
+ This is required to avoid a z-index issue with datepicker field
+ */
+.rdatepicker {
+	position: relative;
+	z-index: 5;
+	width: 150px;
+}
+button.ui-datepicker-trigger {
+	color: #990000;
+}
