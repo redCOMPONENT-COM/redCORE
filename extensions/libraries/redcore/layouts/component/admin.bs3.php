@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -62,7 +62,7 @@ if ($comOption = $input->get('option', null))
 if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
 {
 	// Require the message renderer as it doesn't respect the naming convention.
-	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/message.php';
+	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/html/message.php';
 
 	if (file_exists($messageRendererPath))
 	{
@@ -233,7 +233,7 @@ else : ?>
 			</div>
 		</div>
 		<footer class="footer pagination-centered navbar-nav navbar-fixed-bottom hidden-xs">
-			Copyright 2015 redcomponent.com. All rights reserved.
+			Copyright <?php echo date('Y') ?> redcomponent.com. All rights reserved.
 		</footer>
 	</div>
 <?php endif;

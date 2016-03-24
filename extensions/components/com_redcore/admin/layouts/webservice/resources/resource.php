@@ -3,11 +3,14 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('_JEXEC') or die;
+
+$view = $displayData['view'];
+$model = $view->getModel();
 
 $operation = !empty($displayData['options']['operation']) ? $displayData['options']['operation'] : 'read';
 $fieldList = !empty($displayData['options']['fieldList']) ? $displayData['options']['fieldList'] : '';
@@ -93,7 +96,7 @@ $id = RFilesystemFile::getUniqueName($operation);
 				</div>
 				<?php echo JHtml::_(
 					'select.genericlist',
-					RApiHalHelper::getTransformElements(),
+					$model->getTransformTypes($operation),
 					'transform',
 					' class="required form-control" ',
 					'value',

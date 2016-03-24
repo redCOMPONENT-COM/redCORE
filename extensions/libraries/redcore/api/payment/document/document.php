@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -89,22 +89,27 @@ class RApiPaymentDocumentDocument extends JDocument
 	 */
 	public function render($cache = false, $params = array())
 	{
+		$app = JFactory::getApplication();
 		$runtime = microtime(true) - $this->payment->startTime;
-
-		JFactory::getApplication()->setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
-		JFactory::getApplication()->setHeader('Server', '', true);
-		JFactory::getApplication()->setHeader('X-Runtime', $runtime, true);
-		JFactory::getApplication()->setHeader('Access-Control-Allow-Origin', '*', true);
-		JFactory::getApplication()->setHeader('Pragma', 'public', true);
-		JFactory::getApplication()->setHeader('Expires', '0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
-		JFactory::getApplication()->setHeader('Cache-Control', 'private', false);
-		JFactory::getApplication()->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-
-		JFactory::getApplication()->sendHeaders();
+		$language = explode('-', $app->input->get('lang', RTranslationHelper::getSiteLanguage()));
+		$language = $language[0];
 
 		// Get the payment string from the buffer.
 		$content = $this->getBuffer();
+
+		RApi::setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
+		RApi::setHeader('Server', '', true);
+		RApi::setHeader('X-Runtime', $runtime, true);
+		RApi::setHeader('Access-Control-Allow-Origin', '*', true);
+		RApi::setHeader('Pragma', 'public', true);
+		RApi::setHeader('Expires', '0', true);
+		RApi::setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		RApi::setHeader('Cache-Control', 'private', false);
+		RApi::setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+		RApi::setHeader('Content-length', strlen($content), true);
+		RApi::setHeader('Content-Language', $language, true);
+
+		RApi::sendHeaders();
 
 		// Check for defined constants
 		if (!defined('JSON_UNESCAPED_SLASHES'))

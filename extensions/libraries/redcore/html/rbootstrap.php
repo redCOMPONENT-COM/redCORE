@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -385,13 +385,13 @@ abstract class JHtmlRbootstrap
 		static::framework();
 
 		$opt['animation'] = isset($params['animation']) ? $params['animation'] : null;
-		$opt['html'] = isset($params['html']) ? $params['html'] : true;
+		$opt['html']      = isset($params['html']) ? $params['html'] : true;
 		$opt['placement'] = isset($params['placement']) ? $params['placement'] : null;
-		$opt['selector'] = isset($params['selector']) ? $params['selector'] : null;
-		$opt['title'] = isset($params['title']) ? $params['title'] : null;
-		$opt['trigger'] = isset($params['trigger']) ? $params['trigger'] : 'hover focus';
-		$opt['content'] = isset($params['content']) ? $params['content'] : null;
-		$opt['delay'] = isset($params['delay']) ? $params['delay'] : null;
+		$opt['selector']  = isset($params['selector']) ? $params['selector'] : null;
+		$opt['title']     = isset($params['title']) ? $params['title'] : null;
+		$opt['trigger']   = isset($params['trigger']) ? $params['trigger'] : 'hover focus';
+		$opt['content']   = isset($params['content']) ? $params['content'] : null;
+		$opt['delay']     = isset($params['delay']) ? $params['delay'] : null;
 		$opt['container'] = isset($params['container']) ? $params['container'] : 'body';
 
 		$options = RHtml::getJSObject($opt);
@@ -511,7 +511,7 @@ abstract class JHtmlRbootstrap
 
 			if ($onHide)
 			{
-				$script[] = "\tjQuery('" . $selector . "').on('hide.bs.tooltip', " . $onHide . ");";
+				$script[] = "\tjQuery('" . $selector . "').on('hideme.bs.tooltip', " . $onHide . ");";
 			}
 
 			if ($onHidden)
@@ -599,6 +599,13 @@ abstract class JHtmlRbootstrap
 	 *                             - toggle  boolean   Toggles the collapsible element on invocation
 	 *                             - active  string    Sets the active slide during load
 	 *
+	 *                             - onShow    function  This event fires immediately when the show instance method is called.
+	 *                             - onShown   function  This event is fired when a collapse element has been made visible to the user
+	 *                                                   (will wait for css transitions to complete).
+	 *                             - onHide    function  This event is fired immediately when the hide method has been called.
+	 *                             - onHidden  function  This event is fired when a collapse element has been hidden from the user
+	 *                                                   (will wait for css transitions to complete).
+	 *
 	 * @return  string  HTML for the accordian
 	 */
 	public static function startAccordion($selector = 'myAccordian', $params = array())
@@ -611,18 +618,48 @@ abstract class JHtmlRbootstrap
 			static::framework();
 
 			// Setup options object
-			$opt['parent'] = (isset($params['parent']) && ($params['parent'])) ? (boolean) $params['parent'] : false;
-			$opt['toggle'] = (isset($params['toggle']) && ($params['toggle'])) ? (boolean) $params['toggle'] : true;
-			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
+			$opt['parent'] = isset($params['parent']) && $params['parent'] ? ($params['parent'] == true ? '#' . $selector : $params['parent']) : false;
+			$opt['toggle'] = isset($params['toggle']) && $params['toggle']
+				? (boolean) $params['toggle'] : ($opt['parent'] === false
+				|| isset($params['active']) ? false : true);
+			$onShow = isset($params['onShow']) ? (string) $params['onShow'] : null;
+			$onShown = isset($params['onShown']) ? (string) $params['onShown'] : null;
+			$onHide = isset($params['onHide']) ? (string) $params['onHide'] : null;
+			$onHidden = isset($params['onHidden']) ? (string) $params['onHidden'] : null;
 
 			$options = RHtml::getJSObject($opt);
 
+			$opt['active'] = (isset($params['active']) && ($params['active'])) ? (string) $params['active'] : '';
+
+			// Build the script.
+			$script = array();
+			$script[] = "jQuery(document).ready(function($){";
+			$script[] = "\t$('#" . $selector . "').collapse(" . $options . ")";
+
+			if ($onShow)
+			{
+				$script[] = "\t.on('show', " . $onShow . ")";
+			}
+
+			if ($onShown)
+			{
+				$script[] = "\t.on('shown', " . $onShown . ")";
+			}
+
+			if ($onHide)
+			{
+				$script[] = "\t.on('hideme', " . $onHide . ")";
+			}
+
+			if ($onHidden)
+			{
+				$script[] = "\t.on('hidden', " . $onHidden . ")";
+			}
+
+			$script[] = "});";
+
 			// Attach accordion to document
-			JFactory::getDocument()->addScriptDeclaration(
-				"(function($){
-					$('#$selector').collapse($options);
-				})(jQuery);"
-			);
+			JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
 
 			// Set static array
 			static::$loaded[__METHOD__][$sig] = true;
@@ -655,11 +692,13 @@ abstract class JHtmlRbootstrap
 	public static function addSlide($selector, $text, $id, $class = '')
 	{
 		$in = (static::$loaded['JHtmlRbootstrap::startAccordion']['active'] == $id) ? ' in' : '';
+		$parent = static::$loaded['JHtmlRbootstrap::startAccordion'][$selector]['parent'] ?
+			' data-parent="' . static::$loaded['JHtmlRbootstrap::startAccordion'][$selector]['parent'] . '"' : '';
 		$class = (!empty($class)) ? ' ' . $class : '';
 
 		$html = '<div class="panel panel-default accordion-group' . $class . '">'
 			. '<div class="panel-heading accordion-heading">'
-			. '<strong><a href="#' . $id . '" data-parent="#' . $selector . '" data-toggle="collapse" class="accordion-toggle">'
+			. '<strong><a href="#' . $id . '" data-parent="#' . $selector . '" data-toggle="collapse" ' . $parent . ' class="accordion-toggle">'
 			. $text
 			. '</a></strong>'
 			. '</div>'

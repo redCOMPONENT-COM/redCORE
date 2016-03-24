@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -109,16 +109,19 @@ abstract class RApiBase implements RApiInterface
 		if ($options instanceof JRegistry)
 		{
 			$this->options = $options;
+
+			return $this;
 		}
+
+		$data = array();
+
 		// Received array
-		elseif (is_array($options))
+		if (is_array($options))
 		{
-			$this->options = new JRegistry($options);
+			$data = $options;
 		}
-		else
-		{
-			$this->options = new JRegistry;
-		}
+
+		$this->options = new JRegistry($data);
 
 		return $this;
 	}
@@ -139,10 +142,8 @@ abstract class RApiBase implements RApiInterface
 		{
 			return self::$statusTexts[$errorCode] . ': ' . implode(". \n", $errors);
 		}
-		else
-		{
-			return self::$statusTexts[$errorCode];
-		}
+
+		return self::$statusTexts[$errorCode];
 	}
 
 	/**
@@ -240,31 +241,6 @@ abstract class RApiBase implements RApiInterface
 	}
 
 	/**
-	 * Method to render the api call.
-	 *
-	 * @return  string  Api call output
-	 *
-	 * @since   1.2
-	 */
-	public function render()
-	{
-		return '';
-	}
-
-	/**
-	 * Execute the Api operation.
-	 *
-	 * @return  mixed  RApi object with information on success, boolean false on failure.
-	 *
-	 * @since   1.2
-	 * @throws  RuntimeException
-	 */
-	public function execute()
-	{
-		return null;
-	}
-
-	/**
 	 * Render the list of debug messages
 	 *
 	 * @return  string  Output text/HTML code
@@ -288,5 +264,30 @@ abstract class RApiBase implements RApiInterface
 	public function addDebugMessage($message)
 	{
 		$this->debugMessages[] = $message;
+	}
+
+	/**
+	 * Execute the Api operation.
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.2
+	 * @throws  RuntimeException
+	 */
+	public function execute()
+	{
+		return null;
+	}
+
+	/**
+	 * Method to render the api call.
+	 *
+	 * @return  string  Api call output
+	 *
+	 * @since   1.2
+	 */
+	public function render()
+	{
+		return '';
 	}
 }

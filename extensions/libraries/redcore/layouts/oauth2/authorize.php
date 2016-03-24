@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  *
  */
@@ -26,7 +26,7 @@ $column = 0;
 	<link type="text/css" href="<?php echo JUri::root(true) . '/media/redcore/css/component.bs3.min.css' ?>" rel="stylesheet" />
 	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/js/bootstrap.min.js' ?>" />
 </head>
-<body>
+<body class="redcore">
 <form action="<?php echo $formAction; ?>" method="post" name="<?php echo $formName; ?>" id="<?php echo $formId; ?>" class="<?php echo $formAlign; ?>">
 	<h1><?php echo JText::sprintf('LIB_REDCORE_API_OAUTH2_SERVER_AUTHORIZE_CLIENT_HEADER', JFactory::getConfig()->get('sitename', 'API')); ?></h1>
 

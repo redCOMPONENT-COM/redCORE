@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Translation
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -214,6 +214,7 @@ final class RTranslationTable
 
 		// Check if that table is already installed
 		$columns = self::getTranslationsTableColumns($contentElement->table);
+		$contentElement->allFallbackColumns = array();
 		$fields = array();
 		$primaryKeys = array();
 		$fieldsXml = $contentElement->getTranslateFields();
@@ -242,11 +243,17 @@ final class RTranslationTable
 				continue;
 			}
 
-			$fields[(string) $field['name']] = $db->qn((string) $field['name']);
+			$filedName = (string) $field['name'];
+			$fields[$filedName] = $db->qn($filedName);
+
+			if (isset($field['alwaysFallback']) && (string) $field['alwaysFallback'] == 'true')
+			{
+				$contentElement->allFallbackColumns[] = $filedName;
+			}
 
 			if ((string) $field['type'] == 'referenceid')
 			{
-				$fieldName = (string) $field['name'];
+				$fieldName = $filedName;
 
 				$primaryKeys[$fieldName] = $db->qn($fieldName);
 			}

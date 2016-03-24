@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('JPATH_BASE') or die;
 
@@ -205,6 +205,78 @@ class RApiHalHal extends RApi
 		{
 			$this->authorizationCheck = 'joomla';
 		}
+
+		// Setting default option for webservices translation fallback
+		RDatabaseSqlparserSqltranslation::setTranslationFallback(RBootstrap::getConfig('enable_translation_fallback_webservices', '1') == '1');
+	}
+
+	/**
+	 * Set options received from Headers of the request
+	 *
+	 * @return  RApi
+	 *
+	 * @since   1.7
+	 */
+	public function setOptionsFromHeader()
+	{
+		$app = JFactory::getApplication();
+		parent::setOptionsFromHeader();
+		$headers = self::getHeaderVariablesFromGlobals();
+
+		if (isset($headers['X_WEBSERVICE_TRANSLATION_FALLBACK']))
+		{
+			$fallbackEnabled = $headers['X_WEBSERVICE_TRANSLATION_FALLBACK'] == 'true' ? '1' : '0';
+
+			// This will force configuration of the redCORE to user defined option
+			RBootstrap::$config->set('enable_translation_fallback_webservices', $fallbackEnabled);
+		}
+
+		if (isset($headers['X_WEBSERVICE_STATEFUL']))
+		{
+			$useState = (int) $headers['X_WEBSERVICE_STATEFUL'] == 1 ? 1 : 0;
+			$this->options->set('webservice_stateful', $useState);
+			RBootstrap::$config->set('webservice_stateful', $useState);
+		}
+
+		if (isset($headers['ACCEPT']))
+		{
+			// We are only using header options if the URI does not contain format parameter as it have higher priority
+			if ($app->input->get('format', '') == '')
+			{
+				$outputFormats = explode(',', $headers['ACCEPT']);
+
+				// We go through all proposed Content Types. First Content Type that is accepted by API is used
+				foreach ($outputFormats as $outputFormat)
+				{
+					$outputFormat = strtolower($outputFormat);
+					$format = '';
+
+					switch ($outputFormat)
+					{
+						case 'application/hal+json':
+							$format = 'json';
+							break;
+						case 'application/hal+xml':
+							$format = 'xml';
+							break;
+						case 'application/hal+doc':
+							$format = 'doc';
+							break;
+					}
+
+					if ($format)
+					{
+						// This will force configuration of the redCORE to user defined option
+						RBootstrap::$config->set('webservices_default_format', $format);
+						$this->options->set('format', $format);
+
+						break;
+					}
+				}
+			}
+		}
+
+		return $this;
 	}
 
 	/**
@@ -338,6 +410,9 @@ class RApiHalHal extends RApi
 		// Set initial status code to OK
 		$this->setStatusCode(200);
 
+		// Prepare the application state
+		$this->cleanCache();
+
 		// We do not want some unwanted text to appear before output
 		ob_start();
 
@@ -436,6 +511,39 @@ class RApiHalHal extends RApi
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Method to clear the cache and any session state
+	 * related to API requests
+	 *
+	 * @param   string   $group      The cache group
+	 * @param   integer  $client_id  The ID of the client
+	 *
+	 * @throws Exception
+	 * @return void
+	 */
+	private function cleanCache($group = null, $client_id = 0)
+	{
+		if ($this->options->get('webservice_stateful', 0) == 1)
+		{
+			return;
+		}
+
+		$option = $this->options->get('optionName', '');
+		$option = strpos($option, 'com_') === false ? 'com_' . $option : $option;
+		$conf = JFactory::getConfig();
+
+		$options = array(
+			'defaultgroup' => ($group) ? $group : $option,
+			'cachebase' => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache'));
+
+		$cache = JCache::getInstance('callback', $options);
+		$cache->clean();
+
+		$session = JFactory::getSession();
+		$registry = $session->get('registry');
+		$registry->set($option, null);
 	}
 
 	/**
@@ -568,11 +676,18 @@ class RApiHalHal extends RApi
 
 		if ($displayTarget == 'list')
 		{
-			if (method_exists($model, 'getPagination'))
+			$functionName       = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
+			$paginationFunction = RApiHalHelper::attributeToString($currentConfiguration, 'paginationFunction', 'getPagination');
+			$totalFunction      = RApiHalHelper::attributeToString($currentConfiguration, 'totalFunction', 'getTotal');
+
+			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
+
+			if (!empty($paginationFunction) && method_exists($model, $paginationFunction))
 			{
-				if (method_exists($model, 'getTotal'))
+				// Get total count to check if we have reached the limit
+				if (!empty($totalFunction) && method_exists($model, $totalFunction))
 				{
-					$totalItems = $model->getTotal();
+					$totalItems = $model->{$totalFunction}();
 
 					if ($model->getState('limitstart', 0) >= $totalItems)
 					{
@@ -583,7 +698,7 @@ class RApiHalHal extends RApi
 					}
 				}
 
-				$pagination = $model->getPagination();
+				$pagination = $model->{$paginationFunction}();
 				$paginationPages = $pagination->getPaginationPages();
 
 				$this->setData(
@@ -599,10 +714,6 @@ class RApiHalHal extends RApi
 				$this->setData('pagination.page', max($pagination->pagesCurrent, 1));
 				$this->setData('pagination.last', ((max($pagination->pagesTotal, 1) - 1) * $pagination->limit));
 			}
-
-			$functionName = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItems');
-
-			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
 
 			$this->triggerFunction('setForRenderList', $items, $currentConfiguration);
 

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Database
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -18,6 +18,13 @@ defined('JPATH_REDCORE') or die;
  */
 class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 {
+	/**
+	 * The options.
+	 *
+	 * @var  array
+	 */
+	private static $options = array();
+
 	/**
 	 * Checks if tables inside query have translatable tables and fields and fetch appropriate
 	 * value from translations table
@@ -80,6 +87,18 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						foreach ($tableColumns as $tableColumn)
 						{
 							$column = array();
+							$fallbackValue = $foundTable['alias']['originalName'] . '.' . $tableColumn;
+
+							// Check to see if fallback option is turned on, if it is not then we set empty string as value
+							if (!self::getOption('translationFallback', true))
+							{
+								// Additionally we check for columns that must have a fallback (ex. state, publish, etc.)
+								if (empty($translationTables[$foundTable['originalTableName']]->fallbackColumns)
+									|| !in_array($tableColumn, $translationTables[$foundTable['originalTableName']]->fallbackColumns))
+								{
+									$fallbackValue = $db->q('');
+								}
+							}
 
 							// If column is primary key we do not need to translate it
 							if (in_array($tableColumn, $translationTables[$foundTable['originalTableName']]->primaryKeys))
@@ -90,10 +109,8 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							{
 								$column['base_expr'] = ''
 										. 'COALESCE('
-										. $foundTable['alias']['name']
-										. '.' . $tableColumn
-										. ',' . $foundTable['alias']['originalName']
-										. '.' . $tableColumn
+										. $foundTable['alias']['name'] . '.' . $tableColumn
+										. ',' . $fallbackValue
 										. ')';
 							}
 
@@ -158,16 +175,24 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			}
 		}
 
+		// If we have a SELECT in the query then we check the reset of the params
+		$validSelect = (!empty($sql) && stristr(mb_strtolower($sql), 'select'));
+
+		// If the language is the default, there is no reason to translate
+		$isDefaultLanguage = (RTranslationHelper::getSiteLanguage() == $selectedLanguage);
+
+		// If this is the admin, but no an API request we shouldn't translate
+		$isAdmin = RTranslationHelper::isAdmin();
+
 		/**
 		 * Basic check for translations, translation will not be inserted if:
 		 * If we do not have SELECT anywhere in query
 		 * If current language is site default language
 		 * If we are in administration
 		 */
-		if (empty($sql)
-			|| JFactory::getApplication()->isAdmin()
-			|| !stristr(mb_strtolower($sql), 'select')
-			|| RTranslationHelper::getSiteLanguage() == $selectedLanguage)
+		if (!$validSelect
+			|| $isDefaultLanguage
+			|| $isAdmin)
 		{
 			if (empty($db->parseTablesBefore) && empty($db->parseTablesAfter))
 			{
@@ -972,5 +997,48 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		}
 
 		return false;
+	}
+
+	/**
+	 * Set a translation option value.
+	 *
+	 * @param   string  $key  The key
+	 * @param   mixed   $val  The default value
+	 *
+	 * @return  null
+	 */
+	public static function setOption($key, $val)
+	{
+		self::$options[$key] = $val;
+	}
+
+	/**
+	 * Get a translation option value.
+	 *
+	 * @param   string  $key      The key
+	 * @param   mixed   $default  The default value
+	 *
+	 * @return  mixed  The value or the default value
+	 */
+	public static function getOption($key, $default = null)
+	{
+		if (isset(self::$options[$key]))
+		{
+			return self::$options[$key];
+		}
+
+		return $default;
+	}
+
+	/**
+	 * Set a translation option fallback value.
+	 *
+	 * @param   bool  $enable  Enable or disable translation fallback feature
+	 *
+	 * @return  null
+	 */
+	public static function setTranslationFallback($enable = true)
+	{
+		self::setOption('translationFallback', $enable);
 	}
 }

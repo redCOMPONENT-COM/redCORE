@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -171,7 +171,7 @@ endif;
 				endif; ?>
 			</small>
 		</div>
-		<div class="col-xs4 col-md-4 well" style="border: 2px solid #fff;">
+		<div class="col-xs-4 col-md-4 well" style="border: 2px solid #fff;">
 			<h5 style="border-bottom: 1px solid #ddd"><strong><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_RESPONSE'); ?></strong></h5>
 			<small>
 				<?php if (!empty($resources)) :

@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -94,8 +94,10 @@ class RApiSoapDocumentDocument extends JDocument
 	{
 		// Get the Soap string from the buffer.
 		$content = (string) $this->getBuffer();
-		$runtime = microtime(true) - $this->soap->startTime;
 		$app = JFactory::getApplication();
+		$runtime = microtime(true) - $this->soap->startTime;
+		$language = explode('-', $app->input->get('lang', RTranslationHelper::getSiteLanguage()));
+		$language = $language[0];
 
 		$app->setHeader('Status', $this->soap->statusCode . ' ' . $this->soap->statusText, true);
 		$app->setHeader('Server', '', true);
@@ -107,6 +109,7 @@ class RApiSoapDocumentDocument extends JDocument
 		$app->setHeader('Cache-Control', 'private', false);
 		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
 		$app->setHeader('Content-length', strlen($content), true);
+		$app->setHeader('Content-Language', $language, true);
 
 		$app->sendHeaders();
 

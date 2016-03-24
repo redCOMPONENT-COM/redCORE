@@ -4,7 +4,7 @@
  * Including this file into your application and executing RBootstrap::bootstrap() will make redCORE available to use.
  *
  * @package    Redcore
- * @copyright  Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright  Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license    GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -113,6 +113,12 @@ class RBootstrap
 			// Sets bootstrapped variable, to avoid bootstrapping redCORE twice
 			define('REDCORE_LIBRARY_LOADED', 1);
 
+			// We are still in Joomla 2.5 or another version so we use alias to prevent errors
+			if (!class_exists('Joomla\Registry\Registry'))
+			{
+				class_alias('JRegistry', 'Joomla\Registry\Registry');
+			}
+
 			// Use our own base field
 			if (!class_exists('JFormField', false))
 			{
@@ -161,7 +167,7 @@ class RBootstrap
 			JFactory::$database = null;
 			JFactory::$database = RFactory::getDbo();
 
-			if (self::getConfig('enable_translations', 0) == 1 && !JFactory::getApplication()->isAdmin())
+			if (self::getConfig('enable_translations', 0) == 1 && !RTranslationHelper::isAdmin())
 			{
 				// This is our object now
 				$db = JFactory::getDbo();
@@ -169,8 +175,17 @@ class RBootstrap
 				// Enable translations
 				$db->translate = self::getConfig('enable_translations', 0) == 1;
 
+				// Setting default option for translation fallback
+				RDatabaseSqlparserSqltranslation::setTranslationFallback(self::getConfig('enable_translation_fallback', '1') == '1');
+
 				// Reset plugin translations params if needed
 				RTranslationHelper::resetPluginTranslation();
+			}
+			else
+			{
+				// We still need to set translate property to avoid notices as we check it from other functions
+				$db = JFactory::getDbo();
+				$db->translate = 0;
 			}
 		}
 	}

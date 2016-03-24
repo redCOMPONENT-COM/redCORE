@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Registry\Registry;
 
 /**
  * Utility class for form related behaviors
@@ -19,23 +21,18 @@ defined('JPATH_REDCORE') or die;
 abstract class JHtmlRformbehavior extends JHtmlFormbehavior
 {
 	/**
-	 * Array containing information for loaded files
-	 *
-	 * @var  array
-	 */
-	protected static $loaded = array();
-
-	/**
 	 * Method to load the AJAX Chosen library
 	 *
 	 * If debugging mode is on an uncompressed version of AJAX Chosen is included for easier debugging.
 	 *
-	 * @param   JRegistry  $options  Options in a JRegistry object
-	 * @param   mixed      $debug    Is debugging mode on? [optional]
+	 * @param   Registry  $options  Options in a Registry object
+	 * @param   mixed     $debug    Is debugging mode on? [optional]
 	 *
 	 * @return  void
+	 *
+	 * @since   3.0
 	 */
-	public static function ajaxchosen(JRegistry $options, $debug = null)
+	public static function ajaxchosen(Registry $options, $debug = null)
 	{
 		// Retrieve options/defaults
 		$selector       = $options->get('selector', '.tagfield');
@@ -46,49 +43,32 @@ abstract class JHtmlRformbehavior extends JHtmlFormbehavior
 		$afterTypeDelay = $options->get('afterTypeDelay', '500');
 		$minTermLength  = $options->get('minTermLength', '3');
 
-		JText::script('JGLOBAL_KEEP_TYPING');
-		JText::script('JGLOBAL_LOOKING_FOR');
-
 		// Ajax URL is mandatory
 		if (!empty($url))
 		{
-			if (isset(self::$loaded[__METHOD__][$selector]))
+			if (isset(static::$loaded[__METHOD__][$selector]))
 			{
 				return;
 			}
 
-			// Include jQuery
-			JHtml::_('rjquery.framework');
-
 			// Requires chosen to work
-			JHtml::_('rjquery.chosen', $selector, $debug);
+			static::chosen($selector, $debug);
 
-			JHtml::_('script', 'jui/ajax-chosen.min.js', false, true, false, false, $debug);
-			JFactory::getDocument()->addScriptDeclaration("
-				(function($){
-					$(document).ready(function () {
-						$('" . $selector . "').ajaxChosen({
-							type: '" . $type . "',
-							url: '" . $url . "',
-							dataType: '" . $dataType . "',
-							jsonTermKey: '" . $jsonTermKey . "',
-							afterTypeDelay: '" . $afterTypeDelay . "',
-							minTermLength: '" . $minTermLength . "'
-						}, function (data) {
-							var results = [];
-
-							$.each(data, function (i, val) {
-								results.push({ value: val.value, text: val.text });
-							});
-
-							return results;
-						});
-					});
-				})(jQuery);
-				"
+			$displayData = array(
+				'url'            => $url,
+				'debug'          => $debug,
+				'options'        => $options,
+				'selector'       => $selector,
+				'type'           => $type,
+				'dataType'       => $dataType,
+				'jsonTermKey'    => $jsonTermKey,
+				'afterTypeDelay' => $afterTypeDelay,
+				'minTermLength'  => $minTermLength
 			);
 
-			self::$loaded[__METHOD__][$selector] = true;
+			JLayoutHelper::render('joomla.html.formbehavior.ajaxchosen', $displayData);
+
+			static::$loaded[__METHOD__][$selector] = true;
 		}
 
 		return;

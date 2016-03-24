@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="2.5" method="upgrade">
     <name>COM_REDCORE</name>
-    <creationDate>November 2015</creationDate>
+    <creationDate>February 2016</creationDate>
     <author>redCOMPONENT</author>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.7.1</version>
+    <version>1.8.2</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.7.1" defaultFramework="bootstrap3" />
+    <redcore version="1.8.2" defaultFramework="bootstrap3" />
 
     <install folder="components/com_redcore/admin">
         <sql>
@@ -41,6 +41,7 @@
         <files folder="components/com_redcore/admin">
             <folder>controllers</folder>
             <folder>helpers</folder>
+            <folder>language</folder>
             <folder>layouts</folder>
             <folder>models</folder>
             <folder>sql</folder>

@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Tables
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -99,11 +99,9 @@ class RedcoreTableWebservice extends RTable
 		$this->name = trim($this->name);
 		$this->version = trim($this->version);
 
-		if (empty($this->version))
-		{
-			$this->version = '1.0.0';
-		}
-		else
+		$version = '1.0.0';
+
+		if (!empty($this->version))
 		{
 			$matches = array();
 
@@ -125,8 +123,10 @@ class RedcoreTableWebservice extends RTable
 				return false;
 			}
 
-			$this->version = $matches['version'];
+			$version = $matches['version'];
 		}
+
+		$this->version = $version;
 
 		if (empty($this->name))
 		{

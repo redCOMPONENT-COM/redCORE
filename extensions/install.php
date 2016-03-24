@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Model
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('_JEXEC') or die;
@@ -372,7 +372,29 @@ class Com_RedcoreInstallerScript
 
 				if ($updatePath != '')
 				{
-					$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
+					switch ((string) $manifest['type'])
+					{
+						case 'plugin':
+							$sourcePath = JPATH_PLUGINS . '/' . (string) $manifest['group'] . '/' . $this->extensionElement;
+							break;
+						case 'module':
+							if ((string) $manifest['client'] == 'administrator')
+							{
+								$sourcePath = JPATH_ADMINISTRATOR . '/modules/' . $this->extensionElement;
+							}
+							else
+							{
+								$sourcePath = JPATH_SITE . '/modules/' . $this->extensionElement;
+							}
+							break;
+						case 'library':
+							$sourcePath = JPATH_BASE . '/libraries/' . $this->extensionElement;
+							break;
+						case 'component':
+						default:
+							$sourcePath = JPATH_ADMINISTRATOR . '/components/' . $this->extensionElement;
+							break;
+					}
 
 					if (is_dir($sourcePath . '/' . $updatePath))
 					{

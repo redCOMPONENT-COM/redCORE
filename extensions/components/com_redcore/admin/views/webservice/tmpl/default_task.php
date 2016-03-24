@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('_JEXEC') or die;
@@ -17,7 +17,8 @@ $firstContentActive = true;
 			<input type="text" class="form-control" name="newTask" onblur="this.value = this.value.replace(/[^\w]/g,'')"
 			       placeholder="<?php echo JText::_('COM_REDCORE_WEBSERVICE_TASK_ADD_NEW_TASK_PLACEHOLDER'); ?>" />
 			<span class="input-group-btn">
-				<button type="button" class="btn btn-default btn-success fields-add-new-task">
+				<button type="button" class="btn btn-default btn-success fields-add-new-task"
+				        data-no-task-msg="<?php echo JText::_('COM_REDCORE_WEBSERVICE_TASK_ADD_NEW_TASK_ERROR', true, true);?>">
 					<i class="icon-plus"></i>
 					<?php echo JText::_('COM_REDCORE_WEBSERVICE_TASK_ADD_NEW_TASK'); ?>
 				</button>

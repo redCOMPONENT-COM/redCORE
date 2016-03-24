@@ -2,12 +2,12 @@
 <extension version="3.0" type="plugin" group="system" method="upgrade">
     <name>PLG_SYSTEM_REDCORE</name>
     <author>redCOMPONENT</author>
-    <creationDate>April 2015</creationDate>
-    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
+    <creationDate>February 2016</creationDate>
+    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>email@redcomponent.com</authorEmail>
     <authorUrl>www.redcomponent.com</authorUrl>
-    <version>1.7.0</version>
+    <version>1.8.0</version>
     <description>PLG_SYSTEM_REDCORE_XML_DESCRIPTION</description>
 
     <files>
@@ -80,6 +80,26 @@
                     <option value="triggers">PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_TRIGGERS</option>
                     <option value="none">PLG_SYSTEM_REDCORE_TRANSLATIONS_CONSTRAINT_TYPE_NONE</option>
                 </field>
+                <field
+                        name="enable_translation_fallback"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_BUTTON"
+                        description="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_BUTTON_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="enable_translation_fallback_webservices"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_WEBSERVICES_BUTTON"
+                        description="PLG_SYSTEM_REDCORE_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_WEBSERVICES_BUTTON_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
                 <!--<field
                         name="show_edit_button_on_all_forms"
                         type="list"
@@ -98,6 +118,16 @@
                         default="0"
                         label="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_WEBSERVICES"
                         description="PLG_SYSTEM_REDCORE_WEBSERVICES_ENABLE_WEBSERVICES_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="webservice_stateful"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_WEBSERVICES_STATEFUL_WEBSERVICE"
+                        description="PLG_SYSTEM_REDCORE_WEBSERVICES_STATEFUL_WEBSERVICE_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
@@ -254,6 +284,16 @@
                     <option value="0">JNO</option>
                 </field>
                 <field
+                        name="oauth2_redirect_with_token"
+                        class="btn-group"
+                        type="radio"
+                        default="0"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_REDIRECT_WITH_TOKEN"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_REDIRECT_WITH_TOKEN_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
                         name="oauth2_allow_credentials_in_request_body"
                         class="btn-group"
                         type="radio"
@@ -280,6 +320,16 @@
                         default="0"
                         label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN"
                         description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN_DESC">
+                    <option value="1">JYES</option>
+                    <option value="0">JNO</option>
+                </field>
+                <field
+                        name="oauth2_unset_refresh_token_after_use"
+                        class="btn-group"
+                        type="radio"
+                        default="1"
+                        label="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_UNSET_REFRESH_TOKEN_AFTER_USE"
+                        description="PLG_SYSTEM_REDCORE_OAUTH2_SERVER_UNSET_REFRESH_TOKEN_AFTER_USE_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>

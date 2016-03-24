@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -24,6 +24,7 @@ $isPrimaryField = !empty($displayData['options']['form']['isPrimaryField']) ? $d
 $displayData['options']['form'] = !empty($displayData['options']['form']) ? $displayData['options']['form'] : array();
 
 $id = RFilesystemFile::getUniqueName($operation);
+$model = $view->getModel();
 ?>
 <div class="row row-stripped">
 	<div class="col-xs-2">
@@ -90,7 +91,7 @@ $id = RFilesystemFile::getUniqueName($operation);
 				</div>
 				<?php echo JHtml::_(
 					'select.genericlist',
-					RApiHalHelper::getTransformElements(),
+					$model->getTransformTypes($operation),
 					'transform',
 					' class="required form-control" ',
 					'value',

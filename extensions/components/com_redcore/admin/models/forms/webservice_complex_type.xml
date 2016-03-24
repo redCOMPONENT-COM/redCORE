@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="operation">
+        <fieldset addfieldpath="/libraries/redcore/form/fields">
+            <fields name="fields">
+                <field
+                        name="field"
+                        multiple="true"
+                        type="checkbox"
+                        />
+                <field
+                        name="description"
+                        labelclass="col-sm-2 control-label"
+                        type="text"
+                        label="COM_REDCORE_WEBSERVICE_DESCRIPTION_LABEL"
+                        description="COM_REDCORE_WEBSERVICE_DESCRIPTION_FIELDS_DESCRIPTION"
+                        class="form-control"
+                        />
+            </fields>
+        </fieldset>
+    </fields>
+</form>

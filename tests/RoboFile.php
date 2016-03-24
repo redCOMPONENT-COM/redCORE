@@ -12,17 +12,12 @@ require_once 'vendor/autoload.php';
 /**
  * Class RoboFile
  *
- * @since  1.5
+ * @since  1.6.14
  */
 class RoboFile extends \Robo\Tasks
 {
 	// Load tasks from composer, see composer.json
 	use \redcomponent\robo\loadTasks;
-
-	/**
-	 * Current RoboFile version
-	 */
-	private $version = '1.4';
 
 	/**
 	 * Current root folder
@@ -95,17 +90,31 @@ class RoboFile extends \Robo\Tasks
 			$this->taskDeleteDir('joomla-cms3')->run();
 		}
 
-		$version = 'staging';
+		$this->cloneJoomla();
+	}
 
-		/*
-		 * When joomla Staging branch has a bug you can uncomment the following line as a tmp fix for the tests layer.
-		 * Use as $version value the latest tagged stable version at: https://github.com/joomla/joomla-cms/releases
-		 */
-		$version = '3.4.5';
+	/**
+	 * Downloads and prepares a Joomla CMS site for testing
+	 *
+	 * @return mixed
+	 */
+	public function prepareSiteForUnitTests()
+	{
+		// Make sure we have joomla
+		if (!is_dir('joomla-cms3'))
+		{
+			$this->cloneJoomla();
+		}
 
-		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git joomla-cms3");
+		if (!is_dir('joomla-cms3/libraries/vendor/phpunit'))
+		{
+			$this->getComposer();
+			$this->taskComposerInstall('../composer.phar')->dir('joomla-cms3')->run();
+		}
 
-		$this->say("Joomla CMS ($version) site created at joomla-cms3/");
+		// Copy extension. No need to install, as we don't use mysql db for unit tests
+		$joomlaPath = __DIR__ . '/joomla-cms3';
+		$this->_exec("gulp copy --wwwDir=$joomlaPath --gulpfile ../build/gulpfile.js");
 	}
 
 	/**
@@ -115,37 +124,39 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return mixed
 	 */
-	public function runTest($options = [
-		'test'         => null,
-		'suite'         => 'acceptance',
-		'selenium_path' => null
+	public function runTest($opts = [
+		'test|t'	    => null,
+		'suite|s'	    => 'acceptance'
 	])
 	{
-		if (!$options['selenium_path'])
-		{
-			$this->getSelenium();
-		}
-
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
 
-		$this->runSelenium($options['selenium_path']);
 
-		$this->taskWaitForSeleniumStandaloneServer()
-		     ->run()
-		     ->stopOnFail();
+		if (isset($opts['suite']) && 'api' === $opts['suite'])
+		{
+			// Do not launch selenium when running API tests
+		}
+		else
+		{
+			$this->runSelenium();
+
+			$this->taskWaitForSeleniumStandaloneServer()
+				->run()
+				->stopOnFail();
+		}
 
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
-		if (!$options['test'])
+		if (!$opts['test'])
 		{
 			$this->say('Available tests in the system:');
 
 			$iterator = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator(
-						$this->testsFolder . $options['suite'],
+						$this->testsFolder . $opts['suite'],
 					RecursiveDirectoryIterator::SKIP_DOTS),
 				RecursiveIteratorIterator::SELF_FIRST);
 
@@ -168,20 +179,51 @@ class RoboFile extends \Robo\Tasks
 			}
 
 			$this->say('');
-			$testNumber     = $this->ask('Type the number of the test  in the list that you want to run...');
-			$options['test'] = $tests[$testNumber];
+			$testNumber	= $this->ask('Type the number of the test  in the list that you want to run...');
+			$opts['test'] = $tests[$testNumber];
 		}
 
-		$pathToTestFile = $this->testsFolder . $options['suite'] . '/' . $options['test'];
+		$pathToTestFile = './' . $opts['suite'] . '/' . $opts['test'];
+
+		// loading the class to display the methods in the class
+		require './' . $opts['suite'] . '/' . $opts['test'];
+
+		$classes = Nette\Reflection\AnnotationsParser::parsePhp(file_get_contents($pathToTestFile));
+		$className = array_keys($classes)[0];
+
+		// If test is Cest, give the option to execute individual methods
+		if (strripos($className, 'cest'))
+		{
+			$testFile = new Nette\Reflection\ClassType($className);
+			$testMethods = $testFile->getMethods(ReflectionMethod::IS_PUBLIC);
+
+			foreach ($testMethods as $key => $method)
+			{
+				$this->say('[' . $key . '] ' . $method->name);
+			}
+
+			$this->say('');
+			$methodNumber = $this->askDefault('Choose the method in the test to run (hit ENTER for All)', 'All');
+
+			if($methodNumber != 'All')
+			{
+				$method = $testMethods[$methodNumber]->name;
+				$pathToTestFile = $pathToTestFile . ':' . $method;
+			}
+		}
 
 		$this->taskCodecept()
-		     ->test($pathToTestFile)
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->run()
-		     ->stopOnFail();
+			->test($pathToTestFile)
+			->arg('--steps')
+			->arg('--debug')
+			->arg('--fail-fast')
+			->run()
+			->stopOnFail();
 
-		$this->killSelenium();
+		if (!'api' == $opts['suite'])
+		{
+			$this->killSelenium();
+		}
 	}
 
 	/**
@@ -192,8 +234,6 @@ class RoboFile extends \Robo\Tasks
 	public function runTestPreparation()
 	{
 		$this->prepareSiteForSystemTests();
-
-		$this->getSelenium();
 
 		$this->getComposer();
 
@@ -221,26 +261,19 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Function to Run tests in a Group
 	 *
-	 * @param   array  $options  Array of options
-	 *
 	 * @return void
 	 */
-	public function runTests($options = ['selenium_path' => null])
+	public function runTests()
 	{
 		$this->prepareSiteForSystemTests();
 
-		if (!$options['selenium_path'])
-		{
-			$this->getSelenium();
-		}
-
-		//$this->prepareReleasePackages();
+		$this->prepareReleasePackages();
 
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
 
-		$this->runSelenium($options['selenium_path']);
+		$this->runSelenium();
 
 		$this->taskWaitForSeleniumStandaloneServer()
 			->run()
@@ -285,34 +318,15 @@ class RoboFile extends \Robo\Tasks
 	}
 
 	/**
-	 * This function ensures that you have the latest version of RoboFile in your project.
-	 * All redCOMPONENT RoboFiles are clones. All special needs for a project are stored in a robofile.yml file
+	 * Function to run unit tests
 	 *
 	 * @return void
 	 */
-	public function checkRoboFileVersion()
+	public function runUnitTests()
 	{
-		$this->taskCheckRoboFileVersion($this->version)
-		     ->run()
-		     ->stopOnFail();
-	}
-
-	/**
-	 * Downloads Selenium Standalone Server
-	 *
-	 * @return void
-	 */
-	private function getSelenium()
-	{
-		if (!file_exists('selenium-server-standalone.jar'))
-		{
-			$this->say('Downloading Selenium Server, this may take a while.');
-			$this->_exec('curl'
-			             . ' -sS'
-			             . ' --retry 3 --retry-delay 5'
-			             . ' http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar'
-			             . ' > selenium-server-standalone.jar');
-		}
+		$this->prepareSiteForUnitTests();
+		$this->_exec("joomla-cms3/libraries/vendor/phpunit/phpunit/phpunit")
+			->stopOnFail();
 	}
 
 	/**
@@ -320,7 +334,7 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return void
 	 */
-	private function killSelenium()
+	public function killSelenium()
 	{
 		$this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
 	}
@@ -340,21 +354,13 @@ class RoboFile extends \Robo\Tasks
 	}
 
 	/**
-	 * Runs Selenium Standalone Server
-	 *
-	 * @param   string  $path  Optional path to selenium standalone server
+	 * Runs Selenium Standalone Server.
 	 *
 	 * @return void
 	 */
-	private function runSelenium($path = null)
+	public function runSelenium()
 	{
-		if (!$path)
-		{
-			$path = 'selenium-server-standalone.jar';
-		}
-
-		// Running Selenium server
-		$this->_exec("java -jar $path >> selenium.log 2>&1 &");
+		$this->_exec("vendor/bin/selenium-server-standalone >> selenium.log 2>&1 &");
 	}
 
 	/**
@@ -395,5 +401,25 @@ class RoboFile extends \Robo\Tasks
 		$this->taskExec('php checkers/phpcs.php')
 				->printed(true)
 				->run();
+	}
+
+	/**
+	 * Clone joomla from official repo
+	 *
+	 * @return void
+	 */
+	private function cloneJoomla()
+	{
+		$version = 'staging';
+
+		/*
+		 * When joomla Staging branch has a bug you can uncomment the following line as a tmp fix for the tests layer.
+		 * Use as $version value the latest tagged stable version at: https://github.com/joomla/joomla-cms/releases
+		 */
+		$version = '3.4.8';
+
+		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git joomla-cms3");
+
+		$this->say("Joomla CMS ($version) site created at joomla-cms3/");
 	}
 }

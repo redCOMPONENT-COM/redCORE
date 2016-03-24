@@ -3,7 +3,7 @@
  * @package     Joomla.Plugin
  * @subpackage  System.Redcore
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -45,7 +45,7 @@ class PlgSystemRedcore extends JPlugin
 			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
 			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
 			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
-			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_disable_mootools', false);
+			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_mootools_disable', false);
 
 			if (!$this->isInstaller())
 			{
@@ -77,7 +77,7 @@ class PlgSystemRedcore extends JPlugin
 						error_reporting(0);
 						ini_set('display_errors', 0);
 						JError::setErrorHandling(E_ERROR, 'message');
-						JFactory::getApplication()->clearHeaders();
+						RApi::clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
 						$optionName = $input->get->getString('option', '');
 						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
@@ -88,7 +88,15 @@ class PlgSystemRedcore extends JPlugin
 						$method = strtoupper($input->getMethod());
 						$task = RApiHalHelper::getTask();
 						$data = RApi::getPostedData();
-						$dataGet = $input->get->getArray();
+
+						if (version_compare(JVERSION, '3') >= 0)
+						{
+							$dataGet = $input->get->getArray();
+						}
+						else
+						{
+							$dataGet = $input->get->getArray($_GET);
+						}
 
 						if (empty($webserviceClient))
 						{
@@ -109,6 +117,7 @@ class PlgSystemRedcore extends JPlugin
 							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
 							'id'                => $input->getString('id', ''),
 							'absoluteHrefs'     => $input->get->getBool('absoluteHrefs', true),
+							'webservice_stateful' => $this->params->get('webservice_stateful', 1)
 						);
 
 						// Create instance of Api and fill all required options

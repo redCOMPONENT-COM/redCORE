@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Base
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -113,7 +113,14 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 	 */
 	public function handleCallback($extensionName, $ownerName, $data, &$logData)
 	{
-		$post = JFactory::getApplication()->input->post->getArray();
+		if (version_compare(JVERSION, 3) >= 0)
+		{
+			$post = JFactory::getApplication()->input->post->getArray();
+		}
+		else
+		{
+			$post = JRequest::get('post');
+		}
 
 		$postData = array();
 
@@ -136,6 +143,9 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 			   check that txn_id has not been previously processed
 			   check that receiver_email is your Primary PayPal email
 			   check that payment_amount/payment_currency are correct */
+
+			// Remap order_id
+			$data['order_id'] = $data['invoice'];
 
 			$payment = $this->getPaymentByExtensionOrderData($extensionName, $data);
 
@@ -177,6 +187,9 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 			}
 
 			// We are clear to log successful payment log now
+			// Update logData with payment id
+			$logData['payment_id'] = $payment->id;
+
 			// Paypal have very similar structure of Status response so we can actually get them directly
 			$logData['status'] = RApiPaymentStatus::getStatus($post['payment_status']);
 
