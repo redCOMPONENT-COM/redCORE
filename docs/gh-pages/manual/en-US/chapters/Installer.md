@@ -83,6 +83,10 @@ ex:
     <requirements>
         <php>5.3.0</php>
         <mysql>5.5.0</mysql>
+        <extensions>
+            <extension>gd</extension>
+            <extension>cURL</extension>
+        </extensions>
     </requirements>
 ```
 
