@@ -141,6 +141,7 @@ final class RComponentHelper
 		$checked = array();
 		$redCoreManifest = self::getComponentManifestFile();
 
+		// Checking PHP version
 		$phpRequired = !empty($requirements->php) ? $requirements->php : $redCoreManifest->requirements->php;
 		$phpRequired = !empty($phpRequired) ? (string) $phpRequired : '5.3.0';
 
@@ -152,6 +153,7 @@ final class RComponentHelper
 			'status'    => version_compare($phpRequired, $phpVersion, '<=')
 		);
 
+		// Checking MySQL requirement
 		$mySqlRequired = !empty($requirements->mysql) ? (string) $requirements->mysql : '';
 
 		if (!empty($mySqlRequired))
@@ -172,6 +174,22 @@ final class RComponentHelper
 				'name'      => JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION'),
 				'current'   => $dbVersion,
 				'required'  => $mySqlRequired,
+				'status'    => $status
+			);
+		}
+
+		// Checking Joomla requirement
+		$joomlaRequired = !empty($requirements->joomla) ? (string) $requirements->joomla : '';
+
+		if (!empty($joomlaRequired))
+		{
+			$joomlaVersion = defined('JVERSION') ? JVERSION : '1.0.0';
+			$status = version_compare($joomlaRequired, $joomlaVersion, '<=');
+
+			$checked['applications'][] = array(
+				'name'      => JText::_('COM_REDCORE_CONFIG_JOOMLA_VERSION'),
+				'current'   => $joomlaVersion,
+				'required'  => $joomlaRequired,
 				'status'    => $status
 			);
 		}

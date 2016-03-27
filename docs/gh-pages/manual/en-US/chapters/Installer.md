@@ -72,3 +72,62 @@ This is a predefined task that deletes the menu item associated with the current
 The parameter corresponds to the client : `1` for the backend, `0` for the frontend.
 
 If no parameter is specified, it will delete both backend and frontend menu items.
+
+## Requirements check in Manifest
+
+You can specify minimum requirement checks that will be preformed before installing the extension.
+There are few predefined requirements check and there are PHP extensions check.
+ex:
+
+```
+    <requirements>
+        <php>5.3.0</php>
+        <mysql>5.5.0</mysql>
+    </requirements>
+```
+
+### PHP version check
+
+You can define minimum PHP version that your extension require or this extension will not be installable.
+ex:
+```
+    <requirements>
+        <php>5.3.0</php>
+    </requirements>
+```
+
+### MySQL version check
+
+You can define minimum MySQL version that your extension require or this extension will not be installable.
+ex:
+```
+    <requirements>
+        <mysql>5.5.0</mysql>
+    </requirements>
+```
+
+### Joomla version check
+
+You can define minimum Joomla version that your extension require or this extension will not be installable.
+ex:
+```
+    <requirements>
+        <joomla>3.4.0</joomla>
+    </requirements>
+```
+
+### PHP Extensions check
+
+You can define PHP extensions check that your extension require or this extension will not be installable.
+ex:
+```
+    <requirements>
+        <php>5.3.0</php>
+        <mysql>5.5.0</mysql>
+        <extensions>
+            <extension>gd</extension>
+            <extension>SimpleXML</extension>
+            <extension>cURL</extension>
+        </extensions>
+    </requirements>
+```
