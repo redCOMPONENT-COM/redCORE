@@ -115,6 +115,7 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 		$group = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
 		$thirdGroup = new RToolbarButtonGroup;
+		$group4 = new RToolbarButtonGroup;
 		$user = JFactory::getUser();
 
 		if ($user->authorise('core.admin', 'com_redcore'))
@@ -123,9 +124,6 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 			{
 				$new = RToolbarBuilder::createNewButton('webservice.add');
 				$group->addButton($new);
-
-				$clone = RToolbarBuilder::createCopyButton('webservices.copy');
-				$group->addButton($clone);
 			}
 
 			if ($canDo->get('core.edit'))
@@ -140,18 +138,25 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 					->addButton($unPublish);
 			}
 
+			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
+			{
+				$clone = RToolbarBuilder::createCopyButton('webservices.copy', 'btn-success');
+				$thirdGroup->addButton($clone);
+			}
+
 			if ($canDo->get('core.delete'))
 			{
 				$delete = RToolbarBuilder::createDeleteButton('webservices.delete');
 
-				$thirdGroup->addButton($delete);
+				$group4->addButton($delete);
 			}
 		}
 
 		$toolbar = new RToolbar;
 		$toolbar->addGroup($group)
 			->addGroup($secondGroup)
-			->addGroup($thirdGroup);
+			->addGroup($thirdGroup)
+			->addGroup($group4);
 
 		return $toolbar;
 	}
