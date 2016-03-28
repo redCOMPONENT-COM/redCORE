@@ -248,7 +248,16 @@ class RedcoreModelWebservice extends RModelAdmin
 			{
 				if (JFile::exists($oldPath))
 				{
+					// Xml file
 					JFile::delete($oldPath);
+
+					// Wsdl file
+					$oldPathWsdl = substr($oldPath, 0, strlen($oldPath) - 4) . '.wsdl';
+
+					if (JFile::exists($oldPathWsdl))
+					{
+						JFile::delete($oldPathWsdl);
+					}
 				}
 			}
 		}
