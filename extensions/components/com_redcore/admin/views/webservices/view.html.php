@@ -123,6 +123,9 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 			{
 				$new = RToolbarBuilder::createNewButton('webservice.add');
 				$group->addButton($new);
+
+				$clone = RToolbarBuilder::createCopyButton('webservices.copy');
+				$group->addButton($clone);
 			}
 
 			if ($canDo->get('core.edit'))

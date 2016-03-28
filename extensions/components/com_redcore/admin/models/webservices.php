@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+jimport('joomla.filesystem.folder');
+
 /**
  * Webservices Model
  *
@@ -348,5 +350,61 @@ class RedcoreModelWebservices extends RModelList
 		JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DELETED'), 'message');
 
 		return true;
+	}
+
+	/**
+	 * Install Webservice from site
+	 *
+	 * @param   array  $ids  Webservice Ids
+	 *
+	 * @return  boolean  Returns true if all webservices are copied successfully
+	 */
+	public function copy($ids)
+	{
+		/** @var RedcoreTableWebservice $table */
+		$table = RTable::getInstance('Webservice', 'RedcoreTable');
+
+		foreach ($ids as $id)
+		{
+			$table->reset();
+
+			if ($table->load($id))
+			{
+				$path = !empty($table->path) ? '/' . $table->path : '';
+				$i = 0;
+
+				while (true)
+				{
+					$i++;
+					$webservicePathOld = $table->client . '.' . $table->name . '.' . $table->version;
+					$webservicePathNew = $table->client . '.' . $table->name . '_' . $i . '.' . $table->version;
+
+					if (!file_exists(RApiHalHelper::getWebservicesPath() . $path . '/' . $webservicePathNew . '.xml'))
+					{
+						$xml = new SimpleXMLElement(file_get_contents(RApiHalHelper::getWebservicesPath() . $path . '/' . $webservicePathOld . '.xml'));
+						$xml->config->name = $table->name . '_' . $i;
+						$xml->name .= ' (' . JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_COPY') . ' ' . $i . ')';
+
+						if ($xml->saveXML(RApiHalHelper::getWebservicesPath() . $path . '/' . $webservicePathNew . '.xml'))
+						{
+							if ($this->installWebservice($table->client, $table->name . '_' . $i, $table->version, $table->path))
+							{
+								return true;
+							}
+							else
+							{
+								return false;
+							}
+						}
+						else
+						{
+							return false;
+						}
+
+						break;
+					}
+				}
+			}
+		}
 	}
 }
