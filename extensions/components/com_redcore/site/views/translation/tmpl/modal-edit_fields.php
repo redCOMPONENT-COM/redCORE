@@ -50,6 +50,14 @@ $this->setItem($rctranslationId);
 				<hr>
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong>
 				<hr>
+				<!-- Copy button -->
+				<button
+					class="pull-right btn btn-default"
+					type="button"
+					onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', '<?php echo $languageCode; ?>');">
+					<span class="icon-copy"></span>
+					<?php echo JText::_('RTOOLBAR_COPY');?>
+				</button>
 			</div>
 
 			<!-- Value of field in the original item -->
@@ -63,14 +71,6 @@ $this->setItem($rctranslationId);
 					<?php echo $this->item->original->{$columnKey}; ?>
 				<?php endif; ?>
 				<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
-				<!-- Copy button -->
-				<button
-					class="pull-right btn btn-default"
-					type="button"
-					onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', '<?php echo $languageCode; ?>');">
-					<span class="icon-copy"></span>
-					<?php echo JText::_('RTOOLBAR_COPY');?>
-				</button>
 			</div>
 
 			<!-- Field for entering translation -->

@@ -163,6 +163,8 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	/**
 	 * Set the current item to a specific id.
 	 *
+	 * @param   array  $transId  Id the current item should be set to.
+	 *
 	 * @return  void
 	 */
 	public function setItem($transId)

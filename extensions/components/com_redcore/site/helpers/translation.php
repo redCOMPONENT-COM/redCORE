@@ -111,16 +111,16 @@ abstract class RedcoreHelpersTranslation extends JObject
 	/**
 	 * Gets translation item id and returns it
 	 *
-	 * @param   int     $itemId            Item id
-	 * @param   string  $langCode          Language code
-	 * @param   string  $pk  			   Primary key name
+	 * @param   int     $itemid    Item id
+	 * @param   string  $langCode  Language code
+	 * @param   string  $pk        Primary key name
 	 *
 	 * @return  int     Translations item id
 	 */
-	public static function getTranslationItemId($itemid, $langCode, $pk) 
+	public static function getTranslationItemId($itemid, $langCode, $pk)
 	{
-		$table = RedcoreHelpersTranslation::getTranslationTable();
-		
+		$table = self::getTranslationTable();
+
 		$ids = explode('###', $itemid);
 
 		$db = JFactory::getDbo();
@@ -128,6 +128,7 @@ abstract class RedcoreHelpersTranslation extends JObject
 		->select('rctranslations_id')
 		->from($db->qn(RTranslationTable::getTranslationsTableName($table->table, '')))
 		->where('rctranslations_language=' . $db->q($langCode));
+
 		foreach ($pk as $key => $primaryKey)
 		{
 			$query->where($db->qn($primaryKey) . ' = ' . $db->q($ids[$key]));
@@ -135,31 +136,48 @@ abstract class RedcoreHelpersTranslation extends JObject
 
 		$db->setQuery($query);
 
-		return $db->loadResult();	
+		return $db->loadResult();
 	}
 
 	/**
 	 * Checks if an array of data is empty
 	 *
-	 * @param   array    $data       Array of data to be checked
-	 * @param   array    $excludes   Array of keys to be excluded from validation
+	 * @param   array    $data      Array of data to be checked
+	 * @param   array    $excludes  Array of keys to be excluded from validation
 	 *
 	 * @return  boolean 
 	 */
 	public static function validateEmptyTranslationData($data, $excludes = null)
 	{
-		//Remove excluded keys from array
+		// Remove excluded keys from array
 		foreach ($excludes as $exclude)
 		{
 			unset($data[$exclude]);
 		}
 
-		//Check if the rest of the keys in the array are empty
-		if (array_filter($data)) 
+		// Check if array within the array has any data, and remove it if it doesn't
+		foreach ($data as $key => $value)
 		{
-		    return true;
+			echo $key;
+			if (is_array($value))
+			{
+				if (array_filter($value))
+				{
+					return true;
+				}
+				else 
+				{
+					unset($data[$key]);
+				}
+			}
 		}
-		else 
+
+		// Check if the rest of the keys in the array are empty
+		if (array_filter($data))
+		{
+			return true;
+		}
+		else
 		{
 			return false;
 		}

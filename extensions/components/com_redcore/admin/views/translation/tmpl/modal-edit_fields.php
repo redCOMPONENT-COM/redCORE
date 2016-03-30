@@ -45,16 +45,23 @@ $this->setItem($rctranslationId);
 			$maxCols = !empty($column['columns']) ? $column['columns'] : 30;
 		?>
 
-		
-
-		<?php if ($column['type'] != 'params') : ?>
-			<!-- Name of field -->
+		<!-- Name of field -->
 			<div class="field-name">
 				<hr>
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong>
+				
+				<!-- Copy button -->
+				<button
+					class="pull-right btn btn-default"
+					type="button"
+					onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>, '<?php echo $languageCode; ?>');">
+					<span class="icon-copy"></span>
+					<?php echo JText::_('RTOOLBAR_COPY');?>
+				</button>
 				<hr>
 			</div>
 
+		<?php if ($column['type'] != 'params') : ?>
 			<!-- Value of field in the original item -->
 			<div class="original-field">
 				<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
@@ -66,14 +73,6 @@ $this->setItem($rctranslationId);
 					<?php echo $this->item->original->{$columnKey}; ?>
 				<?php endif; ?>
 				<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
-				<!-- Copy button -->
-				<button
-					class="pull-right btn btn-default"
-					type="button"
-					onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', '<?php echo $languageCode; ?>');">
-					<span class="icon-copy"></span>
-					<?php echo JText::_('RTOOLBAR_COPY');?>
-				</button>
 			</div>
 
 			<!-- Field for entering translation -->
@@ -153,6 +152,15 @@ $this->setItem($rctranslationId);
 			</div>
 			<?php else: ?>
 				<!-- Parameters -->
+				<table>
+				<td id="original_field_<?php echo $columnKey;?>">
+					<button
+						class="btn btn-default"
+						type="button"
+						onclick="jQuery(this).parent().find('div:first').toggle()">
+						<span class="icon-plus"></span>
+						<?php echo JText::_('COM_REDCORE_TRANSLATIONS_SHOW_HIDE_ORIGINALS');?>
+					</button>
 				<div style="display:none">
 					<br />
 					<?php echo RLayoutHelper::render(
@@ -164,6 +172,7 @@ $this->setItem($rctranslationId);
 							'name' => $columnKey,
 							'column' => $column,
 							'translationForm' => false,
+							'suffix' => $languageCode,
 						)
 					); ?>
 					<textarea name="original[params_<?php echo $columnKey;?>]" style="display:none"><?php
@@ -174,6 +183,27 @@ $this->setItem($rctranslationId);
 						endif;
 					?></textarea>
 				</div>
+				</td>
+					</tr>
+					<tr>
+					<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION');?></td>
+					<td id="translation_field_<?php echo $columnKey;?>">
+						<?php echo RLayoutHelper::render(
+							'translation.params',
+							array(
+								'form' => RTranslationHelper::loadParamsForm($column, $this->contentElement, $this->item->translation, 'translation'),
+								'original' => $this->item->original->{$columnKey},
+								'translation' => $this->item->translation->{$columnKey},
+								'name' => $columnKey,
+								'column' => $column,
+								'translationForm' => true,
+								'suffix' => $languageCode,
+							)
+						);
+						?>
+					</td>
+				</tr>
+				</table>
 			<?php endif; ?>
 	<?php endforeach; ?>
 

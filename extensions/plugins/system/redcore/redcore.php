@@ -351,13 +351,12 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	public function onContentPrepareForm()
 	{
-		//If the options to do so are turned on, create a button for opening a modal window to edit translations directly from a translatable form
+		// If the options to do so are turned on, create a button for opening a modal window to edit translations directly from a translatable form
 		if ($this->params->get('enable_translations') == 1 && $this->params->get('show_edit_button_on_all_forms') == 1)
 		{
 			RTranslationHelper::isTranslatableForm();
 		}
 	}
-
 
 	/**
 	 * Check is is a redCORE view

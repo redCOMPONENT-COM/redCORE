@@ -13,7 +13,6 @@ jimport('joomla.html.editor');
 $input = JFactory::getApplication()->input;
 
 $contentLanguages = JLanguageHelper::getLanguages();
-$currentEditor = JFactory::getConfig()->get('editor');
 ?>
 	<!-- Tabs for selecting languages -->
 	<ul class="nav nav-tabs" id="categoryTab">
@@ -27,7 +26,7 @@ $currentEditor = JFactory::getConfig()->get('editor');
 	<!-- Container for the fields of each language -->
 	<div class="tab-content">
 		<?php foreach ($contentLanguages as $language) : ?>
-		
+
 		<?php $input->set('template_language', $language->lang_code); ?>
 
 			<div class="tab-pane" id="fields-<?php echo $language->lang_id; ?>">	
@@ -37,33 +36,79 @@ $currentEditor = JFactory::getConfig()->get('editor');
 			</div>
 			<iframe name="my_iframe_<?php echo $language->lang_id; ?>" style="display:none;"></iframe>
 		<?php endforeach;?>
-		
+
 	</div>
 <script type="text/javascript">
-	function setTranslationValue(elementName, elementOriginal, langCode)
+	function setTranslationValue(elementName, elementOriginal, setParams, langCode)
 	{
 		var tabArea = jQuery('#'+langCode);
-		var val = elementOriginal != '' ? tabArea.find('[name="original[' + elementOriginal + ']"]').val() : '';
-		var targetElement = tabArea.find('[name="translation[' + elementName + ']"]');
-
-		if (tabArea.find(targetElement).is('textarea'))
+		if (setParams)
 		{
-			tabArea.find(targetElement).val(val);
-			tabArea.find(targetElement).parent().find('iframe').contents().find('body').html(val);
+			var originalValue = '';
+			var name = '';
+			var originalField = {};
+			tabArea.find('#translation_field_' + elementName + ' :input').each(function(){
+				name = jQuery(this).attr('name');
+				originalValue = '';
+				originalField = {};
+				if (name)
+				{
+					if (jQuery(this).is(':checkbox, :radio'))
+					{
+						originalField = jQuery('[name="' + name.replace('translation', 'original') + '"][value="' + jQuery(this).val() + '"]');
+						var checked = (originalField.length > 0) ? jQuery(originalField).is(':checked') : false;
+						var label = jQuery(this).parent().find('[for="' + jQuery(this).attr('id') + '"]');
+
+						jQuery(this).attr('checked', checked);
+						jQuery(label).removeClass('active btn-success btn-danger btn-primary');
+						if (checked)
+						{
+							var css = '';
+							switch(jQuery(this).val()) {
+								case '' : css = 'btn-primary'; break;
+								case '0': css = 'btn-danger'; break;
+								default : css = 'btn-success'; break;
+							}
+							jQuery(label).addClass('active ' + css).button('toggle');
+						}
+					}
+					else
+					{
+						originalField = jQuery('[name="' + name.replace('translation', 'original') + '"]');
+						if (originalField.length > 0)
+						{
+							originalValue = jQuery(originalField).val();
+						}
+						jQuery(this)
+							.val(originalValue)
+							.trigger("liszt:updated");
+					}
+				}
+			});
 		}
 		else
 		{
-			tabArea.find(targetElement).val(val);
-		}
+			var val = elementOriginal != '' ? tabArea.find('[name="original[' + elementOriginal + ']"]').val() : '';
+			var targetElement = tabArea.find('[name="translation[' + elementName + ']"]');
 
+			if (tabArea.find(targetElement).is('textarea'))
+			{
+				tabArea.find(targetElement).val(val);
+				tabArea.find(targetElement).parent().find('iframe').contents().find('body').html(val);
+			}
+			else
+			{
+				tabArea.find(targetElement).val(val);
+			}
+		}
 	}
 
 	Joomla.submitbutton = function(task)
 	{
 		//Go through each form and submit them individually
-		jQuery('form').each(function() 
+		jQuery('form').each(function()
 		{
-		    Joomla.submitform(task, this);
+			Joomla.submitform(task, this);
 		});
 	}
 </script>

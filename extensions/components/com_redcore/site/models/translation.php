@@ -25,7 +25,7 @@ class RedcoreModelTranslation extends RModelAdmin
 	 *
 	 * @return  mixed  Object on success, false on failure.
 	 */
-	public function getItem($pk = null, $tid = null)
+	public function getItem($pk = null)
 	{
 		$ids = JFactory::getApplication()->input->getString('id', '');
 		$id = JFactory::getApplication()->input->getString('rctranslations_id', '');
@@ -141,17 +141,18 @@ class RedcoreModelTranslation extends RModelAdmin
 		$original = JFactory::getApplication()->input->get('original', array(), 'array');
 		$id = !empty($data['rctranslations_id']) ? (int) $data['rctranslations_id'] : 0;
 
-		//Check if the form is completely empty, and return an error if it is.
+		// Check if the form is completely empty, and return an error if it is.
 		$dataFilled = RedcoreHelpersTranslation::validateEmptyTranslationData($translation, $translationTable->primaryKeys);
 
-		if(!$dataFilled)
+		if (!$dataFilled)
 		{
 			$this->setError(JText::_('COM_REDCORE_TRANSLATIONS_SAVE_ERROR_EMPTY'));
+			
 			return false;
 		}
 
 		$data = array_merge($data, $translation);
-		
+
 		$fieldsXml = $contentElement->getTranslateFields();
 
 		foreach ($fieldsXml as $field)
