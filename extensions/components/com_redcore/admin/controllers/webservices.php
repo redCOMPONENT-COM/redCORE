@@ -174,4 +174,45 @@ class RedcoreControllerWebservices extends RControllerAdmin
 			parent::display();
 		}
 	}
+
+	/**
+	 * Method to publish a list of items
+	 *
+	 * @return  void
+	 */
+	public function copy()
+	{
+		// Check for request forgeries
+		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+
+		// Get items to copy from the request.
+		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
+
+		if (empty($cid))
+		{
+			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
+		}
+		else
+		{
+			// Get the model.
+			$model = $this->getModel('Webservices');
+
+			// Make sure the item ids are integers
+			JArrayHelper::toInteger($cid);
+
+			// Copy the items.
+			if ($model->copy($cid))
+			{
+				$ntext = $this->text_prefix . '_N_ITEMS_COPIED';
+				$this->setMessage(JText::plural($ntext, count($cid)));
+			}
+			else
+			{
+				$this->setMessage($model->getError(), 'error');
+			}
+		}
+
+		// Set redirect
+		$this->setRedirect($this->getRedirectToListRoute());
+	}
 }
