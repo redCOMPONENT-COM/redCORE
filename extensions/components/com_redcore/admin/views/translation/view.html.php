@@ -174,5 +174,6 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 
 		$item = $this->get('Item');
 		$this->item = $item;
+		$this->form = $this->get('Form');
 	}
 }

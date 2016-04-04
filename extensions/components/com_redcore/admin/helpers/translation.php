@@ -142,8 +142,8 @@ abstract class RedcoreHelpersTranslation extends JObject
 	/**
 	 * Checks if an array of data has any data
 	 *
-	 * @param   array    $data      Array of data to be checked
-	 * @param   array    $excludes  Array of keys to be excluded from validation
+	 * @param   array  $data      Array of data to be checked
+	 * @param   array  $excludes  Array of keys to be excluded from validation
 	 *
 	 * @return  boolean  True if the array contains data
 	 */

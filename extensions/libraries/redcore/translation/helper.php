@@ -351,10 +351,11 @@ class RTranslationHelper
 	 * @param   RTranslationContentElement  $contentElement  Content element
 	 * @param   mixed                       $data            The data expected for the form.
 	 * @param   string                      $controlName     Name of the form control group
+	 * @param   string                      $basepath        Base path to use when loading files
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function loadParamsForm($column, $contentElement, $data, $controlName = '')
+	public static function loadParamsForm($column, $contentElement, $data, $controlName = '', $basepath = JPATH_BASE)
 	{
 		if (version_compare(JVERSION, '3.0', '<') && !empty($column['formname25']))
 		{
@@ -382,25 +383,25 @@ class RTranslationHelper
 		$lang = JFactory::getLanguage();
 
 		// Load language file
-		$lang->load($contentElement->extension, JPATH_BASE, null, false, false)
-		|| $lang->load($contentElement->extension, JPATH_BASE . "/components/" . $contentElement->extension, null, false, false)
-		|| $lang->load($contentElement->extension, JPATH_BASE, $lang->getDefault(), false, false)
-		|| $lang->load($contentElement->extension, JPATH_BASE . "/components/" . $contentElement->extension, $lang->getDefault(), false, false);
+		$lang->load($contentElement->extension, $basepath, null, false, false)
+		|| $lang->load($contentElement->extension, $basepath . "/components/" . $contentElement->extension, null, false, false)
+		|| $lang->load($contentElement->extension, $basepath, $lang->getDefault(), false, false)
+		|| $lang->load($contentElement->extension, $basepath . "/components/" . $contentElement->extension, $lang->getDefault(), false, false);
 
 		// Get the form.
-		RForm::addFormPath(JPATH_BASE . '/components/' . $contentElement->extension . '/models/forms');
-		RForm::addFormPath(JPATH_BASE . '/administrator/components/' . $contentElement->extension . '/models/forms');
-		RForm::addFieldPath(JPATH_BASE . '/components/' . $contentElement->extension . '/models/fields');
-		RForm::addFieldPath(JPATH_BASE . '/administrator/components/' . $contentElement->extension . '/models/fields');
+		RForm::addFormPath($basepath . '/components/' . $contentElement->extension . '/models/forms');
+		RForm::addFormPath($basepath . '/administrator/components/' . $contentElement->extension . '/models/forms');
+		RForm::addFieldPath($basepath . '/components/' . $contentElement->extension . '/models/fields');
+		RForm::addFieldPath($basepath . '/administrator/components/' . $contentElement->extension . '/models/fields');
 
 		if (!empty($column['formpath']))
 		{
-			RForm::addFormPath(JPATH_BASE . $column['formpath']);
+			RForm::addFormPath($basepath . $column['formpath']);
 		}
 
 		if (!empty($column['fieldpath']))
 		{
-			RForm::addFieldPath(JPATH_BASE . $column['fieldpath']);
+			RForm::addFieldPath($basepath . $column['fieldpath']);
 		}
 
 		$xpath = !empty($column['xpath']) ? $column['xpath'] : false;
@@ -831,14 +832,19 @@ class RTranslationHelper
 								return;
 							}
 
-							if ($option == 'com_reditem')
+							// Check whether there's a relation between the current item and the translation element
+							$db = JFactory::getDbo();
+							$query = $db->getQuery(true)
+							->select($db->qn($translationTable->primaryKeys[0]))
+							->from($db->qn($translationTable->table))
+							->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemid));
+
+							$db->setQuery($query);
+							$results = $db->loadObjectList();
+
+							// If there is, render a modal button & window in the toolbar
+							if (!empty($results))
 							{
-								// Call specific method for checking redITEM translation elements
-								self::isReditemElementTranslatable($translationTable->table, $translationTable->primaryKeys, $itemid, $translationTable->name);
-							}
-							else
-							{
-								// Render modal button & window in the toolbar
 								$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->name;
 								$contentelement = str_replace('#__', '', $translationTable->table);
 
@@ -848,40 +854,6 @@ class RTranslationHelper
 					}
 				}
 			}
-		}
-	}
-
-	/**
-	 * Checks if a translation element for redITEM should be translatable on the current page.
-	 * It's necessary because of the way redITEM's custom fields are set up.
-	 * If the database structure of the redITEM component changes, the code will have to be changed too.
-	 *
-	 * @param   string  $table        The database table of the translation element
-	 * @param   array   $primaryKeys  The name of the columns of the translation element's reference IDs
-	 * @param   int     $itemid       The id of the current item being shown
-	 * @param   string  $elementName  Name of the translation element
-	 *
-	 * @return  void
-	 */
-	public static function isReditemElementTranslatable($table, $primaryKeys, $itemid, $elementName)
-	{
-		// Check whether there's a relation between the current item and the translation element
-		$db = JFactory::getDbo();
-		$query = $db->getQuery(true)
-		->select($db->qn($primaryKeys[0]))
-		->from($db->qn($table))
-		->where($db->qn($primaryKeys[0]) . '=' . $db->q($itemid));
-
-		$db->setQuery($query);
-		$results = $db->loadObjectList();
-
-		// If there is, render a modal button & window in the toolbar
-		if (!empty($results))
-		{
-			$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $elementName;
-			$contentelement = str_replace('#__', '', $table);
-
-			self::renderTranslationModal($itemid, $linkname, $contentelement);
 		}
 	}
 

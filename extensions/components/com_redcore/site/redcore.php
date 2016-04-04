@@ -30,6 +30,11 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_redcore'))
 	return false;
 }
 
+//Load administrator language files
+$language = JFactory::getLanguage();
+$language->load('joomla', JPATH_ADMINISTRATOR, 'en-GB', true);
+$language->load('joomla', JPATH_ADMINISTRATOR, null, true);
+
 // Instantiate and execute the front controller.
 $controller = JControllerLegacy::getInstance('Redcore');
 $controller->execute($app->input->get('task'));

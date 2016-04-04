@@ -27,15 +27,32 @@ $contentLanguages = JLanguageHelper::getLanguages();
 	<div class="tab-content">
 		<?php foreach ($contentLanguages as $language) : ?>
 
-		<?php $input->set('template_language', $language->lang_code); ?>
-
 			<div class="tab-pane" id="fields-<?php echo $language->lang_id; ?>">	
-				<form method="post" target="my_iframe_<?php echo $language->lang_id; ?>" name="adminForm_<?php echo $language->lang_id; ?>" id="adminForm_<?php echo $language->lang_id; ?>" class="form-validate form-horizontal">
-					<?php echo $this->loadTemplate('fields'); ?>
+				<form method="post" target="my_iframe_<?php echo $language->lang_id; ?>" name="adminForm_<?php echo $language->lang_id; ?>" id="adminForm_<?php echo $language->lang_id; ?>" class="form-validate form-horizontal">	
+
+					<?php 
+					$rctranslationId = RedcoreHelpersTranslation::getTranslationItemId($input->getString('id', ''), $language->lang_code, $this->translationTable->primaryKeys);
+					$this->setItem($rctranslationId);
+
+					echo RLayoutHelper::render(
+						'translation.input',
+						array(
+							'item' => $this->item,
+							'columns' => $this->columns,
+							'editor' => $this->editor,
+							'contentelement' => $this->contentElement,
+							'translationTable' => $this->translationTable,
+							'languageCode' => $language->lang_code,
+							'form' => $this->form,
+							'noTranslationColumns' => $this->noTranslationColumns,
+							'modal' => true,
+						)
+					);
+					?>
 				</form>
 			</div>
 			<iframe name="my_iframe_<?php echo $language->lang_id; ?>" style="display:none;"></iframe>
-		<?php endforeach;?>
+		<?php endforeach; ?>
 
 	</div>
 <script type="text/javascript">
