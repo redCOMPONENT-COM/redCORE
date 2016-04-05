@@ -79,7 +79,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	public function display($tpl = null)
 	{
 		$this->form	= $this->get('Form');
-		$this->translationTable = RedcoreHelpersTranslation::getTranslationTable();
+		$this->translationTable = RTranslationHelper::getTranslationTable();
 		$this->contentElement = RTranslationHelper::getContentElement($this->translationTable->option, $this->translationTable->xml);
 		$this->item	= $this->get('Item');
 

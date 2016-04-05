@@ -29,7 +29,7 @@ $form = $displayData['form'];
 $noTranslationColumns = $displayData['noTranslationColumns'];
 $modal = !empty($displayData['modal']) ? $displayData['modal'] : false;
 
-$status = RedcoreHelpersTranslation::getTranslationItemStatus($item->original, array_keys($columns));
+$status = RTranslationHelper::getTranslationItemStatus($item->original, array_keys($columns));
 
 $predefinedOptions = array(
 	1   => 'JPUBLISHED',

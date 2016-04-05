@@ -30,7 +30,7 @@ class RedcoreTableTranslation extends RTable
 		$this->_tableName = 'extension';
 		$this->_tbl_key = 'rctranslations_id';
 
-		$table = RedcoreHelpersTranslation::getTranslationTable();
+		$table = RTranslationHelper::getTranslationTable();
 
 		$this->_tbl = RTranslationTable::getTranslationsTableName($table->table, '');
 		$this->_tableName = str_replace('#__', '', $this->_tbl);

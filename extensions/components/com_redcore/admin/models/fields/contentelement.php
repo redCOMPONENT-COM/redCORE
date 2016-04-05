@@ -65,7 +65,7 @@ class JFormFieldContentelement extends JFormFieldList
 			}
 		}
 
-		$contentElement = RedcoreHelpersTranslation::getCurrentContentElement();
+		$contentElement = RTranslationHelper::getCurrentContentElement();
 
 		if (!empty($contentElement))
 		{

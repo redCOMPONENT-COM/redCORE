@@ -10,7 +10,6 @@
 defined('_JEXEC') or die;
 jimport('joomla.html.editor');
 
-$status = RedcoreHelpersTranslation::getTranslationItemStatus($this->item->original, array_keys($this->columns));
 $hiddenFields = array();
 
 // HTML helpers

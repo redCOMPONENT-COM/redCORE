@@ -57,7 +57,7 @@ class RedcoreModelTranslations extends RModelList
 	 */
 	protected function getListQuery()
 	{
-		$table = RedcoreHelpersTranslation::getTranslationTable();
+		$table = RTranslationHelper::getTranslationTable();
 		$db	= $this->getDbo();
 		$query = $db->getQuery(true);
 
@@ -166,14 +166,14 @@ class RedcoreModelTranslations extends RModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
-		$table = RedcoreHelpersTranslation::getTranslationTable();
+		$table = RTranslationHelper::getTranslationTable();
 		$columns = (array) $table->columns;
 
 		if (!empty($items))
 		{
 			foreach ($items as $itemKey => $item)
 			{
-				$items[$itemKey]->translationStatus = RedcoreHelpersTranslation::getTranslationItemStatus($item, $columns);
+				$items[$itemKey]->translationStatus = RTranslationHelper::getTranslationItemStatus($item, $columns);
 			}
 		}
 
