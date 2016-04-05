@@ -13,7 +13,7 @@ echo RLayoutHelper::render(
 	'dashboard.extensions',
 	array(
 		'view' => $this,
-		'return' => base64_encode('index.php?option=com_redcore&view=dashboard'),
+		'return' => '',
 		'components' => $this->components,
 		'configurationLink' => true,
 		'translationLink' => true,

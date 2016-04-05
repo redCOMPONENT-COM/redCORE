@@ -3,7 +3,7 @@
     <name>Newsfeeds</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
+    <version>1.8.3</version>
     <description>Translation definition for Joomla Newsfeeds component</description>
     <reference>
         <table name="newsfeeds">
@@ -11,11 +11,9 @@
             <field type="titletext" name="name" translate="1">Name</field>
             <field type="text" name="alias" translate="1" posthandler="filterTitle">Alias</field>
             <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
-            <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-            <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
         </table>
         <component>
-            <form>com_newsfeeds#newsfeeds#cid#task#!edit</form>
+            <editForm admin="true" option="com_newsfeeds" view="newsfeed" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" />
         </component>
     </reference>
 </contentelement>

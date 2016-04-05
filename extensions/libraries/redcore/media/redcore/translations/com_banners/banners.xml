@@ -3,7 +3,7 @@
     <name>Banners</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
+    <version>1.8.3</version>
     <description>Translation definition for Joomla Banner component</description>
     <reference>
         <table name="banners">
@@ -14,7 +14,7 @@
             <field type="state" name="state" translate="1" alwaysFallback="true">State</field>
         </table>
         <component>
-            <form>com_banners#banners#id#task#!edit</form>
+            <editForm admin="true" option="com_banners" view="banner" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" />
         </component>
     </reference>
 </contentelement>

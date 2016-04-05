@@ -92,15 +92,15 @@ JHtml::_('rjquery.chosen', 'select');
 					<th>
 						<?php echo JText::_('COM_REDCORE_PAYMENT_LOG_REFERRER'); ?>
 					</th>
-					<td style="word-wrap:break-word;">
+					<td style="word-break:break-all; word-wrap:break-word;">
 						<?php echo $this->item->referrer; ?>
 					</td>
 				</tr>
 				<tr>
-					<th style="width: 25%;word-wrap:break-word;">
+					<th style="width: 25%;word-break:break-all; word-wrap:break-word;">
 						<?php echo JText::_('COM_REDCORE_PAYMENT_LOG_MESSAGE_URI'); ?>
 					</th>
-					<td style="word-wrap:break-word;">
+					<td style="word-break:break-all; word-wrap:break-word;">
 						<?php echo $this->item->message_uri; ?>
 					</td>
 				</tr>
@@ -108,7 +108,7 @@ JHtml::_('rjquery.chosen', 'select');
 					<th>
 						<?php echo JText::_('COM_REDCORE_PAYMENT_CUSTOMER_NOTE'); ?>
 					</th>
-					<td style="word-wrap:break-word;">
+					<td style="word-break:break-all; word-wrap:break-word;">
 						<?php echo $this->item->customer_note; ?>
 					</td>
 				</tr>
@@ -117,7 +117,7 @@ JHtml::_('rjquery.chosen', 'select');
 	</div>
 	<div class="container-fluid">
 		<h3><?php echo JText::_('COM_REDCORE_PAYMENT_LOG_MESSAGE_TEXT'); ?></h3><br />
-		<p style="word-wrap:break-word;"><?php echo $this->item->message_post; ?></p>
+		<p style="word-break:break-all; word-wrap:break-word;"><?php echo $this->item->message_post; ?></p>
 	</div>
 
 	<!-- hidden fields -->

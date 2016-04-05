@@ -52,24 +52,17 @@ class JFormFieldContentelement extends JFormFieldList
 		{
 			static::$cache[$hash] = parent::getOptions();
 			$options = array();
-			$translationTables = RTranslationHelper::getInstalledTranslationTables();
+			$translationTables = RTranslationHelper::getTranslationTables();
 
 			if (!empty($translationTables))
 			{
 				foreach ($translationTables as $value)
 				{
-					$options[] = JHtml::_('select.option', str_replace('#__', '', $value->table), $value->name);
+					$options[] = JHtml::_('select.option', str_replace('#__', '', $value->name), $value->title);
 				}
 
 				static::$cache[$hash] = array_merge(static::$cache[$hash], $options);
 			}
-		}
-
-		$contentElement = RedcoreHelpersTranslation::getCurrentContentElement();
-
-		if (!empty($contentElement))
-		{
-			$this->value = $contentElement;
 		}
 
 		return static::$cache[$hash];

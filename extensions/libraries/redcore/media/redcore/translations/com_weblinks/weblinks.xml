@@ -3,7 +3,7 @@
     <name>Weblinks</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
+    <version>1.8.3</version>
     <description>Translation definition for Joomla Weblinks component</description>
     <reference>
         <table name="weblinks">
@@ -13,5 +13,8 @@
             <field type="text" name="url" maxlength="1000" translate="1">URL</field>
             <field type="state" name="state" translate="1" alwaysFallback="true">State</field>
         </table>
+        <component>
+            <editForm admin="true" option="com_weblinks" view="weblink" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" />
+        </component>
     </reference>
 </contentelement>

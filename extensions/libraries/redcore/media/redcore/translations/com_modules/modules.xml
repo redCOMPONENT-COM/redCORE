@@ -3,7 +3,7 @@
     <name>Modules</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
+    <version>1.8.3</version>
     <description>Translation definition for Joomla Module Management</description>
     <reference>
         <table name="modules">
@@ -12,14 +12,12 @@
             <field type="titletext" name="module" translate="0">Module</field>
             <field type="htmltext" name="content" translate="1">Content</field>
             <field type="text" name="client_id" translate="0">Module</field>
-            <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-            <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
             <field type="params" name="params" formname="advanced" formname25="module" fieldsname="params" translate="1" alwaysFallback="true">Parameters</field>
             <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
             <filter>o.client_id = 0</filter>
         </table>
         <component>
-            <form>com_modules#modules#cid#task#!edit#client#!1</form>
+            <editForm admin="true" option="com_modules" view="module" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" />
         </component>
     </reference>
 </contentelement>

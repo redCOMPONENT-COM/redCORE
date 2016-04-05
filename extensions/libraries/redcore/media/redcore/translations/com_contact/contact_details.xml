@@ -3,7 +3,7 @@
     <name>Contact - details</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
+    <version>1.8.3</version>
     <description>Translation definition for Joomla Contact component</description>
     <reference>
         <table name="contact_details">
@@ -20,13 +20,11 @@
             <field type="text" name="telephone" translate="1">Telefon</field>
             <field type="text" name="fax" translate="1">Fax</field>
             <field type="textarea" name="misc" translate="1">Miscellaneous Info</field>
-            <field type="textarea" name="params" translate="1" alwaysFallback="true">Parameters</field>
-            <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-            <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
+            <field type="params" name="params" translate="1" alwaysFallback="true">Parameters</field>
             <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
         </table>
         <component>
-            <form>com_contact#contact_details#cid#!edit</form>
+            <editForm admin="true" option="com_contact" view="contact" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" />
         </component>
     </reference>
 </contentelement>

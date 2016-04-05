@@ -88,6 +88,7 @@ final class RTranslationContentElement
 			{
 				$xmlDoc = new SimpleXMLElement($content);
 
+				$this->xml_hashed = md5($content);
 				$this->xml = $xmlDoc;
 				$this->table = $this->getTableName();
 				$this->name = $this->getContentElementName();
@@ -184,20 +185,75 @@ final class RTranslationContentElement
 	 */
 	public function getEditForms()
 	{
-		if (!empty($this->xml->reference->component->form))
+		$formLinks = array();
+
+		if (isset($this->xml->reference->component))
 		{
-			$forms = $this->xml->reference->component->form;
-			$formLinks = array();
-
-			foreach ($forms as $form)
+			// Old way
+			if (isset($this->xml->reference->component->form))
 			{
-				$formLinks[] = (string) $form;
-			}
+				foreach ($this->xml->reference->component->form as $form)
+				{
+					$formArray = explode('#', $form);
+					$formLink = array();
 
-			return $formLinks;
+					if (count($formArray) > 1)
+					{
+						$formLink['option'] = $formArray[0];
+						$formLink['view'] = $formArray[1];
+						$formLink['identifier'] = !empty($formArray[2]) ? $formArray[2] : '';
+						$formLink['layout'] = !empty($formArray[4]) ? preg_replace("/[^a-zA-Z0-9]+/", "", $formArray[4]) : 'edit';
+
+						// Set defaults
+						$this->getEditFormDefaults($formLink);
+
+						$formLinks[] = $formLink;
+					}
+				}
+			}
+			// Current structure
+			else
+			{
+				foreach ($this->xml->reference->component->editForm as $editForm)
+				{
+					$formLink = array();
+
+					if (!empty($editForm['option']) && !empty($editForm['view']))
+					{
+						$attributes = $editForm->attributes();
+
+						foreach ($attributes as $key => $attribute)
+						{
+							$formLink[strtolower($key)] = (string) $attribute;
+						}
+
+						// Set defaults
+						$this->getEditFormDefaults($formLink);
+
+						$formLinks[] = $formLink;
+					}
+				}
+			}
 		}
 
-		return array();
+		return $formLinks;
+	}
+
+	/**
+	 * Sets default values to the form links if they are not set
+	 *
+	 * @param   array  &$formLink  Form link options
+	 *
+	 * @return  void
+	 */
+	public function getEditFormDefaults(&$formLink)
+	{
+		// Defaults
+		$formLink['admin'] = !empty($formLink['admin']) ? $formLink['admin'] : 'false';
+		$formLink['layout'] = !empty($formLink['layout']) ? $formLink['layout'] : 'edit';
+		$formLink['identifier'] = isset($formLink['identifier']) ? $formLink['identifier'] : 'id';
+		$formLink['showbutton'] = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
+		$formLink['htmlposition'] = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
 	}
 
 	/**
@@ -205,21 +261,10 @@ final class RTranslationContentElement
 	 *
 	 * @return  String  Content Element Status
 	 */
-	public function getStatus()
+	public function getFieldDifference()
 	{
 		$return = '';
-
-		if (empty($this->table))
-		{
-			$return .= ' ' . JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_VALID_FILE');
-		}
-
 		$fieldsTable = RTranslationTable::getTranslationsTableColumns($this->table);
-
-		if (empty($fieldsTable))
-		{
-			return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED') . $return;
-		}
 
 		// Language is automatically added to the table if table exists
 		$fieldsTable = RTranslationTable::removeFixedColumnsFromArray($fieldsTable);
@@ -251,10 +296,10 @@ final class RTranslationContentElement
 
 		if (!empty($fields))
 		{
-			$return .= ' ' . JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_FIELDS_MISSING') . implode(', ', $fields);
+			$return .= JText::_('COM_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_FIELDS_MISSING') . implode(', ', $fields);
 		}
 
-		return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED') . $return;
+		return $return;
 	}
 
 	/**
@@ -306,5 +351,63 @@ final class RTranslationContentElement
 		}
 
 		return $extensionPath;
+	}
+
+	/**
+	 * Gets path without base path
+	 *
+	 * @param   string  $path  Path
+	 *
+	 * @return  string
+	 */
+	public static function getPathWithoutBase($path)
+	{
+		return str_replace(JPATH_SITE, '', $path);
+	}
+
+	/**
+	 * Gets path without base path
+	 *
+	 * @param   bool    $notInstalled       Filter only not installed Content elements
+	 * @param   string  $onlyFromExtension  Show only from specific extension
+	 *
+	 * @return  array
+	 */
+	public static function getContentElements($notInstalled = false, $onlyFromExtension = '')
+	{
+		$xmlFileOptions = RTranslationHelper::loadAllContentElements();
+		$tables = RTranslationHelper::getTranslationTables();
+		$xmlFiles = array();
+
+		if (!empty($xmlFileOptions))
+		{
+			foreach ($xmlFileOptions as $option => $xmlFileTables)
+			{
+				if (!empty($onlyFromExtension) && $onlyFromExtension != $option)
+				{
+					continue;
+				}
+
+				foreach ($xmlFileTables as $key => $contentElement)
+				{
+					$xmlFiles[$key] = $contentElement;
+
+					if ($notInstalled && !empty($tables))
+					{
+						foreach ($tables as $table)
+						{
+							if ($table->xml_path == self::getPathWithoutBase($contentElement->contentElementXmlPath))
+							{
+								// We remove it from the list
+								unset($xmlFiles[$key]);
+								break;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $xmlFiles;
 	}
 }

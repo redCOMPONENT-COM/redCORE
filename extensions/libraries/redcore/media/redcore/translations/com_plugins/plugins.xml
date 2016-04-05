@@ -3,7 +3,7 @@
     <name>Plugins</name>
     <author>redCOMPONENT</author>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
+    <version>1.8.3</version>
     <description>Translation definition for Joomla Plugin Management</description>
     <reference>
         <table name="extensions">
@@ -16,7 +16,7 @@
             <filter>o.type = 'plugin'</filter>
         </table>
         <component>
-            <form>com_plugins#plugins#cid#task#!edit#client#!1</form>
+            <editForm admin="true" option="com_plugins" view="plugin" layout="edit" identifier="extension_id" showbutton="true" htmlposition=".btn-toolbar:first" />
         </component>
     </reference>
 </contentelement>

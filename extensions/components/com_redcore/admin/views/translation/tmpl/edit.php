@@ -102,7 +102,7 @@ $predefinedOptions = array(
 		{
 			<?php
 			foreach ($this->columns as $editorColumnKey => $editorColumn) :
-				if ($editorColumn['type'] == 'htmltext') :
+				if ($editorColumn['value_type'] == 'htmltext') :
 					echo $this->editor->save('translation[' . $editorColumnKey . ']');
 				endif;
 			endforeach;
@@ -116,7 +116,7 @@ $predefinedOptions = array(
 		<div class="col-md-8" id="translationDetails">
 		<table class="table table-striped">
 			<?php foreach ($this->columns as $columnKey => $column) : ?>
-				<?php if ($column['type'] == 'referenceid' || $column['type'] == 'hiddentext') : ?>
+				<?php if ($column['value_type'] == 'referenceid' || $column['value_type'] == 'hiddentext') : ?>
 					<?php continue; ?>
 				<?php endif; ?>
 				<?php
@@ -126,7 +126,7 @@ $predefinedOptions = array(
 					$maxCols = !empty($column['columns']) ? $column['columns'] : 30;
 				?>
 					<tr>
-						<td colspan="3"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong>
+						<td colspan="3"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong>
 						<?php if (!empty($this->item->translation->rctranslations_originals[$columnKey])
 							&& $this->item->translation->rctranslations_originals[$columnKey] != md5($this->item->original->{$columnKey})): ?>
 							<span class="label label-warning"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_STATUS_CHANGED'); ?></span>
@@ -134,24 +134,24 @@ $predefinedOptions = array(
 							<button
 								class="pull-right btn btn-default"
 								type="button"
-								onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
+								onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['value_type'] != 'params') ? 'false' : 'true' ?>);">
 								<span class="icon-copy"></span>
 								<?php echo JText::_('RTOOLBAR_COPY');?>
 							</button>
 							<button
 								class="pull-right btn btn-default"
 								type="button"
-								onclick="setTranslationValue('<?php echo $columnKey;?>', '', <?php echo ($column['type'] != 'params') ? 'false' : 'true' ?>);">
+								onclick="setTranslationValue('<?php echo $columnKey;?>', '', <?php echo ($column['value_type'] != 'params') ? 'false' : 'true' ?>);">
 								<span class="icon-trash"></span>
 								<?php echo JText::_('JCLEAR');?>
 							</button>
 						</td>
 					</tr>
-			<?php if ($column['type'] != 'params') : ?>
+			<?php if ($column['value_type'] != 'params') : ?>
 					<tr>
 						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
 						<td id="original_field_<?php echo $columnKey;?>">
-							<?php if ($column['type'] == 'state'): ?>
+							<?php if ($column['value_type'] == 'state'): ?>
 								<?php echo isset($predefinedOptions[$this->item->original->{$columnKey}]) ?
 									JText::_($predefinedOptions[$this->item->original->{$columnKey}]) : $this->item->original->{$columnKey}; ?>
 							<?php else: ?>
@@ -163,7 +163,7 @@ $predefinedOptions = array(
 					<tr>
 						<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION');?></td>
 						<td id="translation_field_<?php echo $columnKey;?>">
-							<?php if ($column['type'] == 'text' || $column['type'] == 'titletext'): ?>
+							<?php if ($column['value_type'] == 'text' || $column['value_type'] == 'titletext'): ?>
 								<input
 									class="inputbox"
 									type="text"
@@ -171,7 +171,7 @@ $predefinedOptions = array(
 									size="<?php echo $length;?>"
 									value="<?php echo $this->item->translation->{$columnKey}; ?>"
 									<?php echo $maxLength;?> />
-							<?php elseif ($column['type'] == 'state'): ?>
+							<?php elseif ($column['value_type'] == 'state'): ?>
 								<?php echo RLayoutHelper::render(
 									'translation.fields.state',
 									array(
@@ -183,13 +183,13 @@ $predefinedOptions = array(
 										'predefinedOptions' => $predefinedOptions
 									)
 								); ?>
-							<?php elseif ($column['type'] == 'textarea'): ?>
+							<?php elseif ($column['value_type'] == 'textarea'): ?>
 								<textarea
 									name="translation[<?php echo $columnKey;?>]"
 									rows="<?php echo $maxRows;?>"
 									cols="<?php echo $maxCols;?>"
 									><?php echo $this->item->translation->{$columnKey}; ?></textarea>
-							<?php elseif($column['type'] == 'htmltext'): ?>
+							<?php elseif($column['value_type'] == 'htmltext'): ?>
 								<?php $editorFields[] = array('editor_' . $columnKey, 'translation[' . $columnKey . ']');
 								echo $this->editor->display(
 									// Area name
@@ -208,7 +208,7 @@ $predefinedOptions = array(
 									(!empty($column['ebuttons']) ? $column['ebuttons'] : '')
 								);
 								?>
-							<?php elseif ($column['type'] == 'images'): ?>
+							<?php elseif ($column['value_type'] == 'images'): ?>
 								<div class="input-group">
 									<input
 										class="input-lg"
@@ -221,7 +221,7 @@ $predefinedOptions = array(
 										href="index.php?option=com_media&amp;view=images&amp;tmpl=component&amp;fieldid=translation<?php echo $columnKey;?>"
 										rel="{handler: 'iframe', size: {x: 800, y: 500}}"><?php echo JText::_("JSELECT")?></a>
 								</div>
-							<?php elseif ($column['type'] == 'readonlytext'): ?>
+							<?php elseif ($column['value_type'] == 'readonlytext'): ?>
 								<?php $value = !empty($this->item->translation->{$columnKey}) ? $this->item->translation->{$columnKey} : $this->item->original->{$columnKey}; ?>
 								<input class="inputbox" readonly="yes" type="text" name="translation[<?php echo $columnKey;?>]" size="<?php echo $length;?>" value="<?php echo $value; ?>" maxlength="<?php echo $maxLength;?>"/>
 							<?php endif; ?>
@@ -248,7 +248,7 @@ $predefinedOptions = array(
 								<?php echo RLayoutHelper::render(
 									'translation.params',
 									array(
-										'form' => RTranslationHelper::loadParamsForm($column, $this->contentElement, $this->item->original, 'original'),
+										'form' => RTranslationHelper::loadParamsForm($column, $this->translationTable, $this->item->original, 'original'),
 										'original' => $this->item->original->{$columnKey},
 										'translation' => $this->item->translation->{$columnKey},
 										'name' => $columnKey,
@@ -272,7 +272,7 @@ $predefinedOptions = array(
 							<?php echo RLayoutHelper::render(
 								'translation.params',
 								array(
-									'form' => RTranslationHelper::loadParamsForm($column, $this->contentElement, $this->item->translation, 'translation'),
+									'form' => RTranslationHelper::loadParamsForm($column, $this->translationTable, $this->item->translation, 'translation'),
 									'original' => $this->item->original->{$columnKey},
 									'translation' => $this->item->translation->{$columnKey},
 									'name' => $columnKey,
@@ -287,7 +287,7 @@ $predefinedOptions = array(
 			<?php endforeach; ?>
 			<?php foreach ($this->noTranslationColumns as $columnKey => $column) : ?>
 				<tr>
-					<td colspan="2"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['titleLabel']; ?></strong></td>
+					<td colspan="2"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong></td>
 				</tr>
 				<tr>
 					<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></td>
@@ -298,7 +298,7 @@ $predefinedOptions = array(
 			<?php endforeach; ?>
 		</table>
 		<?php foreach ($this->columns as $columnKey => $column) : ?>
-			<?php if ($column['type'] == 'hiddentext') : ?>
+			<?php if ($column['value_type'] == 'hiddentext') : ?>
 				<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $this->item->original->{$columnKey};?></textarea>
 				<textarea name="translation[<?php echo $columnKey;?>]"  style="display:none"><?php echo $this->item->translation->{$columnKey}; ?></textarea>
 			<?php endif; ?>
@@ -348,7 +348,7 @@ $predefinedOptions = array(
 	<input type="hidden" name="task" value=""/>
 	<input type="hidden" name="id" value="<?php echo $input->getString('id', ''); ?>"/>
 	<input type="hidden" name="rctranslations_id" value="<?php echo $this->item->id; ?>"/>
-	<input type="hidden" name="contentelement" value="<?php echo $input->getString('contentelement', ''); ?>"/>
+	<input type="hidden" name="translationTableName" value="<?php echo $input->getString('translationTableName', ''); ?>"/>
 	<input type="hidden" name="component" value="<?php echo $input->getString('component', ''); ?>"/>
 	<?php echo JHTML::_('form.token'); ?>
 </form>
