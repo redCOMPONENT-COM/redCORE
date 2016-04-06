@@ -71,7 +71,6 @@ class JFormFieldRtext extends JFormField
 		$this->attribs['id'] = $this->id;
 		$this->attribs['name'] = $this->name;
 		$this->attribs['type'] = 'text';
-		$this->attribs['value'] = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 		$this->attribs['readonly'] = ($this->element['readonly'] == 'true') ? 'readonly' : null;
 		$this->attribs['disabled'] = ($this->element['disabled'] == 'true') ? 'disabled' : null;
 		$this->attribs['placeholder'] = $this->element['placeholder'] ? JText::_($this->element['placeholder']) : null;
@@ -87,6 +86,22 @@ class JFormFieldRtext extends JFormField
 				}
 			}
 		}
+
+
+		$html = '';
+
+		if ($this->multiple == 1)
+		{
+			foreach ($this->value AS $value)
+			{
+				$this->attribs['value'] = htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+				$html .= '<div class="multiple_input_wrapper"><input ' . $this->parseAttributes() . ' /></div>';
+			}
+
+			return $html;
+		}
+
+		$this->attribs['value'] = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
 		return '<input ' . $this->parseAttributes() . ' />';
 	}
