@@ -1,18 +1,19 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Languages</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.8.3</version>
-    <description>Translation definition for Joomla Languages</description>
-    <reference type="content">
-        <table name="languages">
-            <field type="referenceid" name="lang_id" translate="0">ID</field>
-            <field type="titletext" name="title" translate="1">Title</field>
-            <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
-        </table>
-        <component>
-            <editForm admin="true" option="com_languages" view="language" layout="edit" identifier="lang_id" showbutton="true" htmlposition=".btn-toolbar:first" />
-        </component>
-    </reference>
+  <name>Languages</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Languages</description>
+  <reference>
+    <table name="languages">
+      <field name="lang_id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="title" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="">Title</field>
+      <field name="published" type="state" translate="1" alwaysFallback="true" filter="RAW" description="">State</field>
+      <filter><![CDATA[]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_languages" view="language" layout="edit" identifier="lang_id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+    </component>
+  </reference>
 </contentelement>

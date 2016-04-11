@@ -54,6 +54,13 @@ final class RTranslationContentElement
 	public $name;
 
 	/**
+	 * The Content Element version
+	 *
+	 * @var  String
+	 */
+	public $version;
+
+	/**
 	 * Table name
 	 *
 	 * @var  String
@@ -92,6 +99,7 @@ final class RTranslationContentElement
 				$this->xml = $xmlDoc;
 				$this->table = $this->getTableName();
 				$this->name = $this->getContentElementName();
+				$this->version = $this->getContentElementVersion();
 				$this->primaryKey = $this->getPrimaryKey();
 			}
 		}
@@ -119,12 +127,27 @@ final class RTranslationContentElement
 	 */
 	public function getContentElementName()
 	{
-		if (!empty($this->xml->name))
+		if (isset($this->xml->name))
 		{
 			return (string) $this->xml->name;
 		}
 
 		return '';
+	}
+
+	/**
+	 * Gets Content Element name
+	 *
+	 * @return  String  Name
+	 */
+	public function getContentElementVersion()
+	{
+		if (isset($this->xml->version))
+		{
+			return (string) $this->xml->version;
+		}
+
+		return '1.0.0';
 	}
 
 	/**
@@ -176,6 +199,51 @@ final class RTranslationContentElement
 		}
 
 		return array();
+	}
+
+	/**
+	 * Get table description
+	 *
+	 * @return  string
+	 */
+	public function getTranslateDescription()
+	{
+		if (isset($this->xml->description))
+		{
+			return (string) $this->xml->description;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Get table copyright
+	 *
+	 * @return  string
+	 */
+	public function getTranslateCopyright()
+	{
+		if (isset($this->xml->copyright))
+		{
+			return (string) $this->xml->copyright;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Get table author
+	 *
+	 * @return  string
+	 */
+	public function getTranslateAuthor()
+	{
+		if (isset($this->xml->author))
+		{
+			return (string) $this->xml->author;
+		}
+
+		return '';
 	}
 
 	/**
@@ -402,6 +470,11 @@ final class RTranslationContentElement
 								unset($xmlFiles[$key]);
 								break;
 							}
+
+							if (str_replace('#__', '', $table->name) == $contentElement->table)
+							{
+								$xmlFiles[$key]->mainTable = $table;
+							}
 						}
 					}
 				}
@@ -409,5 +482,107 @@ final class RTranslationContentElement
 		}
 
 		return $xmlFiles;
+	}
+
+	/**
+	 * Gets XML string from the given table object
+	 *
+	 * @param   RedcoreTableTranslation_Table  $table  Table object
+	 *
+	 * @return  SimpleXMLElement
+	 */
+	public static function generateTranslationXml($table)
+	{
+		$xml = new SimpleXMLElement('<?xml version="1.0"?><contentelement type="contentelement"></contentelement>');
+
+		$params = !empty($table->params) ? json_decode($table->params, true) : array();
+
+		$xml->addChild('name', $table->title);
+		$xml->addChild('author', $params['author'] ? $params['author'] : '');
+		$xml->addChild('copyright', $params['copyright'] ? $params['copyright'] : '');
+		$xml->addChild('version', $table->version);
+		$xml->addChild('description', $params['description'] ? $params['description'] : '');
+
+		$reference = $xml->addChild('reference');
+
+		// Add main table
+		$referenceTable = $reference->addChild('table');
+		$referenceTable->addAttribute('name', str_replace('#__', '', $table->name));
+		$columns = $table->getTranslationColumns();
+
+		// Add table columns
+		foreach ($columns as $column)
+		{
+			$field = $referenceTable->addChild('field', $column['title']);
+
+			$field->addAttribute('name', $column['name']);
+			$field->addAttribute('type', $column['value_type']);
+			$field->addAttribute('translate', $column['column_type'] == 'translate' ? '1' : '0');
+			$field->addAttribute('alwaysFallback', $column['fallback'] ? 'true' : 'false');
+			$field->addAttribute('filter', $column['filter']);
+			$field->addAttribute('description', $column['description']);
+
+			if (!empty($column['params']) && is_string($column['params']))
+			{
+				$column['params'] = json_decode($column['params'], true);
+			}
+
+			if ($column['params'])
+			{
+				foreach ($column['params'] as $paramKey => $param)
+				{
+					$field->addAttribute($paramKey, $param);
+				}
+			}
+		}
+
+		// Add table filters for editor
+		self::addChildWithCDATA($referenceTable, 'filter', $table->filter_query);
+
+		// Add reference edit forms
+		$referenceComponent = $reference->addChild('component');
+		$formLinks = $table->form_links ? json_decode($table->form_links, true) : array();
+
+		foreach ($formLinks as $formLink)
+		{
+			$editForm = $referenceComponent->addChild('editForm');
+
+			$editForm->addAttribute('admin', $formLink['admin']);
+			$editForm->addAttribute('option', $formLink['option']);
+			$editForm->addAttribute('view', $formLink['view']);
+			$editForm->addAttribute('layout', $formLink['layout']);
+			$editForm->addAttribute('identifier', $formLink['identifier']);
+			$editForm->addAttribute('showbutton', $formLink['showbutton']);
+			$editForm->addAttribute('htmlposition', $formLink['htmlposition']);
+		}
+
+		return $xml;
+	}
+
+	/**
+	 * Method to add child with text inside CDATA
+	 *
+	 * @param   SimpleXMLElement  &$xml   Xml element
+	 * @param   string            $name   Name of the child
+	 * @param   string            $value  Value of the child
+	 *
+	 * @return  SimpleXMLElement
+	 *
+	 * @since   1.4
+	 */
+	public static function addChildWithCDATA(&$xml, $name, $value = '')
+	{
+		$newChild = $xml->addChild($name);
+
+		if (is_null($newChild))
+		{
+			return $newChild;
+		}
+
+		$node = dom_import_simplexml($newChild);
+		$no   = $node->ownerDocument;
+		$node->appendChild($no->createCDATASection($value));
+
+		return $newChild;
 	}
 }

@@ -93,6 +93,11 @@ class RTranslationHelper
 	 */
 	public static function loadAllContentElements($mediaPath = '', $redcoreFolder = false)
 	{
+		if (!empty(self::$contentElements) && !$redcoreFolder)
+		{
+			return self::$contentElements;
+		}
+
 		jimport('joomla.filesystem.folder');
 
 		if ($mediaPath == '')
@@ -105,31 +110,37 @@ class RTranslationHelper
 
 		$mediaFolders = JFolder::folders($mediaPath);
 
-		foreach ($mediaFolders as $mediaFolder)
+		if ($mediaFolders)
 		{
-			// We have already processed redcore media folder
-			if ($mediaFolder == 'redcore' && $mediaPath == JPATH_SITE . '/media')
+			foreach ($mediaFolders as $mediaFolder)
 			{
-				continue;
-			}
-
-			$folder = $mediaPath . '/' . $mediaFolder . ($redcoreFolder ? '' : '/translations');
-
-			if (is_dir($folder))
-			{
-				$contentElementsXml = JFolder::files($folder, '.xml', true);
-
-				if (!empty($contentElementsXml))
+				// We have already processed redcore media folder
+				if ($mediaFolder == 'redcore' && $mediaPath == JPATH_SITE . '/media')
 				{
-					self::$contentElements[$mediaFolder] = array();
+					continue;
+				}
 
-					foreach ($contentElementsXml as $contentElementXml)
+				$folder = $mediaPath . '/' . $mediaFolder . ($redcoreFolder ? '' : '/translations');
+
+				if (is_dir($folder))
+				{
+					$contentElementsXml = JFolder::files($folder, '.xml', false);
+
+					if (!empty($contentElementsXml))
 					{
-						$contentElement = new RTranslationContentElement($mediaFolder, $contentElementXml);
-
-						if (!empty($contentElement->table) || $contentElement->extension == 'upload')
+						if (!isset(self::$contentElements[$mediaFolder]))
 						{
-							self::$contentElements[$mediaFolder][$contentElement->table] = $contentElement;
+							self::$contentElements[$mediaFolder] = array();
+						}
+
+						foreach ($contentElementsXml as $contentElementXml)
+						{
+							$contentElement = new RTranslationContentElement($mediaFolder, $contentElementXml);
+
+							if (!empty($contentElement->table) || $mediaFolder == 'upload')
+							{
+								self::$contentElements[$mediaFolder][$folder . '/' . $contentElement->table] = $contentElement;
+							}
 						}
 					}
 				}
@@ -137,95 +148,6 @@ class RTranslationHelper
 		}
 
 		return self::$contentElements;
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName  Extension name
-	 *
-	 * @return  array  List of objects
-	 */
-	public static function loadContentElements($extensionName = '')
-	{
-		jimport('joomla.filesystem.folder');
-		$extensions = array();
-
-		if (empty($extensionName))
-		{
-			$iterator = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator(JPATH_SITE . '/media/redcore/translations')
-			);
-
-			/** @var SplFileInfo $fileInfo */
-			foreach ($iterator as $fileInfo)
-			{
-				if ($fileInfo->isDir())
-				{
-					$extensions[] = $fileInfo->getFilename();
-				}
-			}
-		}
-		else
-		{
-			$extensions[] = $extensionName;
-		}
-
-		foreach ($extensions as $extension)
-		{
-			$contentElementsXml = array();
-			$contentElementsXmlRedcorePath = RTranslationContentElement::getContentElementFolderPath($extension, true);
-
-			if (is_dir($contentElementsXmlRedcorePath))
-			{
-				$contentElementsXml = JFolder::files($contentElementsXmlRedcorePath, '.xml', true);
-			}
-
-			$contentElementsXmlExtensionPath = RTranslationContentElement::getContentElementFolderPath($extension);
-
-			if (is_dir($contentElementsXmlExtensionPath))
-			{
-				$contentElementsXmlExtension = JFolder::files($contentElementsXmlExtensionPath, '.xml', true);
-
-				if (!empty($contentElementsXmlExtension))
-				{
-					$contentElementsXml = array_merge($contentElementsXml, $contentElementsXmlExtension);
-				}
-			}
-
-			if (!empty($contentElementsXml))
-			{
-				self::$contentElements[$extension] = array();
-
-				foreach ($contentElementsXml as $contentElementXml)
-				{
-					$contentElement = new RTranslationContentElement($extension, $contentElementXml);
-					self::$contentElements[$extension][$contentElement->table] = $contentElement;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName  Extension name
-	 *
-	 * @return  array  List of objects
-	 */
-	public static function getContentElements($extensionName = '')
-	{
-		if (empty(self::$contentElements) || empty(self::$contentElements[$extensionName]))
-		{
-			self::loadContentElements($extensionName);
-		}
-
-		if (!empty(self::$contentElements[$extensionName]))
-		{
-			return self::$contentElements[$extensionName];
-		}
-
-		return $extensionName == '' ? self::$contentElements : array();
 	}
 
 	/**
@@ -239,7 +161,7 @@ class RTranslationHelper
 	 */
 	public static function getContentElement($extensionName = '', $contentElementsXml = '', $fullPath = false)
 	{
-		$contentElements = self::getContentElements($extensionName);
+		$contentElements = RTranslationContentElement::getContentElements(false, $extensionName);
 
 		if (!empty($contentElements))
 		{
@@ -261,24 +183,6 @@ class RTranslationHelper
 		}
 
 		return null;
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName  Extension name
-	 * @param   string  $tableName      XML File name
-	 *
-	 * @return  mixed  RTranslationContentElement if found or null
-	 */
-	public static function getContentElementByTable($extensionName = '', $tableName = '')
-	{
-		if (!isset(self::$contentElements[$extensionName][$tableName]))
-		{
-			self::getContentElements($extensionName);
-		}
-
-		return isset(self::$contentElements[$extensionName][$tableName]) ? self::$contentElements[$extensionName][$tableName] : null;
 	}
 
 	/**
@@ -315,7 +219,7 @@ class RTranslationHelper
 
 			foreach ($tables as $key => $table)
 			{
-				$tables[$key]->columns = explode(',', $table->columns);
+				$tables[$key]->columns = explode(',', $table->primaryKeys . ',' . $table->columns);
 				$tables[$key]->primaryKeys = explode(',', $table->primaryKeys);
 				$tables[$key]->fallbackColumns = explode(',', $table->fallbackColumns);
 				$tables[$key]->formLinks = json_decode($table->formLinks, true);
@@ -355,7 +259,7 @@ class RTranslationHelper
 				->order('tt.title');
 
 			$tables = $db->setQuery($query)->loadObjectList('name');
-			
+
 			foreach ($tables as $key => $table)
 			{
 				$tables[$key]->columns = explode(',', $table->translate_columns);
@@ -401,8 +305,7 @@ class RTranslationHelper
 				$query = $db->getQuery(true)
 					->select('tc.*')
 					->from($db->qn('#__redcore_translation_columns', 'tc'))
-					->where($db->qn('translation_table_id') . ' = ' . $table->id)
-					->order('tc.name');
+					->where($db->qn('translation_table_id') . ' = ' . $table->id);
 
 				self::$translationColumns[$table->name] = $db->setQuery($query)->loadAssocList('name');
 
@@ -489,9 +392,9 @@ class RTranslationHelper
 	/**
 	 * Set a value to translation table list
 	 *
-	 * @param   string  $option          Extension option name
-	 * @param   string  $table           Table name
-	 * @param   object  $contentElement  Content Element
+	 * @param   string                      $option          Extension option name
+	 * @param   string                      $table           Table name
+	 * @param   RTranslationContentElement  $contentElement  Content Element
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
@@ -519,8 +422,12 @@ class RTranslationHelper
 				'name'              => $table,
 				'extension_name'    => $option,
 				'title'             => $contentElement->name,
+				'version'           => $contentElement->version,
 				'columns'           => $contentElement->fieldsToColumns,
 				'formLinks'         => $contentElement->getEditForms(),
+				'description'       => $contentElement->getTranslateDescription(),
+				'author'            => $contentElement->getTranslateAuthor(),
+				'copyright'         => $contentElement->getTranslateCopyright(),
 				'xml_path'          => RTranslationContentElement::getPathWithoutBase($contentElement->contentElementXmlPath),
 				'xml_hashed'        => $contentElement->xml_hashed,
 				'filter_query'      => implode(' AND ', (array) $contentElement->getTranslateFilter()),
@@ -529,8 +436,6 @@ class RTranslationHelper
 			);
 			$translationTableModel->save($data);
 		}
-
-		self::loadContentElements($option);
 	}
 
 	/**

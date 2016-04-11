@@ -144,6 +144,23 @@ $column = 0;
 						<strong><?php echo !empty($contentElement->xml->description) ? $contentElement->xml->description : ''; ?></strong>
 					</td>
 				</tr>
+				<?php if (isset($contentElement->mainTable)): ?>
+					<tr>
+						<td>
+							<strong><?php echo JText::_('NOTICE'); ?>:</strong>
+						</td>
+						<td style="word-break:break-all;">
+							<strong>
+								<?php echo JText::sprintf(
+									'COM_REDCORE_TRANSLATION_TABLE_ALREADY_INSTALLED',
+									$contentElement->mainTable->name,
+									$contentElement->mainTable->version,
+									$contentElement->mainTable->xml_path
+								); ?>
+							</strong>
+						</td>
+					</tr>
+				<?php endif; ?>
 				</tbody>
 			</table>
 			<button

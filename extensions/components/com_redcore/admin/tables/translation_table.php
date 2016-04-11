@@ -41,6 +41,11 @@ class RedcoreTableTranslation_Table extends RTable
 	/**
 	 * @var  string
 	 */
+	public $version;
+
+	/**
+	 * @var  string
+	 */
 	public $primary_columns;
 
 	/**
@@ -52,6 +57,11 @@ class RedcoreTableTranslation_Table extends RTable
 	 * @var  string
 	 */
 	public $fallback_columns;
+
+	/**
+	 * @var  string
+	 */
+	public $form_links;
 
 	/**
 	 * @var string
@@ -67,6 +77,11 @@ class RedcoreTableTranslation_Table extends RTable
 	 * @var string
 	 */
 	public $filter_query;
+
+	/**
+	 * @var string
+	 */
+	public $params;
 
 	/**
 	 * @var int
@@ -114,6 +129,11 @@ class RedcoreTableTranslation_Table extends RTable
 	protected $columns = array();
 
 	/**
+	 * @var  bool
+	 */
+	protected $fromEditForm = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JDatabase  &$db  A database connector object
@@ -126,6 +146,16 @@ class RedcoreTableTranslation_Table extends RTable
 		$this->_tbl_key = 'id';
 
 		parent::__construct($db);
+	}
+
+	/**
+	 * Returns array of columns
+	 *
+	 * @return  array
+	 */
+	public function getTranslationColumns()
+	{
+		return $this->columns;
 	}
 
 	/**
@@ -142,6 +172,8 @@ class RedcoreTableTranslation_Table extends RTable
 		$client = clone $this;
 
 		$this->name = trim($this->name);
+		$this->version = trim($this->version);
+		$this->version = !empty($this->version) ? $this->version : '1.0.0';
 
 		if (empty($this->name))
 		{
@@ -171,6 +203,22 @@ class RedcoreTableTranslation_Table extends RTable
 	 */
 	public function store($updateNulls = true)
 	{
+		if ($this->fromEditForm)
+		{
+			$xml = RTranslationContentElement::generateTranslationXml($this);
+
+			$dom = dom_import_simplexml($xml)->ownerDocument;
+			$dom->preserveWhiteSpace = false;
+			$dom->formatOutput = true;
+			$this->xml_hashed = md5($dom->saveXML());
+		}
+
+		// We will set XML file to the upload folder so this will be our priority content element
+		if ($this->fromEditForm || empty($this->xml_path))
+		{
+			$this->xml_path = '/media/redcore/translations/upload/' . JPath::clean(str_replace('#__', '', $this->name) . '_' . $this->version . '.xml');
+		}
+
 		// Create new translation table
 		if (!RTranslationTable::setTranslationTable($this))
 		{
@@ -187,6 +235,14 @@ class RedcoreTableTranslation_Table extends RTable
 		if (!$this->storeColumns($this->columns))
 		{
 			return false;
+		}
+
+		if ($this->fromEditForm)
+		{
+			if (!$dom->save(JPath::clean(JPATH_SITE . '' . $this->xml_path)))
+			{
+				return false;
+			}
 		}
 
 		return true;

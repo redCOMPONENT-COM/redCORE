@@ -13,24 +13,22 @@ $model = isset($displayData['model']) ? $displayData['model'] : 'xmlForm';
 $return = isset($displayData['return']) ? $displayData['return'] : null;
 $action = RRoute::_('index.php?option=com_redcore&task=translation_tables.uploadXmlFile');
 ?>
+<button
+	class="btn btn-success"
+	type="button"
+	onclick="jQuery('#redcoreContentElement').click()">
+	<i class="icon-upload"></i>
+	<?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_UPLOAD_CONTENT_ELEMENT_XML') ?>
+</button>
 <form action="<?php echo $action; ?>" method="POST" enctype="multipart/form-data" id="xmlForm_<?php echo $model; ?>">
 	<div class="input_upload_button">
-		<div class="controls">
-			<input onchange="jQuery('#xmlForm_<?php echo $model; ?>').submit();"
-			       type="file"
-			       multiple="multiple"
-			       name="redcoreContentElement[]"
-			       id="redcoreContentElement"
-			       accept="application/xml"
-			       class="hide" />
-			<button
-				class="btn btn-success"
-				type="button"
-				onclick="jQuery('#redcoreContentElement').click()">
-				<i class="icon-upload"></i>
-				<?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_UPLOAD_CONTENT_ELEMENT_XML') ?>
-			</button>
-		</div>
+		<input onchange="jQuery('#xmlForm_<?php echo $model; ?>').submit();"
+		       type="file"
+		       multiple="multiple"
+		       name="redcoreContentElement[]"
+		       id="redcoreContentElement"
+		       accept="application/xml"
+		       class="hide" />
 	</div>
 
 	<input type="hidden" name="model" value="<?php echo $model; ?>"/>

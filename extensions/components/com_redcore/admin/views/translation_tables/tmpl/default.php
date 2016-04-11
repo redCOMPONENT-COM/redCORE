@@ -93,7 +93,7 @@ $db = JFactory::getDbo();
 							$columns = explode(',', $item->translate_columns);
 							$title = !empty($item->title) ? $item->title : $item->name;
 							$xmlModified = false;
-							$xmlDoc = RTranslationHelper::getContentElementByTable($item->extension_name, str_replace('#__', '', $item->name));
+							$xmlDoc = RTranslationHelper::getContentElement('', JPATH_SITE . $item->xml_path, $fullPath = true);
 							if (!empty($item->xml_path)) :
 								if (isset($xmlDoc->xml_hashed)) :
 									$xmlModified = $xmlDoc->xml_hashed != $item->xml_hashed;
@@ -109,7 +109,7 @@ $db = JFactory::getDbo();
 								</td>
 								<td>
 									<a class="hasTooltip"
-									   data-original-title="<?php echo str_replace('#__', $db->getPrefix(), $item->name); ?>"
+									   data-original-title="<span style='word-break:break-all;'><?php echo str_replace('#__', $db->getPrefix(), $item->name); ?> - <?php echo $item->version; ?></span>"
 									   href="<?php echo JRoute::_('index.php?option=com_redcore&task=translation_table.edit&id=' . $item->id); ?>">
 									<?php echo $title; ?>
 									</a>

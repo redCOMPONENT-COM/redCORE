@@ -127,6 +127,11 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
+			$button = RToolbarBuilder::createStandardButton(
+				'translation_tables.downloadXml', 'COM_REDCORE_TRANSLATION_TABLE_DOWNLOAD_XML', 'btn-default', 'icon-download'
+			);
+			$group4->addButton($button);
+
 			// Add / edit
 			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
 			{

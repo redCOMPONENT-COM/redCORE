@@ -1,22 +1,22 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Plugins</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.8.3</version>
-    <description>Translation definition for Joomla Plugin Management</description>
-    <reference>
-        <table name="extensions">
-            <field type="referenceid" name="extension_id" translate="0">ID</field>
-            <field type="titletext" name="name" translate="0">Name</field>
-            <field type="titletext" name="element" translate="0">Element</field>
-            <field type="titletext" name="folder" translate="0">Folder</field>
-            <field type="params" name="params" formname="plugin" formname25="plugin" fieldsname="params" translate="1" alwaysFallback="true">Parameters</field>
-            <field type="state" name="enabled" translate="1" alwaysFallback="true">Enabled</field>
-            <filter>o.type = 'plugin'</filter>
-        </table>
-        <component>
-            <editForm admin="true" option="com_plugins" view="plugin" layout="edit" identifier="extension_id" showbutton="true" htmlposition=".btn-toolbar:first" />
-        </component>
-    </reference>
+  <name>Plugins</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Plugin Management</description>
+  <reference>
+    <table name="extensions">
+      <field name="extension_id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="name" type="titletext" translate="0" alwaysFallback="false" filter="RAW" description="">Name</field>
+      <field name="element" type="titletext" translate="0" alwaysFallback="false" filter="RAW" description="">Element</field>
+      <field name="folder" type="titletext" translate="0" alwaysFallback="false" filter="RAW" description="">Folder</field>
+      <field name="params" type="params" translate="1" alwaysFallback="true" filter="RAW" description="" formname="plugin" formname25="plugin" fieldsname="params">Parameters</field>
+      <field name="enabled" type="state" translate="1" alwaysFallback="true" filter="RAW" description="">Enabled</field>
+      <filter><![CDATA[o.type = 'plugin']]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_plugins" view="plugin" layout="edit" identifier="extension_id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+    </component>
+  </reference>
 </contentelement>

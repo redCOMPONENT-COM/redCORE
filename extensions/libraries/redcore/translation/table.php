@@ -409,6 +409,7 @@ final class RTranslationTable
 			$fieldsToColumn = array();
 			$fieldsToColumn['name'] = (string) $fieldAttributes['name'];
 			$fieldsToColumn['title'] = (string) $field;
+			$fieldsToColumn['description'] = !empty($fieldAttributes['description']) ? (string) $fieldAttributes['description'] : '';
 			$fieldsToColumn['fallback'] = isset($fieldAttributes['alwaysFallback']) && (string) $fieldAttributes['alwaysFallback'] == 'true' ? 1 : 0;
 			$fieldsToColumn['value_type'] = (string) $fieldAttributes['type'];
 			$fieldsToColumn['params'] = $fieldAttributes;
@@ -421,13 +422,13 @@ final class RTranslationTable
 				}
 			}
 
-			$translate = isset($fieldAttributes['translate']) && (string) $fieldAttributes['translate'] == '0' ? false : true;
-			$primaryKey = isset($fieldAttributes['type']) && (string) $fieldAttributes['type'] == 'referenceid' ? true : false;
+			$translate = isset($fieldAttributes['translate']) && ((string) $fieldAttributes['translate']) == '0' ? false : true;
+			$primaryKey = isset($fieldAttributes['type']) && ((string) $fieldAttributes['type']) == 'referenceid' ? true : false;
 
 			if ($primaryKey)
 			{
 				$fieldsToColumn['column_type'] = RedcoreHelpersTranslation::COLUMN_PRIMARY;
-				$fieldsToColumn['value_type'] = 'text';
+				$fieldsToColumn['value_type'] = 'referenceid';
 			}
 			elseif (!$translate)
 			{
@@ -626,7 +627,7 @@ final class RTranslationTable
 
 			foreach ($primaryKeys as $primaryKey => $primaryKeyQuoted)
 			{
-				$constraintKey = $db->qn(md5($newTable . '_' . $primaryKey . '_fk'));
+				$constraintKey = $db->qn(md5($newTable . '_' . $primaryKeyQuoted . '_fk'));
 
 				$query = 'ALTER TABLE ' . $db->qn($newTable) . ' DROP FOREIGN KEY ' . $constraintKey . ' # ' . $newTable . '_' . $primaryKey . '_fk';
 
@@ -771,6 +772,7 @@ final class RTranslationTable
 	public static function batchContentElements($option = 'com_redcore', $action = '')
 	{
 		$contentElements = RTranslationContentElement::getContentElements(true, $option);
+		$tables = RTranslationHelper::getTranslationTables();
 
 		if (!empty($contentElements))
 		{
@@ -779,6 +781,17 @@ final class RTranslationTable
 				if (!empty($option) && $option != $componentName)
 				{
 					continue;
+				}
+
+				// We will check if this table is installed from a different path than the one provided
+				foreach ($tables as $table)
+				{
+					if (str_replace('#__', '', $table->name) == $contentElement->table
+						&& $table->xml_path != RTranslationContentElement::getPathWithoutBase($contentElement->contentElementXmlPath))
+					{
+						// We skip this file because it is not the one that is already installed
+						continue 2;
+					}
 				}
 
 				switch ($action)

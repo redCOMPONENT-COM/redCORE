@@ -87,8 +87,6 @@ class RBootstrap
 					self::$config = $plugin->params;
 				}
 			}
-
-			return null;
 		}
 
 		return self::$config->get($key, $default);

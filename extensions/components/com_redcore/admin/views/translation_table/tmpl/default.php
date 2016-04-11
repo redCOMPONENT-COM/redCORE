@@ -16,6 +16,20 @@ JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
 $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name));
 ?>
+<script type="text/javascript">
+	Joomla.submitbutton = function(task)
+	{
+		if ((task == 'translation_table.apply' || task == 'translation_table.save') && parseInt('<?php echo $this->item->id; ?>') > 0 )
+		{
+			if (confirm('<?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_SAVE_TABLE_CHANGES', true); ?>'))
+				Joomla.submitform(task, document.getElementById('adminForm'));
+		}
+		else
+		{
+			Joomla.submitform(task, document.getElementById('adminForm'));
+		}
+	}
+</script>
 <form action="<?php echo $action; ?>" method="post" name="adminForm" id="adminForm" class="form-validate form-horizontal">
 	<div class="container-fluid">
 		<div id="main-params">
@@ -51,16 +65,14 @@ $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name)
 					<?php echo $this->form->getInput('filter_query'); ?>
 				</div>
 			</div>
-			<?php if ($this->form->getValue('xml_path') != ''): ?>
-				<div class="form-group">
-					<div class="control-label">
-						<?php echo $this->form->getLabel('xml_path'); ?>
-					</div>
-					<div class="controls">
-						<?php echo RTranslationContentElement::getPathWithoutBase($this->item->xml_path); ?>
-					</div>
+			<div class="form-group">
+				<div class="control-label">
+					<?php echo $this->form->getLabel('xml_path'); ?>
 				</div>
-			<?php endif; ?>
+				<div class="controls">
+					<?php echo RTranslationContentElement::getPathWithoutBase($this->item->xml_path); ?>
+				</div>
+			</div>
 			<div class="form-group">
 				<div class="control-label">
 					<?php echo $this->form->getLabel('state'); ?>
@@ -78,6 +90,11 @@ $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name)
 			<li role="presentation">
 				<a href="#mainComponentEditForm" data-toggle="tab" class="translateTable-editForm">
 					<?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_TABLE_EDIT_FORM'); ?>
+				</a>
+			</li>
+			<li role="presentation">
+				<a href="#mainComponentInfo" data-toggle="tab" class="translateTable-infoForm">
+					<?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_TABLE_INFO'); ?>
 				</a>
 			</li>
 		</ul>
@@ -149,12 +166,51 @@ $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name)
 					?>
 				</div>
 			</div>
+			<div class="tab-pane" id="mainComponentInfo">
+				<h4><?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_INFO_DESC'); ?></h4>
+				<hr/>
+				<div id="info-params">
+					<div class="form-group">
+						<div class="control-label">
+							<?php echo $this->form->getLabel('version'); ?>
+						</div>
+						<div class="controls">
+							<?php echo $this->form->getInput('version'); ?>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="control-label">
+							<?php echo $this->form->getLabel('author'); ?>
+						</div>
+						<div class="controls">
+							<?php echo $this->form->getInput('author'); ?>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="control-label">
+							<?php echo $this->form->getLabel('copyright'); ?>
+						</div>
+						<div class="controls">
+							<?php echo $this->form->getInput('copyright'); ?>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="control-label">
+							<?php echo $this->form->getLabel('description'); ?>
+						</div>
+						<div class="controls">
+							<?php echo $this->form->getInput('description'); ?>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<!-- hidden fields -->
 	<input type="hidden" name="option" value="com_redcore">
 	<input type="hidden" name="id" value="<?php echo $this->item->id; ?>">
+	<input type="hidden" name="fromEditForm" value="1">
 	<input type="hidden" name="task" value="">
 	<?php echo JHTML::_('form.token'); ?>
 </form>

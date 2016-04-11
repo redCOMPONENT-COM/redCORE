@@ -56,6 +56,7 @@ abstract class RedcoreHelpersTranslation extends JObject
 	{
 		return array(
 			array('value' => 'text', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_TEXT')),
+			array('value' => 'titletext', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_TEXT_TITLE')),
 			array('value' => 'htmltext', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_HTML_EDITOR')),
 			array('value' => 'referenceid', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_PRIMARY_KEY')),
 			array('value' => 'hiddentext', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_HIDDEN_TEXT')),
@@ -148,7 +149,7 @@ abstract class RedcoreHelpersTranslation extends JObject
 	{
 		$db	= JFactory::getDbo();
 		$rowCount = array();
-		
+
 		try
 		{
 			$query = $db->getQuery(true);
@@ -174,9 +175,28 @@ abstract class RedcoreHelpersTranslation extends JObject
 			$query = $db->getQuery(true);
 
 			// Original rows
-			$query->select('count(*) AS translation_rows, rctranslations_language')
-				->from($db->qn(RTranslationTable::getTranslationsTableName($table->name)))
-				->group('rctranslations_language');
+			$query->select('count(*) AS translation_rows, t.rctranslations_language')
+				->from($db->qn(RTranslationTable::getTranslationsTableName($table->name), 't'))
+				->group('t.rctranslations_language');
+
+			$leftJoinOn = array();
+
+			$primaryKeys = explode(',', $table->primary_columns);
+
+			if ($primaryKeys)
+			{
+				foreach ($primaryKeys as $primaryKey)
+				{
+					$leftJoinOn[] = 'o.' . $primaryKey . ' = t.' . $primaryKey;
+					$query->where($db->qn('o.' . $primaryKey) . ' IS NOT NULL');
+				}
+
+				$leftJoinOn = implode(' AND ', $leftJoinOn);
+
+				$query->leftJoin(
+					$db->qn($table->name, 'o') . (!empty($leftJoinOn) ? ' ON ' . $leftJoinOn . '' : '')
+				);
+			}
 
 			$rowCount['translation_rows'] = $db->setQuery($query)->loadObjectList('rctranslations_language');
 		}
@@ -186,7 +206,7 @@ abstract class RedcoreHelpersTranslation extends JObject
 				JText::_('COM_REDCORE_TRANSLATION_TABLE_DONT_EXIST') . ' ' . RTranslationTable::getTranslationsTableName($table->name), JLog::ERROR, 'jerror'
 			);
 		}
-		
+
 		return $rowCount;
 	}
 }

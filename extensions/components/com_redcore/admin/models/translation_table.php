@@ -35,11 +35,11 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 		$fallbackColumns = array();
 		$translateColumns = array();
 
+		// Set up columns to their respective placeholder
 		if (!empty($data['columns']))
 		{
 			foreach ($data['columns'] as $columnKey => $column)
 			{
-
 				if ($column['column_type'] == RedcoreHelpersTranslation::COLUMN_PRIMARY)
 				{
 					$primaryKeys[] = $column['name'];
@@ -57,6 +57,7 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 					$translateColumns[] = $column['name'];
 				}
 
+				// Key/Value sets that do not belong in the table but are treated as extra parameters from editor or plugins
 				if (!empty($column['extra_field_key']))
 				{
 					$params = array();
@@ -77,6 +78,26 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 			}
 		}
 
+		// Set up params
+		$params = !empty($data['params']) ? $data['params'] : array();
+
+		if ($data['description'])
+		{
+			$params['description'] = $data['description'];
+		}
+
+		if ($data['author'])
+		{
+			$params['author'] = $data['author'];
+		}
+
+		if ($data['copyright'])
+		{
+			$params['copyright'] = $data['copyright'];
+		}
+
+		$data['params'] = $params;
+
 		$data['primary_columns'] = implode(',', $primaryKeys);
 		$data['fallback_columns'] = implode(',', $fallbackColumns);
 		$data['translate_columns'] = implode(',', $translateColumns);
@@ -85,6 +106,8 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 		{
 			$data['form_links'] = json_encode($data['formLinks']);
 		}
+
+		$data['fromEditForm'] = JFactory::getApplication()->input->get('fromEditForm') == '1';
 
 		return parent::save($data);
 	}
@@ -112,7 +135,7 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 				->select('*')
 				->from($db->qn('#__redcore_translation_columns', 'tc'))
 				->where('tc.translation_table_id = ' . $db->q($item->id))
-				->order('tc.name');
+				->order('tc.id');
 			$db->setQuery($query);
 
 			$item->columns = $db->loadObjectList();
@@ -123,6 +146,15 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 			}
 
 			$item->editForms = json_decode($item->form_links, true);
+			$item->params = is_string($item->params) ? json_decode($item->params, true) : $item->params;
+
+			foreach ($item->params as $key => $param)
+			{
+				if (!isset($item->{$key}))
+				{
+					$item->{$key} = $param;
+				}
+			}
 		}
 		else
 		{

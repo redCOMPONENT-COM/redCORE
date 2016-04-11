@@ -30,6 +30,38 @@
                 description="COM_REDCORE_TRANSLATION_TABLE_TITLE_DESC"
                 />
 		<field
+				name="version"
+				default="1.0.0"
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_VERSION"
+				description="COM_REDCORE_TRANSLATION_TABLE_VERSION_DESC"
+				class="form-control"
+		/>
+		<field
+				name="description"
+				default=""
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_DESCRIPTION"
+				description="COM_REDCORE_TRANSLATION_TABLE_DESCRIPTION_DESC"
+				class="form-control"
+		/>
+		<field
+				name="author"
+				default=""
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_AUTHOR"
+				description="COM_REDCORE_TRANSLATION_TABLE_AUTHOR_DESC"
+				class="form-control"
+		/>
+		<field
+				name="copyright"
+				default=""
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_COPYRIGHT"
+				description="COM_REDCORE_TRANSLATION_TABLE_COPYRIGHT_DESC"
+				class="form-control"
+		/>
+		<field
 				name="filter_query"
 				type="textarea"
 				label="COM_REDCORE_TRANSLATION_TABLE_FILTER_QUERY"

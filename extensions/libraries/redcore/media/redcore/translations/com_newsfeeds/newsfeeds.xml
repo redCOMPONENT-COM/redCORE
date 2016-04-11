@@ -1,19 +1,20 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Newsfeeds</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.8.3</version>
-    <description>Translation definition for Joomla Newsfeeds component</description>
-    <reference>
-        <table name="newsfeeds">
-            <field type="referenceid" name="id" translate="0">ID</field>
-            <field type="titletext" name="name" translate="1">Name</field>
-            <field type="text" name="alias" translate="1" posthandler="filterTitle">Alias</field>
-            <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
-        </table>
-        <component>
-            <editForm admin="true" option="com_newsfeeds" view="newsfeed" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" />
-        </component>
-    </reference>
+  <name>Newsfeeds</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Newsfeeds component</description>
+  <reference>
+    <table name="newsfeeds">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="name" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="">Name</field>
+      <field name="alias" type="text" translate="1" alwaysFallback="false" filter="RAW" description="" posthandler="filterTitle">Alias</field>
+      <field name="published" type="state" translate="1" alwaysFallback="true" filter="RAW" description="">State</field>
+      <filter><![CDATA[]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_newsfeeds" view="newsfeed" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+    </component>
+  </reference>
 </contentelement>
