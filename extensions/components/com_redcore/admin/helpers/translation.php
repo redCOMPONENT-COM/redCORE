@@ -26,9 +26,9 @@ abstract class RedcoreHelpersTranslation extends JObject
 	public static function getTranslationColumnTypes()
 	{
 		return array(
-			array('value' => self::COLUMN_PRIMARY, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_PRIMARY')),
-			array('value' => self::COLUMN_READONLY, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_READ_ONLY')),
-			array('value' => self::COLUMN_TRANSLATE, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_TRANSLATE')),
+			array('value' => RTranslationTable::COLUMN_PRIMARY, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_PRIMARY')),
+			array('value' => RTranslationTable::COLUMN_READONLY, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_READ_ONLY')),
+			array('value' => RTranslationTable::COLUMN_TRANSLATE, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_TRANSLATE')),
 		);
 	}
 
