@@ -35,7 +35,7 @@ class Com_RedcoreUpdateScript_1_8_3
 			foreach ($tables as $table)
 			{
 				// Reinstall tables with the new installer
-				RTranslationTable::installContentElement($table->option, $table->path . '/' . $table->xmlFile);
+				RTranslationTable::installContentElement($table->option, $table->path, true);
 
 				// We need to add new column to each existing translation table
 				try

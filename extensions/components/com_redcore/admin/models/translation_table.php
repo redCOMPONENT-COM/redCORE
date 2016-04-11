@@ -40,11 +40,11 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 		{
 			foreach ($data['columns'] as $columnKey => $column)
 			{
-				if ($column['column_type'] == RedcoreHelpersTranslation::COLUMN_PRIMARY)
+				if ($column['column_type'] == RTranslationTable::COLUMN_PRIMARY)
 				{
 					$primaryKeys[] = $column['name'];
 				}
-				elseif ($column['column_type'] == RedcoreHelpersTranslation::COLUMN_READONLY)
+				elseif ($column['column_type'] == RTranslationTable::COLUMN_READONLY)
 				{
 				}
 				elseif($column['fallback'] == 1)

@@ -395,10 +395,11 @@ class RTranslationHelper
 	 * @param   string                      $option          Extension option name
 	 * @param   string                      $table           Table name
 	 * @param   RTranslationContentElement  $contentElement  Content Element
+	 * @param   bool                        $notifications   Show notifications
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function setInstalledTranslationTables($option, $table, $contentElement)
+	public static function setInstalledTranslationTables($option, $table, $contentElement, $notifications = false)
 	{
 		// Initialize installed tables before proceeding
 		self::getTranslationTables();
@@ -433,6 +434,7 @@ class RTranslationHelper
 				'filter_query'      => implode(' AND ', (array) $contentElement->getTranslateFilter()),
 				'state'             => 1,
 				'id'                => $contentElement->tableId,
+				'showNotifications' => $notifications
 			);
 			$translationTableModel->save($data);
 		}

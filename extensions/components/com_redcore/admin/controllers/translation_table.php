@@ -101,7 +101,7 @@ class RedcoreControllerTranslation_Table extends RControllerForm
 
 						if ($columnValue->Key == 'PRI')
 						{
-							$column->column_type = RedcoreHelpersTranslation::COLUMN_PRIMARY;
+							$column->column_type = RTranslationTable::COLUMN_PRIMARY;
 							$column->value_type = 'referenceid';
 						}
 					}

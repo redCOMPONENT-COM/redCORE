@@ -105,7 +105,7 @@ class RedcoreModelTranslation extends RModelAdmin
 
 		foreach ($table->allColumns as $column)
 		{
-			if ($column['column_type'] != RedcoreHelpersTranslation::COLUMN_TRANSLATE)
+			if ($column['column_type'] != RTranslationTable::COLUMN_TRANSLATE)
 			{
 				$item->translation->{$column['name']} = $item->original->{$column['name']};
 			}
@@ -154,7 +154,7 @@ class RedcoreModelTranslation extends RModelAdmin
 
 		foreach ($translationTable->allColumns as $field)
 		{
-			if ($field['value_type'] == 'params' && $field['column_type'] == RedcoreHelpersTranslation::COLUMN_TRANSLATE)
+			if ($field['value_type'] == 'params' && $field['column_type'] == RTranslationTable::COLUMN_TRANSLATE)
 			{
 				$fieldName = $field['name'];
 				$paramsChanged = false;

@@ -75,7 +75,7 @@ class RedcoreModelTranslations extends RModelList
 
 		foreach ($table->allColumns as $column)
 		{
-			if ($column['column_type'] != RedcoreHelpersTranslation::COLUMN_READONLY)
+			if ($column['column_type'] != RTranslationTable::COLUMN_READONLY)
 			{
 				$query->select($db->qn('t.' . $column['name'], 't_' . $column['name']));
 			}

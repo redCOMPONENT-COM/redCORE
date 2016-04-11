@@ -19,21 +19,6 @@ defined('_JEXEC') or die;
 abstract class RedcoreHelpersTranslation extends JObject
 {
 	/**
-	 * @const  string
-	 */
-	const COLUMN_TRANSLATE = 'translate';
-
-	/**
-	 * @const  string
-	 */
-	const COLUMN_PRIMARY = 'primary';
-
-	/**
-	 * @const  string
-	 */
-	const COLUMN_READONLY = 'readonly';
-
-	/**
 	 * Gets translation column types
 	 *
 	 * @return  array

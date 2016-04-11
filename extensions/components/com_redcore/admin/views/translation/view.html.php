@@ -103,7 +103,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 				}
 			}
 
-			if ($field['column_type'] != RedcoreHelpersTranslation::COLUMN_TRANSLATE && $field['value_type'] != 'referenceid')
+			if ($field['column_type'] != RTranslationTable::COLUMN_TRANSLATE && $field['value_type'] != 'referenceid')
 			{
 				$this->noTranslationColumns[$field['name']] = $field;
 			}

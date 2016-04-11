@@ -47,7 +47,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 
 		if ($xmlFile == 'all')
 		{
-			if (RTranslationTable::batchContentElements($option, 'install'))
+			if (RTranslationTable::batchContentElements($option, 'install', $notifications = true))
 			{
 				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_INSTALLED'), 'message');
 			}
@@ -58,7 +58,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 		}
 		else
 		{
-			if (RTranslationTable::installContentElement($option, $xmlFile))
+			if (RTranslationTable::installContentElement($option, $xmlFile, false, $notifications = true))
 			{
 				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_INSTALLED'), 'message');
 			}
@@ -224,7 +224,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 
 				if ($table)
 				{
-					if (!RTranslationTable::installContentElement($table->extension_name, $table->xml_path, $fullPath = true))
+					if (!RTranslationTable::installContentElement($table->extension_name, $table->xml_path, $fullPath = true, $notifications = true))
 					{
 						$this->setMessage(JText::sprintf('COM_REDCORE_TRANSLATION_TABLE_UNABLE_TO_UPDATE_TABLE', $table->title, $table->xml_path), 'error');
 						$success = false;

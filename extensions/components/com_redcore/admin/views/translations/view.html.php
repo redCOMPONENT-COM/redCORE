@@ -82,7 +82,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 
 			foreach ($this->translationTable->allColumns as $column)
 			{
-				if ($column['column_type'] == RedcoreHelpersTranslation::COLUMN_READONLY)
+				if ($column['column_type'] == RTranslationTable::COLUMN_READONLY)
 				{
 					$this->translationTable->readonlyColumns[] = $column['name'];
 				}

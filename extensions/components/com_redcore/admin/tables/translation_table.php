@@ -134,6 +134,11 @@ class RedcoreTableTranslation_Table extends RTable
 	protected $fromEditForm = false;
 
 	/**
+	 * @var  bool
+	 */
+	protected $showNotifications = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JDatabase  &$db  A database connector object
@@ -220,7 +225,7 @@ class RedcoreTableTranslation_Table extends RTable
 		}
 
 		// Create new translation table
-		if (!RTranslationTable::setTranslationTable($this))
+		if (!RTranslationTable::setTranslationTable($this, isset($this->showNotifications) ? $this->showNotifications : $this->fromEditForm))
 		{
 			return false;
 		}

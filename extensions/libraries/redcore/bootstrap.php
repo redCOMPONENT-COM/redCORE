@@ -86,6 +86,14 @@ class RBootstrap
 				{
 					self::$config = $plugin->params;
 				}
+				else
+				{
+					return null;
+				}
+			}
+			else
+			{
+				return null;
 			}
 		}
 

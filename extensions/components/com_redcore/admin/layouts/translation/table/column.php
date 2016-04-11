@@ -14,7 +14,7 @@ extract($displayData);
 $column = $options['column'];
 
 $columnTypes = RedcoreHelpersTranslation::getTranslationColumnTypes();
-$column->column_type = empty($column->column_type) ? RedcoreHelpersTranslation::COLUMN_TRANSLATE : $column->column_type;
+$column->column_type = empty($column->column_type) ? RTranslationTable::COLUMN_TRANSLATE : $column->column_type;
 
 $valueTypes = RedcoreHelpersTranslation::getTranslationValueTypes();
 $column->value_type = empty($column->value_type) ? 'text' : $column->value_type;
