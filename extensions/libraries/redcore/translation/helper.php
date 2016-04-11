@@ -463,9 +463,9 @@ class RTranslationHelper
 				{
 					foreach ($translationTable->formLinks as $formLink)
 					{
-						$formLinks = explode('#', $formLink);
+						$id = $input->getString($formLink['identifier'], '');
 
-						if (count($formLinks) > 1 && $option == $formLinks[0] && in_array($view, array('form', $formLinks[1])))
+						if ($option == $formLink['option'] && $view == $formLink['view'] && $layout == $formLink['layout'] && $id)
 						{
 							unset($translationTables[$tableKey]);
 							break;
