@@ -23,7 +23,7 @@ $I->selectOptionInRadioField('Enable webservices', 'Yes');
 $I->click(['xpath' => "//div[@id='toolbar-apply']/button"]);
 $I->waitForText('Plugin successfully saved.', 30, ['id' => 'system-message-container']);
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');
-$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=&layout=manage');
+$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translation_tables');
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=banner_clients');
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=banners&return');
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=categories');

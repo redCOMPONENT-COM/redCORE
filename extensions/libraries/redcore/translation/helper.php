@@ -262,7 +262,7 @@ class RTranslationHelper
 
 			foreach ($tables as $key => $table)
 			{
-				$tables[$key]->columns = explode(',', $table->translate_columns);
+				$tables[$key]->columns = explode(',', $table->primary_columns . ',' . $table->translate_columns);
 				$tables[$key]->primaryKeys = explode(',', $table->primary_columns);
 				$tables[$key]->fallbackColumns = explode(',', $table->fallback_columns);
 				$tables[$key]->table = $table->name;
