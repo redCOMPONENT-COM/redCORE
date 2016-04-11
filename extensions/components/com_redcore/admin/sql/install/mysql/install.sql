@@ -250,9 +250,7 @@ CREATE TABLE IF NOT EXISTS `#__redcore_webservices` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- -----------------------------------------------------
--- Table `#__redcore_translations`
-
---"#__banner_clients":{"option":"com_banners","table":"#__banner_clients","name":"Banners - Clients","columns":["id","name","contact","email","extrainfo","state"],"primaryKeys":["id"],"fallbackColumns":["state"],"xml":"banner_clients.xml","path":"C:\\projects\\redComponent\\dj\/media\/redcore\/translations\/com_banners\/banner_clients.xml","formLinks":[],"state":1
+-- Table `#__redcore_translation_tables`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `#__redcore_translation_tables` (
   `id`                INT(11)     UNSIGNED  NOT NULL AUTO_INCREMENT,
