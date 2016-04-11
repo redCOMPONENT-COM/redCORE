@@ -143,7 +143,7 @@ $db = JFactory::getDbo();
 								</td>
 								<td>
 									<?php foreach ($this->languages as $languageKey => $language): ?>
-										<span class="label label-primary hasTooltip" data-original-title="<?php echo $languageKey; ?>"><?php echo isset($item->translation_rows[$languageKey]) ? $item->translation_rows[$languageKey]->translation_rows : 0; ?></span>&nbsp;
+										<span style="display: inline-block;min-width:43px;" class="label label-primary hasTooltip" data-original-title="<?php echo $languageKey; ?>"><?php echo isset($item->translation_rows[$languageKey]) ? $item->translation_rows[$languageKey]->translation_rows : 0; ?></span>
 									<?php endforeach; ?>
 								</td>
 								<td>
