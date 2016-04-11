@@ -13,7 +13,6 @@ $column = 0;
 $return = !empty($displayData['return']) ? $displayData['return'] : '';
 $components = !empty($displayData['components']) ? $displayData['components'] : array();
 $configurationLink = !empty($displayData['configurationLink']) ? true : false;
-$translationLink = !empty($displayData['translationLink']) ? true : false;
 ?>
 <div class="row">
 	<?php if (empty($components)): ?>
@@ -63,13 +62,6 @@ $translationLink = !empty($displayData['translationLink']) ? true : false;
 						href="<?php echo JRoute::_('index.php?option=com_redcore&view=config&layout=edit&component=' . $component->option . '&return=' . $return); ?>">
 						<i class="icon-cogs"></i>
 						<?php echo JText::_('COM_REDCORE_CONFIGURATION') ?>
-					</a>
-				<?php endif; ?>
-				<?php if ($translationLink): ?>
-					<a class="btn btn-primary"
-					   href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&component=' . $component->option . '&return=' . $return); ?>">
-						<i class="icon-globe"></i>
-						<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 					</a>
 				<?php endif; ?>
 			</div>

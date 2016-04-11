@@ -82,10 +82,10 @@ $listDirn = $this->state->get('list.direction');
 							<?php echo $item->client_id; ?>
 							</a>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo $item->client_secret; ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo $item->redirect_uri; ?>
 						</td>
 						<td>

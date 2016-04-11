@@ -54,9 +54,9 @@ class RedcoreControllerTranslation extends RControllerForm
 	 */
 	protected function getCommonRedirectAppend($append = '')
 	{
-		if ($contentelement = $this->input->get('contentelement'))
+		if ($translationTableName = $this->input->get('translationTableName'))
 		{
-			$append .= '&contentelement=' . $contentelement;
+			$append .= '&translationTableName=' . $translationTableName;
 		}
 
 		if ($component = $this->input->get('component'))
