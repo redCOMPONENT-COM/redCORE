@@ -485,7 +485,7 @@ final class RTranslationTable
 			$contentElement->fieldsToColumns[] = $fieldsToColumn;
 
 			// We are not saving this fields, we only show them in editor
-			if ((string) $fieldAttributes['translate'] == '0' && (string) $fieldAttributes['type'] != 'referenceid')
+			if (isset($fieldAttributes['translate']) && (string) $fieldAttributes['translate'] == '0' && (string) $fieldAttributes['type'] != 'referenceid')
 			{
 				continue;
 			}
