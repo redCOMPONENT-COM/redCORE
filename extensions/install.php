@@ -639,6 +639,8 @@ class Com_RedcoreInstallerScript
 		{
 			if ($nodes = $manifest->translations->translation)
 			{
+				RTranslationHelper::$contentElements = array();
+				
 				foreach ($nodes as $node)
 				{
 					$extName   = (string) $node->attributes()->name;
