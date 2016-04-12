@@ -207,6 +207,7 @@ class RTranslationHelper
 						$db->qn('tt.primary_columns', 'primaryKeys'),
 						$db->qn('tt.fallback_columns', 'fallbackColumns'),
 						$db->qn('tt.name', 'table'),
+						$db->qn('tt.title', 'title'),
 						$db->qn('tt.extension_name', 'option'),
 						$db->qn('tt.form_links', 'formLinks'),
 					)
