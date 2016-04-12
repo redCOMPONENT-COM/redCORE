@@ -19,70 +19,15 @@ defined('_JEXEC') or die;
 class RedcoreControllerTranslation extends RControllerForm
 {
 	/**
-	 * Gets the URL arguments to append to an item redirect.
+	 * Constructor.
 	 *
-	 * @param   integer  $recordId  The primary key id for the item.
-	 * @param   string   $urlVar    The name of the URL variable for the id.
-	 *
-	 * @return  string  The arguments to append to the redirect URL.
 	 */
-	protected function getRedirectToItemAppend($recordId = null, $urlVar = 'rctranslations_id')
+	public function __construct()
 	{
-		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
-
-		$append .= $this->getCommonRedirectAppend($append);
-
-		if ($rctranslations_id = $this->input->get('rctranslations_id'))
-		{
-			$append .= '&rctranslations_id=' . $rctranslations_id;
-		}
-
-		if ($id = $this->input->get('id'))
-		{
-			$append .= '&id=' . $id;
-		}
-
-		return $append;
-	}
-
-	/**
-	 * Gets the URL arguments to append to an item redirect.
-	 *
-	 * @param   string  $append  String to append to
-	 *
-	 * @return  string  The arguments to append to the redirect URL.
-	 */
-	protected function getCommonRedirectAppend($append = '')
-	{
-		if ($contentelement = $this->input->get('contentelement'))
-		{
-			$append .= '&contentelement=' . $contentelement;
-		}
-
-		if ($component = $this->input->get('component'))
-		{
-			$append .= '&component=' . $component;
-		}
-
-		if ($language = $this->input->get('language'))
-		{
-			$append .= '&language=' . $language;
-		}
-
-		return $append;
-	}
-
-	/**
-	 * Gets the URL arguments to append to a list redirect.
-	 *
-	 * @return  string  The arguments to append to the redirect URL.
-	 */
-	protected function getRedirectToListAppend()
-	{
-		$append = parent::getRedirectToListAppend();
-
-		$append .= $this->getCommonRedirectAppend($append);
-
-		return $append;
+		parent::__construct();
+		$view = $this->getView('translation', 'html');
+		$view->setLayout('modal-edit');
+		$model = RModel::getAdminInstance('translation', array(), 'com_redcore');
+		$view->setModel($model, true);
 	}
 }

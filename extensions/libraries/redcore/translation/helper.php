@@ -806,50 +806,50 @@ class RTranslationHelper
 
 		$translationTables = self::getInstalledTranslationTables();
 
-		if ($layout == 'edit' || $task == 'edit')
+		// Go through all installed translation tables
+		foreach ($translationTables as $tableKey => $translationTable)
 		{
-			// Go through all installed translation tables
-			foreach ($translationTables as $tableKey => $translationTable)
+			if (!empty($translationTable->formLinks))
 			{
-				if (!empty($translationTable->formLinks))
+				// Go through all form links
+				foreach ($translationTable->formLinks as $formLink)
 				{
-					// Go through all form links
-					foreach ($translationTable->formLinks as $formLink)
+					$formLinks = explode('#', $formLink);
+
+					// Create array for later checking layout
+					$layoutArr = isset($formLinks[4]) ? explode('!', $formLinks[4]) : '';
+
+					// Check whether the form link values matches the current page
+					if ($formLinks[0] == $option && $formLinks[1] == $view && in_array($layout, $layoutArr))
 					{
-						$formLinks = explode('#', $formLink);
+						// Get id of item based on the name of the primary key gotten from the XML file.
+						$itemid = $input->getInt($formLinks[2], '');
 
-						// Check whether the form link values matches the current page
-						if ($formLinks[0] == $option && $formLinks[1] == $view)
+						// If the item doesn't have an ID, tell the user that they have to save the item first.
+						if (empty($itemid))
 						{
-							// Get id of item based on the name of the primary key gotten from the XML file.
-							$itemid = $input->getInt($formLinks[2], '');
+							self::renderTranslationModal(false, false, false);
 
-							// If the item doesn't have an ID, tell the user that they have to save the item first.
-							if (empty($itemid))
-							{
-								self::renderTranslationModal(false, false, false);
+							return;
+						}
 
-								return;
-							}
+						// Check whether there's a relation between the current item and the translation element
+						$db = JFactory::getDbo();
+						$query = $db->getQuery(true)
+						->select($db->qn($translationTable->primaryKeys[0]))
+						->from($db->qn($translationTable->table))
+						->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemid));
 
-							// Check whether there's a relation between the current item and the translation element
-							$db = JFactory::getDbo();
-							$query = $db->getQuery(true)
-							->select($db->qn($translationTable->primaryKeys[0]))
-							->from($db->qn($translationTable->table))
-							->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemid));
+						$db->setQuery($query);
+						$results = $db->loadObjectList();
 
-							$db->setQuery($query);
-							$results = $db->loadObjectList();
+						// If there is, render a modal button & window in the toolbar
+						if (!empty($results))
+						{
+							$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->name;
+							$contentelement = str_replace('#__', '', $translationTable->table);
 
-							// If there is, render a modal button & window in the toolbar
-							if (!empty($results))
-							{
-								$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->name;
-								$contentelement = str_replace('#__', '', $translationTable->table);
-
-								self::renderTranslationModal($itemid, $linkname, $contentelement);
-							}
+							self::renderTranslationModal($itemid, $linkname, $contentelement);
 						}
 					}
 				}
@@ -875,7 +875,7 @@ class RTranslationHelper
 					'id' => $itemid,
 					'header' => '',
 					'linkName' => $linkname,
-					'link' => JRoute::_('index.php?option=com_redcore&view=translation&task=translation.edit&layout=modal-edit&contentelement='
+					'link' => JRoute::_('index.php?option=com_redcore&view=translation&task=translation.display&layout=modal-edit&contentelement='
 										. $contentelement
 										. '&id='
 										. $itemid

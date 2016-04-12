@@ -30,7 +30,7 @@ $contentLanguages = JLanguageHelper::getLanguages();
 			<div class="tab-pane" id="fields-<?php echo $language->lang_id; ?>">	
 				<form method="post" target="my_iframe_<?php echo $language->lang_id; ?>" name="adminForm_<?php echo $language->lang_id; ?>" id="adminForm_<?php echo $language->lang_id; ?>" class="form-validate form-horizontal">	
 
-					<?php 
+					<?php
 					$rctranslationId = RTranslationHelper::getTranslationItemId($input->getString('id', ''), $language->lang_code, $this->translationTable->primaryKeys);
 					$this->setItem($rctranslationId);
 
