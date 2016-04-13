@@ -93,7 +93,7 @@ $db = JFactory::getDbo();
 							$columns = explode(',', $item->translate_columns);
 							$title = !empty($item->title) ? $item->title : $item->name;
 							$xmlModified = false;
-							$xmlDoc = RTranslationHelper::getContentElement('', JPATH_SITE . $item->xml_path, $fullPath = true);
+							$xmlDoc = RTranslationContentElement::getContentElement('', JPATH_SITE . $item->xml_path, $fullPath = true);
 							if (!empty($item->xml_path)) :
 								if (isset($xmlDoc->xml_hashed)) :
 									$xmlModified = $xmlDoc->xml_hashed != $item->xml_hashed;

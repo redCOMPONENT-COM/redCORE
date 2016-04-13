@@ -37,7 +37,7 @@ class RedcoreTableTranslation extends RTable
 		$this->_tableName = 'extension';
 		$this->_tbl_key = 'rctranslations_id';
 		$app = JFactory::getApplication();
-		$table = RTranslationHelper::getTranslationTableByName($app->input->get('translationTableName', ''));
+		$table = RTranslationTable::getTranslationTableByName($app->input->get('translationTableName', ''));
 
 		$this->_tbl = RTranslationTable::getTranslationsTableName($table->name, '');
 		$this->_tableName = str_replace('#__', '', $this->_tbl);

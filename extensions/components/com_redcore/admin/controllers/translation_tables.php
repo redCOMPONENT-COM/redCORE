@@ -106,7 +106,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 			// Download single XML file
 			if (count($cid) == 1)
 			{
-				$table = RTranslationHelper::getTranslationTableById($cid[0]);
+				$table = RTranslationTable::getTranslationTableById($cid[0]);
 				$fileName = (str_replace('#__', '', $table->name) . '_' . $table->version) . '.xml';
 
 				if (!empty($table->xml_path) && is_file(JPATH_SITE . $table->xml_path))
@@ -124,7 +124,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 
 				foreach ($cid as $id)
 				{
-					$table = RTranslationHelper::getTranslationTableById($id);
+					$table = RTranslationTable::getTranslationTableById($id);
 
 					if (!empty($table->xml_path) && is_file(JPATH_SITE . $table->xml_path))
 					{
@@ -220,7 +220,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 
 			foreach ($cid as $id)
 			{
-				$table = RTranslationHelper::getTranslationTableById($id);
+				$table = RTranslationTable::getTranslationTableById($id);
 
 				if ($table)
 				{

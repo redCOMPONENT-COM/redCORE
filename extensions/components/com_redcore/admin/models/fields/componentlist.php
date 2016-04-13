@@ -65,7 +65,7 @@ class JFormFieldComponentlist extends JFormFieldList
 
 			// Return the result
 			$components = $db->loadObjectList();
-			$tables = RTranslationHelper::getTranslationTables();
+			$tables = RTranslationTable::getInstalledTranslationTables();
 
 			if (!empty($components))
 			{

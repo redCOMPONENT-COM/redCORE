@@ -200,7 +200,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			}
 		}
 
-		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+		$translationTables = RTranslationTable::getInstalledTranslationTables();
 		$translationTables = RTranslationHelper::removeFromEditForm($translationTables);
 		$sql = self::parseSelectQuery($sql, $prefix, $selectedLanguage, $translationTables);
 

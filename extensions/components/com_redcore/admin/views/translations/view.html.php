@@ -77,7 +77,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		if (!empty($this->translationTableName))
 		{
 			$this->items = $model->getItems();
-			$this->translationTable = RTranslationHelper::setTranslationTableWithColumn($this->translationTableName);
+			$this->translationTable = RTranslationTable::setTranslationTableWithColumn($this->translationTableName);
 			$this->translationTable->readonlyColumns = array();
 
 			foreach ($this->translationTable->allColumns as $column)

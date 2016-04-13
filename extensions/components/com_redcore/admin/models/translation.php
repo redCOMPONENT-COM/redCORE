@@ -30,7 +30,7 @@ class RedcoreModelTranslation extends RModelAdmin
 		$app = JFactory::getApplication();
 		$ids = $app->input->getString('id', '');
 		$id = $app->input->getString('rctranslations_id', '');
-		$table = RTranslationHelper::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
+		$table = RTranslationTable::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
 
 		if (empty($table))
 		{
@@ -136,7 +136,7 @@ class RedcoreModelTranslation extends RModelAdmin
 	public function save($data)
 	{
 		$app = JFactory::getApplication();
-		$translationTable = RTranslationHelper::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
+		$translationTable = RTranslationTable::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
 		$translation = $app->input->get('translation', array(), 'array');
 		$id = !empty($data['rctranslations_id']) ? (int) $data['rctranslations_id'] : 0;
 
