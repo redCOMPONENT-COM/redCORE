@@ -39,6 +39,22 @@ final class RTranslationTable
 	 * @var    array
 	 * @since  1.0
 	 */
+	public static $installedTranslationTables = null;
+
+	/**
+	 * An array to hold columns from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $translationColumns = null;
+
+	/**
+	 * An array to hold tables from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
 	public static $tableList = array();
 
 	/**
@@ -336,7 +352,7 @@ final class RTranslationTable
 		// Remove old constraints if they exist before removing the columns
 		if (!$newTableCreated)
 		{
-			$loadedTable = RTranslationHelper::getTranslationTableByName($originalTableWithPrefix);
+			$loadedTable = self::getTranslationTableByName($originalTableWithPrefix);
 			$primaryColumns = !empty($loadedTable) ? explode(',', $loadedTable->primary_columns) : array();
 
 			self::removeExistingConstraintKeys($originalTableWithPrefix, $primaryColumns);
@@ -417,7 +433,7 @@ final class RTranslationTable
 	public static function installContentElement($option = 'com_redcore', $xmlFile = '', $fullPath = false, $notifications = false)
 	{
 		// Load Content Element
-		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile, $fullPath);
+		$contentElement = RTranslationContentElement::getContentElement($option, $xmlFile, $fullPath);
 
 		if (empty($contentElement) || empty($contentElement->table))
 		{
@@ -511,10 +527,10 @@ final class RTranslationTable
 			return false;
 		}
 
-		$loadedTable = RTranslationHelper::getTranslationTableByName($originalTable);
+		$loadedTable = self::getTranslationTableByName($originalTable);
 		$contentElement->tableId = !empty($loadedTable) ? $loadedTable->id : 0;
 
-		RTranslationHelper::setInstalledTranslationTables(
+		self::setInstalledTranslationTables(
 			$option,
 			$originalTable,
 			$contentElement,
@@ -772,7 +788,7 @@ final class RTranslationTable
 
 		foreach ($cid as $id)
 		{
-			$table = RTranslationHelper::getTranslationTableById($id);
+			$table = self::getTranslationTableById($id);
 
 			if ($table)
 			{
@@ -831,8 +847,9 @@ final class RTranslationTable
 	 */
 	public static function batchContentElements($option = 'com_redcore', $action = '', $notifications = false)
 	{
+		RTranslationContentElement::$contentElements = array();
 		$contentElements = RTranslationContentElement::getContentElements(true, $option);
-		$tables = RTranslationHelper::getTranslationTables();
+		$tables = self::getInstalledTranslationTables(true);
 
 		if (!empty($contentElements))
 		{
@@ -964,5 +981,229 @@ final class RTranslationTable
 		}
 
 		return self::$dbEngines[$engine];
+	}
+
+	/**
+	 * Get list of all translation tables with columns
+	 *
+	 * @param   bool  $fullLoad  Full load tables
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function getInstalledTranslationTables($fullLoad = false)
+	{
+		static $fullLoaded;
+
+		if ($fullLoad && !$fullLoaded)
+		{
+			$db = JFactory::getDbo();
+			$oldTranslate = isset($db->translate) ? $db->translate : false;
+
+			// We do not want to translate this value
+			$db->translate = false;
+
+			$query = $db->getQuery(true)
+				->select('tt.*')
+				->from($db->qn('#__redcore_translation_tables', 'tt'))
+				->order('tt.title');
+
+			$tables = $db->setQuery($query)->loadObjectList('name');
+
+			foreach ($tables as $key => $table)
+			{
+				$tables[$key]->columns = explode(',', $table->primary_columns . ',' . $table->translate_columns);
+				$tables[$key]->primaryKeys = explode(',', $table->primary_columns);
+				$tables[$key]->fallbackColumns = explode(',', $table->fallback_columns);
+				$tables[$key]->table = $table->name;
+				$tables[$key]->option = $table->extension_name;
+				$tables[$key]->formLinks = json_decode($table->form_links, true);
+
+				if (isset(self::$translationColumns[$key]))
+				{
+					$tables[$key]->allColumns = self::$translationColumns[$key];
+				}
+			}
+
+			// We put translation check back on
+			$db->translate = $oldTranslate;
+			self::$installedTranslationTables = $tables;
+
+			$fullLoaded = true;
+		}
+
+		if (!$fullLoad && !isset(self::$installedTranslationTables))
+		{
+			$db = JFactory::getDbo();
+			$oldTranslate = isset($db->translate) ? $db->translate : false;
+
+			// We do not want to translate this value
+			$db->translate = false;
+
+			$query = $db->getQuery(true)
+				->select(
+					array(
+						$db->qn('tt.translate_columns', 'columns'),
+						$db->qn('tt.primary_columns', 'primaryKeys'),
+						$db->qn('tt.fallback_columns', 'fallbackColumns'),
+						$db->qn('tt.name', 'table'),
+						$db->qn('tt.title', 'title'),
+						$db->qn('tt.extension_name', 'option'),
+						$db->qn('tt.form_links', 'formLinks'),
+					)
+				)
+				->from($db->qn('#__redcore_translation_tables', 'tt'))
+				->where('tt.state = 1')
+				->order('tt.title');
+
+			$tables = $db->setQuery($query)->loadObjectList('table');
+
+			foreach ($tables as $key => $table)
+			{
+				$tables[$key]->columns = explode(',', $table->primaryKeys . ',' . $table->columns);
+				$tables[$key]->primaryKeys = explode(',', $table->primaryKeys);
+				$tables[$key]->fallbackColumns = explode(',', $table->fallbackColumns);
+				$tables[$key]->formLinks = json_decode($table->formLinks, true);
+
+				if (isset(self::$translationColumns[$key]))
+				{
+					$tables[$key]->allColumns = self::$translationColumns[$key];
+				}
+			}
+
+			// We put translation check back on
+			$db->translate = $oldTranslate;
+			self::$installedTranslationTables = $tables;
+		}
+
+		return self::$installedTranslationTables;
+	}
+
+	/**
+	 * Populate translation column data for the table
+	 *
+	 * @param   string  $tableName  Table name
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function setTranslationTableWithColumn($tableName)
+	{
+		$table = self::getTranslationTableByName($tableName);
+
+		if ($table)
+		{
+			if (!isset(self::$translationColumns[$table->name]))
+			{
+				$db = JFactory::getDbo();
+
+				$query = $db->getQuery(true)
+					->select('tc.*')
+					->from($db->qn('#__redcore_translation_columns', 'tc'))
+					->where($db->qn('translation_table_id') . ' = ' . $table->id);
+
+				self::$translationColumns[$table->name] = $db->setQuery($query)->loadAssocList('name');
+
+				foreach (self::$translationColumns[$table->name] as $key => $column)
+				{
+					if (!empty($column['params']))
+					{
+						self::$translationColumns[$table->name][$key] = array_merge($column, json_decode($column['params'], true));
+					}
+				}
+			}
+
+			self::$installedTranslationTables[$table->name]->allColumns = self::$translationColumns[$table->name];
+
+			return self::$installedTranslationTables[$table->name];
+		}
+
+		return $table;
+	}
+
+	/**
+	 * Get translation table with columns
+	 *
+	 * @param   int  $id  Translation table ID
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function getTranslationTableById($id)
+	{
+		$tables = self::getInstalledTranslationTables(true);
+
+		foreach ($tables as $table)
+		{
+			if ($table->id == $id)
+			{
+				return $table;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get translation table with columns
+	 *
+	 * @param   string  $name  Translation table Name
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function getTranslationTableByName($name)
+	{
+		$tables = self::getInstalledTranslationTables(true);
+		$name = '#__' . str_replace('#__', '', $name);
+
+		return isset($tables[$name]) ? $tables[$name] : null;
+	}
+
+	/**
+	 * Set a value to translation table list
+	 *
+	 * @param   string                      $option          Extension option name
+	 * @param   string                      $table           Table name
+	 * @param   RTranslationContentElement  $contentElement  Content Element
+	 * @param   bool                        $notifications   Show notifications
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function setInstalledTranslationTables($option, $table, $contentElement, $notifications = false)
+	{
+		// Initialize installed tables before proceeding
+		self::getInstalledTranslationTables(true);
+		$translationTableModel = RModel::getAdminInstance('Translation_Table', array(), 'com_redcore');
+
+		// If content element is empty then we delete this table from the system
+		if (empty($contentElement))
+		{
+			$tableObject = self::getTranslationTableByName($table);
+
+			if ($tableObject)
+			{
+				$translationTableModel->delete($tableObject->id);
+			}
+
+			unset(self::$installedTranslationTables[$table]);
+		}
+		else
+		{
+			$data = array(
+				'name'              => $table,
+				'extension_name'    => $option,
+				'title'             => $contentElement->name,
+				'version'           => $contentElement->version,
+				'columns'           => $contentElement->fieldsToColumns,
+				'formLinks'         => $contentElement->getEditForms(),
+				'description'       => $contentElement->getTranslateDescription(),
+				'author'            => $contentElement->getTranslateAuthor(),
+				'copyright'         => $contentElement->getTranslateCopyright(),
+				'xml_path'          => RTranslationContentElement::getPathWithoutBase($contentElement->contentElementXmlPath),
+				'xml_hashed'        => $contentElement->xml_hashed,
+				'filter_query'      => implode(' AND ', (array) $contentElement->getTranslateFilter()),
+				'state'             => 1,
+				'id'                => $contentElement->tableId,
+				'showNotifications' => $notifications
+			);
+			$translationTableModel->save($data);
+		}
 	}
 }

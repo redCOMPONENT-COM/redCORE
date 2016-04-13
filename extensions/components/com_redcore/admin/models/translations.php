@@ -57,7 +57,7 @@ class RedcoreModelTranslations extends RModelList
 	 */
 	protected function getListQuery()
 	{
-		$table = RTranslationHelper::setTranslationTableWithColumn($this->getState('filter.translationTableName', ''));
+		$table = RTranslationTable::setTranslationTableWithColumn($this->getState('filter.translationTableName', ''));
 		$db	= $this->getDbo();
 		$query = $db->getQuery(true);
 
@@ -173,7 +173,7 @@ class RedcoreModelTranslations extends RModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
-		$table = RTranslationHelper::getTranslationTableByName($this->getState('filter.translationTableName', ''));
+		$table = RTranslationTable::getTranslationTableByName($this->getState('filter.translationTableName', ''));
 
 		if (!empty($items))
 		{
