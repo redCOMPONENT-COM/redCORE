@@ -81,7 +81,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 		$this->form	= $this->get('Form');
 		$app = JFactory::getApplication();
 		$this->translationTableName = $app->input->get('translationTableName', '');
-		$this->translationTable = RTranslationHelper::setTranslationTableWithColumn($this->translationTableName);
+		$this->translationTable = RTranslationTable::setTranslationTableWithColumn($this->translationTableName);
 
 		$this->item	= $this->get('Item');
 

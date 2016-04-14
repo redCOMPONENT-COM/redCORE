@@ -78,6 +78,7 @@ jQuery(document).ready(function () {
 			<?php
 			$element = new RTranslationContentElement('com_plugins', '');
 			$element->name = 'plugins';
+			$element->extension_name = 'com_plugins';
 			$column = array('name' => 'params', 'formname' => 'plugin');
 			echo RLayoutHelper::render(
 				'translation.params',

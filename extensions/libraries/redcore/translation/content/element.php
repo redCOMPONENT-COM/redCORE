@@ -75,6 +75,14 @@ final class RTranslationContentElement
 	public $primaryKey;
 
 	/**
+	 * An array to hold tables from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $contentElements = array();
+
+	/**
 	 * Constructor
 	 *
 	 * @param   string  $extension          The Extension Name ex. com_redcore
@@ -443,8 +451,8 @@ final class RTranslationContentElement
 	 */
 	public static function getContentElements($notInstalled = false, $onlyFromExtension = '')
 	{
-		$xmlFileOptions = RTranslationHelper::loadAllContentElements();
-		$tables = RTranslationHelper::getTranslationTables();
+		$xmlFileOptions = self::loadAllContentElements();
+		$tables = RTranslationTable::getInstalledTranslationTables(true);
 		$xmlFiles = array();
 
 		if (!empty($xmlFileOptions))
@@ -482,6 +490,73 @@ final class RTranslationContentElement
 		}
 
 		return $xmlFiles;
+	}
+
+	/**
+	 * Found out which extensions have content element files
+	 *
+	 * @param   string  $mediaPath      Media path
+	 * @param   bool    $redcoreFolder  Is this redcore media folder
+	 *
+	 * @return  array  List of objects
+	 */
+	public static function loadAllContentElements($mediaPath = '', $redcoreFolder = false)
+	{
+		if (!empty(self::$contentElements) && !$redcoreFolder)
+		{
+			return self::$contentElements;
+		}
+
+		jimport('joomla.filesystem.folder');
+
+		if ($mediaPath == '')
+		{
+			self::loadAllContentElements(JPATH_SITE . '/media');
+			self::loadAllContentElements(JPATH_SITE . '/media/redcore/translations', true);
+
+			return self::$contentElements;
+		}
+
+		$mediaFolders = JFolder::folders($mediaPath);
+
+		if ($mediaFolders)
+		{
+			foreach ($mediaFolders as $mediaFolder)
+			{
+				// We have already processed redcore media folder
+				if ($mediaFolder == 'redcore' && $mediaPath == JPATH_SITE . '/media')
+				{
+					continue;
+				}
+
+				$folder = $mediaPath . '/' . $mediaFolder . ($redcoreFolder ? '' : '/translations');
+
+				if (is_dir($folder))
+				{
+					$contentElementsXml = JFolder::files($folder, '.xml', false);
+
+					if (!empty($contentElementsXml))
+					{
+						if (!isset(self::$contentElements[$mediaFolder]))
+						{
+							self::$contentElements[$mediaFolder] = array();
+						}
+
+						foreach ($contentElementsXml as $contentElementXml)
+						{
+							$contentElement = new RTranslationContentElement($mediaFolder, $contentElementXml);
+
+							if (!empty($contentElement->table) || $mediaFolder == 'upload')
+							{
+								self::$contentElements[$mediaFolder][$folder . '/' . $contentElement->table] = $contentElement;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return self::$contentElements;
 	}
 
 	/**
@@ -584,5 +659,40 @@ final class RTranslationContentElement
 		$node->appendChild($no->createCDATASection($value));
 
 		return $newChild;
+	}
+
+	/**
+	 * Loading of related XML files
+	 *
+	 * @param   string  $extensionName       Extension name
+	 * @param   string  $contentElementsXml  XML File name
+	 * @param   bool    $fullPath            Full path to the XML file
+	 *
+	 * @return  mixed  RTranslationContentElement if found or null
+	 */
+	public static function getContentElement($extensionName = '', $contentElementsXml = '', $fullPath = false)
+	{
+		$contentElements = self::getContentElements(false, $extensionName);
+
+		if (!empty($contentElements))
+		{
+			$contentElementsXmlFullPath = self::getPathWithoutBase($contentElementsXml);
+
+			foreach ($contentElements as $contentElement)
+			{
+				if ($fullPath
+					&& self::getPathWithoutBase($contentElement->contentElementXmlPath) == $contentElementsXmlFullPath)
+				{
+					return $contentElement;
+				}
+
+				if ($contentElement->contentElementXml == $contentElementsXml)
+				{
+					return $contentElement;
+				}
+			}
+		}
+
+		return null;
 	}
 }

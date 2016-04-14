@@ -13,7 +13,7 @@ $view = RInflector::pluralize(JFactory::getApplication()->input->getString('view
 $return = JFactory::getApplication()->input->getString('return', '');
 $translationTableName = JFactory::getApplication()->input->getString('translationTableName', '');
 $components = RedcoreHelpersView::getExtensionsRedcore();
-$translationTables = RTranslationHelper::getTranslationTables();
+$translationTables = RTranslationTable::getInstalledTranslationTables();
 ?>
 <ul class="nav nav-list">
 	<?php if ($view === 'dashboards'): ?>

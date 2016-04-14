@@ -335,8 +335,8 @@ class RedcoreTableTranslation_Table extends RTable
 		try
 		{
 			// Delete translation Table
-			$newTable = RTranslationTable::getTranslationsTableName($this->name, '');
-			RTranslationTable::updateTableTriggers(array(), '', $this->name);
+			$newTable = RTranslationTable::getTranslationsTableName($this->name, '#__');
+			RTranslationTable::removeExistingConstraintKeys($this->name);
 			$db->dropTable($newTable);
 
 			// Remove columns

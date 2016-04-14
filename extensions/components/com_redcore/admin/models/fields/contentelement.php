@@ -52,7 +52,7 @@ class JFormFieldContentelement extends JFormFieldList
 		{
 			static::$cache[$hash] = parent::getOptions();
 			$options = array();
-			$translationTables = RTranslationHelper::getTranslationTables();
+			$translationTables = RTranslationTable::getInstalledTranslationTables();
 
 			if (!empty($translationTables))
 			{

@@ -406,7 +406,7 @@ class RedcoreModelWebservices extends RModelList
 				}
 			}
 		}
-		
+
 		return true;
 	}
 }

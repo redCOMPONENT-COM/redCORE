@@ -133,7 +133,15 @@ abstract class RedcoreHelpersTranslation extends JObject
 	public static function getTableRowCount($table)
 	{
 		$db	= JFactory::getDbo();
-		$rowCount = array();
+		$rowCount = array(
+			'original_rows' => 0,
+			'translation_rows' => array()
+		);
+
+		if (!RTranslationTable::getTableColumns($table->name))
+		{
+			return $rowCount;
+		}
 
 		try
 		{

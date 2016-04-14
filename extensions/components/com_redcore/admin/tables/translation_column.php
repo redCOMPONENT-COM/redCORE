@@ -111,7 +111,7 @@ class RedcoreTableTranslation_Column extends RTable
 
 			return false;
 		}
-		
+
 		if (empty($this->title))
 		{
 			$this->title = $this->name;
