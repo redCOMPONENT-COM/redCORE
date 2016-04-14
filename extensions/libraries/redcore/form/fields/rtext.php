@@ -87,7 +87,6 @@ class JFormFieldRtext extends JFormField
 			}
 		}
 
-
 		$html = '';
 
 		if ($this->multiple == 1)
