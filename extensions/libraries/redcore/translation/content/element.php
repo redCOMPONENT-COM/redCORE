@@ -279,7 +279,6 @@ final class RTranslationContentElement
 						$formLink['view'] = $formArray[1];
 						$formLink['identifier'] = !empty($formArray[2]) ? $formArray[2] : '';
 						$formLink['layout'] = !empty($formArray[4]) ? preg_replace("/[^a-zA-Z0-9]+/", "", $formArray[4]) : 'edit';
-						$formLink['admin'] = 'true';
 
 						// Set defaults
 						$this->getEditFormDefaults($formLink);

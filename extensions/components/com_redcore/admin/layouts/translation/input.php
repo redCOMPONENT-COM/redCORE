@@ -47,7 +47,6 @@ $predefinedOptions = array(
 				<span class="<?php echo $status['badge']; ?>">
 					<?php echo JText::_($status['status']); ?>
 				</span>
-			
 		</div>
 		<div class="col-md-3">
 			<?php echo $form->getLabel('rctranslations_state'); ?>
@@ -86,7 +85,8 @@ $predefinedOptions = array(
 		?>
 
 		<!-- Name of field -->
-			<div class="field-name">
+			<div class="col-md-12">
+				<hr class="translation-divider">
 				<hr class="translation-divider">
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong>
 				
@@ -110,7 +110,7 @@ $predefinedOptions = array(
 
 		<?php if ($column['value_type'] != 'params') : ?>
 			<!-- Value of field in the original item -->
-			<div class="original-field">
+			<div class="col-md-4">
 				<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
 				<br>
 				<?php if ($column['value_type'] == 'state'): ?>
@@ -123,7 +123,7 @@ $predefinedOptions = array(
 			</div>
 
 			<!-- Field for entering translation -->
-			<div class="translate-field">
+			<div class="col-md-8">
 				<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION');?></strong>
 				<br>
 				<!-- Text field -->
@@ -255,23 +255,22 @@ $predefinedOptions = array(
 				</tr>
 				</table>
 			<?php endif; ?>
-			<hr class="translation-divider">
 	<?php endforeach; ?>
 
 	<?php foreach ($noTranslationColumns as $columnKey => $column) : ?>
-		<div class="field-name">
+		<div class="col-md-12">
+			<hr class="translation-divider">
 			<hr class="translation-divider">
 			<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong>
 			<hr class="translation-divider">
 		</div>
-		<div class="original-field">
+		<div class="col-md-4">
 			<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
 			<br>
 			<span id="original_field_<?php echo $columnKey;?>">
 				<?php echo !empty($item->original->{$columnKey}) ? $item->original->{$columnKey} : '--'; ?>
 			</span>
 		</div>
-		<hr class="translation-divider">
 	<?php endforeach; ?>
 
 	<?php foreach ($columns as $columnKey => $column) : ?>

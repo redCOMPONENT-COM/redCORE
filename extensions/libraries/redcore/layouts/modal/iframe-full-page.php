@@ -22,7 +22,7 @@ $htmlposition = !empty($displayData['htmlposition']) ? $displayData['htmlpositio
 ?>
 
 <div class="modalContainer" style="display:none;">
-	<?php if (!empty($id))  : ?>
+	<?php if (!empty($displayData['id'])) : ?>
 	<a class="<?php echo $linkClass; ?> modal-iframe-external" data-toggle="modal" href="#"
 	   id="modalButton_<?php echo $id ?>"
 	   data-target="#modalContainer_modalButton_<?php echo $id ?>"
