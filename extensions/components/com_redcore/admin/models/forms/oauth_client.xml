@@ -59,7 +59,9 @@
 			type="userbs3"
 			label="COM_REDCORE_OAUTH_CLIENTS_USER"
 			description="COM_REDCORE_OAUTH_CLIENTS_USER_DESC"
+			default=""
 			>
+			<option value="">COM_REDCORE_OAUTH_CLIENTS_SELECT_USER</option>
 		</field>
 	</fieldset>
 </form>
