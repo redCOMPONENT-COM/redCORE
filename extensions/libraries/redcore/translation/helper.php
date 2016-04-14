@@ -722,50 +722,6 @@ class RTranslationHelper
 	}
 
 	/**
-	 * Gets translation table object
-	 *
-	 * @param   string  $default  Default Content Element Name
-	 *
-	 * @return  object  Translation Table object
-	 */
-	public static function getTranslationTable($default = '')
-	{
-		$contentElement = self::getCurrentContentElement();
-
-		$translationTables = self::getInstalledTranslationTables();
-
-		return !empty($translationTables['#__' . $contentElement]) ? $translationTables['#__' . $contentElement] : null;
-	}
-
-	/**
-	 * Gets content element name from request
-	 *
-	 * @param   string  $default  Default Content Element Name
-	 *
-	 * @return  string  Content element name
-	 */
-	public static function getCurrentContentElement($default = '')
-	{
-		$app = JFactory::getApplication();
-
-		$filter = $app->getUserStateFromRequest('com_redcore.translations.translations.filter', 'filter', array(), 'array');
-
-		$contentElement = $app->input->get->get('contentelement', null);
-
-		if ($contentElement === null && !empty($filter['contentelement']))
-		{
-			$contentElement = $filter['contentelement'];
-		}
-
-		if (JFactory::getApplication()->input->get('view') == 'translation' || $contentElement === null)
-		{
-			$contentElement = $app->input->getString('contentelement', $default);
-		}
-
-		return $contentElement;
-	}
-
-	/**
 	 * Gets translation item status
 	 *
 	 * @param   object  $item     Translate item object

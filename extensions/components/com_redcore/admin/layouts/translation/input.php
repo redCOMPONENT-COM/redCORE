@@ -40,34 +40,37 @@ $predefinedOptions = array(
 
 ?>
 <div id="<?php echo $languageCode; ?>">
-		<div class="translation-status">
-			<div class="col-md-3">
-					<?php echo JText::_('JSTATUS'); ?>
-				<br>
-					<span class="<?php echo $status['badge']; ?>">
-						<?php echo JText::_($status['status']); ?>
-					</span>
-				
-			</div>
-			<div class="col-md-3">
-				<?php echo $form->getLabel('rctranslations_state'); ?>
-				<br>
-				<?php echo $form->getInput('rctranslations_state'); ?>	
-			</div>
-			<div class="col-md-3">
-				<?php echo $form->getLabel('rctranslations_modified'); ?>
-				<br>
-				<?php echo $form->getInput('rctranslations_modified'); ?>
-			</div>
-			<?php if ($modal == false) : ?>
-			<div class="col-md-3">
-				<?php echo $form->getLabel('rctranslations_language'); ?>
-				<br>
-				<?php echo $form->getInput('rctranslations_language'); ?>
-			</div>
-			<?php endif; ?>
+	<div class="translation-status">
+		<div class="col-md-3">
+				<?php echo JText::_('JSTATUS'); ?>
+			<br>
+				<span class="<?php echo $status['badge']; ?>">
+					<?php echo JText::_($status['status']); ?>
+				</span>
+			
 		</div>
-		<br>
+		<div class="col-md-3">
+			<?php echo $form->getLabel('rctranslations_state'); ?>
+			<br>
+			<?php echo $form->getInput('rctranslations_state'); ?>	
+		</div>
+		<div class="col-md-3">
+			<?php echo $form->getLabel('rctranslations_modified'); ?>
+			<br>
+			<?php echo $form->getInput('rctranslations_modified'); ?>
+		</div>
+		<?php if ($modal == false) : ?>
+		<div class="col-md-3">
+			<?php echo $form->getLabel('rctranslations_language'); ?>
+			<br>
+			<?php echo $form->getInput('rctranslations_language'); ?>
+		</div>
+		<?php else : ?>
+			<input type="hidden" name="jform[rctranslations_language]" id="jform_rctranslations_language" value="<?php echo $languageCode; ?>"/>
+		<?php endif; ?>
+		<hr>
+	</div>
+	<br>
 
 	<!-- Write out all fields -->
 	<?php foreach ($columns as $columnKey => $column) : ?>
@@ -84,7 +87,7 @@ $predefinedOptions = array(
 
 		<!-- Name of field -->
 			<div class="field-name">
-				<hr>
+				<hr class="translation-divider">
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong>
 				
 				<!-- Copy button -->
@@ -102,7 +105,7 @@ $predefinedOptions = array(
 					<span class="icon-trash"></span>
 					<?php echo JText::_('JCLEAR');?>
 				</button>
-				<hr>
+				<hr class="translation-divider">
 			</div>
 
 		<?php if ($column['value_type'] != 'params') : ?>
@@ -252,13 +255,14 @@ $predefinedOptions = array(
 				</tr>
 				</table>
 			<?php endif; ?>
+			<hr class="translation-divider">
 	<?php endforeach; ?>
 
 	<?php foreach ($noTranslationColumns as $columnKey => $column) : ?>
 		<div class="field-name">
-			<hr>
+			<hr class="translation-divider">
 			<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong>
-			<hr>
+			<hr class="translation-divider">
 		</div>
 		<div class="original-field">
 			<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
@@ -267,6 +271,7 @@ $predefinedOptions = array(
 				<?php echo !empty($item->original->{$columnKey}) ? $item->original->{$columnKey} : '--'; ?>
 			</span>
 		</div>
+		<hr class="translation-divider">
 	<?php endforeach; ?>
 
 	<?php foreach ($columns as $columnKey => $column) : ?>
@@ -288,6 +293,5 @@ $predefinedOptions = array(
 	<?php endif; ?>
 	<input type="hidden" name="translationTableName" value="<?php echo $input->getString('translationTableName', ''); ?>"/>
 	<input type="hidden" name="component" value="<?php echo $input->getString('component', ''); ?>"/>
-	<input type="hidden" name="jform[rctranslations_language]" id="jform_rctranslations_language" value="<?php echo $languageCode; ?>"/>
 	<?php echo JHTML::_('form.token'); ?>
 </div>
