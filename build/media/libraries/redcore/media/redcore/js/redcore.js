@@ -198,7 +198,7 @@ redCORE.ws =
 
         var rowValues = {};
 
-        editRow.find('.ws-row-edit :input')
+        parent.find('.ws-row-edit :input')
             .each(function()
             {
                 var input = jQuery(this);

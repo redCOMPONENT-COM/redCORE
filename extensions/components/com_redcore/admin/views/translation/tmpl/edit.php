@@ -104,7 +104,6 @@ $predefinedOptions = array(
 			'item' => $this->item,
 			'columns' => $this->columns,
 			'editor' => $this->editor,
-			'contentelement' => $this->contentElement,
 			'translationTable' => $this->translationTable,
 			'languageCode' => $input->getString('language', ''),
 			'noTranslationColumns' => $this->noTranslationColumns,

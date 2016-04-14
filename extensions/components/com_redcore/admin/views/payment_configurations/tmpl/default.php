@@ -89,13 +89,13 @@ $listDirn = $this->state->get('list.direction');
 								</a>
 							<?php endif; ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo !$isGlobal ? $item->extension_name : JText::_('COM_REDCORE_PAYMENT_CONFIGURATION_DEFAULT_CONFIGURATION_LABEL'); ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo $item->owner_name; ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<a class="btn btn-default" href="<?php echo $action; ?>&payment_name=<?php echo $item->element; ?>&payment_id=<?php echo $item->id; ?>&task=payment_configurations.test">
 								<i class="icon-file-text"></i>
 								<?php echo JText::_('COM_REDCORE_PAYMENT_CONFIGURATION_TEST_CONFIGURATION'); ?>

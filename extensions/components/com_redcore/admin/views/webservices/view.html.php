@@ -86,7 +86,7 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
 					'COM_REDCORE_WEBSERVICES_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore%20-">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
 				),
 				'error');
 		}
@@ -116,10 +116,16 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 		$secondGroup = new RToolbarButtonGroup;
 		$thirdGroup = new RToolbarButtonGroup;
 		$group4 = new RToolbarButtonGroup;
+		$group5 = new RToolbarButtonGroup('pull-right');
 		$user = JFactory::getUser();
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
+			$button = RToolbarBuilder::createStandardButton(
+				'webservices.downloadXml', 'COM_REDCORE_TRANSLATION_TABLE_DOWNLOAD_XML', 'btn-default', 'icon-download'
+			);
+			$group5->addButton($button);
+
 			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
 			{
 				$new = RToolbarBuilder::createNewButton('webservice.add');
@@ -156,7 +162,8 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 		$toolbar->addGroup($group)
 			->addGroup($secondGroup)
 			->addGroup($thirdGroup)
-			->addGroup($group4);
+			->addGroup($group4)
+			->addGroup($group5);
 
 		return $toolbar;
 	}

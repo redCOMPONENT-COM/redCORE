@@ -19,6 +19,13 @@ defined('_JEXEC') or die;
 class RedcoreTableTranslation extends RTable
 {
 	/**
+	 * Field name to publish/unpublish/trash table registers. Ex: state
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldState = 'rctranslations_state';
+
+	/**
 	 * Constructor
 	 *
 	 * @param   JDatabase  &$db  A database connector object
@@ -29,10 +36,10 @@ class RedcoreTableTranslation extends RTable
 	{
 		$this->_tableName = 'extension';
 		$this->_tbl_key = 'rctranslations_id';
+		$app = JFactory::getApplication();
+		$table = RTranslationHelper::getTranslationTableByName($app->input->get('translationTableName', ''));
 
-		$table = RTranslationHelper::getTranslationTable();
-
-		$this->_tbl = RTranslationTable::getTranslationsTableName($table->table, '');
+		$this->_tbl = RTranslationTable::getTranslationsTableName($table->name, '');
 		$this->_tableName = str_replace('#__', '', $this->_tbl);
 
 		if (empty($this->_tbl) || (empty($this->_tbl_key) && empty($this->_tbl_keys)))
@@ -64,6 +71,7 @@ class RedcoreTableTranslation extends RTable
 		}
 
 		$this->rctranslations_modified = JFactory::getDate()->toSql();
+		$this->rctranslations_modified_by = JFactory::getUser()->get('id');
 
 		return true;
 	}

@@ -1,32 +1,31 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Contact - details</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
-    <description>Translation definition for Joomla Contact component</description>
-    <reference>
-        <table name="contact_details">
-            <field type="referenceid" name="id" translate="0">ID</field>
-            <field type="titletext" name="name" translate="1">Name</field>
-            <field type="text" name="alias" translate="1" posthandler="filterTitle">Alias</field>
-            <field type="text" name="con_position" translate="1">Position</field>
-            <field type="text" name="email_to" translate="1">Email Address</field>
-            <field type="text" name="address" translate="1">Street Address</field>
-            <field type="text" name="suburb" translate="1">Town/Suburb</field>
-            <field type="text" name="state" translate="1">State/County</field>
-            <field type="text" name="country" translate="1">Country</field>
-            <field type="text" name="postcode" translate="1">Postcode</field>
-            <field type="text" name="telephone" translate="1">Telefon</field>
-            <field type="text" name="fax" translate="1">Fax</field>
-            <field type="textarea" name="misc" translate="1">Miscellaneous Info</field>
-            <field type="textarea" name="params" translate="1" alwaysFallback="true">Parameters</field>
-            <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-            <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
-            <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
-        </table>
-        <component>
-            <form>com_contact#contact#cid#!edit</form>
-        </component>
-    </reference>
+  <name>Contact - details</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Contact component</description>
+  <reference>
+    <table name="contact_details">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="name" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="">Name</field>
+      <field name="alias" type="text" translate="1" alwaysFallback="false" filter="RAW" description="" posthandler="filterTitle">Alias</field>
+      <field name="con_position" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Position</field>
+      <field name="email_to" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Email Address</field>
+      <field name="address" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Street Address</field>
+      <field name="suburb" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Town/Suburb</field>
+      <field name="state" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">State/County</field>
+      <field name="country" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Country</field>
+      <field name="postcode" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Postcode</field>
+      <field name="telephone" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Telefon</field>
+      <field name="fax" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Fax</field>
+      <field name="misc" type="textarea" translate="1" alwaysFallback="false" filter="RAW" description="">Miscellaneous Info</field>
+      <field name="params" type="params" translate="1" alwaysFallback="true" filter="RAW" description="">Parameters</field>
+      <field name="published" type="state" translate="1" alwaysFallback="true" filter="RAW" description="">State</field>
+      <filter><![CDATA[]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_contact" view="contact" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+    </component>
+  </reference>
 </contentelement>

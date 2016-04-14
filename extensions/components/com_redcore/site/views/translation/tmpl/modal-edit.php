@@ -32,7 +32,7 @@ $contentLanguages = JLanguageHelper::getLanguages();
 				<form method="post" target="my_iframe_<?php echo $language->lang_id; ?>" name="adminForm_<?php echo $language->lang_id; ?>" id="adminForm_<?php echo $language->lang_id; ?>" class="form-validate form-horizontal">	
 
 					<?php
-					$rctranslationId = RTranslationHelper::getTranslationItemId($input->getString('id', ''), $language->lang_code, $this->translationTable->primaryKeys);
+					$rctranslationId = RTranslationHelper::getTranslationItemId($input->getString('id', ''), $language->lang_code, $this->translationTable->primaryKeys, $this->translationTable->name);
 					$this->setItem($rctranslationId);
 
 					echo RLayoutHelper::render(
@@ -41,7 +41,6 @@ $contentLanguages = JLanguageHelper::getLanguages();
 							'item' => $this->item,
 							'columns' => $this->columns,
 							'editor' => $this->editor,
-							'contentelement' => $this->contentElement,
 							'translationTable' => $this->translationTable,
 							'languageCode' => $language->lang_code,
 							'form' => $this->form,

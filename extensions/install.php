@@ -639,13 +639,15 @@ class Com_RedcoreInstallerScript
 		{
 			if ($nodes = $manifest->translations->translation)
 			{
+				RTranslationHelper::$contentElements = array();
+				
 				foreach ($nodes as $node)
 				{
 					$extName   = (string) $node->attributes()->name;
 
 					try
 					{
-						RTranslationTable::batchContentElements($extName, 'install', false);
+						RTranslationTable::batchContentElements($extName, 'install');
 					}
 					catch (Exception $e)
 					{
@@ -1219,7 +1221,7 @@ class Com_RedcoreInstallerScript
 		$class = get_called_class();
 		$extensionOption = strtolower(strstr($class, 'Installer', true));
 
-		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+		$translationTables = RTranslationHelper::getTranslationTables();
 
 		if (!empty($translationTables))
 		{

@@ -11,17 +11,18 @@ defined('JPATH_REDCORE') or die;
 
 RHelperAsset::load('full-page-modal.min.css', 'redcore');
 
-$modal = $displayData;
-$id = !empty($modal['options']['id']) ? $modal['options']['id'] : RFilesystemFile::getUniqueName();
-$header = !empty($modal['options']['header']) ? $modal['options']['header'] : '';
-$footer = !empty($modal['options']['footer']) ? $modal['options']['footer'] : '';
-$link = !empty($modal['options']['link']) ? $modal['options']['link'] : '';
-$linkName = !empty($modal['options']['linkName']) ? $modal['options']['linkName'] : '&nbsp;';
-$linkClass = !empty($modal['options']['linkClass']) ? $modal['options']['linkClass'] : 'btn btn-default';
+$id = !empty($displayData['id']) ? $displayData['id'] : RFilesystemFile::getUniqueName();
+$header = !empty($displayData['header']) ? $displayData['header'] : '';
+$footer = !empty($displayData['footer']) ? $displayData['footer'] : '';
+$link = !empty($displayData['link']) ? $displayData['link'] : '';
+$linkName = !empty($displayData['linkName']) ? $displayData['linkName'] : '&nbsp;';
+$linkClass = !empty($displayData['linkClass']) ? $displayData['linkClass'] : 'btn btn-default';
+$link = !empty($displayData['link']) ? $displayData['link'] : '';
+$htmlposition = !empty($displayData['htmlposition']) ? $displayData['htmlposition'] : '.btn-toolbar:first';
 ?>
 
 <div class="modalContainer" style="display:none;">
-	<?php if (!empty($modal['options']['id']))  : ?>
+	<?php if (!empty($id))  : ?>
 	<a class="<?php echo $linkClass; ?> modal-iframe-external" data-toggle="modal" href="#"
 	   id="modalButton_<?php echo $id ?>"
 	   data-target="#modalContainer_modalButton_<?php echo $id ?>"
@@ -74,7 +75,7 @@ $linkClass = !empty($modal['options']['linkClass']) ? $modal['options']['linkCla
 	}
 
 	jQuery(document).ready(function() {
-		jQuery('.btn-toolbar').first().append(jQuery('.modalContainer'));
+		jQuery('<?php echo $htmlposition; ?>').append(jQuery('.modalContainer'));
 		jQuery('.modalContainer').show();
 	});
 </script>
