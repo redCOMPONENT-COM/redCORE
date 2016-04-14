@@ -11,14 +11,9 @@ defined('_JEXEC') or die;
 $option = JFactory::getApplication()->input->getString('component', '');
 $view = RInflector::pluralize(JFactory::getApplication()->input->getString('view', ''));
 $return = JFactory::getApplication()->input->getString('return', '');
-$contentElement = JFactory::getApplication()->input->getString('contentelement', '');
+$translationTableName = JFactory::getApplication()->input->getString('translationTableName', '');
 $components = RedcoreHelpersView::getExtensionsRedcore();
-$translationTables = RTranslationHelper::getInstalledTranslationTables();
-
-if (empty($return))
-{
-	$return = base64_encode('index.php?option=com_redcore&view=dashboard');
-}
+$translationTables = RTranslationTable::getInstalledTranslationTables();
 ?>
 <ul class="nav nav-list">
 	<?php if ($view === 'dashboards'): ?>
@@ -56,21 +51,22 @@ if (empty($return))
 		<li class="nav-header"><?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?></li>
 		<?php foreach ($translationTables as $translationTable) : ?>
 
-			<li class="<?php echo $contentElement == str_replace('#__', '', $translationTable->table) ? 'active' : ''; ?>">
+			<li class="<?php echo $translationTableName == str_replace('#__', '', $translationTable->table) ? 'active' : ''; ?>">
 				<a href="<?php echo JRoute::_(
-					'index.php?option=com_redcore&view=translations&component=' . $translationTable->option . '&contentelement='
+					'index.php?option=com_redcore&view=translations&component=' . $translationTable->option . '&translationTableName='
 					. str_replace('#__', '', $translationTable->table)
+					. '&filter[language]=' . $app->getUserStateFromRequest('com_redcore.translations.translations.filter.language', 'language', '', 'string')
 					. '&return=' . $return
 				); ?>">
 					<i class="icon-globe"></i>
-					<?php echo $translationTable->name; ?>
+					<?php echo $translationTable->title; ?>
 				</a>
 			</li>
 		<?php endforeach; ?>
 		<li class="divider"></li>
 	<?php else: ?>
 		<li>
-			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&return=' . $return) ?>">
+			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translation_tables') ?>">
 				<i class="icon-globe"></i>
 				<?php echo JText::_('COM_REDCORE_TRANSLATIONS') ?>
 			</a>

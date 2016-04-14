@@ -19,6 +19,37 @@ defined('_JEXEC') or die;
 final class RTranslationTable
 {
 	/**
+	 * @const  string
+	 */
+	const COLUMN_TRANSLATE = 'translate';
+
+	/**
+	 * @const  string
+	 */
+	const COLUMN_PRIMARY = 'primary';
+
+	/**
+	 * @const  string
+	 */
+	const COLUMN_READONLY = 'readonly';
+
+	/**
+	 * An array to hold tables from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $installedTranslationTables = null;
+
+	/**
+	 * An array to hold columns from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $translationColumns = null;
+
+	/**
 	 * An array to hold tables from database
 	 *
 	 * @var    array
@@ -164,133 +195,61 @@ final class RTranslationTable
 			self::loadTables();
 		}
 
-		return $prefix . $originalTableName . '_rctranslations';
+		return $prefix . str_replace($prefix, '', $originalTableName) . '_rctranslations';
 	}
 
 	/**
-	 * Install Content Element from XML file
+	 * Install or update Translation table from current table object
 	 *
-	 * @param   string  $option             The Extension Name ex. com_redcore
-	 * @param   string  $xmlFile            XML file to install
-	 * @param   bool    $showNotifications  Show notifications
+	 * @param   RedcoreTableTranslation_Table  $table          Data needed for translation table creation
+	 * @param   bool                           $notifications  Should we display notifications?
 	 *
-	 * @return  boolean  Returns true if Content element was successfully installed
+	 * @return  boolean  Returns true if translation table was successfully installed
 	 */
-	public static function installContentElement($option = 'com_redcore', $xmlFile = '', $showNotifications = true)
+	public static function setTranslationTable($table, $notifications = false)
 	{
-		// Load Content Element
-		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
-
-		if (empty($contentElement) || empty($contentElement->table))
-		{
-			if ($showNotifications)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
-			}
-
-			return false;
-		}
-
-		// Create table with fields
 		$db = JFactory::getDbo();
+		$newTable = self::getTranslationsTableName($table->name);
+		$originalTable = str_replace('#__', '', $table->name);
+		$originalTableWithPrefix = '#__' . $originalTable;
+		$columns = self::getTranslationsTableColumns($originalTable);
+		$newTableCreated = false;
+		$innoDBSupport = self::checkIfDatabaseEngineExists();
 
 		// We might be in installer and got new tables so we will get fresh list of the tables
 		self::resetLoadedTables();
-		$originalColumns = self::getTableColumns($contentElement->table);
+		$originalColumns = self::getTableColumns($originalTable);
 
 		// If original table is not present then we cannot create shadow table
 		if (empty($originalColumns))
 		{
-			if ($showNotifications)
+			if ($notifications)
 			{
-				JFactory::getApplication()->enqueueMessage(
-					JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_TABLE', $xmlFile, (string) $contentElement->table),
-					'error'
+				JLog::add(
+					JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_TABLE', str_replace('#__', '', $table->name)), JLog::ERROR, 'jerror'
 				);
 			}
 
 			return false;
 		}
-
-		// Check if that table is already installed
-		$columns = self::getTranslationsTableColumns($contentElement->table);
-		$contentElement->allFallbackColumns = array();
-		$fields = array();
-		$primaryKeys = array();
-		$fieldsXml = $contentElement->getTranslateFields();
-		$newTable = self::getTranslationsTableName($contentElement->table);
-		$originalTable = '#__' . $contentElement->table;
-
-		foreach ($fieldsXml as $field)
-		{
-			// If not in original table then do not create it
-			if (empty($originalColumns[(string) $field['name']]))
-			{
-				if ($showNotifications)
-				{
-					JFactory::getApplication()->enqueueMessage(
-						JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_COLUMNS', $xmlFile, (string) $field['name']),
-						'error'
-					);
-				}
-
-				return false;
-			}
-
-			// We are not saving this fields, we only show them in editor
-			if ((string) $field['translate'] == '0' && (string) $field['type'] != 'referenceid')
-			{
-				continue;
-			}
-
-			$filedName = (string) $field['name'];
-			$fields[$filedName] = $db->qn($filedName);
-
-			if (isset($field['alwaysFallback']) && (string) $field['alwaysFallback'] == 'true')
-			{
-				$contentElement->allFallbackColumns[] = $filedName;
-			}
-
-			if ((string) $field['type'] == 'referenceid')
-			{
-				$fieldName = $filedName;
-
-				$primaryKeys[$fieldName] = $db->qn($fieldName);
-			}
-		}
-
-		if (empty($fields))
-		{
-			if ($showNotifications)
-			{
-				JFactory::getApplication()->enqueueMessage(
-					JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_NO_FIELDS', $xmlFile),
-					'error'
-				);
-			}
-
-			return false;
-		}
-
-		$newTableCreated = false;
-		$innoDBSupport = self::checkIfDatabaseEngineExists();
 
 		if (empty($columns))
 		{
 			$newTableCreated = true;
-			$query = 'CREATE TABLE ' . $db->qn($newTable)
+			$query = 'CREATE TABLE IF NOT EXISTS ' . $db->qn($newTable)
 				. ' ('
 				. $db->qn('rctranslations_id') . ' int(10) UNSIGNED PRIMARY KEY AUTO_INCREMENT, '
 				. $db->qn('rctranslations_language') . ' char(7) NOT NULL DEFAULT ' . $db->q('') . ', '
 				. $db->qn('rctranslations_originals') . ' TEXT NOT NULL, '
+				. $db->qn('rctranslations_modified_by') . ' INT(11) NULL DEFAULT NULL, '
 				. $db->qn('rctranslations_modified') . ' datetime NOT NULL DEFAULT ' . $db->q('0000-00-00 00:00:00') . ', '
 				. $db->qn('rctranslations_state') . ' tinyint(3) NOT NULL DEFAULT ' . $db->q('1') . ', '
 				. ' KEY ' . $db->qn('language_idx') . ' (' . $db->qn('rctranslations_language') . ',' . $db->qn('rctranslations_state') . ') '
-				. ' )';
+				. ' ) DEFAULT CHARSET=utf8';
 
 			if ($innoDBSupport)
 			{
-				$query .= 'ENGINE=InnoDB';
+				$query .= ' ENGINE=InnoDB';
 			}
 
 			$db->setQuery($query);
@@ -310,46 +269,63 @@ final class RTranslationTable
 			}
 			catch (RuntimeException $e)
 			{
-				if ($showNotifications)
+				if ($notifications)
 				{
-					JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+					JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::ERROR, 'jerror');
 				}
 
 				return false;
 			}
 		}
 
-		$allContentElementsFields = implode(',', array_keys($fields));
-
 		// Language is automatically added to the table if table exists
 		$columns = self::removeFixedColumnsFromArray($columns);
 		$columnKeys = array_keys($columns);
+		$fields = $table->get('columns', array());
 
 		foreach ($fields as $fieldKey => $field)
 		{
+			$fields[$fieldKey]['exists'] = false;
+
 			foreach ($columnKeys as $columnKey => $columnKeyValue)
 			{
-				if ($fieldKey == $columnKeyValue)
+				if ($field['name'] == $columnKeyValue && $field['column_type'] != self::COLUMN_READONLY)
 				{
 					unset($columnKeys[$columnKey]);
-					unset($fields[$fieldKey]);
+					$fields[$fieldKey]['exists'] = true;
 				}
 			}
 		}
 
-		// We Add New columns
+		// We Add New or modify existing columns
 		if (!empty($fields))
 		{
 			$newColumns = array();
 
 			foreach ($fields as $fieldKey => $field)
 			{
-				if (!empty($originalColumns[$fieldKey]))
+				if ($field['column_type'] != self::COLUMN_READONLY)
 				{
-					$newColumns[] = 'ADD COLUMN ' . $field
-						. ' ' . $originalColumns[$fieldKey]->Type
-						. ' NULL'
-						. ' DEFAULT NULL ';
+					if (!empty($originalColumns[$field['name']]))
+					{
+						$modify = $field['exists'] ? 'MODIFY' : 'ADD';
+
+						$newColumns[] = $modify . ' COLUMN ' . $db->qn($field['name'])
+							. ' ' . $originalColumns[$field['name']]->Type
+							. ' NULL'
+							. ' DEFAULT NULL ';
+					}
+					else
+					{
+						if ($notifications)
+						{
+							JLog::add(
+								JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_COLUMNS', $originalTable, $field['name']), JLog::ERROR, 'jerror'
+							);
+						}
+
+						return false;
+					}
 				}
 			}
 
@@ -363,14 +339,23 @@ final class RTranslationTable
 				}
 				catch (RuntimeException $e)
 				{
-					if ($showNotifications)
+					if ($notifications)
 					{
-						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+						JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::ERROR, 'jerror');
 					}
 
 					return false;
 				}
 			}
+		}
+
+		// Remove old constraints if they exist before removing the columns
+		if (!$newTableCreated)
+		{
+			$loadedTable = self::getTranslationTableByName($originalTableWithPrefix);
+			$primaryColumns = !empty($loadedTable) ? explode(',', $loadedTable->primary_columns) : array();
+
+			self::removeExistingConstraintKeys($originalTableWithPrefix, $primaryColumns);
 		}
 
 		// We delete extra columns
@@ -393,9 +378,9 @@ final class RTranslationTable
 				}
 				catch (RuntimeException $e)
 				{
-					if ($showNotifications)
+					if ($notifications)
 					{
-						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+						JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::ERROR, 'jerror');
 					}
 
 					return false;
@@ -403,18 +388,13 @@ final class RTranslationTable
 			}
 		}
 
-		self::updateTableIndexKeys($fieldsXml, $newTable);
+		self::updateTableIndexKeys($fields, $newTable, $notifications);
 
-		if (!$newTableCreated)
-		{
-			self::removeExistingConstraintKeys($originalTable, $primaryKeys);
-		}
-
-		$constraintType = 'foreign_keys';
+		$constraintType = 'none';
 
 		if (method_exists('RBootstrap', 'getConfig'))
 		{
-			$constraintType = RBootstrap::getConfig('translations_constraint_type', 'foreign_keys');
+			$constraintType = RBootstrap::getConfig('translations_constraint_type', 'none');
 		}
 
 		// New install use default value foreign key if InnoDB is present
@@ -422,48 +402,154 @@ final class RTranslationTable
 		{
 			if ($innoDBSupport)
 			{
-				self::updateTableForeignKeys($fieldsXml, $newTable, $originalTable);
+				self::updateTableForeignKeys($fields, $newTable, $originalTableWithPrefix);
 			}
 			else
 			{
-				if ($showNotifications)
+				if ($notifications)
 				{
-					JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INNODB_MISSING'), 'message');
+					JLog::add(JText::_('COM_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_INNODB_MISSING'), JLog::WARNING, 'jerror');
 				}
 			}
 		}
 		elseif ($constraintType == 'triggers')
 		{
-			self::updateTableTriggers($fieldsXml, $newTable, $originalTable);
-		}
-
-		$contentElement->allContentElementsFields = explode(',', $allContentElementsFields);
-		$contentElement->allPrimaryKeys = array_keys($primaryKeys);
-
-		RTranslationHelper::setInstalledTranslationTables(
-			$option,
-			$originalTable,
-			$contentElement
-		);
-		self::saveRedcoreTranslationConfig();
-
-		if ($showNotifications)
-		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED'), 'message');
+			self::updateTableTriggers($fields, $newTable, $originalTableWithPrefix, $notifications);
 		}
 
 		return true;
 	}
 
 	/**
-	 * Adds table Index Keys based on primary keys for improved performace
+	 * Install Content Element from XML file
 	 *
-	 * @param   array   $fieldsXml  Array of fields from content Element
-	 * @param   string  $newTable   Table name
+	 * @param   string  $option         The Extension Name ex. com_redcore
+	 * @param   string  $xmlFile        XML file to install
+	 * @param   bool    $fullPath       Full path to the XML file
+	 * @param   bool    $notifications  Full path to the XML file
 	 *
 	 * @return  boolean  Returns true if Content element was successfully installed
 	 */
-	public static function updateTableIndexKeys($fieldsXml, $newTable)
+	public static function installContentElement($option = 'com_redcore', $xmlFile = '', $fullPath = false, $notifications = false)
+	{
+		// Load Content Element
+		$contentElement = RTranslationContentElement::getContentElement($option, $xmlFile, $fullPath);
+
+		if (empty($contentElement) || empty($contentElement->table))
+		{
+			if ($notifications)
+			{
+				JLog::add(
+					JText::sprintf(
+						'LIB_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_NOT_INSTALLED', empty($contentElement->table) ? empty($contentElement->table) : ''
+					),
+					JLog::WARNING, 'jerror'
+				);
+			}
+
+			return false;
+		}
+
+		// Create table with fields
+		$db = JFactory::getDbo();
+		$originalTable = '#__' . $contentElement->table;
+
+		// Check if that table is already installed
+		$fields = array();
+		$contentElement->fieldsToColumns = array();
+		$primaryKeys = array();
+		$fieldsXml = $contentElement->getTranslateFields();
+
+		foreach ($fieldsXml as $field)
+		{
+			$fieldAttributes = (array) $field->attributes();
+			$fieldAttributes = !empty($fieldAttributes) ? $fieldAttributes['@attributes'] : array();
+
+			$fieldsToColumn = array();
+			$fieldsToColumn['name'] = (string) $fieldAttributes['name'];
+			$fieldsToColumn['title'] = (string) $field;
+			$fieldsToColumn['description'] = !empty($fieldAttributes['description']) ? (string) $fieldAttributes['description'] : '';
+			$fieldsToColumn['fallback'] = isset($fieldAttributes['alwaysFallback']) && (string) $fieldAttributes['alwaysFallback'] == 'true' ? 1 : 0;
+			$fieldsToColumn['value_type'] = (string) $fieldAttributes['type'];
+			$fieldsToColumn['params'] = $fieldAttributes;
+
+			foreach ($fieldsToColumn['params'] as $paramKey => $paramValue)
+			{
+				if (in_array($paramKey, array('name', 'type', 'alwaysFallback', 'translate')))
+				{
+					unset($fieldsToColumn['params'][$paramKey]);
+				}
+			}
+
+			$translate = isset($fieldAttributes['translate']) && ((string) $fieldAttributes['translate']) == '0' ? false : true;
+			$primaryKey = isset($fieldAttributes['type']) && ((string) $fieldAttributes['type']) == 'referenceid' ? true : false;
+
+			if ($primaryKey)
+			{
+				$fieldsToColumn['column_type'] = self::COLUMN_PRIMARY;
+				$fieldsToColumn['value_type'] = 'referenceid';
+			}
+			elseif (!$translate)
+			{
+				$fieldsToColumn['column_type'] = self::COLUMN_READONLY;
+			}
+			else
+			{
+				$fieldsToColumn['column_type'] = self::COLUMN_TRANSLATE;
+			}
+
+			$contentElement->fieldsToColumns[] = $fieldsToColumn;
+
+			// We are not saving this fields, we only show them in editor
+			if (isset($fieldAttributes['translate']) && (string) $fieldAttributes['translate'] == '0' && (string) $fieldAttributes['type'] != 'referenceid')
+			{
+				continue;
+			}
+
+			$fieldName = (string) $fieldAttributes['name'];
+			$fields[$fieldName] = $db->qn($fieldName);
+
+			if ($primaryKey)
+			{
+				$primaryKeys[$fieldName] = $db->qn($fieldName);
+			}
+		}
+
+		if (empty($fields))
+		{
+			if ($notifications)
+			{
+				JLog::add(
+					JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR_NO_FIELDS', $xmlFile), JLog::ERROR, 'jerror'
+				);
+			}
+
+			return false;
+		}
+
+		$loadedTable = self::getTranslationTableByName($originalTable);
+		$contentElement->tableId = !empty($loadedTable) ? $loadedTable->id : 0;
+
+		self::setInstalledTranslationTables(
+			$option,
+			$originalTable,
+			$contentElement,
+			$notifications
+		);
+
+		return true;
+	}
+
+	/**
+	 * Adds table Index Keys based on primary keys for improved performance
+	 *
+	 * @param   array   $fields         Array of fields from translation table
+	 * @param   string  $newTable       Table name
+	 * @param   bool    $notifications  Table name
+	 *
+	 * @return  boolean  Returns true if Content element was successfully installed
+	 */
+	public static function updateTableIndexKeys($fields, $newTable, $notifications = false)
 	{
 		$indexKeys = array();
 		$db = JFactory::getDbo();
@@ -472,9 +558,9 @@ final class RTranslationTable
 		$languageKey    = $db->qn('rctranslations_language');
 		$stateKey       = $db->qn('rctranslations_state');
 
-		foreach ($fieldsXml as $field)
+		foreach ($fields as $field)
 		{
-			if ((string) $field['type'] == 'referenceid')
+			if ((string) $field['value_type'] == 'referenceid')
 			{
 				$fieldName      = (string) $field['name'];
 				$constraintKey  = md5($newTable . '_' . $fieldName . '_idx');
@@ -512,7 +598,10 @@ final class RTranslationTable
 			}
 			catch (RuntimeException $e)
 			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+				if ($notifications)
+				{
+					JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::ERROR, 'jerror');
+				}
 
 				return false;
 			}
@@ -524,24 +613,28 @@ final class RTranslationTable
 	/**
 	 * Adds table triggers based on primary keys for constraint between tables
 	 *
-	 * @param   array   $fieldsXml      Array of fields from content Element
+	 * @param   array   $fields         Array of fields from translation table
 	 * @param   string  $newTable       Translation Table name
 	 * @param   string  $originalTable  Original Table name
+	 * @param   bool    $notifications  Show notifications
 	 *
 	 * @return  boolean  Returns true if triggers are successfully installed
 	 */
-	public static function updateTableTriggers($fieldsXml, $newTable, $originalTable)
+	public static function updateTableTriggers($fields, $newTable, $originalTable, $notifications = false)
 	{
 		$db = JFactory::getDbo();
 		$triggerKey = md5($originalTable . '_rctranslationstrigger');
 		$primaryKeys = array();
 
-		foreach ($fieldsXml as $field)
+		if (!empty($fields))
 		{
-			if ((string) $field['type'] == 'referenceid')
+			foreach ($fields as $field)
 			{
-				$fieldName = (string) $field['name'];
-				$primaryKeys[] = $db->qn($fieldName) . ' = OLD.' . $db->qn($fieldName);
+				if ((string) $field['type'] == 'referenceid')
+				{
+					$fieldName = (string) $field['name'];
+					$primaryKeys[] = $db->qn($fieldName) . ' = OLD.' . $db->qn($fieldName);
+				}
 			}
 		}
 
@@ -561,7 +654,10 @@ final class RTranslationTable
 			}
 			catch (RuntimeException $e)
 			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+				if ($notifications)
+				{
+					JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::ERROR, 'jerror');
+				}
 
 				return false;
 			}
@@ -602,14 +698,14 @@ final class RTranslationTable
 
 			foreach ($primaryKeys as $primaryKey => $primaryKeyQuoted)
 			{
-				$constraintKey = $db->qn(md5($newTable . '_' . $primaryKey . '_fk'));
+				$constraintKey = $db->qn(md5($newTable . '_' . $primaryKeyQuoted . '_fk'));
 
 				$query = 'ALTER TABLE ' . $db->qn($newTable) . ' DROP FOREIGN KEY ' . $constraintKey . ' # ' . $newTable . '_' . $primaryKey . '_fk';
 
 				try
 				{
 					$db->setQuery($query);
-					$db->execute();
+					@$db->execute();
 				}
 				catch (RuntimeException $e)
 				{
@@ -622,21 +718,22 @@ final class RTranslationTable
 	/**
 	 * Adds table foreign keys Keys based on primary keys for constraint between tables
 	 *
-	 * @param   array   $fieldsXml      Array of fields from content Element
+	 * @param   array   $fields         Array of fields from translation table
 	 * @param   string  $newTable       Translation Table name
 	 * @param   string  $originalTable  Original Table name
+	 * @param   bool    $notifications  Show notifications
 	 *
 	 * @return  boolean  Returns true if Foreign keys are successfully installed
 	 */
-	public static function updateTableForeignKeys($fieldsXml, $newTable, $originalTable)
+	public static function updateTableForeignKeys($fields, $newTable, $originalTable, $notifications = false)
 	{
 		$db = JFactory::getDbo();
 
-		if (!empty($fieldsXml))
+		if (!empty($fields))
 		{
-			foreach ($fieldsXml as $field)
+			foreach ($fields as $field)
 			{
-				if ((string) $field['type'] == 'referenceid')
+				if ((string) $field['value_type'] == 'referenceid')
 				{
 					$fieldName = (string) $field['name'];
 
@@ -658,7 +755,10 @@ final class RTranslationTable
 						}
 						catch (RuntimeException $e)
 						{
-							JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
+							if ($notifications)
+							{
+								JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::WARNING, 'jerror');
+							}
 
 							return false;
 						}
@@ -671,95 +771,41 @@ final class RTranslationTable
 	}
 
 	/**
-	 * Uninstall Content Element from database
+	 * Purge Tables
 	 *
-	 * @param   string  $option             The Extension Name ex. com_redcore
-	 * @param   string  $xmlFile            XML file to install
-	 * @param   bool    $showNotifications  Show notifications
+	 * @param   array  $cid  Table IDs
 	 *
-	 * @return  boolean  Returns true if Content element was successfully installed
+	 * @return  boolean  Returns true if Table was successfully purged
 	 */
-	public static function uninstallContentElement($option = 'com_redcore', $xmlFile = '', $showNotifications = true)
+	public static function purgeTables($cid)
 	{
-		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+		$db = JFactory::getDbo();
 
-		if (!empty($translationTables))
+		if (!is_array($cid))
 		{
-			$db = JFactory::getDbo();
+			$cid = array($cid);
+		}
 
-			foreach ($translationTables as $translationTable => $translationTableParams)
+		foreach ($cid as $id)
+		{
+			$table = self::getTranslationTableById($id);
+
+			if ($table)
 			{
-				if ($option == $translationTableParams->option && $xmlFile == $translationTableParams->xml)
+				$newTableName = self::getTranslationsTableName($table->name);
+
+				try
 				{
-					$newTable = self::getTranslationsTableName($translationTable, '');
+					$db->truncateTable($newTableName);
+				}
+				catch (RuntimeException $e)
+				{
+					JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::WARNING, 'jerror');
 
-					try
-					{
-						self::updateTableTriggers(array(), '', $translationTable);
-						$db->dropTable($newTable);
-
-						RTranslationHelper::setInstalledTranslationTables($option, $translationTable, null);
-						self::saveRedcoreTranslationConfig();
-					}
-					catch (Exception $e)
-					{
-						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DELETE_ERROR', $e->getMessage()), 'error');
-					}
+					return false;
 				}
 			}
 		}
-
-		if ($showNotifications)
-		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_UNINSTALLED'), 'message');
-		}
-
-		return true;
-	}
-
-	/**
-	 * Purge Content Element Table
-	 *
-	 * @param   string  $option   The Extension Name ex. com_redcore
-	 * @param   string  $xmlFile  XML file to install
-	 *
-	 * @return  boolean  Returns true if Content element was successfully purged
-	 */
-	public static function purgeContentElement($option = 'com_redcore', $xmlFile = '')
-	{
-		// Load Content Element
-		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
-
-		if (empty($contentElement) || empty($contentElement->table))
-		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
-
-			return false;
-		}
-
-		// Check if that table is already installed
-		$columns = self::getTranslationsTableColumns($contentElement->table);
-
-		if (!empty($columns))
-		{
-			// Delete Table
-			$db = JFactory::getDbo();
-
-			$newTable = self::getTranslationsTableName($contentElement->table);
-
-			try
-			{
-				$db->truncateTable($newTable);
-			}
-			catch (RuntimeException $e)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
-
-				return false;
-			}
-		}
-
-		JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_PURGED'), 'message');
 
 		return true;
 	}
@@ -774,87 +820,69 @@ final class RTranslationTable
 	 */
 	public static function deleteContentElement($option = 'com_redcore', $xmlFile = '')
 	{
-		// Load Content Element
-		$contentElement = RTranslationHelper::getContentElement($option, $xmlFile);
+		$xmlFilePath = RTranslationContentElement::getContentElementXmlPath($option, $xmlFile);
 
-		if (self::uninstallContentElement($option, $xmlFile) || empty($contentElement->table))
+		try
 		{
-			if (empty($contentElement))
-			{
-				JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED'), 'warning');
+			JFile::delete($xmlFilePath);
+		}
+		catch (Exception $e)
+		{
+			JLog::add(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), JLog::WARNING, 'jerror');
 
-				return false;
-			}
-
-			$xmlFilePath = RTranslationContentElement::getContentElementXmlPath($option, $xmlFile);
-
-			try
-			{
-				JFile::delete($xmlFilePath);
-			}
-			catch (Exception $e)
-			{
-				JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_CONTENT_ELEMENT_ERROR', $e->getMessage()), 'error');
-
-				return false;
-			}
-
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_DELETED'), 'message');
-
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
 	 * Preforms Batch action against all Content elements of given Extension
 	 *
-	 * @param   string  $option             The Extension Name ex. com_redcore
-	 * @param   string  $action             Action to preform
-	 * @param   bool    $showNotifications  Show notification after each Action
+	 * @param   string  $option         The Extension Name ex. com_redcore
+	 * @param   string  $action         Action to preform
+	 * @param   bool    $notifications  Show notifications
 	 *
 	 * @return  boolean  Returns true if Action was successful
 	 */
-	public static function batchContentElements($option = 'com_redcore', $action = '', $showNotifications = true)
+	public static function batchContentElements($option = 'com_redcore', $action = '', $notifications = false)
 	{
-		$contentElements = RTranslationHelper::getContentElements($option);
+		RTranslationContentElement::$contentElements = array();
+		$contentElements = RTranslationContentElement::getContentElements(true, $option);
+		$tables = self::getInstalledTranslationTables(true);
 
 		if (!empty($contentElements))
 		{
-			foreach ($contentElements as $contentElement)
+			foreach ($contentElements as $componentName => $contentElement)
 			{
+				if (!empty($option) && $option != $contentElement->extension)
+				{
+					continue;
+				}
+
+				// We will check if this table is installed from a different path than the one provided
+				foreach ($tables as $table)
+				{
+					if (str_replace('#__', '', $table->name) == $contentElement->table
+						&& $table->xml_path != RTranslationContentElement::getPathWithoutBase($contentElement->contentElementXmlPath))
+					{
+						// We skip this file because it is not the one that is already installed
+						continue 2;
+					}
+				}
+
 				switch ($action)
 				{
 					case 'install':
-						self::installContentElement($option, $contentElement->contentElementXml, $showNotifications);
-						break;
-					case 'uninstall':
-						self::uninstallContentElement($option, $contentElement->contentElementXml, $showNotifications);
-						break;
-					case 'purge':
-						self::purgeContentElement($option, $contentElement->contentElementXml);
+						if (!empty($contentElement->table))
+						{
+							self::installContentElement($option, $contentElement->contentElementXmlPath, true, $notifications);
+						}
+
 						break;
 					case 'delete':
 						self::deleteContentElement($option, $contentElement->contentElementXml);
 						break;
-				}
-			}
-		}
-
-		// Delete missing tables as well
-		if ($action == 'uninstall')
-		{
-			$translationTables = RTranslationHelper::getInstalledTranslationTables();
-
-			if (!empty($translationTables))
-			{
-				foreach ($translationTables as $translationTableParams)
-				{
-					if ($option == $translationTableParams->option)
-					{
-						self::uninstallContentElement($option, $translationTableParams->xml, $showNotifications);
-					}
 				}
 			}
 		}
@@ -865,12 +893,11 @@ final class RTranslationTable
 	/**
 	 * Upload Content Element to redcore media location
 	 *
-	 * @param   string  $option  The Extension Name ex. com_redcore
-	 * @param   array   $files   The array of Files (file descriptor returned by PHP)
+	 * @param   array  $files  The array of Files (file descriptor returned by PHP)
 	 *
 	 * @return  boolean  Returns true if Upload was successful
 	 */
-	public static function uploadContentElement($option = 'com_redcore', $files = array())
+	public static function uploadContentElement($files = array())
 	{
 		$uploadOptions = array(
 			'allowedFileExtensions' => 'xml',
@@ -878,63 +905,7 @@ final class RTranslationTable
 			'overrideExistingFile'  => true,
 		);
 
-		return RFilesystemFile::uploadFiles($files, RTranslationContentElement::getContentElementFolderPath($option), $uploadOptions);
-	}
-
-	/**
-	 * Method to save the configuration data.
-	 *
-	 * @return  bool   True on success, false on failure.
-	 */
-	public static function saveRedcoreTranslationConfig()
-	{
-		$data = array();
-		$component = JComponentHelper::getComponent('com_redcore');
-
-		$component->params->set('translations', RTranslationHelper::getInstalledTranslationTables());
-
-		$data['params'] = $component->params->toString('JSON');
-
-		$dispatcher = RFactory::getDispatcher();
-		$table = JTable::getInstance('Extension');
-		$isNew = true;
-
-		// Load the previous Data
-		if (!$table->load($component->id))
-		{
-			return false;
-		}
-
-		// Bind the data.
-		if (!$table->bind($data))
-		{
-			return false;
-		}
-
-		// Check the data.
-		if (!$table->check())
-		{
-			return false;
-		}
-
-		// Trigger the onConfigurationBeforeSave event.
-		$result = $dispatcher->trigger('onExtensionBeforeSave', array('com_redcore.config', &$table, $isNew));
-
-		if (in_array(false, $result, true))
-		{
-			return false;
-		}
-
-		// Store the data.
-		if (!$table->store())
-		{
-			return false;
-		}
-
-		// Trigger the onConfigurationAfterSave event.
-		$dispatcher->trigger('onExtensionAfterSave', array('com_redcore.config', &$table, $isNew));
-
-		return true;
+		return RFilesystemFile::uploadFiles($files, RTranslationContentElement::getContentElementFolderPath('upload'), $uploadOptions);
 	}
 
 	/**
@@ -950,6 +921,7 @@ final class RTranslationTable
 		unset($columns['rctranslations_language']);
 		unset($columns['rctranslations_originals']);
 		unset($columns['rctranslations_modified']);
+		unset($columns['rctranslations_modified_by']);
 		unset($columns['rctranslations_state']);
 
 		return $columns;
@@ -1009,5 +981,229 @@ final class RTranslationTable
 		}
 
 		return self::$dbEngines[$engine];
+	}
+
+	/**
+	 * Get list of all translation tables with columns
+	 *
+	 * @param   bool  $fullLoad  Full load tables
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function getInstalledTranslationTables($fullLoad = false)
+	{
+		static $fullLoaded;
+
+		if ($fullLoad && !$fullLoaded)
+		{
+			$db = JFactory::getDbo();
+			$oldTranslate = isset($db->translate) ? $db->translate : false;
+
+			// We do not want to translate this value
+			$db->translate = false;
+
+			$query = $db->getQuery(true)
+				->select('tt.*')
+				->from($db->qn('#__redcore_translation_tables', 'tt'))
+				->order('tt.title');
+
+			$tables = $db->setQuery($query)->loadObjectList('name');
+
+			foreach ($tables as $key => $table)
+			{
+				$tables[$key]->columns = explode(',', $table->primary_columns . ',' . $table->translate_columns);
+				$tables[$key]->primaryKeys = explode(',', $table->primary_columns);
+				$tables[$key]->fallbackColumns = explode(',', $table->fallback_columns);
+				$tables[$key]->table = $table->name;
+				$tables[$key]->option = $table->extension_name;
+				$tables[$key]->formLinks = json_decode($table->form_links, true);
+
+				if (isset(self::$translationColumns[$key]))
+				{
+					$tables[$key]->allColumns = self::$translationColumns[$key];
+				}
+			}
+
+			// We put translation check back on
+			$db->translate = $oldTranslate;
+			self::$installedTranslationTables = $tables;
+
+			$fullLoaded = true;
+		}
+
+		if (!$fullLoad && !isset(self::$installedTranslationTables))
+		{
+			$db = JFactory::getDbo();
+			$oldTranslate = isset($db->translate) ? $db->translate : false;
+
+			// We do not want to translate this value
+			$db->translate = false;
+
+			$query = $db->getQuery(true)
+				->select(
+					array(
+						$db->qn('tt.translate_columns', 'columns'),
+						$db->qn('tt.primary_columns', 'primaryKeys'),
+						$db->qn('tt.fallback_columns', 'fallbackColumns'),
+						$db->qn('tt.name', 'table'),
+						$db->qn('tt.title', 'title'),
+						$db->qn('tt.extension_name', 'option'),
+						$db->qn('tt.form_links', 'formLinks'),
+					)
+				)
+				->from($db->qn('#__redcore_translation_tables', 'tt'))
+				->where('tt.state = 1')
+				->order('tt.title');
+
+			$tables = $db->setQuery($query)->loadObjectList('table');
+
+			foreach ($tables as $key => $table)
+			{
+				$tables[$key]->columns = explode(',', $table->primaryKeys . ',' . $table->columns);
+				$tables[$key]->primaryKeys = explode(',', $table->primaryKeys);
+				$tables[$key]->fallbackColumns = explode(',', $table->fallbackColumns);
+				$tables[$key]->formLinks = json_decode($table->formLinks, true);
+
+				if (isset(self::$translationColumns[$key]))
+				{
+					$tables[$key]->allColumns = self::$translationColumns[$key];
+				}
+			}
+
+			// We put translation check back on
+			$db->translate = $oldTranslate;
+			self::$installedTranslationTables = $tables;
+		}
+
+		return self::$installedTranslationTables;
+	}
+
+	/**
+	 * Populate translation column data for the table
+	 *
+	 * @param   string  $tableName  Table name
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function setTranslationTableWithColumn($tableName)
+	{
+		$table = self::getTranslationTableByName($tableName);
+
+		if ($table)
+		{
+			if (!isset(self::$translationColumns[$table->name]))
+			{
+				$db = JFactory::getDbo();
+
+				$query = $db->getQuery(true)
+					->select('tc.*')
+					->from($db->qn('#__redcore_translation_columns', 'tc'))
+					->where($db->qn('translation_table_id') . ' = ' . $table->id);
+
+				self::$translationColumns[$table->name] = $db->setQuery($query)->loadAssocList('name');
+
+				foreach (self::$translationColumns[$table->name] as $key => $column)
+				{
+					if (!empty($column['params']))
+					{
+						self::$translationColumns[$table->name][$key] = array_merge($column, json_decode($column['params'], true));
+					}
+				}
+			}
+
+			self::$installedTranslationTables[$table->name]->allColumns = self::$translationColumns[$table->name];
+
+			return self::$installedTranslationTables[$table->name];
+		}
+
+		return $table;
+	}
+
+	/**
+	 * Get translation table with columns
+	 *
+	 * @param   int  $id  Translation table ID
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function getTranslationTableById($id)
+	{
+		$tables = self::getInstalledTranslationTables(true);
+
+		foreach ($tables as $table)
+		{
+			if ($table->id == $id)
+			{
+				return $table;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Get translation table with columns
+	 *
+	 * @param   string  $name  Translation table Name
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function getTranslationTableByName($name)
+	{
+		$tables = self::getInstalledTranslationTables(true);
+		$name = '#__' . str_replace('#__', '', $name);
+
+		return isset($tables[$name]) ? $tables[$name] : null;
+	}
+
+	/**
+	 * Set a value to translation table list
+	 *
+	 * @param   string                      $option          Extension option name
+	 * @param   string                      $table           Table name
+	 * @param   RTranslationContentElement  $contentElement  Content Element
+	 * @param   bool                        $notifications   Show notifications
+	 *
+	 * @return  array  Array or table with columns columns
+	 */
+	public static function setInstalledTranslationTables($option, $table, $contentElement, $notifications = false)
+	{
+		// Initialize installed tables before proceeding
+		self::getInstalledTranslationTables(true);
+		$translationTableModel = RModel::getAdminInstance('Translation_Table', array(), 'com_redcore');
+
+		// If content element is empty then we delete this table from the system
+		if (empty($contentElement))
+		{
+			$tableObject = self::getTranslationTableByName($table);
+
+			if ($tableObject)
+			{
+				$translationTableModel->delete($tableObject->id);
+			}
+
+			unset(self::$installedTranslationTables[$table]);
+		}
+		else
+		{
+			$data = array(
+				'name'              => $table,
+				'extension_name'    => $option,
+				'title'             => $contentElement->name,
+				'version'           => $contentElement->version,
+				'columns'           => $contentElement->fieldsToColumns,
+				'formLinks'         => $contentElement->getEditForms(),
+				'description'       => $contentElement->getTranslateDescription(),
+				'author'            => $contentElement->getTranslateAuthor(),
+				'copyright'         => $contentElement->getTranslateCopyright(),
+				'xml_path'          => RTranslationContentElement::getPathWithoutBase($contentElement->contentElementXmlPath),
+				'xml_hashed'        => $contentElement->xml_hashed,
+				'filter_query'      => implode(' AND ', (array) $contentElement->getTranslateFilter()),
+				'state'             => 1,
+				'id'                => $contentElement->tableId,
+				'showNotifications' => $notifications
+			);
+			$translationTableModel->save($data);
+		}
 	}
 }

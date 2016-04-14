@@ -54,6 +54,13 @@ final class RTranslationContentElement
 	public $name;
 
 	/**
+	 * The Content Element version
+	 *
+	 * @var  String
+	 */
+	public $version;
+
+	/**
 	 * Table name
 	 *
 	 * @var  String
@@ -66,6 +73,14 @@ final class RTranslationContentElement
 	 * @var  String
 	 */
 	public $primaryKey;
+
+	/**
+	 * An array to hold tables from database
+	 *
+	 * @var    array
+	 * @since  1.0
+	 */
+	public static $contentElements = array();
 
 	/**
 	 * Constructor
@@ -88,9 +103,11 @@ final class RTranslationContentElement
 			{
 				$xmlDoc = new SimpleXMLElement($content);
 
+				$this->xml_hashed = md5($content);
 				$this->xml = $xmlDoc;
 				$this->table = $this->getTableName();
 				$this->name = $this->getContentElementName();
+				$this->version = $this->getContentElementVersion();
 				$this->primaryKey = $this->getPrimaryKey();
 			}
 		}
@@ -118,12 +135,27 @@ final class RTranslationContentElement
 	 */
 	public function getContentElementName()
 	{
-		if (!empty($this->xml->name))
+		if (isset($this->xml->name))
 		{
 			return (string) $this->xml->name;
 		}
 
 		return '';
+	}
+
+	/**
+	 * Gets Content Element name
+	 *
+	 * @return  String  Name
+	 */
+	public function getContentElementVersion()
+	{
+		if (isset($this->xml->version))
+		{
+			return (string) $this->xml->version;
+		}
+
+		return '1.0.0';
 	}
 
 	/**
@@ -178,26 +210,126 @@ final class RTranslationContentElement
 	}
 
 	/**
+	 * Get table description
+	 *
+	 * @return  string
+	 */
+	public function getTranslateDescription()
+	{
+		if (isset($this->xml->description))
+		{
+			return (string) $this->xml->description;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Get table copyright
+	 *
+	 * @return  string
+	 */
+	public function getTranslateCopyright()
+	{
+		if (isset($this->xml->copyright))
+		{
+			return (string) $this->xml->copyright;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Get table author
+	 *
+	 * @return  string
+	 */
+	public function getTranslateAuthor()
+	{
+		if (isset($this->xml->author))
+		{
+			return (string) $this->xml->author;
+		}
+
+		return '';
+	}
+
+	/**
 	 * Get list of edit forms where we will not show translation
 	 *
 	 * @return  array  Array of edit form locations
 	 */
 	public function getEditForms()
 	{
-		if (!empty($this->xml->reference->component->form))
+		$formLinks = array();
+
+		if (isset($this->xml->reference->component))
 		{
-			$forms = $this->xml->reference->component->form;
-			$formLinks = array();
-
-			foreach ($forms as $form)
+			// Old way
+			if (isset($this->xml->reference->component->form))
 			{
-				$formLinks[] = (string) $form;
-			}
+				foreach ($this->xml->reference->component->form as $form)
+				{
+					$formArray = explode('#', $form);
+					$formLink = array();
 
-			return $formLinks;
+					if (count($formArray) > 1)
+					{
+						$formLink['option'] = $formArray[0];
+						$formLink['view'] = $formArray[1];
+						$formLink['identifier'] = !empty($formArray[2]) ? $formArray[2] : '';
+						$formLink['layout'] = !empty($formArray[4]) ? preg_replace("/[^a-zA-Z0-9]+/", "", $formArray[4]) : 'edit';
+
+						// Set defaults
+						$this->getEditFormDefaults($formLink);
+
+						$formLinks[] = $formLink;
+					}
+				}
+			}
+			// Current structure
+			else
+			{
+				foreach ($this->xml->reference->component->editForm as $editForm)
+				{
+					$formLink = array();
+
+					if (!empty($editForm['option']) && !empty($editForm['view']))
+					{
+						$attributes = $editForm->attributes();
+
+						foreach ($attributes as $key => $attribute)
+						{
+							$formLink[strtolower($key)] = (string) $attribute;
+						}
+
+						// Set defaults
+						$this->getEditFormDefaults($formLink);
+
+						$formLinks[] = $formLink;
+					}
+				}
+			}
 		}
 
-		return array();
+		return $formLinks;
+	}
+
+	/**
+	 * Sets default values to the form links if they are not set
+	 *
+	 * @param   array  &$formLink  Form link options
+	 *
+	 * @return  void
+	 */
+	public function getEditFormDefaults(&$formLink)
+	{
+		// Defaults
+		$formLink['admin'] = !empty($formLink['admin']) ? $formLink['admin'] : 'false';
+		$formLink['layout'] = !empty($formLink['layout']) ? $formLink['layout'] : 'edit';
+		$formLink['identifier'] = isset($formLink['identifier']) ? $formLink['identifier'] : 'id';
+		$formLink['showbutton'] = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
+		$formLink['htmlposition'] = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
 	}
 
 	/**
@@ -205,21 +337,10 @@ final class RTranslationContentElement
 	 *
 	 * @return  String  Content Element Status
 	 */
-	public function getStatus()
+	public function getFieldDifference()
 	{
 		$return = '';
-
-		if (empty($this->table))
-		{
-			$return .= ' ' . JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_VALID_FILE');
-		}
-
 		$fieldsTable = RTranslationTable::getTranslationsTableColumns($this->table);
-
-		if (empty($fieldsTable))
-		{
-			return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_NOT_INSTALLED') . $return;
-		}
 
 		// Language is automatically added to the table if table exists
 		$fieldsTable = RTranslationTable::removeFixedColumnsFromArray($fieldsTable);
@@ -251,10 +372,10 @@ final class RTranslationContentElement
 
 		if (!empty($fields))
 		{
-			$return .= ' ' . JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_FIELDS_MISSING') . implode(', ', $fields);
+			$return .= JText::_('COM_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_FIELDS_MISSING') . implode(', ', $fields);
 		}
 
-		return JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_CONTENT_ELEMENT_INSTALLED') . $return;
+		return $return;
 	}
 
 	/**
@@ -306,5 +427,272 @@ final class RTranslationContentElement
 		}
 
 		return $extensionPath;
+	}
+
+	/**
+	 * Gets path without base path
+	 *
+	 * @param   string  $path  Path
+	 *
+	 * @return  string
+	 */
+	public static function getPathWithoutBase($path)
+	{
+		return str_replace(JPATH_SITE, '', $path);
+	}
+
+	/**
+	 * Gets path without base path
+	 *
+	 * @param   bool    $notInstalled       Filter only not installed Content elements
+	 * @param   string  $onlyFromExtension  Show only from specific extension
+	 *
+	 * @return  array
+	 */
+	public static function getContentElements($notInstalled = false, $onlyFromExtension = '')
+	{
+		$xmlFileOptions = self::loadAllContentElements();
+		$tables = RTranslationTable::getInstalledTranslationTables(true);
+		$xmlFiles = array();
+
+		if (!empty($xmlFileOptions))
+		{
+			foreach ($xmlFileOptions as $option => $xmlFileTables)
+			{
+				if (!empty($onlyFromExtension) && $onlyFromExtension != $option)
+				{
+					continue;
+				}
+
+				foreach ($xmlFileTables as $key => $contentElement)
+				{
+					$xmlFiles[$key] = $contentElement;
+
+					if ($notInstalled && !empty($tables))
+					{
+						foreach ($tables as $table)
+						{
+							if ($table->xml_path == self::getPathWithoutBase($contentElement->contentElementXmlPath))
+							{
+								// We remove it from the list
+								unset($xmlFiles[$key]);
+								break;
+							}
+
+							if (str_replace('#__', '', $table->name) == $contentElement->table)
+							{
+								$xmlFiles[$key]->mainTable = $table;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $xmlFiles;
+	}
+
+	/**
+	 * Found out which extensions have content element files
+	 *
+	 * @param   string  $mediaPath      Media path
+	 * @param   bool    $redcoreFolder  Is this redcore media folder
+	 *
+	 * @return  array  List of objects
+	 */
+	public static function loadAllContentElements($mediaPath = '', $redcoreFolder = false)
+	{
+		if (!empty(self::$contentElements) && !$redcoreFolder)
+		{
+			return self::$contentElements;
+		}
+
+		jimport('joomla.filesystem.folder');
+
+		if ($mediaPath == '')
+		{
+			self::loadAllContentElements(JPATH_SITE . '/media');
+			self::loadAllContentElements(JPATH_SITE . '/media/redcore/translations', true);
+
+			return self::$contentElements;
+		}
+
+		$mediaFolders = JFolder::folders($mediaPath);
+
+		if ($mediaFolders)
+		{
+			foreach ($mediaFolders as $mediaFolder)
+			{
+				// We have already processed redcore media folder
+				if ($mediaFolder == 'redcore' && $mediaPath == JPATH_SITE . '/media')
+				{
+					continue;
+				}
+
+				$folder = $mediaPath . '/' . $mediaFolder . ($redcoreFolder ? '' : '/translations');
+
+				if (is_dir($folder))
+				{
+					$contentElementsXml = JFolder::files($folder, '.xml', false);
+
+					if (!empty($contentElementsXml))
+					{
+						if (!isset(self::$contentElements[$mediaFolder]))
+						{
+							self::$contentElements[$mediaFolder] = array();
+						}
+
+						foreach ($contentElementsXml as $contentElementXml)
+						{
+							$contentElement = new RTranslationContentElement($mediaFolder, $contentElementXml);
+
+							if (!empty($contentElement->table) || $mediaFolder == 'upload')
+							{
+								self::$contentElements[$mediaFolder][$folder . '/' . $contentElement->table] = $contentElement;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return self::$contentElements;
+	}
+
+	/**
+	 * Gets XML string from the given table object
+	 *
+	 * @param   RedcoreTableTranslation_Table  $table  Table object
+	 *
+	 * @return  SimpleXMLElement
+	 */
+	public static function generateTranslationXml($table)
+	{
+		$xml = new SimpleXMLElement('<?xml version="1.0"?><contentelement type="contentelement"></contentelement>');
+
+		$params = !empty($table->params) ? json_decode($table->params, true) : array();
+
+		$xml->addChild('name', $table->title);
+		$xml->addChild('author', $params['author'] ? $params['author'] : '');
+		$xml->addChild('copyright', $params['copyright'] ? $params['copyright'] : '');
+		$xml->addChild('version', $table->version);
+		$xml->addChild('description', $params['description'] ? $params['description'] : '');
+
+		$reference = $xml->addChild('reference');
+
+		// Add main table
+		$referenceTable = $reference->addChild('table');
+		$referenceTable->addAttribute('name', str_replace('#__', '', $table->name));
+		$columns = $table->getTranslationColumns();
+
+		// Add table columns
+		foreach ($columns as $column)
+		{
+			$field = $referenceTable->addChild('field', $column['title']);
+
+			$field->addAttribute('name', $column['name']);
+			$field->addAttribute('type', $column['value_type']);
+			$field->addAttribute('translate', $column['column_type'] == 'translate' ? '1' : '0');
+			$field->addAttribute('alwaysFallback', $column['fallback'] ? 'true' : 'false');
+			$field->addAttribute('filter', $column['filter']);
+			$field->addAttribute('description', $column['description']);
+
+			if (!empty($column['params']) && is_string($column['params']))
+			{
+				$column['params'] = json_decode($column['params'], true);
+			}
+
+			if ($column['params'])
+			{
+				foreach ($column['params'] as $paramKey => $param)
+				{
+					$field->addAttribute($paramKey, $param);
+				}
+			}
+		}
+
+		// Add table filters for editor
+		self::addChildWithCDATA($referenceTable, 'filter', $table->filter_query);
+
+		// Add reference edit forms
+		$referenceComponent = $reference->addChild('component');
+		$formLinks = $table->form_links ? json_decode($table->form_links, true) : array();
+
+		foreach ($formLinks as $formLink)
+		{
+			$editForm = $referenceComponent->addChild('editForm');
+
+			$editForm->addAttribute('admin', $formLink['admin']);
+			$editForm->addAttribute('option', $formLink['option']);
+			$editForm->addAttribute('view', $formLink['view']);
+			$editForm->addAttribute('layout', $formLink['layout']);
+			$editForm->addAttribute('identifier', $formLink['identifier']);
+			$editForm->addAttribute('showbutton', $formLink['showbutton']);
+			$editForm->addAttribute('htmlposition', $formLink['htmlposition']);
+		}
+
+		return $xml;
+	}
+
+	/**
+	 * Method to add child with text inside CDATA
+	 *
+	 * @param   SimpleXMLElement  &$xml   Xml element
+	 * @param   string            $name   Name of the child
+	 * @param   string            $value  Value of the child
+	 *
+	 * @return  SimpleXMLElement
+	 *
+	 * @since   1.4
+	 */
+	public static function addChildWithCDATA(&$xml, $name, $value = '')
+	{
+		$newChild = $xml->addChild($name);
+
+		if (is_null($newChild))
+		{
+			return $newChild;
+		}
+
+		$node = dom_import_simplexml($newChild);
+		$no   = $node->ownerDocument;
+		$node->appendChild($no->createCDATASection($value));
+
+		return $newChild;
+	}
+
+	/**
+	 * Loading of related XML files
+	 *
+	 * @param   string  $extensionName       Extension name
+	 * @param   string  $contentElementsXml  XML File name
+	 * @param   bool    $fullPath            Full path to the XML file
+	 *
+	 * @return  mixed  RTranslationContentElement if found or null
+	 */
+	public static function getContentElement($extensionName = '', $contentElementsXml = '', $fullPath = false)
+	{
+		$contentElements = self::getContentElements(false, $extensionName);
+
+		if (!empty($contentElements))
+		{
+			$contentElementsXmlFullPath = self::getPathWithoutBase($contentElementsXml);
+
+			foreach ($contentElements as $contentElement)
+			{
+				if ($fullPath
+					&& self::getPathWithoutBase($contentElement->contentElementXmlPath) == $contentElementsXmlFullPath)
+				{
+					return $contentElement;
+				}
+
+				if ($contentElement->contentElementXml == $contentElementsXml)
+				{
+					return $contentElement;
+				}
+			}
+		}
+
+		return null;
 	}
 }

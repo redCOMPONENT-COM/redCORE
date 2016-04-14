@@ -57,7 +57,7 @@ class RedcoreModelTranslations extends RModelList
 	 */
 	protected function getListQuery()
 	{
-		$table = RedcoreHelpersTranslation::getTranslationTable();
+		$table = RTranslationTable::setTranslationTableWithColumn($this->getState('filter.translationTableName', ''));
 		$db	= $this->getDbo();
 		$query = $db->getQuery(true);
 
@@ -73,11 +73,12 @@ class RedcoreModelTranslations extends RModelList
 		$query->select('o.*')
 			->from($db->qn($table->table, 'o'));
 
-		$columns = (array) $table->columns;
-
-		foreach ($columns as $column)
+		foreach ($table->allColumns as $column)
 		{
-			$query->select($db->qn('t.' . $column, 't_' . $column));
+			if ($column['column_type'] != RTranslationTable::COLUMN_READONLY)
+			{
+				$query->select($db->qn('t.' . $column['name'], 't_' . $column['name']));
+			}
 		}
 
 		$query->select(
@@ -86,6 +87,7 @@ class RedcoreModelTranslations extends RModelList
 				$db->qn('t.rctranslations_language'),
 				$db->qn('t.rctranslations_originals'),
 				$db->qn('t.rctranslations_modified'),
+				$db->qn('t.rctranslations_modified_by'),
 				$db->qn('t.rctranslations_state')
 			)
 		);
@@ -101,17 +103,17 @@ class RedcoreModelTranslations extends RModelList
 		{
 			$leftJoinOn[] = 't.rctranslations_language = ' . $db->q($language);
 		}
-		else
-		{
-			// We will return empty query
-			$leftJoinOn[] = '1 = 2';
-		}
 
 		$leftJoinOn = implode(' AND ', $leftJoinOn);
 
 		$query->leftJoin(
 			$db->qn(RTranslationTable::getTranslationsTableName($table->table, ''), 't') . (!empty($leftJoinOn) ? ' ON ' . $leftJoinOn . '' : '')
 		);
+
+		$query->select($db->qn('u.name', 'rctranslations_modified_user'))
+			->leftJoin(
+				$db->qn('#__users', 'u')
+				. ' ON u.id = t.rctranslations_modified_by');
 
 		// Filter search
 		$search = $this->getState('filter.search_translations');
@@ -121,7 +123,7 @@ class RedcoreModelTranslations extends RModelList
 			$search = $db->quote('%' . $db->escape($search, true) . '%');
 			$searchColumns = array();
 
-			foreach ($columns as $column)
+			foreach ($table->columns as $column)
 			{
 				$searchColumns[] = '(o.' . $column . ' LIKE ' . $search . ')';
 				$searchColumns[] = '(t.' . $column . ' LIKE ' . $search . ')';
@@ -133,16 +135,21 @@ class RedcoreModelTranslations extends RModelList
 			}
 		}
 
-		// Content Element filter
-		$contentElement = RTranslationHelper::getContentElement($table->option, $table->xml);
-		$filters = $contentElement->getTranslateFilter();
-
-		if (!empty($filters))
+		if ($authorId = $this->getState('filter.author_id'))
 		{
-			foreach ($filters as $filter)
-			{
-				$query->where((string) $filter);
-			}
+			$query->where('t.rctranslations_modified_by = ' . $db->q($authorId));
+		}
+
+		$state = $this->getState('filter.state', '');
+
+		if ($state != '')
+		{
+			$query->where('t.rctranslations_state = ' . $db->q((int) $state));
+		}
+
+		if (!empty($table->filter_query))
+		{
+			$query->where((string) $table->filter_query);
 		}
 
 		// Ordering
@@ -166,14 +173,13 @@ class RedcoreModelTranslations extends RModelList
 	public function getItems()
 	{
 		$items = parent::getItems();
-		$table = RedcoreHelpersTranslation::getTranslationTable();
-		$columns = (array) $table->columns;
+		$table = RTranslationTable::getTranslationTableByName($this->getState('filter.translationTableName', ''));
 
 		if (!empty($items))
 		{
 			foreach ($items as $itemKey => $item)
 			{
-				$items[$itemKey]->translationStatus = RedcoreHelpersTranslation::getTranslationItemStatus($item, $columns);
+				$items[$itemKey]->translationStatus = RedcoreHelpersTranslation::getTranslationItemStatus($item, $table->columns);
 			}
 		}
 

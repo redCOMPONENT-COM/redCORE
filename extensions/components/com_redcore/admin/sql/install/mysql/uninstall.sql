@@ -15,5 +15,7 @@ DROP TABLE IF EXISTS `#__redcore_country`;
 DROP TABLE IF EXISTS `#__redcore_payment_configuration`;
 DROP TABLE IF EXISTS `#__redcore_payments`;
 DROP TABLE IF EXISTS `#__redcore_payment_log`;
+DROP TABLE IF EXISTS `#__redcore_translation_tables`;
+DROP TABLE IF EXISTS `#__redcore_translation_columns`;
 
 SET FOREIGN_KEY_CHECKS = 1;

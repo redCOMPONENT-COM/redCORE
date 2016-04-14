@@ -261,7 +261,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 								<td>
 									<?php echo JText::_('J' . $item->client); ?>
 								</td>
-								<td style="word-wrap:break-word;">
+								<td style="word-break:break-all; word-wrap:break-word;">
 									<?php $folder = !empty($item->path) ? '/' . $item->path : ''; ?>
 									<?php echo RApiHalHelper::getWebservicesRelativePath(); ?>
 									<strong><?php echo $folder ?>/<span class="lc-webservice-file"><?php echo $item->xmlFile; ?></span></strong>

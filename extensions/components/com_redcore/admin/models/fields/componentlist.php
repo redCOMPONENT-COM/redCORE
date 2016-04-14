@@ -65,6 +65,7 @@ class JFormFieldComponentlist extends JFormFieldList
 
 			// Return the result
 			$components = $db->loadObjectList();
+			$tables = RTranslationTable::getInstalledTranslationTables();
 
 			if (!empty($components))
 			{
@@ -78,11 +79,19 @@ class JFormFieldComponentlist extends JFormFieldList
 
 					if ($this->getAttribute('loadContentElements', 'false') == 'true')
 					{
-						$contentElementsArray = RTranslationHelper::getContentElements($value->name);
+						$contentElementsCount = 0;
 
-						if (!empty($contentElementsArray))
+						foreach ($tables as $table)
 						{
-							$contentElements = ' (' . count($contentElementsArray) . ')';
+							if ($table->extension_name == $value->element)
+							{
+								$contentElementsCount++;
+							}
+						}
+
+						if (!empty($contentElementsCount))
+						{
+							$contentElements = ' (' . $contentElementsCount . ')';
 						}
 					}
 

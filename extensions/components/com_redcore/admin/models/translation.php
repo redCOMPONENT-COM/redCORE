@@ -27,17 +27,17 @@ class RedcoreModelTranslation extends RModelAdmin
 	 */
 	public function getItem($pk = null)
 	{
-		$ids = JFactory::getApplication()->input->getString('id', '');
-		$id = JFactory::getApplication()->input->getString('rctranslations_id', '');
-		$table = RedcoreHelpersTranslation::getTranslationTable();
+		$app = JFactory::getApplication();
+		$ids = $app->input->getString('id', '');
+		$id = $app->input->getString('rctranslations_id', '');
+		$table = RTranslationTable::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
 
 		if (empty($table))
 		{
 			// Translation table does not exist we are redirecting to manager
-			JFactory::getApplication()->redirect('index.php?option=com_redcore&view=translations&contentelement=&layout=manage');
+			$app->redirect('index.php?option=com_redcore&view=translations');
 		}
 
-		$contentElement = RTranslationHelper::getContentElement($table->option, $table->xml);
 		$db	= $this->getDbo();
 		$query = $db->getQuery(true);
 		$item = new stdClass;
@@ -82,6 +82,7 @@ class RedcoreModelTranslation extends RModelAdmin
 
 			$item->rctranslations_state = 1;
 			$item->rctranslations_modified = '';
+			$item->rctranslations_modified_by = '';
 			$item->rctranslations_language = JFactory::getApplication()->input->getString('language', '');
 			$item->id = 0;
 		}
@@ -96,30 +97,29 @@ class RedcoreModelTranslation extends RModelAdmin
 
 			$item->original->rctranslations_state = $item->rctranslations_state = $item->translation->rctranslations_state;
 			$item->original->rctranslations_modified = $item->rctranslations_modified = $item->translation->rctranslations_modified;
+			$item->original->rctranslations_modified_by = $item->rctranslations_modified_by = $item->translation->rctranslations_modified_by;
 			$item->original->rctranslations_language = $item->rctranslations_language = $item->translation->rctranslations_language;
 			$item->original->rctranslations_originals = $item->rctranslations_originals = $item->translation->rctranslations_originals;
 			$item->id = $item->translation->rctranslations_id;
 		}
 
-		$fieldsXml = $contentElement->getTranslateFields();
-
-		foreach ($fieldsXml as $field)
+		foreach ($table->allColumns as $column)
 		{
-			if ((string) $field['translate'] == '0')
+			if ($column['column_type'] != RTranslationTable::COLUMN_TRANSLATE)
 			{
-				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+				$item->translation->{$column['name']} = $item->original->{$column['name']};
 			}
 
-			if ((string) $field['type'] == 'params'
-				&& (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			if ($column['value_type'] == 'params'
+				&& (empty($item->translation->{$column['name']}) || $item->translation->{$column['name']} == '{}'))
 			{
-				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+				$item->translation->{$column['name']} = $item->original->{$column['name']};
 			}
 
-			if ((string) $field['type'] == 'readonlytext'
-				&& (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			if ($column['value_type'] == 'readonlytext'
+				&& (empty($item->translation->{$column['name']}) || $item->translation->{$column['name']} == '{}'))
 			{
-				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+				$item->translation->{$column['name']} = $item->original->{$column['name']};
 			}
 		}
 
@@ -135,22 +135,28 @@ class RedcoreModelTranslation extends RModelAdmin
 	 */
 	public function save($data)
 	{
-		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
-		$contentElement = RTranslationHelper::getContentElement($translationTable->option, $translationTable->xml);
-		$translation = JFactory::getApplication()->input->get('translation', array(), 'array');
-		$original = JFactory::getApplication()->input->get('original', array(), 'array');
+		$app = JFactory::getApplication();
+		$translationTable = RTranslationTable::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
+		$translation = $app->input->get('translation', array(), 'array');
 		$id = !empty($data['rctranslations_id']) ? (int) $data['rctranslations_id'] : 0;
+
+		if ($original = $this->getItem())
+		{
+			$original = (array) $original->original;
+
+		}
+		else
+		{
+			$original = $app->input->get('original', array(), 'array');
+		}
 
 		$data = array_merge($data, $translation);
 
-		$fieldsXml = $contentElement->getTranslateFields();
-
-		foreach ($fieldsXml as $field)
+		foreach ($translationTable->allColumns as $field)
 		{
-			if ((string) $field['type'] == 'params' && (string) $field['translate'] == '1')
+			if ($field['value_type'] == 'params' && $field['column_type'] == RTranslationTable::COLUMN_TRANSLATE)
 			{
-				$fieldName = (string) $field['name'];
-				$original[$fieldName] = $original['params_' . $fieldName];
+				$fieldName = $field['name'];
 				$paramsChanged = false;
 
 				if (!empty($data[$fieldName]))
@@ -223,12 +229,12 @@ class RedcoreModelTranslation extends RModelAdmin
 		$data['rctranslations_originals'] = RTranslationTable::createOriginalValueFromColumns($original, $translationTable->columns);
 
 		// We run posthandler methods
-		foreach ($fieldsXml as $field)
+		foreach ($translationTable->allColumns as $field)
 		{
-			$postHandler = (string) $field['posthandler'];
-			$fieldName = (string) $field['name'];
+			$postHandler = $field['posthandler'];
+			$fieldName = $field['name'];
 
-			if (!empty($postHandler) && (string) $field['translate'] == '1')
+			if (!empty($postHandler) && $field['translate'] == '1')
 			{
 				$postHandlerFunctions = explode(',', $postHandler);
 

@@ -263,6 +263,7 @@ class Com_RedcoreInstallerScript
 			if (isset($manifest->update->attributes()->folder))
 			{
 				$path = $manifest->update->attributes()->folder;
+				$sourcePath = $parent->getParent()->getPath('source');
 
 				if (isset($manifest->update->pre) && isset($manifest->update->pre->schemas))
 				{
@@ -270,8 +271,6 @@ class Com_RedcoreInstallerScript
 
 					if (count($schemapaths))
 					{
-						$sourcePath = $parent->getParent()->getPath('source');
-
 						// If it just upgraded redCORE to a newer version using RFactory for database, it forces using the redCORE database drivers
 						if (substr(get_class(JFactory::$database), 0, 1) == 'J' && $this->extensionElement != 'com_redcore')
 						{
@@ -645,7 +644,7 @@ class Com_RedcoreInstallerScript
 
 					try
 					{
-						RTranslationTable::batchContentElements($extName, 'install', false);
+						RTranslationTable::batchContentElements($extName, 'install');
 					}
 					catch (Exception $e)
 					{
@@ -1199,7 +1198,7 @@ class Com_RedcoreInstallerScript
 		$this->preventUninstallRedcore($parent);
 
 		// Uninstall extensions
-		$this->uninstallTranslations();
+		$this->uninstallTranslations($parent);
 		$this->uninstallMedia($parent);
 		$this->uninstallWebservices($parent);
 		$this->uninstallModules($parent);
@@ -1212,30 +1211,62 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Uninstall all Translation tables from database
 	 *
+	 * @param   JInstallerAdapter  $parent  class calling this method
+	 *
 	 * @return  void
 	 */
-	protected function uninstallTranslations()
+	protected function uninstallTranslations($parent)
 	{
-		$class = get_called_class();
-		$extensionOption = strtolower(strstr($class, 'Installer', true));
-
-		$translationTables = RTranslationHelper::getInstalledTranslationTables();
-
-		if (!empty($translationTables))
+		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
-			$db = JFactory::getDbo();
+			// Required objects
+			$manifest  = $parent->get('manifest');
+			$class = get_called_class();
+			$deleteIds = array();
+			$translationTables = RTranslationTable::getInstalledTranslationTables(true);
+			$translationTableModel = RModel::getAdminInstance('Translation_Table', array(), 'com_redcore');
 
-			foreach ($translationTables as $translationTable => $translationTableParams)
+			// Delete specific extension translation tables
+			if ($class != 'Com_RedcoreInstallerScript')
 			{
-				if ((method_exists('RTranslationTable', 'getTranslationsTableName'))
-					&& ($class == 'Com_RedcoreInstallerScript' || $extensionOption == $translationTableParams->option))
+				if ($nodes = $manifest->translations->translation)
 				{
-					$newTable = RTranslationTable::getTranslationsTableName($translationTable, '');
+					foreach ($nodes as $node)
+					{
+						$extensionOption = (string) $node->attributes()->name;
 
+						if (!empty($translationTables))
+						{
+							foreach ($translationTables as $translationTableParams)
+							{
+								if ($extensionOption == $translationTableParams->option)
+								{
+									$deleteIds[] = $translationTableParams->id;
+								}
+							}
+						}
+					}
+				}
+			}
+			// We delete everything
+			else
+			{
+				if (!empty($translationTables))
+				{
+					foreach ($translationTables as $translationTableParams)
+					{
+						$deleteIds[] = $translationTableParams->id;
+					}
+				}
+			}
+
+			if (!empty($deleteIds))
+			{
+				foreach ($deleteIds as $deleteId)
+				{
 					try
 					{
-						RTranslationTable::removeExistingConstraintKeys($translationTable);
-						$db->dropTable($newTable);
+						$translationTableModel->delete($deleteId);
 					}
 					catch (Exception $e)
 					{

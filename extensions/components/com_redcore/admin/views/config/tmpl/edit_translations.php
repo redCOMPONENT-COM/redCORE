@@ -13,6 +13,6 @@ echo RLayoutHelper::render(
 	'translation.tables',
 	array(
 		'contentElements' => $this->contentElements,
-		'missingContentElements' => $this->missingContentElements,
+		'componentName' => $this->componentName,
 	)
 );
