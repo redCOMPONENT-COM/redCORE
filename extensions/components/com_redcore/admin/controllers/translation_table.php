@@ -56,7 +56,7 @@ class RedcoreControllerTranslation_Table extends RControllerForm
 			'select.genericlist',
 			$columns,
 			'tableColumnList',
-			' class="form-control" ',
+			' class="" ',
 			'Field',
 			'Field'
 		);

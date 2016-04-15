@@ -16,7 +16,7 @@
                 label="COM_REDCORE_PAYMENT_CONFIGURATION_OPTION_NAME_LABEL"
                 description="COM_REDCORE_PAYMENT_CONFIGURATION_OPTION_NAME_DESC"
                 default=""
-                class="form-control">
+                class="">
             <option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
         </field>
         <field
