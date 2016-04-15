@@ -10,6 +10,8 @@
 defined('_JEXEC') or die;
 
 $view = $displayData['view'];
+$model = isset($displayData['model']) ? $displayData['model'] : $view->getModel();
+
 $operation = !empty($displayData['options']['operation']) ? $displayData['options']['operation'] : 'read';
 $fieldList = !empty($displayData['options']['fieldList']) ? $displayData['options']['fieldList'] : array();
 $tabActive = isset($displayData['options']['tabActive']) ? $displayData['options']['tabActive'] : ' active in ';
@@ -25,6 +27,7 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 				'webservice.fields',
 				array(
 					'view' => $view,
+					'model' => $model,
 					'options' => array(
 						'operation' => $operation,
 						'fieldList' => $fieldList,
@@ -38,6 +41,7 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 				'webservice.resources',
 				array(
 					'view' => $view,
+					'model' => $model,
 					'options' => array(
 						'operation' => $operation,
 						'form'      => $form,

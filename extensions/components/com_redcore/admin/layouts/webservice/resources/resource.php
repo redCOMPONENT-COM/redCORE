@@ -10,7 +10,7 @@
 defined('_JEXEC') or die;
 
 $view = $displayData['view'];
-$model = $view->getModel();
+$model = isset($displayData['model']) ? $displayData['model'] : $view->getModel();
 
 $operation = !empty($displayData['options']['operation']) ? $displayData['options']['operation'] : 'read';
 $fieldList = !empty($displayData['options']['fieldList']) ? $displayData['options']['fieldList'] : '';
@@ -98,7 +98,7 @@ $id = RFilesystemFile::getUniqueName($operation);
 					'select.genericlist',
 					$model->getTransformTypes($operation),
 					'transform',
-					' class="required form-control" ',
+					' class="required" ',
 					'value',
 					'text',
 					$transform

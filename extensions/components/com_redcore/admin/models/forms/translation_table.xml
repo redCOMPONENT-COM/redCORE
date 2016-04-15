@@ -92,8 +92,7 @@
 				type="componentlist"
 				labelclass="col-sm-2 control-label"
 				onchange="javascript:changeOptionName(this);"
-				default=""
-				class="form-control">
+				default="">
 			<option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
 		</field>
 		<field
@@ -101,8 +100,7 @@
 				type="tablelist"
 				labelclass="col-sm-2 control-label"
 				onchange="javascript:changeTableName(this);"
-				default=""
-				class="form-control">
+				default="">
 			<option value="">COM_REDCORE_TRANSLATIONS_SELECT_TABLE</option>
 		</field>
 		<field

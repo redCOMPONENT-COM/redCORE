@@ -5,7 +5,7 @@
  * Licensed under the GNU General Public License version 2 or later.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Based on Twitter Bootstrap v.3.3.0
+ * Based on Twitter Bootstrap v.3.3.6
  * http://getbootstrap.com/
  */
 .redcore {
@@ -9737,8 +9737,9 @@
 .redcore .input-group-addon .chzn-results {
   text-align: left;
 }
-.redcore .form-inline .input-group .chzn-container {
-  width: 100% !important;
+.redcore .input-group-addon .chzn-drop {
+  white-space: normal;
+  word-wrap: break-word;
 }
 .redcore ul.chart-legend {
   list-style-type: none;
