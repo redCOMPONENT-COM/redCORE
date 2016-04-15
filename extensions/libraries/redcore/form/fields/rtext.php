@@ -89,7 +89,7 @@ class JFormFieldRtext extends JFormField
 
 		$html = '';
 
-		if ($this->multiple == 1)
+		if ($this->multiple == 1 && is_array($this->value))
 		{
 			foreach ($this->value AS $value)
 			{
