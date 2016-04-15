@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.8.3</version>
+    <version>1.8.4</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.8.3" defaultFramework="bootstrap3" />
+    <redcore version="1.8.4" defaultFramework="bootstrap3" />
 
     <install folder="components/com_redcore/admin">
         <sql>
@@ -53,12 +53,6 @@
             <filename>controller.php</filename>
             <filename>redcore.php</filename>
         </files>
-        <languages folder="components/com_redcore/admin/language">
-            <language tag="en-GB">en-GB/en-GB.com_redcore.ini</language>
-            <language tag="en-GB">en-GB/en-GB.com_redcore.sys.ini</language>
-            <language tag="da-DK">da-DK/da-DK.com_redcore.ini</language>
-            <language tag="da-DK">da-DK/da-DK.com_redcore.sys.ini</language>
-        </languages>
         <menu view="dashboard">COM_REDCORE</menu>
         <submenu>
             <menu link="option=com_redcore&amp;view=dashboard" view="dashboard">COM_REDCORE_DASHBOARD</menu>
