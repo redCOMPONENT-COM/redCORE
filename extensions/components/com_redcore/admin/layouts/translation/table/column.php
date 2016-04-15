@@ -52,7 +52,7 @@ $id = RFilesystemFile::getUniqueName();
 					'select.genericlist',
 					$columnTypes,
 					'jform[columns][' . $id . '][column_type]',
-					' class="required form-control" ',
+					' class="required" ',
 					'value',
 					'text',
 					$column->column_type
@@ -66,7 +66,7 @@ $id = RFilesystemFile::getUniqueName();
 					'select.genericlist',
 					$valueTypes,
 					'jform[columns][' . $id . '][value_type]',
-					' class="required form-control" ',
+					' class="required" ',
 					'value',
 					'text',
 					$column->value_type
@@ -93,7 +93,7 @@ $id = RFilesystemFile::getUniqueName();
 					'select.genericlist',
 					$filterTypes,
 					'jform[columns][' . $id . '][filter]',
-					' class="required form-control" ',
+					' class="required" ',
 					'value',
 					'text',
 					$column->filter

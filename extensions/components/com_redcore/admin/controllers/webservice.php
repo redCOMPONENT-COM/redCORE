@@ -43,6 +43,7 @@ class RedcoreControllerWebservice extends RControllerForm
 			'webservice.operation',
 			array(
 				'view' => $model,
+				'model' => $model,
 				'options' => array(
 					'operation' => 'task-' . $taskName,
 					'form'      => $model->getForm($model->formData, false),
@@ -86,6 +87,7 @@ class RedcoreControllerWebservice extends RControllerForm
 			'webservice.complextype',
 			array(
 				'view' => $model,
+				'model' => $model,
 				'options' => array(
 					'operation' => 'type-' . $typeName,
 					'form'      => $model->getForm($model->formData, false),
@@ -119,6 +121,7 @@ class RedcoreControllerWebservice extends RControllerForm
 			'webservice.fields.field',
 			array(
 				'view' => $view,
+				'model' => $model,
 				'options' => array(
 					'operation' => $operation,
 					'fieldList' => $fieldList,
@@ -143,6 +146,7 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = $input->getString('fieldList', '');
 		$fieldList = explode(',', $fieldList);
 		$tableName = $input->getCmd('tableName', '');
+		$model = $this->getModel();
 
 		if (empty($tableName))
 		{
@@ -171,6 +175,7 @@ class RedcoreControllerWebservice extends RControllerForm
 				'webservice.fields.field',
 				array(
 					'view' => $this,
+					'model' => $model,
 					'options' => array(
 						'operation' => $operation,
 						'fieldList' => $fieldList,
@@ -197,6 +202,7 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = $input->getString('fieldList', '');
 		$fieldList = explode(',', $fieldList);
 		$tableName = $input->getCmd('tableName', '');
+		$model = $this->getModel();
 
 		if (empty($tableName))
 		{
@@ -225,6 +231,7 @@ class RedcoreControllerWebservice extends RControllerForm
 				'webservice.resources.resource',
 				array(
 					'view' => $this,
+					'model' => $model,
 					'options' => array(
 						'operation' => $operation,
 						'fieldList' => $fieldList,
@@ -279,6 +286,7 @@ class RedcoreControllerWebservice extends RControllerForm
 			'webservice.resources.resource',
 			array(
 				'view' => $this,
+				'model' => $model,
 				'options' => array(
 					'operation' => $operation,
 					'fieldList' => $fieldList,
@@ -299,6 +307,7 @@ class RedcoreControllerWebservice extends RControllerForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$model = $this->getModel();
 
 		$operation = $input->getString('operation', 'read');
 		$fieldList = $input->getString('fieldList', '');
@@ -307,6 +316,7 @@ class RedcoreControllerWebservice extends RControllerForm
 			'webservice.resources.resource',
 			array(
 				'view' => $this,
+				'model' => $model,
 				'options' => array(
 					'operation' => $operation,
 					'fieldList' => $fieldList,

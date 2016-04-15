@@ -10,6 +10,7 @@
 defined('_JEXEC') or die;
 
 $view = $displayData['view'];
+$model = isset($displayData['model']) ? $displayData['model'] : $view->getModel();
 
 $operation = !empty($displayData['options']['operation']) ? $displayData['options']['operation'] : 'read-list';
 $fieldList = !empty($displayData['options']['fieldList']) ? $displayData['options']['fieldList'] : array();
@@ -24,7 +25,6 @@ $isPrimaryField = !empty($displayData['options']['form']['isPrimaryField']) ? $d
 $displayData['options']['form'] = !empty($displayData['options']['form']) ? $displayData['options']['form'] : array();
 
 $id = RFilesystemFile::getUniqueName($operation);
-$model = $view->getModel();
 ?>
 <div class="row row-stripped">
 	<div class="col-xs-2">
@@ -93,7 +93,7 @@ $model = $view->getModel();
 					'select.genericlist',
 					$model->getTransformTypes($operation),
 					'transform',
-					' class="required form-control" ',
+					' class="required" ',
 					'value',
 					'text',
 					$transform
