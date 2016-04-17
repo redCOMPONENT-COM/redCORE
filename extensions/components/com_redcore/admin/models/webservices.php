@@ -69,6 +69,9 @@ class RedcoreModelWebservices extends RModelList
 				'client', 'w.client',
 				'state', 'w.state',
 				'path', 'w.path',
+				'title', 'w.title',
+				'name', 'w.name',
+				'scopes', 'w.scopes'
 			);
 		}
 
