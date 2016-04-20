@@ -100,7 +100,7 @@ endif;
 					$editLink = $canEdit ? '<a href="'
 						. JRoute::_('index.php?option=com_redcore&task=translation.edit'
 							. '&translationTableName=' . $this->translationTableName
-							. '&language=' . $selectedLanguage
+							. '&language=' . $this->escape($item->rctranslations_language)
 							. '&id=' . (implode('###', $primaryId))
 							. '&rctranslations_id=' . $item->rctranslations_id
 						) . '">' : '';

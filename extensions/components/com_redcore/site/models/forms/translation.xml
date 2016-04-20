@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <form>
-	<fieldset name="translation">
+  <fieldset name="translation">
         <field name="rctranslations_state" type="list" label="JSTATUS"
                description="JFIELD_PUBLISHED_DESC" class="chzn-color-state"
                filter="intval" size="1" default="1"
@@ -19,5 +19,5 @@
             <option value="">JOPTION_SELECT_LANGUAGE</option>
         </field>
         <field name="rctranslations_modified_by" type="user" class="readonly" label="JGLOBAL_FIELD_MODIFIED_BY_LABEL" readonly="true" />
-	</fieldset>
+  </fieldset>
 </form>

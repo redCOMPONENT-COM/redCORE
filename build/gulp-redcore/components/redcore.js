@@ -28,6 +28,11 @@ gulp.task('clean:' + baseTask + ':backend', function() {
 	return del(config.wwwDir + '/administrator/components/com_redcore', {force : true});
 });
 
+// Clean frontend
+gulp.task('clean:' + baseTask + ':frontend', function() {
+	return del(config.wwwDir + '/components/com_redcore', {force : true});
+});
+
 // Copy
 gulp.task('copy:' + baseTask,
 	[
@@ -49,10 +54,19 @@ gulp.task('copy:' + baseTask + ':backend', ['clean:' + baseTask + ':backend'], f
 	);
 });
 
+// Copy frontend
+gulp.task('copy:' + baseTask + ':frontend', ['clean:' + baseTask + ':frontend'], function(cb) {
+	return (
+		gulp.src(extPath + '/site/**')
+		.pipe(gulp.dest(config.wwwDir + '/components/com_redcore'))
+	);
+});
+
 // Watch
 gulp.task('watch:' + baseTask,
 	[
-		'watch:' + baseTask + ':backend'
+		'watch:' + baseTask + ':backend',
+		'watch:' + baseTask + ':frontend'
 	],
 	function() {
 		return true;
@@ -67,4 +81,13 @@ gulp.task('watch:' + baseTask + ':backend', function() {
 	],
 	{ interval: config.watchInterval },
 	['copy:' + baseTask + ':backend', browserSync.reload]);
+});
+
+// Watch frontend
+gulp.task('watch:' + baseTask + ':frontend', function() {
+	gulp.watch([
+		extPath + '/site/**/*'
+	],
+	{ interval: config.watchInterval },
+	['copy:' + baseTask + ':frontend', browserSync.reload]);
 });

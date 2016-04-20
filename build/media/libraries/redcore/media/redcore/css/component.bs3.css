@@ -9763,6 +9763,12 @@
 .redcore .chart-box {
   padding: 0;
 }
-.redcore .redcore .modal-body {
+.redcore .modal-body {
   overflow: auto;
+}
+.redcore .translation-status {
+  padding-bottom: 15px;
+}
+.redcore .translation-divider {
+  border-top: 1px solid #ddd;
 }

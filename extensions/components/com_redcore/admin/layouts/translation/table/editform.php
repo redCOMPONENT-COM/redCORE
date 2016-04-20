@@ -20,6 +20,7 @@ $editForm->showbutton = empty($editForm->showbutton) ? 'true' : $editForm->showb
 $editForm->htmlposition = empty($editForm->htmlposition) ? '.btn-toolbar:first' : $editForm->htmlposition;
 $editForm->option = empty($editForm->option) ? '' : $editForm->option;
 $editForm->view = empty($editForm->view) ? '' : $editForm->view;
+$editForm->checkoriginalid = empty($editForm->checkoriginalid) ? 'false' : $editForm->checkoriginalid;
 $id = RFilesystemFile::getUniqueName();
 
 ?>
@@ -88,7 +89,19 @@ $id = RFilesystemFile::getUniqueName();
 				</div>
 				<input type="text" name="jform[editForms][<?php echo $id;?>][htmlposition]" value="<?php echo $editForm->htmlposition;?>" class="form-control" />
 			</div>
-
+			<div class="input-group input-group-sm">
+				<div class="input-group-addon hasTooltip" title="<?php echo JText::_('COM_REDCORE_TRANSLATION_EDIT_FORM_BUTTON_CHECK_ORIGINAL_ID_DESC'); ?>">
+					<?php echo JText::_('COM_REDCORE_TRANSLATION_EDIT_FORM_BUTTON_CHECK_ORIGINAL_ID'); ?>
+				</div>
+				<fieldset class="radio btn-group">
+					<input id="<?php echo $id;?>_checkoriginalid1" type="radio" name="jform[editForms][<?php echo $id;?>][checkoriginalid]"
+					       value="true" <?php echo $editForm->checkoriginalid == 'false' ? '' : ' checked="checked" '; ?> />
+					<label for="<?php echo $id;?>_checkoriginalid1" class="btn btn-default"><?php echo JText::_('JYES'); ?></label>
+					<input id="<?php echo $id;?>_checkoriginalid0" type="radio" name="jform[editForms][<?php echo $id;?>][checkoriginalid]"
+					       value="false" <?php echo $editForm->checkoriginalid == 'false' ? ' checked="checked" ' : ''; ?> />
+					<label for="<?php echo $id;?>_checkoriginalid0" class="btn btn-default"><?php echo JText::_('JNO'); ?></label>
+				</fieldset>
+			</div>
 		</div>
 	</div>
 </div>

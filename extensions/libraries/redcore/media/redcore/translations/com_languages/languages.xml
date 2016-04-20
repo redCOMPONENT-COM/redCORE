@@ -13,7 +13,7 @@
       <filter><![CDATA[]]></filter>
     </table>
     <component>
-      <editForm admin="true" option="com_languages" view="language" layout="edit" identifier="lang_id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+      <editForm admin="true" option="com_languages" view="language" layout="edit" identifier="lang_id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
     </component>
   </reference>
 </contentelement>

@@ -179,7 +179,7 @@ class RedcoreModelTranslations extends RModelList
 		{
 			foreach ($items as $itemKey => $item)
 			{
-				$items[$itemKey]->translationStatus = RedcoreHelpersTranslation::getTranslationItemStatus($item, $table->columns);
+				$items[$itemKey]->translationStatus = RTranslationHelper::getTranslationItemStatus($item, $table->columns);
 			}
 		}
 
