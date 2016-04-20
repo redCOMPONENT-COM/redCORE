@@ -13,7 +13,7 @@ class InstallJoomlaCest
 		$I->wantToTest('Joomla 3 Installation');
 		$I->installJoomlaRemovingInstallationFolder();
 		$I->doAdministratorLogin();
-		// @todo: uncomment when testing against joomla 3.5 and beyond $I->disableStatistics();
+		$I->disableStatistics();
 		$I->setErrorReportingToDevelopment();
 	}
 }
