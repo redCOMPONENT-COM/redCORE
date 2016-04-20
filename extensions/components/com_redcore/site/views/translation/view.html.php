@@ -110,17 +110,6 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 			}
 		}
 
-		// Check if option is enabled
-		if (RBootstrap::getConfig('enable_translations', 0) == 0)
-		{
-			JFactory::getApplication()->enqueueMessage(
-				JText::sprintf(
-					'COM_REDCORE_TRANSLATION_TABLE_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore%20-">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
-				),
-				'error');
-		}
-
 		parent::display($tpl);
 	}
 
@@ -132,29 +121,6 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	public function getTitle()
 	{
 		return JText::_('COM_REDCORE_TRANSLATIONS') . ' <small>' . JText::_('JEDIT') . ' ' . $this->translationTable->name . '</small>';
-	}
-
-	/**
-	 * Get the toolbar to render.
-	 *
-	 * @return  RToolbar
-	 */
-	public function getToolbar()
-	{
-		$group = new RToolbarButtonGroup;
-
-		$save = RToolbarBuilder::createSaveButton('translation.apply');
-		$saveAndClose = RToolbarBuilder::createSaveAndCloseButton('translation.save');
-		$cancel = RToolbarBuilder::createCancelButton('translation.cancel');
-
-		$group->addButton($save)
-			->addButton($saveAndClose)
-			->addButton($cancel);
-
-		$toolbar = new RToolbar;
-		$toolbar->addGroup($group);
-
-		return $toolbar;
 	}
 
 	/**

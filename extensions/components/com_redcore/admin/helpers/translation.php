@@ -78,52 +78,6 @@ abstract class RedcoreHelpersTranslation extends JObject
 	}
 
 	/**
-	 * Gets translation item status
-	 *
-	 * @param   object  $item     Translate item object
-	 * @param   array   $columns  List of columns used in translation
-	 *
-	 * @return  string  Translation Item status
-	 */
-	public static function getTranslationItemStatus($item, $columns)
-	{
-		if (empty($item->rctranslations_language))
-		{
-			return array('badge' => 'label label-danger', 'status' => 'JNONE');
-		}
-		elseif ($item->rctranslations_state != 1)
-		{
-			return array('badge' => 'label label-danger', 'status' => 'JUNPUBLISHED');
-		}
-		else
-		{
-			$originalValues = new JRegistry;
-
-			if (is_array($item->rctranslations_originals))
-			{
-				$originalValues->loadArray($item->rctranslations_originals);
-			}
-			else
-			{
-				$originalValues->loadString((string) $item->rctranslations_originals);
-			}
-
-			$translationStatus = array('badge' => 'label label-success', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_TRANSLATED');
-
-			foreach ($columns as $column)
-			{
-				if (md5($item->$column) != $originalValues->get($column))
-				{
-					$translationStatus = array('badge' => 'label label-warning', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_CHANGED');
-					break;
-				}
-			}
-
-			return $translationStatus;
-		}
-	}
-
-	/**
 	 * Gets table row count
 	 *
 	 * @param   string  $table  Table object

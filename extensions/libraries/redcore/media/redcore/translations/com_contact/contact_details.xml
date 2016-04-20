@@ -25,7 +25,7 @@
       <filter><![CDATA[]]></filter>
     </table>
     <component>
-      <editForm admin="true" option="com_contact" view="contact" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+      <editForm admin="true" option="com_contact" view="contact" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
     </component>
   </reference>
 </contentelement>
