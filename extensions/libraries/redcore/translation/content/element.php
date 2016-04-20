@@ -330,6 +330,7 @@ final class RTranslationContentElement
 		$formLink['identifier'] = isset($formLink['identifier']) ? $formLink['identifier'] : 'id';
 		$formLink['showbutton'] = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
 		$formLink['htmlposition'] = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
+		$formLink['checkoriginalid'] = !empty($formLink['checkoriginalid']) ? $formLink['checkoriginalid'] : 'false';
 	}
 
 	/**
@@ -629,6 +630,7 @@ final class RTranslationContentElement
 			$editForm->addAttribute('identifier', $formLink['identifier']);
 			$editForm->addAttribute('showbutton', $formLink['showbutton']);
 			$editForm->addAttribute('htmlposition', $formLink['htmlposition']);
+			$editForm->addAttribute('checkOriginalId', $formLink['checkoriginalid']);
 		}
 
 		return $xml;

@@ -639,13 +639,14 @@ class RTranslationHelper
 			foreach ($translationTable->formLinks as $formLink)
 			{
 				// Form values
-				$tableAdmin = $formLink['admin'];
+				$tableAdmin = !empty($formLink['admin']) ? $formLink['admin'] : 'false';
 				$tableOption = $formLink['option'];
 				$tableView = $formLink['view'];
-				$tableLayout = $formLink['layout'];
-				$tableID = $formLink['identifier'];
-				$showButton = $formLink['showbutton'];
-				$htmlposition = $formLink['htmlposition'];
+				$tableLayout = !empty($formLink['layout']) ? $formLink['layout'] : 'edit';
+				$tableID = isset($formLink['identifier']) ? $formLink['identifier'] : 'id';
+				$showButton = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
+				$htmlposition = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
+				$checkid = !empty($formLink['checkoriginalid']) ? $formLink['checkoriginalid'] : 'false';
 
 				// Check if the form's frontend/backend options matches the current page
 				$tableAdmin = $tableAdmin === 'true' ? true : false;
@@ -669,18 +670,21 @@ class RTranslationHelper
 						return;
 					}
 
-					// Check whether there's a relation between the current item and the translation element
-					$db = JFactory::getDbo();
-					$query = $db->getQuery(true)
-					->select($db->qn($translationTable->primaryKeys[0]))
-					->from($db->qn($translationTable->table))
-					->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemID));
+					if ($checkid == 'true')
+					{
+						// Check whether there's a relation between the current item and the translation element
+						$db = JFactory::getDbo();
+						$query = $db->getQuery(true)
+						->select($db->qn($translationTable->primaryKeys[0]))
+						->from($db->qn($translationTable->table))
+						->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemID));
 
-					$db->setQuery($query);
-					$results = $db->loadObjectList();
+						$db->setQuery($query);
+						$results = $db->loadObjectList();
+					}
 
 					// If there is, render a modal button & window in the toolbar
-					if (!empty($results))
+					if ($checkid == 'false' || !empty($results))
 					{
 						$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->title;
 						$contentelement = str_replace('#__', '', $translationTable->table);
@@ -716,6 +720,7 @@ class RTranslationHelper
 									. $itemID
 									. '&tmpl=component'),
 				'linkClass' => 'btn btn-primary',
+				'contentElement' => $contentelement,
 				'htmlposition' => $htmlposition,
 			)
 		);

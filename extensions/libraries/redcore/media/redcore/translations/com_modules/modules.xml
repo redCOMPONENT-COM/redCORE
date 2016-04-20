@@ -17,7 +17,7 @@
       <filter><![CDATA[o.client_id = 0]]></filter>
     </table>
     <component>
-      <editForm admin="true" option="com_modules" view="module" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+      <editForm admin="true" option="com_modules" view="module" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkOriginalId="false"/>
     </component>
   </reference>
 </contentelement>

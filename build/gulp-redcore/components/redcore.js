@@ -86,9 +86,7 @@ gulp.task('watch:' + baseTask + ':backend', function() {
 // Watch frontend
 gulp.task('watch:' + baseTask + ':frontend', function() {
 	gulp.watch([
-		extPath + '/site/**/*',
-		extPath + '/../redcore.xml',
-		extPath + '/../install.php'
+		extPath + '/site/**/*'
 	],
 	{ interval: config.watchInterval },
 	['copy:' + baseTask + ':frontend', browserSync.reload]);

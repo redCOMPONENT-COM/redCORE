@@ -11,23 +11,23 @@ defined('JPATH_REDCORE') or die;
 
 RHelperAsset::load('full-page-modal.min.css', 'redcore');
 
-$id = !empty($displayData['id']) ? $displayData['id'] : RFilesystemFile::getUniqueName();
+$id = !empty($displayData['id']) ? $displayData['id'] : 0;
 $header = !empty($displayData['header']) ? $displayData['header'] : '';
 $footer = !empty($displayData['footer']) ? $displayData['footer'] : '';
 $link = !empty($displayData['link']) ? $displayData['link'] : '';
 $linkName = !empty($displayData['linkName']) ? $displayData['linkName'] : '&nbsp;';
 $linkClass = !empty($displayData['linkClass']) ? $displayData['linkClass'] : 'btn btn-default';
-$link = !empty($displayData['link']) ? $displayData['link'] : '';
 $htmlposition = !empty($displayData['htmlposition']) ? $displayData['htmlposition'] : '.btn-toolbar:first';
+$contentElement = !empty($displayData['contentElement']) ? $displayData['contentElement'] : RFilesystemFile::getUniqueName();
 ?>
 
-<div class="modalContainer" style="display:none;">
+<div id="modalContainer<?php echo $contentElement; ?>" class="modalContainer" style="display:none;">
 	<?php if (!empty($displayData['id'])) : ?>
-	<a class="<?php echo $linkClass; ?> modal-iframe-external" data-toggle="modal" href="#"
-	   id="modalButton_<?php echo $id ?>"
-	   data-target="#modalContainer_modalButton_<?php echo $id ?>"
+	<a class="<?php echo $linkClass; ?> modal-iframe-external" data-toggle="modal" href="javascript:void(0);"
+	   id="modalButton_<?php echo $contentElement; ?>"
+	   data-target="#modalContainer_modalButton_<?php echo $contentElement; ?>"
 	   title="<?php echo $header ?>" data-href="<?php echo $link ?>"
-	   onclick="openFullPageModal(this);">
+	   onclick="openFullPageModal_<?php echo $contentElement; ?>(this);">
 		<?php echo $linkName ?>
 	</a>
 	<?php else: ?>
@@ -35,7 +35,7 @@ $htmlposition = !empty($displayData['htmlposition']) ? $displayData['htmlpositio
 			<?php echo JText::_('LIB_REDCORE_TRANSLATION_SAVE_ITEM_TO_TRANSLATE'); ?>
 		</button>
 	<?php endif; ?>
-	<div class="modal modal-iframe-external-container full-page hide" id="modalContainer_modalButton_<?php echo $id ?>"
+	<div class="modal modal-iframe-external-container full-page hide" id="modalContainer_modalButton_<?php echo $contentElement; ?>"
 	     tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-lg modal-lg">
 			<div class="modal-content">
@@ -44,7 +44,7 @@ $htmlposition = !empty($displayData['htmlposition']) ? $displayData['htmlpositio
 					<button type="button" class="btn btn-default" data-dismiss="modal" name="modal-close">
 						<?php echo JText::_('LIB_REDCORE_TRANSLATION_NAME_CANCEL') ?>
 					</button>
-					<button type="button" class="btn btn-primary" name="modal-save" data-dismiss="modal" onclick="saveIframe();">
+					<button type="button" class="btn btn-primary" name="modal-save" data-dismiss="modal" onclick="saveIframe_<?php echo $contentElement; ?>();">
 						<?php echo JText::_('LIB_REDCORE_TRANSLATION_NAME_SAVE') ?>
 					</button>
 					<?php echo $footer ?>
@@ -55,27 +55,27 @@ $htmlposition = !empty($displayData['htmlposition']) ? $displayData['htmlpositio
 </div>
 
 <script type="text/javascript">
-	function openFullPageModal(el) 
+	function openFullPageModal_<?php echo $contentElement; ?>(el) 
 	{
 		var url = jQuery(el).attr('data-href');
 
 		jQuery('.translation-message').remove();
 
-		jQuery('#modalContainer_modalButton_<?php echo $id; ?> .modal-body')
-		.html('<iframe id="modal_iframe_<?php echo $id; ?>" width="100%" height="100%" frameborder="0" scrolling="yes" allowtransparency="true" src="' 
+		jQuery('#modalContainer_modalButton_<?php echo $contentElement; ?> .modal-body')
+		.html('<iframe id="modal_iframe_<?php echo $contentElement; ?>" width="100%" height="100%" frameborder="0" scrolling="yes" allowtransparency="true" src="' 
 		+ url 
 		+ '"></iframe>');
 	}
 
-	function saveIframe() 
+	function saveIframe_<?php echo $contentElement; ?>() 
 	{
-		jQuery('#modal_iframe_<?php echo $id; ?>')[0].contentWindow.Joomla.submitbutton('translation.apply');
+		jQuery('#modal_iframe_<?php echo $contentElement; ?>')[0].contentWindow.Joomla.submitbutton('translation.apply');
 		var savedIframe = '<div class="alert alert-success translation-message"><?php echo JTEXT::_('LIB_REDCORE_TRANSLATION_SAVE_SUCESS'); ?></div>';
 		jQuery('#system-message-container').append(savedIframe);
 	}
 
 	jQuery(document).ready(function() {
-		jQuery('<?php echo $htmlposition; ?>').append(jQuery('.modalContainer'));
-		jQuery('.modalContainer').show();
+		jQuery('<?php echo $htmlposition; ?>').append(jQuery('#modalContainer<?php echo $contentElement; ?>'));
+		jQuery('#modalContainer<?php echo $contentElement; ?>').show();
 	});
 </script>

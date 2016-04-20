@@ -16,7 +16,7 @@
       <filter><![CDATA[o.type = 'plugin']]></filter>
     </table>
     <component>
-      <editForm admin="true" option="com_plugins" view="plugin" layout="edit" identifier="extension_id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+      <editForm admin="true" option="com_plugins" view="plugin" layout="edit" identifier="extension_id" showbutton="true" htmlposition=".btn-toolbar:first" checkOriginalId="false"/>
     </component>
   </reference>
 </contentelement>

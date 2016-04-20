@@ -135,26 +135,19 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	}
 
 	/**
-	 * Get the toolbar to render.
+	 * Get the protected properties that are needed to create translation layout.
 	 *
-	 * @return  RToolbar
+	 * @return  array
 	 */
-	public function getToolbar()
+	public function getLayoutProperties()
 	{
-		$group = new RToolbarButtonGroup;
+		$array = array(
+				'item' => $this->item,
+				'form' => $this->form,
+				'editor' => $this->editor,
+			);
 
-		$save = RToolbarBuilder::createSaveButton('translation.apply');
-		$saveAndClose = RToolbarBuilder::createSaveAndCloseButton('translation.save');
-		$cancel = RToolbarBuilder::createCancelButton('translation.cancel');
-
-		$group->addButton($save)
-			->addButton($saveAndClose)
-			->addButton($cancel);
-
-		$toolbar = new RToolbar;
-		$toolbar->addGroup($group);
-
-		return $toolbar;
+		return $array;
 	}
 
 	/**

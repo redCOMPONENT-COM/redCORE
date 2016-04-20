@@ -30,7 +30,7 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_redcore'))
 	return false;
 }
 
-//Load administrator language files
+// Load administrator language files
 $language = JFactory::getLanguage();
 $language->load('joomla', JPATH_ADMINISTRATOR, 'en-GB', true);
 $language->load('joomla', JPATH_ADMINISTRATOR, null, true);

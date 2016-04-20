@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
  * @subpackage  Views
  * @since       1.0
  */
-abstract class RedcoreHelpersView extends RViewAdmin
+abstract class RedcoreHelpersView extends RViewSite
 {
 	/**
 	 * The component title to display in the topbar layout (if using it).
@@ -31,7 +31,7 @@ abstract class RedcoreHelpersView extends RViewAdmin
 	 *
 	 * @var  boolean
 	 */
-	protected $displaySidebar = true;
+	protected $displaySidebar = false;
 
 	/**
 	 * The sidebar layout name to display.
@@ -45,7 +45,7 @@ abstract class RedcoreHelpersView extends RViewAdmin
 	 *
 	 * @var  boolean
 	 */
-	protected $displayTopBar = true;
+	protected $displayTopBar = false;
 
 	/**
 	 * The topbar layout name to display.
@@ -59,7 +59,7 @@ abstract class RedcoreHelpersView extends RViewAdmin
 	 *
 	 * @var  boolean
 	 */
-	protected $displayTopBarInnerLayout = true;
+	protected $displayTopBarInnerLayout = false;
 
 	/**
 	 * The topbar inner layout name to display.
@@ -74,34 +74,4 @@ abstract class RedcoreHelpersView extends RViewAdmin
 	 * @var  boolean
 	 */
 	protected $displayComponentVersion = true;
-
-	/**
-	 * Loaded redCore extensions
-	 *
-	 * @var  array
-	 */
-	public static $loadedRedcoreExtensions = array();
-
-	/**
-	 * Method to get all extensions that are using redCORE
-	 *
-	 * @return  array  Array of extensions
-	 */
-	public static function getExtensionsRedcore()
-	{
-		if (empty($loadedRedcoreExtensions))
-		{
-			/** @var RedcoreModelConfig $model */
-			$model = RModelAdmin::getAdminInstance('Config', array(), 'com_redcore');
-
-			self::$loadedRedcoreExtensions = RComponentHelper::getRedcoreComponents();
-
-			foreach (self::$loadedRedcoreExtensions as $componentKey => $componentName)
-			{
-				self::$loadedRedcoreExtensions[$componentKey] = $model->getComponent($componentName);
-			}
-		}
-
-		return self::$loadedRedcoreExtensions;
-	}
 }

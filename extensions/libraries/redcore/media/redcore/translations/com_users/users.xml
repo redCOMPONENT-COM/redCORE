@@ -12,7 +12,7 @@
       <filter><![CDATA[]]></filter>
     </table>
     <component>
-      <editForm admin="true" option="com_users" view="user" layout="edit" identifier="id" showbutton="false" htmlposition=".btn-toolbar:first"/>
+      <editForm admin="true" option="com_users" view="user" layout="edit" identifier="id" showbutton="false" htmlposition=".btn-toolbar:first" checkOriginalId="false"/>
     </component>
   </reference>
 </contentelement>
