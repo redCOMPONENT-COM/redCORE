@@ -630,7 +630,7 @@ final class RTranslationContentElement
 			$editForm->addAttribute('identifier', $formLink['identifier']);
 			$editForm->addAttribute('showbutton', $formLink['showbutton']);
 			$editForm->addAttribute('htmlposition', $formLink['htmlposition']);
-			$editForm->addAttribute('checkOriginalId', $formLink['checkoriginalid']);
+			$editForm->addAttribute('checkoriginalid', $formLink['checkoriginalid']);
 		}
 
 		return $xml;

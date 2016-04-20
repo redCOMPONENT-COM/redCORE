@@ -647,6 +647,7 @@ class RTranslationHelper
 				$showButton = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
 				$htmlposition = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
 				$checkid = !empty($formLink['checkoriginalid']) ? $formLink['checkoriginalid'] : 'false';
+				$results = null;
 
 				// Check if the form's frontend/backend options matches the current page
 				$tableAdmin = $tableAdmin === 'true' ? true : false;

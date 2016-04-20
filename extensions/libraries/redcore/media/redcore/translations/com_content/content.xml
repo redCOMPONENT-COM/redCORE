@@ -22,8 +22,8 @@
       <filter><![CDATA[]]></filter>
     </table>
     <component>
-      <editForm admin="true" option="com_content" view="article" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkOriginalId="false"/>
-      <editForm admin="false" option="com_content" view="form" layout="edit" identifier="a_id" showbutton="true" htmlposition=".btn-toolbar:first" checkOriginalId="false"/>
+      <editForm admin="true" option="com_content" view="article" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
+      <editForm admin="false" option="com_content" view="form" layout="edit" identifier="a_id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
     </component>
   </reference>
 </contentelement>

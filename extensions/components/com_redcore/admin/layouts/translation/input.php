@@ -58,11 +58,13 @@ $predefinedOptions = array(
 			<br>
 			<?php echo $form->getInput('rctranslations_modified'); ?>
 		</div>
+		<?php if (!empty($form->getValue('rctranslations_modified_by'))) : ?>
 		<div class="col-md-3">
 			<?php echo $form->getLabel('rctranslations_modified_by'); ?>
 			<br>
 			<?php echo $form->getInput('rctranslations_modified_by'); ?>
 		</div>
+		<?php endif; ?>
 		<?php if ($modal == false) : ?>
 		<div class="col-md-3">
 			<?php echo $form->getLabel('rctranslations_language'); ?>

@@ -102,15 +102,13 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 		$data['fallback_columns'] = implode(',', $fallbackColumns);
 		$data['translate_columns'] = implode(',', $translateColumns);
 
-		JLog::add(
-			str_replace("\n", ' ', print_r($data, 1)),
-			JLog::INFO,
-			'transtable'
-		);
-
 		if (!empty($data['formLinks']))
 		{
 			$data['form_links'] = json_encode($data['formLinks']);
+		}
+		elseif (!empty($data['editForms']))
+		{
+			$data['form_links'] = json_encode($data['editForms']);
 		}
 
 		$data['fromEditForm'] = JFactory::getApplication()->input->get('fromEditForm') == '1';

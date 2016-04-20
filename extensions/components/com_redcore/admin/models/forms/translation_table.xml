@@ -109,7 +109,7 @@
 				multiple="true"
 		/>
 		<field
-				name="formLinks"
+				name="editForms"
 				type="list"
 				multiple="true"
 		/>
