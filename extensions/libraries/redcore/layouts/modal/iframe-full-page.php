@@ -23,21 +23,23 @@ $contentElement = !empty($displayData['contentElement']) ? $displayData['content
 
 <div id="modalContainer<?php echo $contentElement; ?>" class="modalContainer" style="display:none;">
 	<?php if (!empty($displayData['id'])) : ?>
-	<a class="<?php echo $linkClass; ?> modal-iframe-external" data-toggle="modal" href="javascript:void(0);"
-	   id="modalButton_<?php echo $contentElement; ?>"
-	   data-target="#modalContainer_modalButton_<?php echo $contentElement; ?>"
-	   title="<?php echo $header ?>" data-href="<?php echo $link ?>"
-	   onclick="openFullPageModal_<?php echo $contentElement; ?>(this);">
+		<button type="button"
+			class="btn" 
+			data-toggle="modal" 
+			data-target="#modalContainer_modalButton_<?php echo $contentElement; ?>"
+			title="<?php echo $header ?>"
+			onclick="openFullPageModal_<?php echo $contentElement; ?>(this);">
 		<?php echo $linkName ?>
-	</a>
+	</button>
 	<?php else: ?>
 		<button type="button" class="btn btn-primary disabled">
 			<?php echo JText::_('LIB_REDCORE_TRANSLATION_SAVE_ITEM_TO_TRANSLATE'); ?>
 		</button>
 	<?php endif; ?>
-	<div class="modal modal-iframe-external-container full-page hide" id="modalContainer_modalButton_<?php echo $contentElement; ?>"
+
+	<div class="modal full-page hide" id="modalContainer_modalButton_<?php echo $contentElement; ?>"
 	     tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-lg modal-lg">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-body"></div>
 				<div class="modal-footer">
@@ -57,8 +59,10 @@ $contentElement = !empty($displayData['contentElement']) ? $displayData['content
 <script type="text/javascript">
 	function openFullPageModal_<?php echo $contentElement; ?>(el) 
 	{
-		var url = jQuery(el).attr('data-href');
+		var url = '<?php echo $link; ?>';
 
+		jQuery('#modalContainer_modalButton_<?php echo $contentElement; ?>').removeClass('hide');
+		
 		jQuery('.translation-message').remove();
 
 		jQuery('#modalContainer_modalButton_<?php echo $contentElement; ?> .modal-body')
