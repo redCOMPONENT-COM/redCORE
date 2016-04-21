@@ -1206,4 +1206,25 @@ final class RTranslationTable
 			$translationTableModel->save($data);
 		}
 	}
+
+	/**
+	 * Method to purge contents of a translation table
+	 *
+	 * @param   string  $tableName  name of either the translations table or the table being translated I.E. #__content or #__content__rctranslations
+	 *
+	 * @return bool
+	 */
+	public static function purgeContentElement($tableName)
+	{
+		$db = JFactory::getDbo();
+
+		if (strpos($tableName, '_rctranslations') === false)
+		{
+			$tableName .= '_rctranslations';
+		}
+
+		$db->setQuery('TRUNCATE ' . $tableName);
+
+		return ($db->execute() !== false);
+	}
 }
