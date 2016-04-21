@@ -48,3 +48,4 @@ Structure is based on maximum simplicity for developers and for end users:
 - tests - Folder that is used for automated testing of the redCORE
 
 See more information in: [redCORE Folder Structure](http://redcomponent-com.github.io/redCORE/?chapters/folder-structure.md)
+
