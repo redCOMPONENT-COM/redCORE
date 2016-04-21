@@ -21,6 +21,7 @@
     "gulp-uglify": "^1.4.1",
     "gulp-zip": "^3.0.2",
     "joomla-gulp": "^1.1.1",
+    "merge-stream": "^1.0.0",
     "require-dir": "^0.3.0",
     "xml2js": "^0.4.12",
     "yargs": "^3.27.0"

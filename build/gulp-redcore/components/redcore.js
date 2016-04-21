@@ -1,11 +1,12 @@
 var gulp = require('gulp');
-var fs   = require('fs');
 
 var config = require('../config.js');
 
 // Dependencies
 var browserSync = require('browser-sync');
 var del         = require('del');
+var fs          = require('fs');
+var merge       = require('merge-stream');
 
 var baseTask  = 'components.redcore';
 
@@ -44,14 +45,13 @@ gulp.task('copy:' + baseTask,
 
 // Copy backend
 gulp.task('copy:' + baseTask + ':backend', ['clean:' + baseTask + ':backend'], function(cb) {
-	return (
-		gulp.src(extPath + '/admin/**')
-		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore')) &&
-		gulp.src(extPath + '/../../redcore.xml')
-		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore')) &&
-		gulp.src(extPath + '/../../install.php')
-		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore'))
-	);
+	var admin = gulp.src(extPath + '/admin/**')
+		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore'));
+
+	var install = gulp.src([extPath + '/../../redcore.xml', extPath + '/../../install.php'])
+		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore'));
+
+	return merge(admin, install);
 });
 
 // Copy frontend
