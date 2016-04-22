@@ -9,6 +9,16 @@
 
 class AdministratorContacts100SoapCest
 {
+	public function __construct()
+	{
+		$this->faker = Faker\Factory::create();
+		$this->name = $this->faker->bothify('AdministratorContacts100SoapCest contact ?##?');
+
+		// 4 is by default the id of Uncategorised category
+		$this->category = 4;
+		$this->id = 'this property will contain the id of the created contact';
+	}
+
 	public function _before(ApiTester $I, \Helper\SoapModule $soapModule, \Codeception\TestCase\Cest $testCase)
 	{
 		$endpoint = $I->getWebserviceBaseUrl() . '/administrator/index.php?webserviceClient=administrator&webserviceVersion=1.0.0&option=contact&api=soap';
@@ -19,14 +29,6 @@ class AdministratorContacts100SoapCest
 			$endpoint,
 			$schema
 		);
-
-		$this->faker = Faker\Factory::create();
-		$this->name = $this->faker->bothify('AdministratorContacts1SoapCest contact ?##?');
-
-		// 4 is by default the id of Uncategorised category
-		$this->category = 4;
-		$this->id = 'this property will contain the id of the created contact';
-
 	}
 
 	public function create(ApiTester $I)
