@@ -9,7 +9,7 @@
 
 class AdministratorContacts100CrudCest
 {
-	public function _before(ApiTester $I)
+	public function __construct()
 	{
 		$this->faker = Faker\Factory::create();
 		$this->name = $this->faker->bothify('AdministratorContacts100CrudCest contact ?##?');
@@ -55,6 +55,8 @@ class AdministratorContacts100CrudCest
 		$I->seeResponseIsJson();
 		$I->seeHttpHeader('X-Webservice-name', 'contact');
 		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
+		$I->seeResponseContainsJson(['id' => $this->id]);
+		$I->seeResponseContainsJson(['name' => $this->name]);
 	}
 
 	/**
