@@ -7,30 +7,29 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-class AdministratorContacts1SoapCest
+class AdministratorContacts100SoapCest
 {
-	/**
-	 * Set up the contact stub
-	 */
 	public function __construct()
 	{
 		$this->faker = Faker\Factory::create();
-		$this->name = $this->faker->bothify('AdministratorContacts1SoapCest contact ?##?');
-		$this->category = 4; // 4 is by default the id of Uncategorised category
+		$this->name = $this->faker->bothify('AdministratorContacts100SoapCest contact ?##?');
+
+		// 4 is by default the id of Uncategorised category
+		$this->category = 4;
 		$this->id = 'this property will contain the id of the created contact';
 	}
 
-	/*
-	public function existsWsdl(ApiTester $I)
+	public function _before(ApiTester $I, \Helper\SoapModule $soapModule, \Codeception\TestCase\Cest $testCase)
 	{
-		$I->comment('I execute a request to ensure that redCORE automatically generates the .wsdl schema on the fly');
-		$I->sendGET('index.php?webserviceClient=administrator&webserviceVersion=1.0.0&option=contact&api=soap&wsdl');
-		sleep(1);
-		$I->sendGET('media/redcore/webservices/joomla/administrator.contact.1.0.0.wsdl');
-		$I->seeResponseCodeIs(200);
-		$I->seeResponseIsXml();
+		$endpoint = $I->getWebserviceBaseUrl() . '/administrator/index.php?webserviceClient=administrator&webserviceVersion=1.0.0&option=contact&api=soap';
+		$schema = $I->getSoapWsdlDinamically($endpoint);
+
+		$soapModule->configure(
+			$testCase,
+			$endpoint,
+			$schema
+		);
 	}
-	*/
 
 	public function create(ApiTester $I)
 	{
