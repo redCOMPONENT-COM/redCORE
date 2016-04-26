@@ -102,4 +102,51 @@ final class RFactory extends JFactory
 
 		return $db;
 	}
+
+	/**
+	 * Create a mailer object
+	 *
+	 * @return  JMail object
+	 *
+	 * @see     JMail
+	 * @since   11.1
+	 */
+	protected static function createMailer()
+	{
+		$conf = self::getConfig();
+
+		$smtpauth = ($conf->get('smtpauth') == 0) ? null : 1;
+		$smtpuser = $conf->get('smtpuser');
+		$smtppass = $conf->get('smtppass');
+		$smtphost = $conf->get('smtphost');
+		$smtpsecure = $conf->get('smtpsecure');
+		$smtpport = $conf->get('smtpport');
+		$mailfrom = $conf->get('mailfrom');
+		$fromname = $conf->get('fromname');
+		$mailer = $conf->get('mailer');
+
+		// Create a JMail object
+		$mail = RMail::getInstance();
+
+		// Set default sender without Reply-to
+		$mail->setFrom(JMailHelper::cleanLine($mailfrom), JMailHelper::cleanLine($fromname), 0);
+
+		// Default mailer is to use PHP's mail function
+		switch ($mailer)
+		{
+			case 'smtp':
+				$mail->useSmtp($smtpauth, $smtphost, $smtpuser, $smtppass, $smtpsecure, $smtpport);
+				break;
+
+			case 'sendmail':
+				$mail->isSendmail();
+				break;
+
+			default:
+				$mail->isMail();
+				break;
+		}
+
+		return $mail;
+	}
 }

@@ -112,10 +112,7 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '	}';
 
 			$script[] = "
-				function closeModal(fieldId)
-				{
-					jQuery('#modal-' + fieldId).modal('hide');
-				}
+				
 			";
 
 			// Add the script to the document head.
