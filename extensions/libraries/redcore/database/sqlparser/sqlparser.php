@@ -1322,7 +1322,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				case 'AND':
 				case '&&':
 				case 'BETWEEN':
-				case 'AND':
 				case 'BINARY':
 				case '&':
 				case '~':

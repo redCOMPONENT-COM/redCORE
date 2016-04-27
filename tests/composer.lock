@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6be2d60562e228a6d01cbb69caffcada",
-    "content-hash": "eaab2f2f9625c1e9db6c3c7ff8e75648",
+    "hash": "55fa4e1a94ed45fe1232abab943abbf9",
+    "content-hash": "f394d375900c6f210dd6099ba925de50",
     "packages": [],
     "packages-dev": [
         {
@@ -1044,20 +1044,20 @@
         },
         {
             "name": "phpmd/phpmd",
-            "version": "2.4.2",
+            "version": "2.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpmd/phpmd.git",
-                "reference": "fccbdb6b222f6d7a6d35af1c396ba5435cec76a9"
+                "reference": "2b9c2417a18696dfb578b38c116cd0ddc19b256e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/fccbdb6b222f6d7a6d35af1c396ba5435cec76a9",
-                "reference": "fccbdb6b222f6d7a6d35af1c396ba5435cec76a9",
+                "url": "https://api.github.com/repos/phpmd/phpmd/zipball/2b9c2417a18696dfb578b38c116cd0ddc19b256e",
+                "reference": "2b9c2417a18696dfb578b38c116cd0ddc19b256e",
                 "shasum": ""
             },
             "require": {
-                "pdepend/pdepend": "~2.0",
+                "pdepend/pdepend": "^2.0.4",
                 "php": ">=5.3.0"
             },
             "require-dev": {
@@ -1105,7 +1105,7 @@
                 "phpmd",
                 "pmd"
             ],
-            "time": "2016-03-10 17:17:44"
+            "time": "2016-04-04 11:52:04"
         },
         {
             "name": "phpspec/prophecy",
@@ -1626,6 +1626,51 @@
                 "task"
             ],
             "time": "2016-02-16 15:58:14"
+        },
+        {
+            "name": "redcomponent/teststatistics",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/redCOMPONENT-COM/teststatistics.git",
+                "reference": "a291f2a482247c082b1a4202c200df8a0d3bf6d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/redCOMPONENT-COM/teststatistics/zipball/a291f2a482247c082b1a4202c200df8a0d3bf6d1",
+                "reference": "a291f2a482247c082b1a4202c200df8a0d3bf6d1",
+                "shasum": ""
+            },
+            "require-dev": {
+                "codeception/codeception": "@dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Codeception\\Extension\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL2"
+            ],
+            "authors": [
+                {
+                    "name": "Javier Gómez",
+                    "email": "javier@redcomponent.com",
+                    "homepage": "https://github.com/redCOMPONENT-COM/teststatistics"
+                }
+            ],
+            "description": "Codeception Extension to measure the performance of your tests",
+            "homepage": "https://github.com/redCOMPONENT-COM/teststatistics",
+            "keywords": [
+                "TDD",
+                "acceptance testing",
+                "functional testing",
+                "performance",
+                "unit testing"
+            ],
+            "time": "2015-07-20 17:10:31"
         },
         {
             "name": "sebastian/comparator",
@@ -2732,6 +2777,7 @@
     "stability-flags": {
         "phing/phing": 20,
         "redcomponent/robo": 20,
+        "redcomponent/teststatistics": 20,
         "flow/jsonpath": 20
     },
     "prefer-stable": false,
