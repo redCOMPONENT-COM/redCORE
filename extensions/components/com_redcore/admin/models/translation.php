@@ -143,7 +143,6 @@ class RedcoreModelTranslation extends RModelAdmin
 		if ($original = $this->getItem())
 		{
 			$original = (array) $original->original;
-
 		}
 		else
 		{
@@ -151,6 +150,44 @@ class RedcoreModelTranslation extends RModelAdmin
 		}
 
 		$data = array_merge($data, $translation);
+
+		/** @var RedcoreTableTranslation $table */
+		$table = $this->getTable();
+
+		if (empty($id))
+		{
+			$db	= $this->getDbo();
+			$query = $db->getQuery(true)
+				->select('rctranslations_id')
+				->from($db->qn(RTranslationTable::getTranslationsTableName($translationTable->table, '')))
+				->where('rctranslations_language = ' . $db->q($data['rctranslations_language']));
+
+			foreach ($translationTable->primaryKeys as $primaryKey)
+			{
+				if (!empty($data[$primaryKey]))
+				{
+					$query->where($db->qn($primaryKey) . ' = ' . $db->q($data[$primaryKey]));
+				}
+			}
+
+			$db->setQuery($query);
+			$id = $db->loadResult();
+		}
+
+		// Check if the form is completely empty, and return an error if it is.
+		$dataFilled = RTranslationHelper::validateEmptyTranslationData($translation, $translationTable->primaryKeys);
+
+		if (!$dataFilled)
+		{
+			$this->setError(JText::_('COM_REDCORE_TRANSLATIONS_SAVE_ERROR_EMPTY'));
+
+			if (!empty($id))
+			{
+				$table->delete($id);
+			}
+
+			return false;
+		}
 
 		foreach ($translationTable->allColumns as $field)
 		{
@@ -188,28 +225,6 @@ class RedcoreModelTranslation extends RModelAdmin
 		}
 
 		$dispatcher = RFactory::getDispatcher();
-		/** @var RedcoreTableTranslation $table */
-		$table = $this->getTable();
-
-		if (empty($id))
-		{
-			$db	= $this->getDbo();
-			$query = $db->getQuery(true)
-				->select('rctranslations_id')
-				->from($db->qn(RTranslationTable::getTranslationsTableName($translationTable->table, '')))
-				->where('rctranslations_language = ' . $db->q($data['rctranslations_language']));
-
-			foreach ($translationTable->primaryKeys as $primaryKey)
-			{
-				if (!empty($data[$primaryKey]))
-				{
-					$query->where($db->qn($primaryKey) . ' = ' . $db->q($data[$primaryKey]));
-				}
-			}
-
-			$db->setQuery($query);
-			$id = $db->loadResult();
-		}
 
 		foreach ($translationTable->primaryKeys as $primaryKey)
 		{
@@ -308,5 +323,35 @@ class RedcoreModelTranslation extends RModelAdmin
 		$this->cleanCache();
 
 		return true;
+	}
+
+	/**
+	 * Method to get a form object.
+	 *
+	 * @param   array    $data      Data for the form.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  mixed  A JForm object on success, false on failure
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		$option = JFactory::getApplication()->input->getString('component');
+
+		JForm::addFormPath(JPATH_ADMINISTRATOR . '/components/' . $option);
+
+		// Get the form.
+		$form = $this->loadForm(
+			'com_redcore.edit.translation.translation',
+			'translation',
+			array('control' => 'jform', 'load_data' => $loadData),
+			true
+		);
+
+		if (empty($form))
+		{
+			return false;
+		}
+
+		return $form;
 	}
 }

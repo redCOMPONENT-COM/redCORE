@@ -239,7 +239,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 												disabled="disabled"
 											<?php endif; ?>
 											data-remote-format="doc"
-											data-remote="../index.php?api=Hal&format=doc&option=<?php echo $item->xml->config->name . $webserviceClientUri; ?>"
+											data-remote="../index.php?api=Hal&format=doc&option=<?php echo $item->xml->config->name . $webserviceClientUri . '&webserviceVersion=' . $item->xml->config->version; ?>"
 											data-target="#webservicePreview">
 											<i class="icon-file-text"></i>
 											<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DOCUMENTATION') ?>
@@ -251,7 +251,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 												disabled="disabled"
 											<?php endif; ?>
 											data-remote-format="json"
-											data-remote="../index.php?api=Hal&option=<?php echo $item->xml->config->name . $webserviceClientUri; ?>"
+											data-remote="../index.php?api=Hal&option=<?php echo $item->xml->config->name . $webserviceClientUri . '&webserviceVersion=' . $item->xml->config->version; ?>"
 											data-target="#webservicePreview">
 											<i class="icon-file-text"></i>
 											<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_PREVIEW_JSON') ?>

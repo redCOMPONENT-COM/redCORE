@@ -64,6 +64,15 @@
         </submenu>
     </administration>
 
+    <files folder="components/com_redcore/site">
+        <folder>controllers</folder>
+        <folder>helpers</folder>
+        <folder>models</folder>
+        <folder>views</folder>
+        <filename>controller.php</filename>
+        <filename>redcore.php</filename>
+    </files>
+
     <!-- Medias -->
     <media destination="redcore" folder="libraries/redcore/media/redcore">
         <folder>css</folder>

@@ -13,9 +13,10 @@
         "joomla-projects/joomla-browser": "v3.4.8.2",
         "codegyre/robo": "~0.6",
         "redcomponent/robo": "dev-master",
+        "redcomponent/teststatistics": "dev-master",
         "flow/jsonpath": "dev-master",
         "fzaninotto/faker": "^1.5",
-        "joomla-projects/selenium-server-standalone": "v2.51.0",
+        "joomla-projects/selenium-server-standalone": "v2.53.0",
         "nette/reflection": "~2"
     }
 }

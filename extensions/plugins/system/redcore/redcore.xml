@@ -100,15 +100,16 @@
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
                 </field>
-                <!--<field
+                <field
                         name="show_edit_button_on_all_forms"
-                        type="list"
+                        class="btn-group"
+                        type="radio"
                         default="0"
                         label="PLG_SYSTEM_REDCORE_TRANSLATIONS_SHOW_TRANSLATION_BUTTON"
                         description="PLG_SYSTEM_REDCORE_TRANSLATIONS_SHOW_TRANSLATION_BUTTON_DESC">
                     <option value="1">JYES</option>
                     <option value="0">JNO</option>
-                </field>-->
+                </field>
             </fieldset>
             <fieldset name="PLG_SYSTEM_REDCORE_WEBSERVICES_OPTIONS">
                 <field

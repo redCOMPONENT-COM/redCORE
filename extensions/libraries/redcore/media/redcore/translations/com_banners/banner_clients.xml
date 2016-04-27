@@ -16,7 +16,7 @@
       <filter><![CDATA[]]></filter>
     </table>
     <component>
-      <editForm admin="true" option="com_banners" view="client" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first"/>
+      <editForm admin="true" option="com_banners" view="client" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
     </component>
   </reference>
 </contentelement>

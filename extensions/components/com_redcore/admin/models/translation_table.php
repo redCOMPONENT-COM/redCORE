@@ -106,6 +106,10 @@ class RedcoreModelTranslation_Table extends RModelAdmin
 		{
 			$data['form_links'] = json_encode($data['formLinks']);
 		}
+		elseif (!empty($data['editForms']))
+		{
+			$data['form_links'] = json_encode($data['editForms']);
+		}
 
 		$data['fromEditForm'] = JFactory::getApplication()->input->get('fromEditForm') == '1';
 

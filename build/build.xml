@@ -54,6 +54,13 @@
             </fileset>
         </copy>
 
+        <!-- Frontend component -->
+        <copy todir="${www.dir}/components/com_redcore" overwrite="true">
+            <fileset dir="${redcore.src}/components/com_redcore/site">
+                <include name="**"/>
+            </fileset>
+        </copy>
+
         <!-- Copy Package Manifest -->
         <echo message="Copying manifiest..." />
         <copy file="${redcore.src}/${extension}.xml"

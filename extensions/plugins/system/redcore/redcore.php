@@ -344,6 +344,23 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
+	 * Called before a JForm is rendered. It can be used to modify the JForm object in memory before rendering.
+	 * https://docs.joomla.org/Plugin/Events/Content
+	 *
+	 * @return  void
+	 */
+	public function onContentPrepareForm()
+	{
+		// If the options to do so are turned on, create a button for opening a modal window to edit translations directly from a translatable form
+		if ($this->params->get('enable_translations', 0) == 1 && $this->params->get('show_edit_button_on_all_forms', 0) == 1)
+		{
+			$isAdmin = JFactory::getApplication()->isAdmin();
+
+			RTranslationHelper::isTranslatableForm($isAdmin);
+		}
+	}
+
+	/**
 	 * Check is is a redCORE view
 	 *
 	 * @return  boolean
