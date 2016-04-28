@@ -15,6 +15,8 @@ class AdministratorContact100StructureCest
 		$this->faker = Faker\Factory::create();
 		$this->name  = $this->faker->bothify('AdministratorContact100StructureCest contact ?##?');
 
+		$this->adminId = $mail = $I->grabFromDatabase('jos_users', 'id', array('username' => 'admin'));
+
 		$I->amHttpAuthenticated('admin', 'admin');
 		$I->sendPOST('index.php'
 			. '?option=contact'
@@ -56,7 +58,7 @@ class AdministratorContact100StructureCest
 				"_links" => [
 					"curies" => [
 						[
-							"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&format=doc&api=Hal#[rel}",
+							"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&format=doc&api=Hal#{rel}",
 							"title" => "Documentation",
 							"name" => "contact",
 							"templated" => true
@@ -67,28 +69,28 @@ class AdministratorContact100StructureCest
 						"title" => "Default page"
 					],
 					"contact =>self" => [
-						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=17&api=Hal"
+						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&api=Hal"
 					],
-					"contact =>list" => [
+					"contact:list" => [
 						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&api=Hal"
 					],
-					"contact =>checkout" => [
-						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=17&task=checkout&api=Hal"
+					"contact:checkout" => [
+						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&task=checkout&api=Hal"
 					],
-					"contact =>checkin" => [
-						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=17&task=checkin&api=Hal"
+					"contact:checkin" => [
+						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&task=checkin&api=Hal"
 					],
-					"contact =>featured" => [
-						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=17&task=featured&api=Hal"
+					"contact:featured" => [
+						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&task=featured&api=Hal"
 					],
-					"contact =>unfeatured" => [
-						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=17&task=unfeatured&api=Hal"
+					"contact:unfeatured" => [
+						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&task=unfeatured&api=Hal"
 					],
-					"contact =>publish" => [
-						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=17&task=publish&api=Hal"
+					"contact:publish" => [
+						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&task=publish&api=Hal"
 					],
-					"contact =>unpublish" => [
-						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=17&task=unpublish&api=Hal"
+					"contact:unpublish" => [
+						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&task=unpublish&api=Hal"
 					]
 				],
 				'id'                => $this->id,
