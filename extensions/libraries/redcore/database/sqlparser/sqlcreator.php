@@ -346,7 +346,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processOperator($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processColRef($v);
-			$sql .= $this->processSubquery($v);
+			$sql .= $this->processSubQuery($v);
 			$sql .= $this->processInList($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processWhereExpression($v);
@@ -476,6 +476,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processOperator($v);
 			$sql .= $this->processColRef($v);
+			$sql .= $this->processInList($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
 			$sql .= $this->processSubQuery($v);

@@ -7,38 +7,15 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-class AdministratorContacts1Cest
+class AdministratorContacts100CrudCest
 {
-	/**
-	 * Set up the contact stub
-	 */
 	public function __construct()
 	{
-		$this->name = 'contact' . rand(0,1000);
+		$this->faker = Faker\Factory::create();
+		$this->name = $this->faker->bothify('AdministratorContacts100CrudCest contact ?##?');
 		$this->id = 0;
 	}
 
-	public function WebserviceIsAvailable(ApiTester $I)
-	{
-		$I->wantTo("check the availability of the webservice");
-		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendGET('index.php'
-			. '?option=contact'
-			. '&api=Hal'
-			. '&webserviceClient=administrator'
-			. '&webserviceVersion=1.0.0'
-		);
-
-		// Checking for 204 code since there are no contacts before inserting them
-		$I->seeResponseCodeIs(204);
-		$I->seeResponseIsJson();
-		$I->seeHttpHeader('X-Webservice-name', 'contact');
-		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
-	}
-
-	/**
-	 * @depends WebserviceIsAvailable
-	 */
 	public function create(ApiTester $I)
 	{
 		$I->wantTo('POST a new Contact in com_contacts');
@@ -78,6 +55,8 @@ class AdministratorContacts1Cest
 		$I->seeResponseIsJson();
 		$I->seeHttpHeader('X-Webservice-name', 'contact');
 		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
+		$I->seeResponseContainsJson(['id' => $this->id]);
+		$I->seeResponseContainsJson(['name' => $this->name]);
 	}
 
 	/**
@@ -97,7 +76,7 @@ class AdministratorContacts1Cest
 
 		$I->seeResponseCodeIs(200);
 		$I->seeResponseIsJson();
-		$I->seeResponseContains('"name":"'. $this->name.'"');
+		$I->seeResponseContainsJson(['name' => $this->name]);
 	}
 
 	/**
@@ -130,7 +109,7 @@ class AdministratorContacts1Cest
 
 		$I->seeResponseCodeIs(200);
 		$I->seeResponseIsJson();
-		$I->seeResponseContains('"name":"' . $this->name . '"');
+		$I->seeResponseContainsJson(['name' => $this->name]);
 		$I->comment("The contact name has been modified to: $this->name");
 	}
 

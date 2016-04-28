@@ -6,6 +6,7 @@ var config = require('../config.js');
 // Dependencies
 var browserSync = require('browser-sync');
 var del         = require('del');
+var merge       = require('merge-stream');
 
 var baseTask  = 'libraries.redcore';
 
@@ -78,18 +79,19 @@ gulp.task('copy:' + baseTask + ':media', function() {
 		config.wwwDir + '/media/redcore/webservices/joomla'
 	], {force: true});
 
-	return gulp.src([mediaPath + '/**'])
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore'))
-		// Copy original uncompressed files to the testing site too
-		&&
-		gulp.src([
-			buildPathMedia + '/**',
-			'!' + buildPathMedia + '/less',
-			'!' + buildPathMedia + '/less/**',
-			'!' + buildPathMedia + '/sass',
-			'!' + buildPathMedia + '/sass/**'
-		])
+	var media = gulp.src([mediaPath + '/**'])
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+
+	var uncompressed = gulp.src([
+				buildPathMedia + '/**',
+				'!' + buildPathMedia + '/less',
+				'!' + buildPathMedia + '/less/**',
+				'!' + buildPathMedia + '/sass',
+				'!' + buildPathMedia + '/sass/**'
+			])
+			.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+
+	return merge(media, uncompressed);
 });
 
 // Watch

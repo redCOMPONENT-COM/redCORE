@@ -10,6 +10,17 @@
 defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
+$doc = JFactory::getDocument();
+$script   = array();
+
+$script[] = '	(function($) {';
+$script[] = '		$(document).ready(function() {';
+$script[] = '			jModalClose = function() {';
+$script[] = '				$(\'.modal.in\').modal(\'hide\');';
+$script[] = '			}';
+$script[] = '		});';
+$script[] = '	})( jQuery );';
+$doc->addScriptDeclaration(implode("\n", $script));
 ?>
 
 <?php echo RLayoutHelper::render('modal', $data['modal']); ?>
