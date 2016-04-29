@@ -148,9 +148,9 @@
 			this.orderCols.click(function() {
 
 				// Order to set
-				var newOrderCol = $(this).attr('data-order');
+				var newOrderCol  = $(this).attr('data-order');
 				var newDirection = $(this).attr('data-direction');
-				var newOrdering = newOrderCol + ' ' + newDirection;
+				var newOrdering  = newOrderCol + ' ' + newDirection;
 
 				// The data-order attrib is required
 				if (newOrderCol.length)
@@ -240,7 +240,7 @@
 			}
 		},
 		getFilterFields: function () {
-			return this.filterContainer.find('select');
+			return this.filterContainer.find('select,input');
 		},
 		getListFields: function () {
 			return this.listContainer.find('select');

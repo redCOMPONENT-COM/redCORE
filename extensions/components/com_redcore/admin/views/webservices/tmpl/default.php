@@ -142,7 +142,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 			'options' => array(
 				'filtersHidden' => false,
 				'searchField' => 'search_webservices',
-				'searchFieldSelector' => '#filter_search_webservicess',
+				'searchFieldSelector' => '#filter_search_webservices',
 				'limitFieldSelector' => '#list_webservices_limit',
 				'activeOrder' => $listOrder,
 				'activeDirection' => $listDirn
