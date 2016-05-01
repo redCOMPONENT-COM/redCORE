@@ -27,7 +27,7 @@ class InstallExtensionCest
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
 		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
 		$I->selectOptionInChosen('Check user permission against','Joomla - Use already defined authorization checks in Joomla');
-		$I->click(['xpath' => "//button[@onclick='Joomla.submitbutton(\"config.apply\")']"]);
+		$I->click(['xpath' => "//button[@onclick=\"Joomla.submitbutton('config.apply')\"]"]);
 		$I->waitForText('Save success', 30, ['id' => 'system-message-container']);
 		$I->amOnPage('administrator/index.php?option=com_redcore&view=webservices');
 		$I->waitForText('Webservice Manager', 30, ['css' => 'H1']);
