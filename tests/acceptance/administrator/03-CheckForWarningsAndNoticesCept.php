@@ -15,8 +15,8 @@ $I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);
 $I->selectOptionInRadioField('Enable translations', 'Yes');
 $I->click(['link' => 'Webservice options']);
-$I->selectOptionInRadioField('Enable webservices', 'Yes');
-$I->click(['xpath' => "//button[@onclick=\"Joomla.submitbutton('config.apply')\"]"]);
+$I->selectOptionInRadioField('Enable webservices', 'Yes');//[contains(@value, 'foo')]
+$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
 $I->waitForText('Save success', 30, ['id' => 'system-message-container']);
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translation_tables');
