@@ -320,24 +320,4 @@ class RedcoreControllerConfig extends RControllerForm
 
 		return $append;
 	}
-
-	/**
-	 * Method to cancel an edit.
-	 *
-	 * @param   string  $key  The name of the primary key of the URL variable.
-	 *
-	 * @return  boolean  True if access level checks pass, false otherwise.
-	 */
-	public function cancel($key = null)
-	{
-		if ($this->input->get('return', '', 'Base64'))
-		{
-			return parent::cancel($key);
-		}
-
-		// Redirect to the list screen
-		$this->setRedirect(JRoute::_('index.php?option=' . $this->option . '&view=dashboard', false));
-
-		return true;
-	}
 }
