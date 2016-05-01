@@ -81,28 +81,6 @@ class RBootstrap
 			self::$loadFrontendjQuery = self::$config->get('frontend_jquery', true);
 			self::$loadFrontendjQueryMigrate = self::$config->get('frontend_jquery_migrate', true);
 			self::$disableFrontendMootools = self::$config->get('frontend_mootools_disable', false);
-
-			$plugin = JPluginHelper::getPlugin('system', 'redcore');
-/*
-			if ($plugin)
-			{
-				if (is_string($plugin->params))
-				{
-					self::$config = new JRegistry($plugin->params);
-				}
-				elseif (is_object($plugin->params))
-				{
-					self::$config = $plugin->params;
-				}
-				else
-				{
-					return null;
-				}
-			}
-			else
-			{
-				return null;
-			}*/
 		}
 
 		return self::$config->get($key, $default);
