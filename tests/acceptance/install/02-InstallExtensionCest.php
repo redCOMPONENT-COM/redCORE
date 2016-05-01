@@ -44,6 +44,28 @@ class InstallExtensionCest
 		$I->see('site.users.1.0.0.xml', ['class' => 'lc-webservice-file']);
 	}
 
+	public function selectOptionInChosenjs($label, $option)
+	{
+		$I = $this;
+
+		$I->waitForJS("return jQuery(\"label:contains('$label')\");");
+		$selectID = $I->executeJS("return jQuery(\"label:contains('$label')\").attr(\"for\");");
+
+		$option = trim($option);
+		$I->executeJS("jQuery('#$selectID option').filter(function(){ return this.text.trim() === \"$option\" }).prop('selected', true);");
+		$I->executeJS("jQuery('#$selectID').trigger('liszt:updated').trigger('chosen:updated');");
+		$I->executeJS("jQuery('#$selectID').trigger('change');");
+
+		// give time to Chosen to update
+		$I->wait(1);
+	}
+
+	public function scrollUp()
+	{
+		$I = $this;
+		$I->executeJS('window.scrollTo(0,0)');
+	}
+
 	/*public function configure(\Step\Acceptance\redshopb2b $I)
 	{
 		$I->wantToTest('Edit redSHOPB2B configuration');
