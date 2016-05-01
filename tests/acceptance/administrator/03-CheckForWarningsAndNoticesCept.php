@@ -21,7 +21,6 @@ $I->click(['link' => 'Webservice options']);
 $I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 $I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 $I->selectOptionInRadioField('Enable webservices', 'Yes');
-$I->executeJS("jQuery('label[for=\"jform_enable_webservices0\"]').click();");
 $I->executeJS('window.scrollTo(0,0)');
 $I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
 $I->waitForText('Save success', 30, ['id' => 'system-message-container']);
