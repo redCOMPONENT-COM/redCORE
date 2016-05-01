@@ -15,8 +15,10 @@ $I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);
 $I->selectOptionInRadioField('Enable translations', 'Yes');
 $I->click(['link' => 'Webservice options']);
-$I->selectOptionInRadioField('Enable webservices', 'Yes');//[contains(@value, 'foo')]
-$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
+$I->selectOptionInRadioField('Enable webservices', 'Yes');
+// This selector does not work for some reason, check why
+//$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
+$I->click(['class' => "btn btn-default btn-success"]);
 $I->waitForText('Save success', 30, ['id' => 'system-message-container']);
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translation_tables');
