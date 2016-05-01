@@ -27,6 +27,8 @@ class InstallExtensionCest
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
+		$I->executeJS("jQuery('label[for=\"jform_enable_webservices0\"]').click();");
+		$I->executeJS("jQuery('label[for=\"jform_enable_soap0\"]').click();");
 		$I->executeJS("javascript:window.scrollBy(0,200);");
 		$I->selectOptionInChosen('Check user permission against', 'Joomla - Use already defined authorization checks in Joomla');
 		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
