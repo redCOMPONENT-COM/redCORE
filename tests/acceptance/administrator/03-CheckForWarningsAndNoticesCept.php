@@ -14,12 +14,14 @@ $I->amOnPage('administrator/index.php?option=com_redcore&view=config&layout=edit
 $I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);
 $I->executeJS("javascript:document.getElementById(\"REDCORE_TRANSLATIONS_OPTIONS\").scrollIntoView();");
+$I->waitForElementVisible(['id' => 'REDCORE_TRANSLATIONS_OPTIONS']);
 $I->selectOptionInRadioField('Enable translations', 'Yes');
-$I->executeJS("javascript:window.scrollTo(0,0);");
+$I->scrollUp();
 $I->click(['link' => 'Webservice options']);
 $I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
+$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 $I->selectOptionInRadioField('Enable webservices', 'Yes');
-$I->executeJS("javascript:window.scrollTo(0,0);");
+$I->scrollUp();
 $I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
 $I->waitForText('Save success', 30, ['id' => 'system-message-container']);
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');

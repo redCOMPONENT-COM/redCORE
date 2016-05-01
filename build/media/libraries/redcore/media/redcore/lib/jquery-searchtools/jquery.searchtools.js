@@ -223,7 +223,6 @@
 			$(element).addClass('active');
 
 			if (self.chosenSupport) {
-				$(element).chosen();
 				var chosenId = '#' + $(element).attr('id') + '_chzn';
 				$(chosenId).addClass('active');
 			}
@@ -234,7 +233,6 @@
 			$(element).removeClass('active');
 
 			if (self.chosenSupport) {
-				$(element).chosen();
 				var chosenId = '#' + $(element).attr('id') + '_chzn';
 				$(chosenId).removeClass('active');
 			}
