@@ -18,6 +18,7 @@ $I->click(['link' => 'Webservice options']);
 $I->selectOptionInRadioField('Enable webservices', 'Yes');
 // This selector does not work for some reason, check why
 //$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
+$I->executeJS("javascript:window.scrollTo(0,0);");
 $I->click(['xpath' => '//button[contains(@onclick, "Joomla.submitbutton(\'config.apply\')")]']);
 //$I->click(['class' => "btn btn-default btn-success"]);
 $I->waitForText('Save success', 30, ['id' => 'system-message-container']);
