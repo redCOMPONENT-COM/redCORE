@@ -27,7 +27,7 @@ class InstallExtensionCest
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
 		$I->executeJS("javascript:window.scrollBy(0,200);");
-		$I->selectOptionInChosen('Check user permission against','Joomla - Use already defined authorization checks in Joomla');
+		$I->selectOptionInChosen('Check user permission against', 'Joomla - Use already defined authorization checks in Joomla');
 		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
 		$I->executeJS("javascript:window.scrollTo(0,0);");
 		$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
@@ -39,8 +39,8 @@ class InstallExtensionCest
 		$I->executeJS("javascript:window.scrollBy(0,200);");
 		$I->click(['class' => 'lc-install_all_webservices']);
 		$I->waitForElement(['id' => 'oauthClientsList'], 30);
-		$I->see('administrator.contact.1.0.0.xml',['class' => 'lc-webservice-file']);
-		$I->see('site.contact.1.0.0.xml',['class' => 'lc-webservice-file']);
-		$I->see('site.users.1.0.0.xml',['class' => 'lc-webservice-file']);
+		$I->see('administrator.contact.1.0.0.xml', ['class' => 'lc-webservice-file']);
+		$I->see('site.contact.1.0.0.xml', ['class' => 'lc-webservice-file']);
+		$I->see('site.users.1.0.0.xml', ['class' => 'lc-webservice-file']);
 	}
 }
