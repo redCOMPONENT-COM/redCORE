@@ -48,9 +48,10 @@
             <folder>tables</folder>
             <folder>updates</folder>
             <folder>views</folder>
-            <filename>LICENSE</filename>
             <filename>access.xml</filename>
+            <filename>config.xml</filename>
             <filename>controller.php</filename>
+            <filename>LICENSE</filename>
             <filename>redcore.php</filename>
         </files>
         <menu view="dashboard">COM_REDCORE</menu>

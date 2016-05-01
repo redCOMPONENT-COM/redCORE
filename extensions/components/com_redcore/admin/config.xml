@@ -115,7 +115,7 @@
                 name="webservice_stateful"
                 class="btn-group"
                 type="radio"
-                default="1"
+                default="0"
                 label="COM_REDCORE_CONFIG_WEBSERVICES_STATEFUL_WEBSERVICE"
                 description="COM_REDCORE_CONFIG_WEBSERVICES_STATEFUL_WEBSERVICE_DESC">
             <option value="1">JYES</option>

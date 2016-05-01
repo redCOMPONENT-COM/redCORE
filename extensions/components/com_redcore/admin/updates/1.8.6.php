@@ -42,6 +42,16 @@ class Com_RedcoreUpdateScript_1_8_6
 			// We will update com_redcore component parameters with the plugin parameters
 			try
 			{
+				// We have changed default behavior of stateful webservices so we will change it together with the update
+				if (is_string($params))
+				{
+					$params = json_decode($params, true);
+				}
+
+				// We set all old installations to default ON condition if that parameter was not set
+				$params['webservice_stateful'] = isset($params['webservice_stateful']) ? $params['webservice_stateful'] : 1;
+				$params = json_encode($params);
+
 				$query = $db->getQuery(true)
 					->update('#__extensions')
 					->set($db->qn('params') . ' = ' . $db->q($params))

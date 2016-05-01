@@ -92,7 +92,7 @@ final class RComponentHelper
 		{
 			if (!isset(self::$redcoreExtensionManifests['com_redcore']))
 			{
-				$content = @file_get_contents($componentXmlPath);
+				$content = @file_get_contents(JPATH_ADMINISTRATOR . '/components/com_redcore/redcore.xml');
 				$element = new SimpleXMLElement($content);
 				self::$redcoreExtensionManifests['com_redcore'] = $element;
 			}

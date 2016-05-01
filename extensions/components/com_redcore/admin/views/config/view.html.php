@@ -88,11 +88,6 @@ class RedcoreViewConfig extends RedcoreHelpersView
 			}
 		}
 
-		if (empty($this->return))
-		{
-			$this->return = base64_encode('index.php?option=com_redcore&view=config&layout=edit&component=' . $option);
-		}
-
 		parent::display($tpl);
 	}
 
