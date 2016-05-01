@@ -24,8 +24,8 @@ class InstallExtensionCest
 		$I->amOnPage('administrator/index.php?option=com_redcore&view=config&layout=edit&component=com_redcore');
 		$I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
 		$I->click(['link' => 'Webservice options']);
-		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
+		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
 		$I->executeJS("jQuery('label[for=\"jform_enable_webservices0\"]').click();");
 		$I->executeJS("jQuery('label[for=\"jform_enable_soap0\"]').click();");
