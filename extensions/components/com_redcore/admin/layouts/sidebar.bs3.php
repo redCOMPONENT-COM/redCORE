@@ -13,7 +13,7 @@ $option = $app->input->getString('component', '');
 $view = RInflector::pluralize($app->input->getString('view', ''));
 $return = $app->input->getString('return', '');
 $translationTableName = $app->input->getString('translationTableName', '');
-$components = RedcoreHelpersView::getExtensionsRedcore();
+$components = RedcoreHelpersView::getExtensionsRedcore(true);
 $translationTables = RTranslationTable::getInstalledTranslationTables();
 ?>
 <div class="panel-group" id="rc-sidebar-accordion">

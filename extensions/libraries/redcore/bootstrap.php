@@ -74,8 +74,16 @@ class RBootstrap
 	{
 		if (is_null(self::$config))
 		{
-			$plugin = JPluginHelper::getPlugin('system', 'redcore');
+			self::$config = JComponentHelper::getParams('com_redcore');
 
+			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
+			self::$loadFrontendCSS = self::$config->get('frontend_css', false);
+			self::$loadFrontendjQuery = self::$config->get('frontend_jquery', true);
+			self::$loadFrontendjQueryMigrate = self::$config->get('frontend_jquery_migrate', true);
+			self::$disableFrontendMootools = self::$config->get('frontend_mootools_disable', false);
+
+			$plugin = JPluginHelper::getPlugin('system', 'redcore');
+/*
 			if ($plugin)
 			{
 				if (is_string($plugin->params))
@@ -94,7 +102,7 @@ class RBootstrap
 			else
 			{
 				return null;
-			}
+			}*/
 		}
 
 		return self::$config->get($key, $default);
