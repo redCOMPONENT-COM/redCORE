@@ -24,7 +24,7 @@ class InstallExtensionCest
 		$I->amOnPage('administrator/index.php?option=com_redcore&view=config&layout=edit&component=com_redcore');
 		$I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
 		$I->click(['link' => 'Webservice options']);
-		$I->executeJS("javascript:window.scrollBy(0,200);");
+		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
 		$I->executeJS("javascript:window.scrollBy(0,200);");
 		$I->selectOptionInChosen('Check user permission against','Joomla - Use already defined authorization checks in Joomla');
