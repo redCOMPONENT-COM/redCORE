@@ -13,13 +13,16 @@ $I->wantTo('Activate redCORE system plugin features');
 $I->amOnPage('administrator/index.php?option=com_redcore&view=config&layout=edit&component=com_redcore');
 $I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);
+$I->executeJS("javascript:window.scrollBy(0,200);");
 $I->selectOptionInRadioField('Enable translations', 'Yes');
+$I->executeJS("javascript:window.scrollTo(0,0);");
 $I->click(['link' => 'Webservice options']);
+$I->executeJS("javascript:window.scrollBy(0,200);");
 $I->selectOptionInRadioField('Enable webservices', 'Yes');
 // This selector does not work for some reason, check why
-//$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
 $I->executeJS("javascript:window.scrollTo(0,0);");
-$I->click(['xpath' => '//button[contains(@onclick, "Joomla.submitbutton(\'config.apply\')")]']);
+$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
+//$I->click(['xpath' => '//button[contains(@onclick, "Joomla.submitbutton(\'config.apply\')")]']);
 //$I->click(['class' => "btn btn-default btn-success"]);
 $I->waitForText('Save success', 30, ['id' => 'system-message-container']);
 $I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');
