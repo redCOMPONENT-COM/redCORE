@@ -25,11 +25,12 @@ class InstallExtensionCest
 		$I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
 		$I->click(['link' => 'Webservice options']);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
+		$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
 		$I->executeJS("javascript:window.scrollBy(0,200);");
-		$I->selectOptionInChosenjs('Check user permission against', 'Joomla - Use already defined authorization checks in Joomla');
+		$I->selectOptionInChosen('Check user permission against', 'Joomla - Use already defined authorization checks in Joomla');
 		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
-		$I->scrollUp();
+		$I->executeJS('window.scrollTo(0,0)');
 		$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
 		$I->waitForText('Save success', 30, ['id' => 'system-message-container']);
 		$I->amOnPage('administrator/index.php?option=com_redcore&view=webservices');
@@ -42,28 +43,6 @@ class InstallExtensionCest
 		$I->see('administrator.contact.1.0.0.xml', ['class' => 'lc-webservice-file']);
 		$I->see('site.contact.1.0.0.xml', ['class' => 'lc-webservice-file']);
 		$I->see('site.users.1.0.0.xml', ['class' => 'lc-webservice-file']);
-	}
-
-	public function selectOptionInChosenjs($label, $option)
-	{
-		$I = $this;
-
-		$I->waitForJS("return jQuery(\"label:contains('$label')\");");
-		$selectID = $I->executeJS("return jQuery(\"label:contains('$label')\").attr(\"for\");");
-
-		$option = trim($option);
-		$I->executeJS("jQuery('#$selectID option').filter(function(){ return this.text.trim() === \"$option\" }).prop('selected', true);");
-		$I->executeJS("jQuery('#$selectID').trigger('liszt:updated').trigger('chosen:updated');");
-		$I->executeJS("jQuery('#$selectID').trigger('change');");
-
-		// give time to Chosen to update
-		$I->wait(1);
-	}
-
-	public function scrollUp()
-	{
-		$I = $this;
-		$I->executeJS('window.scrollTo(0,0)');
 	}
 
 	/*public function configure(\Step\Acceptance\redshopb2b $I)
