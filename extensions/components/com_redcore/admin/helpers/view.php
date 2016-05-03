@@ -85,16 +85,18 @@ abstract class RedcoreHelpersView extends RViewAdmin
 	/**
 	 * Method to get all extensions that are using redCORE
 	 *
+	 * @param   bool  $includeRedcore  Include redcore as extension
+	 *
 	 * @return  array  Array of extensions
 	 */
-	public static function getExtensionsRedcore()
+	public static function getExtensionsRedcore($includeRedcore = false)
 	{
 		if (empty($loadedRedcoreExtensions))
 		{
 			/** @var RedcoreModelConfig $model */
 			$model = RModelAdmin::getAdminInstance('Config', array(), 'com_redcore');
 
-			self::$loadedRedcoreExtensions = RComponentHelper::getRedcoreComponents();
+			self::$loadedRedcoreExtensions = RComponentHelper::getRedcoreComponents($includeRedcore);
 
 			foreach (self::$loadedRedcoreExtensions as $componentKey => $componentName)
 			{

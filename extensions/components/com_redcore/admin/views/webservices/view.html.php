@@ -86,7 +86,9 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
 					'COM_REDCORE_WEBSERVICES_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore%20-">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+					'<a href="index.php?option=com_redcore&view=config&layout=edit&component=com_redcore&return=' . $this->return . '">'
+					. JText::_('COM_REDCORE_CONFIGURE')
+					. '</a>'
 				),
 				'error');
 		}
