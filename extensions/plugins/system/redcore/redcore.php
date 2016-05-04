@@ -247,7 +247,7 @@ class PlgSystemRedcore extends JPlugin
 					unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
 				}
 
-				if (!$isAdmin)
+				if (!$isAdmin && version_compare(JVERSION, '3.4', '<'))
 				{
 					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
 					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
