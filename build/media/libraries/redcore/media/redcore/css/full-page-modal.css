@@ -28,7 +28,7 @@
   border-radius: 0;
   box-shadow: none;
 }
-.modal.full-page .modal-header, .modal-body, .modal-footer {
+.modal.full-page .modal-header, .modal.full-page .modal-body, .modal.full-page .modal-footer {
   position: absolute !important;
   right: 0;
   left: 0;

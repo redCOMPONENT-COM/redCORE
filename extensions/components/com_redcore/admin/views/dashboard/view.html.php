@@ -32,7 +32,7 @@ class RedcoreViewDashboard extends RedcoreHelpersView
 	 */
 	public function display($tpl = null)
 	{
-		$this->components = RedcoreHelpersView::getExtensionsRedcore();
+		$this->components = RedcoreHelpersView::getExtensionsRedcore(true);
 
 		parent::display($tpl);
 	}

@@ -12,7 +12,7 @@ $option = JFactory::getApplication()->input->getString('component', '');
 $view = RInflector::pluralize(JFactory::getApplication()->input->getString('view', ''));
 $return = JFactory::getApplication()->input->getString('return', '');
 $translationTableName = JFactory::getApplication()->input->getString('translationTableName', '');
-$components = RedcoreHelpersView::getExtensionsRedcore();
+$components = RedcoreHelpersView::getExtensionsRedcore(true);
 $translationTables = RTranslationTable::getInstalledTranslationTables();
 ?>
 <ul class="nav nav-list">
