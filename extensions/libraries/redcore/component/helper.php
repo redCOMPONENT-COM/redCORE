@@ -37,9 +37,11 @@ final class RComponentHelper
 	/**
 	 * Get the element name of the components using redcore.
 	 *
+	 * @param   bool  $includeRedcore  Include redcore as extension
+	 *
 	 * @return  array  An array of component names (com_redshopb...)
 	 */
-	public static function getRedcoreComponents()
+	public static function getRedcoreComponents($includeRedcore = false)
 	{
 		if (empty(self::$redcoreExtensions))
 		{
@@ -84,6 +86,18 @@ final class RComponentHelper
 					}
 				}
 			}
+		}
+
+		if ($includeRedcore)
+		{
+			if (!isset(self::$redcoreExtensionManifests['com_redcore']))
+			{
+				$content = @file_get_contents(JPATH_ADMINISTRATOR . '/components/com_redcore/redcore.xml');
+				$element = new SimpleXMLElement($content);
+				self::$redcoreExtensionManifests['com_redcore'] = $element;
+			}
+
+			return array_merge(self::$redcoreExtensions, array('com_redcore'));
 		}
 
 		return self::$redcoreExtensions;
