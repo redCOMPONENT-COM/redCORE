@@ -16,6 +16,7 @@ class AdministratorContact100StructureCest
 		$this->name  = $this->faker->bothify('AdministratorContact100StructureCest contact ?##?');
 
 		$this->adminId = $mail = $I->grabFromDatabase('jos_users', 'id', array('username' => 'admin'));
+		$I->comment('The administrator id is: ' . $this->adminId);
 
 		$I->amHttpAuthenticated('admin', 'admin');
 		$I->sendPOST('index.php'
@@ -123,9 +124,9 @@ class AdministratorContact100StructureCest
 				'sortname3' => '',
 				'language' => '*',
 				'created' => '',
-				'created_by' => 606,
+				'created_by' => $this->adminId,
 				'modified' => '',
-				'modified_by' => 606,
+				'modified_by' => $this->adminId,
 				'metakey' => '',
 				'metadesc' => '',
 				'metadata' => '',
