@@ -3,10 +3,6 @@ modules:
     enabled:
       - ApiHelper
       - Asserts
-      - REST
-      - DB
-      - SOAP
-    config:
       - REST:
           depends: PhpBrowser
           url: http://localhost/tests/joomla-cms3/
