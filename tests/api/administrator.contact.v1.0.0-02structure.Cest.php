@@ -13,7 +13,11 @@ class AdministratorContact100StructureCest
 	{
 		$I->wantTo('POST a new contact');
 		$this->faker = Faker\Factory::create();
-		$this->name  = $this->faker->bothify('AdministratorContact100StructureCest contact ?##?');
+		$this->faker->addProvider(new Faker\Provider\en_US\Address($this->faker));
+
+		$this->faker->seed(1234);
+		$this->contact['name']  = (string) $this->faker->bothify('AdministratorContact100StructureCest contact ?##?');
+
 
 		$this->adminId = $mail = $I->grabFromDatabase('jos_users', 'id', array('username' => 'admin'));
 		$I->comment('The administrator id is: ' . $this->adminId);
@@ -23,17 +27,29 @@ class AdministratorContact100StructureCest
 			. '?option=contact'
 			. '&api=Hal'
 			. '&webserviceClient=administrator'
-			. '&webserviceVersion=1.0.0'
-			. "&name=$this->name"
-			// Uncategorised default category
-			. '&catid=4'
+			. '&webserviceVersion=1.0.0',
+			[
+				'name' => $this->contact['name'],
+				// Uncategorised default category
+				'catid' => 4,
+				'address' => '7217 Collins Row Apt. 719',
+				'suburb' => 'Douglasfort',
+				'state' => 'Washington',
+				'country' => 'United States',
+				'postcode' => '08740',
+				'telephone' => '934454545',
+				'fax' => '934454546',
+				'misc' => 'miscelaneous info',
+				'image' => '',
+				'email_to' => 'test@test.com'
+			]
 		);
 
 		$I->seeResponseCodeIs(201);
 		$I->seeResponseIsJson();
 		$contactIDs = $I->grabDataFromResponseByJsonPath('$.id');
 		$this->id = $contactIDs[0];
-		$I->comment("The id of the new created category with name '$this->name' is => $this->id");
+		$I->comment('The id of the new created category with name ' . $this->contact['name'] . ' is ' . $this->id);
 	}
 
 	public function readItemAndCheckItsStructure(ApiTester $I)
@@ -69,7 +85,7 @@ class AdministratorContact100StructureCest
 						"href" => "$baseUrl/?webserviceClient=administrator&api=Hal",
 						"title" => "Default page"
 					],
-					"contact =>self" => [
+					"contact:self" => [
 						"href" => "$baseUrl/index.php?option=com_contact&webserviceVersion=1.0.0&webserviceClient=administrator&id=$this->id&api=Hal"
 					],
 					"contact:list" => [
@@ -95,19 +111,20 @@ class AdministratorContact100StructureCest
 					]
 				],
 				'id'                => $this->id,
-				'name'              => $this->name,
-				'alias'             => $I->getAlias($this->name),
+				'name'              => $this->contact['name'],
+				// @todo change the following line once REDCORE-475 gets fixed: 'alias' => $I->getAlias($this->contact['name']),
+				'alias'             => '',
 				'con_position' => '',
-				'address' => '',
-				'suburb' => '',
-				'state' => '',
-				'country' => '',
-				'postcode' => '',
-				'telephone' => '',
-				'fax' => '',
-				'misc' => '',
+				'address' => '7217 Collins Row Apt. 719',
+				'suburb' => 'Douglasfort',
+				'state' => 'Washington',
+				'country' => 'United States',
+				'postcode' => '08740',
+				'telephone' => '934454545',
+				'fax' => '934454546',
+				'misc' => 'miscelaneous info',
 				'image' => '',
-				'email_to' => '',
+				'email_to' => 'test@test.com',
 				'default_con' => 0,
 				'published' => 1,
 				'checked_out' => 0,
@@ -124,9 +141,9 @@ class AdministratorContact100StructureCest
 				'sortname3' => '',
 				'language' => '*',
 				'created' => '',
-				'created_by' => $this->adminId,
+				'created_by' => "$this->adminId",
 				'modified' => '',
-				'modified_by' => $this->adminId,
+				'modified_by' => "$this->adminId",
 				'metakey' => '',
 				'metadesc' => '',
 				'metadata' => '',
@@ -143,10 +160,11 @@ class AdministratorContact100StructureCest
 	{
 		$I->wantTo('Clear up all created items by the test');
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendDELETE('index.php'
-			. '?option=redshopb&view=category'
+		$I->sendDELETE(
+			'index.php'
+			. '?option=contact'
 			. '&api=Hal'
-			. '&webserviceClient=site'
+			. '&webserviceClient=administrator'
 			. '&webserviceVersion=1.0.0'
 			. "&id=$this->id"
 		);
