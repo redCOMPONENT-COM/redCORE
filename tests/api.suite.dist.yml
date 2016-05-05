@@ -6,7 +6,7 @@ modules:
       - REST:
           depends: PhpBrowser
           url: http://localhost/tests/joomla-cms3/
-      - DB:
+      - Db:
           dsn: 'mysql:host=localhost;dbname=test_redcore'
           user: 'root'
           password: ''
