@@ -109,12 +109,14 @@ class RedcoreControllerWebservice extends RControllerForm
 	{
 		$app = JFactory::getApplication();
 		$input = $app->input;
+		$id = $input->getInt('id', null);
 
 		$operation = $input->getString('operation', 'read');
 		$fieldList = $input->getString('fieldList', '');
 		$fieldList = explode(',', $fieldList);
 		$view = $this->getView('webservice', 'html');
 		$model = $this->getModel('Webservice');
+		$model->getItem($id);
 		$view->setModel($model, true);
 
 		echo RLayoutHelper::render(
