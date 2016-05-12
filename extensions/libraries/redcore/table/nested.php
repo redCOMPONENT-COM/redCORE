@@ -792,7 +792,7 @@ class RTableNested extends JTableNested
 	 * Get the columns from database table.
 	 *
 	 * @return  mixed  An array of the field names, or false if an error occurs.
-	 * 
+	 *
 	 * @since   11.1
 	 * @throws  UnexpectedValueException
 	 */
@@ -886,7 +886,7 @@ class RTableNested extends JTableNested
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
 
-		$query->update('#__logical_schemas');
+		$query->update('#__redcore_schemas');
 
 		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
 		$query->set('fields = ' . $dbo->q($fields));

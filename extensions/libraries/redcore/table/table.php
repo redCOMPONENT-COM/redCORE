@@ -1131,7 +1131,7 @@ class RTable extends JTable
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
 
-		$query->update('#__logical_schemas');
+		$query->update('#__redcore_schemas');
 
 		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
 		$query->set('fields = ' . $dbo->q($fields));
