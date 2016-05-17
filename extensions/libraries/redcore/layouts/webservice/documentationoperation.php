@@ -22,7 +22,7 @@ $authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtol
 ?>
 <div class="container-fluid">
 	<div class="page-header">
-		<h3>
+		<h3 id="<?php echo JFilterOutput::stringURLSafe($operationName); ?>">
 			<span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span>
 			<?php if (!$authorizationNotNeeded) : ?>
 				<span class="label label-warning"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_AUTHORIZATION_NEEDED') ?></span>
