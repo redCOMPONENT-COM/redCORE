@@ -14,8 +14,8 @@
   font-size: 14px;
   line-height: 1.42857143;
   color: #333333;
-  background-color: #fff;
-  /*!
+  background-color: inherit;
+  /*
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
