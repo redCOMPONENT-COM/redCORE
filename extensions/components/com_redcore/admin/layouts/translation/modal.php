@@ -17,29 +17,27 @@ $contentLanguages = JLanguageHelper::getLanguages();
 $view = $displayData['view'];
 $model = RModel::getAdminInstance('translation', array(), 'com_redcore');
 $view->setModel($model, true);
-
+$first = true;
 ?>
-
 <!-- Tabs for selecting languages -->
 	<ul class="nav nav-tabs" id="categoryTab">
 		<?php foreach ($contentLanguages as $language) : ?>
-			<li>
+			<li class="<?php echo $first ? 'active' : '';?>">
 				<a href="#fields-<?php echo $language->lang_id; ?>" data-toggle="tab"><strong><?php echo $language->title; ?></strong></a>
 			</li>
+			<?php $first = false; ?>
 		<?php endforeach;?>
 	</ul>
-
 	<!-- Container for the fields of each language -->
 	<div class="tab-content">
+		<?php $first = true; ?>
 		<?php foreach ($contentLanguages as $language) : ?>
-
-			<div class="tab-pane" id="fields-<?php echo $language->lang_id; ?>">	
+			<div class="tab-pane<?php echo $first ? ' active in' : '';?>" id="fields-<?php echo $language->lang_id; ?>">
 				<form method="post" target="my_iframe_<?php echo $language->lang_id; ?>" name="adminForm_<?php echo $language->lang_id; ?>" id="adminForm_<?php echo $language->lang_id; ?>" class="form-validate form-horizontal">	
 				<?php
 					$rctranslationId = RTranslationHelper::getTranslationItemId($input->getString('id', ''), $language->lang_code, $view->translationTable->primaryKeys, $view->translationTable->name);
 					$view->setItem($rctranslationId);
 					$properties = $view->getLayoutProperties();
-
 
 					echo RLayoutHelper::render(
 						'translation.input',
@@ -59,8 +57,8 @@ $view->setModel($model, true);
 				</form>
 			</div>
 			<iframe name="my_iframe_<?php echo $language->lang_id; ?>" style="display:none;"></iframe>
+			<?php $first = false; ?>
 		<?php endforeach; ?>
-
 	</div>
 <script type="text/javascript">
 	function setTranslationValue(elementName, elementOriginal, setParams, langCode)

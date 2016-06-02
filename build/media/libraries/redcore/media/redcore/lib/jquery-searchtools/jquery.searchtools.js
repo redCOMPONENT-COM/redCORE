@@ -178,8 +178,7 @@
 		checkFilter: function (element) {
 			var self = this;
 
-			var option = $(element).find('option:selected');
-			if (option.val() !== '') {
+			if ($(element).val() !== '') {
 				self.activeFilter(element);
 			} else {
 				self.deactiveFilter(element);
