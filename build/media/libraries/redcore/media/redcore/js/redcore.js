@@ -130,6 +130,7 @@ redCORE.ws =
     {
         event.preventDefault();
         var targ = jQuery(redCORE.getTarget(event, true));
+        var id = targ.closest('form').find('input[name="id"]');
 
         var getData = {};
         getData.operation = targ.find('[name="addNewRowOperation"]').val();
@@ -153,7 +154,7 @@ redCORE.ws =
         }
 
         jQuery.ajax({
-            url: 'index.php?option=com_redcore&task=webservice.ajaxGet' + optionType,
+            url: 'index.php?option=com_redcore&task=webservice.ajaxGet' + optionType  + '&id=' + id.val(),
             data: getData,
             dataType: 'text',
             beforeSend: function ()
