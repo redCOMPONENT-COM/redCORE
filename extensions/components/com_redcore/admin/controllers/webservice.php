@@ -115,6 +115,8 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = explode(',', $fieldList);
 		$view = $this->getView('webservice', 'html');
 		$model = $this->getModel('Webservice');
+		$id = $input->getInt('id', null);
+		$model->getItem($id);
 		$view->setModel($model, true);
 
 		echo RLayoutHelper::render(
@@ -147,6 +149,9 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = explode(',', $fieldList);
 		$tableName = $input->getCmd('tableName', '');
 		$model = $this->getModel();
+
+		$id = $input->getInt('id', null);
+		$model->getItem($id);
 
 		if (empty($tableName))
 		{
@@ -203,6 +208,9 @@ class RedcoreControllerWebservice extends RControllerForm
 		$fieldList = explode(',', $fieldList);
 		$tableName = $input->getCmd('tableName', '');
 		$model = $this->getModel();
+
+		$id = $input->getInt('id', null);
+		$model->getItem($id);
 
 		if (empty($tableName))
 		{
@@ -308,7 +316,9 @@ class RedcoreControllerWebservice extends RControllerForm
 		$app = JFactory::getApplication();
 		$input = $app->input;
 		$model = $this->getModel();
-
+		$id = $input->getInt('id', null);
+		$model->getItem($id);
+		
 		$operation = $input->getString('operation', 'read');
 		$fieldList = $input->getString('fieldList', '');
 
