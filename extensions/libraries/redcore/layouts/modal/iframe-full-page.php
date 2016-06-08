@@ -32,8 +32,7 @@ $contentElement = !empty($displayData['contentElement']) ? $displayData['content
 			<?php echo $linkName ?>
 	</button>
 	<div id="modalContainer<?php echo $contentElement; ?>" class="modalContainer" style="display:none;">
-		<div class="modal full-page hide" id="modalContainer_modalButton_<?php echo $contentElement; ?>"
-		     tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal full-page" style="display:none" id="modalContainer_modalButton_<?php echo $contentElement; ?>" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-body"></div>
@@ -71,8 +70,11 @@ $contentElement = !empty($displayData['contentElement']) ? $displayData['content
 			}
 
 			jQuery(document).ready(function() {
-				jQuery('<?php echo $htmlposition; ?>').append(jQuery('.modalContainer_modalButton_<?php echo $contentElement; ?>'));
-				jQuery('.modalContainer_modalButton_<?php echo $contentElement; ?>').show();
+				if (!jQuery('<?php echo $htmlposition; ?> .modalContainer_modalButton_<?php echo $contentElement; ?>').length)
+				{
+					jQuery('<?php echo $htmlposition; ?>').append(jQuery('.modalContainer_modalButton_<?php echo $contentElement; ?>'));
+				}
+				jQuery('.modalContainer_modalButton_<?php echo $contentElement; ?>:first').show();
 			});
 		</script>
 
