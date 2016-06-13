@@ -26,6 +26,13 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	private static $options = array();
 
 	/**
+	 * The options.
+	 *
+	 * @var  array
+	 */
+	private static $parsedQueries = array();
+
+	/**
 	 * Checks if tables inside query have translatable tables and fields and fetch appropriate
 	 * value from translations table
 	 *
@@ -46,7 +53,15 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 		try
 		{
+			$hashedQueryKey = md5($sql . $language);
+
+			if (isset(self::$parsedQueries[$hashedQueryKey]))
+			{
+				return self::$parsedQueries[$hashedQueryKey];
+			}
+
 			$db = JFactory::getDbo();
+			self::$parsedQueries[$hashedQueryKey] = null;
 			$sqlParser = new RDatabaseSqlparserSqlparser($sql);
 			$parsedSql = $sqlParser->parsed;
 
@@ -141,8 +156,9 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				if ($columnFound || $subQueryFound)
 				{
 					$sqlCreator = new RDatabaseSqlparserSqlcreator($parsedSqlColumns);
+					self::$parsedQueries[$hashedQueryKey] = $sqlCreator->created;
 
-					return $sqlCreator->created;
+					return self::$parsedQueries[$hashedQueryKey];
 				}
 			}
 		}
