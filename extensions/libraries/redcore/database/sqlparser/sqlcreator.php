@@ -556,6 +556,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processOperator($v);
 			$sql .= $this->processConstant($v);
+			$sql .= $this->processUserVariable($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
 			$sql .= $this->processSubQuery($v);
@@ -758,6 +759,20 @@ class RDatabaseSqlparserSqlcreator {
 
 	protected function processConstant($parsed) {
 		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'const') {
+			return "";
+		}
+
+		$sql = $parsed['base_expr'];
+
+		if (isset($parsed['alias'])) {
+			$sql .= $this->processAlias($parsed['alias']);
+		}
+
+		return $sql;
+	}
+
+	protected function processUserVariable($parsed) {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'user_variable') {
 			return "";
 		}
 
