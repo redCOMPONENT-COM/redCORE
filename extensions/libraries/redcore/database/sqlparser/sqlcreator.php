@@ -771,14 +771,17 @@ class RDatabaseSqlparserSqlcreator {
 		return $sql;
 	}
 
-	protected function processUserVariable($parsed) {
-		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'user_variable') {
+	protected function processUserVariable($parsed)
+	{
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'user_variable')
+		{
 			return "";
 		}
 
 		$sql = $parsed['base_expr'];
 
-		if (isset($parsed['alias'])) {
+		if (isset($parsed['alias']))
+		{
 			$sql .= $this->processAlias($parsed['alias']);
 		}
 
