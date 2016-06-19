@@ -74,7 +74,9 @@ class RDatabaseSqlparserSqlcreator {
 		return $this->created;
 	}
 
-	protected function processSelectStatement($parsed) {
+	protected function processSelectStatement($parsed)
+	{
+
 		$sql = $this->processSELECT($parsed['SELECT']) . " " . $this->processFROM($parsed['FROM']);
 		if (isset($parsed['WHERE'])) {
 			$sql .= " " . $this->processWHERE($parsed['WHERE']);
@@ -144,8 +146,9 @@ class RDatabaseSqlparserSqlcreator {
 			$len = strlen($sql);
 			$sql .= $this->processTable($v, $k);
 			$sql .= $this->processTableExpression($v, $k);
-			$sql .= $this->processSubquery($v, $k);
+			$sql .= $this->processSubQuery($v, $k);
 			$sql .= $this->processConstant($v);
+			$sql .= $this->processIndexHints($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('FROM', $k, $v, 'expr_type');
@@ -183,6 +186,21 @@ class RDatabaseSqlparserSqlcreator {
 			throw new RDatabaseSqlparserExceptioncreatesql('LIMIT', 'rowcount', $parsed, 'rowcount');
 		}
 		return "LIMIT " . $sql;
+	}
+
+	protected function processIndexHints($parsed)
+	{
+		if (!isset($parsed['index_hints']) || !$parsed['index_hints'])
+		{
+			return "";
+		}
+
+		if ($parsed['index_hints']['base_expr'] == "")
+		{
+			throw new RDatabaseSqlparserExceptioncreatesql('Index_Hints', 'USE', $parsed['index_hints'], 'expr_type');
+		}
+
+		return ' ' . $parsed['index_hints']['base_expr'];
 	}
 
 	protected function processGROUP($parsed) {

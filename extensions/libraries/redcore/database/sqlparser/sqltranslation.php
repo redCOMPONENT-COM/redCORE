@@ -511,6 +511,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$language
 								);
 								$newTagValue['ref_clause'] = $refClause;
+								$newTagValue['index_hints'] = false;
 								$foundTables[] = $newTagValue;
 								$originalTables[$newTagValue['alias']['originalName']] = isset($originalTables[$newTagValue['alias']['originalName']]) ?
 									$originalTables[$newTagValue['alias']['originalName']]++ : 1;
