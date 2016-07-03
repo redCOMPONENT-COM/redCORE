@@ -1475,15 +1475,13 @@ class RApiHalHal extends RApi
 				// If field is not sent through Request
 				if (!isset($data[$fieldAttributes['name']]))
 				{
-					// If this is a create operation then we will populate missing fields with default values if they are not empty
+					// We will populate missing fields with null value
+					$data[$fieldAttributes['name']] = null;
+
+					// We will populate value with default value if the field is not set for create operation
 					if ($this->operation == 'create')
 					{
 						$data[$fieldAttributes['name']] = $fieldAttributes['defaultValue'];
-					}
-					// If this is not create operation we will populate missing fields with null value
-					else
-					{
-						$data[$fieldAttributes['name']] = null;
 					}
 				}
 
