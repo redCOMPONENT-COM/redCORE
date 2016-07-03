@@ -1472,12 +1472,15 @@ class RApiHalHal extends RApi
 				$fieldAttributes['defaultValue'] = !is_null($fieldAttributes['defaultValue'])
 					&& !RApiHalHelper::isAttributeTrue($fieldAttributes, 'isPrimaryField') ? $fieldAttributes['defaultValue'] : '';
 
+				// If field is not sent through Request
 				if (!isset($data[$fieldAttributes['name']]))
 				{
-					if ($this->operation == 'create' && !empty($fieldAttributes['defaultValue']))
+					// If this is a create operation then we will populate missing fields with default values if they are not empty
+					if ($this->operation == 'create')
 					{
 						$data[$fieldAttributes['name']] = $fieldAttributes['defaultValue'];
 					}
+					// If this is not create operation we will populate missing fields with null value
 					else
 					{
 						$data[$fieldAttributes['name']] = null;
