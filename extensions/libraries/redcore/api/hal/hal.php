@@ -1472,12 +1472,23 @@ class RApiHalHal extends RApi
 				$fieldAttributes['defaultValue'] = !is_null($fieldAttributes['defaultValue'])
 					&& !RApiHalHelper::isAttributeTrue($fieldAttributes, 'isPrimaryField') ? $fieldAttributes['defaultValue'] : '';
 
-				if (!isset($data[$fieldAttributes['name']]) || is_null($data[$fieldAttributes['name']]))
+				if (!isset($data[$fieldAttributes['name']]))
 				{
-					$data[$fieldAttributes['name']] = $fieldAttributes['defaultValue'];
+					if ($this->operation == 'create' && !empty($fieldAttributes['defaultValue']))
+					{
+						$data[$fieldAttributes['name']] = $fieldAttributes['defaultValue'];
+					}
+					else
+					{
+						$data[$fieldAttributes['name']] = null;
+					}
 				}
 
-				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
+				if (!is_null($data[$fieldAttributes['name']]))
+				{
+					$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
+				}
+
 				$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
 			}
 
