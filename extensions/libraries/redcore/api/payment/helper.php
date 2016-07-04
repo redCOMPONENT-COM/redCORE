@@ -838,6 +838,7 @@ class RApiPaymentHelper
 					'value' => $value,
 					'id' => $id,
 					'attributes' => $attributes,
+					'selectSingleOption' => true,
 				)
 			)
 		);
