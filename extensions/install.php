@@ -109,27 +109,27 @@ class Com_RedcoreInstallerScript
 		$extensionType = $manifest->attributes()->type;
 		$this->extensionElement = $this->getElement($parent, $manifest);
 
+		// Reads current (old) version from manifest
+		$db = JFactory::getDbo();
+		$version = $db->setQuery(
+			$db->getQuery(true)
+				->select($db->qn('s.version_id'))
+				->from($db->qn('#__schemas', 's'))
+				->join('inner', $db->qn('#__extensions', 'e') . ' ON ' . $db->qn('e.extension_id') . ' = ' . $db->qn('s.extension_id'))
+				->where('e.element = ' . $db->q($this->extensionElement))
+		)
+			->loadResult();
+
+		if (!empty($version))
+		{
+			$this->oldVersion = (string) $version;
+		}
+
 		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
 		{
 			// Update SQL pre-processing
 			if ($type == 'update')
 			{
-				// Reads current (old) version from manifest
-				$db = JFactory::getDbo();
-				$version = $db->setQuery(
-					$db->getQuery(true)
-						->select($db->qn('s.version_id'))
-						->from($db->qn('#__schemas', 's'))
-						->join('inner', $db->qn('#__extensions', 'e') . ' ON ' . $db->qn('e.extension_id') . ' = ' . $db->qn('s.extension_id'))
-						->where('e.element = ' . $db->q($this->extensionElement))
-				)
-					->loadResult();
-
-				if (!empty($version))
-				{
-					$this->oldVersion = (string) $version;
-				}
-
 				if (!$this->preprocessUpdates($parent))
 				{
 					return false;
