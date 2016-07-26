@@ -316,6 +316,18 @@ class PlgSystemRedcore extends JPlugin
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.min.js']);
 			}
+
+			// Remove permission.js. Specially for Joomla 3.6
+			if ($isAdmin && version_compare(JVERSION, '3.6.0', '>='))
+			{
+				if (isset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions.js'])
+					|| isset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions-uncompressed.js']))
+				{
+					unset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions.js']);
+					unset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions-uncompressed.js']);
+					RHelperAsset::load('permission.min.js', 'redcore');
+				}
+			}
 		}
 	}
 

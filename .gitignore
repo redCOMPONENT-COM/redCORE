@@ -72,3 +72,6 @@ tests/checkers/phpcs/*
 !.gitignore
 !index.html
 !index.php
+
+# Ignore minified javascript
+extensions/libraries/redcore/media/**/js/*.min.js
