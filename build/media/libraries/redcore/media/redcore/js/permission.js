@@ -61,9 +61,7 @@ function sendPermissions(event) {
 
         Joomla.renderMessages(Joomla.ajaxErrorsMessages(jqXHR, textStatus, error));
 
-        window.scrollTo(0, 0);
-
-        icon.setAttribute('class', iconSuccess);
+        icon.setAttribute('class', iconFail);
     })
     .done(function (response) {
         // Remove the spinning icon.
