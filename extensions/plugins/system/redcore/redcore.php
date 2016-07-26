@@ -324,7 +324,7 @@ class PlgSystemRedcore extends JPlugin
 				$redcoreExtensions[] = 'com_redcore';
 				$option = JFactory::getApplication()->input->getCmd('option');
 
-				if (in_array($option. $redcoreExtensions)
+				if (!empty($option) && in_array($option, $redcoreExtensions)
 					|| isset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions.js'])
 					|| isset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions-uncompressed.js']))
 				{
