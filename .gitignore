@@ -67,6 +67,8 @@ selenium.log
 selenium-errors.log
 tests/_support/_generated/*
 tests/checkers/phpcs/*
+tests/RoboFile.ini
+tests/cache
 
 # Never ignore
 !.gitignore

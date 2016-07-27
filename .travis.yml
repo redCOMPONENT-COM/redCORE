@@ -5,22 +5,33 @@ php:
 - 5.6
 - 7.0
 addons:
-  firefox: "45.0.1"
-matrix:
-  allow_failures:
-    - php: 5.6
-    - php: 7.0
+  firefox: "47.0.1"
 before_script:
 - sudo apt-get update -qq
-- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd php5-sqlite > /dev/null
-- sudo /etc/init.d/apache2 stop
-- sudo sed -i -e "s,APACHE_RUN_USER=www-data,APACHE_RUN_USER=$USER,g" /etc/apache2/envvars
-- sudo sed -i -e "s,APACHE_RUN_GROUP=www-data,APACHE_RUN_GROUP=$USER,g" /etc/apache2/envvars
-- sudo chown -R $USER /var/lock/apache2
-- sudo chown -R $USER:$USER /var/www
-- ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
-- sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-- sudo /etc/init.d/apache2 start
+- sudo apt-get install -y --force-yes apache2 libapache2-mod-fastcgi php5-curl php5-mysql php5-intl php5-gd  > /dev/null
+- sudo mkdir $(pwd)/.run
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo sed -e "s,listen = 127.0.0.1:9000,listen = /tmp/php5-fpm.sock,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo sed -e "s,;listen.owner = nobody,listen.owner = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo sed -e "s,;listen.group = nobody,listen.group = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo sed -e "s,;listen.mode = 0660,listen.mode = 0666,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo sed -e "s,user = nobody,;user = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "5" ]]; then sudo sed -e "s,group = nobody,;group = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo sed -e "s,listen = 127.0.0.1:9000,listen = /tmp/php5-fpm.sock,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo sed -e "s,;listen.owner = nobody,listen.owner = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo sed -e "s,;listen.group = nobody,listen.group = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo sed -e "s,;listen.mode = 0660,listen.mode = 0666,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo sed -e "s,user = nobody,;user = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi
+- if [[ ${TRAVIS_PHP_VERSION:0:1} == "7" ]]; then sudo sed -e "s,group = nobody,;group = $USER,g" --in-place ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi
+- sudo a2enmod rewrite actions fastcgi alias
+- echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+- sudo cp -f tests/travis-ci-apache.conf /etc/apache2/sites-available/default
+- sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
+- git submodule update --init --recursive
+- sudo service apache2 restart
 - "export DISPLAY=:99.0"
 - "sh -e /etc/init.d/xvfb start"
 - sleep 3 # give xvfb some time to start
@@ -33,6 +44,7 @@ before_script:
 - mv gulp-config.json.dist gulp-config.json
 - gulp release --skip-version
 - cd ../tests
+- mv RoboFile.ini.dist RoboFile.ini
 
 script:
 - composer install --prefer-dist
@@ -43,6 +55,7 @@ script:
 - mv api.suite.dist.yml api.suite.yml
 - vendor/bin/robo run:tests
 - vendor/bin/robo run:unit-tests
+
 notifications:
   slack:
     secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=
