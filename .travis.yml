@@ -55,6 +55,7 @@ script:
 - mv api.suite.dist.yml api.suite.yml
 - vendor/bin/robo run:tests
 - vendor/bin/robo run:unit-tests
+- if [ $TRAVIS_PULL_REQUEST != "false" ]; then vendor/bin/robo send:screenshot-from-travis-to-github $CLOUD_NAME $API_KEY $API_SECRET $GITHUB_TOKEN $ORGANIZATION $REPO $TRAVIS_PULL_REQUEST; fi
 
 notifications:
   slack:
