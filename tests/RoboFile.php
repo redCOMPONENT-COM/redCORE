@@ -114,6 +114,61 @@ class RoboFile extends \Robo\Tasks
 		return $result;
 	}
 
+	public function sendScreenshotFromTravisToGithub($cloudName, $apiKey, $apiSecret, $GithubToken, $repoOwner, $repo, $pull)
+	{
+		$error = false;
+
+		// Loop throught Codeception snapshots
+		if ($handler = opendir('_output'))
+		{
+			$body = '';
+
+			if (is_file('_output/report.tap.log'))
+			{
+				$body = file_get_contents('_output/report.tap.log', null, null, 15);
+			}
+
+			while (false !== ($errorSnapshot = readdir($handler)))
+			{
+				// Avoid sending system files or html files
+				if (!('png' === pathinfo($errorSnapshot, PATHINFO_EXTENSION)))
+				{
+					continue;
+				}
+
+				$error = true;
+				$this->say("Uploading screenshots: $errorSnapshot");
+
+				Cloudinary::config(
+					array(
+						'cloud_name' => $cloudName,
+						'api_key'    => $apiKey,
+						'api_secret' => $apiSecret
+					)
+				);
+
+				$result = \Cloudinary\Uploader::upload(realpath(dirname(__FILE__) . '/_output/' . $errorSnapshot));
+				$this->say($errorSnapshot . 'Image sent');
+				$body .= '![Screenshot](' . $result['secure_url'] . ')';
+			}
+
+			if ($error)
+			{
+				$this->say('Creating Github issue');
+				$client = new \Github\Client;
+				$client->authenticate($GithubToken, \Github\Client::AUTH_HTTP_TOKEN);
+				$client
+					->api('issue')
+					->comments()->create(
+						$repoOwner, $repo, $pull,
+						array(
+							'body'  => $body
+						)
+					);
+			}
+		}
+	}
+
 	/**
 	 * Downloads and prepares a Joomla CMS site for testing
 	 *
