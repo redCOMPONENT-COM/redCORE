@@ -174,14 +174,7 @@ class PlgSystemRedcore extends JPlugin
 			if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag()
 				|| (!empty($oldLang) && JFactory::getLanguage()->getTag() != $oldLang))
 			{
-				if ($oldLang == RTranslationHelper::getSiteLanguage())
-				{
-					$app->setUserState('redcore.old_lang', null);
-				}
-				else
-				{
-					$app->setUserState('redcore.old_lang', JFactory::getLanguage()->getTag());
-				}
+				$app->setUserState('redcore.old_lang', JFactory::getLanguage()->getTag());
 
 				// Reset menus because they are loaded before any other module
 				RMenu::resetJoomlaMenuItems();

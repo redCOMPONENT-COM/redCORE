@@ -1031,7 +1031,7 @@ final class RTranslationTable
 			$fullLoaded = true;
 		}
 
-		if ($fullLoad && !isset(self::$installedTranslationTables))
+		if (!$fullLoad && !isset(self::$installedTranslationTables))
 		{
 			$db = JFactory::getDbo();
 			$oldTranslate = isset($db->translate) ? $db->translate : false;
