@@ -324,13 +324,28 @@ class PlgSystemRedcore extends JPlugin
 				$redcoreExtensions[] = 'com_redcore';
 				$option = JFactory::getApplication()->input->getCmd('option');
 
-				if (!empty($option) && in_array($option, $redcoreExtensions)
-					|| isset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions.js'])
-					|| isset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions-uncompressed.js']))
+				if (!empty($option) && in_array($option, $redcoreExtensions))
 				{
-					unset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions.js']);
-					unset($doc->_scripts[JURI::root(true) . '/media/system/js/permissions-uncompressed.js']);
-					RHelperAsset::load('permission.min.js', 'redcore');
+					$usePermission = false;
+
+					if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']))
+					{
+						unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']);
+
+						$usePermission = true;
+					}
+
+					if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']))
+					{
+						unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']);
+
+						$usePermission = true;
+					}
+
+					if ($usePermission)
+					{
+						RHelperAsset::load('permission.min.js', 'redcore');
+					}
 				}
 			}
 		}
