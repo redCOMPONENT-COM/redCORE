@@ -28,7 +28,7 @@ class UninstallExtensionCest
 		$I->doAdministratorLogin();
 		$I->amOnPage('/administrator/index.php?option=com_installer&view=manage');
 		$I->fillField(['id' => 'filter_search'], 'redCORE - component');
-		$I->click(['xpath' => "//button[@type='submit' and @data-original-title='Search']"]);
+		$I->pressKey(['id' => 'filter_search'], WebDriverKeys::ENTER);
 		$I->waitForElement(['id' => 'manageList']);
 		$I->click(['xpath' => "//input[@id='cb0']"]);
 		$I->click(['xpath' => "//div[@id='toolbar-delete']/button"]);
@@ -36,9 +36,8 @@ class UninstallExtensionCest
 		$I->waitForText('Uninstalling the component was successful', 60, ['id' => 'system-message-container']);
 		$I->see('Uninstalling the component was successful', ['id' => 'system-message-container']);
 		$I->fillField(['id' => 'filter_search'], 'redCORE - component');
-		$I->click(['xpath' => "//button[@type='submit' and @data-original-title='Search']"]);
+		$I->pressKey(['id' => 'filter_search'], WebDriverKeys::ENTER);
 		$I->waitForText('There are no extensions installed matching your query.', 60, ['class' => 'alert-no-items']);
 		$I->see('There are no extensions installed matching your query.', ['class' => 'alert-no-items']);
 	}
 }
-
