@@ -1,8 +1,5 @@
 language: php
-env:
-  global:
-    - TRAVIS_PUBLIC_REPOSITORY=true
-    - secure: "IlljezqPgc4Se97Tg1pCSOFrNMi9CMisySXua4iaETbeKwAV21dVdBzP/8zOZebcGqVdIH68Zo9NP69JKg6R+eRN20pu/rOvVNOcF+e1UVBT8uw8XFtQ9/1B1rDBQbLme6bQT3RW5XPzer+ZrZO6wMkkLb5+eaGi6yKEfh3lSNU="
+env: TRAVIS_PUBLIC_REPOSITORY=true
 php:
 - 5.5
 - 5.6
@@ -10,7 +7,7 @@ php:
 addons:
   firefox: "47.0.1"
 before_script:
-- echo $FOO
+- echo $CLOUDINARY_FOO
 - echo $TRAVIS_SECURE_ENV_VARS
 - exit 1
 - sudo apt-get update -qq
