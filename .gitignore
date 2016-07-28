@@ -59,6 +59,7 @@ tests/acceptance.suite.yml
 tests/functional.suite.yml
 tests/unit.suite.yml
 tests/api.suite.yml
+tests/apisoap.suite.yml
 tests/joomla-cms3*
 tests/_output
 selenium-server-standalone.jar

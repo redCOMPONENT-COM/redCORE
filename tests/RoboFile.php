@@ -190,8 +190,10 @@ class RoboFile extends \Robo\Tasks
 			$iterator = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator(
 						$this->testsFolder . $opts['suite'],
-					RecursiveDirectoryIterator::SKIP_DOTS),
-				RecursiveIteratorIterator::SELF_FIRST);
+					RecursiveDirectoryIterator::SKIP_DOTS
+				),
+				RecursiveIteratorIterator::SELF_FIRST
+			);
 
 			$tests = array();
 
@@ -257,7 +259,7 @@ class RoboFile extends \Robo\Tasks
 			->run()
 			->stopOnFail();
 
-		if (!'api' == $opts['suite'])
+		if (!('api' == $opts['suite'] || 'apisoap' == $opts['suite']))
 		{
 			$this->killSelenium();
 		}
@@ -323,41 +325,44 @@ class RoboFile extends \Robo\Tasks
 			->run()
 			->stopOnFail();
 
-
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/install/')
-		     ->run()
-		     ->stopOnFail();
+			// ->arg('--steps')
+			// ->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/install/')
+			->run()
+			->stopOnFail();
+
+			$this->taskCodecept()
+				// ->arg('--steps')
+				// ->arg('--debug')
+				->arg('--tap')
+				->arg('--fail-fast')
+				->arg($this->testsFolder . 'acceptance/administrator/')
+				->run()
+				->stopOnFail();
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/administrator/')
-		     ->run()
-		     ->stopOnFail();
+			//  ->arg('--steps')
+			//  ->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg('api')
+			->run()
+			->stopOnFail();
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg('api')
-		     ->run()
-		     ->stopOnFail();
-
-		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/uninstall/')
-		     ->run()
-		     ->stopOnFail();
+			//  ->arg('--steps')
+			//  ->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/uninstall/')
+			->run()
+			->stopOnFail();
 
 		$this->killSelenium();
 	}
