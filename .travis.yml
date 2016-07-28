@@ -15,7 +15,7 @@ php:
 addons:
   firefox: "47.0.1"
 before_script:
-- echo $FOO
+- echo ${FOO}
 - echo $TRAVIS_SECURE_ENV_VARS
 - exit 1
 - sudo apt-get update -qq
