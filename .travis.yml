@@ -7,9 +7,6 @@ php:
 addons:
   firefox: "47.0.1"
 before_script:
-- echo $CLOUDINARY_FOO
-- echo $TRAVIS_SECURE_ENV_VARS
-- exit 1
 - sudo apt-get update -qq
 - sudo apt-get install -y --force-yes apache2 libapache2-mod-fastcgi php5-curl php5-mysql php5-intl php5-gd  > /dev/null
 - sudo mkdir $(pwd)/.run
