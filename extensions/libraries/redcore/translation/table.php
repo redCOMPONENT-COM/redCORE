@@ -986,15 +986,16 @@ final class RTranslationTable
 	/**
 	 * Get list of all translation tables with columns
 	 *
-	 * @param   bool  $fullLoad  Full load tables
+	 * @param   bool  $fullLoad   Full load tables
+	 * @param   bool  $isEnabled  If true is just return "Enabled" translation table.
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function getInstalledTranslationTables($fullLoad = false)
+	public static function getInstalledTranslationTables($fullLoad = false, $isEnabled = false)
 	{
 		static $fullLoaded;
 
-		if ($fullLoad && !$fullLoaded)
+		if ($fullLoad && (is_null($fullLoaded) || !$fullLoaded))
 		{
 			$db = JFactory::getDbo();
 			$oldTranslate = isset($db->translate) ? $db->translate : false;
@@ -1073,6 +1074,21 @@ final class RTranslationTable
 			// We put translation check back on
 			$db->translate = $oldTranslate;
 			self::$installedTranslationTables = $tables;
+		}
+
+		if ($isEnabled && $fullLoaded)
+		{
+			$tables = self::$installedTranslationTables;
+
+			foreach ($tables as $key => $table)
+			{
+				if (!$table->state)
+				{
+					unset($tables[$key]);
+				}
+			}
+
+			return $tables;
 		}
 
 		return self::$installedTranslationTables;

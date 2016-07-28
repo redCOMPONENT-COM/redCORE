@@ -318,7 +318,7 @@ class RedcoreControllerWebservice extends RControllerForm
 		$model = $this->getModel();
 		$id = $input->getInt('id', null);
 		$model->getItem($id);
-		
+
 		$operation = $input->getString('operation', 'read');
 		$fieldList = $input->getString('fieldList', '');
 
