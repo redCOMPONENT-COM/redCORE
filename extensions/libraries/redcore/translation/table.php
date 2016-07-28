@@ -1098,7 +1098,8 @@ final class RTranslationTable
 				$query = $db->getQuery(true)
 					->select('tc.*')
 					->from($db->qn('#__redcore_translation_columns', 'tc'))
-					->where($db->qn('translation_table_id') . ' = ' . $table->id);
+					->where($db->qn('translation_table_id') . ' = ' . $table->id)
+					->order($db->qn('id'));
 
 				self::$translationColumns[$table->name] = $db->setQuery($query)->loadAssocList('name');
 
