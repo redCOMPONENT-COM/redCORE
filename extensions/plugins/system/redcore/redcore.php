@@ -18,8 +18,6 @@ defined('JPATH_BASE') or die;
  */
 class PlgSystemRedcore extends JPlugin
 {
-	static $oldLanguage;
-
 	/**
 	 * Constructor
 	 *

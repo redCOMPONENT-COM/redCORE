@@ -986,7 +986,8 @@ final class RTranslationTable
 	/**
 	 * Get list of all translation tables with columns
 	 *
-	 * @param   bool  $fullLoad  Full load tables
+	 * @param   bool  $fullLoad   Full load tables
+	 * @param   bool  $isEnabled  If true is just return "Enabled" translation table.
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
