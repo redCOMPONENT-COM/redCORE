@@ -76,47 +76,22 @@ class RoboFile extends \Robo\Tasks
 		return $result;
 	}
 
-	/**
-	 * Sends Codeception errors to Slack
-	 *
-	 * @param   string  $slackChannel             The Slack Channel ID
-	 * @param   string  $slackToken               Your Slack authentication token.
-	 * @param   string  $codeceptionOutputFolder  Optional. By default tests/_output
-	 *
-	 * @return mixed
-	 */
-	public function sendCodeceptionOutputToSlack($slackChannel, $slackToken = null, $codeceptionOutputFolder = null)
-	{
-		if (is_null($slackToken))
-		{
-			$this->say('we are in Travis environment, getting token from ENV');
-
-			// Remind to set the token in repo Travis settings,
-			// see: http://docs.travis-ci.com/user/environment-variables/#Using-Settings
-			$slackToken = getenv('SLACK_ENCRYPTED_TOKEN');
-		}
-
-		if (is_null($codeceptionOutputFolder))
-		{
-			$this->codeceptionOutputFolder = '_output';
-		}
-
-		$this->say($codeceptionOutputFolder);
-
-		$result = $this
-			->taskSendCodeceptionOutputToSlack(
-				$slackChannel,
-				$slackToken,
-				$codeceptionOutputFolder
-			)
-			->run();
-
-		return $result;
-	}
-
-	public function sendScreenshotFromTravisToGithub($cloudName, $apiKey, $apiSecret, $GithubToken, $repoSlug, $pull)
+	public function sendScreenshotFromTravisToGithub($repoSlug, $pull)
 	{
 		$error = false;
+
+		$cloudName = getenv('CLOUDINARY_CLOUD_NAME');
+		$apiKey = getenv('CLOUDINARY_API_KEY');
+		$apiSecret = getenv('CLOUDINARY_API_SECRET');
+		$githubToken = getenv('GITHUB_TOKEN');
+
+		if ($cloudName == ''
+			|| $apiKey == ''
+			|| $apiSecret == ''
+			|| $githubToken == '')
+		{
+			$this->say("Environment variables not set.  Screenshot will not be reported back");
+		}
 
 		// Loop throught Codeception snapshots
 		if ($handler = opendir('_output'))
@@ -157,7 +132,7 @@ class RoboFile extends \Robo\Tasks
 				list($repoOwner, $repo) = explode('/', $repoSlug);
 				$this->say('Creating Github issue');
 				$client = new \Github\Client;
-				$client->authenticate($GithubToken, \Github\Client::AUTH_HTTP_TOKEN);
+				$client->authenticate($githubToken, \Github\Client::AUTH_HTTP_TOKEN);
 				$client
 					->api('issue')
 					->comments()->create(
