@@ -114,7 +114,7 @@ class RoboFile extends \Robo\Tasks
 		return $result;
 	}
 
-	public function sendScreenshotFromTravisToGithub($cloudName, $apiKey, $apiSecret, $GithubToken, $repoOwner, $repo, $pull)
+	public function sendScreenshotFromTravisToGithub($cloudName, $apiKey, $apiSecret, $GithubToken, $repoSlug, $pull)
 	{
 		$error = false;
 
@@ -154,6 +154,7 @@ class RoboFile extends \Robo\Tasks
 
 			if ($error)
 			{
+				list($repoOwner, $repo) = explode('/', $repoSlug);
 				$this->say('Creating Github issue');
 				$client = new \Github\Client;
 				$client->authenticate($GithubToken, \Github\Client::AUTH_HTTP_TOKEN);

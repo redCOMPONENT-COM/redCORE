@@ -1,5 +1,11 @@
 language: php
-env: TRAVIS_PUBLIC_REPOSITORY=true
+env:
+  global:
+    - TRAVIS_PUBLIC_REPOSITORY=true
+    - secure: "RrwO6wItaXwzqRBUJqMEc8Gje2w+DzbYKY9m1WrqA6KnK9uVQ2NvHr8+rUBhE0ZQlWezjamN4wLGCy+/s9wCvQrg9ak/RppB79obL8BfAlmA9wZfFvprCrEOYrGGhxsuw99k8GFCGlwkAwy1q0Ph/hKXSkmLWyOIrtS8NoMfmd4="
+    - secure: "lnvcAm3OhLzVucJeOLg9eQsYkNOwyuLU+tPxysQ0D+3yJxncd+ZY+4vs9NcYrzckCfcrs5xJYGkV7KsVPo35ajBQdSCYqBe0DSqv7A/u2Bg4lEuvjAQ4/GHCuNWFsPil0acvcOYhj0978pmZUR74XBQoV+2TSQIQesmF5Xf1RKI="
+    - secure: "D8fTy2YilSRoosvogNnvpeh2fiV8UAAPgh4mpgJuH/yf9Ee58LhXckQibM6VpC1I8ooC+ZmiQ2yM3Nb/0cDLPlPGhvzEXhZVs1e4J5RCDd21+jf7bkZqgaNSA5SlcOGSs+20viKNr7xjJaGFSaoU+7hHMfuVNssS3ozkUUKAMGk="
+    - secure: "m7c/7nGg2x8zK+9hoFQ3pGaaqHgXnd2onM+ubL8x61DHqCxw0qjITiYG3261t55OboWG+qMvB8ingMA9w1C+vKXaze1VK3l4Wdh/64B4p152f1K4vC8uOwexmCJeAsLxs7ynCO/Y6ChgxmsHyRKe49Dy3HkiD/11hrzfMbITCFI="
 php:
 - 5.5
 - 5.6
@@ -57,7 +63,7 @@ script:
 - mv api.suite.dist.yml api.suite.yml
 - vendor/bin/robo run:tests
 - vendor/bin/robo run:unit-tests
-- if [ $TRAVIS_PULL_REQUEST != "false" ]; then vendor/bin/robo send:screenshot-from-travis-to-github $CLOUD_NAME $API_KEY $API_SECRET $GITHUB_TOKEN $ORGANIZATION $REPO $TRAVIS_PULL_REQUEST; fi
+- if [ $TRAVIS_PULL_REQUEST != "false" ]; then vendor/bin/robo send:screenshot-from-travis-to-github $CLOUDINARY_CLOUD_NAME $CLOUDINARY_API_KEY $CLOUDINARY_API_SECRET $GITHUB_TOKEN $TRAVIS_REPO_SLUG $TRAVIS_PULL_REQUEST; fi
 
 notifications:
   slack:
