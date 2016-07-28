@@ -2,12 +2,7 @@ language: php
 env:
   global:
     - TRAVIS_PUBLIC_REPOSITORY=true
-    - secure:
-        - "RrwO6wItaXwzqRBUJqMEc8Gje2w+DzbYKY9m1WrqA6KnK9uVQ2NvHr8+rUBhE0ZQlWezjamN4wLGCy+/s9wCvQrg9ak/RppB79obL8BfAlmA9wZfFvprCrEOYrGGhxsuw99k8GFCGlwkAwy1q0Ph/hKXSkmLWyOIrtS8NoMfmd4="
-        - "lnvcAm3OhLzVucJeOLg9eQsYkNOwyuLU+tPxysQ0D+3yJxncd+ZY+4vs9NcYrzckCfcrs5xJYGkV7KsVPo35ajBQdSCYqBe0DSqv7A/u2Bg4lEuvjAQ4/GHCuNWFsPil0acvcOYhj0978pmZUR74XBQoV+2TSQIQesmF5Xf1RKI="
-        - "D8fTy2YilSRoosvogNnvpeh2fiV8UAAPgh4mpgJuH/yf9Ee58LhXckQibM6VpC1I8ooC+ZmiQ2yM3Nb/0cDLPlPGhvzEXhZVs1e4J5RCDd21+jf7bkZqgaNSA5SlcOGSs+20viKNr7xjJaGFSaoU+7hHMfuVNssS3ozkUUKAMGk="
-        - "m7c/7nGg2x8zK+9hoFQ3pGaaqHgXnd2onM+ubL8x61DHqCxw0qjITiYG3261t55OboWG+qMvB8ingMA9w1C+vKXaze1VK3l4Wdh/64B4p152f1K4vC8uOwexmCJeAsLxs7ynCO/Y6ChgxmsHyRKe49Dy3HkiD/11hrzfMbITCFI="
-        - "IlljezqPgc4Se97Tg1pCSOFrNMi9CMisySXua4iaETbeKwAV21dVdBzP/8zOZebcGqVdIH68Zo9NP69JKg6R+eRN20pu/rOvVNOcF+e1UVBT8uw8XFtQ9/1B1rDBQbLme6bQT3RW5XPzer+ZrZO6wMkkLb5+eaGi6yKEfh3lSNU="
+    - secure: "IlljezqPgc4Se97Tg1pCSOFrNMi9CMisySXua4iaETbeKwAV21dVdBzP/8zOZebcGqVdIH68Zo9NP69JKg6R+eRN20pu/rOvVNOcF+e1UVBT8uw8XFtQ9/1B1rDBQbLme6bQT3RW5XPzer+ZrZO6wMkkLb5+eaGi6yKEfh3lSNU="
 php:
 - 5.5
 - 5.6
@@ -15,7 +10,7 @@ php:
 addons:
   firefox: "47.0.1"
 before_script:
-- echo ${FOO}
+- echo $FOO
 - echo $TRAVIS_SECURE_ENV_VARS
 - exit 1
 - sudo apt-get update -qq
