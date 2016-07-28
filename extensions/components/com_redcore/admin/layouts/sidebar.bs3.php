@@ -14,7 +14,7 @@ $view = RInflector::pluralize($app->input->getString('view', ''));
 $return = $app->input->getString('return', '');
 $translationTableName = $app->input->getString('translationTableName', '');
 $components = RedcoreHelpersView::getExtensionsRedcore(true);
-$translationTables = RTranslationTable::getInstalledTranslationTables();
+$translationTables = RTranslationTable::getInstalledTranslationTables(false, true);
 ?>
 <div class="panel-group" id="rc-sidebar-accordion">
 	<div class="panel panel-default">
