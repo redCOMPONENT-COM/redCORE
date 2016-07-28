@@ -87,10 +87,12 @@ class RoboFile extends \Robo\Tasks
 
 		if ($cloudName == ''
 			|| $apiKey == ''
-			|| $apiSecret == ''
+			|| $apiSecret == ''
 			|| $githubToken == '')
 		{
 			$this->say("Environment variables not set.  Screenshot will not be reported back");
+
+			return;
 		}
 
 		// Loop throught Codeception snapshots
