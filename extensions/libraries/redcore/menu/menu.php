@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Registry\Registry;
+
 /**
  * Represents a menu.
  * A menu is a set of trees.
@@ -86,7 +88,7 @@ class RMenu
 			$item = $menu->getItem($item->id);
 
 			// Decode the item params
-			$result = new JRegistry;
+			$result = new Registry;
 			$result->loadString($item->params);
 			$item->params = $result;
 		}
