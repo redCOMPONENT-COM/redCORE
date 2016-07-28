@@ -1,10 +1,8 @@
-class_name: ApiTester
+class_name: ApisoapTester
 modules:
     enabled:
-      - ApiHelper
-      - Asserts
-      - REST:
-          depends: PhpBrowser
+      - \Helper\Apisoap
+      - PhpBrowser:
           url: http://localhost/tests/joomla-cms3/
       - SOAP:
           depends: PhpBrowser

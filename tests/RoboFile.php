@@ -20,9 +20,46 @@ class RoboFile extends \Robo\Tasks
 	use \redcomponent\robo\loadTasks;
 
 	/**
-	 * Current root folder
+	 * File extension for executables
+	 *
+	 * @var string
 	 */
-	private $testsFolder = './';
+	private $executableExtension = '';
+
+	/**
+	 * Local configuration parameters
+	 *
+	 * @var array
+	 */
+	private $configuration = array();
+
+	/**
+	 * Path to the local CMS root
+	 *
+	 * @var string
+	 */
+	private $cmsPath = '';
+
+	/**
+	 * Current root folder
+	 * File extension for executables
+	 *
+	 * @var string
+	 */
+	 private $testsFolder = './';
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->configuration = $this->getConfiguration();
+		$this->cmsPath = $this->getCmsPath();
+		$this->executableExtension = $this->getExecutableExtension();
+
+		// Set default timezone (so no warnings are generated if it is not set)
+		date_default_timezone_set('UTC');
+	}
 
 	/**
 	 * Hello World example task.
@@ -40,57 +77,54 @@ class RoboFile extends \Robo\Tasks
 	}
 
 	/**
-	 * Sends Codeception errors to Slack
-	 *
-	 * @param   string  $slackChannel             The Slack Channel ID
-	 * @param   string  $slackToken               Your Slack authentication token.
-	 * @param   string  $codeceptionOutputFolder  Optional. By default tests/_output
-	 *
-	 * @return mixed
-	 */
-	public function sendCodeceptionOutputToSlack($slackChannel, $slackToken = null, $codeceptionOutputFolder = null)
-	{
-		if (is_null($slackToken))
-		{
-			$this->say('we are in Travis environment, getting token from ENV');
-
-			// Remind to set the token in repo Travis settings,
-			// see: http://docs.travis-ci.com/user/environment-variables/#Using-Settings
-			$slackToken = getenv('SLACK_ENCRYPTED_TOKEN');
-		}
-
-		if (is_null($codeceptionOutputFolder))
-		{
-			$this->codeceptionOutputFolder = '_output';
-		}
-
-		$this->say($codeceptionOutputFolder);
-
-		$result = $this
-			->taskSendCodeceptionOutputToSlack(
-				$slackChannel,
-				$slackToken,
-				$codeceptionOutputFolder
-			)
-			->run();
-
-		return $result;
-	}
-
-	/**
 	 * Downloads and prepares a Joomla CMS site for testing
 	 *
+	 * @param   int  $use_htaccess  (1/0) Rename and enable embedded Joomla .htaccess file
+	 *
 	 * @return mixed
 	 */
-	public function prepareSiteForSystemTests()
+	public function prepareSiteForSystemTests($use_htaccess = 0)
 	{
-		// Get Joomla Clean Testing sites
-		if (is_dir('joomla-cms3'))
+		// Caching cloned installations locally
+		if (!is_dir('cache') || (time() - filemtime('cache') > 60 * 60 * 24))
 		{
-			$this->taskDeleteDir('joomla-cms3')->run();
+			if (file_exists('cache'))
+			{
+				$this->taskDeleteDir('cache')->run();
+			}
+
+			$this->_exec($this->buildGitCloneCommand());
 		}
 
-		$this->cloneJoomla();
+		// Get Joomla Clean Testing sites
+		if (is_dir($this->cmsPath))
+		{
+			try
+			{
+				$this->taskDeleteDir($this->cmsPath)->run();
+			}
+			catch (Exception $e)
+			{
+				// Sorry, we tried :(
+				$this->say('Sorry, you will have to delete ' . $this->cmsPath . ' manually. ');
+				exit(1);
+			}
+		}
+
+		$this->_copyDir('cache', $this->cmsPath);
+
+		// Optionally change owner to fix permissions issues
+		if (!empty($this->configuration->localUser) && !$this->isWindows())
+		{
+			$this->_exec('chown -R ' . $this->configuration->localUser . ' ' . $this->cmsPath);
+		}
+
+		// Optionally uses Joomla default htaccess file
+		if ($use_htaccess == 1)
+		{
+			$this->_copy($this->cmsPath . '/htaccess.txt', $this->cmsPath . '/.htaccess');
+			$this->_exec('sed -e "s,# RewriteBase /,RewriteBase /' . $this->cmsPath . '/,g" --in-place ' . $this->cmsPath . '/.htaccess');
+		}
 	}
 
 	/**
@@ -120,21 +154,20 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Executes Selenium System Tests in your machine
 	 *
-	 * @param   array  $options  Use -h to see available options
+	 * @param   array  $opts  Use -h to see available options
 	 *
 	 * @return mixed
 	 */
 	public function runTest($opts = [
 		'test|t'	    => null,
-		'suite|s'	    => 'acceptance'
-	])
+		'suite|s'	    => 'acceptance'])
 	{
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
 
-
-		if (isset($opts['suite']) && 'api' === $opts['suite'])
+		if (isset($opts['suite'])
+			&& ('api' === $opts['suite'] || 'apisoap' === $opts['suite']))
 		{
 			// Do not launch selenium when running API tests
 		}
@@ -157,8 +190,10 @@ class RoboFile extends \Robo\Tasks
 			$iterator = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator(
 						$this->testsFolder . $opts['suite'],
-					RecursiveDirectoryIterator::SKIP_DOTS),
-				RecursiveIteratorIterator::SELF_FIRST);
+					RecursiveDirectoryIterator::SKIP_DOTS
+				),
+				RecursiveIteratorIterator::SELF_FIRST
+			);
 
 			$tests = array();
 
@@ -168,7 +203,8 @@ class RoboFile extends \Robo\Tasks
 			while ($iterator->valid())
 			{
 				if (strripos($iterator->getSubPathName(), 'cept.php')
-					|| strripos($iterator->getSubPathName(), 'cest.php'))
+					|| strripos($iterator->getSubPathName(), 'cest.php')
+					|| strripos($iterator->getSubPathName(), '.feature'))
 				{
 					$this->say('[' . $i . '] ' . $iterator->getSubPathName());
 					$tests[$i] = $iterator->getSubPathName();
@@ -185,30 +221,33 @@ class RoboFile extends \Robo\Tasks
 
 		$pathToTestFile = './' . $opts['suite'] . '/' . $opts['test'];
 
-		// loading the class to display the methods in the class
-		require './' . $opts['suite'] . '/' . $opts['test'];
-
-		$classes = Nette\Reflection\AnnotationsParser::parsePhp(file_get_contents($pathToTestFile));
-		$className = array_keys($classes)[0];
-
 		// If test is Cest, give the option to execute individual methods
-		if (strripos($className, 'cest'))
+		if (strripos($opts['test'], 'cest'))
 		{
-			$testFile = new Nette\Reflection\ClassType($className);
-			$testMethods = $testFile->getMethods(ReflectionMethod::IS_PUBLIC);
+			// Loading the class to display the methods in the class
+			require './' . $opts['suite'] . '/' . $opts['test'];
 
-			foreach ($testMethods as $key => $method)
+			$classes = Nette\Reflection\AnnotationsParser::parsePhp(file_get_contents($pathToTestFile));
+			$className = array_keys($classes)[0];
+
+			if (strripos($className, 'cest'))
 			{
-				$this->say('[' . $key . '] ' . $method->name);
-			}
+				$testFile = new Nette\Reflection\ClassType($className);
+				$testMethods = $testFile->getMethods(ReflectionMethod::IS_PUBLIC);
 
-			$this->say('');
-			$methodNumber = $this->askDefault('Choose the method in the test to run (hit ENTER for All)', 'All');
+				foreach ($testMethods as $key => $method)
+				{
+					$this->say('[' . $key . '] ' . $method->name);
+				}
 
-			if($methodNumber != 'All')
-			{
-				$method = $testMethods[$methodNumber]->name;
-				$pathToTestFile = $pathToTestFile . ':' . $method;
+				$this->say('');
+				$methodNumber = $this->askDefault('Choose the method in the test to run (hit ENTER for All)', 'All');
+
+				if ($methodNumber != 'All')
+				{
+					$method = $testMethods[$methodNumber]->name;
+					$pathToTestFile = $pathToTestFile . ':' . $method;
+				}
 			}
 		}
 
@@ -220,7 +259,7 @@ class RoboFile extends \Robo\Tasks
 			->run()
 			->stopOnFail();
 
-		if (!'api' == $opts['suite'])
+		if (!('api' == $opts['suite'] || 'apisoap' == $opts['suite']))
 		{
 			$this->killSelenium();
 		}
@@ -229,15 +268,20 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Preparation for running manual tests after installing Joomla/Extension and some basic configuration
 	 *
+	 * @param   int     $use_htaccess    (1/0) Rename and enable embedded Joomla .htaccess file
+	 * @param   string  $package_method  Optional. Availabe methods are "phing" or "gulp". "gulp" by default
+	 *
 	 * @return void
 	 */
-	public function runTestPreparation()
+	public function runTestPreparation($use_htaccess = 0, $package_method = 'gulp')
 	{
-		$this->prepareSiteForSystemTests();
+		$this->prepareSiteForSystemTests($use_htaccess);
 
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
+
+		$this->prepareReleasePackages();
 
 		$this->runSelenium();
 
@@ -261,20 +305,22 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Function to Run tests in a Group
 	 *
+	 * @param   int     $use_htaccess   (1/0) Rename and enable embedded Joomla .htaccess file
+	 * @param   string  $database_host  Optional. If using Joomla Vagrant Box do: $ vendor/bin/robo 0 gulp run:tests 33.33.33.58
+	 *
 	 * @return void
 	 */
-	public function runTests()
+	public function runTests($use_htaccess = 0, $database_host = null)
 	{
-		$this->prepareSiteForSystemTests();
-
-		$this->prepareReleasePackages();
+		$this->prepareSiteForSystemTests($use_htaccess);
 
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
 
-		$this->runSelenium();
+		$this->prepareReleasePackages();
 
+		$this->runSelenium();
 		$this->taskWaitForSeleniumStandaloneServer()
 			->run()
 			->stopOnFail();
@@ -283,36 +329,40 @@ class RoboFile extends \Robo\Tasks
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/install/')
-		     ->run()
-		     ->stopOnFail();
+			// ->arg('--steps')
+			// ->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/install/')
+			->run()
+			->stopOnFail();
+
+			$this->taskCodecept()
+				// ->arg('--steps')
+				// ->arg('--debug')
+				->arg('--tap')
+				->arg('--fail-fast')
+				->arg($this->testsFolder . 'acceptance/administrator/')
+				->run()
+				->stopOnFail();
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/administrator/')
-		     ->run()
-		     ->stopOnFail();
+			//  ->arg('--steps')
+			//  ->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg('api')
+			->run()
+			->stopOnFail();
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg('api')
-		     ->run()
-		     ->stopOnFail();
-
-		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/uninstall/')
-		     ->run()
-		     ->stopOnFail();
+			//  ->arg('--steps')
+			//  ->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/uninstall/')
+			->run()
+			->stopOnFail();
 
 		$this->killSelenium();
 	}
@@ -402,24 +452,98 @@ class RoboFile extends \Robo\Tasks
 				->printed(true)
 				->run();
 	}
+	/**
+	 * Check if local OS is Windows
+	 *
+	 * @return bool
+	 */
+	private function isWindows()
+	{
+		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	}
 
 	/**
-	 * Clone joomla from official repo
+	 * Get the correct CMS root path
+	 *
+	 * @return string
+	 */
+	private function getCmsPath()
+	{
+		if (empty($this->configuration->cmsPath))
+		{
+			return 'joomla-cms3';
+		}
+
+		if (!file_exists(dirname($this->configuration->cmsPath)))
+		{
+			$this->say("Cms path written in local configuration does not exists or is not readable");
+
+			return 'joomla-cms3';
+		}
+
+		return $this->configuration->cmsPath;
+	}
+
+	/**
+	 * Get the executable extension according to Operating System
 	 *
 	 * @return void
 	 */
-	private function cloneJoomla()
+	private function getExecutableExtension()
 	{
-		$version = 'staging';
+		if ($this->isWindows())
+		{
+			// Check whether git.exe or git as command should be used, as on windows both are possible
+			if (!$this->_exec('git.exe --version')->getMessage())
+			{
+				return '';
+			}
+			else
+			{
+				return '.exe';
+			}
+		}
 
-		/*
-		 * When joomla Staging branch has a bug you can uncomment the following line as a tmp fix for the tests layer.
-		 * Use as $version value the latest tagged stable version at: https://github.com/joomla/joomla-cms/releases
-		 */
-		$version = '3.5.1';
+		return '';
+	}
 
-		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git joomla-cms3");
+	/**
+	 * Get (optional) configuration from an external file
+	 *
+	 * @return \stdClass|null
+	 */
+	public function getConfiguration()
+	{
+		$configurationFile = __DIR__ . '/RoboFile.ini';
 
-		$this->say("Joomla CMS ($version) site created at joomla-cms3/");
+		if (!file_exists($configurationFile))
+		{
+			$this->say("No local configuration file");
+
+			return null;
+		}
+
+		$configuration = parse_ini_file($configurationFile);
+
+		if ($configuration === false)
+		{
+			$this->say('Local configuration file is empty or wrong (check is it in correct .ini format');
+
+			return null;
+		}
+
+		return json_decode(json_encode($configuration));
+	}
+
+	/**
+	 * Build correct git clone command according to local configuration and OS
+	 *
+	 * @return string
+	 */
+	private function buildGitCloneCommand()
+	{
+		$branch = empty($this->configuration->branch) ? 'staging' : $this->configuration->branch;
+
+		return "git" . $this->executableExtension . " clone -b $branch --single-branch --depth 1 https://github.com/joomla/joomla-cms.git cache";
 	}
 }
