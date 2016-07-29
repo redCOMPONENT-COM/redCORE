@@ -9,37 +9,34 @@
 
 class AdministratorContacts100SoapCest
 {
-	public function __construct()
+	public function _before(ApisoapTester $I)
+	{
+		$endpoint = $I->getWebserviceBaseUrl()
+			. '/administrator/index.php?webserviceClient=site&webserviceVersion=1.0.0&option=contact&api=soap';
+		$dynamicEndpoint = $I->getSoapWsdlDinamically($endpoint);
+		$I->switchEndPoint($dynamicEndpoint);
+	}
+
+	public function prepare()
 	{
 		$this->faker = Faker\Factory::create();
+	}
+
+	public function create(ApisoapTester $I)
+	{
+		$I->wantTo('create a Contact in Joomla using SOAP');
+		$I->amHttpAuthenticated('admin', 'admin');
+
 		$this->name = $this->faker->bothify('AdministratorContacts100SoapCest contact ?##?');
 
 		// 4 is by default the id of Uncategorised category
 		$this->category = 4;
 		$this->id = 'this property will contain the id of the created contact';
-	}
 
-	public function _before(ApiTester $I, \Helper\SoapModule $soapModule, \Codeception\TestCase\Cest $testCase)
-	{
-		$endpoint = $I->getWebserviceBaseUrl() . '/administrator/index.php?webserviceClient=administrator&webserviceVersion=1.0.0&option=contact&api=soap';
-		$schema = $I->getSoapWsdlDinamically($endpoint);
-
-		$soapModule->configure(
-			$testCase,
-			$endpoint,
-			$schema
-		);
-	}
-
-	public function create(ApiTester $I)
-	{
-		$I->wantTo('create a Contact in Joomla using SOAP');
-		$I->amHttpAuthenticated('admin', 'admin');
-
-		// Following line fails until https://github.com/Codeception/Codeception/issues/2540 gets fixed
-		// $I->sendSoapRequest('create', '<name>test</name><catid>4</catid>');
-		$I->sendSoapRequest('create', ['name' => $this->name, 'catid' => '4']);
-		$I->seeSoapResponseIncludes("<result>true</result>");
+		$I->comment($this->name);
+		$I->sendSoapRequest('create', "<name>$this->name</name><catid>4</catid>");
+		$I->seeSoapResponseContainsStructure("<result></result>");
+		$I->dontSeeSoapResponseIncludes("<result>false</result>");
 	}
 
 
@@ -56,7 +53,7 @@ class AdministratorContacts100SoapCest
 	{
 		$I->wantTo('read 1 contact in Joomla using SOAP');
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendSoapRequest('readItem', ['id' => $this->id]);
+		$I->sendSoapRequest('readItem', "<id>$this->id</id>");
 		$I->seeSoapResponseIncludes("<name>$this->name</name>");
 		$I->seeSoapResponseIncludes("<published>1</published>");
 	}
@@ -66,10 +63,10 @@ class AdministratorContacts100SoapCest
 	{
 		$I->wantTo('unpublish 1 contact in Joomla using SOAP');
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendSoapRequest('task_unpublish', ['id' => $this->id]);
+		$I->sendSoapRequest('task_unpublish', "<id>$this->id</id>");
 		$I->seeSoapResponseIncludes("<result>true</result>");
 
-		$I->sendSoapRequest('readItem', ['id' => $this->id]);
+		$I->sendSoapRequest('readItem', "<id>$this->id</id>");
 		$I->seeSoapResponseIncludes("<name>$this->name</name>");
 		$I->seeSoapResponseIncludes("<published>0</published>");
 	}
@@ -78,10 +75,10 @@ class AdministratorContacts100SoapCest
 	{
 		$I->wantTo('delete 1 contact in Joomla using SOAP');
 		$I->amHttpAuthenticated('admin', 'admin');
-		$I->sendSoapRequest('delete', ['id' => $this->id]);
+		$I->sendSoapRequest('delete', "<id>$this->id</id>");
 		$I->seeSoapResponseIncludes("<result>true</result>");
 
-		$I->sendSoapRequest('readItem', ['id' => $this->id]);
+		$I->sendSoapRequest('readItem', "<id>$this->id</id>");
 		$I->dontSeeSoapResponseIncludes("<name>$this->name</name>");
 	}
 }
