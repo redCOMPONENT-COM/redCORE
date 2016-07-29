@@ -39,253 +39,286 @@ $predefinedOptions = array(
 );
 
 ?>
+<br />
 <div id="<?php echo $languageCode; ?>">
-	<div class="translation-status">
-		<div class="col-md-3">
-				<?php echo JText::_('JSTATUS'); ?>
-			<br>
-				<span class="<?php echo $status['badge']; ?>">
-					<?php echo JText::_($status['status']); ?>
-				</span>
-		</div>
-		<div class="col-md-3">
-			<?php echo $form->getLabel('rctranslations_state'); ?>
-			<br>
-			<?php echo $form->getInput('rctranslations_state'); ?>	
-		</div>
-		<div class="col-md-3">
-			<?php echo $form->getLabel('rctranslations_modified'); ?>
-			<br>
-			<?php echo $form->getValue('rctranslations_modified'); ?>
-		</div>
-		<?php if (!empty($form->getValue('rctranslations_modified_by'))) : ?>
-			<div class="col-md-3">
-				<?php echo $form->getLabel('rctranslations_modified_by'); ?>
-				<br>
-				<?php echo $form->getInput('rctranslations_modified_by'); ?>
-			</div>
-		<?php endif; ?>
-		<?php if ($modal == false) : ?>
-		<div class="col-md-3">
-			<?php echo $form->getLabel('rctranslations_language'); ?>
-			<br>
-			<?php echo $form->getInput('rctranslations_language'); ?>
-		</div>
-		<?php else : ?>
-			<input type="hidden" name="jform[rctranslations_language]" id="jform_rctranslations_language" value="<?php echo $languageCode; ?>"/>
-		<?php endif; ?>
-		<hr>
-	</div>
-	<br>
-
-	<!-- Write out all fields -->
-	<?php foreach ($columns as $columnKey => $column) : ?>
-		<?php if ($column['value_type'] == 'referenceid' || $column['value_type'] == 'hiddentext') : ?>
-			<?php continue; ?>
-		<?php endif; ?>
-			
-		<?php
-			$length = !empty($column['length']) ? $column['length'] : 60;
-			$maxLength = !empty($column['maxlength']) ? 'maxlength="' . $column['maxlength'] . '"' : '';
-			$maxRows = !empty($column['rows']) ? $column['rows'] : 15;
-			$maxCols = !empty($column['columns']) ? $column['columns'] : 30;
-		?>
-
-		<!-- Name of field -->
-			<div class="col-md-12">
-				<hr class="translation-divider">
-				<hr class="translation-divider">
-				<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong>
-				
-				<!-- Copy button -->
-				<button
-					class="pull-right btn btn-default"
-					type="button"
-					onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['value_type'] != 'params') ? 'false' : 'true' ?>, '<?php echo $languageCode; ?>');">
-					<span class="icon-copy"></span>
-					<?php echo JText::_('RTOOLBAR_COPY');?>
-				</button>
-				<button
-					class="pull-right btn btn-default"
-					type="button"
-					onclick="setTranslationValue('<?php echo $columnKey;?>', '', <?php echo ($column['value_type'] != 'params') ? 'false' : 'true' ?>, '<?php echo $languageCode; ?>');">
-					<span class="icon-trash"></span>
-					<?php echo JText::_('JCLEAR');?>
-				</button>
-				<hr class="translation-divider">
-			</div>
-
-		<?php if ($column['value_type'] != 'params') : ?>
-			<!-- Value of field in the original item -->
-			<div class="col-md-4">
-				<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
-				<br>
-				<?php if ($column['value_type'] == 'state'): ?>
-					<?php echo isset($predefinedOptions[$item->original->{$columnKey}]) ?
-						JText::_($predefinedOptions[$item->original->{$columnKey}]) : $item->original->{$columnKey}; ?>
-				<?php else: ?>
-					<?php echo $item->original->{$columnKey}; ?>
+	<div class="row">
+		<div class="col-md-9">
+			<!-- Write out all fields -->
+			<?php foreach ($columns as $columnKey => $column) : ?>
+				<?php if ($column['value_type'] == 'referenceid' || $column['value_type'] == 'hiddentext') : ?>
+					<?php continue; ?>
 				<?php endif; ?>
-				<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $item->original->{$columnKey};?></textarea>
-			</div>
 
-			<!-- Field for entering translation -->
-			<div class="col-md-8">
-				<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION');?></strong>
-				<br>
-				<!-- Text field -->
-				<?php if ($column['value_type'] == 'text' || $column['value_type'] == 'titletext'): ?>
-					<input
-						class="inputbox"
-						type="text"
-						name="translation[<?php echo $columnKey;?>]"
-						size="<?php echo $length;?>"
-						value="<?php echo $item->translation->{$columnKey}; ?>"
-						<?php echo $maxLength;?> />
-				<!-- State of field -->
-				<?php elseif ($column['value_type'] == 'state'): ?>
-					<?php echo RLayoutHelper::render(
-						'translation.fields.state',
-						array(
-							'original' => $item->original->{$columnKey},
-							'translation' => $item->translation->{$columnKey},
-							'name' => $columnKey,
-							'column' => $column,
-							'translationForm' => true,
-							'predefinedOptions' => $predefinedOptions
-						),
-						JPATH_ROOT . '/administrator/components/com_redcore/layouts'
-					); ?>
-				<!-- Textarea field -->
-				<?php elseif ($column['value_type'] == 'textarea'): ?>
-					<textarea
-						name="translation[<?php echo $columnKey;?>]"
-						rows="<?php echo $maxRows;?>"
-						cols="<?php echo $maxCols;?>"
-						><?php echo $item->translation->{$columnKey}; ?></textarea>
-				<!-- WYSIWYG editor field -->
-				<?php elseif($column['value_type'] == 'htmltext'): ?>
-					<?php
-					$editorid = 'translation[' . $columnKey . ']_' . $languageCode;
-					echo $editor->display(
-						// Area name
-						'translation[' . $columnKey . ']',
-						// Content
-						$item->translation->{$columnKey},
-						// Width
-						'60%',
-						// Height
-						'300',
-						// Rows
-						'70',
-						// Cols
-						'15',
-						// Buttons
-						(!empty($column['ebuttons']) ? $column['ebuttons'] : ''),
-						// ID
-						$editorid
-					);
-					?>
-				<!-- Field for uploading and saving images -->
-				<?php elseif ($column['value_type'] == 'images'): ?>
-					<div class="input-group">
-						<input
-							class="input-lg"
-							type="text"
-							name="translation[<?php echo $columnKey;?>]"
-							id="translation<?php echo $columnKey;?>"
-							size="<?php echo $length;?>"
-							value="<?php echo $item->translation->{$columnKey}; ?>" <?php echo $maxLength;?>/>
-						<a class="modal btn btn-default" title="<?php echo JText::_("JSELECT")?>"
-							href="index.php?option=com_media&amp;view=images&amp;tmpl=component&amp;fieldid=translation<?php echo $columnKey;?>"
-							rel="{handler: 'iframe', size: {x: 800, y: 500}}"><?php echo JText::_("JSELECT")?></a>
+				<?php
+				$length    = !empty($column['length']) ? $column['length'] : 60;
+				$maxLength = !empty($column['maxlength']) ? 'maxlength="' . $column['maxlength'] . '"' : '';
+				$maxRows   = !empty($column['rows']) ? $column['rows'] : 15;
+				$maxCols   = !empty($column['columns']) ? $column['columns'] : 30;
+				?>
+
+				<!-- Name of field -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<strong class="text-info"><?php echo $column['title'] ?></strong>
+								<div class="btn-group pull-right">
+									<!-- Copy button -->
+									<button
+										class="btn btn-xs btn-default"
+										type="button"
+										onclick="setTranslationValue('<?php echo $columnKey;?>', '<?php echo $columnKey;?>', <?php echo ($column['value_type'] != 'params') ? 'false' : 'true' ?>, '<?php echo $languageCode; ?>');">
+										<span class="icon-copy"></span>
+										<?php echo JText::_('RTOOLBAR_COPY');?>
+									</button>
+									<button
+										class="btn btn-xs btn-danger"
+										type="button"
+										onclick="setTranslationValue('<?php echo $columnKey;?>', '', <?php echo ($column['value_type'] != 'params') ? 'false' : 'true' ?>, '<?php echo $languageCode; ?>');">
+										<span class="icon-trash"></span>
+										<?php echo JText::_('JCLEAR');?>
+									</button>
+								</div>
+							</div>
+							<div class="panel-body">
+								<?php if ($column['value_type'] != 'params') : ?>
+									<!-- Value of field in the original item -->
+									<div class="col-md-4">
+										<p>
+											<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
+										</p>
+										<?php if ($column['value_type'] == 'state'): ?>
+											<?php echo isset($predefinedOptions[$item->original->{$columnKey}]) ?
+												JText::_($predefinedOptions[$item->original->{$columnKey}]) : $item->original->{$columnKey}; ?>
+										<?php else: ?>
+											<?php echo $item->original->{$columnKey}; ?>
+										<?php endif; ?>
+										<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $item->original->{$columnKey};?></textarea>
+									</div>
+
+									<!-- Field for entering translation -->
+									<div class="col-md-8">
+										<p>
+											<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION') ?></strong>
+										</p>
+										<!-- Text field -->
+										<?php if ($column['value_type'] == 'text' || $column['value_type'] == 'titletext'): ?>
+											<input
+												class="inputbox form-control"
+												type="text"
+												name="translation[<?php echo $columnKey;?>]"
+												size="<?php echo $length;?>"
+												value="<?php echo $item->translation->{$columnKey}; ?>"
+												<?php echo $maxLength;?> />
+											<!-- State of field -->
+										<?php elseif ($column['value_type'] == 'state'): ?>
+											<?php echo RLayoutHelper::render(
+												'translation.fields.state',
+												array(
+													'original' => $item->original->{$columnKey},
+													'translation' => $item->translation->{$columnKey},
+													'name' => $columnKey,
+													'column' => $column,
+													'translationForm' => true,
+													'predefinedOptions' => $predefinedOptions
+												),
+												JPATH_ROOT . '/administrator/components/com_redcore/layouts'
+											); ?>
+											<!-- Textarea field -->
+										<?php elseif ($column['value_type'] == 'textarea'): ?>
+											<textarea
+												name="translation[<?php echo $columnKey;?>]"
+												rows="<?php echo $maxRows;?>"
+												cols="<?php echo $maxCols;?>"
+											><?php echo $item->translation->{$columnKey}; ?></textarea>
+											<!-- WYSIWYG editor field -->
+										<?php elseif($column['value_type'] == 'htmltext'): ?>
+											<?php
+											$editorid = 'translation[' . $columnKey . ']_' . $languageCode;
+											echo $editor->display(
+											// Area name
+												'translation[' . $columnKey . ']',
+												// Content
+												$item->translation->{$columnKey},
+												// Width
+												'60%',
+												// Height
+												'300',
+												// Rows
+												'70',
+												// Cols
+												'15',
+												// Buttons
+												(!empty($column['ebuttons']) ? $column['ebuttons'] : ''),
+												// ID
+												$editorid
+											);
+											?>
+											<!-- Field for uploading and saving images -->
+										<?php elseif ($column['value_type'] == 'images'): ?>
+											<div class="input-group">
+												<input
+													class="input-lg form-control"
+													type="text"
+													name="translation[<?php echo $columnKey;?>]"
+													id="translation<?php echo $columnKey;?>"
+													size="<?php echo $length;?>"
+													value="<?php echo $item->translation->{$columnKey}; ?>" <?php echo $maxLength;?>/>
+												<a class="modal btn btn-default" title="<?php echo JText::_("JSELECT")?>"
+												   href="index.php?option=com_media&amp;view=images&amp;tmpl=component&amp;fieldid=translation<?php echo $columnKey;?>"
+												   rel="{handler: 'iframe', size: {x: 800, y: 500}}"><?php echo JText::_("JSELECT")?></a>
+											</div>
+										<?php elseif ($column['value_type'] == 'readonlytext'): ?>
+											<?php $value = !empty($item->translation->{$columnKey}) ? $item->translation->{$columnKey} : $item->original->{$columnKey}; ?>
+											<input class="inputbox form-control" readonly="yes" type="text"
+											       name="translation[<?php echo $columnKey;?>]" size="<?php echo $length;?>"
+											       value="<?php echo $value; ?>" maxlength="<?php echo $maxLength;?>"/>
+										<?php endif; ?>
+									</div>
+								<?php else: ?>
+									<!-- Parameters -->
+									<div class="row">
+										<div class="col-md-6">
+											<div id="original_field_<?php echo $columnKey ?>">
+												<p>
+													<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
+												</p>
+												<?php
+												echo RLayoutHelper::render(
+													'translation.params',
+													array(
+														'form' => RTranslationHelper::loadParamsForm(
+															$column, $translationTable, $item->original, 'original', JPATH_ADMINISTRATOR
+														),
+														'original' => $item->original->{$columnKey},
+														'translation' => $item->translation->{$columnKey},
+														'name' => $columnKey,
+														'column' => $column,
+														'translationForm' => false,
+														'suffix' => $languageCode,
+													),
+													JPATH_ROOT . '/administrator/components/com_redcore/layouts'
+												);
+												?>
+												<button
+													class="btn btn-default"
+													type="button"
+													onclick="jQuery(this).parent().find('div:first').toggle()">
+													<span class="icon-plus"></span>
+													<?php echo JText::_('COM_REDCORE_TRANSLATIONS_SHOW_HIDE_ORIGINALS');?>
+												</button>
+												<textarea name="original[params_<?php echo $columnKey;?>]" class="hidden"><?php
+													if (is_array($item->original->{$columnKey})) :
+														echo json_encode($item->original->{$columnKey});
+													else:
+														echo $item->original->{$columnKey};
+													endif;
+													?></textarea>
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div id="translation_field_<?php echo $columnKey ?>">
+												<p><strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION') ?></strong></p>
+												<?php
+												echo RLayoutHelper::render(
+													'translation.params',
+													array(
+														'form' => RTranslationHelper::loadParamsForm(
+															$column, $translationTable, $item->translation, 'translation', JPATH_ADMINISTRATOR
+														),
+														'original' => $item->original->{$columnKey},
+														'translation' => $item->translation->{$columnKey},
+														'name' => $columnKey,
+														'column' => $column,
+														'translationForm' => true,
+														'suffix' => $languageCode,
+													),
+													JPATH_ROOT . '/administrator/components/com_redcore/layouts'
+												);
+												?>
+											</div>
+										</div>
+									</div>
+								<?php endif; ?>
+							</div>
+						</div>
 					</div>
-				<?php elseif ($column['value_type'] == 'readonlytext'): ?>
-					<?php $value = !empty($item->translation->{$columnKey}) ? $item->translation->{$columnKey} : $item->original->{$columnKey}; ?>
-					<input class="inputbox" readonly="yes" type="text" name="translation[<?php echo $columnKey;?>]" size="<?php echo $length;?>" value="<?php echo $value; ?>" maxlength="<?php echo $maxLength;?>"/>
-				<?php endif; ?>
-			</div>
-			<?php else: ?>
-				<!-- Parameters -->
-				<table>
-				<td id="original_field_<?php echo $columnKey;?>">
-					<button
-						class="btn btn-default"
-						type="button"
-						onclick="jQuery(this).parent().find('div:first').toggle()">
-						<span class="icon-plus"></span>
-						<?php echo JText::_('COM_REDCORE_TRANSLATIONS_SHOW_HIDE_ORIGINALS');?>
-					</button>
-				<div style="display:none">
-					<br />
-					<?php echo RLayoutHelper::render(
-						'translation.params',
-						array(
-							'form' => RTranslationHelper::loadParamsForm($column, $translationTable, $item->original, 'original', JPATH_ADMINISTRATOR),
-							'original' => $item->original->{$columnKey},
-							'translation' => $item->translation->{$columnKey},
-							'name' => $columnKey,
-							'column' => $column,
-							'translationForm' => false,
-							'suffix' => $languageCode,
-						),
-						JPATH_ROOT . '/administrator/components/com_redcore/layouts'
-					); ?>
-					<textarea name="original[params_<?php echo $columnKey;?>]" style="display:none"><?php
-						if (is_array($item->original->{$columnKey})) :
-							echo json_encode($item->original->{$columnKey});
-						else:
-							echo $item->original->{$columnKey};
-						endif;
-					?></textarea>
 				</div>
-				</td>
-					</tr>
-					<tr>
-					<td><?php echo JText::_('COM_REDCORE_TRANSLATIONS_TRANSLATION');?></td>
-					<td id="translation_field_<?php echo $columnKey;?>">
-						<?php echo RLayoutHelper::render(
-							'translation.params',
-							array(
-								'form' => RTranslationHelper::loadParamsForm($column, $translationTable, $item->translation, 'translation', JPATH_ADMINISTRATOR),
-								'original' => $item->original->{$columnKey},
-								'translation' => $item->translation->{$columnKey},
-								'name' => $columnKey,
-								'column' => $column,
-								'translationForm' => true,
-								'suffix' => $languageCode,
-							),
-						JPATH_ROOT . '/administrator/components/com_redcore/layouts'
-						);
-						?>
-					</td>
-				</tr>
-				</table>
-			<?php endif; ?>
-	<?php endforeach; ?>
+			<?php endforeach; ?>
 
-	<?php foreach ($noTranslationColumns as $columnKey => $column) : ?>
-		<div class="col-md-12">
-			<hr class="translation-divider">
-			<hr class="translation-divider">
-			<?php echo JText::_('COM_REDCORE_TRANSLATIONS_FIELD') . ': <strong>' . $column['title']; ?></strong>
-			<hr class="translation-divider">
-		</div>
-		<div class="col-md-4">
-			<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL');?></strong>
-			<br>
-			<span id="original_field_<?php echo $columnKey;?>">
-				<?php echo !empty($item->original->{$columnKey}) ? $item->original->{$columnKey} : '--'; ?>
-			</span>
-		</div>
-	<?php endforeach; ?>
+			<?php foreach ($noTranslationColumns as $columnKey => $column) : ?>
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<strong class="text-muted"><?php echo $column['title'] ?></strong>
+							</div>
+							<div class="panel-body">
+								<div class="col-md-4">
+									<strong><?php echo JText::_('COM_REDCORE_TRANSLATIONS_ORIGINAL') ?></strong>
+								</div>
+								<div class="col-md-8">
+									<span id="original_field_<?php echo $columnKey;?>">
+										<?php echo !empty($item->original->{$columnKey}) ? $item->original->{$columnKey} : '--'; ?>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			<?php endforeach; ?>
 
-	<?php foreach ($columns as $columnKey => $column) : ?>
-		<?php if ($column['value_type'] == 'hiddentext') : ?>
-			<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $item->original->{$columnKey};?></textarea>
-			<textarea name="translation[<?php echo $columnKey;?>]"  style="display:none"><?php echo $item->translation->{$columnKey}; ?></textarea>
-		<?php endif; ?>
-	<?php endforeach; ?>
+			<?php foreach ($columns as $columnKey => $column) : ?>
+				<?php if ($column['value_type'] == 'hiddentext') : ?>
+					<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $item->original->{$columnKey};?></textarea>
+					<textarea name="translation[<?php echo $columnKey;?>]"  style="display:none"><?php echo $item->translation->{$columnKey}; ?></textarea>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		</div>
+		<div class="col-md-3">
+			<div class="translation-status">
+				<fieldset class="form-vertical">
+					<div class="form-group">
+						<label><?php echo JText::_('JSTATUS'); ?></label>
+						<div class="form-controls">
+							<span class="<?php echo $status['badge']; ?>"><?php echo JText::_($status['status']); ?></span>
+						</div>
+					</div>
+					<div class="form-group">
+						<label><?php echo $form->getLabel('rctranslations_state'); ?></label>
+						<div class="form-controls">
+							<?php echo $form->getInput('rctranslations_state'); ?>
+						</div>
+					</div>
+					<div class="form-group">
+						<label><?php echo $form->getLabel('rctranslations_modified'); ?></label>
+						<div class="form-controls">
+							<?php echo $form->getValue('rctranslations_modified'); ?>
+						</div>
+					</div>
+					<?php if (!empty($form->getValue('rctranslations_modified_by'))) : ?>
+						<div class="form-group">
+							<label><?php echo $form->getLabel('rctranslations_modified_by'); ?></label>
+							<div class="form-controls">
+								<?php echo $form->getInput('rctranslations_modified_by'); ?>
+							</div>
+						</div>
+					<?php endif; ?>
+					<?php if ($modal == false) : ?>
+						<div class="form-group">
+							<label><?php echo $form->getLabel('rctranslations_language'); ?></label>
+							<div class="form-controls">
+								<?php echo $form->getInput('rctranslations_language'); ?>
+							</div>
+						</div>
+					<?php else : ?>
+						<input type="hidden" name="jform[rctranslations_language]" id="jform_rctranslations_language"
+						       value="<?php echo $languageCode; ?>" />
+					<?php endif; ?>
+				</fieldset>
+			</div>
+		</div>
+	</div>
 
 	<!-- Hidden fields -->
 	<?php foreach ($translationTable->primaryKeys as $primaryKey): ?>

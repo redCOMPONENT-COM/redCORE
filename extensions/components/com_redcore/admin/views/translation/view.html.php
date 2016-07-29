@@ -85,7 +85,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 
 		$this->item	= $this->get('Item');
 
-		$editor = JFactory::getConfig()->get('editor');
+		$editor       = JFactory::getConfig()->get('editor');
 		$this->editor = JEditor::getInstance($editor);
 
 		$this->columns = array();
