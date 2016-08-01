@@ -159,8 +159,18 @@ if ($result instanceof Exception)
 }
 ?>
 <script type="text/javascript">
-	jQuery(document).ready(function () {
-		jQuery('.message-sys').append(jQuery('#system-message-container'));
+(function ($) {
+    $(document).ready(function () {
+
+        if ($('.message-sys').length) {
+            var messageContainer = $('#system-message-container');
+
+            // No messages found. Create an empty div
+            if (!messageContainer.length) {
+                messageContainer = $("<div>", {id: "system-message-container"});
+            }
+            $('.message-sys').append(messageContainer);
+        }
 
 		<?php if ($input->getBool('disable_topbar') || $input->getBool('hidemainmenu')) : ?>
 		jQuery('.topbar').addClass('opacity-70');
@@ -174,6 +184,7 @@ if ($result instanceof Exception)
 		jQuery('.sidebar a').attr('disabled', true).attr('href', '#').addClass('disabled');
 		<?php endif; ?>
 	});
+})(jQuery);
 </script>
 <?php if ($view->getLayout() === 'modal') : ?>
 	<div class="row-fluid redcore">
