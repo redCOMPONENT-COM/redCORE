@@ -10,7 +10,7 @@
         "phpmd/phpmd": "*",
         "codeception/codeception": "~2.2",
         "phing/phing": "2.9.*@dev",
-        "joomla-projects/joomla-browser": "dev-develop",
+        "joomla-projects/joomla-browser": "v3.6.0.1",
         "codegyre/robo": "~0.6",
         "redcomponent/robo": "dev-master",
         "redcomponent/teststatistics": "dev-master",
