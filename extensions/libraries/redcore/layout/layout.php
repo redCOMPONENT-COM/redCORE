@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Joomla.Libraries
+ * @package     Redcore.Libraries
  * @subpackage  Layout
  *
  * @copyright   Copyright (C) 2005 - 2016 Open Source Matters, Inc. All rights reserved.
@@ -10,12 +10,13 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * Interface to handle display layout
+ * Interface to handle display layout.
+ * Based on JLayout introduced in Joomla! 3.2.0.
  *
  * @see    https://docs.joomla.org/Sharing_layouts_across_views_or_extensions_with_JLayout
- * @since  3.0
+ * @since  1.8.5
  */
-interface JLayout
+interface RLayout
 {
 	/**
 	 * Method to escape output.
@@ -24,7 +25,7 @@ interface JLayout
 	 *
 	 * @return  string  The escaped output.
 	 *
-	 * @since   3.0
+	 * @since   1.8.5
 	 */
 	public function escape($output);
 
@@ -35,7 +36,7 @@ interface JLayout
 	 *
 	 * @return  string  The rendered layout.
 	 *
-	 * @since   3.0
+	 * @since   1.8.5
 	 */
 	public function render($displayData);
 }

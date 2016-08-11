@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Joomla.Libraries
+ * @package     Redcore.Libraries
  * @subpackage  Layout
  *
  * @copyright   Copyright (C) 2005 - 2016 Open Source Matters, Inc. All rights reserved.
@@ -12,18 +12,19 @@ defined('JPATH_PLATFORM') or die;
 use Joomla\Registry\Registry;
 
 /**
- * Base class for rendering a display layout
+ * Base class for rendering a display layout.
+ * Based on JLayoutBase introduced in Joomla! 3.2.0.
  *
  * @see    https://docs.joomla.org/Sharing_layouts_across_views_or_extensions_with_JLayout
- * @since  3.0
+ * @since  1.8.5
  */
-class JLayoutBase implements JLayout
+abstract class RLayoutBase implements RLayout
 {
 	/**
 	 * Options object
 	 *
 	 * @var    Registry
-	 * @since  3.2
+	 * @since  1.8.5
 	 */
 	protected $options = null;
 
@@ -31,7 +32,7 @@ class JLayoutBase implements JLayout
 	 * Data for the layout
 	 *
 	 * @var    array
-	 * @since  3.5
+	 * @since  1.8.5
 	 */
 	protected $data = array();
 
@@ -39,7 +40,7 @@ class JLayoutBase implements JLayout
 	 * Debug information messages
 	 *
 	 * @var    array
-	 * @since  3.2
+	 * @since  1.8.5
 	 */
 	protected $debugMessages = array();
 
@@ -48,25 +49,46 @@ class JLayoutBase implements JLayout
 	 *
 	 * @param   array|Registry  $options  Array / Registry object with the options to load
 	 *
-	 * @return  JLayoutBase  Instance of $this to allow chaining.
+	 * @return  RLayoutBase  Instance of $this to allow chaining.
 	 *
-	 * @since   3.2
+	 * @since   1.8.5
 	 */
 	public function setOptions($options = null)
 	{
-		// Received Registry
-		if ($options instanceof Registry)
+		// Check if we have Registry defined or we should use JRegistry instead
+		if (class_exists('Registry'))
 		{
-			$this->options = $options;
+			// Received Registry
+			if ($options instanceof Registry)
+			{
+				$this->options = $options;
+			}
+			// Received array
+			elseif (is_array($options))
+			{
+				$this->options = new Registry($options);
+			}
+			else
+			{
+				$this->options = new Registry;
+			}
 		}
-		// Received array
-		elseif (is_array($options))
+		elseif (class_exists('JRegistry'))
 		{
-			$this->options = new Registry($options);
-		}
-		else
-		{
-			$this->options = new Registry;
+			// Received Registry
+			if ($options instanceof JRegistry)
+			{
+				$this->options = $options;
+			}
+			// Received array
+			elseif (is_array($options))
+			{
+				$this->options = new JRegistry($options);
+			}
+			else
+			{
+				$this->options = new JRegistry;
+			}
 		}
 
 		return $this;
@@ -77,14 +99,26 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  Registry  Object with the options
 	 *
-	 * @since   3.2
+	 * @since   1.8.5
 	 */
 	public function getOptions()
 	{
-		// Always return a Registry instance
-		if (!($this->options instanceof Registry))
+		// Check if we have Registry defined or we should use JRegistry instead
+		if (class_exists('Registry'))
 		{
-			$this->resetOptions();
+			// Always return a Registry instance
+			if (!($this->options instanceof Registry))
+			{
+				$this->resetOptions();
+			}
+		}
+		elseif (class_exists('JRegistry'))
+		{
+			// Always return a Registry instance
+			if (!($this->options instanceof JRegistry))
+			{
+				$this->resetOptions();
+			}
 		}
 
 		return $this->options;
@@ -93,9 +127,9 @@ class JLayoutBase implements JLayout
 	/**
 	 * Function to empty all the options
 	 *
-	 * @return  JLayoutBase  Instance of $this to allow chaining.
+	 * @return  RLayoutBase  Instance of $this to allow chaining.
 	 *
-	 * @since   3.2
+	 * @since   1.8.5
 	 */
 	public function resetOptions()
 	{
@@ -109,7 +143,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  string  The escaped output.
 	 *
-	 * @since   3.0
+	 * @since   1.8.5
 	 */
 	public function escape($output)
 	{
@@ -121,7 +155,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  array
 	 *
-	 * @since   3.2
+	 * @since   1.8.5
 	 */
 	public function getDebugMessages()
 	{
@@ -135,25 +169,16 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  string  The necessary HTML to display the layout
 	 *
-	 * @since   3.0
+	 * @since   1.8.5
 	 */
-	public function render($displayData)
-	{
-		// Automatically merge any previously data set if $displayData is an array
-		if (is_array($displayData))
-		{
-			$displayData = array_merge($this->data, $displayData);
-		}
-
-		return '';
-	}
+	public abstract function render($displayData);
 
 	/**
 	 * Render the list of debug messages
 	 *
 	 * @return  string  Output text/HTML code
 	 *
-	 * @since   3.2
+	 * @since   1.8.5
 	 */
 	public function renderDebugMessages()
 	{
@@ -167,7 +192,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   3.2
+	 * @since   1.8.5
 	 */
 	public function addDebugMessage($message)
 	{
@@ -181,7 +206,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   3.5
+	 * @since   1.8.5
 	 */
 	public function clearDebugMessages()
 	{
@@ -197,7 +222,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  string
 	 *
-	 * @since    3.5
+	 * @since   1.8.5
 	 */
 	public function debug($data = array())
 	{
@@ -218,7 +243,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  mixed   Value from the data array | defaultValue if doesn't exist
 	 *
-	 * @since   3.5
+	 * @since   1.8.5
 	 */
 	public function get($key, $defaultValue = null)
 	{
@@ -230,7 +255,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  array
 	 *
-	 * @since   3.5
+	 * @since   1.8.5
 	 */
 	public function getData()
 	{
@@ -242,7 +267,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  boolean
 	 *
-	 * @since   3.5
+	 * @since   1.8.5
 	 */
 	public function isDebugEnabled()
 	{
@@ -257,7 +282,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   3.5
+	 * @since   1.8.5
 	 */
 	public function set($key, $value)
 	{
@@ -273,7 +298,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   3.5
+	 * @since   1.8.5
 	 */
 	public function setData(array $data)
 	{
@@ -289,7 +314,7 @@ class JLayoutBase implements JLayout
 	 *
 	 * @return  void
 	 *
-	 * @since   3.5
+	 * @since   1.8.5
 	 */
 	public function setDebug($debug)
 	{
