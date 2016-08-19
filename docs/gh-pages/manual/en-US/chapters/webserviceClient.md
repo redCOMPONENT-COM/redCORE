@@ -1,6 +1,7 @@
 # Webservice Client class
 
 This class enables easy connection and execution of the specific operation through Hal Webservices.
+Object will upon execution generate token and watch for the expiration time before it refreshes it or create a new one.
 
 Standard method names are:
 - `post` - Used for new items or for task operations
