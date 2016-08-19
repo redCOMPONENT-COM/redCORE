@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.8.7</version>
+    <version>1.8.8</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.8.7" defaultFramework="bootstrap3" />
+    <redcore version="1.8.8" defaultFramework="bootstrap3" />
 
     <install folder="components/com_redcore/admin">
         <sql>
@@ -57,7 +57,7 @@
         <menu view="dashboard">COM_REDCORE</menu>
         <submenu>
             <menu link="option=com_redcore&amp;view=dashboard" view="dashboard">COM_REDCORE_DASHBOARD</menu>
-            <menu link="option=com_redcore&amp;view=configs" view="configs">COM_REDCORE_CONFIGURATION</menu>
+            <menu link="option=com_redcore&amp;view=config&amp;layout=edit&amp;component=com_redcore" view="configs">COM_REDCORE_CONFIGURATION</menu>
             <menu link="option=com_redcore&amp;view=translation_tables" view="translation_tables">COM_REDCORE_TRANSLATIONS</menu>
             <menu link="option=com_redcore&amp;view=webservices" view="webservices">COM_REDCORE_WEBSERVICES</menu>
             <menu link="option=com_redcore&amp;view=oauth_clients" view="oauth_clients">COM_REDCORE_OAUTH_CLIENTS</menu>

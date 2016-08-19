@@ -94,5 +94,8 @@
 		- [Browser](chapters/Browser.md)
 	- Media
 		- [Icons](chapters/Icons.md)
+	- Webservice Client
+		- [Webservice](chapters/webserviceClient.md)
+		- [SOAP](chapters/soapClient.md)
 	- Appendices
 		- [Examples](appendices/examples.md)
