@@ -76,7 +76,8 @@ class RApiSoapTransformBase implements RApiSoapTransformInterface
 		{
 			$this->element->addAttribute(
 				'minOccurs',
-				(($validateOptional && RApiHalHelper::isAttributeTrue($field, 'isRequiredField') || !$validateOptional) ? '1' : '0')
+				(($validateOptional && RApiHalHelper::isAttributeTrue($field, 'isRequiredField') || !$validateOptional)
+				&& !RApiHalHelper::isAttributeTrue($field, 'optionalSoapField') ? '1' : '0')
 			);
 		}
 
