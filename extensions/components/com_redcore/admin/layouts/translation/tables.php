@@ -73,8 +73,8 @@ $column = 0;
 </script>
 <div class="tab-pane" id="mainComponentTranslations">
 	<h4 class="tab-description"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_DESC'); ?></h4>
-	<div class="row">
-		<div class="col-md-6 well">
+	<div class="row-fluid">
+		<div class="span6 well">
 			<div class="form-group">
 				<div class="control-label">
 					<?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_FILES_MASS_ACTIONS'); ?>
@@ -98,7 +98,7 @@ $column = 0;
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row-fluid">
 		<input type="hidden" id="contentElement" name="contentElement" />
 		<input type="hidden" id="componentName" name="component" />
 		<?php if (empty($contentElements)): ?>
@@ -181,7 +181,7 @@ $column = 0;
 		</div>
 		<?php if ((++$column) % 3 == 0 ) : ?>
 	</div>
-	<div class="row">
+	<div class="row-fluid">
 		<?php endif; ?>
 		<?php endforeach; ?>
 		<?php endif; ?>

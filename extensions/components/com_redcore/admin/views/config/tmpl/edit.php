@@ -49,6 +49,7 @@ JFactory::getDocument()->addScriptDeclaration(
 	</ul>
 	<div class="tab-content">
 		<?php echo $this->loadTemplate('configuration'); ?>
+		<?php // echo RLayoutHelper::render('config.config', array('form' => $this->form)) ?>
 		<?php echo $this->loadTemplate('translations'); ?>
 		<?php echo $this->loadTemplate('info'); ?>
 	</div>

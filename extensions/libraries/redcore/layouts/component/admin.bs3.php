@@ -189,7 +189,7 @@ if ($result instanceof Exception)
 <?php if ($view->getLayout() === 'modal') : ?>
 	<div class="row redcore">
 		<section id="component">
-			<div class="row message-sys"></div>
+			<div class="row-fluid message-sys"></div>
 			<div class="container-fluid">
 				<?php echo $result ?>
 			</div>
@@ -202,7 +202,7 @@ if ($result instanceof Exception)
 				<div class="row">
 					<h1><?php echo $view->getTitle() ?></h1>
 				</div>
-				<div class="row message-sys"></div>
+				<div class="row-fluid message-sys"></div>
 				<hr/>
 				<div class="container-fluid">
 					<?php echo $result ?>
@@ -217,26 +217,25 @@ else : ?>
 			<?php if ($displayTopbar) : ?>
 				<?php echo RLayoutHelper::render($topbarLayout, $topbarData) ?>
 			<?php endif; ?>
-			<div class="container-fluid">
+			<div class="row">
 				<?php if ($displaySidebar) : ?>
-					<div class="col-md-2 sidebar">
+					<div class="col-md-2 col-sm-3 sidebar">
 						<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
 					</div>
-					<div class="col-md-10 content">
+					<div class="col-md-10 col-sm-9 content">
 				<?php else : ?>
 					<div class="col-md-12 content">
 				<?php endif; ?>
 						<section id="component">
-							<div class="row">
-								<h1><?php echo $view->getTitle() ?></h1>
-							</div>
+							<h1 class="sub-header"><?php echo $view->getTitle() ?></h1>
 							<?php if ($toolbar instanceof RToolbar) : ?>
-								<div class="row">
+								<div class="row-fluid">
 									<?php echo $toolbar->render() ?>
 								</div>
+								<p></p>
 							<?php endif; ?>
-							<div class="row message-sys"></div>
-							<div class="container-fluid">
+							<div class="row-fluid message-sys"></div>
+							<div class="row-fluid">
 								<?php echo $result ?>
 							</div>
 						</section>

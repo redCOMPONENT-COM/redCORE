@@ -186,7 +186,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 		<div class="tab-pane active in" id="mainComponentWebservices">
 			<p class="tab-description"><?php echo JText::_('COM_REDCORE_WEBSERVICES_DESC'); ?></p>
 
-			<div class="row">
+			<div class="row-fluid">
 				<table class="table table-striped table-hover" id="oauthClientsList">
 					<thead>
 					<tr>
@@ -290,58 +290,9 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 
 		</div>
 		<div class="tab-pane" id="mainComponentWebservicesXmls">
-			<?php if (empty($this->xmlFiles)): ?>
-				<br />
-				<div class="alert alert-info">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<div class="pagination-centered">
-						<h3><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NO_FILES_AVAILABLE') ?></h3>
-					</div>
-				</div>
-			<?php else : ?>
-
-				<div class="row">
-					<div class="col-md-6 well">
-						<div class="form-group">
-							<div class="control-label">
-								<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_TITLE'); ?>
-							</div>
-							<div class="controls">
-								<input type="file" multiple="multiple" name="redcoreWebservice[]" id="redcoreWebservice" accept="application/xml" class="inputbox" />
-								<button
-									class="btn btn-success"
-									type="button"
-									onclick="setWebservice('', '', '', '', 'webservices.uploadWebservice')">
-									<i class="icon-upload"></i>
-									<?php echo JText::_('JTOOLBAR_UPLOAD') ?>
-								</button>
-							</div>
-						</div>
-						<div class="form-group" style="margin-top:40px;margin-bottom: 0;">
-							<div class="control-label">
-								<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_ALL'); ?>
-							</div>
-							<div class="controls">
-								<button
-									class="btn btn-success lc-install_all_webservices"
-									type="button"
-									onclick="setWebservice('', 'all', '', '', 'webservices.installWebservice')">
-									<i class="icon-cogs"></i>
-									<?php echo JText::_('JTOOLBAR_INSTALL'); ?>
-								</button>
-								<button
-									class="btn btn-danger"
-									type="button"
-									onclick="setWebservice('', 'all', '', '', 'webservices.deleteWebservice')">
-									<i class="icon-remove"></i>
-									<?php echo JText::_('JTOOLBAR_DELETE') ?>
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
+			<div class="container-fluid">
 				<?php if (empty($this->xmlFiles)): ?>
+					<br />
 					<div class="alert alert-info">
 						<button type="button" class="close" data-dismiss="alert">&times;</button>
 						<div class="pagination-centered">
@@ -350,73 +301,137 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 					</div>
 				<?php else : ?>
 
-					<?php foreach ($this->xmlFiles as $clients => $webserviceNames): ?>
-						<?php $column = 0;; ?>
-						<div class='clearfix'></div>
-						<h3><?php echo JText::_('J' . $clients); ?></h3>
-						<?php foreach ($webserviceNames as $webserviceVersions):
-							foreach ($webserviceVersions as $webservice):
-								$webserviceClient = RApiHalHelper::getWebserviceClient($webservice);
-								?>
-								<div class="col-md-4 well">
-									<h4>
-										<?php echo $webservice->name; ?> (<?php echo $webservice->config->name; ?>&nbsp;
-										<?php echo !empty($webservice->config->version) ? $webservice->config->version : ''; ?>)
-									</h4>
-									<table class="table table-striped adminlist">
-										<tbody>
-										<tr>
-											<td>
-												<strong><?php echo JText::_('JAUTHOR'); ?>:</strong>
-											</td>
-											<td>
-												<strong><?php echo !empty($webservice->author) ? $webservice->author : ''; ?></strong>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<strong><?php echo JText::_('COM_REDCORE_WEBSERVICE_PATH_LABEL'); ?>:</strong>
-											</td>
-											<td>
-												<strong><?php echo $webservice->webservicePath; ?></strong>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<strong><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?>:</strong>
-											</td>
-											<td>
-												<strong><?php echo !empty($webservice->description) ? $webservice->description : ''; ?></strong>
-											</td>
-										</tr>
-										</tbody>
-									</table>
+					<div class="row">
+						<div class="col-md-6 well" style="margin-top: 15px;">
+							<div class="form-group">
+								<div class="col-md-4">
+									<label><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_TITLE'); ?></label>
+								</div>
+								<div class="col-md-8">
+									<div class="input-group">
+										<input type="file" multiple="multiple" name="redcoreWebservice[]"
+										       id="redcoreWebservice" accept="application/xml" class="form-control"
+										       aria-describedby="redcoreWebservice-upload-addon"/>
+										<div class="input-group-btn">
+											<button
+												class="btn btn-success"
+												id="redcoreWebservice-upload-addon"
+												type="button"
+												onclick="setWebservice('', '', '', '', 'webservices.uploadWebservice')">
+												<i class="icon-upload"></i>
+												<?php echo JText::_('JTOOLBAR_UPLOAD') ?>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<hr />
+							<div class="form-group">
+								<div class="col-md-4">
+									<label><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_ALL'); ?></label>
+								</div>
+								<div class="col-md-8">
 									<button
-										class="btn btn-xs btn-success"
+										class="btn btn-success lc-install_all_webservices"
 										type="button"
-										onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.installWebservice')">
+										onclick="setWebservice('', 'all', '', '', 'webservices.installWebservice')">
 										<i class="icon-cogs"></i>
-										<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_INSTALL_XML') ?>
+										<?php echo JText::_('JTOOLBAR_INSTALL'); ?>
 									</button>
 									<button
-										class="btn btn-xs btn-danger"
+										class="btn btn-danger"
 										type="button"
-										onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.deleteWebservice')">
+										onclick="setWebservice('', 'all', '', '', 'webservices.deleteWebservice')">
 										<i class="icon-remove"></i>
-										<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DELETE_XML') ?>
+										<?php echo JText::_('JTOOLBAR_DELETE') ?>
 									</button>
 								</div>
-								<?php if ((++$column) % 3 == 0 ) : ?>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+					<?php if (empty($this->xmlFiles)): ?>
+						<div class="alert alert-info">
+							<button type="button" class="close" data-dismiss="alert">&times;</button>
+							<div class="pagination-centered">
+								<h3><?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_NO_FILES_AVAILABLE') ?></h3>
+							</div>
+						</div>
+					<?php else : ?>
+
+						<?php foreach ($this->xmlFiles as $clients => $webserviceNames): ?>
+							<?php $column = 0; ?>
+							<div class='clearfix'></div>
+							<h3 class="text-primary"><?php echo JText::_('J' . $clients); ?></h3>
+							<hr />
+							<?php foreach ($webserviceNames as $webserviceVersions):
+								foreach ($webserviceVersions as $webservice):
+									$webserviceClient = RApiHalHelper::getWebserviceClient($webservice);
+									?>
+									<div class="col-md-4">
+										<div class="panel panel-default">
+											<div class="panel-heading">
+												<h3><?php echo $webservice->name ?></h3>
+												<p><?php echo $webservice->config->name; ?>&nbsp;<?php echo !empty($webservice->config->version) ? '<span class="label">' . $webservice->config->version . '</span>' : ''; ?></p>
+											</div>
+											<div class="panel-body">
+												<table class="table table-striped adminlist">
+													<tbody>
+													<tr>
+														<td>
+															<strong><?php echo JText::_('JAUTHOR'); ?>:</strong>
+														</td>
+														<td>
+															<strong><?php echo !empty($webservice->author) ? $webservice->author : ''; ?></strong>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<strong><?php echo JText::_('COM_REDCORE_WEBSERVICE_PATH_LABEL'); ?>:</strong>
+														</td>
+														<td>
+															<strong><?php echo $webservice->webservicePath ?></strong>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<strong><?php echo JText::_('JGLOBAL_DESCRIPTION'); ?>:</strong>
+														</td>
+														<td>
+															<?php echo !empty($webservice->description) ? $webservice->description : '' ?>
+														</td>
+													</tr>
+													</tbody>
+												</table>
+												<button
+													class="btn btn-xs btn-success"
+													type="button"
+													onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.installWebservice')">
+													<i class="icon-cogs"></i>
+													<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_INSTALL_XML') ?>
+												</button>
+												<button
+													class="btn btn-xs btn-danger"
+													type="button"
+													onclick="setWebservice('<?php echo $webserviceClient; ?>', '<?php echo $webservice->config->name; ?>', '<?php echo $webservice->config->version; ?>', '<?php echo $webservice->webservicePath; ?>', 'webservices.deleteWebservice')">
+													<i class="icon-remove"></i>
+													<?php echo JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_DELETE_XML') ?>
+												</button>
+											</div>
+										</div>
 									</div>
-									<div class="row">
-								<?php endif; ?>
+									<?php if ((++$column) % 3 == 0 ) : ?>
+										</div>
+										<div class="row">
+									<?php endif; ?>
+								<?php endforeach; ?>
 							<?php endforeach; ?>
 						<?php endforeach; ?>
-					<?php endforeach; ?>
-				<?php endif; ?>
-				</div>
+					<?php endif; ?>
+					</div>
 				<?php endif; ?>
 				<div class="clearfix"></div>
+			</div>
 			</div>
 		</div>
 	<div>
