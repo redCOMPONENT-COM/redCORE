@@ -290,7 +290,6 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 
 		</div>
 		<div class="tab-pane" id="mainComponentWebservicesXmls">
-			<div class="container-fluid">
 				<?php if (empty($this->xmlFiles)): ?>
 					<br />
 					<div class="alert alert-info">
@@ -300,8 +299,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 						</div>
 					</div>
 				<?php else : ?>
-
-					<div class="row">
+					<div class="row-fluid">
 						<div class="col-md-6 well" style="margin-top: 15px;">
 							<div class="form-group">
 								<div class="col-md-4">
@@ -362,8 +360,10 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 						<?php foreach ($this->xmlFiles as $clients => $webserviceNames): ?>
 							<?php $column = 0; ?>
 							<div class='clearfix'></div>
-							<h3 class="text-primary"><?php echo JText::_('J' . $clients); ?></h3>
-							<hr />
+							<div class="container-fluid">
+								<h3 class="text-primary"><?php echo JText::_('J' . $clients); ?></h3>
+								<hr />
+							</div>
 							<?php foreach ($webserviceNames as $webserviceVersions):
 								foreach ($webserviceVersions as $webservice):
 									$webserviceClient = RApiHalHelper::getWebserviceClient($webservice);
@@ -431,7 +431,6 @@ $action = JRoute::_('index.php?option=com_redcore&view=webservices');
 					</div>
 				<?php endif; ?>
 				<div class="clearfix"></div>
-			</div>
 			</div>
 		</div>
 	<div>

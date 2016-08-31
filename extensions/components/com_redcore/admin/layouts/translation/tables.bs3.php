@@ -99,7 +99,8 @@ $column = 0;
 				</div>
 			</div>
 		</div>
-		<div class="row">
+	</div>
+	<div class="row">
 			<input type="hidden" id="contentElement" name="contentElement" />
 			<input type="hidden" id="componentName" name="component" />
 			<?php if (empty($contentElements)): ?>
@@ -185,10 +186,9 @@ $column = 0;
 			</div>
 			<?php if ((++$column) % 3 == 0 ) : ?>
 		</div>
-		<div class="row">
-			<?php endif; ?>
-			<?php endforeach; ?>
-			<?php endif; ?>
-		</div>
+	<div class="row">
+		<?php endif; ?>
+		<?php endforeach; ?>
+		<?php endif; ?>
 	</div>
 </div>
