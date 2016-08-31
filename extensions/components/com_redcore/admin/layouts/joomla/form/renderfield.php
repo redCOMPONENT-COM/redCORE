@@ -32,7 +32,7 @@ $isBs3 = empty($options['bs3']) ? false : true;
 <?php if (!empty($displayData['label']) || !empty($displayData['input'])) : ?>
 	<?php if ($isBs3): ?>
 		<div class="form-group <?php echo $class; ?>"<?php echo $rel; ?>>
-			<div class="row-fluid">
+			<div class="container-fluid">
 			<?php if (empty($options['hiddenLabel'])) : ?>
 				<div class="col-md-3 col-sm-4">
 				<?php echo $label ?>
