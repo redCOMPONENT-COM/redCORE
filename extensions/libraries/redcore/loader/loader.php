@@ -16,7 +16,7 @@ defined('JPATH_REDCORE') or die;
  * @subpackage  Loader
  * @since       1.0
  */
-abstract class RLoader
+class RLoader extends JLoader
 {
 	/**
 	 * Container for already imported library paths.
