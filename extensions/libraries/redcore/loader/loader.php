@@ -16,8 +16,52 @@ defined('JPATH_REDCORE') or die;
  * @subpackage  Loader
  * @since       1.0
  */
-abstract class RLoader extends JLoader
+abstract class RLoader
 {
+	/**
+	 * Container for already imported library paths.
+	 *
+	 * @var  array
+	 */
+	protected static $classes = array();
+
+	/**
+	 * Container for already imported library paths.
+	 *
+	 * @var  array
+	 */
+	protected static $imported = array();
+
+	/**
+	 * Container for registered library class prefixes and path lookups.
+	 *
+	 * @var  array
+	 */
+	protected static $prefixes = array();
+
+	/**
+	 * Holds proxy classes and the class names the proxy.
+	 *
+	 * @var    array
+	 * @since  3.2
+	 */
+	protected static $classAliases = array();
+
+	/**
+	 * Holds the inverse lookup for proxy classes and the class names the proxy.
+	 *
+	 * @var    array
+	 * @since  3.4
+	 */
+	protected static $classAliasesInverse = array();
+
+	/**
+	 * Container for namespace => path map.
+	 *
+	 * @var  array
+	 */
+	protected static $namespaces = array();
+
 	/**
 	 * Method to discover classes of a given type in a given path.
 	 *
