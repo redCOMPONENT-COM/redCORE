@@ -74,7 +74,9 @@ class RBootstrap
 	{
 		if (is_null(self::$config))
 		{
-			if (JComponentHelper::isInstalled('com_redcore'))
+			$component = JComponentHelper::getComponent('com_redcore');
+
+			if (!empty($component->extension_id))
 			{
 				self::$config = JComponentHelper::getParams('com_redcore');
 
