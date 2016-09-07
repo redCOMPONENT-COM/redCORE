@@ -27,7 +27,7 @@ class InstallExtensionCest
 		$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
-		$I->executeJS("javascript:window.scrollBy(0,200);");
+		//$I->executeJS("javascript:window.scrollBy(0,200);");
 		$I->selectOptionInChosen('Check user permission against', 'Joomla - Use already defined authorization checks in Joomla');
 		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
 		$I->executeJS('window.scrollTo(0,0)');
