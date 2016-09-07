@@ -14,7 +14,7 @@ JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
 ?>
-<div class="tab-pane" id="mainComponentConfiguration">
+<div class="tab-pane active" id="mainComponentConfiguration">
 	<p class="tab-description"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_CONFIGURATION_DESC'); ?></p>
 	<?php if (!empty($this->form)) : ?>
 		<div class="col-md-12">
