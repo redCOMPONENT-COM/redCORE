@@ -23,6 +23,7 @@ class InstallExtensionCest
 		$I->comment('I enable basic authentication');
 		$I->amOnPage('administrator/index.php?option=com_redcore&view=config&layout=edit&component=com_redcore');
 		$I->waitForText('redCORE Config', 30, ['css' => 'h1']);
+		$I->waitForText('Payment API options', 30, ['css' => 'a']);
 		$I->click(['link' => 'Webservice options']);
 		$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
