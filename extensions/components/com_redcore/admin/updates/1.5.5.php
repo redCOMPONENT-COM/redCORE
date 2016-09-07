@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Redshopb
+ * @package     Redcore
  * @subpackage  Upgrade
  *
  * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
