@@ -27,9 +27,8 @@ class InstallExtensionCest
 		$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
-		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
-		$I->executeJS("javascript:document.getElementById(\"jform_webservices_authorization_check_chzn\").scrollIntoView();");
 		$I->selectOptionInChosen('Check user permission against', 'Joomla - Use already defined authorization checks in Joomla');
+		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
 		$I->executeJS('window.scrollTo(0,0)');
 		$I->click(['xpath' => "//button[contains(@onclick, 'config.apply')]"]);
 		$I->waitForText('Save success', 30, ['id' => 'system-message-container']);
