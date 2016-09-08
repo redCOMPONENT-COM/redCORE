@@ -1,6 +1,6 @@
 <?php
 /**
- * @package     Redshopb.Backend
+ * @package     Redcore.Backend
  * @subpackage  Layouts
  *
  * @copyright   Copyright (C) 2012 - 2015 redCOMPONENT.com. All rights reserved.
