@@ -18,7 +18,7 @@
 class UninstallExtensionCest
 {
 	/**
-	 * Function to Uninstall redSHOP extension
+	 * Function to Uninstall Redcore extension
 	 *
 	 * @return void
 	 */

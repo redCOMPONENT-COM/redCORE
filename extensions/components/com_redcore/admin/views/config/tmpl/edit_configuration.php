@@ -15,4 +15,3 @@ echo RLayoutHelper::render(
 		'form' => $this->form
 	)
 );
-
