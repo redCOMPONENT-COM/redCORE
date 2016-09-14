@@ -9,9 +9,9 @@
 
 defined('_JEXEC') or die;
 
-$app = JFactory::getApplication();
+$app      = JFactory::getApplication();
 $template = $app->getTemplate();
-$tab = $app->input->getString('tab');
+$tab      = $app->input->getString('tab');
 
 if (empty($tab))
 {
@@ -43,13 +43,12 @@ JFactory::getDocument()->addScriptDeclaration(
 <form action="<?php echo JRoute::_('index.php?option=com_redcore'); ?>"
       id="adminForm" method="post" name="adminForm" autocomplete="off" class="form-validate form-horizontal" enctype="multipart/form-data">
 	<ul class="nav nav-tabs" id="mainTabs">
-		<li class="active"><a href="#mainComponentConfiguration" data-toggle="tab"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_CONFIGURATION'); ?></a></li>
+		<li><a href="#mainComponentConfiguration" data-toggle="tab"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_CONFIGURATION'); ?></a></li>
 		<li><a href="#mainComponentTranslations" data-toggle="tab"><?php echo JText::_('COM_REDCORE_TRANSLATIONS'); ?></a></li>
 		<li><a href="#mainComponentInfo" data-toggle="tab"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_INFO'); ?></a></li>
 	</ul>
 	<div class="tab-content">
 		<?php echo $this->loadTemplate('configuration'); ?>
-		<?php // echo RLayoutHelper::render('config.config', array('form' => $this->form)) ?>
 		<?php echo $this->loadTemplate('translations'); ?>
 		<?php echo $this->loadTemplate('info'); ?>
 	</div>
@@ -70,5 +69,7 @@ JFactory::getDocument()->addScriptDeclaration(
 		jQuery('#mainTabs a').on('click', function () {
 			jQuery('#currentTab').val(jQuery(this).attr('href').substr(1));
 		});
+
+		jQuery('#mainTabs a[href="#<?php echo $tab ?>"]').tab('show');
 	});
 </script>
