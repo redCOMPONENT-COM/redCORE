@@ -3,7 +3,7 @@
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-// Only define the redSHOPB namespace if not defined.
+// Only define the redCORE namespace if not defined.
 redCORE = window.redCORE || {};
 
 /**

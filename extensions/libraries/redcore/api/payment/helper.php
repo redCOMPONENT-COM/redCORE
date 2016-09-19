@@ -74,6 +74,7 @@ class RApiPaymentHelper
 			->where($db->qn('p.element') . ' = ' . $db->q($paymentName))
 			->leftJoin(
 				$db->qn('#__redcore_payment_configuration', 'pc1') . ' ON pc1.payment_name = p.element AND pc1.extension_name = ' . $db->q($extensionName)
+				. ' AND pc1.owner_name = ' . $db->q('')
 			)
 			->leftJoin(
 				$db->qn('#__redcore_payment_configuration', 'pc2') . ' ON pc2.payment_name = p.element AND pc2.extension_name = ' . $db->q($extensionName)
