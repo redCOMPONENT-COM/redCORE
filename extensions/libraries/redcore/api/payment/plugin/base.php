@@ -77,7 +77,7 @@ abstract class RApiPaymentPluginBase extends JPlugin
 			return null;
 		}
 
-		$payments[] = (object) array(
+		$payments[$this->paymentName . $extensionName . $ownerName] = (object) array(
 			'value' => $this->paymentName,
 			'text' => $this->params->get('payment_title', $this->paymentName),
 			'logo' => $this->params->get('payment_logo', ''),
