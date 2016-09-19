@@ -14,7 +14,7 @@ defined('JPATH_PLATFORM') or die;
  * Based on JLayout introduced in Joomla! 3.2.0.
  *
  * @see    https://docs.joomla.org/Sharing_layouts_across_views_or_extensions_with_JLayout
- * @since  1.8.5
+ * @since  1.8.8
  */
 interface RLayout
 {
@@ -25,7 +25,7 @@ interface RLayout
 	 *
 	 * @return  string  The escaped output.
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function escape($output);
 
@@ -36,7 +36,7 @@ interface RLayout
 	 *
 	 * @return  string  The rendered layout.
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function render($displayData);
 }

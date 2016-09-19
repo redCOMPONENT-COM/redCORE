@@ -14,7 +14,7 @@ defined('JPATH_PLATFORM') or die;
  * Based on JLayout, introduced in Joomla! 3.2.0.
  *
  * @see    https://docs.joomla.org/Sharing_layouts_across_views_or_extensions_with_JLayout
- * @since  1.8.5
+ * @since  1.8.8
  */
 class RLayoutHelper
 {
@@ -23,7 +23,7 @@ class RLayoutHelper
 	 * Note that JLayoutFile itself will defaults to JPATH_ROOT . '/layouts' if no basePath is supplied at all
 	 *
 	 * @var    string
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	public static $defaultBasePath = '';
 
@@ -37,7 +37,7 @@ class RLayoutHelper
 	 *
 	 * @return  string
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public static function render($layoutFile, $displayData = null, $basePath = '', $options = null)
 	{
@@ -61,7 +61,7 @@ class RLayoutHelper
 	 *
 	 * @return  string
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public static function debug($layoutFile, $displayData = null, $basePath = '', $options = null)
 	{

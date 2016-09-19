@@ -14,7 +14,7 @@ defined('JPATH_PLATFORM') or die;
  * loaded from from a layout file
  *
  * @see    https://docs.joomla.org/Sharing_layouts_across_views_or_extensions_with_JLayout
- * @since  1.8.5
+ * @since  1.8.8
  */
 class RLayoutFile extends RLayoutBase
 {
@@ -22,7 +22,7 @@ class RLayoutFile extends RLayoutBase
 	 * Cached layout paths
 	 *
 	 * @var    array
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected static $cache = array();
 
@@ -30,7 +30,7 @@ class RLayoutFile extends RLayoutBase
 	 * Dot separated path to the layout file, relative to base path
 	 *
 	 * @var    string
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected $layoutId = '';
 
@@ -38,7 +38,7 @@ class RLayoutFile extends RLayoutBase
 	 * Base path to use when loading layout files
 	 *
 	 * @var    string
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected $basePath = null;
 
@@ -46,7 +46,7 @@ class RLayoutFile extends RLayoutBase
 	 * Full path to actual layout files, after possible template override check
 	 *
 	 * @var    string
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected $fullPath = null;
 
@@ -54,7 +54,7 @@ class RLayoutFile extends RLayoutBase
 	 * Paths to search for layouts
 	 *
 	 * @var    array
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected $includePaths = array();
 
@@ -65,7 +65,7 @@ class RLayoutFile extends RLayoutBase
 	 * @param   string  $basePath  Base path to use when loading layout files
 	 * @param   mixed   $options   Optional custom options to load. Registry or array format [@since 3.2]
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function __construct($layoutId, $basePath = null, $options = null)
 	{
@@ -101,7 +101,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  array
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function getDefaultIncludePaths()
 	{
@@ -150,7 +150,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  void
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	protected function refreshIncludePaths()
 	{
@@ -165,7 +165,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  string  The necessary HTML to display the layout
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function render($displayData = array())
 	{
@@ -207,7 +207,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  string  The full path to the layout file
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	protected function getPath()
 	{
@@ -299,7 +299,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function addIncludePath($path)
 	{
@@ -315,7 +315,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function addIncludePaths($paths)
 	{
@@ -345,7 +345,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function clearIncludePaths()
 	{
@@ -359,7 +359,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  array
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function getIncludePaths()
 	{
@@ -376,7 +376,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  string
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function getLayoutId()
 	{
@@ -388,7 +388,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  array
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function getSuffixes()
 	{
@@ -401,7 +401,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function loadLanguageSuffixes()
 	{
@@ -424,7 +424,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function loadVersionSuffixes()
 	{
@@ -452,7 +452,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function removeIncludePath($path)
 	{
@@ -468,7 +468,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function removeIncludePaths($paths)
 	{
@@ -489,7 +489,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  boolean
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	protected function validComponent($option = null)
 	{
@@ -513,7 +513,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  mixed  Component option string | null for none
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setComponent($option)
 	{
@@ -553,7 +553,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  void
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setClient($client)
 	{
@@ -588,7 +588,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 *
 	 * @deprecated  3.5  Use setLayoutId()
 	 */
@@ -607,7 +607,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setLayoutId($layoutId)
 	{
@@ -624,7 +624,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setIncludePaths($paths)
 	{
@@ -640,7 +640,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setSuffixes(array $suffixes)
 	{
@@ -657,7 +657,7 @@ class RLayoutFile extends RLayoutBase
 	 *
 	 * @return  string  The necessary HTML to display the layout
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function sublayout($layoutId, $displayData)
 	{

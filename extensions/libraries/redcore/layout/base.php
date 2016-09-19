@@ -16,7 +16,7 @@ use Joomla\Registry\Registry;
  * Based on JLayoutBase introduced in Joomla! 3.2.0.
  *
  * @see    https://docs.joomla.org/Sharing_layouts_across_views_or_extensions_with_JLayout
- * @since  1.8.5
+ * @since  1.8.8
  */
 abstract class RLayoutBase implements RLayout
 {
@@ -24,7 +24,7 @@ abstract class RLayoutBase implements RLayout
 	 * Options object
 	 *
 	 * @var    Registry
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected $options = null;
 
@@ -32,7 +32,7 @@ abstract class RLayoutBase implements RLayout
 	 * Data for the layout
 	 *
 	 * @var    array
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected $data = array();
 
@@ -40,7 +40,7 @@ abstract class RLayoutBase implements RLayout
 	 * Debug information messages
 	 *
 	 * @var    array
-	 * @since  1.8.5
+	 * @since  1.8.8
 	 */
 	protected $debugMessages = array();
 
@@ -51,7 +51,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  RLayoutBase  Instance of $this to allow chaining.
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setOptions($options = null)
 	{
@@ -99,7 +99,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  Registry  Object with the options
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function getOptions()
 	{
@@ -129,7 +129,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  RLayoutBase  Instance of $this to allow chaining.
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function resetOptions()
 	{
@@ -143,7 +143,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  string  The escaped output.
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function escape($output)
 	{
@@ -155,7 +155,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  array
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function getDebugMessages()
 	{
@@ -169,7 +169,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  string  The necessary HTML to display the layout
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public abstract function render($displayData);
 
@@ -178,7 +178,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  string  Output text/HTML code
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function renderDebugMessages()
 	{
@@ -192,7 +192,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function addDebugMessage($message)
 	{
@@ -206,7 +206,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function clearDebugMessages()
 	{
@@ -222,7 +222,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  string
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function debug($data = array())
 	{
@@ -243,7 +243,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  mixed   Value from the data array | defaultValue if doesn't exist
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function get($key, $defaultValue = null)
 	{
@@ -255,7 +255,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  array
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function getData()
 	{
@@ -267,7 +267,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  boolean
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function isDebugEnabled()
 	{
@@ -282,7 +282,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function set($key, $value)
 	{
@@ -298,7 +298,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  self
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setData(array $data)
 	{
@@ -314,7 +314,7 @@ abstract class RLayoutBase implements RLayout
 	 *
 	 * @return  void
 	 *
-	 * @since   1.8.5
+	 * @since   1.8.8
 	 */
 	public function setDebug($debug)
 	{
