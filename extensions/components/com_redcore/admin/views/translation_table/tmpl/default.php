@@ -32,53 +32,55 @@ $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name)
 </script>
 <form action="<?php echo $action; ?>" method="post" name="adminForm" id="adminForm" class="form-validate form-horizontal">
 	<div class="container-fluid">
-		<div id="main-params">
-			<div class="form-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('name'); ?>
+		<div class="row">
+			<div id="main-params" class="col-md-12">
+				<div class="form-group">
+					<div class="col-md-2 col-sm-3">
+						<?php echo $this->form->getLabel('name') ?>
+					</div>
+					<div class="col-md-10 col-sm-9">
+						<?php echo $this->form->getInput('name') ?><?php echo $this->form->getInput('tableName'); ?>
+					</div>
 				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput('name'); ?> <?php echo $this->form->getInput('tableName'); ?>
+				<div class="form-group">
+					<div class="col-md-2 col-sm-3">
+						<?php echo $this->form->getLabel('extension_name') ?>
+					</div>
+					<div class="col-md-10 col-sm-9">
+						<?php echo $this->form->getInput('extension_name') ?><?php echo $this->form->getInput('optionName'); ?>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('extension_name'); ?>
+				<div class="form-group">
+					<div class="col-md-2 col-sm-3">
+						<?php echo $this->form->getLabel('title') ?>
+					</div>
+					<div class="col-md-10 col-sm-9">
+						<?php echo $this->form->getInput('title') ?>
+					</div>
 				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput('extension_name'); ?> <?php echo $this->form->getInput('optionName'); ?>
+				<div class="form-group">
+					<div class="col-md-2 col-sm-3">
+						<?php echo $this->form->getLabel('filter_query') ?>
+					</div>
+					<div class="col-md-10 col-sm-9">
+						<?php echo $this->form->getInput('filter_query') ?>
+					</div>
 				</div>
-			</div>
-			<div class="form-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('title'); ?>
+				<div class="form-group">
+					<div class="col-md-2 col-sm-3">
+						<?php echo $this->form->getLabel('xml_path') ?>
+					</div>
+					<div class="col-md-10 col-sm-9">
+						<?php echo RTranslationContentElement::getPathWithoutBase($this->item->xml_path); ?>
+					</div>
 				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput('title'); ?>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('filter_query'); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput('filter_query'); ?>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('xml_path'); ?>
-				</div>
-				<div class="controls">
-					<?php echo RTranslationContentElement::getPathWithoutBase($this->item->xml_path); ?>
-				</div>
-			</div>
-			<div class="form-group">
-				<div class="control-label">
-					<?php echo $this->form->getLabel('state'); ?>
-				</div>
-				<div class="controls">
-					<?php echo $this->form->getInput('state'); ?>
+				<div class="form-group">
+					<div class="col-md-2 col-sm-3">
+						<?php echo $this->form->getLabel('state') ?>
+					</div>
+					<div class="col-md-10 col-sm-9">
+						<?php echo $this->form->getInput('state') ?>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -118,7 +120,7 @@ $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name)
 					</div>
 				</div>
 				<hr/>
-				<div class="columns-row-list">
+				<div class="columns-row-list container-fluid">
 					<?php
 					if (!empty($this->item->columns)) :
 						foreach ($this->item->columns as $column) :
@@ -147,7 +149,7 @@ $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name)
 					</button>
 				</div>
 				<hr/>
-				<div class="editform-row-list">
+				<div class="editform-row-list container-fluid">
 					<?php
 					if (!empty($this->item->editForms)) :
 						foreach ($this->item->editForms as $editForm) :
@@ -171,35 +173,35 @@ $this->form->setValue('tableName', '', str_replace('#__', '', $this->item->name)
 				<hr/>
 				<div id="info-params">
 					<div class="form-group">
-						<div class="control-label">
-							<?php echo $this->form->getLabel('version'); ?>
+						<div class="col-md-2 col-sm-3">
+							<?php echo $this->form->getLabel('version') ?>
 						</div>
-						<div class="controls">
-							<?php echo $this->form->getInput('version'); ?>
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="control-label">
-							<?php echo $this->form->getLabel('author'); ?>
-						</div>
-						<div class="controls">
-							<?php echo $this->form->getInput('author'); ?>
+						<div class="col-md-10 col-sm-9">
+							<?php echo $this->form->getInput('version') ?>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="control-label">
-							<?php echo $this->form->getLabel('copyright'); ?>
+						<div class="col-md-2 col-sm-3">
+							<?php echo $this->form->getLabel('author') ?>
 						</div>
-						<div class="controls">
-							<?php echo $this->form->getInput('copyright'); ?>
+						<div class="col-md-10 col-sm-9">
+							<?php echo $this->form->getInput('author') ?>
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="control-label">
-							<?php echo $this->form->getLabel('description'); ?>
+						<div class="col-md-2 col-sm-3">
+							<?php echo $this->form->getLabel('copyright') ?>
 						</div>
-						<div class="controls">
-							<?php echo $this->form->getInput('description'); ?>
+						<div class="col-md-10 col-sm-9">
+							<?php echo $this->form->getInput('copyright') ?>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-md-2 col-sm-3">
+							<?php echo $this->form->getLabel('description') ?>
+						</div>
+						<div class="col-md-10 col-sm-9">
+							<?php echo $this->form->getInput('description') ?>
 						</div>
 					</div>
 				</div>
