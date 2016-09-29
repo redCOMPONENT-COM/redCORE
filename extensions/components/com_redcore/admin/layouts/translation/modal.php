@@ -19,7 +19,6 @@ $model = RModel::getAdminInstance('translation', array(), 'com_redcore');
 $view->setModel($model, true);
 $first = true;
 ?>
-
 <form method="post" name="adminForm" id="adminForm" class="form-validate form-horizontal">
 <!-- Tabs for selecting languages -->
 	<ul class="nav nav-tabs" id="categoryTab">
@@ -31,8 +30,7 @@ $first = true;
 		<?php endforeach;?>
 	</ul>
 	<!-- Container for the fields of each language -->
-	<div class="tab-content">
-		
+	<div class="tab-content">	
 		<?php $first = true; ?>
 		<?php foreach ($contentLanguages as $language) : ?>
 			<div class="tab-pane<?php echo $first ? ' active in' : '';?>" id="fields-<?php echo $language->lang_id; ?>">
@@ -128,7 +126,6 @@ $first = true;
 
 	Joomla.submitbutton = function(task)
 	{
-		//console.log(document.getElementById('adminForm'));
 		Joomla.submitform(task, document.getElementById('adminForm'));
 	}
 </script>
