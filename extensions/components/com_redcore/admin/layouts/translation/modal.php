@@ -19,6 +19,8 @@ $model = RModel::getAdminInstance('translation', array(), 'com_redcore');
 $view->setModel($model, true);
 $first = true;
 ?>
+
+<form method="post" name="adminForm" id="adminForm" class="form-validate form-horizontal">
 <!-- Tabs for selecting languages -->
 	<ul class="nav nav-tabs" id="categoryTab">
 		<?php foreach ($contentLanguages as $language) : ?>
@@ -30,10 +32,10 @@ $first = true;
 	</ul>
 	<!-- Container for the fields of each language -->
 	<div class="tab-content">
+		
 		<?php $first = true; ?>
 		<?php foreach ($contentLanguages as $language) : ?>
 			<div class="tab-pane<?php echo $first ? ' active in' : '';?>" id="fields-<?php echo $language->lang_id; ?>">
-				<form method="post" target="my_iframe_<?php echo $language->lang_id; ?>" name="adminForm_<?php echo $language->lang_id; ?>" id="adminForm_<?php echo $language->lang_id; ?>" class="form-validate form-horizontal">	
 				<?php
 					$rctranslationId = RTranslationHelper::getTranslationItemId($input->getString('id', ''), $language->lang_code, $view->translationTable->primaryKeys, $view->translationTable->name);
 					$view->setItem($rctranslationId);
@@ -54,12 +56,11 @@ $first = true;
 						JPATH_ROOT . '/administrator/components/com_redcore/layouts'
 					);
 				?>
-				</form>
 			</div>
-			<iframe name="my_iframe_<?php echo $language->lang_id; ?>" style="display:none;"></iframe>
 			<?php $first = false; ?>
 		<?php endforeach; ?>
 	</div>
+</form>
 <script type="text/javascript">
 	function setTranslationValue(elementName, elementOriginal, setParams, langCode)
 	{
@@ -111,7 +112,7 @@ $first = true;
 		else
 		{
 			var val = elementOriginal != '' ? tabArea.find('[name="original[' + elementOriginal + ']"]').val() : '';
-			var targetElement = tabArea.find('[name="translation[' + elementName + ']"]');
+			var targetElement = tabArea.find('[name="translation['+ langCode +'][' + elementName + ']"]');
 
 			if (tabArea.find(targetElement).is('textarea'))
 			{
@@ -127,10 +128,7 @@ $first = true;
 
 	Joomla.submitbutton = function(task)
 	{
-		//Go through each form and submit them individually
-		jQuery('form').each(function()
-		{
-			Joomla.submitform(task, this);
-		});
+		//console.log(document.getElementById('adminForm'));
+		Joomla.submitform(task, document.getElementById('adminForm'));
 	}
 </script>
