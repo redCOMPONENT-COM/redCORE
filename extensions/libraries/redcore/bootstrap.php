@@ -178,6 +178,11 @@ class RBootstrap
 				// Setting default option for translation fallback
 				RDatabaseSqlparserSqltranslation::setTranslationFallback(self::getConfig('enable_translation_fallback', '1') == '1');
 
+				// Setting default option for force translate default language
+				RDatabaseSqlparserSqltranslation::setForceTranslateDefaultLanguage(
+					self::getConfig('force_translate_default_site_language', '1') == '1'
+				);
+
 				// Reset plugin translations params if needed
 				RTranslationHelper::resetPluginTranslation();
 			}
