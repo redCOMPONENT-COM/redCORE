@@ -282,14 +282,15 @@ class RLoader extends JLoader
 	 * Offers the ability for "just in time" usage of `class_alias()`.
 	 * You cannot overwrite an existing alias.
 	 *
-	 * @param   string  $alias     The alias name to register.
-	 * @param   string  $original  The original class to alias.
+	 * @param   string          $alias     The alias name to register.
+	 * @param   string          $original  The original class to alias.
+	 * @param   string|boolean  $version   The version in which the alias will no longer be present.
 	 *
 	 * @return  boolean  True if registration was successful. False if the alias already exists.
 	 *
 	 * @since   3.2
 	 */
-	public static function registerAlias($alias, $original)
+	public static function registerAlias($alias, $original, $version = false)
 	{
 		if (!isset(self::$classAliases[$alias]))
 		{
@@ -308,6 +309,12 @@ class RLoader extends JLoader
 			else
 			{
 				self::$classAliasesInverse[$original][] = $alias;
+			}
+
+			// If given a version, log this alias as deprecated
+			if ($version)
+			{
+				self::$deprecatedAliases[] = array('old' => $alias, 'new' => $original, 'version' => $version);
 			}
 
 			return true;
