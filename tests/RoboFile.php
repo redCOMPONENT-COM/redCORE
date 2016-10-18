@@ -327,7 +327,7 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return void
 	 */
-	public function runTests($use_htaccess = 0, $database_host = null, $addCertificates)
+	public function runTests($use_htaccess = 0, $database_host = null, $addCertificates = true)
 	{
 		$this->prepareSiteForSystemTests($use_htaccess, $addCertificates);
 
