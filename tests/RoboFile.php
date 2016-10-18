@@ -79,11 +79,12 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Downloads and prepares a Joomla CMS site for testing
 	 *
-	 * @param   int  $use_htaccess  (1/0) Rename and enable embedded Joomla .htaccess file
+	 * @param   int   $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
+	 * @param   bool  $addCertificates  Optional.  Adds the certificates to the Joomla-provided PEM file
 	 *
 	 * @return mixed
 	 */
-	public function prepareSiteForSystemTests($use_htaccess = 0)
+	public function prepareSiteForSystemTests($use_htaccess = 0, $addCertificates = true)
 	{
 		// Caching cloned installations locally
 		if (!is_dir('cache') || (time() - filemtime('cache') > 60 * 60 * 24))
@@ -124,6 +125,20 @@ class RoboFile extends \Robo\Tasks
 		{
 			$this->_copy($this->cmsPath . '/htaccess.txt', $this->cmsPath . '/.htaccess');
 			$this->_exec('sed -e "s,# RewriteBase /,RewriteBase /' . $this->cmsPath . '/,g" --in-place ' . $this->cmsPath . '/.htaccess');
+		}
+
+		// Appends the provided certificates to the Joomla file to avoid problems when updating extensions
+		if ($addCertificates)
+		{
+			$this->say('Appending certificates to default Joomla file: ' . $this->cmsPath . '/libraries/joomla/http/transport/cacert.pem');
+			$this->taskConcat(
+					[
+						$this->cmsPath . '/libraries/joomla/http/transport/cacert.pem',
+						'certificates.pem'
+					]
+				)
+				->to($this->cmsPath . '/libraries/joomla/http/transport/cacert.pem')
+				->run();
 		}
 	}
 
@@ -268,14 +283,15 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Preparation for running manual tests after installing Joomla/Extension and some basic configuration
 	 *
-	 * @param   int     $use_htaccess    (1/0) Rename and enable embedded Joomla .htaccess file
-	 * @param   string  $package_method  Optional. Availabe methods are "phing" or "gulp". "gulp" by default
+	 * @param   int     $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
+	 * @param   string  $package_method   Optional. Availabe methods are "phing" or "gulp". "gulp" by default
+	 * @param   bool    $addCertificates  Optional.  Adds the certificates to the Joomla-provided PEM file
 	 *
 	 * @return void
 	 */
-	public function runTestPreparation($use_htaccess = 0, $package_method = 'gulp')
+	public function runTestPreparation($use_htaccess = 0, $package_method = 'gulp', $addCertificates = true)
 	{
-		$this->prepareSiteForSystemTests($use_htaccess);
+		$this->prepareSiteForSystemTests($use_htaccess, $addCertificates);
 
 		$this->getComposer();
 
@@ -305,14 +321,15 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Function to Run tests in a Group
 	 *
-	 * @param   int     $use_htaccess   (1/0) Rename and enable embedded Joomla .htaccess file
-	 * @param   string  $database_host  Optional. If using Joomla Vagrant Box do: $ vendor/bin/robo 0 gulp run:tests 33.33.33.58
+	 * @param   int     $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
+	 * @param   string  $database_host    Optional. If using Joomla Vagrant Box do: $ vendor/bin/robo 0 gulp run:tests 33.33.33.58
+	 * @param   bool    $addCertificates  Optional.  Adds the certificates to the Joomla-provided PEM file
 	 *
 	 * @return void
 	 */
-	public function runTests($use_htaccess = 0, $database_host = null)
+	public function runTests($use_htaccess = 0, $database_host = null, $addCertificates = true)
 	{
-		$this->prepareSiteForSystemTests($use_htaccess);
+		$this->prepareSiteForSystemTests($use_htaccess, $addCertificates);
 
 		$this->getComposer();
 
