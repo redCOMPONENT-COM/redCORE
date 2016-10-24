@@ -833,4 +833,40 @@ class RTranslationHelper
 			return false;
 		}
 	}
+
+	/**
+	 * Adds array to a JForm input
+	 *
+	 * @param   string  $form   Form to be modified
+	 * @param   string  $index  Index of the array
+	 *
+	 * @return  string  Modified form
+	 */
+	public static function arrayifyTranslationJForm($form, $index)
+	{
+		$pattern = '/name="jform/';
+		$replacement = 'name="jform[' . $index . ']';
+		$form = preg_replace($pattern, $replacement, $form);
+
+		return $form;
+	}
+
+	/**
+	 * Returns an array of all content language codes (fx. en-GB)
+	 *
+	 * @return array  All content language codes
+	 */
+	public static function getAllContentLanguageCodes()
+	{
+		$contentLanguages = JLanguageHelper::getLanguages();
+
+		$languageCodes = array();
+
+		foreach ($contentLanguages as $language)
+		{
+			$languageCodes[] = $language->lang_code;
+		}
+
+		return $languageCodes;
+	}
 }

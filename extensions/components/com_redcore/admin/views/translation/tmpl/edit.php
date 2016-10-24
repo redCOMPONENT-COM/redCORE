@@ -77,7 +77,7 @@ $predefinedOptions = array(
 		else
 		{
 			var val = elementOriginal != '' ? jQuery('[name="original[' + elementOriginal + ']"]').val() : '';
-			var targetElement = jQuery('[name="translation[' + elementName + ']"]');
+			var targetElement = jQuery('[name="translation[' + langCode + '][' + elementName + ']"]');
 
 			if (jQuery(targetElement).is('textarea'))
 			{

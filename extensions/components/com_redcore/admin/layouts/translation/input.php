@@ -23,7 +23,7 @@ $item = $displayData['item'];
 $columns = $displayData['columns'];
 $editor = $displayData['editor'];
 $translationTable = $displayData['translationTable'];
-$languageCode = $displayData['languageCode'];
+$languageCode = !empty($displayData['languageCode']) ? $displayData['languageCode'] : 'no-language';
 $form = $displayData['form'];
 $noTranslationColumns = $displayData['noTranslationColumns'];
 $modal = !empty($displayData['modal']) ? $displayData['modal'] : false;
@@ -106,7 +106,7 @@ $predefinedOptions = array(
 											<input
 												class="inputbox form-control"
 												type="text"
-												name="translation[<?php echo $columnKey;?>]"
+												name="translation[<?php echo $languageCode; ?>][<?php echo $columnKey;?>]"
 												size="<?php echo $length;?>"
 												value="<?php echo $item->translation->{$columnKey}; ?>"
 												<?php echo $maxLength;?> />
@@ -127,7 +127,7 @@ $predefinedOptions = array(
 											<!-- Textarea field -->
 										<?php elseif ($column['value_type'] == 'textarea'): ?>
 											<textarea
-												name="translation[<?php echo $columnKey;?>]"
+												name="translation[<?php echo $languageCode; ?>][<?php echo $columnKey;?>]"
 												rows="<?php echo $maxRows;?>"
 												cols="<?php echo $maxCols;?>"
 											><?php echo $item->translation->{$columnKey}; ?></textarea>
@@ -137,7 +137,7 @@ $predefinedOptions = array(
 											$editorid = 'translation[' . $columnKey . ']_' . $languageCode;
 											echo $editor->display(
 											// Area name
-												'translation[' . $columnKey . ']',
+												'translation[' . $languageCode . '][' . $columnKey . ']',
 												// Content
 												$item->translation->{$columnKey},
 												// Width
@@ -160,7 +160,7 @@ $predefinedOptions = array(
 												<input
 													class="input-lg form-control"
 													type="text"
-													name="translation[<?php echo $columnKey;?>]"
+													name="translation[<?php echo $languageCode; ?>][<?php echo $columnKey;?>]"
 													id="translation<?php echo $columnKey;?>"
 													size="<?php echo $length;?>"
 													value="<?php echo $item->translation->{$columnKey}; ?>" <?php echo $maxLength;?>/>
@@ -171,7 +171,7 @@ $predefinedOptions = array(
 										<?php elseif ($column['value_type'] == 'readonlytext'): ?>
 											<?php $value = !empty($item->translation->{$columnKey}) ? $item->translation->{$columnKey} : $item->original->{$columnKey}; ?>
 											<input class="inputbox form-control" readonly="yes" type="text"
-											       name="translation[<?php echo $columnKey;?>]" size="<?php echo $length;?>"
+											       name="translation[<?php echo $languageCode; ?>][<?php echo $columnKey;?>]" size="<?php echo $length;?>"
 											       value="<?php echo $value; ?>" maxlength="<?php echo $maxLength;?>"/>
 										<?php endif; ?>
 									</div>
@@ -224,7 +224,7 @@ $predefinedOptions = array(
 													'translation.params',
 													array(
 														'form' => RTranslationHelper::loadParamsForm(
-															$column, $translationTable, $item->translation, 'translation', JPATH_ADMINISTRATOR
+															$column, $translationTable, $item->translation, 'translation[' . $languageCode . ']', JPATH_ADMINISTRATOR
 														),
 														'original' => $item->original->{$columnKey},
 														'translation' => $item->translation->{$columnKey},
@@ -271,7 +271,7 @@ $predefinedOptions = array(
 			<?php foreach ($columns as $columnKey => $column) : ?>
 				<?php if ($column['value_type'] == 'hiddentext') : ?>
 					<textarea name="original[<?php echo $columnKey;?>]" style="display:none"><?php echo $item->original->{$columnKey};?></textarea>
-					<textarea name="translation[<?php echo $columnKey;?>]"  style="display:none"><?php echo $item->translation->{$columnKey}; ?></textarea>
+					<textarea name="translation[<?php echo $languageCode; ?>][<?php echo $columnKey;?>]"  style="display:none"><?php echo $item->translation->{$columnKey}; ?></textarea>
 				<?php endif; ?>
 			<?php endforeach; ?>
 		</div>
@@ -287,33 +287,42 @@ $predefinedOptions = array(
 					<div class="form-group">
 						<label><?php echo $form->getLabel('rctranslations_state'); ?></label>
 						<div class="form-controls">
-							<?php echo $form->getInput('rctranslations_state'); ?>
+							<?php
+								$rctranslations_state_form = $form->getInput('rctranslations_state');
+								echo RTranslationHelper::arrayifyTranslationJForm($rctranslations_state_form, $languageCode);
+							?>
 						</div>
 					</div>
 					<div class="form-group">
 						<label><?php echo $form->getLabel('rctranslations_modified'); ?></label>
 						<div class="form-controls">
-							<?php echo $form->getValue('rctranslations_modified'); ?>
+							<?php 
+								$rctranslations_modified_form = $form->getValue('rctranslations_modified');
+								echo RTranslationHelper::arrayifyTranslationJForm($rctranslations_modified_form, $languageCode);
+							?>
 						</div>
 					</div>
 					<?php if (!empty($form->getValue('rctranslations_modified_by'))) : ?>
 						<div class="form-group">
 							<label><?php echo $form->getLabel('rctranslations_modified_by'); ?></label>
 							<div class="form-controls">
-								<?php echo $form->getInput('rctranslations_modified_by'); ?>
+								<?php 
+									$rctranslations_modified_by = $form->getInput('rctranslations_modified_by');
+									echo RTranslationHelper::arrayifyTranslationJForm($rctranslations_modified_by, $languageCode);
+								?>
 							</div>
 						</div>
 					<?php endif; ?>
-					<?php if ($modal == false) : ?>
+					<?php if ($languageCode == 'no-language') : ?>
 						<div class="form-group">
 							<label><?php echo $form->getLabel('rctranslations_language'); ?></label>
 							<div class="form-controls">
-								<?php echo $form->getInput('rctranslations_language'); ?>
+								<?php 
+									$rctranslations_language_form = $form->getInput('rctranslations_language');
+									echo RTranslationHelper::arrayifyTranslationJForm($rctranslations_language_form, $languageCode);
+								?>
 							</div>
 						</div>
-					<?php else : ?>
-						<input type="hidden" name="jform[rctranslations_language]" id="jform_rctranslations_language"
-						       value="<?php echo $languageCode; ?>" />
 					<?php endif; ?>
 				</fieldset>
 			</div>
@@ -322,10 +331,10 @@ $predefinedOptions = array(
 
 	<!-- Hidden fields -->
 	<?php foreach ($translationTable->primaryKeys as $primaryKey): ?>
-		<input type="hidden" name="translation[<?php echo $primaryKey; ?>]" value="<?php echo $item->original->{$primaryKey}; ?>"/>
+		<input type="hidden" name="translation[<?php echo $languageCode; ?>][<?php echo $primaryKey; ?>]" value="<?php echo $item->original->{$primaryKey}; ?>"/>
 	<?php endforeach; ?>
 	<input type="hidden" name="option" value="com_redcore"/>
-	<input type="hidden" name="task" value=""/>
+	<input type="hidden" name="task" value="translation.apply"/>
 	<input type="hidden" name="id" value="<?php echo $input->getString('id', ''); ?>"/>
 	<?php if ($modal == false) : ?>
 		<input type="hidden" name="rctranslations_id" value="<?php echo $item->id; ?>" />
