@@ -119,24 +119,30 @@ class RDatabaseSqlparserSqlcreator {
 		return substr($sql, 0, -1);
 	}
 
-	protected function processSELECT($parsed) {
+	protected function processSELECT($parsed)
+	{
 		$sql = "";
 
-		foreach ($parsed as $k => $v) {
+		foreach ($parsed as $k => $v)
+		{
 			$len = strlen($sql);
+			$sql .= $this->processReserved($v);
 			$sql .= $this->processColRef($v);
 			$sql .= $this->processSelectExpression($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processSelectBracketExpression($v);
 
-			if ($len == strlen($sql)) {
+			if ($len == strlen($sql))
+			{
 				throw new RDatabaseSqlparserExceptioncreatesql('SELECT', $k, $v, 'expr_type');
 			}
 
 			$sql .= ",";
 		}
+
 		$sql = substr($sql, 0, -1);
+
 		return "SELECT " . $sql;
 	}
 
@@ -760,11 +766,21 @@ class RDatabaseSqlparserSqlcreator {
 		return $sql;
 	}
 
-	protected function processReserved($parsed) {
-		if (!$this->isReserved($parsed)) {
+	protected function processReserved($parsed)
+	{
+		if (!$this->isReserved($parsed))
+		{
 			return "";
 		}
-		return $parsed['base_expr'];
+
+		$sql = $parsed['base_expr'];
+
+		if (isset($parsed['alias']))
+		{
+			$sql .= $this->processAlias($parsed['alias']);
+		}
+
+		return $sql;
 	}
 
 	protected function isReserved($parsed) {
