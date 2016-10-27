@@ -11,15 +11,17 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
+$data->picker = isset($data->picker) ? $data->picker : 'datepicker';
+
 // Add jquery UI js.
-JHtml::_('rjquery.datepicker');
+JHtml::_('rjquery.' . $data->picker);
 
 $doc = JFactory::getDocument();
 
 $script = "
 (function($){
 	$(document).ready(function () {
-		$('" . $data->cssId . "').datepicker(" . $data->datepickerOptions . ");
+		$('" . $data->cssId . "')." . $data->picker . "(" . $data->datepickerOptions . ");
 	});
 })(jQuery);
 ";

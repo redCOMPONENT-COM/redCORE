@@ -287,58 +287,7 @@ trait RTableTraitTable
 			$this->setRules($rules);
 		}
 
-		// If the source value is an object, get its accessible properties.
-		if (is_object($src))
-		{
-			$arraySrc = get_object_vars($src);
-		}
-		else
-		{
-			$arraySrc = $src;
-		}
-
-		// If the ignore value is a string, explode it over spaces.
-		if (!is_array($ignore))
-		{
-			$arrayIgnore = explode(' ', $ignore);
-		}
-		else
-		{
-			$arrayIgnore = $ignore;
-		}
-
-		$previousTableFieldCreatedBy = $this->_tableFieldCreatedBy;
-		$previousTableFieldCreatedDate = $this->_tableFieldCreatedDate;
-		$previousTableFieldModifiedBy = $this->_tableFieldModifiedBy;
-		$previousTableFieldModifiedDate = $this->_tableFieldModifiedDate;
-
-		if (array_key_exists($this->_tableFieldCreatedBy, $arraySrc) && !array_key_exists($this->_tableFieldCreatedBy, $arrayIgnore))
-		{
-			$this->_tableFieldCreatedBy = '';
-		}
-
-		if (array_key_exists($this->_tableFieldCreatedDate, $arraySrc) && !array_key_exists($this->_tableFieldCreatedDate, $arrayIgnore))
-		{
-			$this->_tableFieldCreatedDate = '';
-		}
-
-		if (array_key_exists($this->_tableFieldModifiedBy, $arraySrc) && !array_key_exists($this->_tableFieldModifiedBy, $arrayIgnore))
-		{
-			$this->_tableFieldModifiedBy = '';
-		}
-
-		if (array_key_exists($this->_tableFieldModifiedDate, $arraySrc) && !array_key_exists($this->_tableFieldModifiedDate, $arrayIgnore))
-		{
-			$this->_tableFieldModifiedDate = '';
-		}
-
-		$return = parent::bind($src, $ignore);
-		$this->_tableFieldCreatedBy = $previousTableFieldCreatedBy;
-		$this->_tableFieldCreatedDate = $previousTableFieldCreatedDate;
-		$this->_tableFieldModifiedBy = $previousTableFieldModifiedBy;
-		$this->_tableFieldModifiedDate = $previousTableFieldModifiedDate;
-
-		return $return;
+		return parent::bind($src, $ignore);
 	}
 
 	/**
@@ -581,7 +530,7 @@ trait RTableTraitTable
 		// Audit fields optional auto-update (on by default)
 		if ($this->getOption('updateAuditFields', true))
 		{
-			$this->updateAuditFields($this);
+			$this->updateAuditFields();
 		}
 
 		return true;
@@ -790,24 +739,17 @@ trait RTableTraitTable
 	}
 
 	/**
-	 * Method to update audit fields using a static function, to reuse in non-children classes like RNestedTable
-	 *
-	 * @param   RedcoreTableTraitTable  &$tableInstance  Table instance
+	 * Method to update audit fields using a static function
 	 *
 	 * @return  void
 	 *
 	 * @since   1.5.2
 	 */
-	public function updateAuditFields(&$tableInstance)
+	public function updateAuditFields()
 	{
-		$tableFieldCreatedBy = $tableInstance->get('_tableFieldCreatedBy');
-		$tableFieldCreatedDate = $tableInstance->get('_tableFieldCreatedDate');
-		$tableFieldModifiedBy = $tableInstance->get('_tableFieldModifiedBy');
-		$tableFieldModifiedDate = $tableInstance->get('_tableFieldModifiedDate');
-		$auditDateFormat = $tableInstance->get('_auditDateFormat');
 		$user = JFactory::getUser();
 
-		switch ($tableInstance->get('_dateConversion'))
+		switch ($this->_dateConversion)
 		{
 			// Get the user timezone setting defaulting to the server timezone setting.
 			case 'USER_UTC':
@@ -824,41 +766,41 @@ trait RTableTraitTable
 		}
 
 		// Optional created_by field updated when present
-		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedBy))
+		if (!$this->hasPrimaryKey() && property_exists($this, $this->_tableFieldCreatedBy))
 		{
 			if ($user->id)
 			{
-				$tableInstance->{$tableFieldCreatedBy} = $user->id;
+				$this->{$this->_tableFieldCreatedBy} = $user->id;
 			}
 			else
 			{
-				$tableInstance->{$tableFieldCreatedBy} = null;
+				$this->{$this->_tableFieldCreatedBy} = null;
 			}
 		}
 
 		// Optional created_date field updated when present
-		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedDate))
+		if (!$this->hasPrimaryKey() && property_exists($this, $this->_tableFieldCreatedDate))
 		{
-			$tableInstance->{$tableFieldCreatedDate} = JFactory::getDate('now', $offset)->format($auditDateFormat);
+			$this->{$this->_tableFieldCreatedDate} = JFactory::getDate('now', $offset)->format($this->_auditDateFormat);
 		}
 
 		// Optional modified_by field updated when present
-		if (property_exists($tableInstance, $tableFieldModifiedBy))
+		if (property_exists($this, $this->_tableFieldModifiedBy))
 		{
 			if ($user->id)
 			{
-				$tableInstance->{$tableFieldModifiedBy} = $user->id;
+				$this->{$this->_tableFieldModifiedBy} = $user->id;
 			}
 			else
 			{
-				$tableInstance->{$tableFieldModifiedBy} = null;
+				$this->{$this->_tableFieldModifiedBy} = null;
 			}
 		}
 
 		// Optional modified_date field updated when present
-		if (property_exists($tableInstance, $tableFieldModifiedDate))
+		if (property_exists($this, $this->_tableFieldModifiedDate))
 		{
-			$tableInstance->{$tableFieldModifiedDate} = JFactory::getDate('now', $offset)->format($auditDateFormat);
+			$this->{$this->_tableFieldModifiedDate} = JFactory::getDate('now', $offset)->format($this->_auditDateFormat);
 		}
 	}
 

@@ -34,6 +34,8 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	 */
 	public $cssId = null;
 
+	public $picker = 'datepicker';
+
 	/**
 	 * Field input
 	 *
@@ -169,7 +171,17 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 		$user = JFactory::getUser();
 		$phpFormat = $this->dateFormatJQueryUIToPHP($this->getAttribute('dateFormat'));
 
-		// If a known filter is given use it. Allowed data just like database format 'Y-m-d' and/or 'H:i:s'
+		if (isset($this->element['showTime']) && $this->element['showTime'] == 'true')
+		{
+			$phpFormat .= ' H:i:s';
+			$this->picker = 'datetimepicker';
+		}
+		else
+		{
+			$this->picker = 'datepicker';
+		}
+
+		// If a known filter is given use it. Allowed data just like database format 'Y-m-d H:i:s'
 		switch (strtoupper($this->filter))
 		{
 			case 'SERVER_UTC':
@@ -306,7 +318,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	 */
 	protected function getDatepickerOptions()
 	{
-		$options = new JRegistry;
+		$return = '{';
 
 		$optionsToCheck = array(
 			'altField'               => array('type' => 'string'),
@@ -356,45 +368,59 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 			// 'weekHeader'          => array('type' => 'string'),
 			'yearRange'              => array('type' => 'string'),
 			// 'yearSuffix'          => array('type' => 'string'),
+			'onSelect'               => array('type' => 'function'),
+			'timeFormat'             => array('type' => 'string', 'default' => 'HH:mm:ss')
 		);
 
 		if ($optionsToCheck)
 		{
-			foreach ($optionsToCheck as $attribute => $option)
-			{
-				if (!empty($this->element[$attribute]) || isset($option['default']))
-				{
-					$value = isset($this->element[$attribute]) ? $this->element[$attribute] : $option['default'];
+			$options = array();
 
-					switch ((string) $option['type'])
+			foreach ($optionsToCheck as $attribute => $params)
+			{
+				if (!empty($this->element[$attribute]) || isset($params['default']))
+				{
+					$value = isset($this->element[$attribute]) ? $this->element[$attribute] : $params['default'];
+					$option = '"' . $attribute . '":';
+
+					switch ((string) $params['type'])
 					{
 						case 'bool':
 						case 'boolean':
-							$value = (boolean) $value;
+						$option .= (boolean) $value;
 							break;
 						case 'int':
 						case 'integer':
-							$value = (integer) $value;
+						$option .= (integer) $value;
 							break;
 						case 'double':
 						case 'float':
 						case 'real':
-							$value = (double) $value;
+						$option .= (double) $value;
 							break;
 						case 'array':
 							$value = str_replace(array('[', ']'), '', $value);
-							$value = explode(',', $value);
+							$option .= json_encode(explode(',', $value));
+							break;
+
+						// Do nothing with value
+						case 'function':
+							$option .= $value;
 							break;
 						default:
-							$value = (string) $value;
+							$option .= json_encode((string) $value);
 							break;
 					}
 
-					$options->set($attribute, $value);
+					$options[] = $option;
 				}
 			}
+
+			$return .= implode(',', $options);
 		}
 
-		return $options->toString();
+		$return .= '}';
+
+		return $return;
 	}
 }
