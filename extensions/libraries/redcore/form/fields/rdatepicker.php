@@ -57,6 +57,13 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	 */
 	protected $filter;
 
+	/**
+	 * Show time addon
+	 *
+	 * @var  bool
+	 */
+	protected $showTime = false;
+
 	protected $symbolsMatching = array(
 		// Day
 		'dd' => 'd',
@@ -109,6 +116,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 		if ($return)
 		{
 			$this->filter = (string) $this->element['filter'] ? (string) $this->element['filter'] : '';
+			$this->showTime = (string) $this->element['showTime'] && (string) $this->element['showTime'] == 'true' ? true : false;
 		}
 
 		return $return;
@@ -126,6 +134,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 		switch ($name)
 		{
 			case 'filter':
+			case 'showTime':
 				return $this->$name;
 		}
 
@@ -146,6 +155,21 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 		{
 			case 'filter':
 				$this->$name = (string) $value;
+				break;
+			case 'showTime':
+				if (is_bool($value))
+				{
+					$this->$name = $value;
+				}
+				elseif ($value == 'true')
+				{
+					$this->$name = true;
+				}
+				else
+				{
+					$this->$name = false;
+				}
+
 				break;
 
 			default:
@@ -171,7 +195,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 		$user = JFactory::getUser();
 		$phpFormat = $this->dateFormatJQueryUIToPHP($this->getAttribute('dateFormat'));
 
-		if (isset($this->element['showTime']) && $this->element['showTime'] == 'true')
+		if ($this->showTime == true)
 		{
 			$phpFormat .= ' H:i:s';
 			$this->picker = 'datetimepicker';

@@ -1020,8 +1020,6 @@ class RTable extends JTable
 		// Optional created_by field updated when present
 		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedBy))
 		{
-			$user = JFactory::getUser();
-
 			if ($user->id)
 			{
 				$tableInstance->{$tableFieldCreatedBy} = $user->id;
@@ -1041,11 +1039,6 @@ class RTable extends JTable
 		// Optional modified_by field updated when present
 		if (property_exists($tableInstance, $tableFieldModifiedBy))
 		{
-			if (!isset($user))
-			{
-				$user = JFactory::getUser();
-			}
-
 			if ($user->id)
 			{
 				$tableInstance->{$tableFieldModifiedBy} = $user->id;
