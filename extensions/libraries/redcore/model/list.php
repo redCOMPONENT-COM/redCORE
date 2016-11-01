@@ -454,6 +454,9 @@ abstract class RModelList extends JModelList
 			// We pass the data because plugins may require it.
 			$this->preprocessForm($form, $data);
 
+			// Filter and validate the form data.
+			$data = $form->filter($data);
+
 			// Load the data into the form after the plugins have operated.
 			$form->bind($data);
 		}

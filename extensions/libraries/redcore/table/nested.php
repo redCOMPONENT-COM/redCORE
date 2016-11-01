@@ -91,13 +91,6 @@ class RTableNested extends JTableNested
 	protected $_auditDateFormat = 'Y-m-d H:i:s';
 
 	/**
-	 * Convert a date to UTC based on the user timezone offset or on the server timezone offset.
-	 *
-	 * @var string USER_UTC|SERVER_UTC|null
-	 */
-	protected $_dateConversion = null;
-
-	/**
 	 * An array of plugin types to import.
 	 *
 	 * @var  array

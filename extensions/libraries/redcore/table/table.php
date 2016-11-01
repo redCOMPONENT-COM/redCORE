@@ -89,13 +89,6 @@ class RTable extends JTable
 	protected $_auditDateFormat = 'Y-m-d H:i:s';
 
 	/**
-	 * Convert a date to UTC based on the user timezone offset or on the server timezone offset.
-	 *
-	 * @var string USER_UTC|SERVER_UTC|null
-	 */
-	protected $_dateConversion = null;
-
-	/**
 	 * An array of plugin types to import.
 	 *
 	 * @var  array
@@ -999,27 +992,12 @@ class RTable extends JTable
 		$tableFieldModifiedBy = $tableInstance->get('_tableFieldModifiedBy');
 		$tableFieldModifiedDate = $tableInstance->get('_tableFieldModifiedDate');
 		$auditDateFormat = $tableInstance->get('_auditDateFormat');
-		$user = JFactory::getUser();
-
-		switch ($tableInstance->get('_dateConversion'))
-		{
-			// Get the user timezone setting defaulting to the server timezone setting.
-			case 'USER_UTC':
-				$offset = $user->getParam('timezone', JFactory::getConfig()->get('offset'));
-				break;
-
-			// Get the server timezone setting.
-			case 'SERVER_UTC':
-				$offset = JFactory::getConfig()->get('offset');
-				break;
-			default:
-				$offset = null;
-				break;
-		}
 
 		// Optional created_by field updated when present
 		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedBy))
 		{
+			$user = JFactory::getUser();
+
 			if ($user->id)
 			{
 				$tableInstance->{$tableFieldCreatedBy} = $user->id;
@@ -1033,12 +1011,17 @@ class RTable extends JTable
 		// Optional created_date field updated when present
 		if (!$tableInstance->hasPrimaryKey() && property_exists($tableInstance, $tableFieldCreatedDate))
 		{
-			$tableInstance->{$tableFieldCreatedDate} = JFactory::getDate('now', $offset)->format($auditDateFormat);
+			$tableInstance->{$tableFieldCreatedDate} = JFactory::getDate()->format($auditDateFormat);
 		}
 
 		// Optional modified_by field updated when present
 		if (property_exists($tableInstance, $tableFieldModifiedBy))
 		{
+			if (!isset($user))
+			{
+				$user = JFactory::getUser();
+			}
+
 			if ($user->id)
 			{
 				$tableInstance->{$tableFieldModifiedBy} = $user->id;
@@ -1052,7 +1035,7 @@ class RTable extends JTable
 		// Optional modified_date field updated when present
 		if (property_exists($tableInstance, $tableFieldModifiedDate))
 		{
-			$tableInstance->{$tableFieldModifiedDate} = JFactory::getDate('now', $offset)->format($auditDateFormat);
+			$tableInstance->{$tableFieldModifiedDate} = JFactory::getDate()->format($auditDateFormat);
 		}
 	}
 }
