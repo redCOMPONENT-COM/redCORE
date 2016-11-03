@@ -211,7 +211,7 @@ class RApiSoapSoap extends RApi
 		}
 
 		// WSDL file is not present, we are going to generate it on the fly
-		$this->wsdl = RApiSoapHelper::generateWsdl($this->webservice->configuration, $this->wsdlPath);
+		$this->wsdl = RApiSoapHelper::generateWsdl($this->webservice->configuration, $this->webservice->webservicePath, $this->wsdlPath);
 		RApiSoapHelper::saveWsdlContentToPath($this->wsdl, JPATH_SITE . '/' . $this->wsdlPath);
 
 		return $this->wsdlPath;
