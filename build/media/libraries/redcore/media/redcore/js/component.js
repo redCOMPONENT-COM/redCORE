@@ -81,9 +81,13 @@
         }
 
         // Quick temporary fix for 3.6.4
-        $._data(document, 'events').click.filter(function (el) {
+        var dataApiDropdownEventHandler = $._data(document, 'events').click.filter(function (el) {
             return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined
-        })[0].namespace = 'data-api.dropdown';
+        });
+
+        if (dataApiDropdownEventHandler[0] != null) {
+            dataApiDropdownEventHandler[0].namespace = 'data-api.dropdown';
+        }
     });
 
     // add color classes to chosen field based on value
