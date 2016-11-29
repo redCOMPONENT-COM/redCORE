@@ -2417,12 +2417,20 @@ class RApiHalHal extends RApi
 
 		// We will add this instance of the object as last argument for manipulation in plugin and helper
 		$temp[] = &$this;
+		$return = null;
 
-		$result = JFactory::getApplication()->triggerEvent('RApiHalBefore' . $functionName, array($functionName, $temp));
+		$result = JFactory::getApplication()->triggerEvent('RApiHalBefore' . $functionName, array($functionName, $temp, &$return));
 
 		if ($result)
 		{
-			return $result;
+			if ($return !== null)
+			{
+				return $return;
+			}
+			else
+			{
+				return $result;
+			}
 		}
 
 		// Checks if that method exists in helper file and executes it
