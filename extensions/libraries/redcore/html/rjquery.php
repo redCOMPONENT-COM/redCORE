@@ -118,6 +118,38 @@ abstract class JHtmlRjquery
 	}
 
 	/**
+	 * Load the datetimepicker.
+	 *
+	 * @return  void
+	 */
+	public static function datetimepicker()
+	{
+		self::datepicker();
+
+		// Only load once
+		if (!empty(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
+
+		RHelperAsset::load('lib/jquery-timepicker-addon/js/jquery-ui-timepicker-addon.js', self::EXTENSION);
+
+		// Include translations
+		$langTag = JFactory::getLanguage()->getTag();
+		$langTagParts = explode('-', $langTag);
+		$mainLang = reset($langTagParts);
+
+		RHelperAsset::load('lib/jquery-timepicker-addon/i18n/jquery-ui-timepicker-' . $langTag . '.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-timepicker-addon/i18n/jquery-ui-timepicker-' . $mainLang . '.js', self::EXTENSION);
+
+		RHelperAsset::load('lib/jquery-timepicker-addon/css/jquery-ui-timepicker-addon.css', self::EXTENSION);
+
+		static::$loaded[__METHOD__] = true;
+
+		return;
+	}
+
+	/**
 	 * Load the dependent fields
 	 *
 	 * @param   string  $childFieldSelector  DOM selector to apply the dropdowns
