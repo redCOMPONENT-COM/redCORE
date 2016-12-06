@@ -1101,6 +1101,9 @@ class RApiPaymentHelper
 		/** @var RedcoreModelPayment_Log $logModel */
 		$logModel = RModelAdmin::getAdminInstance('Payment_Log', array(), 'com_redcore');
 
+		// Avoid ghost id from URL
+		$paymentLog['id'] = 0;
+
 		if ($logModel->save($paymentLog))
 		{
 			if ($updatePaymentStatus)
