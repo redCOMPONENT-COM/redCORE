@@ -96,6 +96,7 @@ class RApiPaymentDocumentDocument extends JDocument
 
 		// Get the payment string from the buffer.
 		$content = $this->getBuffer();
+		$jsonEncodedContent = json_encode($content, JSON_UNESCAPED_SLASHES);
 
 		RApi::setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
 		RApi::setHeader('Server', '', true);
@@ -106,7 +107,7 @@ class RApiPaymentDocumentDocument extends JDocument
 		RApi::setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
 		RApi::setHeader('Cache-Control', 'private', false);
 		RApi::setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-		RApi::setHeader('Content-length', strlen($content), true);
+		RApi::setHeader('Content-length', strlen($jsonEncodedContent), true);
 		RApi::setHeader('Content-Language', $language, true);
 
 		RApi::sendHeaders();
