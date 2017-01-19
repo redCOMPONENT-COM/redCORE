@@ -107,6 +107,16 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
+        <field
+                name="translate_in_admin"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_TRANSLATE_IN_ADMIN"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_TRANSLATE_IN_ADMIN_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
     </fieldset>
     <fieldset name="REDCORE_WEBSERVICES_OPTIONS"
               addfieldpath="/libraries/redcore/form/fields"
