@@ -209,7 +209,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		 */
 		if (!$validSelect
 			|| $isDefaultLanguage
-			|| $isAdmin)
+			|| ($isAdmin && !self::getOption('translateInAdmin', false)))
 		{
 			if (empty($db->parseTablesBefore) && empty($db->parseTablesAfter))
 			{
@@ -1070,5 +1070,17 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function setForceTranslateDefaultLanguage($enable = false)
 	{
 		self::setOption('forceTranslateDefault', $enable);
+	}
+
+	/**
+	 * Set a translate data in Admin value.
+	 *
+	 * @param   bool  $enable  Enable or disable translation fallback feature
+	 *
+	 * @return  null
+	 */
+	public static function setTranslationInAdmin($enable = false)
+	{
+		self::setOption('translateInAdmin', $enable);
 	}
 }
