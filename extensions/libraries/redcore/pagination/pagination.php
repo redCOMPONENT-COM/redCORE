@@ -496,6 +496,10 @@ class RPagination
 			$list['previous']['active'] = (null !== $data->previous->base);
 			$list['previous']['data']   = $data->previous;
 
+			// Previous 10 link
+			$list['previous_10']['active'] = (null !== $data->previous_10->base);
+			$list['previous_10']['data']   = $data->previous_10;
+
 			// Make sure it exists
 			$list['pages'] = array();
 
@@ -507,6 +511,9 @@ class RPagination
 
 			$list['next']['active'] = (null !== $data->next->base);
 			$list['next']['data']   = $data->next;
+
+			$list['next_10']['active'] = (null !== $data->next_10->base);
+			$list['next_10']['data']   = $data->next_10;
 
 			$list['end']['active'] = (null !== $data->end->base);
 			$list['end']['data']   = $data->end;
@@ -732,6 +739,8 @@ class RPagination
 		// Set the start and previous data objects.
 		$data->start = new RPaginationObject(JText::_('JLIB_HTML_START'), $this->prefix);
 		$data->start->setFormName($this->formName);
+		$data->previous_10 = new RPaginationObject(JText::_('LIB_REDCORE_PREVIOUS_10'), $this->prefix);
+		$data->previous_10->setFormName($this->formName);
 		$data->previous = new RPaginationObject(JText::_('JPREV'), $this->prefix);
 		$data->previous->setFormName($this->formName);
 
@@ -748,9 +757,19 @@ class RPagination
 			$data->previous->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $page);
 		}
 
+		if ($this->pagesCurrent > 10)
+		{
+			$page = ($this->pagesCurrent - 11) * $this->limit;
+
+			$data->previous_10->base = $page;
+			$data->previous_10->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $page);
+		}
+
 		// Set the next and end data objects.
 		$data->next = new RPaginationObject(JText::_('JNEXT'), $this->prefix);
 		$data->next->setFormName($this->formName);
+		$data->next_10 = new RPaginationObject(JText::_('LIB_REDCORE_NEXT_10'), $this->prefix);
+		$data->next_10->setFormName($this->formName);
 		$data->end = new RPaginationObject(JText::_('JLIB_HTML_END'), $this->prefix);
 		$data->end->setFormName($this->formName);
 
@@ -763,6 +782,14 @@ class RPagination
 			$data->next->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $next);
 			$data->end->base = $end;
 			$data->end->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $end);
+		}
+
+		if ($this->pagesCurrent < $this->pagesTotal - 9)
+		{
+			$page = ($this->pagesCurrent + 9) * $this->limit;
+
+			$data->next_10->base = $page;
+			$data->next_10->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $page);
 		}
 
 		$data->pages = array();
