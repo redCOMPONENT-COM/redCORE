@@ -109,6 +109,8 @@ class RApiHalHelperSiteUsers
 		$options = array(
 			'action' => 'core.login.site'
 		);
+
+		$response = new stdClass;
 		$response->username = $user->username;
 
 		$app = JFactory::getApplication('site');
