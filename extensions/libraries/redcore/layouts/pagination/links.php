@@ -57,6 +57,7 @@ if ($currentPage >= $step)
 		<ul class="pagination-list">
 			<?php
 				echo RLayoutHelper::render('pagination.link', $pages['start']);
+				echo RLayoutHelper::render('pagination.link', $pages['previous_10']);
 				echo RLayoutHelper::render('pagination.link', $pages['previous']); ?>
 			<?php foreach ($pages['pages'] as $k => $page) : ?>
 
@@ -71,6 +72,7 @@ if ($currentPage >= $step)
 			<?php endforeach; ?>
 			<?php
 				echo RLayoutHelper::render('pagination.link', $pages['next']);
+				echo RLayoutHelper::render('pagination.link', $pages['next_10']);
 				echo RLayoutHelper::render('pagination.link', $pages['end']); ?>
 		</ul>
 	<?php endif; ?>

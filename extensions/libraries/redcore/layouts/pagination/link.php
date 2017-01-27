@@ -17,7 +17,7 @@ switch ((string) $item->text)
 {
 	// Check for "Start" item
 	case JText::_('JLIB_HTML_START') :
-		$icon = "icon-backward";
+		$icon = "icon-fast-backward";
 		break;
 
 	// Check for "Prev" item
@@ -26,14 +26,24 @@ switch ((string) $item->text)
 		$icon = "icon-step-backward";
 		break;
 
+	// Check for "Prev" item
+	case $item->text == JText::_('LIB_REDCORE_PREVIOUS_10') :
+		$icon = "icon-backward";
+		break;
+
 	// Check for "Next" item
 	case JText::_('JNEXT') :
 		$icon = "icon-step-forward";
 		break;
 
+	// Check for "Next" item
+	case JText::_('LIB_REDCORE_NEXT_10') :
+		$icon = "icon-forward";
+		break;
+
 	// Check for "End" item
 	case JText::_('JLIB_HTML_END') :
-		$icon = "icon-forward";
+		$icon = "icon-fast-forward";
 		break;
 
 	default:
