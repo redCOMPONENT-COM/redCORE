@@ -380,10 +380,11 @@ class RLoader extends JLoader
 	 */
 	public static function setup($enablePsr = false, $enablePrefixes = true, $enableClasses = true)
 	{
-		if ($enableClasses)
+		if ($enablePsr)
 		{
-			// Register the class map based autoloader.
-			spl_autoload_register(array('RLoader', 'load'), true, true);
+			// Register the PSR-0 based autoloader.
+			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
+			spl_autoload_register(array('RLoader', 'loadByAlias'));
 		}
 
 		if ($enablePrefixes)
@@ -392,11 +393,10 @@ class RLoader extends JLoader
 			spl_autoload_register(array('RLoader', '_autoload'), true, true);
 		}
 
-		if ($enablePsr)
+		if ($enableClasses)
 		{
-			// Register the PSR-0 based autoloader.
-			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
-			spl_autoload_register(array('RLoader', 'loadByAlias'));
+			// Register the class map based autoloader.
+			spl_autoload_register(array('RLoader', 'load'), true, true);
 		}
 	}
 
