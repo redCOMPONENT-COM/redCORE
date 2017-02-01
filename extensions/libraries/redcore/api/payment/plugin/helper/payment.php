@@ -396,17 +396,32 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		}
 
 		$data['id'] = $paymentId;
+		$updateMainPaymentStatus = true;
 
 		if (empty($data['payment_log']))
 		{
+			$paymentStatus = RApiPaymentStatus::getStatusCreated();
+
+			if (!$isNew)
+			{
+				// If the payment not new and any other log not found, then current event must inherit the last payment status
+				$prevLog = RApiPaymentHelper::getLastPaymentLog($paymentId);
+
+				if ($prevLog)
+				{
+					$paymentStatus = $prevLog->status;
+					$updateMainPaymentStatus = false;
+				}
+			}
+
 			$data['payment_log'] = RApiPaymentHelper::generatePaymentLog(
-				RApiPaymentStatus::getStatusCreated(),
+				$paymentStatus,
 				$data,
 				JText::sprintf('LIB_REDCORE_PAYMENT_LOG_' . ($isNew ? 'CREATE' : 'UPDATE') . '_MESSAGE', $data['extension_name'], $this->paymentName)
 			);
 		}
 
-		RApiPaymentHelper::saveNewPaymentLog($data['payment_log']);
+		RApiPaymentHelper::saveNewPaymentLog($data['payment_log'], $updateMainPaymentStatus);
 
 		return $paymentId;
 	}

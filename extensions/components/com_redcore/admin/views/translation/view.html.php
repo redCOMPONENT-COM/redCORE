@@ -42,7 +42,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	/**
 	 * @var  object
 	 */
-	public $contentElement;
+	public $translationTableName;
 
 	/**
 	 * @var  array
@@ -79,37 +79,34 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	public function display($tpl = null)
 	{
 		$this->form	= $this->get('Form');
-		$this->translationTable = RedcoreHelpersTranslation::getTranslationTable();
-		$this->contentElement = RTranslationHelper::getContentElement($this->translationTable->option, $this->translationTable->xml);
+		$app = JFactory::getApplication();
+		$this->translationTableName = $app->input->get('translationTableName', '');
+		$this->translationTable = RTranslationTable::setTranslationTableWithColumn($this->translationTableName);
+
 		$this->item	= $this->get('Item');
 
-		$editor = JFactory::getConfig()->get('editor');
+		$editor       = JFactory::getConfig()->get('editor');
 		$this->editor = JEditor::getInstance($editor);
 
 		$this->columns = array();
 		$this->noTranslationColumns = array();
 		$tableColumns = (array) $this->translationTable->columns;
-		$this->fieldsXml = $this->contentElement->getTranslateFields();
 
-		foreach ($this->fieldsXml as $field)
+		foreach ($this->translationTable->allColumns as $field)
 		{
 			foreach ($tableColumns as $column)
 			{
-				if ($column == (string) $field['name'])
+				if ($column == $field['name'])
 				{
-					$attributes = current($field->attributes());
-					$attributes['titleLabel'] = (string) $field;
-					$this->columns[$column] = $attributes;
+					$this->columns[$column] = $field;
 
 					break;
 				}
 			}
 
-			if ((string) $field['translate'] == '0' && (string) $field['type'] != 'referenceid')
+			if ($field['column_type'] != RTranslationTable::COLUMN_TRANSLATE && $field['value_type'] != 'referenceid')
 			{
-				$attributes = current($field->attributes());
-				$attributes['titleLabel'] = (string) $field;
-				$this->noTranslationColumns[(string) $field['name']] = $attributes;
+				$this->noTranslationColumns[$field['name']] = $field;
 			}
 		}
 
@@ -118,8 +115,10 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 		{
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
-					'COM_REDCORE_CONFIG_TRANSLATIONS_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+					'COM_REDCORE_TRANSLATION_TABLE_PLUGIN_LABEL_WARNING',
+					'<a href="index.php?option=com_redcore&view=config&layout=edit&component=com_redcore">'
+					. JText::_('COM_REDCORE_CONFIGURE')
+					. '</a>'
 				),
 				'error');
 		}
@@ -158,5 +157,38 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 		$toolbar->addGroup($group);
 
 		return $toolbar;
+	}
+
+	/**
+	 * Get the protected properties that are needed to create translation layout.
+	 *
+	 * @return  array
+	 */
+	public function getLayoutProperties()
+	{
+		$array = array(
+				'item' => $this->item,
+				'form' => $this->form,
+				'editor' => $this->editor,
+			);
+
+		return $array;
+	}
+
+	/**
+	 * Set the current item to a specific id.
+	 *
+	 * @param   array  $transId  Id the current item should be set to.
+	 *
+	 * @return  void
+	 */
+	public function setItem($transId)
+	{
+		$input = JFactory::getApplication()->input;
+		$input->set('rctranslations_id', $transId);
+
+		$item = $this->get('Item');
+		$this->item = $item;
+		$this->form = $this->get('Form');
 	}
 }

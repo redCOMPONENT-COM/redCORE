@@ -248,12 +248,21 @@ class RedcoreModelWebservice extends RModelAdmin
 			{
 				if (JFile::exists($oldPath))
 				{
+					// Xml file
 					JFile::delete($oldPath);
+
+					// Wsdl file
+					$oldPathWsdl = substr($oldPath, 0, strlen($oldPath) - 4) . '.wsdl';
+
+					if (JFile::exists($oldPathWsdl))
+					{
+						JFile::delete($oldPathWsdl);
+					}
 				}
 			}
 		}
 
-		$wsdl = RApiSoapHelper::generateWsdl($xml);
+		$wsdl = RApiSoapHelper::generateWsdl($xml, null, $data['main']['path']);
 		$fullWsdlPath = substr($fullPath, 0, -4) . '.wsdl';
 
 		return RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);

@@ -1,0 +1,10 @@
+class_name: ApisoapTester
+modules:
+    enabled:
+      - \Helper\Apisoap
+      - PhpBrowser:
+          url: http://localhost/tests/joomla-cms3/
+      - SOAP:
+          depends: PhpBrowser
+          endpoint: api_url
+          schema: wsdl

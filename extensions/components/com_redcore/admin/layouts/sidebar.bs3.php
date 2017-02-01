@@ -8,17 +8,13 @@
  */
 
 defined('_JEXEC') or die;
-$option = JFactory::getApplication()->input->getString('component', '');
-$view = RInflector::pluralize(JFactory::getApplication()->input->getString('view', ''));
-$return = JFactory::getApplication()->input->getString('return', '');
-$contentElement = JFactory::getApplication()->input->getString('contentelement', '');
-$components = RedcoreHelpersView::getExtensionsRedcore();
-$translationTables = RTranslationHelper::getInstalledTranslationTables();
-
-if (empty($return))
-{
-	$return = base64_encode('index.php?option=com_redcore&view=dashboard');
-}
+$app = JFactory::getApplication();
+$option = $app->input->getString('component', '');
+$view = RInflector::pluralize($app->input->getString('view', ''));
+$return = $app->input->getString('return', '');
+$translationTableName = $app->input->getString('translationTableName', '');
+$components = RedcoreHelpersView::getExtensionsRedcore(true);
+$translationTables = RTranslationTable::getInstalledTranslationTables(false, true);
 ?>
 <div class="panel-group" id="rc-sidebar-accordion">
 	<div class="panel panel-default">
@@ -65,20 +61,21 @@ if (empty($return))
 		<div id="rc-sidebar-accordion-translations" class="panel-collapse collapse<?php echo $view === 'translations' ? ' in' : '';?>">
 			<ul class="list-group">
 				<li class="list-group-item">
-					<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translations&contentelement=&layout=manage&return=' . $return) ?>">
+					<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=translation_tables') ?>">
 						<i class="icon-globe"></i>
 						<?php echo JText::_('COM_REDCORE_TRANSLATIONS_MANAGE_CONTENT_ELEMENTS') ?>
 					</a>
 				</li>
 				<?php foreach ($translationTables as $translationTable) : ?>
-					<li class="list-group-item <?php echo $contentElement == str_replace('#__', '', $translationTable->table) ? 'list-group-item-info' : ''; ?>">
+					<li class="list-group-item <?php echo $translationTableName == str_replace('#__', '', $translationTable->table) ? 'list-group-item-info' : ''; ?>">
 						<a href="<?php echo JRoute::_(
-							'index.php?option=com_redcore&view=translations&component=' . $translationTable->option . '&contentelement='
+							'index.php?option=com_redcore&view=translations&filter[translationTableName]='
 							. str_replace('#__', '', $translationTable->table)
+							. '&filter[language]=' . $app->getUserStateFromRequest('com_redcore.translations.translations.filter.language', 'language', '', 'string')
 							. '&return=' . $return
 						); ?>">
 							<i class="icon-globe"></i>
-							<?php echo $translationTable->name; ?>
+							<?php echo $translationTable->title; ?>
 						</a>
 					</li>
 				<?php endforeach; ?>

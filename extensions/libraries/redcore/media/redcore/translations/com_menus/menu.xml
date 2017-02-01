@@ -1,27 +1,25 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Menus</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
-    <description>Translation definition for Joomla Menu Manager</description>
-    <reference>
-        <table name="menu">
-            <field type="referenceid" name="id" translate="0">ID</field>
-            <field type="titletext" name="title" translate="1">Name</field>
-            <field type="text" name="alias" translate="1" posthandler="filterTitle" alwaysFallback="true">Menu Alias</field>
-            <field type="readonlytext" name="link" translate="1" posthandler="saveUrlParams" alwaysFallback="true">Link</field>
-            <field type="readonlytext" name="path" translate="1" posthandler="saveMenuPath">Path</field>
-            <field type="text" name="type" translate="0">Menu Type</field>
-            <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-            <field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
-            <field type="hiddentext" name="home" translate="1" alwaysFallback="true">Homepage</field>
-            <field type="params" name="params" formname="item" fieldsname="params" xpath="true" translate="1" alwaysFallback="true">Params</field>
-            <field type="state" name="published" translate="1" alwaysFallback="true">State</field>
-            <filter>o.client_id = 0 AND o.lft > 0</filter>
-        </table>
-        <component>
-            <form>com_menus#menu#cid#task#!edit</form>
-        </component>
-    </reference>
+  <name>Menus</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Menu Manager</description>
+  <reference>
+    <table name="menu">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="title" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="">Name</field>
+      <field name="alias" type="text" translate="1" alwaysFallback="true" filter="RAW" description="" posthandler="filterTitle">Menu Alias</field>
+      <field name="link" type="readonlytext" translate="1" alwaysFallback="true" filter="RAW" description="" posthandler="saveUrlParams">Link</field>
+      <field name="path" type="readonlytext" translate="1" alwaysFallback="false" filter="RAW" description="" posthandler="saveMenuPath">Path</field>
+      <field name="type" type="text" translate="0" alwaysFallback="false" filter="RAW" description="">Menu Type</field>
+      <field name="home" type="hiddentext" translate="1" alwaysFallback="true" filter="RAW" description="">Homepage</field>
+      <field name="params" type="params" translate="1" alwaysFallback="true" filter="RAW" description="" formname="item" fieldsname="params" xpath="true">Params</field>
+      <field name="published" type="state" translate="1" alwaysFallback="true" filter="RAW" description="">State</field>
+      <filter><![CDATA[o.client_id = 0 AND o.lft > 0]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_menus" view="item" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
+    </component>
+  </reference>
 </contentelement>

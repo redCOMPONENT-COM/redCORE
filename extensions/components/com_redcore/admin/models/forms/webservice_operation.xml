@@ -82,7 +82,7 @@
                     label="COM_REDCORE_WEBSERVICE_OPTION_NAME_LABEL"
                     description="COM_REDCORE_WEBSERVICE_OPTION_NAME_DESCRIPTION"
                     default=""
-                    class="form-control">
+                    class="">
                 <option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
             </field>
             <field
@@ -178,7 +178,7 @@
                     label="COM_REDCORE_WEBSERVICE_TABLE_NAME_LABEL"
                     description="COM_REDCORE_WEBSERVICE_TABLE_NAME_DESCRIPTION"
                     default=""
-                    class="form-control">
+                    class="">
                 <option value="">COM_REDCORE_WEBSERVICE_SELECT_TABLE</option>
             </field>
             <field

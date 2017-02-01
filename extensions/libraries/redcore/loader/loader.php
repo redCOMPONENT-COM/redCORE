@@ -16,29 +16,8 @@ defined('JPATH_REDCORE') or die;
  * @subpackage  Loader
  * @since       1.0
  */
-abstract class RLoader
+class RLoader extends JLoader
 {
-	/**
-	 * Container for already imported library paths.
-	 *
-	 * @var  array
-	 */
-	protected static $classes = array();
-
-	/**
-	 * Container for already imported library paths.
-	 *
-	 * @var  array
-	 */
-	protected static $imported = array();
-
-	/**
-	 * Container for registered library class prefixes and path lookups.
-	 *
-	 * @var  array
-	 */
-	protected static $prefixes = array();
-
 	/**
 	 * Holds proxy classes and the class names the proxy.
 	 *
@@ -303,14 +282,15 @@ abstract class RLoader
 	 * Offers the ability for "just in time" usage of `class_alias()`.
 	 * You cannot overwrite an existing alias.
 	 *
-	 * @param   string  $alias     The alias name to register.
-	 * @param   string  $original  The original class to alias.
+	 * @param   string          $alias     The alias name to register.
+	 * @param   string          $original  The original class to alias.
+	 * @param   string|boolean  $version   The version in which the alias will no longer be present.
 	 *
 	 * @return  boolean  True if registration was successful. False if the alias already exists.
 	 *
 	 * @since   3.2
 	 */
-	public static function registerAlias($alias, $original)
+	public static function registerAlias($alias, $original, $version = false)
 	{
 		if (!isset(self::$classAliases[$alias]))
 		{
@@ -329,6 +309,12 @@ abstract class RLoader
 			else
 			{
 				self::$classAliasesInverse[$original][] = $alias;
+			}
+
+			// If given a version, log this alias as deprecated
+			if ($version)
+			{
+				self::$deprecatedAliases[] = array('old' => $alias, 'new' => $original, 'version' => $version);
 			}
 
 			return true;
@@ -394,10 +380,11 @@ abstract class RLoader
 	 */
 	public static function setup($enablePsr = false, $enablePrefixes = true, $enableClasses = true)
 	{
-		if ($enableClasses)
+		if ($enablePsr)
 		{
-			// Register the class map based autoloader.
-			spl_autoload_register(array('RLoader', 'load'), true, true);
+			// Register the PSR-0 based autoloader.
+			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
+			spl_autoload_register(array('RLoader', 'loadByAlias'));
 		}
 
 		if ($enablePrefixes)
@@ -406,11 +393,10 @@ abstract class RLoader
 			spl_autoload_register(array('RLoader', '_autoload'), true, true);
 		}
 
-		if ($enablePsr)
+		if ($enableClasses)
 		{
-			// Register the PSR-0 based autoloader.
-			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
-			spl_autoload_register(array('RLoader', 'loadByAlias'));
+			// Register the class map based autoloader.
+			spl_autoload_register(array('RLoader', 'load'), true, true);
 		}
 	}
 

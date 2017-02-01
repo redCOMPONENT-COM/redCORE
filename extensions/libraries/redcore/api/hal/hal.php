@@ -1472,12 +1472,24 @@ class RApiHalHal extends RApi
 				$fieldAttributes['defaultValue'] = !is_null($fieldAttributes['defaultValue'])
 					&& !RApiHalHelper::isAttributeTrue($fieldAttributes, 'isPrimaryField') ? $fieldAttributes['defaultValue'] : '';
 
-				if (!isset($data[$fieldAttributes['name']]) || is_null($data[$fieldAttributes['name']]))
+				// If field is not sent through Request
+				if (!isset($data[$fieldAttributes['name']]))
 				{
-					$data[$fieldAttributes['name']] = $fieldAttributes['defaultValue'];
+					// We will populate missing fields with null value
+					$data[$fieldAttributes['name']] = null;
+
+					// We will populate value with default value if the field is not set for create operation
+					if ($this->operation == 'create')
+					{
+						$data[$fieldAttributes['name']] = $fieldAttributes['defaultValue'];
+					}
 				}
 
-				$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
+				if (!is_null($data[$fieldAttributes['name']]))
+				{
+					$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
+				}
+
 				$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
 			}
 
@@ -2405,12 +2417,20 @@ class RApiHalHal extends RApi
 
 		// We will add this instance of the object as last argument for manipulation in plugin and helper
 		$temp[] = &$this;
+		$return = null;
 
-		$result = JFactory::getApplication()->triggerEvent('RApiHalBefore' . $functionName, array($functionName, $temp));
+		$result = JFactory::getApplication()->triggerEvent('RApiHalBefore' . $functionName, array($functionName, $temp, &$return));
 
 		if ($result)
 		{
-			return $result;
+			if ($return !== null)
+			{
+				return $return;
+			}
+			else
+			{
+				return $result;
+			}
 		}
 
 		// Checks if that method exists in helper file and executes it

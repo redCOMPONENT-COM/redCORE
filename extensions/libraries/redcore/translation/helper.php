@@ -28,22 +28,6 @@ class RTranslationHelper
 	public static $pluginParams = null;
 
 	/**
-	 * An array to hold tables from database
-	 *
-	 * @var    array
-	 * @since  1.0
-	 */
-	public static $contentElements = array();
-
-	/**
-	 * An array to hold tables from database
-	 *
-	 * @var    array
-	 * @since  1.0
-	 */
-	public static $installedTranslationTables = null;
-
-	/**
 	 * Default language
 	 *
 	 * @var    array
@@ -65,146 +49,6 @@ class RTranslationHelper
 	public function __construct()
 	{
 		self::$pluginParams = new JRegistry;
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName  Extension name
-	 *
-	 * @return  array  List of objects
-	 */
-	public static function loadContentElements($extensionName = '')
-	{
-		jimport('joomla.filesystem.folder');
-		$extensions = array();
-
-		if (empty($extensionName))
-		{
-			$iterator = new RecursiveIteratorIterator(
-				new RecursiveDirectoryIterator(JPATH_SITE . '/media/redcore/translations')
-			);
-
-			/** @var SplFileInfo $fileInfo */
-			foreach ($iterator as $fileInfo)
-			{
-				if ($fileInfo->isDir())
-				{
-					$extensions[] = $fileInfo->getFilename();
-				}
-			}
-		}
-		else
-		{
-			$extensions[] = $extensionName;
-		}
-
-		foreach ($extensions as $extension)
-		{
-			$contentElementsXml = array();
-			$contentElementsXmlRedcorePath = RTranslationContentElement::getContentElementFolderPath($extension, true);
-
-			if (is_dir($contentElementsXmlRedcorePath))
-			{
-				$contentElementsXml = JFolder::files($contentElementsXmlRedcorePath, '.xml', true);
-			}
-
-			$contentElementsXmlExtensionPath = RTranslationContentElement::getContentElementFolderPath($extension);
-
-			if (is_dir($contentElementsXmlExtensionPath))
-			{
-				$contentElementsXmlExtension = JFolder::files($contentElementsXmlExtensionPath, '.xml', true);
-
-				if (!empty($contentElementsXmlExtension))
-				{
-					$contentElementsXml = array_merge($contentElementsXml, $contentElementsXmlExtension);
-				}
-			}
-
-			if (!empty($contentElementsXml))
-			{
-				self::$contentElements[$extension] = array();
-
-				foreach ($contentElementsXml as $contentElementXml)
-				{
-					$contentElement = new RTranslationContentElement($extension, $contentElementXml);
-					self::$contentElements[$extension][$contentElement->table] = $contentElement;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName  Extension name
-	 *
-	 * @return  array  List of objects
-	 */
-	public static function getContentElements($extensionName = '')
-	{
-		if (empty(self::$contentElements) || empty(self::$contentElements[$extensionName]))
-		{
-			self::loadContentElements($extensionName);
-		}
-
-		if (!empty(self::$contentElements[$extensionName]))
-		{
-			return self::$contentElements[$extensionName];
-		}
-
-		return array();
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName       Extension name
-	 * @param   string  $contentElementsXml  XML File name
-	 *
-	 * @return  mixed  RTranslationContentElement if found or null
-	 */
-	public static function getContentElement($extensionName = '', $contentElementsXml = '')
-	{
-		$contentElements = self::getContentElements($extensionName);
-
-		if (!empty($contentElements))
-		{
-			foreach ($contentElements as $contentElement)
-			{
-				if ($contentElement->contentElementXml == $contentElementsXml)
-				{
-					return $contentElement;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get list of all translation tables with columns
-	 *
-	 * @return  array  Array or table with columns columns
-	 */
-	public static function getInstalledTranslationTables()
-	{
-		if (!isset(self::$installedTranslationTables))
-		{
-			$db = JFactory::getDbo();
-			$oldTranslate = $db->translate;
-
-			// We do not want to translate this value
-			$db->translate = false;
-
-			$component = JComponentHelper::getComponent('com_redcore');
-
-			// We put translation check back on
-			$db->translate = $oldTranslate;
-			self::$installedTranslationTables = (array) $component->params->get('translations', array());
-		}
-
-		return self::$installedTranslationTables;
 	}
 
 	/**
@@ -234,41 +78,13 @@ class RTranslationHelper
 	}
 
 	/**
-	 * Set a value to translation table list
-	 *
-	 * @param   string  $option          Extension option name
-	 * @param   string  $table           Table name
-	 * @param   object  $contentElement  Content Element
+	 * Get list of all translation tables with columns. It is here for backward compatibility below version 1.8.3
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function setInstalledTranslationTables($option, $table, $contentElement)
+	public static function getInstalledTranslationTables()
 	{
-		// Initialize installed tables before proceeding
-		self::getInstalledTranslationTables();
-
-		if (empty($contentElement))
-		{
-			unset(self::$installedTranslationTables[$table]);
-			self::loadContentElements($option);
-		}
-		else
-		{
-			self::$installedTranslationTables[$table] = array(
-				'option' => $option,
-				'table' => $table,
-				'name' => $contentElement->name,
-				'columns' => $contentElement->allContentElementsFields,
-				'primaryKeys' => $contentElement->allPrimaryKeys,
-				'fallbackColumns' => $contentElement->allFallbackColumns,
-				'xml' => $contentElement->contentElementXml,
-				'path' => $contentElement->contentElementXmlPath,
-				'formLinks' => $contentElement->getEditForms(),
-				'state' => 1,
-			);
-
-			self::loadContentElements($option);
-		}
+		return RTranslationTable::getInstalledTranslationTables();
 	}
 
 	/**
@@ -294,9 +110,9 @@ class RTranslationHelper
 				{
 					foreach ($translationTable->formLinks as $formLink)
 					{
-						$formLinks = explode('#', $formLink);
+						$id = $input->getString($formLink['identifier'], '');
 
-						if (count($formLinks) > 1 && $option == $formLinks[0] && in_array($view, array('form', $formLinks[1])))
+						if ($option == $formLink['option'] && $view == $formLink['view'] && $layout == $formLink['layout'] && $id)
 						{
 							unset($translationTables[$tableKey]);
 							break;
@@ -347,14 +163,15 @@ class RTranslationHelper
 	/**
 	 * Loads form for Params field
 	 *
-	 * @param   array                       $column          Content element column
-	 * @param   RTranslationContentElement  $contentElement  Content element
-	 * @param   mixed                       $data            The data expected for the form.
-	 * @param   string                      $controlName     Name of the form control group
+	 * @param   array                       $column            Content element column
+	 * @param   RTranslationContentElement  $translationTable  Translation table
+	 * @param   mixed                       $data              The data expected for the form.
+	 * @param   string                      $controlName       Name of the form control group
+	 * @param   string                      $basepath          Base path to use when loading files
 	 *
 	 * @return  array  Array or table with columns columns
 	 */
-	public static function loadParamsForm($column, $contentElement, $data, $controlName = '')
+	public static function loadParamsForm($column, $translationTable, $data, $controlName = '', $basepath = JPATH_BASE)
 	{
 		if (version_compare(JVERSION, '3.0', '<') && !empty($column['formname25']))
 		{
@@ -382,25 +199,27 @@ class RTranslationHelper
 		$lang = JFactory::getLanguage();
 
 		// Load language file
-		$lang->load($contentElement->extension, JPATH_BASE, null, false, false)
-		|| $lang->load($contentElement->extension, JPATH_BASE . "/components/" . $contentElement->extension, null, false, false)
-		|| $lang->load($contentElement->extension, JPATH_BASE, $lang->getDefault(), false, false)
-		|| $lang->load($contentElement->extension, JPATH_BASE . "/components/" . $contentElement->extension, $lang->getDefault(), false, false);
+		$lang->load($translationTable->extension_name, $basepath, null, false, false)
+		|| $lang->load($translationTable->extension_name, $basepath . "/components/" . $translationTable->extension_name, null, false, false)
+		|| $lang->load($translationTable->extension_name, $basepath, $lang->getDefault(), false, false)
+		|| $lang->load(
+			$translationTable->extension_name, $basepath . "/components/" . $translationTable->extension_name, $lang->getDefault(), false, false
+		);
 
 		// Get the form.
-		RForm::addFormPath(JPATH_BASE . '/components/' . $contentElement->extension . '/models/forms');
-		RForm::addFormPath(JPATH_BASE . '/administrator/components/' . $contentElement->extension . '/models/forms');
-		RForm::addFieldPath(JPATH_BASE . '/components/' . $contentElement->extension . '/models/fields');
-		RForm::addFieldPath(JPATH_BASE . '/administrator/components/' . $contentElement->extension . '/models/fields');
+		RForm::addFormPath($basepath . '/components/' . $translationTable->extension_name . '/models/forms');
+		RForm::addFormPath($basepath . '/administrator/components/' . $translationTable->extension_name . '/models/forms');
+		RForm::addFieldPath($basepath . '/components/' . $translationTable->extension_name . '/models/fields');
+		RForm::addFieldPath($basepath . '/administrator/components/' . $translationTable->extension_name . '/models/fields');
 
 		if (!empty($column['formpath']))
 		{
-			RForm::addFormPath(JPATH_BASE . $column['formpath']);
+			RForm::addFormPath($basepath . $column['formpath']);
 		}
 
 		if (!empty($column['fieldpath']))
 		{
-			RForm::addFieldPath(JPATH_BASE . $column['fieldpath']);
+			RForm::addFieldPath($basepath . $column['fieldpath']);
 		}
 
 		$xpath = !empty($column['xpath']) ? $column['xpath'] : false;
@@ -411,7 +230,7 @@ class RTranslationHelper
 
 			// Allow for additional modification of the form, and events to be triggered.
 			// We pass the data because plugins may require it.
-			self::preprocessForm($form, $data, 'content', $column, $contentElement);
+			self::preprocessForm($form, $data, 'content', $column, $translationTable);
 
 			// Load the data into the form after the plugins have operated.
 			$form->bind($formData);
@@ -432,11 +251,11 @@ class RTranslationHelper
 	/**
 	 * Method to allow derived classes to preprocess the form.
 	 *
-	 * @param   JForm                       $form            A JForm object.
-	 * @param   mixed                       $data            The data expected for the form.
-	 * @param   string                      $group           The name of the plugin group to import (defaults to "content").
-	 * @param   array                       $column          Content element column
-	 * @param   RTranslationContentElement  $contentElement  Content element
+	 * @param   JForm                          $form              A JForm object.
+	 * @param   mixed                          $data              The data expected for the form.
+	 * @param   string                         $group             The name of the plugin group to import (defaults to "content").
+	 * @param   array                          $column            Content element column
+	 * @param   RedcoreTableTranslation_Table  $translationTable  Translation table
 	 *
 	 * @return  void
 	 *
@@ -444,17 +263,19 @@ class RTranslationHelper
 	 * @since   12.2
 	 * @throws  Exception if there is an error in the form event.
 	 */
-	public static function preprocessForm(JForm $form, $data, $group = 'content', $column = array(), $contentElement = null)
+	public static function preprocessForm(JForm $form, $data, $group = 'content', $column = array(), $translationTable = null)
 	{
-		if (strtolower($contentElement->name) == 'modules')
+		$tableName = str_replace('#__', '', $translationTable->name);
+
+		if ($tableName == 'modules')
 		{
 			$form = self::preprocessFormModules($form, $data);
 		}
-		elseif (strtolower($contentElement->name) == 'menus')
+		elseif ($tableName == 'menus')
 		{
 			$form = self::preprocessFormMenu($form, $data);
 		}
-		elseif (strtolower($contentElement->name) == 'plugins')
+		elseif ($tableName == 'plugins')
 		{
 			$form = self::preprocessFormPlugins($form, $data);
 		}
@@ -788,5 +609,264 @@ class RTranslationHelper
 		}
 
 		return false;
+	}
+
+	/**
+	 * Checks if the current page is a translatable form.
+	 *
+	 * @param   bool  $isAdmin  Informs us whether we are on frontend or backend
+	 *
+	 * @return  void
+	 */
+	public static function isTranslatableForm($isAdmin)
+	{
+		// Current page values
+		$input = JFactory::getApplication()->input;
+		$option = $input->getString('option', '');
+		$view = $input->getString('view', '');
+		$layout = $input->getString('layout', '');
+		$task = $input->getString('task', '');
+
+		$translationTables = self::getInstalledTranslationTables();
+
+		foreach ($translationTables as $tableKey => $translationTable)
+		{
+			if (!isset($translationTable->formLinks))
+			{
+				continue;
+			}
+
+			foreach ($translationTable->formLinks as $formLink)
+			{
+				// Form values
+				$tableAdmin = !empty($formLink['admin']) ? $formLink['admin'] : 'false';
+				$tableOption = $formLink['option'];
+				$tableView = $formLink['view'];
+				$tableLayout = !empty($formLink['layout']) ? $formLink['layout'] : 'edit';
+				$tableID = isset($formLink['identifier']) ? $formLink['identifier'] : 'id';
+				$showButton = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
+				$htmlposition = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
+				$checkPrimaryId = !empty($formLink['checkoriginalid']) ? $formLink['checkoriginalid'] : 'false';
+				$results = null;
+
+				// Check if the form's frontend/backend options matches the current page
+				$tableAdmin = $tableAdmin === 'true' ? true : false;
+
+				if ($isAdmin != $tableAdmin)
+				{
+					continue;
+				}
+
+				// Check whether form values matches the current page
+				if ($option == $tableOption && $view == $tableView && $layout == $tableLayout)
+				{
+					// Get id of item based on the form identifier.
+					$itemID = $input->getInt($tableID, '');
+
+					// If the item doesn't have an ID, tell the user that they have to save the item first.
+					if (empty($itemID))
+					{
+						self::renderTranslationModal(false, false, false, false);
+
+						return;
+					}
+
+					if ($checkPrimaryId == 'true')
+					{
+						// Check whether there's a relation between the current item and the translation element
+						$db = JFactory::getDbo();
+						$query = $db->getQuery(true)
+						->select($db->qn($translationTable->primaryKeys[0]))
+						->from($db->qn($translationTable->table))
+						->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemID));
+
+						$db->setQuery($query);
+						$results = $db->loadObjectList();
+
+						$checkPrimaryId = !empty($results) ? 'false' : 'true';
+					}
+
+					// If there is, render a modal button & window in the toolbar
+					if ($checkPrimaryId == 'false' && $showButton == 'true')
+					{
+						$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->title;
+						$contentelement = str_replace('#__', '', $translationTable->table);
+
+						self::renderTranslationModal($itemID, $linkname, $contentelement, $htmlposition);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Renders a modal button & window for a translation element 
+	 *
+	 * @param   string  $itemID          The id of the current item being shown
+	 * @param   array   $linkname        The text to be shown on the modal button
+	 * @param   int     $contentelement  The current translation element
+	 * @param   string  $htmlposition    The position on the page where the button should be moved to
+	 *                             
+	 * @return  void
+	 */
+	public static function renderTranslationModal($itemID, $linkname, $contentelement, $htmlposition)
+	{
+		echo RLayoutHelper::render(
+			'modal.iframe-full-page',
+			array(
+				'id' => $itemID,
+				'header' => '',
+				'linkName' => $linkname,
+				'link' => JRoute::_('index.php?option=com_redcore&view=translation&task=translation.display&layout=modal-edit&translationTableName='
+									. $contentelement
+									. '&id='
+									. $itemID
+									. '&tmpl=component'),
+				'linkClass' => 'btn btn-primary',
+				'contentElement' => $contentelement,
+				'htmlposition' => $htmlposition,
+			)
+		);
+	}
+
+	/**
+	 * Gets translation item status
+	 *
+	 * @param   object  $item     Translate item object
+	 * @param   array   $columns  List of columns used in translation
+	 *
+	 * @return  string  Translation Item status
+	 */
+	public static function getTranslationItemStatus($item, $columns)
+	{
+		if (empty($item->rctranslations_language))
+		{
+			return array('badge' => 'label label-danger', 'status' => 'JNONE');
+		}
+		elseif ($item->rctranslations_state != 1)
+		{
+			return array('badge' => 'label label-danger', 'status' => 'JUNPUBLISHED');
+		}
+		else
+		{
+			$originalValues = new JRegistry;
+
+			if (is_array($item->rctranslations_originals))
+			{
+				$originalValues->loadArray($item->rctranslations_originals);
+			}
+			else
+			{
+				$originalValues->loadString((string) $item->rctranslations_originals);
+			}
+
+			$translationStatus = array('badge' => 'label label-success', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_TRANSLATED');
+
+			foreach ($columns as $column)
+			{
+				if (md5($item->$column) != $originalValues->get($column))
+				{
+					$translationStatus = array('badge' => 'label label-warning', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_CHANGED');
+					break;
+				}
+			}
+
+			return $translationStatus;
+		}
+	}
+
+	/**
+	 * Gets translation item id and returns it
+	 *
+	 * @param   int     $itemid                Item id
+	 * @param   string  $langCode              Language code
+	 * @param   string  $pk                    Primary key name
+	 * @param   string  $translationTableName  Name of the translation table
+	 *
+	 * @return  int     Translations item id
+	 */
+	public static function getTranslationItemId($itemid, $langCode, $pk, $translationTableName)
+	{
+		$ids = explode('###', $itemid);
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true)
+		->select('rctranslations_id')
+		->from($db->qn(RTranslationTable::getTranslationsTableName($translationTableName, '#__')))
+		->where('rctranslations_language=' . $db->q($langCode));
+
+		foreach ($pk as $key => $primaryKey)
+		{
+			$query->where($db->qn($primaryKey) . ' = ' . $db->q($ids[$key]));
+		}
+
+		$db->setQuery($query);
+
+		$result = $db->loadResult();
+
+		return $result;
+	}
+
+	/**
+	 * Checks if an array of data has any data
+	 *
+	 * @param   array  $data      Array of data to be checked
+	 * @param   array  $excludes  Array of keys to be excluded from validation
+	 *
+	 * @return  boolean  True if the array contains data
+	 */
+	public static function validateEmptyTranslationData($data, $excludes = null)
+	{
+		// Remove excluded keys from array
+		foreach ($excludes as $exclude)
+		{
+			unset($data[$exclude]);
+		}
+
+		// Check if the rest of the keys in the array are empty
+		if (array_filter($data, 'strlen'))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Adds array to a JForm input
+	 *
+	 * @param   string  $form   Form to be modified
+	 * @param   string  $index  Index of the array
+	 *
+	 * @return  string  Modified form
+	 */
+	public static function arrayifyTranslationJForm($form, $index)
+	{
+		$pattern = '/name="jform/';
+		$replacement = 'name="jform[' . $index . ']';
+		$form = preg_replace($pattern, $replacement, $form);
+
+		return $form;
+	}
+
+	/**
+	 * Returns an array of all content language codes (fx. en-GB)
+	 *
+	 * @return array  All content language codes
+	 */
+	public static function getAllContentLanguageCodes()
+	{
+		$contentLanguages = JLanguageHelper::getLanguages();
+
+		$languageCodes = array();
+
+		foreach ($contentLanguages as $language)
+		{
+			$languageCodes[] = $language->lang_code;
+		}
+
+		return $languageCodes;
 	}
 }

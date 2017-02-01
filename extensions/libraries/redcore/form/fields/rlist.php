@@ -55,7 +55,7 @@ class JFormFieldRlist extends JFormFieldList
 		$layout = !empty($this->element['layout']) ? $this->element['layout'] : $this->layout;
 
 		return RLayoutHelper::render(
-			$layout,
+			trim($layout),
 			array(
 				'id'       => $this->id,
 				'element'  => $this->element,

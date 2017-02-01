@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset addfieldpath="/libraries/redcore/form/fields">
+        <field
+            name="id"
+            type="hidden"
+            default="0"
+            label="COM_REDCORE_ID_LABEL"
+            description="COM_REDCORE_ID_DESC"
+            readonly="true"
+            />
+        <field
+                name="name"
+                type="text"
+                label="COM_REDCORE_TRANSLATION_TABLE_NAME"
+                description="COM_REDCORE_TRANSLATION_TABLE_NAME_DESC"
+                required="true"
+				onchange="javascript:fillColumnsDropdown();"
+                />
+        <field
+                name="extension_name"
+                type="text"
+                label="COM_REDCORE_TRANSLATION_TABLE_EXTENSION_NAME"
+                description="COM_REDCORE_TRANSLATION_TABLE_EXTENSION_NAME_DESC"
+                />
+        <field
+                name="title"
+                type="text"
+                label="COM_REDCORE_TRANSLATION_TABLE_TITLE"
+                description="COM_REDCORE_TRANSLATION_TABLE_TITLE_DESC"
+                />
+		<field
+				name="version"
+				default="1.0.0"
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_VERSION"
+				description="COM_REDCORE_TRANSLATION_TABLE_VERSION_DESC"
+				class="form-control"
+		/>
+		<field
+				name="description"
+				default=""
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_DESCRIPTION"
+				description="COM_REDCORE_TRANSLATION_TABLE_DESCRIPTION_DESC"
+				class="form-control"
+		/>
+		<field
+				name="author"
+				default=""
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_AUTHOR"
+				description="COM_REDCORE_TRANSLATION_TABLE_AUTHOR_DESC"
+				class="form-control"
+		/>
+		<field
+				name="copyright"
+				default=""
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_COPYRIGHT"
+				description="COM_REDCORE_TRANSLATION_TABLE_COPYRIGHT_DESC"
+				class="form-control"
+		/>
+		<field
+				name="filter_query"
+				type="textarea"
+				label="COM_REDCORE_TRANSLATION_TABLE_FILTER_QUERY"
+				description="COM_REDCORE_TRANSLATION_TABLE_FILTER_QUERY_DESC"
+		/>
+		<field
+				name="xml_path"
+				type="text"
+				label="COM_REDCORE_TRANSLATION_TABLE_XML_FILE"
+				description="COM_REDCORE_TRANSLATION_TABLE_XML_FILE_DESC"
+				readonly="true"
+		/>
+		<field
+				name="state"
+				labelclass="col-sm-2 control-label"
+				type="radio"
+				label="COM_REDCORE_TRANSLATION_TABLE_STATE"
+				description="COM_REDCORE_TRANSLATION_TABLE_STATE_DESC"
+				required="true"
+				class="btn-group"
+				default="1"
+		>
+			<option value="1">JPUBLISHED</option>
+			<option value="0">JUNPUBLISHED</option>
+		</field>
+		<field
+				name="optionName"
+				type="componentlist"
+				labelclass="col-sm-2 control-label"
+				onchange="javascript:changeOptionName(this);"
+				default="">
+			<option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
+		</field>
+		<field
+				name="tableName"
+				type="tablelist"
+				labelclass="col-sm-2 control-label"
+				onchange="javascript:changeTableName(this);"
+				default="">
+			<option value="">COM_REDCORE_TRANSLATIONS_SELECT_TABLE</option>
+		</field>
+		<field
+				name="columns"
+				type="list"
+				multiple="true"
+		/>
+		<field
+				name="editForms"
+				type="list"
+				multiple="true"
+		/>
+	</fieldset>
+</form>

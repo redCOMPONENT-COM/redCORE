@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<apiservice client="site">
+  <name>User Webservice</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2017 redCOMPONENT.com. All rights reserved.</copyright>
+  <description>Api HAL configuration for com_users.</description>
+  <config>
+    <name>users</name>
+    <version>1.1.0</version>
+    <authorizationAssetName>com_{webserviceName}</authorizationAssetName>
+  </config>
+  <operations>
+    <documentation authorizationNeeded="false" source="auto" url=""/>
+    <task>
+      <forgotUsername useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="" strictFields="false">
+        <description><![CDATA[This task for user can retrieve username.]]></description>
+        <fields>
+          <field name="email" transform="string" defaultValue="" isRequiredField="true" isPrimaryField="false">
+            <description><![CDATA[Email of user.]]></description>
+          </field>
+        </fields>
+        <resources>
+          <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
+        </resources>
+      </forgotUsername>
+      <forgotPassword useOperation="" authorizationNeeded="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="" strictFields="false">
+        <description><![CDATA[This task for user can retrieve password.]]></description>
+        <fields>
+          <field name="email" transform="string" defaultValue="" isRequiredField="true" isPrimaryField="false">
+            <description><![CDATA[Email of user.]]></description>
+          </field>
+        </fields>
+        <resources>
+          <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="result" transform="boolean" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
+        </resources>
+      </forgotPassword>
+      <authenticateUser useOperation="" authorizationNeeded="true" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="" functionArgs="email{string}" validateData="none" validateDataFunction="validate" tableName="" strictFields="false">
+        <description><![CDATA[This task authenticates the user and returns the user's information on succesful authentication]]></description>
+        <fields>
+          <field name="email" transform="string" defaultvalue="" isRequiredField="true" isPrimaryField="false">
+            <description><![CDATA[Email of user.]]></description>
+          </field>
+        </fields>
+        <resources>
+          <resource displayName="documentation" transform="string" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" displayGroup="_links" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="base" transform="string" fieldFormat="/" displayGroup="_links" linkTitle="Default page" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="{webserviceName}:list" transform="string" fieldFormat="{webserviceUrlPath}" displayGroup="_links" linkTitle="" linkName="" hrefLang="" linkTemplated="false" linkRel="" resourceSpecific="rcwsGlobal"/>
+          <resource displayName="result" transform="array" fieldFormat="{result}" displayGroup="" resourceSpecific="rcwsGlobal"/>
+        </resources>
+      </authenticateUser>
+    </task>
+  </operations>
+</apiservice>

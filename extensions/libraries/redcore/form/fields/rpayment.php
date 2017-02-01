@@ -97,6 +97,7 @@ class JFormFieldRpayment extends JFormFieldList
 					'value' => $this->value,
 					'id' => $this->id,
 					'attributes' => $this->getAttributes(),
+					'selectSingleOption' => true,
 				)
 			)
 		);

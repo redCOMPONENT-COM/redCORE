@@ -35,7 +35,6 @@
 			type="checkboxes"
 			label="COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPES"
 			description="COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPES_DESC"
-			class="btn-group"
 			default=""
 			>
             <option value="authorization_code">COM_REDCORE_OAUTH_CLIENTS_GRANT_TYPE_AUTHORIZATION_CODE</option>
@@ -59,7 +58,9 @@
 			type="userbs3"
 			label="COM_REDCORE_OAUTH_CLIENTS_USER"
 			description="COM_REDCORE_OAUTH_CLIENTS_USER_DESC"
+			default=""
 			>
+			<option value="">COM_REDCORE_OAUTH_CLIENTS_SELECT_USER</option>
 		</field>
 	</fieldset>
 </form>

@@ -597,22 +597,22 @@ abstract class JFormField
 		if ($this->required)
 		{
 			$this->class = trim($this->class . ' required');
-		}
 
-		if (version_compare(JVERSION, '3.0', 'lt'))
-		{
-			$elementClass = (string) $element['class'];
-
-			if ($elementClass)
+			if (version_compare(JVERSION, '3.0', 'lt'))
 			{
-				if (strpos($elementClass, 'required') === false)
+				$elementClass = (string) $element['class'];
+
+				if ($elementClass)
 				{
-					$this->element['class'] = $elementClass . ' required';
+					if (strpos($elementClass, 'required') === false)
+					{
+						$this->element['class'] = $elementClass . ' required';
+					}
 				}
-			}
-			else
-			{
-				$this->element->addAttribute('class', 'required');
+				else
+				{
+					$this->element->addAttribute('class', 'required');
+				}
 			}
 		}
 
@@ -1015,6 +1015,18 @@ abstract class JFormField
 	}
 
 	/**
+	 * Allow to override renderer include paths in child fields
+	 *
+	 * @return  array
+	 *
+	 * @since   3.5
+	 */
+	protected function getLayoutPaths()
+	{
+		return array();
+	}
+
+	/**
 	 * Get the renderer
 	 *
 	 * @param   string  $layoutId  Id to load
@@ -1029,6 +1041,13 @@ abstract class JFormField
 
 		$renderer->setDebug($this->isDebugEnabled());
 
+		$layoutPaths = $this->getLayoutPaths();
+
+		if ($layoutPaths)
+		{
+			$renderer->setIncludePaths($layoutPaths);
+		}
+
 		return $renderer;
 	}
 
@@ -1041,6 +1060,112 @@ abstract class JFormField
 	 */
 	protected function isDebugEnabled()
 	{
-		return ($this->getAttribute('debug', 'false') === 'true');
+		return $this->getAttribute('debug', 'false') === 'true';
+	}
+
+	/**
+	 * Transforms the field into an XML element and appends it as child on the given parent. This
+	 * is the default implementation of a field. Form fields which do support to be transformed into
+	 * an XML Element mut implemet the JFormDomfieldinterface.
+	 *
+	 * @param   stdClass    $field   The field.
+	 * @param   DOMElement  $parent  The field node parent.
+	 * @param   JForm       $form    The form.
+	 *
+	 * @return  DOMElement
+	 *
+	 * @since   3.7.0
+	 * @see     JFormDomfieldinterface::appendXMLFieldTag
+	 */
+	public function appendXMLFieldTag($field, DOMElement $parent, JForm $form)
+	{
+		$app = JFactory::getApplication();
+
+		if ($field->params->get('show_on') == 1 && $app->isClient('administrator'))
+		{
+			return;
+		}
+		elseif ($field->params->get('show_on') == 2 && $app->isClient('site'))
+		{
+			return;
+		}
+
+		$node = $parent->appendChild(new DOMElement('field'));
+
+		$node->setAttribute('name', $field->alias);
+		$node->setAttribute('type', $field->type);
+		$node->setAttribute('default', $field->default_value);
+		$node->setAttribute('label', $field->label);
+		$node->setAttribute('description', $field->description);
+		$node->setAttribute('class', $field->params->get('class'));
+		$node->setAttribute('hint', $field->params->get('hint'));
+		$node->setAttribute('required', $field->required ? 'true' : 'false');
+		$node->setAttribute('readonly', $field->params->get('readonly', 0) ? 'true' : 'false');
+
+		// Set the disabled state based on the parameter and the permission
+		if ($field->params->get('disabled', 0))
+		{
+			$node->setAttribute('disabled', 'true');
+		}
+
+		foreach ($field->fieldparams->toArray() as $key => $param)
+		{
+			if (is_array($param))
+			{
+				// Multidimensional arrays (eg. list options) can't be transformed properly
+				$param = count($param) == count($param, COUNT_RECURSIVE) ? implode(',', $param) : '';
+			}
+
+			if (!$param)
+			{
+				continue;
+			}
+
+			$node->setAttribute($key, $param);
+		}
+
+		$this->postProcessDomNode($field, $node, $form);
+
+		return $node;
+	}
+
+	/**
+	 * Function to manipulate the DOM element of the field. The form can be
+	 * manipulated at that point.
+	 *
+	 * @param   stdClass    $field      The field.
+	 * @param   DOMElement  $fieldNode  The field node.
+	 * @param   JForm       $form       The form.
+	 *
+	 * @return  void
+	 *
+	 * @since   3.7.0
+	 */
+	protected function postProcessDomNode($field, DOMElement $fieldNode, JForm $form)
+	{
+	}
+
+	/**
+	 * Returns the attributes of the field as an XML string which can be loaded
+	 * into JForm.
+	 *
+	 * @return  string
+	 *
+	 * @since   3.7.0
+	 */
+	public function getFormParameters()
+	{
+		JLoader::import('joomla.filesystem.file');
+
+		$reflectionClass = new ReflectionClass($this);
+		$fileName        = dirname($reflectionClass->getFileName()) . '/../parameters/';
+		$fileName       .= str_replace('.php', '.xml', basename($reflectionClass->getFileName()));
+
+		if (JFile::exists($fileName))
+		{
+			return file_get_contents($fileName);
+		}
+
+		return '';
 	}
 }

@@ -26,6 +26,13 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	private static $options = array();
 
 	/**
+	 * The options.
+	 *
+	 * @var  array
+	 */
+	private static $parsedQueries = array();
+
+	/**
 	 * Checks if tables inside query have translatable tables and fields and fetch appropriate
 	 * value from translations table
 	 *
@@ -46,7 +53,15 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 		try
 		{
+			$hashedQueryKey = md5($sql . $language);
+
+			if (isset(self::$parsedQueries[$hashedQueryKey]))
+			{
+				return self::$parsedQueries[$hashedQueryKey];
+			}
+
 			$db = JFactory::getDbo();
+			self::$parsedQueries[$hashedQueryKey] = null;
 			$sqlParser = new RDatabaseSqlparserSqlparser($sql);
 			$parsedSql = $sqlParser->parsed;
 
@@ -141,8 +156,9 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 				if ($columnFound || $subQueryFound)
 				{
 					$sqlCreator = new RDatabaseSqlparserSqlcreator($parsedSqlColumns);
+					self::$parsedQueries[$hashedQueryKey] = $sqlCreator->created;
 
-					return $sqlCreator->created;
+					return self::$parsedQueries[$hashedQueryKey];
 				}
 			}
 		}
@@ -165,6 +181,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function buildTranslationQuery($sql = '', $prefix = '')
 	{
 		$db = JFactory::getDbo();
+
 		$selectedLanguage = !empty($db->forceLanguageTranslation) ? $db->forceLanguageTranslation : JFactory::getLanguage()->getTag();
 
 		if (!empty($db->parseTablesBefore))
@@ -179,7 +196,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		$validSelect = (!empty($sql) && stristr(mb_strtolower($sql), 'select'));
 
 		// If the language is the default, there is no reason to translate
-		$isDefaultLanguage = (RTranslationHelper::getSiteLanguage() == $selectedLanguage);
+		$isDefaultLanguage = (RTranslationHelper::getSiteLanguage() == $selectedLanguage) && !self::getOption('forceTranslateDefault', false);
 
 		// If this is the admin, but no an API request we shouldn't translate
 		$isAdmin = RTranslationHelper::isAdmin();
@@ -192,7 +209,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		 */
 		if (!$validSelect
 			|| $isDefaultLanguage
-			|| $isAdmin)
+			|| ($isAdmin && !self::getOption('translateInAdmin', false)))
 		{
 			if (empty($db->parseTablesBefore) && empty($db->parseTablesAfter))
 			{
@@ -200,7 +217,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			}
 		}
 
-		$translationTables = RTranslationHelper::getInstalledTranslationTables();
+		$translationTables = RTranslationTable::getInstalledTranslationTables();
 		$translationTables = RTranslationHelper::removeFromEditForm($translationTables);
 		$sql = self::parseSelectQuery($sql, $prefix, $selectedLanguage, $translationTables);
 
@@ -495,6 +512,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 									$language
 								);
 								$newTagValue['ref_clause'] = $refClause;
+								$newTagValue['index_hints'] = false;
 								$foundTables[] = $newTagValue;
 								$originalTables[$newTagValue['alias']['originalName']] = isset($originalTables[$newTagValue['alias']['originalName']]) ?
 									$originalTables[$newTagValue['alias']['originalName']]++ : 1;
@@ -1040,5 +1058,29 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 	public static function setTranslationFallback($enable = true)
 	{
 		self::setOption('translationFallback', $enable);
+	}
+
+	/**
+	 * Set a translation option force translate default value.
+	 *
+	 * @param   bool  $enable  Enable or disable force translate default language feature
+	 *
+	 * @return  null
+	 */
+	public static function setForceTranslateDefaultLanguage($enable = false)
+	{
+		self::setOption('forceTranslateDefault', $enable);
+	}
+
+	/**
+	 * Set a translate data in Admin value.
+	 *
+	 * @param   bool  $enable  Enable or disable translation fallback feature
+	 *
+	 * @return  null
+	 */
+	public static function setTranslationInAdmin($enable = false)
+	{
+		self::setOption('translateInAdmin', $enable);
 	}
 }
