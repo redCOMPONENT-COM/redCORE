@@ -135,6 +135,16 @@ class RApiHalHelperSiteUsers
 
 		$user->user_groups = $userGroups;
 
+		// Set access token to expire for security reasons
+		$accessTokenKey = $app->input->get('access_token');
+
+		$query = $db->getQuery(true)
+			->update('#__redcore_oauth_access_tokens')
+			->set($db->qn('expires') . ' = NOW()')
+			->where($db->qn('access_token') . ' = ' . $db->q($accessTokenKey));
+		$db->setQuery($query);
+		$db->execute();
+
 		return $user;
 	}
 }
