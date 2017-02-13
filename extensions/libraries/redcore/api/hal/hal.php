@@ -1627,7 +1627,7 @@ class RApiHalHal extends RApi
 	/**
 	 * Checks if operation is allowed from the configuration file
 	 *
-	 * @return object This method may be chained.
+	 * @return bool
 	 *
 	 * @throws  Exception
 	 */
@@ -1709,7 +1709,7 @@ class RApiHalHal extends RApi
 		if ($this->authorizationCheck == 'oauth2')
 		{
 			// Use scopes to authorize
-			$scope = array($this->client . '.' . $this->webserviceName . '.' . $scope);
+			$scope = array(strtolower($this->client . '.' . $this->webserviceName . '.' . $scope));
 
 			// Add in Global scope check
 			$scope[] = $this->client . '.' . $this->operation;
@@ -1850,8 +1850,9 @@ class RApiHalHal extends RApi
 			return $this->apiHelperClass;
 		}
 
-		$version = $this->options->get('webserviceVersion', '');
-		$helperFile = RApiHalHelper::getWebserviceFile($this->client, strtolower($this->webserviceName), $version, 'php', $this->webservicePath);
+		$helperFile = RApiHalHelper::getWebserviceFile(
+			$this->client, strtolower($this->webserviceName), $this->webserviceVersion, 'php', $this->webservicePath
+		);
 
 		if (file_exists($helperFile))
 		{
