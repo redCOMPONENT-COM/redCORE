@@ -18,7 +18,15 @@ JLoader::import('cms.html.access');
 abstract class JHtmlRAccess extends JHtmlAccess
 {
 	/**
-	 * Returns a UL list of user groups with checkboxes
+	 * Returns a UL list of user groups with buttons (Add/Remove).
+	 * This is a workaround for selecting usergroups. It is used in cases where
+	 * we have large number of usergroups which results in problems with
+	 * sending too much inputs (per each usergroup). This fix sends only
+	 * selected usergroups instead. Beside using this function, it is required to
+	 * override admin tpl file under
+	 * "administrator/templates/TEMPLATE/html/com_users/user/edit_groups.php"
+	 * and change `JHtml::_('access.usergroups', 'jform[groups]', $this->groups, true);`
+	 * to `JHtml::_('raccess.usergroups', 'jform[groups]', $this->groups, true);`
 	 *
 	 * @param   string   $name             The name of the checkbox controls array
 	 * @param   array    $selected         An array of the checked boxes
@@ -40,13 +48,15 @@ abstract class JHtmlRAccess extends JHtmlAccess
 		$doc          = JFactory::getDocument();
 
 		$script[] = 'function JAddUsergroup(id, value){';
-		$script[] = '   var html = "<input type=\'hidden\' name=\'' . $name . '[]\' value=\'" + value + "\' id=\'" + id + "\' />";';
-		$script[] = '   html += "<button type=\'button\' class=\'btn btn-small btn-danger\' onclick=\'JRemoveUsergroup(\"" + id + "\", \"" + value + "\")\'>' . JText::_('JREMOVE') . '</button>";';
-		$script[] = '   jQuery("#" + id + "-hidden").html(html);';
+		$script[] = '  html = "<input type=\'hidden\' name=\'' . $name . '[]\' value=\'" + value + "\' id=\'" + id + "\' />";';
+		$script[] = '  html += "<button type=\'button\' class=\'btn btn-small btn-danger\' onclick=\'JRemoveUsergroup(\"" + id + "\", \"" + value + "\")\'>'
+			. JText::_('JREMOVE') . '</button>";';
+		$script[] = '  jQuery("#" + id + "-hidden").html(html);';
 		$script[] = '}';
 		$script[] = 'function JRemoveUsergroup(id, value){';
-		$script[] = '   html = "<button type=\'button\' class=\'btn btn-small btn-success\' onclick=\'JAddUsergroup(\"" + id + "\", \"" + value + "\")\'>' . JText::_('JADD') . '</button>";';
-		$script[] = '   jQuery("#" + id + "-hidden").html(html);';
+		$script[] = '  html = "<button type=\'button\' class=\'btn btn-small btn-success\' onclick=\'JAddUsergroup(\"" + id + "\", \"" + value + "\")\'>'
+			. JText::_('JADD') . '</button>";';
+		$script[] = '  jQuery("#" + id + "-hidden").html(html);';
 		$script[] = '}';
 
 		$doc->addScriptDeclaration(implode("\n", $script));
