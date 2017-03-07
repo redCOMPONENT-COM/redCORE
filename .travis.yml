@@ -36,7 +36,7 @@ before_script:
 - gulp release --skip-version
 - cd ../tests
 # Generic RoboFile init file
-- mv JoomlaTesting.ini.dist JoomlaTesting.ini
+- mv JoomlaTesting.dist.ini JoomlaTesting.ini
 
 script:
 - composer install --prefer-dist
