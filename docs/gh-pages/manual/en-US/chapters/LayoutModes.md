@@ -30,4 +30,4 @@ else
 }
 ```
 
-The default one is bootstrap3 so if the current template is for example bootstrap2, one must add `.bs2` prefix to all `.php` files, example: `example.bs2.php`.
+The default one is bootstrap3 so if the current template is for example bootstrap2, one must add `.bs2` prefix to all `.php` files, example: `example.bs2.php`. redCORE will only search for the prefix of the version your extensions is set on, in case redCORE does not find one of these prefixes, it will load the default ones without any prefixes.
