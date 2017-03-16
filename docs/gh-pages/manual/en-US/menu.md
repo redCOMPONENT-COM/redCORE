@@ -85,6 +85,7 @@
 		- [Layouts](chapters/Layouts.md)
 		   - Topbar
 		   - Modal
+		- [Layout Modes](chapters/LayoutModes.md)
 	- Assets
 		- [Assets](chapters/Assets.md)
 		   - [- Chosen](chapters/Chosen.md)
