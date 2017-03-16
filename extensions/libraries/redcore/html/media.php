@@ -58,7 +58,7 @@ abstract class RHtmlMedia
 	 *
 	 * @since   1.4
 	 */
-	public static function setFramework($framework = 'bootstrap2', $options = array())
+	public static function setFramework($framework = 'bootstrap3', $options = array())
 	{
 		self::$framework = $framework;
 
@@ -67,6 +67,13 @@ abstract class RHtmlMedia
 			self::$frameworkSuffix = 'bs3';
 			self::$frameworkOptions = array(
 				'disableMootools' => true,
+			);
+		}
+		elseif ($framework == 'bootstrap2')
+		{
+			self::$frameworkSuffix = 'bs2';
+			self::$frameworkOptions = array(
+				'disableMootools' => false,
 			);
 		}
 		elseif ($framework == 'foundation5')
