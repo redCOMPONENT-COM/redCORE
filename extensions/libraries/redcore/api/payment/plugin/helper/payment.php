@@ -24,6 +24,8 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 */
 	public $paymentName = '';
 
+	public $offlinePayment = false;
+
 	/**
 	 * Plugin parameters
 	 * @var JRegistry
