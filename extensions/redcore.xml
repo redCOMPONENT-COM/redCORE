@@ -10,7 +10,7 @@
     <version>1.8.9</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.8.9" defaultFramework="bootstrap3" />
+    <redcore version="1.9.0" defaultFramework="bootstrap3" />
 
     <install folder="components/com_redcore/admin">
         <sql>
