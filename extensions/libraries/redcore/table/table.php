@@ -788,6 +788,9 @@ class RTable extends JTable
 			return false;
 		}
 
+		// Implement JObservableInterface: Pre-processing by observers
+		$this->_observers->update('onBeforeDelete', array($pk));
+
 		// Delete the row by primary key.
 		$query = $this->_db->getQuery(true);
 		$query->delete($this->_db->quoteName($this->_tbl));
@@ -814,6 +817,9 @@ class RTable extends JTable
 
 			return false;
 		}
+
+		// Implement JObservableInterface: Post-processing by observers
+		$this->_observers->update('onAfterDelete', array($pk));
 
 		return true;
 	}

@@ -359,6 +359,11 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			case 'EXPLAIN':
 			case 'USE':
 			case 'HELP':
+				// We are using USE from FROM statement, not separate token category
+				if ($prev_category == 'FROM')
+				{
+					continue;
+				}
 				$token_category = $upper; /* set the category in case these get subclauses
 										  in a future version of MySQL */
 				$out[$upper][0] = $upper;
@@ -914,11 +919,35 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			case 'ON':
 				$parseInfo['ref_type'] = $upper;
 				$parseInfo['ref_expr'] = "";
+				$parseInfo['token_count']++;
+				continue;
+				break;
 
-			case 'CROSS':
 			case 'USE':
 			case 'FORCE':
 			case 'IGNORE':
+				$tableOptions = array('option' => $upper, 'name' => $upper, 'expr_type' => 'index_hints', 'base_expr' => $token);
+				$parseInfo['token_count']++;
+				$n = 1;
+				$tokenCount = count($token);
+
+				while ($tokenCount < ($i + $n))
+				{
+					$tableOptions['base_expr'] .= ($tokens[$i + $n] === "" ? " " : $tokens[$i + $n]);
+
+					if (strpos($tokens[$i + $n], ')') !== false)
+					{
+						break;
+					}
+
+					++$n;
+				}
+
+				$parseInfo['index_hints'] = $tableOptions;
+				continue;
+				break;
+
+			case 'CROSS':
 			case 'INNER':
 			case 'OUTER':
 				$parseInfo['token_count']++;
@@ -969,6 +998,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		}
 
 		$expr[] = $this->processFromExpression($parseInfo);
+
 		return $expr;
 	}
 
@@ -980,7 +1010,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		// loop init
 		return array('expression' => "", 'token_count' => 0, 'table' => "", 'alias' => false, 'join_type' => "",
 					 'next_join_type' => "", 'saved_join_type' => $parseInfo['saved_join_type'],
-					 'ref_type' => false, 'ref_expr' => false, 'base_expr' => false, 'sub_tree' => false,
+					 'ref_type' => false, 'ref_expr' => false, 'base_expr' => false, 'sub_tree' => false, 'index_hints' => false,
 					 'subquery' => "");
 	}
 
@@ -1029,6 +1059,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		$res['ref_clause'] = $parseInfo['ref_expr'];
 		$res['base_expr'] = trim($parseInfo['expression']);
 		$res['sub_tree'] = $parseInfo['sub_tree'];
+		$res['index_hints'] = $parseInfo['index_hints'];
 		return $res;
 	}
 

@@ -68,12 +68,14 @@ class RApiPaymentHelper
 			->select('COALESCE(pc2.extension_name, COALESCE(pc1.extension_name, ' . $db->q('') . ')) as extension_name')
 			->select('COALESCE(pc2.owner_name, COALESCE(pc1.owner_name, ' . $db->q('') . ')) as owner_name')
 			->select('COALESCE(pc2.state, COALESCE(pc1.state, p.enabled)) as state')
+			->select('p.params AS original_params')
 			->from($db->qn('#__extensions', 'p'))
 			->where($db->qn('p.type') . '= ' . $db->q('plugin'))
 			->where($db->qn('p.folder') . '= ' . $db->q('redpayment'))
 			->where($db->qn('p.element') . ' = ' . $db->q($paymentName))
 			->leftJoin(
 				$db->qn('#__redcore_payment_configuration', 'pc1') . ' ON pc1.payment_name = p.element AND pc1.extension_name = ' . $db->q($extensionName)
+				. ' AND pc1.owner_name = ' . $db->q('')
 			)
 			->leftJoin(
 				$db->qn('#__redcore_payment_configuration', 'pc2') . ' ON pc2.payment_name = p.element AND pc2.extension_name = ' . $db->q($extensionName)
@@ -83,9 +85,15 @@ class RApiPaymentHelper
 		$db->setQuery($query);
 		$item = $db->loadObject();
 
-		$registry = new JRegistry;
+		$registry = new Joomla\Registry\Registry;
+		$registry->loadString($item->original_params);
+		$item->original_params = $registry;
+		$originalParams = clone $registry;
+
+		$registry = new Joomla\Registry\Registry;
 		$registry->loadString($item->params);
-		$item->params = $registry;
+		$originalParams->merge($registry);
+		$item->params = $originalParams;
 
 		self::$pluginParams[$paymentName][$extensionName][$ownerName] = $item;
 
@@ -838,6 +846,7 @@ class RApiPaymentHelper
 					'value' => $value,
 					'id' => $id,
 					'attributes' => $attributes,
+					'selectSingleOption' => true,
 				)
 			)
 		);
@@ -1098,6 +1107,9 @@ class RApiPaymentHelper
 
 		/** @var RedcoreModelPayment_Log $logModel */
 		$logModel = RModelAdmin::getAdminInstance('Payment_Log', array(), 'com_redcore');
+
+		// Avoid ghost id from URL
+		$paymentLog['id'] = 0;
 
 		if ($logModel->save($paymentLog))
 		{

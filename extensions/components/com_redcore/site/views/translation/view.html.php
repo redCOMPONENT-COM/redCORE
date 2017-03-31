@@ -120,7 +120,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 	 */
 	public function getTitle()
 	{
-		return JText::_('COM_REDCORE_TRANSLATIONS') . ' <small>' . JText::_('JEDIT') . ' ' . $this->translationTable->name . '</small>';
+		return JText::_('COM_REDCORE_TRANSLATIONS') . ' <small>' . JText::_('JEDIT') . ' ' . $this->translationTable->title . '</small>';
 	}
 
 	/**

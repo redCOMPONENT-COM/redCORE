@@ -387,7 +387,7 @@ class RApiSoapWsdl
 		// Add read item messages
 		$inputFields = array_merge(
 			RApiHalHelper::getFieldsArray($this->webserviceXml->operations->read->item, true),
-			array(array('name' => 'language', 'transform' => 'string'))
+			array(array('name' => 'language', 'transform' => 'string', 'optionalSoapField' => 'true'))
 		);
 
 		// Add read item response messages

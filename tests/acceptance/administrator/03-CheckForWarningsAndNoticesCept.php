@@ -11,7 +11,7 @@ $I->wantToTest(' that there are no Warnings or Notices in redCORE');
 $I->doAdministratorLogin();
 $I->wantTo('Activate redCORE system plugin features');
 $I->amOnPage('administrator/index.php?option=com_redcore&view=config&layout=edit&component=com_redcore');
-$I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
+$I->waitForText('redCORE Config', 30, ['css' => 'h1']);
 $I->click(['link' => 'Translation options']);
 $I->waitForElementVisible(['id' => 'REDCORE_TRANSLATIONS_OPTIONS']);
 $I->executeJS("javascript:document.getElementById(\"REDCORE_TRANSLATIONS_OPTIONS\").scrollIntoView();");

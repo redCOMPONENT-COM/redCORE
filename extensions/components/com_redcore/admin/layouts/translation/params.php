@@ -49,7 +49,7 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 						continue;
 					endif;
 					?>
-					<?php $label = empty($fieldSet->label) ?  $fieldSetNameAddition . $name . '_FIELDSET_LABEL' : $fieldSet->label; ?>
+					<?php $label = empty($fieldSet->label) ?  JText::_(strtoupper($fieldSetNameAddition . $name) . '_FIELDSET_LABEL') : $fieldSet->label; ?>
 					<li><a href="#params_<?php echo $formType;?>_<?php echo $name; ?><?php echo $suffix; ?>" data-toggle="tab"><?php echo RText::getTranslationIfExists($label, '', ''); ?></a></li>
 				<?php endforeach; ?>
 			</ul>
@@ -58,21 +58,25 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 					<?php if (!empty($selectedFieldSets) && !in_array($name, $selectedFieldSets)) : ?>
 						<?php continue; ?>
 					<?php endif; ?>
-					<div class="tab-pane" id="params_<?php echo $formType;?>_<?php echo $name; ?><?php echo $suffix; ?>">
+					<div class="tab-pane form-horizontal" id="params_<?php echo $formType;?>_<?php echo $name; ?><?php echo $suffix; ?>">
 						<?php if (isset($fieldSet->description) && !empty($fieldSet->description)) : ?>
 							<p class="tab-description"><?php echo RText::getTranslationIfExists($fieldSet->description, '', ''); ?></p>
 						<?php endif; ?>
 						<?php foreach ($form->getFieldset($name) as $field): ?>
 							<div class="form-group">
-								<?php if (!$field->hidden && $name != "permissions") : ?>
-									<div class="control-label">
-										<?php echo $field->label; ?>
+								<?php if ($field->type == 'spacer'): ?>
+									<div class="col-md-12">
+										<p><?php echo $field->label; ?></p>
 									</div>
-								<?php endif; ?>
-								<?php if ($name != "permissions") : ?>
-									<div class="controls">
-										<?php echo $field->input; ?>
-									</div>
+								<?php else: ?>
+									<?php if (!$field->hidden && $name != "permissions") : ?>
+										<div class="col-md-4"><?php echo $field->label; ?></div>
+									<?php endif; ?>
+									<?php if ($name != "permissions") : ?>
+										<div class="col-md-8">
+											<?php echo $field->input; ?>
+										</div>
+									<?php endif; ?>
 								<?php endif; ?>
 							</div>
 						<?php endforeach; ?>

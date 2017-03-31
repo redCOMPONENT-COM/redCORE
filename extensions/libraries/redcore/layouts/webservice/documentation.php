@@ -135,6 +135,42 @@ $availableLanguages = implode(', ', $availableLanguages);
 		<h2><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ALLOWED_OPERATIONS'); ?></h2>
 		<p>
 			<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ALLOWED_OPERATIONS_DESC'); ?>
+			<div class="before">
+				<nav role='navigation' class='table-of-contents'>
+					<ul>
+						<?php foreach ($xml->operations as $operations) : ?>
+							<?php foreach ($operations as $operationName => $operation) : ?>
+								<?php if ($operationName == 'documentation') :
+									continue;
+								elseif ($operationName == 'read') :
+									if (isset($xml->operations->read->list)) : ?>
+										<li>
+											<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName . ' list')); ?>"><?php echo ucfirst($operationName . ' list'); ?></a>
+										</li>
+									<?php endif;
+
+									if (isset($xml->operations->read->item)) : ?>
+										<li>
+											<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName . ' item')); ?>"><?php echo ucfirst($operationName . ' item'); ?></a>
+										</li>
+									<?php endif;
+								elseif ($operationName == 'task') :
+									foreach ($operation as $taskName => $task) : ?>
+										<li>
+											<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName . ' ' . $taskName)); ?>"><?php echo ucfirst($operationName . ' ' . $taskName); ?></a>
+										</li>
+									<?php endforeach;
+								else : ?>
+									<li>
+										<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName)); ?>"><?php echo ucfirst($operationName); ?></a>
+									</li>
+								<?php endif; ?>
+								
+							<?php endforeach; ?>
+						<?php endforeach; ?>
+					</ul>
+				</nav>
+			</div>
 		</p>
 
 		<br />

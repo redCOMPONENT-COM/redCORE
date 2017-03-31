@@ -48,7 +48,7 @@ $db = JFactory::getDbo();
 	</ul>
 	<div class="tab-content">
 		<div class="tab-pane active in" id="mainComponentTranslations">
-			<div class="row">
+			<div class="row-fluid">
 				<table class="table table-striped table-hover" id="translationTablesList">
 					<thead>
 					<tr>
@@ -169,7 +169,7 @@ $db = JFactory::getDbo();
 					</div>
 				</div>
 			<?php else : ?>
-				<div class="row">
+				<div class="row-fluid">
 				<?php echo RLayoutHelper::render(
 					'translation.tables',
 					array(

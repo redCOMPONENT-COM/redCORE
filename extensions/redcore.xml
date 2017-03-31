@@ -7,10 +7,10 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.8.7</version>
+    <version>1.8.9</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="1.8.6" defaultFramework="bootstrap3" />
+    <redcore version="1.9.0" defaultFramework="bootstrap3" />
 
     <install folder="components/com_redcore/admin">
         <sql>
@@ -97,7 +97,7 @@
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
         <plugin name="mvcoverride" group="system" disabled="1" />
-        <plugin name="paypal" group="redpayment"/>
+        <plugin name="paypal" group="redpayment" disabled="1" />
     </plugins>
 
     <!-- Modules to install with the component -->
