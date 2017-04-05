@@ -57,7 +57,7 @@
         <menu view="dashboard">COM_REDCORE</menu>
         <submenu>
             <menu link="option=com_redcore&amp;view=dashboard" view="dashboard">COM_REDCORE_DASHBOARD</menu>
-            <menu link="option=com_redcore&amp;view=configs" view="configs">COM_REDCORE_CONFIGURATION</menu>
+            <menu link="option=com_redcore&amp;view=configs&amp;layout=edit&amp;component=com_redcore" view="configs">COM_REDCORE_CONFIGURATION</menu>
             <menu link="option=com_redcore&amp;view=translation_tables" view="translation_tables">COM_REDCORE_TRANSLATIONS</menu>
             <menu link="option=com_redcore&amp;view=webservices" view="webservices">COM_REDCORE_WEBSERVICES</menu>
             <menu link="option=com_redcore&amp;view=oauth_clients" view="oauth_clients">COM_REDCORE_OAUTH_CLIENTS</menu>
