@@ -1815,6 +1815,12 @@ class RApiHalHal extends RApi
 					return true;
 				}
 
+				// We will use this only for authorizations with no actual users. This is used for reading of the data.
+				if (isset($response->success) && $response->success === true)
+				{
+					return true;
+				}
+
 				$authorized = false || !$terminateIfNotAuthorized;
 			}
 		}
