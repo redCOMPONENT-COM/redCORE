@@ -5,7 +5,7 @@ redCORE
 
 # Overview
 
-redCORE is a RAD (Rapid Application Development) Layered abstraction layer that focuses on Development of complex extensions.
+redCORE is a RAD (Rapid Application Development) Layeredlayer that focuses on Development of complex extensions.
 
 redCORE focuses on allowing the more complex structures and thus saving time for the developer so the focus becomes on added value and not in reinventing the Wheel.
 
