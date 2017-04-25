@@ -9,6 +9,7 @@
 
 defined('JPATH_REDCORE') or die;
 
+/** @var JPaginationObject $item */
 $item = $displayData['data'];
 
 $display = $item->text;
@@ -17,13 +18,13 @@ switch ((string) $item->text)
 {
 	// Check for "Start" item
 	case JText::_('JLIB_HTML_START') :
-		$icon = "icon-fast-backward";
+		$icon = 'icon-backward icon-first';
 		break;
 
 	// Check for "Prev" item
-	case $item->text == JText::_('JPREV') :
+	case $item->text === JText::_('JPREV') :
 		$item->text = JText::_('JPREVIOUS');
-		$icon = "icon-step-backward";
+		$icon = 'icon-step-backward icon-previous';
 		break;
 
 	// Check for "Prev" item
@@ -33,7 +34,7 @@ switch ((string) $item->text)
 
 	// Check for "Next" item
 	case JText::_('JNEXT') :
-		$icon = "icon-step-forward";
+		$icon = 'icon-step-forward icon-next';
 		break;
 
 	// Check for "Next" item
@@ -43,7 +44,7 @@ switch ((string) $item->text)
 
 	// Check for "End" item
 	case JText::_('JLIB_HTML_END') :
-		$icon = "icon-fast-forward";
+		$icon = 'icon-forward icon-last';
 		break;
 
 	default:
@@ -56,7 +57,7 @@ if ($icon !== null)
 	$display = '<i class="' . $icon . '"></i>';
 }
 
-if($displayData['active'])
+if ($displayData['active'])
 {
 	if ($item->base > 0)
 	{

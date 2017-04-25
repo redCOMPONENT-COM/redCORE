@@ -10,7 +10,7 @@
 defined('JPATH_REDCORE') or die;
 
 /**
- * Autoloader.
+ * Static class to handle loading of libraries.
  *
  * @package     Redcore
  * @subpackage  Loader
@@ -18,6 +18,30 @@ defined('JPATH_REDCORE') or die;
  */
 class RLoader extends JLoader
 {
+	/**
+	 * Container for already imported library paths.
+	 *
+	 * @var    array
+	 * @since  11.1
+	 */
+	protected static $classes = array();
+
+	/**
+	 * Container for already imported library paths.
+	 *
+	 * @var    array
+	 * @since  11.1
+	 */
+	protected static $imported = array();
+
+	/**
+	 * Container for registered library class prefixes and path lookups.
+	 *
+	 * @var    array
+	 * @since  12.1
+	 */
+	protected static $prefixes = array();
+
 	/**
 	 * Holds proxy classes and the class names the proxy.
 	 *
@@ -37,9 +61,18 @@ class RLoader extends JLoader
 	/**
 	 * Container for namespace => path map.
 	 *
-	 * @var  array
+	 * @var    array
+	 * @since  12.3
 	 */
-	protected static $namespaces = array();
+	protected static $namespaces = array('psr0' => array(), 'psr4' => array());
+
+	/**
+	 * Holds a reference for all deprecated aliases (mainly for use by a logging platform).
+	 *
+	 * @var    array
+	 * @since  3.6.3
+	 */
+	protected static $deprecatedAliases = array();
 
 	/**
 	 * Method to discover classes of a given type in a given path.
@@ -50,6 +83,8 @@ class RLoader extends JLoader
 	 * @param   boolean  $recurse      Recurse through all child directories as well as the parent path.
 	 *
 	 * @return  void
+	 *
+	 * @since   11.1
 	 */
 	public static function discover($classPrefix, $parentPath, $force = true, $recurse = false)
 	{
@@ -96,6 +131,8 @@ class RLoader extends JLoader
 	 * Method to get the list of registered classes and their respective file paths for the autoloader.
 	 *
 	 * @return  array  The array of class => path values for the autoloader.
+	 *
+	 * @since   11.1
 	 */
 	public static function getClassList()
 	{
@@ -103,13 +140,34 @@ class RLoader extends JLoader
 	}
 
 	/**
+	 * Method to get the list of deprecated class aliases.
+	 *
+	 * @return  array  An associative array with deprecated class alias data.
+	 *
+	 * @since   3.6.3
+	 */
+	public static function getDeprecatedAliases()
+	{
+		return self::$deprecatedAliases;
+	}
+
+	/**
 	 * Method to get the list of registered namespaces.
 	 *
+	 * @param   string  $type  Defines the type of namespace, can be prs0 or psr4.
+	 *
 	 * @return  array  The array of namespace => path values for the autoloader.
+	 *
+	 * @since   12.3
 	 */
-	public static function getNamespaces()
+	public static function getNamespaces($type = 'psr0')
 	{
-		return self::$namespaces;
+		if ($type !== 'psr0' && $type !== 'psr4')
+		{
+			throw new InvalidArgumentException('Type needs to be prs0 or psr4!');
+		}
+
+		return self::$namespaces[$type];
 	}
 
 	/**
@@ -119,6 +177,8 @@ class RLoader extends JLoader
 	 * @param   string  $base  Search this directory for the class.
 	 *
 	 * @return  boolean  True on success.
+	 *
+	 * @since   11.1
 	 */
 	public static function import($key, $base = null)
 	{
@@ -127,17 +187,16 @@ class RLoader extends JLoader
 		{
 			// Setup some variables.
 			$success = false;
-			$parts = explode('.', $key);
-			$class = array_pop($parts);
-			$base = (!empty($base)) ? $base : __DIR__;
-			$path = str_replace('.', DIRECTORY_SEPARATOR, $key);
+			$parts   = explode('.', $key);
+			$class   = array_pop($parts);
+			$base    = (!empty($base)) ? $base : __DIR__;
+			$path    = str_replace('.', DIRECTORY_SEPARATOR, $key);
 
 			// Handle special case for helper classes.
 			if ($class == 'helper')
 			{
 				$class = ucfirst(array_pop($parts)) . ucfirst($class);
 			}
-
 			// Standard class.
 			else
 			{
@@ -157,7 +216,6 @@ class RLoader extends JLoader
 					$success = true;
 				}
 			}
-
 			/*
 			 * If we are not importing a library from the Joomla namespace directly include the
 			 * file since we cannot assert the file/folder naming conventions.
@@ -184,6 +242,8 @@ class RLoader extends JLoader
 	 * @param   string  $class  The class to be loaded.
 	 *
 	 * @return  boolean  True on success
+	 *
+	 * @since   11.1
 	 */
 	public static function load($class)
 	{
@@ -215,6 +275,8 @@ class RLoader extends JLoader
 	 * @param   boolean  $force  True to overwrite the autoload path value for the class if it already exists.
 	 *
 	 * @return  void
+	 *
+	 * @since   11.1
 	 */
 	public static function register($class, $path, $force = true)
 	{
@@ -247,6 +309,8 @@ class RLoader extends JLoader
 	 * @return  void
 	 *
 	 * @throws  RuntimeException
+	 *
+	 * @since   12.1
 	 */
 	public static function registerPrefix($prefix, $path, $reset = false, $prepend = false)
 	{
@@ -263,7 +327,6 @@ class RLoader extends JLoader
 		{
 			self::$prefixes[$prefix] = array($path);
 		}
-
 		// Otherwise we want to simply add the path to the prefix.
 		else
 		{
@@ -330,13 +393,22 @@ class RLoader extends JLoader
 	 * @param   string   $path       A case sensitive absolute file path to the library root where classes of the given namespace can be found.
 	 * @param   boolean  $reset      True to reset the namespace with only the given lookup path.
 	 * @param   boolean  $prepend    If true, push the path to the beginning of the namespace lookup paths array.
+	 * @param   string   $type       Defines the type of namespace, can be prs0 or psr4.
 	 *
 	 * @return  void
 	 *
 	 * @throws  RuntimeException
+	 *
+	 * @note    The default argument of $type will be changed in J4 to be 'psr4'
+	 * @since   12.3
 	 */
-	public static function registerNamespace($namespace, $path, $reset = false, $prepend = false)
+	public static function registerNamespace($namespace, $path, $reset = false, $prepend = false, $type = 'psr0')
 	{
+		if ($type !== 'psr0' && $type !== 'psr4')
+		{
+			throw new InvalidArgumentException('Type needs to be prs0 or psr4!');
+		}
+
 		// Verify the library path exists.
 		if (!file_exists($path))
 		{
@@ -346,9 +418,9 @@ class RLoader extends JLoader
 		}
 
 		// If the namespace is not yet registered or we have an explicit reset flag then set the path.
-		if (!isset(self::$namespaces[$namespace]) || $reset)
+		if (!isset(self::$namespaces[$type][$namespace]) || $reset)
 		{
-			self::$namespaces[$namespace] = array($path);
+			self::$namespaces[$type][$namespace] = array($path);
 		}
 
 		// Otherwise we want to simply add the path to the namespace.
@@ -356,11 +428,11 @@ class RLoader extends JLoader
 		{
 			if ($prepend)
 			{
-				array_unshift(self::$namespaces[$namespace], $path);
+				array_unshift(self::$namespaces[$type][$namespace], $path);
 			}
 			else
 			{
-				self::$namespaces[$namespace][] = $path;
+				self::$namespaces[$type][$namespace][] = $path;
 			}
 		}
 	}
@@ -377,27 +449,92 @@ class RLoader extends JLoader
 	 * @param   boolean  $enableClasses   True to enable class map based class loading (needed to auto load the Joomla core).
 	 *
 	 * @return  void
+	 *
+	 * @since   12.3
 	 */
-	public static function setup($enablePsr = false, $enablePrefixes = true, $enableClasses = true)
+	public static function setup($enablePsr = true, $enablePrefixes = true, $enableClasses = true)
 	{
-		if ($enablePsr)
-		{
-			// Register the PSR-0 based autoloader.
-			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
-			spl_autoload_register(array('RLoader', 'loadByAlias'));
-		}
-
-		if ($enablePrefixes)
-		{
-			// Register the prefix autoloader.
-			spl_autoload_register(array('RLoader', '_autoload'), true, true);
-		}
-
 		if ($enableClasses)
 		{
 			// Register the class map based autoloader.
 			spl_autoload_register(array('RLoader', 'load'), true, true);
 		}
+
+		if ($enablePrefixes)
+		{
+			// Register the J prefix and base path for Joomla platform libraries.
+			self::registerPrefix('J', JPATH_PLATFORM . '/joomla');
+
+			// Register the prefix autoloader.
+			spl_autoload_register(array('RLoader', '_autoload'), true, true);
+		}
+
+		if ($enablePsr)
+		{
+			// Register the PSR-0 based autoloader.
+			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
+			spl_autoload_register(array('RLoader', 'loadByPsr4'), true, true);
+			spl_autoload_register(array('RLoader', 'loadByAlias'));
+		}
+	}
+
+	/**
+	 * Method to autoload classes that are namespaced to the PSR-4 standard.
+	 *
+	 * @param   string  $class  The fully qualified class name to autoload.
+	 *
+	 * @return  boolean  True on success, false otherwise.
+	 *
+	 * @since   3.7.0
+	 */
+	public static function loadByPsr4($class)
+	{
+		// Remove the root backslash if present.
+		if ($class[0] == '\\')
+		{
+			$class = substr($class, 1);
+		}
+
+		// Find the location of the last NS separator.
+		$pos = strrpos($class, '\\');
+
+		// If one is found, we're dealing with a NS'd class.
+		if ($pos !== false)
+		{
+			$classPath = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, 0, $pos)) . DIRECTORY_SEPARATOR;
+			$className = substr($class, $pos + 1);
+		}
+		// If not, no need to parse path.
+		else
+		{
+			$classPath = null;
+			$className = $class;
+		}
+
+		$classPath .= $className . '.php';
+
+		// Loop through registered namespaces until we find a match.
+		foreach (self::$namespaces['psr4'] as $ns => $paths)
+		{
+			$nsPath = trim(str_replace('\\', DIRECTORY_SEPARATOR, $ns), DIRECTORY_SEPARATOR);
+
+			if (strpos($class, $ns) === 0)
+			{
+				// Loop through paths registered to this namespace until we find a match.
+				foreach ($paths as $path)
+				{
+					$classFilePath = $path . DIRECTORY_SEPARATOR . str_replace($nsPath, '', $classPath);
+
+					// We check for class_exists to handle case-sensitive file systems
+					if (file_exists($classFilePath) && !class_exists($class, false))
+					{
+						return (bool) include_once $classFilePath;
+					}
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -406,6 +543,10 @@ class RLoader extends JLoader
 	 * @param   string  $class  The fully qualified class name to autoload.
 	 *
 	 * @return  boolean  True on success, false otherwise.
+	 *
+	 * @since   13.1
+	 *
+	 * @deprecated 4.0 this method will be removed
 	 */
 	public static function loadByPsr0($class)
 	{
@@ -424,7 +565,6 @@ class RLoader extends JLoader
 			$classPath = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, 0, $pos)) . DIRECTORY_SEPARATOR;
 			$className = substr($class, $pos + 1);
 		}
-
 		// If not, no need to parse path.
 		else
 		{
@@ -435,7 +575,7 @@ class RLoader extends JLoader
 		$classPath .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
 		// Loop through registered namespaces until we find a match.
-		foreach (self::$namespaces as $ns => $paths)
+		foreach (self::$namespaces['psr0'] as $ns => $paths)
 		{
 			if (strpos($class, $ns) === 0)
 			{
@@ -519,8 +659,10 @@ class RLoader extends JLoader
 	 * @param   string  $class  The class to be loaded.
 	 *
 	 * @return  boolean  True if the class was loaded, false otherwise.
+	 *
+	 * @since   11.3
 	 */
-	private static function _autoload($class)
+	public static function _autoload($class)
 	{
 		foreach (self::$prefixes as $prefix => $lookup)
 		{
@@ -542,14 +684,14 @@ class RLoader extends JLoader
 	 * @param   array   $lookup  The array of base paths to use for finding the class file.
 	 *
 	 * @return  boolean  True if the class was loaded, false otherwise.
+	 *
+	 * @since   12.1
 	 */
 	private static function _load($class, $lookup)
 	{
 		// Split the class name into parts separated by camelCase.
 		$parts = preg_split('/(?<=[a-z0-9])(?=[A-Z])/x', $class);
-
-		// If there is only one part we want to duplicate that part for generating the path.
-		$parts = (count($parts) === 1) ? array($parts[0], $parts[0]) : $parts;
+		$partsCount = count($parts);
 
 		foreach ($lookup as $base)
 		{
@@ -560,6 +702,21 @@ class RLoader extends JLoader
 			if (file_exists($path))
 			{
 				return include $path;
+			}
+
+			// Backwards compatibility patch
+
+			// If there is only one part we want to duplicate that part for generating the path.
+			if ($partsCount === 1)
+			{
+				// Generate the path based on the class name parts.
+				$path = $base . '/' . implode('/', array_map('strtolower', array($parts[0], $parts[0]))) . '.php';
+
+				// Load the file if it exists.
+				if (file_exists($path))
+				{
+					return include $path;
+				}
 			}
 		}
 

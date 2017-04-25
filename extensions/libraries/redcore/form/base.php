@@ -173,23 +173,32 @@ abstract class RFormBase extends JForm
 	/**
 	 * Returns the value of an attribute of the form itself
 	 *
-	 * @param   string  $attribute  The name of the attribute
-	 * @param   mixed   $default    Optional default value to return
+	 * @param   string  $name     Name of the attribute to get
+	 * @param   mixed   $default  Optional value to return if attribute not found
 	 *
-	 * @return  mixed  The attribute value.
+	 * @return  mixed             Value of the attribute / default
+	 *
+	 * @since   3.2
 	 */
-	public function getAttribute($attribute, $default = null)
+	public function getAttribute($name, $default = null)
 	{
-		$value = $this->xml->attributes()->$attribute;
+		if ($this->xml instanceof SimpleXMLElement)
+		{
+			$attributes = $this->xml->attributes();
 
-		if (is_null($value))
-		{
-			return $default;
+			// Ensure that the attribute exists
+			if (property_exists($attributes, $name))
+			{
+				$value = $attributes->$name;
+
+				if ($value !== null)
+				{
+					return (string) $value;
+				}
+			}
 		}
-		else
-		{
-			return (string) $value;
-		}
+
+		return $default;
 	}
 
 	/**
