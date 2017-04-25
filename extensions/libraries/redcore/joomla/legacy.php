@@ -1,17 +1,13 @@
 <?php
 /**
- * @package     Joomla.Platform
- * @subpackage  Form
+ * @package     Redcore
+ * @subpackage  Legacy
  *
  * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('JPATH_PLATFORM') or die;
-
-use Joomla\String\StringHelper;
-
-jimport('joomla.filesystem.path');
 
 /**
  * This class have some functions needed for other Joomla Classes so we dont end up copying every Joomla class there is

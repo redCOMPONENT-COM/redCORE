@@ -18,7 +18,7 @@ switch ((string) $item->text)
 {
 	// Check for "Start" item
 	case JText::_('JLIB_HTML_START') :
-		$icon = 'icon-backward icon-first';
+		$icon = 'icon-fast-backward icon-first';
 		break;
 
 	// Check for "Prev" item
@@ -44,7 +44,7 @@ switch ((string) $item->text)
 
 	// Check for "End" item
 	case JText::_('JLIB_HTML_END') :
-		$icon = 'icon-forward icon-last';
+		$icon = 'icon-fast-forward icon-last';
 		break;
 
 	default:
