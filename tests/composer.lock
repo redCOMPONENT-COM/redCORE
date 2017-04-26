@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b8e31e1b57e53af253d7dc544958202d",
-    "content-hash": "6561518fed59d2c881d98e85af26e3de",
+    "hash": "44c8870ba39b06506be09953b9a7d17e",
+    "content-hash": "56c2d52b44164e1358734ebf3b4d2b68",
     "packages": [],
     "packages-dev": [
         {
@@ -2371,6 +2371,48 @@
             "time": "2016-10-10 12:19:37"
         },
         {
+            "name": "redcomponent/robo",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/redCOMPONENT-COM/robo.git",
+                "reference": "ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/redCOMPONENT-COM/robo/zipball/ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a",
+                "reference": "ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "redcomponent\\robo\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "redCOMPONENT",
+                    "email": "email@redweb.dk"
+                }
+            ],
+            "description": "Robo tasks for redWEB Quality Assurance",
+            "keywords": [
+                "BDD",
+                "robo",
+                "task"
+            ],
+            "abandoned": "joomla-projects/joomla-testing-robo",
+            "time": "2017-04-26 05:34:20"
+        },
+        {
             "name": "redcomponent/teststatistics",
             "version": "dev-master",
             "source": {
@@ -3829,6 +3871,7 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "phing/phing": 20,
+        "redcomponent/robo": 20,
         "redcomponent/teststatistics": 20,
         "flow/jsonpath": 20
     },
