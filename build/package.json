@@ -1,6 +1,6 @@
 {
   "name": "redCORE",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "description": "Rapid application development layer for Joomla!",
   "main": "gulpfile.js",
   "directories": {
