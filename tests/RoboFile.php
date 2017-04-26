@@ -62,21 +62,6 @@ class RoboFile extends \Robo\Tasks
 	}
 
 	/**
-	 * Hello World example task.
-	 *
-	 * @see  https://github.com/redCOMPONENT-COM/robo/blob/master/src/HelloWorld.php
-	 * @link https://packagist.org/packages/redcomponent/robo
-	 *
-	 * @return object Result
-	 */
-	public function sayHelloWorld()
-	{
-		$result = $this->taskHelloWorld()->run();
-
-		return $result;
-	}
-
-	/**
 	 * Downloads and prepares a Joomla CMS site for testing
 	 *
 	 * @param   int   $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
