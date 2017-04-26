@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7c76ae7f06436761ec8b9343330a04e0",
-    "content-hash": "0c25d52ff17a641f5d7b16686ca6b0d8",
+    "hash": "f1cb09bf4a0994ab37fdd69ef853889b",
+    "content-hash": "f905e047c1225013bfe0ce77a49d2d9c",
     "packages": [],
     "packages-dev": [
         {
@@ -1309,38 +1309,32 @@
         },
         {
             "name": "nette/reflection",
-            "version": "v2.4.1",
+            "version": "v2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/reflection.git",
-                "reference": "ca6bafe1f73c19719238b58f91e6a399f281069b"
+                "reference": "6c39adc4661f5f7b64be7ee161b8f67d8174da4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/reflection/zipball/ca6bafe1f73c19719238b58f91e6a399f281069b",
-                "reference": "ca6bafe1f73c19719238b58f91e6a399f281069b",
+                "url": "https://api.github.com/repos/nette/reflection/zipball/6c39adc4661f5f7b64be7ee161b8f67d8174da4d",
+                "reference": "6c39adc4661f5f7b64be7ee161b8f67d8174da4d",
                 "shasum": ""
             },
             "require": {
                 "ext-tokenizer": "*",
-                "nette/caching": "^2.2 || ^3.0",
-                "nette/utils": "^2.4 || ^3.0",
-                "php": ">=5.6.0"
+                "nette/caching": "~2.2",
+                "nette/utils": "~2.2",
+                "php": ">=5.3.1"
             },
             "conflict": {
                 "nette/nette": "<2.2"
             },
             "require-dev": {
-                "nette/di": "^2.4 || ^3.0",
-                "nette/tester": "^2.0",
-                "tracy/tracy": "^2.4"
+                "nette/di": "~2.3",
+                "nette/tester": "~1.4"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.4-dev"
-                }
-            },
             "autoload": {
                 "classmap": [
                     "src/"
@@ -1364,7 +1358,7 @@
             ],
             "description": "Nette PHP Reflection Component",
             "homepage": "https://nette.org",
-            "time": "2017-01-10 16:10:27"
+            "time": "2016-03-12 14:57:07"
         },
         {
             "name": "nette/utils",
@@ -2372,16 +2366,16 @@
         },
         {
             "name": "redcomponent/robo",
-            "version": "dev-master",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/redCOMPONENT-COM/robo.git",
-                "reference": "ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a"
+                "reference": "b6ac3983a373d87972825e5de0bbcf38a8457e49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/redCOMPONENT-COM/robo/zipball/ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a",
-                "reference": "ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a",
+                "url": "https://api.github.com/repos/redCOMPONENT-COM/robo/zipball/b6ac3983a373d87972825e5de0bbcf38a8457e49",
+                "reference": "b6ac3983a373d87972825e5de0bbcf38a8457e49",
                 "shasum": ""
             },
             "require": {
@@ -2410,7 +2404,7 @@
                 "task"
             ],
             "abandoned": "joomla-projects/joomla-testing-robo",
-            "time": "2017-04-26 05:34:20"
+            "time": "2017-04-26 05:33:41"
         },
         {
             "name": "redcomponent/teststatistics",
@@ -3871,7 +3865,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "phing/phing": 20,
-        "redcomponent/robo": 20,
         "redcomponent/teststatistics": 20,
         "flow/jsonpath": 20
     },
