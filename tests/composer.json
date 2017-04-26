@@ -13,7 +13,7 @@
         "joomla-projects/joomla-browser": "v3.6.5.1",
         "codegyre/robo": "~0.6",
         "consolidation/robo": "~1.0.6",
-        "redcomponent/robo": "dev-master",
+        "redcomponent/robo": "~1.0.2",
         "redcomponent/teststatistics": "dev-master",
         "flow/jsonpath": "dev-master",
         "fzaninotto/faker": "^1.5",

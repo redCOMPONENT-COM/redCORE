@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ce84a055f2168957651b10a0a6dfbb8c",
-    "content-hash": "ed38283050fe0326d1cfef61b11f3852",
+    "hash": "21fb4bd35b5b4674aab905315e07ca64",
+    "content-hash": "059cada235e62def3888e03579578e5f",
     "packages": [],
     "packages-dev": [
         {
@@ -2481,16 +2481,16 @@
         },
         {
             "name": "redcomponent/robo",
-            "version": "dev-master",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/redCOMPONENT-COM/robo.git",
-                "reference": "ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a"
+                "reference": "c672017ad60b32fb0da6ea1b6e7dec7351da09df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/redCOMPONENT-COM/robo/zipball/ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a",
-                "reference": "ded619c98bb6dbb4e8c74d09c54d34e40b8fef4a",
+                "url": "https://api.github.com/repos/redCOMPONENT-COM/robo/zipball/c672017ad60b32fb0da6ea1b6e7dec7351da09df",
+                "reference": "c672017ad60b32fb0da6ea1b6e7dec7351da09df",
                 "shasum": ""
             },
             "require": {
@@ -2519,7 +2519,7 @@
                 "task"
             ],
             "abandoned": "joomla-projects/joomla-testing-robo",
-            "time": "2017-04-26 05:34:20"
+            "time": "2017-04-26 09:09:48"
         },
         {
             "name": "redcomponent/teststatistics",
@@ -3983,7 +3983,6 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "phing/phing": 20,
-        "redcomponent/robo": 20,
         "redcomponent/teststatistics": 20,
         "flow/jsonpath": 20
     },
