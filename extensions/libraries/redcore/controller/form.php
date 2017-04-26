@@ -481,7 +481,7 @@ class RControllerForm extends JControllerForm
 		$lang  = JFactory::getLanguage();
 		$model = $this->getModel();
 		$table = $model->getTable();
-		$data  = $this->input->post->get('jform', array(), 'array');
+		$data  = $this->getSaveData();
 		$checkin = property_exists($table, 'checked_out');
 		$context = "$this->option.edit.$this->context";
 		$task = $this->getTask();
@@ -770,5 +770,16 @@ class RControllerForm extends JControllerForm
 			'index.php?option=' . $this->option . '&view=' . $this->view_item
 			. $append, false
 		);
+	}
+
+	/**
+	 * Get the data for form saving
+	 * Allows for subclasses to get data from multiple sources (e.g. $this->input->files)
+	 *
+	 * @return  array
+	 */
+	protected function getSaveData()
+	{
+		return $this->input->post->get('jform', array(), 'array');
 	}
 }
