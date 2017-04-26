@@ -780,20 +780,20 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/joomla-projects/joomla-browser.git",
-                "reference": "b3eb0afd2dae7d55e67e1cda4847573f50de61ea"
+                "reference": "833e113544dc05b34ef024b0634f17c69f95be42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/b3eb0afd2dae7d55e67e1cda4847573f50de61ea",
-                "reference": "b3eb0afd2dae7d55e67e1cda4847573f50de61ea",
+                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/833e113544dc05b34ef024b0634f17c69f95be42",
+                "reference": "833e113544dc05b34ef024b0634f17c69f95be42",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "consolidation/robo": "~1",
+                "php": ">=5.5.9"
             },
             "require-dev": {
-                "codegyre/robo": "^0.5.3",
-                "joomla-projects/robo": "dev-master"
+                "joomla-projects/joomla-testing-robo": "~1.0"
             },
             "type": "library",
             "autoload": {
