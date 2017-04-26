@@ -2376,12 +2376,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/redCOMPONENT-COM/robo.git",
-                "reference": "65d6aeda5a4f6bc5ff7ea8cf81161002e3ca15ec"
+                "reference": "cebbf34acc90d0ceb8f5a18fa466935ac6e41c96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/redCOMPONENT-COM/robo/zipball/65d6aeda5a4f6bc5ff7ea8cf81161002e3ca15ec",
-                "reference": "65d6aeda5a4f6bc5ff7ea8cf81161002e3ca15ec",
+                "url": "https://api.github.com/repos/redCOMPONENT-COM/robo/zipball/cebbf34acc90d0ceb8f5a18fa466935ac6e41c96",
+                "reference": "cebbf34acc90d0ceb8f5a18fa466935ac6e41c96",
                 "shasum": ""
             },
             "require": {
@@ -2410,7 +2410,7 @@
                 "task"
             ],
             "abandoned": "joomla-projects/joomla-testing-robo",
-            "time": "2016-11-23 20:18:13"
+            "time": "2017-04-26 00:54:24"
         },
         {
             "name": "redcomponent/teststatistics",
