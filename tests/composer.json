@@ -6,19 +6,15 @@
         "php": ">=5.3.10"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "1.*",
-        "phpmd/phpmd": "*",
-        "codeception/codeception": "~2.2",
-        "phing/phing": "2.9.*@dev",
-        "joomla-projects/joomla-browser": "v3.6.0.1",
-        "codegyre/robo": "~0.6",
-        "redcomponent/robo": "dev-master",
-        "redcomponent/teststatistics": "dev-master",
-        "flow/jsonpath": "dev-master",
-        "fzaninotto/faker": "^1.5",
-				"joomla-projects/selenium-server-standalone": "v2.53.1",
-        "nette/reflection": "~2",
-				"cloudinary/cloudinary_php": "1.1.1",
-				"knplabs/github-api": "1.4.12"
-    }
+        "codeception/codeception"                    : "^2.2",
+        "joomla-projects/selenium-server-standalone" : "v2.53.1",
+        "fzaninotto/faker"                           : "^1.6",
+        "Behat/Gherkin"                              : "^4.4.1",
+        "joomla-projects/jorobo"                     : "dev-container-test",
+        "joomla-projects/joomla-browser"             : "dev-container-test",
+        "joomla-projects/joomla-testing-robo"        : "dev-container-test",
+        "redcomponent/teststatistics"                : "dev-master"
+    },
+    "minimum-stability"                 : "dev",
+    "prefer-stable"                     : true
 }
