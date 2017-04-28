@@ -48,7 +48,7 @@ class RDatabaseMysql extends JDatabaseMySQL
 			}
 		}
 
-		return RHelperDatabase::replacePrefix($parsedSql, $this->tablePrefix, $prefix, $insideQuotes);
+		return RHelperDatabase::replacePrefix($sql, $this->tablePrefix, $prefix, $insideQuotes);
 	}
 
 	/**
@@ -69,5 +69,17 @@ class RDatabaseMysql extends JDatabaseMySQL
 		}
 
 		return parent::execute();
+	}
+
+	/**
+	 * Test to see if the MySQL connector is available.
+	 *
+	 * @return  boolean  True on success, false otherwise.
+	 *
+	 * @since   12.1
+	 */
+	public static function isSupported()
+	{
+		return PHP_MAJOR_VERSION < 7 && function_exists('mysql_connect');
 	}
 }

@@ -111,7 +111,7 @@ class RControllerForm extends JControllerForm
 			}
 			else
 			{
-				$this->model_prefix = $this->name . 'Model';
+				$this->model_prefix = ucfirst($this->name) . 'Model';
 			}
 		}
 
@@ -185,6 +185,7 @@ class RControllerForm extends JControllerForm
 			$this->view_item = $this->context;
 		}
 
+		// Guess the list view as the plural of the item view.
 		if (empty($this->view_list))
 		{
 			$this->view_list = RInflector::pluralize($this->view_item);
@@ -360,6 +361,8 @@ class RControllerForm extends JControllerForm
 	 */
 	public function edit($key = null, $urlVar = null)
 	{
+		// Do not cache the response to this, its a redirect, and mod_expires and google chrome browser bugs cache it forever!
+		JFactory::getApplication()->allowCache(false);
 		$app   = JFactory::getApplication();
 		$model = $this->getModel();
 		$table = $model->getTable();

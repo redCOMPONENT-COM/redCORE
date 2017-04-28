@@ -132,7 +132,7 @@ $app                  = JFactory::getApplication();
 		<div class="accordion-heading">
 			<a href="http://redcomponent-com.github.io/redCORE/" target="_blank" class="accordion-toggle text-error">
 				<h5>
-					<i class="icon-book"></i><?php echo JText::_('COM_REDCORE_DOCUMENTATION_LINK_TITLE') ?>
+					<i class="icon-book"></i><?php echo JText::_('COM_REDCORE_DOCUMENTATION_LINK_TITLE'); ?>
 				</h5>
 			</a>
 		</div>

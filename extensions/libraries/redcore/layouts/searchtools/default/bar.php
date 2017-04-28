@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Registry\Registry;
+
 $data = $displayData;
 
 // Receive overridable options
@@ -16,7 +18,7 @@ $data['options'] = !empty($data['options']) ? $data['options'] : array();
 
 if (is_array($data['options']))
 {
-	$data['options'] = new JRegistry($data['options']);
+	$data['options'] = new Registry($data['options']);
 }
 
 // Options
@@ -29,10 +31,17 @@ $filters = $data['view']->filterForm->getGroup('filter');
 <?php if (!empty($filters[$searchField])) : ?>
 	<?php if ($searchButton) : ?>
 		<label for="filter_search" class="element-invisible">
-			<?php echo JText::_('LIB_REDCORE_FILTER_SEARCH_DESC'); ?>
+			<?php if (isset($filters[$searchField]->label)) : ?>
+				<?php echo JText::_($filters[$searchField]->label); ?>
+			<?php else : ?>
+				<?php echo JText::_('LIB_REDCORE_FILTER_SEARCH_DESC'); ?>
+			<?php endif; ?>
 		</label>
 		<div class="btn-wrapper input-append">
 			<?php echo $filters[$searchField]->input; ?>
+			<?php if ($filters[$searchField]->description) : ?>
+				<?php JHtmlBootstrap::tooltip('#' . $searchField, array('title' => JText::_($filters[$searchField]->description))); ?>
+			<?php endif; ?>
 			<button type="submit" class="btn hasTooltip" title="<?php echo RHtml::tooltipText('JSEARCH_FILTER_SUBMIT'); ?>">
 				<i class="icon-search"></i>
 			</button>

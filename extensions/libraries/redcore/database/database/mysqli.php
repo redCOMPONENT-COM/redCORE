@@ -48,7 +48,7 @@ class RDatabaseMysqli extends JDatabaseMySQLi
 			}
 		}
 
-		return RHelperDatabase::replacePrefix($parsedSql, $this->tablePrefix, $prefix, $insideQuotes);
+		return RHelperDatabase::replacePrefix($sql, $this->tablePrefix, $prefix, $insideQuotes);
 	}
 
 	/**
