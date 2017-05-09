@@ -135,6 +135,17 @@ class RApiHalHelperSiteUsers
 
 		$user->user_groups = $userGroups;
 
+		// Set access token to expire for security reasons
+		$accessTokenParamName = RBootstrap::getConfig('oauth2_token_param_name', 'access_token');
+		$accessTokenKey = $app->input->get($accessTokenParamName);
+
+		$query = $db->getQuery(true)
+			->update('#__redcore_oauth_access_tokens')
+			->set($db->qn('expires') . ' = NOW()')
+			->where($db->qn('access_token') . ' = ' . $db->q($accessTokenKey));
+		$db->setQuery($query);
+		$db->execute();
+
 		return $user;
 	}
 }

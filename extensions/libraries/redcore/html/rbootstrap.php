@@ -127,7 +127,7 @@ abstract class JHtmlRbootstrap
 			// Attach affix to document
 			JFactory::getDocument()->addScriptDeclaration(
 				"(function($){
-					$('#$selector').affix($options);
+					$(" . json_encode('#' . $selector) . ").affix($options);
 					})(jQuery);"
 			);
 
@@ -159,7 +159,7 @@ abstract class JHtmlRbootstrap
 		// Attach the alerts to the document
 		JFactory::getDocument()->addScriptDeclaration(
 			"(function($){
-				$('.$selector').alert();
+				$(" . json_encode('.' . $selector) . ").alert();
 				})(jQuery);"
 		);
 
@@ -189,7 +189,7 @@ abstract class JHtmlRbootstrap
 		// Attach the button to the document
 		JFactory::getDocument()->addScriptDeclaration(
 			"(function($){
-				$('.$selector').button();
+				$(" . json_encode('.' . $selector) . ").button();
 				})(jQuery);"
 		);
 
@@ -229,7 +229,7 @@ abstract class JHtmlRbootstrap
 			// Attach the carousel to document
 			JFactory::getDocument()->addScriptDeclaration(
 				"(function($){
-					$('.$selector').carousel($options);
+					$(" . json_encode('.' . $selector) . ").carousel($options);
 					})(jQuery);"
 			);
 
@@ -261,7 +261,7 @@ abstract class JHtmlRbootstrap
 		// Attach the dropdown to the document
 		JFactory::getDocument()->addScriptDeclaration(
 			"(function($){
-				$('.$selector').dropdown();
+				$(" . json_encode('.' . $selector) . ").dropdown();
 				})(jQuery);"
 		);
 
@@ -303,7 +303,7 @@ abstract class JHtmlRbootstrap
 			// Attach the modal to document
 			JFactory::getDocument()->addScriptDeclaration(
 				"(function($){
-					$('#$selector').modal($options);
+					$(" . json_encode('#' . $selector) . ").modal($options);
 					})(jQuery);"
 			);
 
@@ -344,7 +344,7 @@ abstract class JHtmlRbootstrap
 		$layoutData = array(
 			'selector' => $selector,
 			'params'   => $params,
-			'body'     => $body
+			'body'     => $body,
 		);
 
 		return JLayoutHelper::render('joomla.modal.main', $layoutData);
@@ -400,7 +400,7 @@ abstract class JHtmlRbootstrap
 		JFactory::getDocument()->addScriptDeclaration(
 			"jQuery(document).ready(function()
 			{
-				jQuery('" . $selector . "').popover(" . $options . ");
+				jQuery(" . json_encode($selector) . ").popover(" . $options . ");
 			});"
 		);
 
@@ -436,7 +436,7 @@ abstract class JHtmlRbootstrap
 			// Attach ScrollSpy to document
 			JFactory::getDocument()->addScriptDeclaration(
 				"(function($){
-					$('#$selector').scrollspy($options);
+					$(" . json_encode('#' . $selector) . ").scrollspy($options);
 					})(jQuery);"
 			);
 
@@ -484,7 +484,7 @@ abstract class JHtmlRbootstrap
 			$opt['selector']  = (isset($params['selector']) && ($params['selector'])) ? (string) $params['selector'] : null;
 			$opt['title']     = (isset($params['title']) && ($params['title'])) ? (string) $params['title'] : null;
 			$opt['trigger']   = (isset($params['trigger']) && ($params['trigger'])) ? (string) $params['trigger'] : null;
-			$opt['delay']     = (isset($params['delay']) && ($params['delay'])) ? (int) $params['delay'] : null;
+			$opt['delay']     = (isset($params['delay']) && ($params['delay'])) ? (is_array($params['delay']) ? $params['delay'] : (int) $params['delay']) : null;
 			$opt['container'] = (isset($params['container']) && ($params['container'])) ? (int) $params['container'] : 'body';
 			$opt['template']  = isset($params['template']) ? (string) $params['template'] : null;
 			$onShow = isset($params['onShow']) ? (string) $params['onShow'] : null;
@@ -497,26 +497,26 @@ abstract class JHtmlRbootstrap
 			// Build the script.
 			$script = array();
 			$script[] = "jQuery(document).ready(function(){";
-			$script[] = "\tjQuery('" . $selector . "').tooltip(" . $options . ");";
+			$script[] = "\tjQuery(" . json_encode($selector) . ").tooltip(" . $options . ");";
 
 			if ($onShow)
 			{
-				$script[] = "\tjQuery('" . $selector . "').on('show.bs.tooltip', " . $onShow . ");";
+				$script[] = "\tjQuery(" . json_encode($selector) . ").on('show.bs.tooltip', " . $onShow . ");";
 			}
 
 			if ($onShown)
 			{
-				$script[] = "\tjQuery('" . $selector . "').on('shown.bs.tooltip', " . $onShown . ");";
+				$script[] = "\tjQuery(" . json_encode($selector) . ").on('shown.bs.tooltip', " . $onShown . ");";
 			}
 
 			if ($onHide)
 			{
-				$script[] = "\tjQuery('" . $selector . "').on('hideme.bs.tooltip', " . $onHide . ");";
+				$script[] = "\tjQuery(" . json_encode($selector) . ").on('hideme.bs.tooltip', " . $onHide . ");";
 			}
 
 			if ($onHidden)
 			{
-				$script[] = "\tjQuery('" . $selector . "').on('hidden.bs.tooltip', " . $onHidden . ");";
+				$script[] = "\tjQuery(" . json_encode($selector) . ").on('hidden.bs.tooltip', " . $onHidden . ");";
 			}
 
 			$script[] = "});";
@@ -529,6 +529,24 @@ abstract class JHtmlRbootstrap
 		}
 
 		return;
+	}
+
+	/**
+	 * Loads js and css files needed by Bootstrap Tooltip Extended plugin
+	 *
+	 * @param   boolean  $extended  If true, bootstrap-tooltip-extended.js and .css files are loaded
+	 *
+	 * @return  void
+	 *
+	 * @since   3.6
+	 */
+	public static function tooltipExtended($extended = true)
+	{
+		if ($extended)
+		{
+			JHtml::_('script', 'jui/bootstrap-tooltip-extended.min.js', false, true);
+			JHtml::_('stylesheet', 'jui/bootstrap-tooltip-extended.css', false, true);
+		}
 	}
 
 	/**
@@ -577,7 +595,7 @@ abstract class JHtmlRbootstrap
 			JFactory::getDocument()->addScriptDeclaration(
 				"jQuery(document).ready(function()
 				{
-					jQuery('" . $selector . "').typeahead(" . $options . ");
+					jQuery(" . json_encode($selector) . ").typeahead(" . $options . ");
 				});"
 			);
 
@@ -654,6 +672,20 @@ abstract class JHtmlRbootstrap
 			if ($onHidden)
 			{
 				$script[] = "\t.on('hidden', " . $onHidden . ")";
+			}
+
+			$parents = array_key_exists(__METHOD__, static::$loaded) ? array_filter(array_column(static::$loaded[__METHOD__], 'parent')) : array();
+
+			if ($opt['parent'] && empty($parents))
+			{
+				$script[] = "
+					$(document).on('click.collapse.data-api', '[data-toggle=collapse]', function (e) {
+						var \$this   = $(this), href
+						var parent  = \$this.attr('data-parent')
+						var \$parent = parent && $(parent)
+
+						if (\$parent) \$parent.find('[data-toggle=collapse][data-parent=' + parent + ']').not(\$this).addClass('collapsed')
+					})";
 			}
 
 			$script[] = "});";
@@ -838,7 +870,7 @@ abstract class JHtmlRbootstrap
 			// Attach tab to document
 			JFactory::getDocument()->addScriptDeclaration(
 				"(function($){
-					$('#$selector a').click(function (e) {
+					$(" . json_encode('#' . $selector . ' a') . ").click(function (e) {
 						e.preventDefault();
 						$(this).tab('show');
 					});

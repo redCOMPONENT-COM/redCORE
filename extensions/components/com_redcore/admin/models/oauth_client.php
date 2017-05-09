@@ -39,9 +39,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 				{
 					if (empty($data['user_id']))
 					{
-						$this->setError(JText::_('COM_REDCORE_OAUTH_CLIENTS_ERROR_CLIENT_CREDENTIALS_JOOMLA_USER'));
-
-						return false;
+						JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_OAUTH_CLIENTS_ERROR_CLIENT_CREDENTIALS_JOOMLA_USER'), 'warning');
 					}
 				}
 			}

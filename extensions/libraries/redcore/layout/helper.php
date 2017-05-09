@@ -36,8 +36,7 @@ class RLayoutHelper extends JLayoutHelper
 		// Make sure we send null to JLayoutFile if no path set
 		$basePath = empty($basePath) ? null : $basePath;
 		$layout = new RLayoutFile($layoutFile, $basePath, $options);
-		$renderedLayout = $layout->render($displayData);
 
-		return $renderedLayout;
+		return $layout->render($displayData);
 	}
 }

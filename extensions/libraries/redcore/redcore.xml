@@ -42,6 +42,7 @@
         <folder>translation</folder>
         <folder>user</folder>
         <folder>view</folder>
+        <folder>webservices</folder>
         <filename>bootstrap.php</filename>
         <filename>functions.php</filename>
         <filename>redcore.xml</filename>

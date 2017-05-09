@@ -38,6 +38,8 @@ abstract class RApiPaymentPluginBase extends JPlugin
 	 */
 	protected $autoloadLanguage = true;
 
+	protected $offlinePayment = false;
+
 	/**
 	 * Constructor
 	 *
@@ -55,6 +57,8 @@ abstract class RApiPaymentPluginBase extends JPlugin
 		// Load default helper file or use the plugin helper file
 		$this->loadRedpaymentHelper();
 
+		$this->offlinePayment = $this->params->get('offline_payment', 0);
+		$this->paymentHelper->offlinePayment = $this->offlinePayment;
 		$this->paymentHelper->paymentName = $this->paymentName;
 	}
 

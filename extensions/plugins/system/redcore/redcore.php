@@ -211,6 +211,25 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
+	 * Checks if this is a redCORE supported extension
+	 *
+	 * @return boolean
+	 */
+	private function isRedcoreExtension()
+	{
+		$redcoreExtensions = RComponentHelper::getRedcoreComponents();
+		$redcoreExtensions[] = 'com_redcore';
+		$option = JFactory::getApplication()->input->getCmd('option');
+
+		if (!empty($option) && in_array($option, $redcoreExtensions))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * This event is triggered before the framework creates the Head section of the Document.
 	 *
 	 * @return  void
@@ -224,10 +243,16 @@ class PlgSystemRedcore extends JPlugin
 			return;
 		}
 
+		// Only set media settings for Extensions that are redCORE supported Extension in administration
+		$isRedcoreExtension = $this->isRedcoreExtension();
+
 		$doc = JFactory::getDocument();
 		$isAdmin = JFactory::getApplication()->isAdmin();
 
-		RHtmlMedia::loadFrameworkJs();
+		if (!$isAdmin || $isRedcoreExtension)
+		{
+			RHtmlMedia::loadFrameworkJs();
+		}
 
 		if ($doc->_scripts)
 		{
@@ -261,7 +286,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
+			if (($isAdmin && $isRedcoreExtension) || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
@@ -302,7 +327,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
+			if (($isAdmin && $isRedcoreExtension) || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);
@@ -313,7 +338,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
+			if (($isAdmin && $isRedcoreExtension) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
@@ -324,34 +349,27 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove permission.js. Specially for Joomla 3.6 and make sure run only on redCORE's base extensions
-			if ($isAdmin && version_compare(JVERSION, '3.6.0', '>='))
+			if ($isAdmin && version_compare(JVERSION, '3.6.0', '>=') && $isRedcoreExtension)
 			{
-				$redcoreExtensions = RComponentHelper::getRedcoreComponents();
-				$redcoreExtensions[] = 'com_redcore';
-				$option = JFactory::getApplication()->input->getCmd('option');
+				$usePermission = false;
 
-				if (!empty($option) && in_array($option, $redcoreExtensions))
+				if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']))
 				{
-					$usePermission = false;
+					unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']);
 
-					if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']))
-					{
-						unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']);
+					$usePermission = true;
+				}
 
-						$usePermission = true;
-					}
+				if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']))
+				{
+					unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']);
 
-					if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']))
-					{
-						unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']);
+					$usePermission = true;
+				}
 
-						$usePermission = true;
-					}
-
-					if ($usePermission)
-					{
-						RHelperAsset::load('permission.min.js', 'redcore');
-					}
+				if ($usePermission)
+				{
+					RHelperAsset::load('permission.min.js', 'redcore');
 				}
 			}
 		}

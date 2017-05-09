@@ -978,10 +978,12 @@ class Com_RedcoreInstallerScript
 
 		$this->installTranslations($parent);
 
+		/** @var JXMLElement $manifest */
+		$manifest = $parent->get('manifest');
+
 		if (in_array($type, array('install', 'update', 'discover_install')))
 		{
-			/** @var JXMLElement $manifest */
-			$manifest = $parent->get('manifest');
+
 			$attributes = current($manifest->attributes());
 
 			// If it's a component
@@ -990,6 +992,17 @@ class Com_RedcoreInstallerScript
 				$this->loadRedcoreLanguage();
 				$this->displayComponentInfo($parent);
 			}
+		}
+
+		if($type == 'update')
+		{
+			$componentName = strtolower((string) $manifest->name);
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+			$query->delete('#__redcore_schemas')
+				->where('asset_id LIKE ' . $db->q($componentName . '.%'));
+
+			$db->setQuery($query)->execute();
 		}
 
 		return true;

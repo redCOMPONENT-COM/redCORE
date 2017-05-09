@@ -68,6 +68,7 @@ class RApiPaymentHelper
 			->select('COALESCE(pc2.extension_name, COALESCE(pc1.extension_name, ' . $db->q('') . ')) as extension_name')
 			->select('COALESCE(pc2.owner_name, COALESCE(pc1.owner_name, ' . $db->q('') . ')) as owner_name')
 			->select('COALESCE(pc2.state, COALESCE(pc1.state, p.enabled)) as state')
+			->select('p.params AS original_params')
 			->from($db->qn('#__extensions', 'p'))
 			->where($db->qn('p.type') . '= ' . $db->q('plugin'))
 			->where($db->qn('p.folder') . '= ' . $db->q('redpayment'))
@@ -84,9 +85,15 @@ class RApiPaymentHelper
 		$db->setQuery($query);
 		$item = $db->loadObject();
 
-		$registry = new JRegistry;
+		$registry = new Joomla\Registry\Registry;
+		$registry->loadString($item->original_params);
+		$item->original_params = $registry;
+		$originalParams = clone $registry;
+
+		$registry = new Joomla\Registry\Registry;
 		$registry->loadString($item->params);
-		$item->params = $registry;
+		$originalParams->merge($registry);
+		$item->params = $originalParams;
 
 		self::$pluginParams[$paymentName][$extensionName][$ownerName] = $item;
 
