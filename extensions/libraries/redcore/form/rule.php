@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Registry\Registry;
+
 // Detect if we have full UTF-8 and unicode PCRE support.
 if (!defined('JCOMPAT_UNICODE_PROPERTIES'))
 {

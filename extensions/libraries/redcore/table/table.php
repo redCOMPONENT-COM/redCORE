@@ -1038,4 +1038,117 @@ class RTable extends JTable
 			$tableInstance->{$tableFieldModifiedDate} = JFactory::getDate()->format($auditDateFormat);
 		}
 	}
+
+	/**
+	 * Get the columns from database table.
+	 *
+	 * @param   bool  $reload  flag to reload cache
+	 *
+	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 *
+	 * @since   11.1
+	 * @throws  UnexpectedValueException
+	 */
+	public function getFields($reload = false)
+	{
+		static $cache = null;
+
+		if ($cache !== null && !$reload)
+		{
+			return $cache;
+		}
+
+		$dbo = $this->getDbo();
+
+		$query = $dbo->getQuery(true);
+
+		$query->select('*');
+		$query->from('#__redcore_schemas');
+
+		$input = JFactory::getApplication()->input;
+		$option = $input->getCmd('option');
+
+		$assetName = $option . '.' . $this->_tbl;
+		$query->where('asset_id = ' . $dbo->q($assetName));
+		$result = $dbo->setQuery($query)->loadAssoc();
+
+		if (is_null($result))
+		{
+			$result = $this->createSchema($assetName);
+		}
+
+		$cachedOn = new \JDate($result['cached_on']);
+		$now = new \JDate;
+
+		if ($now->toUnix() > ($cachedOn->toUnix() + 86400))
+		{
+			$this->updateSchema($assetName, $now);
+		}
+
+		// Decode the fields
+		$fields = (array) json_decode($result['fields']);
+
+		if (empty($fields))
+		{
+			$msg = JText::sprintf('REDCORE_TABLE_ERROR_NO_COLUMNS_FOUND', $this->_tbl);
+
+			throw new UnexpectedValueException($msg, 500);
+		}
+
+		$cache = $fields;
+
+		return $cache;
+	}
+
+	/**
+	 * Method to cache the table schema in the logical schemas table
+	 *
+	 * @param   string  $assetName  the asset name of this table. standard format is "com_componentName.TableName"
+	 *
+	 * @return array
+	 */
+	private function createSchema($assetName)
+	{
+		$dbo = $this->getDbo();
+		$query = $dbo->getQuery(true);
+
+		$query->insert('#__redcore_schemas');
+		$query->set('asset_id = ' . $dbo->q($assetName));
+
+		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
+		$query->set('fields = ' . $dbo->q($fields));
+
+		$now = new \JDate;
+		$query->set('cached_on = ' . $dbo->q($now->toSql()));
+
+		$dbo->setQuery($query)->execute();
+
+		return array('asset_id' => $assetName, 'fields' => $fields, 'cached_on' => $now->toSql());
+	}
+
+	/**
+	 * Method to update the table schema in the logical schemas table
+	 *
+	 * @param   string  $assetName  the asset name of this table. standard format is "com_componentName.TableName"
+	 * @param   \JDate  $now        the current time
+	 *
+	 * @return array
+	 */
+	private function updateSchema($assetName, \JDate $now)
+	{
+		$dbo = $this->getDbo();
+		$query = $dbo->getQuery(true);
+
+		$query->update('#__redcore_schemas');
+
+		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
+		$query->set('fields = ' . $dbo->q($fields));
+		$query->set('cached_on = ' . $dbo->q($now->toSql()));
+
+		$query->where('asset_id = ' . $dbo->q($assetName));
+
+		$dbo->setQuery($query)->execute();
+
+		return array('asset_id' => $assetName, 'fields' => $fields, 'cached_on' => $now->toSql());
+	}
 }

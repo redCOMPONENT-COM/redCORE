@@ -136,7 +136,7 @@ else
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
 			<a class="navbar-brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>
-			<div class="navbar-right navbar-collapse hidden-xs hidden-sm">
+			<div class="navbar-left navbar-collapse hidden-xs hidden-sm">
 				<?php if ($displayJoomlaMenu) : ?>
 					<?php foreach ($modules as $module): ?>
 						<?php echo JModuleHelper::renderModule($module, array('style' => 'standard')); ?>

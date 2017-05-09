@@ -27,7 +27,13 @@ $filters = $data['view']->filterForm->getGroup('filter');
 <?php if ($filters) : ?>
 	<?php foreach ($filters as $fieldName => $field) : ?>
 		<?php if ($fieldName != $searchField) : ?>
-			<div class="js-stools-field-filter">
+			<?php $dataShowOn = ''; ?>
+			<?php if ($field->showon) : ?>
+				<?php JHtml::_('jquery.framework'); ?>
+				<?php JHtml::_('script', 'jui/cms.js', false, true); ?>
+				<?php $dataShowOn = " data-showon='" . json_encode(RJoomlaLegacy::parseShowOnConditions($field->showon, $field->formControl, $field->group)) . "'"; ?>
+			<?php endif; ?>
+			<div class="js-stools-field-filter"<?php echo $dataShowOn; ?>>
 				<?php echo $field->input; ?>
 			</div>
 		<?php endif; ?>

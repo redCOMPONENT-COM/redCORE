@@ -2,7 +2,6 @@ language: php
 sudo: required
 env: TRAVIS_PUBLIC_REPOSITORY=true
 php:
-- 5.5
 - 5.6
 - 7.0
 addons:

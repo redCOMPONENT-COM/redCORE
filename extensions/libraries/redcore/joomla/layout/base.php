@@ -3,7 +3,7 @@
  * @package     Joomla.Libraries
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2005 - 2016 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
@@ -287,12 +287,14 @@ class JLayoutBase implements JLayout
 	 *
 	 * @param   boolean  $debug  Enable / Disable debug
 	 *
-	 * @return  void
+	 * @return  self
 	 *
 	 * @since   3.5
 	 */
 	public function setDebug($debug)
 	{
 		$this->options->set('debug', (boolean) $debug);
+
+		return $this;
 	}
 }

@@ -44,25 +44,25 @@ class RPagination
 	public $prefix = null;
 
 	/**
-	 * @var    integer
+	 * @var    integer  Value pagination object begins at
 	 * @since  3.0
 	 */
 	public $pagesStart;
 
 	/**
-	 * @var    integer
+	 * @var    integer  Value pagination object ends at
 	 * @since  3.0
 	 */
 	public $pagesStop;
 
 	/**
-	 * @var    integer
+	 * @var    integer  Current page
 	 * @since  3.0
 	 */
 	public $pagesCurrent;
 
 	/**
-	 * @var    integer
+	 * @var    integer  Total number of pages
 	 * @since  3.0
 	 */
 	public $pagesTotal;
@@ -462,6 +462,7 @@ class RPagination
 			'limitfield'   => $this->getLimitBox(),
 			'pagescounter' => $this->getPagesCounter(),
 			'pages'        => $this->getPaginationPages(),
+			'pagesTotal'   => $this->pagesTotal,
 			'formName'     => $this->formName
 		);
 
@@ -469,9 +470,9 @@ class RPagination
 	}
 
 	/**
-	 * Create and return the pagination page list string, ie. Previous, Next, 1 2 3 ... x.
+	 * Create and return the pagination pages list, ie. Previous, Next, 1 2 3 ... x.
 	 *
-	 * @return  string  Pagination page list string.
+	 * @return  array  Pagination pages list.
 	 *
 	 * @since   1.0
 	 */
@@ -536,15 +537,16 @@ class RPagination
 
 		if (file_exists($chromePath))
 		{
-			$list = array();
-			$list['prefix'] = $this->prefix;
-			$list['limit'] = $this->limit;
-			$list['limitstart'] = $this->limitstart;
-			$list['total'] = $this->total;
-			$list['limitfield'] = $this->getLimitBox();
-			$list['pagescounter'] = $this->getPagesCounter();
-			$list['pageslinks'] = $this->getPagesLinks();
-			$list['formName'] = $this->formName;
+			$list = array(
+				'prefix'       => $this->prefix,
+				'limit'        => $this->limit,
+				'limitstart'   => $this->limitstart,
+				'total'        => $this->total,
+				'limitfield'   => $this->getLimitBox(),
+				'pagescounter' => $this->getPagesCounter(),
+				'pageslinks'   => $this->getPagesLinks(),
+				'formName'     => $this->formName,
+			);
 
 			include_once $chromePath;
 
@@ -661,6 +663,29 @@ class RPagination
 		{
 			return '&#160;';
 		}
+	}
+
+	/**
+	 * Create the HTML for a list footer
+	 *
+	 * @param   array  $list  Pagination list data structure.
+	 *
+	 * @return  string  HTML for a list footer
+	 *
+	 * @since   1.5
+	 */
+	protected function _list_footer($list)
+	{
+		$html = "<div class=\"list-footer\">\n";
+
+		$html .= "\n<div class=\"limit\">" . JText::_('JGLOBAL_DISPLAY_NUM') . $list['limitfield'] . "</div>";
+		$html .= $list['pageslinks'];
+		$html .= "\n<div class=\"counter\">" . $list['pagescounter'] . "</div>";
+
+		$html .= "\n<input type=\"hidden\" name=\"" . $list['prefix'] . "limitstart\" value=\"" . $list['limitstart'] . "\" />";
+		$html .= "\n</div>";
+
+		return $html;
 	}
 
 	/**

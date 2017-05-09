@@ -80,36 +80,6 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	}
 
 	/**
-	 * Method to save the submitted ordering values for records via AJAX.
-	 *
-	 * @return	void
-	 */
-	public function saveOrderAjax()
-	{
-		// Get the input
-		$pks   = $this->input->post->get('cid', array(), 'array');
-		$order = $this->input->post->get('order', array(), 'array');
-
-		// Sanitize the input
-		JArrayHelper::toInteger($pks);
-		JArrayHelper::toInteger($order);
-
-		// Get the model
-		$model = $this->getModel();
-
-		// Save the ordering
-		$return = $model->saveorder($pks, $order);
-
-		if ($return)
-		{
-			echo "1";
-		}
-
-		// Close the application
-		JFactory::getApplication()->close();
-	}
-
-	/**
 	 * Removes an item.
 	 *
 	 * @return  void
@@ -228,42 +198,6 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	}
 
 	/**
-	 * Check in of one or more records.
-	 *
-	 * @return  boolean  True on success
-	 */
-	public function checkin()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-
-		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
-		$model = $this->getModel();
-		$return = $model->checkin($ids);
-
-		if ($return === false)
-		{
-			// Checkin failed.
-			$message = JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError());
-
-			// Set redirect
-			$this->setRedirect($this->getRedirectToListRoute(), $message, 'error');
-
-			return false;
-		}
-		else
-		{
-			// Checkin succeeded.
-			$message = JText::plural($this->text_prefix . '_N_ITEMS_CHECKED_IN', count($ids));
-
-			// Set redirect
-			$this->setRedirect($this->getRedirectToListRoute(), $message);
-
-			return true;
-		}
-	}
-
-	/**
 	 * Changes the order of one or more records.
 	 *
 	 * @return  boolean  True on success
@@ -370,5 +304,71 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		{
 			return JRoute::_('index.php?option=' . $this->option . '&view=' . $this->view_list . $append, false);
 		}
+	}
+
+	/**
+	 * Check in of one or more records.
+	 *
+	 * @return  boolean  True on success
+	 */
+	public function checkin()
+	{
+		// Check for request forgeries.
+		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+
+		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
+		$model = $this->getModel();
+		$return = $model->checkin($ids);
+
+		if ($return === false)
+		{
+			// Checkin failed.
+			$message = JText::sprintf('JLIB_APPLICATION_ERROR_CHECKIN_FAILED', $model->getError());
+
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute(), $message, 'error');
+
+			return false;
+		}
+		else
+		{
+			// Checkin succeeded.
+			$message = JText::plural($this->text_prefix . '_N_ITEMS_CHECKED_IN', count($ids));
+
+			// Set redirect
+			$this->setRedirect($this->getRedirectToListRoute(), $message);
+
+			return true;
+		}
+	}
+
+	/**
+	 * Method to save the submitted ordering values for records via AJAX.
+	 *
+	 * @return	void
+	 */
+	public function saveOrderAjax()
+	{
+		// Get the input
+		$pks   = $this->input->post->get('cid', array(), 'array');
+		$order = $this->input->post->get('order', array(), 'array');
+
+		// Sanitize the input
+		JArrayHelper::toInteger($pks);
+		JArrayHelper::toInteger($order);
+
+		// Get the model
+		$model = $this->getModel();
+
+		// Save the ordering
+		$return = $model->saveorder($pks, $order);
+
+		if ($return)
+		{
+			echo "1";
+		}
+
+		// Close the application
+		JFactory::getApplication()->close();
 	}
 }
