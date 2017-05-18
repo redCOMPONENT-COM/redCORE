@@ -296,6 +296,13 @@ abstract class RModelList extends JModelList
 								{
 									$this->setState('list.direction', $fullDirection);
 								}
+								else
+								{
+									$this->setState('list.direction', $direction);
+
+									// Fallback to the default value
+									$value = $ordering . ' ' . $direction;
+								}
 
 								unset($orderingParts[count($orderingParts) - 1]);
 
@@ -306,11 +313,21 @@ abstract class RModelList extends JModelList
 								{
 									$this->setState('list.ordering', $fullOrdering);
 								}
+								else
+								{
+									$this->setState('list.ordering', $ordering);
+
+									// Fallback to the default value
+									$value = $ordering . ' ' . $direction;
+								}
 							}
 							else
 							{
 								$this->setState('list.ordering', $ordering);
 								$this->setState('list.direction', $direction);
+
+								// Fallback to the default value
+								$value = $ordering . ' ' . $direction;
 							}
 							break;
 
@@ -400,7 +417,7 @@ abstract class RModelList extends JModelList
 			$this->setState('list.direction', $oldDirection);
 		}
 
-		$value = $app->getUserStateFromRequest($this->context . '.' . $this->limitstartField, $this->limitstartField, 0);
+		$value = $app->getUserStateFromRequest($this->context . '.' . $this->limitstartField, $this->limitstartField, 0, 'int');
 		$limitstart = ($limit != 0 ? (floor($value / $limit) * $limit) : 0);
 		$this->setState('list.start', $limitstart);
 	}
