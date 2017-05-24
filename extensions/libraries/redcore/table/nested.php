@@ -791,12 +791,14 @@ class RTableNested extends JTableNested
 	/**
 	 * Get the columns from database table.
 	 *
+	 * @param   bool  $reload  flag to reload cache
+	 *
 	 * @return  mixed  An array of the field names, or false if an error occurs.
 	 *
 	 * @since   11.1
 	 * @throws  UnexpectedValueException
 	 */
-	public function getFields()
+	public function getFields($reload = false)
 	{
 		static $cache = null;
 
