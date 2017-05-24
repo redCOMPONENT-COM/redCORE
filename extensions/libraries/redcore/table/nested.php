@@ -802,7 +802,7 @@ class RTableNested extends JTableNested
 	{
 		static $cache = null;
 
-		if ($cache !== null)
+		if ($cache !== null && !$reload)
 		{
 			return $cache;
 		}
