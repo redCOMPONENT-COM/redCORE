@@ -433,6 +433,53 @@ abstract class JFormField
 	}
 
 	/**
+	 * Method to check if certain otherwise inaccessible properties from the form field object are accessible.
+	 *
+	 * @param   string  $name  The property name for which to set the value.
+	 *
+	 * @return  boolean
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public function __isset($name)
+	{
+		switch ($name)
+		{
+			case 'description':
+			case 'hint':
+			case 'formControl':
+			case 'hidden':
+			case 'id':
+			case 'multiple':
+			case 'name':
+			case 'required':
+			case 'type':
+			case 'validate':
+			case 'value':
+			case 'class':
+			case 'layout':
+			case 'labelclass':
+			case 'size':
+			case 'onchange':
+			case 'onclick':
+			case 'fieldname':
+			case 'group':
+			case 'disabled':
+			case 'readonly':
+			case 'autofocus':
+			case 'autocomplete':
+			case 'spellcheck':
+			case 'showon':
+			case 'input':
+			case 'label':
+			case 'title':
+				return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Method to set certain otherwise inaccessible properties of the form field object.
 	 *
 	 * @param   string  $name   The property name for which to the the value.
