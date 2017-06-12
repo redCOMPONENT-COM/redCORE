@@ -821,10 +821,8 @@ class RTableNested extends JTableNested
 			// Don't use caching if we can't get the component name
 			return $dbo->getTableColumns($this->_tbl, false);
 		}
-
-		$option = 'com_' . strtolower($classMatch[1]);
-
-		$assetName = $option . '.' . $this->_tbl;
+		
+		$assetName = $this->_tbl;
 		$query->where('asset_id = ' . $dbo->q($assetName));
 		$result = $dbo->setQuery($query)->loadAssoc();
 
