@@ -814,10 +814,7 @@ class RTableNested extends JTableNested
 		$query->select('*');
 		$query->from('#__redcore_schemas');
 
-		$input = JFactory::getApplication()->input;
-		$option = $input->getCmd('option');
-
-		$assetName = $option . '.' . $this->_tbl;
+		$assetName = $this->_tbl;
 		$query->where('asset_id = ' . $dbo->q($assetName));
 		$result = $dbo->setQuery($query)->loadAssoc();
 
