@@ -1065,10 +1065,7 @@ class RTable extends JTable
 		$query->select('*');
 		$query->from('#__redcore_schemas');
 
-		$input = JFactory::getApplication()->input;
-		$option = $input->getCmd('option');
-
-		$assetName = $option . '.' . $this->_tbl;
+		$assetName = $this->_tbl;
 		$query->where('asset_id = ' . $dbo->q($assetName));
 		$result = $dbo->setQuery($query)->loadAssoc();
 
@@ -1103,7 +1100,7 @@ class RTable extends JTable
 	/**
 	 * Method to cache the table schema in the logical schemas table
 	 *
-	 * @param   string  $assetName  the asset name of this table. standard format is "com_componentName.TableName"
+	 * @param   string  $assetName  the asset name of this table. standard format is "#__TableName"
 	 *
 	 * @return array
 	 */
@@ -1129,7 +1126,7 @@ class RTable extends JTable
 	/**
 	 * Method to update the table schema in the logical schemas table
 	 *
-	 * @param   string  $assetName  the asset name of this table. standard format is "com_componentName.TableName"
+	 * @param   string  $assetName  the asset name of this table. standard format is "#__TableName"
 	 * @param   \JDate  $now        the current time
 	 *
 	 * @return array
