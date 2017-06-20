@@ -73,15 +73,6 @@ class RedcoreControllerPayment extends RControllerForm
 		$returnUrl = $input->get('return', '', 'Base64');
 		$returnUrl = $returnUrl ? base64_decode($returnUrl) : 'index.php';
 
-		if ($model = $input->get('model', null))
-		{
-			$context = $input->getCmd('context', '');
-
-			$model = RModel::getAdminInstance(ucfirst($model), array('context' => $context));
-
-			$state = $model->getState();
-		}
-
 		$app->redirect($returnUrl);
 	}
 
