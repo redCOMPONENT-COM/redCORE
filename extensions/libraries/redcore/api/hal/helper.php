@@ -185,7 +185,7 @@ class RApiHalHelper
 		if (strpos($command, '.') !== false)
 		{
 			// Explode the controller.task command.
-			list ($task) = explode('.', $command);
+			list ($type, $task) = explode('.', $command);
 		}
 		else
 		{
