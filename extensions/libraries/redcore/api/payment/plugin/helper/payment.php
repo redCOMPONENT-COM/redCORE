@@ -605,7 +605,6 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 */
 	public function getRequestFromGateway($data = '')
 	{
-		$response = null;
 
 		if ($this->getRequestMethod() == 'fsockopen')
 		{

@@ -126,7 +126,7 @@ class DynamoDB implements
         $clientData = compact('client_id', 'client_secret', 'redirect_uri', 'grant_types', 'scope', 'user_id');
         $clientData = array_filter($clientData, function ($value) { return !is_null($value); });
 
-        $result = $this->client->putItem(array(
+        $this->client->putItem(array(
             'TableName' =>  $this->config['client_table'],
             'Item' => $this->client->formatAttributes($clientData)
         ));
@@ -173,7 +173,7 @@ class DynamoDB implements
         $clientData = compact('access_token', 'client_id', 'user_id', 'expires', 'scope');
         $clientData = array_filter($clientData, function ($value) { return !empty($value); });
 
-        $result = $this->client->putItem(array(
+        $this->client->putItem(array(
             'TableName' =>  $this->config['access_token_table'],
             'Item' => $this->client->formatAttributes($clientData)
         ));
@@ -184,7 +184,7 @@ class DynamoDB implements
 
     public function unsetAccessToken($access_token)
     {
-        $result = $this->client->deleteItem(array(
+        $this->client->deleteItem(array(
             'TableName' =>  $this->config['access_token_table'],
             'Key' => $this->client->formatAttributes(array("access_token" => $access_token))
         ));
@@ -220,7 +220,7 @@ class DynamoDB implements
         $clientData = compact('authorization_code', 'client_id', 'user_id', 'redirect_uri', 'expires', 'id_token', 'scope');
         $clientData = array_filter($clientData, function ($value) { return !empty($value); });
 
-        $result = $this->client->putItem(array(
+        $this->client->putItem(array(
             'TableName' =>  $this->config['code_table'],
             'Item' => $this->client->formatAttributes($clientData)
         ));
@@ -231,7 +231,7 @@ class DynamoDB implements
     public function expireAuthorizationCode($code)
     {
 
-        $result = $this->client->deleteItem(array(
+        $this->client->deleteItem(array(
             'TableName' =>  $this->config['code_table'],
             'Key' => $this->client->formatAttributes(array("authorization_code" => $code))
         ));
@@ -321,7 +321,7 @@ class DynamoDB implements
         $clientData = compact('refresh_token', 'client_id', 'user_id', 'expires', 'scope');
         $clientData = array_filter($clientData, function ($value) { return !empty($value); });
 
-        $result = $this->client->putItem(array(
+        $this->client->putItem(array(
             'TableName' =>  $this->config['refresh_token_table'],
             'Item' => $this->client->formatAttributes($clientData)
         ));
@@ -331,7 +331,7 @@ class DynamoDB implements
 
     public function unsetRefreshToken($refresh_token)
     {
-        $result = $this->client->deleteItem(array(
+       $this->client->deleteItem(array(
             'TableName' =>  $this->config['refresh_token_table'],
             'Key' => $this->client->formatAttributes(array("refresh_token" => $refresh_token))
         ));
@@ -368,7 +368,7 @@ class DynamoDB implements
         $clientData = compact('username', 'password', 'first_name', 'last_name');
         $clientData = array_filter($clientData, function ($value) { return !is_null($value); });
 
-        $result = $this->client->putItem(array(
+        $this->client->putItem(array(
             'TableName' =>  $this->config['user_table'],
             'Item' => $this->client->formatAttributes($clientData)
         ));
@@ -381,7 +381,6 @@ class DynamoDB implements
     public function scopeExists($scope)
     {
         $scope = explode(' ', $scope);
-        $scope_query = array();
         $count = 0;
         foreach ($scope as $key => $val) {
             $result = $this->client->query(array(
