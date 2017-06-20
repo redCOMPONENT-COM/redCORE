@@ -1363,25 +1363,12 @@ class RApiHalHal extends RApi
 	/**
 	 * Method to fill response with requested data
 	 *
-	 * @param   array  $data  Data to set to Hal document if needed
-	 *
 	 * @return  string  Api call output
 	 *
 	 * @since   1.2
 	 */
-	public function getBody($data = array())
+	public function getBody()
 	{
-		// Add data
-		$data = null;
-
-		if (!empty($data))
-		{
-			foreach ($data as $k => $v)
-			{
-				$this->hal->$k = $v;
-			}
-		}
-
 		return $this->hal;
 	}
 
