@@ -139,7 +139,6 @@ class RedcoreModelTranslation extends RModelAdmin
 		$dataArr = $app->input->get('jform', array(), 'array');
 		$translationTable = RTranslationTable::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
 		$translation = $app->input->get('translation', array(), 'array');
-		$id = !empty($data['rctranslations_id']) ? (int) $data['rctranslations_id'] : 0;
 
 		if ($original = $this->getItem())
 		{

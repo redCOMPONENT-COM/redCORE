@@ -403,8 +403,7 @@ class RedcoreModelWebservices extends RModelList
 						{
 							return false;
 						}
-
-						break;
+						
 					}
 				}
 			}
