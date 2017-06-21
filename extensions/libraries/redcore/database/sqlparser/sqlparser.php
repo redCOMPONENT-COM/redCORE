@@ -368,7 +368,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 										  in a future version of MySQL */
 				$out[$upper][0] = $upper;
 				continue 2;
-				break;
 
 			case 'CACHE':
 				if ($prev_category === "" || $prev_category === 'RESET' || $prev_category === 'FLUSH'
@@ -389,7 +388,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 					$out['OPTIONS'][] = $trim;
 				}
 				continue 2;
-				break;
 
 			case 'USING': /* USING in FROM clause is different from USING w/ prepared statement*/
 				if ($token_category === 'EXECUTE') {
@@ -415,7 +413,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				$skip_next = true;
 				$out['OPTIONS'][] = 'FOR UPDATE';
 				continue 2;
-				break;
 
 			case 'UPDATE':
 				if ($token_category === "") {
@@ -442,7 +439,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			case 'TO':
 			case ';':
 				continue 2;
-				break;
 
 			case 'KEY':
 				if ($token_category === 'DUPLICATE') {
@@ -466,7 +462,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			case 'SQL_CALC_FOUND_ROWS':
 				$out['OPTIONS'][] = $upper;
 				continue 2;
-				break;
 
 			case 'WITH':
 				if ($token_category === 'GROUP') {
@@ -590,7 +585,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 	private function process_set_list($tokens, $isUpdate) {
 		$result = array();
 		$baseExpr = "";
-		$assignment = false;
 		$varType = false;
 
 		foreach ($tokens as $token) {
@@ -768,7 +762,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 		$stripped = array();
 		$capture = false;
 		$alias = false;
-		$processed = false;
 
 		for ($i = 0; $i < $token_count; ++$i) {
 			$token = $tokens[$i];
@@ -921,7 +914,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 				$parseInfo['ref_expr'] = "";
 				$parseInfo['token_count']++;
 				continue;
-				break;
 
 			case 'USE':
 			case 'FORCE':
@@ -952,13 +944,11 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 			case 'OUTER':
 				$parseInfo['token_count']++;
 				continue;
-				break;
 
 			case 'FOR':
 				$parseInfo['token_count']++;
 				$skip_next = true;
 				continue;
-				break;
 
 			case 'LEFT':
 			case 'RIGHT':
@@ -1497,7 +1487,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 	private function process_delete($tokens) {
 		$tables = array();
-		$del = $tokens['DELETE'];
 
 		foreach ($tokens['DELETE'] as $expression) {
 			if ($expression != 'DELETE' && trim($expression, ' .*') != "" && $expression != ',') {
@@ -1570,7 +1559,6 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils {
 
 		$values = $this->split_sql($unparsed);
 
-		$parsed = array();
 		foreach ($values as $k => $v) {
 			if (trim($v) === ",") {
 				unset($values[$k]);
