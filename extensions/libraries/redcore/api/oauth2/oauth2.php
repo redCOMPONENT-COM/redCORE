@@ -291,7 +291,6 @@ class RApiOauth2Oauth2 extends RApi
 	public function apiToken()
 	{
 		$request = OAuth2\Request::createFromGlobals();
-		$user = null;
 
 		// Implicit grant type and Authorization code grant type require user to be logged in before authorising
 		if ($request->request('grant_type') == 'implicit')
