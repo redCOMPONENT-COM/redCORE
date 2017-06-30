@@ -454,10 +454,13 @@ class RLoader extends JLoader
 	 */
 	public static function setup($enablePsr = true, $enablePrefixes = true, $enableClasses = true)
 	{
-		if ($enableClasses)
+		// Since spl_autoload_register use here prepend position we need to use revert order to reproduce the same Joomla! loader order
+		if ($enablePsr)
 		{
-			// Register the class map based autoloader.
-			spl_autoload_register(array('RLoader', 'load'), true, true);
+			// Register the PSR-0 based autoloader.
+			spl_autoload_register(array('RLoader', 'loadByAlias'), true, true);
+			spl_autoload_register(array('RLoader', 'loadByPsr4'), true, true);
+			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
 		}
 
 		if ($enablePrefixes)
@@ -469,12 +472,10 @@ class RLoader extends JLoader
 			spl_autoload_register(array('RLoader', '_autoload'), true, true);
 		}
 
-		if ($enablePsr)
+		if ($enableClasses)
 		{
-			// Register the PSR-0 based autoloader.
-			spl_autoload_register(array('RLoader', 'loadByPsr0'), true, true);
-			spl_autoload_register(array('RLoader', 'loadByPsr4'), true, true);
-			spl_autoload_register(array('RLoader', 'loadByAlias'));
+			// Register the class map based autoloader.
+			spl_autoload_register(array('RLoader', 'load'), true, true);
 		}
 	}
 
