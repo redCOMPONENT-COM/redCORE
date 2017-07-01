@@ -258,6 +258,9 @@ abstract class RModelList extends JModelList
 		$app         = JFactory::getApplication();
 		$inputFilter = JFilterInput::getInstance();
 
+		// Load the parameters for frontend.
+		$params = $app->isSite() ? $app->getParams() : null;
+
 		// Receive & set filters
 		if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
 		{
@@ -375,7 +378,8 @@ abstract class RModelList extends JModelList
 		// Keep B/C for components previous to jform forms for filters
 		{
 			// Pre-fill the limits
-			$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $app->get('list_limit'), 'uint');
+			$defaultLimit = $params ? $params->get('list_limit', $app->get('list_limit')) : $app->get('list_limit');
+			$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $defaultLimit, 'uint');
 			$this->setState('list.limit', $limit);
 
 			// Check if the ordering field is in the white list, otherwise use the incoming value.
