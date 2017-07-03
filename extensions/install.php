@@ -1088,7 +1088,7 @@ class Com_RedcoreInstallerScript
 			->delete('#__menu')
 			->where('type = ' . $db->q($type));
 
-		if ($client)
+		if (!empty($client))
 		{
 			$query->where('client_id = ' . $db->q($client));
 		}

@@ -9,8 +9,6 @@
 
 defined('JPATH_REDCORE') or die;
 
-use Joomla\Utilities\ArrayHelper;
-
 JLoader::import('joomla.environment.browser');
 JLoader::import('joomla.filesystem.file');
 JLoader::import('joomla.filesystem.path');
@@ -447,7 +445,8 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$element/$file" . static::getMd5Version($path);
+										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$element/$file"
+											. static::getMd5Version($path);
 
 										break;
 									}
@@ -796,7 +795,7 @@ abstract class RHtml
 		}
 
 		// If no format is given use the default locale based format.
-		if (!$format)
+		if (!empty($format))
 		{
 			$format = JText::_('DATE_FORMAT_LC1');
 		}
