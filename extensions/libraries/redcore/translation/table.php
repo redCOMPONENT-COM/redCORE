@@ -989,7 +989,7 @@ final class RTranslationTable
 	 * @param   bool  $fullLoad   Full load tables
 	 * @param   bool  $isEnabled  If true is just return "Enabled" translation table.
 	 *
-	 * @return  array  Array or table with columns columns
+	 * @return  array             Array or table with columns columns
 	 */
 	public static function getInstalledTranslationTables($fullLoad = false, $isEnabled = false)
 	{
@@ -1099,7 +1099,7 @@ final class RTranslationTable
 	 *
 	 * @param   string  $tableName  Table name
 	 *
-	 * @return  array  Array or table with columns columns
+	 * @return  array               Array or table with columns columns
 	 */
 	public static function setTranslationTableWithColumn($tableName)
 	{
@@ -1163,7 +1163,7 @@ final class RTranslationTable
 	 *
 	 * @param   string  $name  Translation table Name
 	 *
-	 * @return  array  Array or table with columns columns
+	 * @return  array          Array or table with columns columns
 	 */
 	public static function getTranslationTableByName($name)
 	{

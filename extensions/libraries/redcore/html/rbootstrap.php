@@ -499,22 +499,22 @@ abstract class JHtmlRbootstrap
 			$script[] = "jQuery(document).ready(function(){";
 			$script[] = "\tjQuery(" . json_encode($selector) . ").tooltip(" . $options . ");";
 
-			if ($onShow)
+			if (!is_null($onShow))
 			{
 				$script[] = "\tjQuery(" . json_encode($selector) . ").on('show.bs.tooltip', " . $onShow . ");";
 			}
 
-			if ($onShown)
+			if (!is_null($onShown))
 			{
 				$script[] = "\tjQuery(" . json_encode($selector) . ").on('shown.bs.tooltip', " . $onShown . ");";
 			}
 
-			if ($onHide)
+			if (!is_null($onHide))
 			{
 				$script[] = "\tjQuery(" . json_encode($selector) . ").on('hideme.bs.tooltip', " . $onHide . ");";
 			}
 
-			if ($onHidden)
+			if (!is_null($onHidden))
 			{
 				$script[] = "\tjQuery(" . json_encode($selector) . ").on('hidden.bs.tooltip', " . $onHidden . ");";
 			}
@@ -654,22 +654,22 @@ abstract class JHtmlRbootstrap
 			$script[] = "jQuery(document).ready(function($){";
 			$script[] = "\t$('#" . $selector . "').collapse(" . $options . ")";
 
-			if ($onShow)
+			if ($onShow !== null)
 			{
 				$script[] = "\t.on('show', " . $onShow . ")";
 			}
 
-			if ($onShown)
+			if ($onShown !== null)
 			{
 				$script[] = "\t.on('shown', " . $onShown . ")";
 			}
 
-			if ($onHide)
+			if ($onHide !== null)
 			{
 				$script[] = "\t.on('hideme', " . $onHide . ")";
 			}
 
-			if ($onHidden)
+			if ($onHidden !== null)
 			{
 				$script[] = "\t.on('hidden', " . $onHidden . ")";
 			}

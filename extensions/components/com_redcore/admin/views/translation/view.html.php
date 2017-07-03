@@ -120,7 +120,8 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 					. JText::_('COM_REDCORE_CONFIGURE')
 					. '</a>'
 				),
-				'error');
+				'error'
+			);
 		}
 
 		parent::display($tpl);
