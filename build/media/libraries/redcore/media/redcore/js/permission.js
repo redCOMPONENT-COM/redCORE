@@ -24,13 +24,16 @@ function sendPermissions(event) {
             asset = component;
     }
     else {
+
+        if (document.getElementById('jform_title')) {
+            title = document.getElementById('jform_title').value;
+        }
+
         if (component != false && view != false) {
             asset = component + '.' + view + '.' + getUrlParam('id');
-            title = document.getElementById('jform_title').value;
         }
         else if (component == false && view != false) {
             asset = option + '.' + view + '.' + getUrlParam('id');
-            title = document.getElementById('jform_title').value;
         }
     }
 
