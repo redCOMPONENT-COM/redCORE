@@ -130,7 +130,7 @@ class RApiHalHal extends RApi
 	public $authorizationCheck = 'oauth2';
 
 	/**
-	 * @var    object  Array for storing operation errors
+	 * @var    array  Array for storing operation errors
 	 * @since  1.6
 	 */
 	public $apiErrors = array();

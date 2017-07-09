@@ -7,6 +7,8 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
+use Joomla\Registry\Registry;
+
 defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.folder');
@@ -122,7 +124,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	 *
 	 * @param   array  $data  The form data.
 	 *
-	 * @return  boolean  True on success, False on error.
+	 * @return  boolean       True on success, False on error.
 	 *
 	 * @throws  RuntimeException
 	 *
@@ -130,7 +132,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	 */
 	public function saveXml($data)
 	{
-		$dataRegistry = new JRegistry($data);
+		$dataRegistry = new Registry($data);
 		$item = null;
 
 		if (empty($data['main']['name']))
@@ -265,7 +267,7 @@ class RedcoreModelWebservice extends RModelAdmin
 		$wsdl = RApiSoapHelper::generateWsdl($xml, null, $data['main']['path']);
 		$fullWsdlPath = substr($fullPath, 0, -4) . '.wsdl';
 
-		return RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);
+		return (boolean) RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);
 	}
 
 	/**
