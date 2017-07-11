@@ -116,7 +116,6 @@ class RApiSoapHelper
 			foreach ($fields as $field)
 			{
 				$transformType = isset($field['transform']) ? $field['transform'] : 'string';
-				$complexArrayType = '';
 				$additionalFields = isset($field['fields']) ? $field['fields'] : array();
 				$fieldValidateOptional = $validateOptional;
 

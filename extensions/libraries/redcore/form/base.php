@@ -107,7 +107,6 @@ abstract class RFormBase extends JForm
 		/** @var $field SimpleXMLElement */
 		foreach ($fields as $field)
 		{
-			$value = null;
 			$name = (string) $field['name'];
 
 			// Get the group names as strings for ancestor fields elements.
@@ -157,7 +156,7 @@ abstract class RFormBase extends JForm
 	 */
 	public function getError($name, $group = null)
 	{
-		if ($group)
+		if (!empty($group))
 		{
 			$name = $group . '.' . $name;
 		}
