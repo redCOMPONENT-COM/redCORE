@@ -81,7 +81,7 @@ class RedcoreModelWebservices extends RModelList
 	/**
 	 * Build an SQL query to load the list data.
 	 *
-	 * @return  JDatabaseQuery
+	 * @return  void
 	 */
 	protected function setXmlFiles()
 	{
@@ -232,7 +232,7 @@ class RedcoreModelWebservices extends RModelList
 	 * @param   string  $path        Path to webservice files
 	 * @param   int     $id          Path to webservice files
 	 *
-	 * @return  boolean  Returns id if Webservice was successfully installed
+	 * @return  boolean              Returns id if Webservice was successfully installed
 	 */
 	public function installWebservice($client = '', $webservice = '', $version = '1.0.0', $path = '', $id = 0)
 	{
@@ -384,13 +384,16 @@ class RedcoreModelWebservices extends RModelList
 
 					if (!file_exists(RApiHalHelper::getWebservicesPath() . $path . '/' . $webservicePathNew . '.xml'))
 					{
-						$xml = new SimpleXMLElement(file_get_contents(RApiHalHelper::getWebservicesPath() . $path . '/' . $webservicePathOld . '.xml'));
+						$xml = new SimpleXMLElement(
+							file_get_contents(RApiHalHelper::getWebservicesPath() . $path . '/' . $webservicePathOld . '.xml')
+						);
+
 						$xml->config->name = $table->name . '_' . $i;
 						$xml->name .= ' (' . JText::_('COM_REDCORE_WEBSERVICES_WEBSERVICE_COPY') . ' ' . $i . ')';
 
 						if ($xml->saveXML(RApiHalHelper::getWebservicesPath() . $path . '/' . $webservicePathNew . '.xml'))
 						{
-							if ($this->installWebservice($table->client, $table->name . '_' . $i, $table->version, $table->path))
+							if ($this->installWebservice($table->client, $table->name . '_' . $i, $table->version, $table->path) !== false)
 							{
 								return true;
 							}
@@ -403,8 +406,6 @@ class RedcoreModelWebservices extends RModelList
 						{
 							return false;
 						}
-
-						break;
 					}
 				}
 			}

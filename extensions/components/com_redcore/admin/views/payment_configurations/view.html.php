@@ -103,7 +103,7 @@ class RedcoreViewPayment_Configurations extends RedcoreHelpersView
 			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
 			{
 				$new = new RToolbarButtonStandard(
-					'COM_REDCORE_PAYMENT_CONFIGURATION_NEW_CONFIGURATION', 'payment_configuration.add', 'btn-success', 'icon-file-text', '', false
+					'COM_REDCORE_PAYMENT_CONFIGURATION_NEW_CONFIGURATION', 'payment_configuration.add', 'btn-success', 'icon-file-text', false
 				);
 				$firstGroup->addButton($new);
 			}
@@ -115,7 +115,7 @@ class RedcoreViewPayment_Configurations extends RedcoreHelpersView
 			}
 
 			$new = new RToolbarButtonStandard(
-				'COM_REDCORE_PAYMENT_CONFIGURATION_TEST_CONFIGURATION', 'payment_configurations.test', '', 'icon-file-text', '', false
+				'COM_REDCORE_PAYMENT_CONFIGURATION_TEST_CONFIGURATION', 'payment_configurations.test', '', 'icon-file-text', false
 			);
 			$secondGroup->addButton($new);
 

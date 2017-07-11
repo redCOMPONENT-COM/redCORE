@@ -9,8 +9,6 @@
 
 defined('JPATH_REDCORE') or die;
 
-use Joomla\Utilities\ArrayHelper;
-
 JLoader::import('joomla.environment.browser');
 JLoader::import('joomla.filesystem.file');
 JLoader::import('joomla.filesystem.path');
@@ -447,7 +445,8 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$element/$file" . static::getMd5Version($path);
+										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$element/$file"
+											. static::getMd5Version($path);
 
 										break;
 									}
@@ -796,7 +795,7 @@ abstract class RHtml
 		}
 
 		// If no format is given use the default locale based format.
-		if (!$format)
+		if (!empty($format))
 		{
 			$format = JText::_('DATE_FORMAT_LC1');
 		}
@@ -1003,7 +1002,7 @@ abstract class RHtml
 		$filter       = isset($attribs['filter']) && $attribs['filter'] == '';
 		$todayBtn     = isset($attribs['todayBtn']) ? $attribs['todayBtn'] : true;
 		$weekNumbers  = isset($attribs['weekNumbers']) ? $attribs['weekNumbers'] : false;
-		$showTime     = isset($attribs['showTime']) ? $attribs['showTime'] : true;
+		$showTime     = isset($attribs['showTime']) ? $attribs['showTime'] : false;
 		$fillTable    = isset($attribs['fillTable']) ? $attribs['fillTable'] : true;
 		$timeFormat   = isset($attribs['timeFormat']) ? $attribs['timeFormat'] : 24;
 		$singleHeader = isset($attribs['singleHeader']) ? $attribs['singleHeader'] : false;
@@ -1011,11 +1010,11 @@ abstract class RHtml
 		$class        = isset($attribs['class']) ? $attribs['class'] : '';
 		$onchange     = isset($attribs['onChange']) ? $attribs['onChange'] : '';
 
-		$showTime     = !empty($showTime) ? ($showTime === 'true' ? "1" : "0") : "1";
-		$todayBtn     = !empty($todayBtn) ? ($todayBtn === 'true' ? "1" : "0") : "1";
-		$weekNumbers  = !empty($weekNumbers) ? ($weekNumbers === 'true' ? "1" : "0") : "0";
-		$fillTable    = !empty($fillTable) ? ($fillTable === 'true' ? "1" : "0") : "1";
-		$singleHeader = !empty($singleHeader) ? ($singleHeader === 'true' ? "1" : "0") : "0";
+		$showTime     = ($showTime) ? "1" : "0";
+		$todayBtn     = ($todayBtn) ? "1" : "0";
+		$weekNumbers  = ($weekNumbers) ? "1" : "0";
+		$fillTable    = ($fillTable) ? "1" : "0";
+		$singleHeader = ($singleHeader) ? "1" : "0";
 
 		// Format value when not nulldate ('0000-00-00 00:00:00'), otherwise blank it as it would result in 1970-01-01.
 		if ($value && $value != JFactory::getDbo()->getNullDate() && strtotime($value) !== false)

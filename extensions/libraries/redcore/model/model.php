@@ -88,14 +88,14 @@ abstract class RModel extends JModelLegacy
 		// Admin
 		if ($client === 1)
 		{
-			self::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/models');
+			self::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/models', $prefix);
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/tables');
 		}
 
 		// Site
 		elseif ($client === 0)
 		{
-			self::addIncludePath(JPATH_SITE . '/components/' . $option . '/models');
+			self::addIncludePath(JPATH_SITE . '/components/' . $option . '/models', $prefix);
 			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/tables');
 		}
 

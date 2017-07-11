@@ -130,7 +130,7 @@ class RApiHalHal extends RApi
 	public $authorizationCheck = 'oauth2';
 
 	/**
-	 * @var    object  Array for storing operation errors
+	 * @var    array  Array for storing operation errors
 	 * @since  1.6
 	 */
 	public $apiErrors = array();
@@ -1363,25 +1363,12 @@ class RApiHalHal extends RApi
 	/**
 	 * Method to fill response with requested data
 	 *
-	 * @param   array  $data  Data to set to Hal document if needed
-	 *
 	 * @return  string  Api call output
 	 *
 	 * @since   1.2
 	 */
-	public function getBody($data = array())
+	public function getBody()
 	{
-		// Add data
-		$data = null;
-
-		if (!empty($data))
-		{
-			foreach ($data as $k => $v)
-			{
-				$this->hal->$k = $v;
-			}
-		}
-
 		return $this->hal;
 	}
 
@@ -2496,7 +2483,6 @@ class RApiHalHal extends RApi
 	public function buildFunctionArgs($configuration, $data)
 	{
 		$args = array();
-		$result = null;
 
 		if (!empty($configuration['functionArgs']))
 		{
@@ -2509,7 +2495,6 @@ class RApiHalHal extends RApi
 				// First field is the name of the data field and second is transformation
 				$parameter[0] = trim($parameter[0]);
 				$parameter[1] = !empty($parameter[1]) ? strtolower(trim(str_replace('}', '', $parameter[1]))) : 'string';
-				$parameterValue = null;
 
 				// If we set argument to value, then it will not be transformed, instead we will take field name as a value
 				if ($parameter[1] == 'value')

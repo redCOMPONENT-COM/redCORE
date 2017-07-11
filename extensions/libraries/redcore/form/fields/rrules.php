@@ -82,7 +82,7 @@ class JFormFieldRrules extends JFormField
 		// Full width format.
 
 		// Get the rules for just this asset (non-recursive).
-		$assetRules = JAccess::getAssetRules($assetId);
+		$assetRules = JAccess::getAssetRules($assetId, false, false);
 
 		// Get the available user groups.
 		$groups = $this->getUserGroups();

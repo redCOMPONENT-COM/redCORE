@@ -996,13 +996,9 @@ class Com_RedcoreInstallerScript
 
 		if($type == 'update')
 		{
-			$componentName = strtolower((string) $manifest->name);
 			$db = JFactory::getDbo();
-			$query = $db->getQuery(true);
-			$query->delete('#__redcore_schemas')
-				->where('asset_id LIKE ' . $db->q($componentName . '.%'));
-
-			$db->setQuery($query)->execute();
+			$db->setQuery('TRUNCATE ' . $db->qn('#__redcore_schemas'))
+				->execute();
 		}
 
 		return true;
@@ -1092,7 +1088,7 @@ class Com_RedcoreInstallerScript
 			->delete('#__menu')
 			->where('type = ' . $db->q($type));
 
-		if ($client)
+		if (!empty($client))
 		{
 			$query->where('client_id = ' . $db->q($client));
 		}
