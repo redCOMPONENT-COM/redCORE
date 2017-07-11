@@ -7,7 +7,7 @@
     <authorUrl>www.redcomponent.com</authorUrl>
     <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.10.2</version>
+    <version>1.10.3</version>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
     <redcore version="1.10.2" defaultFramework="bootstrap3" />
