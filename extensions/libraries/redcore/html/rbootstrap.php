@@ -347,7 +347,14 @@ abstract class JHtmlRbootstrap
 			'body'     => $body,
 		);
 
-		return JLayoutHelper::render('joomla.modal.main', $layoutData);
+		if (RHtmlMedia::getFramework() == 'bootstrap3')
+		{
+			return RLayoutHelper::render('modal.dialog', $layoutData);
+		}
+		else
+		{
+			return JLayoutHelper::render('joomla.modal.main', $layoutData);
+		}
 	}
 
 	/**
