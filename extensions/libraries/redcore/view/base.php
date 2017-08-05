@@ -86,7 +86,7 @@ abstract class RViewBase extends JViewLegacy
 	 *
 	 * @return  string  The output of the the template script.
 	 *
-	 * @since   12.2
+	 * @since   10.3
 	 * @throws  Exception
 	 */
 	public function loadTemplate($tpl = null)
