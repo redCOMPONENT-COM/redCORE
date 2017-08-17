@@ -378,7 +378,7 @@ abstract class RModelList extends JModelList
 		// Keep B/C for components previous to jform forms for filters
 		{
 			// Pre-fill the limits
-			$defaultLimit = $params ? $params->get('list_limit', $app->get('list_limit')) : $app->get('list_limit');
+			$defaultLimit = ($params && $params->get('list_limit') > 0) ? $params->get('list_limit', $app->get('list_limit')) : $app->get('list_limit');
 			$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $defaultLimit, 'uint');
 			$this->setState('list.limit', $limit);
 
