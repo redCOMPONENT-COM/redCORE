@@ -70,15 +70,15 @@ class PlgSystemRedcore extends JPlugin
 						JError::setErrorHandling(E_ERROR, 'message');
 						RApi::clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
-						$optionName = $input->get->getString('option', '');
-						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
-						$viewName = $input->getString('view', '');
-						$version = $input->getString('webserviceVersion', '');
-						$token = $input->getString(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), '');
-						$apiName = ucfirst($apiName);
-						$method = strtoupper($input->getMethod());
-						$task = RApiHalHelper::getTask();
-						$data = RApi::getPostedData();
+						$optionName       = $input->get->getString('option', '');
+						$optionName       = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
+						$viewName         = $input->getString('view', '');
+						$version          = $input->getString('webserviceVersion', '');
+						$token            = $input->getString(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), '');
+						$apiName          = ucfirst($apiName);
+						$method           = strtoupper($input->getMethod());
+						$task             = RApiHalHelper::getTask();
+						$data             = RApi::getPostedData();
 
 						if (version_compare(JVERSION, '3') >= 0)
 						{
@@ -91,7 +91,7 @@ class PlgSystemRedcore extends JPlugin
 
 						if (empty($webserviceClient))
 						{
-							$webserviceClient = JFactory::getApplication()->isAdmin() ? 'administrator' : 'site';
+							$webserviceClient = JFactory::getApplication()->isClient('administrator') ? 'administrator' : 'site';
 						}
 
 						$options = array(
@@ -246,8 +246,8 @@ class PlgSystemRedcore extends JPlugin
 		// Only set media settings for Extensions that are redCORE supported Extension in administration
 		$isRedcoreExtension = $this->isRedcoreExtension();
 
-		$doc = JFactory::getDocument();
-		$isAdmin = JFactory::getApplication()->isAdmin();
+		$doc     = JFactory::getDocument();
+		$isAdmin = JFactory::getApplication()->isClient('administrator');
 
 		if (!$isAdmin || $isRedcoreExtension)
 		{
@@ -401,7 +401,7 @@ class PlgSystemRedcore extends JPlugin
 		// If the options to do so are turned on, create a button for opening a modal window to edit translations directly from a translatable form
 		if (RBootstrap::getConfig('enable_translations', 0) == 1 && RBootstrap::getConfig('show_edit_button_on_all_forms', 0) == 1)
 		{
-			$isAdmin = JFactory::getApplication()->isAdmin();
+			$isAdmin = JFactory::getApplication()->isClient('administrator');
 
 			RTranslationHelper::isTranslatableForm($isAdmin);
 		}
@@ -424,10 +424,10 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	private function isInstaller()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
-		return $app->isAdmin() && $input->getString('option') == 'com_installer' && $input->get('task') == 'install.install';
+		return $app->isClient('administrator') && $input->getString('option') == 'com_installer' && $input->get('task') == 'install.install';
 	}
 
 	/**

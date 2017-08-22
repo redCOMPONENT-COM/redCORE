@@ -9,6 +9,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Interface to handle api calls
  *
@@ -225,7 +227,7 @@ class RApi extends RApiBase
 
 		if (is_object($inputData))
 		{
-			$inputData = JArrayHelper::fromObject($inputData);
+			$inputData = ArrayHelper::fromObject($inputData);
 		}
 		elseif (is_string($inputData))
 		{
