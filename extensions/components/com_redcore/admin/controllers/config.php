@@ -48,15 +48,15 @@ class RedcoreControllerConfig extends RControllerForm
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$app   = JFactory::getApplication();
-		$lang  = JFactory::getLanguage();
-		$model = $this->getModel();
-		$table = $model->getTable();
-		$data  = $this->input->post->get('jform', array(), 'array');
+		$app     = JFactory::getApplication();
+		$lang    = JFactory::getLanguage();
+		$model   = $this->getModel();
+		$table   = $model->getTable();
+		$data    = $this->input->post->get('jform', array(), 'array');
 		$checkin = property_exists($table, 'checked_out');
 		$context = "$this->option.edit.$this->context";
-		$task = $this->getTask();
-		$id = $this->input->getInt('id');
+		$task    = $this->getTask();
+		$id      = $this->input->getInt('id');
 
 		// Loading language files from other components if necessary
 		$externalExtension = $this->input->getString('component');
@@ -114,7 +114,7 @@ class RedcoreControllerConfig extends RControllerForm
 
 			// Reset the ID and then treat the request as for Apply.
 			$data[$key] = 0;
-			$task = 'apply';
+			$task       = 'apply';
 		}
 
 		// Access check.
@@ -223,9 +223,9 @@ class RedcoreControllerConfig extends RControllerForm
 
 		$this->setMessage(
 			JText::_(
-				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
+				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isClient('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
 					? $this->text_prefix
-					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isClient('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
 			)
 		);
 
@@ -287,7 +287,7 @@ class RedcoreControllerConfig extends RControllerForm
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
 
 		$component = $this->input->get('component');
-		$tab = $this->input->get('tab');
+		$tab       = $this->input->get('tab');
 
 		if ($component)
 		{
@@ -309,7 +309,7 @@ class RedcoreControllerConfig extends RControllerForm
 	 */
 	protected function getRedirectToListAppend()
 	{
-		$tmpl = JFactory::getApplication()->input->get('tmpl');
+		$tmpl   = JFactory::getApplication()->input->get('tmpl');
 		$append = '';
 
 		// Setup redirect info.

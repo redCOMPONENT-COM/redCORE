@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Registry\Registry;
+
 /**
  * Payments View
  *
@@ -54,11 +56,11 @@ class RedcoreViewPayments extends RedcoreHelpersView
 	{
 		$model = $this->getModel();
 
-		$this->items = $model->getItems();
-		$this->state = $model->getState();
-		$this->pagination = $model->getPagination();
+		$this->items         = $model->getItems();
+		$this->state         = $model->getState();
+		$this->pagination    = $model->getPagination();
 		$this->activeFilters = $model->getActiveFilters();
-		$this->filterForm = $model->getForm();
+		$this->filterForm    = $model->getForm();
 
 		parent::display($tpl);
 	}
@@ -81,11 +83,11 @@ class RedcoreViewPayments extends RedcoreHelpersView
 	public function getToolbar()
 	{
 		$canDo = $this->getActions();
-		$user = JFactory::getUser();
+		$user  = JFactory::getUser();
 
-		$firstGroup = new RToolbarButtonGroup;
+		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup('', true, 'icon-cogs', JText::_('COM_REDCORE_PAYMENT_OPTIONS'));
-		$thirdGroup = new RToolbarButtonGroup;
+		$thirdGroup  = new RToolbarButtonGroup;
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
@@ -129,13 +131,13 @@ class RedcoreViewPayments extends RedcoreHelpersView
 	 * @param   string  $section    The section.
 	 * @param   mixed   $assetName  The asset name.
 	 *
-	 * @return  JObject
+	 * @return  Registry
 	 */
 	public function getActions($section = 'component', $assetName = 'com_redcore')
 	{
-		$user = JFactory::getUser();
-		$result	= new JObject;
-		$actions = JAccess::getActions('com_redcore', $section);
+		$user    = JFactory::getUser();
+		$result  = new Registry;
+		$actions = JAccess::getActionsFromFile('com_redcore', $section) ?: array();
 
 		foreach ($actions as $action)
 		{

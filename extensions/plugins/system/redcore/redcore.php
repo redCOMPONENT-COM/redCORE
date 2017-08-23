@@ -217,9 +217,9 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	private function isRedcoreExtension()
 	{
-		$redcoreExtensions = RComponentHelper::getRedcoreComponents();
+		$redcoreExtensions   = RComponentHelper::getRedcoreComponents();
 		$redcoreExtensions[] = 'com_redcore';
-		$option = JFactory::getApplication()->input->getCmd('option');
+		$option              = JFactory::getApplication()->input->getCmd('option');
 
 		if (!empty($option) && in_array($option, $redcoreExtensions))
 		{
@@ -454,7 +454,7 @@ class PlgSystemRedcore extends JPlugin
 	 *
 	 * @param   string  $apiName  Api name
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	private function isApiEnabled($apiName)
 	{
