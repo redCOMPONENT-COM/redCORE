@@ -11,18 +11,21 @@
         "php": ">=5.6"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "2.*",
-        "phpmd/phpmd": "*",
-        "codeception/codeception": "~2.2",
-        "joomla-projects/joomla-browser": "v3.7.4",
-        "consolidation/robo": "~1.0.6",
-        "redcomponent/robo": "~1.0.2",
-        "redcomponent/teststatistics": "dev-master",
-        "flow/jsonpath": "dev-master",
-        "fzaninotto/faker": "^1.5",
-        "joomla-projects/selenium-server-standalone": "v2.53.1",
-        "nette/reflection": "~2",
-        "cloudinary/cloudinary_php": "1.1.1",
-        "knplabs/github-api": "1.4.12"
+		"squizlabs/php_codesniffer": "~2",
+		"codeception/codeception": "~2.2",
+		"phpmd/phpmd": "*",
+		"joomla-projects/joomla-browser": "v3.7.4",
+		"joomla-projects/joomla-testing-robo": "dev-container-test",
+		"joomla-projects/joomla-testing": "dev-container-test",
+		"joomla-projects/selenium-server-standalone": "v2.53.1",
+		"consolidation/robo": "~1",
+		"flow/jsonpath": "dev-master",
+		"cloudinary/cloudinary_php": "1.1.1",
+		"knplabs/github-api": "1.4.12",
+		"ifsnop/mysqldump-php": "1.*",
+		"fzaninotto/faker": "^1.5",
+		"nette/reflection": "~2",
+		"facebook/webdriver": ">=1.1.2",
+        "redcomponent/teststatistics": "dev-master"
     }
 }
