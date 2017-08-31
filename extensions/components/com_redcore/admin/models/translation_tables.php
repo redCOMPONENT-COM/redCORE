@@ -42,14 +42,14 @@ class RedcoreModelTranslation_Tables extends RModelList
 	/**
 	 * Number of available xml files for install
 	 *
-	 * @var  int
+	 * @var  integer
 	 */
 	public $xmlFilesAvailable = 0;
 
 	/**
 	 * Number of available xml files for install
 	 *
-	 * @var  int
+	 * @var  integer
 	 */
 	public $languages = array();
 
@@ -67,7 +67,7 @@ class RedcoreModelTranslation_Tables extends RModelList
 			);
 		}
 
-		$this->languages = JFactory::getLanguage()->getKnownLanguages();
+		$this->languages = JLanguageHelper::getKnownLanguages();
 
 		parent::__construct($config);
 	}
@@ -100,10 +100,10 @@ class RedcoreModelTranslation_Tables extends RModelList
 		}
 
 		// Ordering
-		$orderList = $this->getState('list.ordering');
+		$orderList     = $this->getState('list.ordering');
 		$directionList = $this->getState('list.direction');
 
-		$order = !empty($orderList) ? $orderList : 'tt.name';
+		$order     = !empty($orderList) ? $orderList : 'tt.name';
 		$direction = !empty($directionList) ? $directionList : 'ASC';
 		$query->order($db->escape($order) . ' ' . $db->escape($direction));
 
@@ -123,8 +123,8 @@ class RedcoreModelTranslation_Tables extends RModelList
 
 		foreach ($items as $key => $item)
 		{
-			$rowCount = RedcoreHelpersTranslation::getTableRowCount($item);
-			$items[$key]->original_rows = isset($rowCount['original_rows']) ? $rowCount['original_rows'] : 0;
+			$rowCount                      = RedcoreHelpersTranslation::getTableRowCount($item);
+			$items[$key]->original_rows    = isset($rowCount['original_rows']) ? $rowCount['original_rows'] : 0;
 			$items[$key]->translation_rows = isset($rowCount['translation_rows']) ? $rowCount['translation_rows'] : 0;
 		}
 
@@ -138,7 +138,7 @@ class RedcoreModelTranslation_Tables extends RModelList
 	 */
 	protected function setXmlFiles()
 	{
-		$this->xmlFiles = RTranslationContentElement::getContentElements(true);
+		$this->xmlFiles          = RTranslationContentElement::getContentElements(true);
 		$this->xmlFilesAvailable = count($this->xmlFiles);
 	}
 

@@ -73,16 +73,16 @@ abstract class RModel extends JModelLegacy
 			if ($option == 'com_installer')
 			{
 				$installer = JInstaller::getInstance();
-				$option = $installer->manifestClass->getElement($installer);
+				$option    = $installer->manifestClass->getElement($installer);
 			}
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
-		$prefix = $componentName . 'Model';
+		$prefix        = $componentName . 'Model';
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isAdmin();
+			$client = (int) JFactory::getApplication()->isClient('administrator');
 		}
 
 		// Admin

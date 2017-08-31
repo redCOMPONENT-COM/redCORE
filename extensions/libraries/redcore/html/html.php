@@ -14,6 +14,8 @@ JLoader::import('joomla.filesystem.file');
 JLoader::import('joomla.filesystem.path');
 JLoader::import('joomla.utilities.arrayhelper');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Utility class for all HTML drawing classes
  *
@@ -249,7 +251,7 @@ abstract class RHtml
 	{
 		if (is_array($attribs))
 		{
-			$attribs = JArrayHelper::toString($attribs);
+			$attribs = ArrayHelper::toString($attribs);
 		}
 
 		return '<a href="' . $url . '" ' . $attribs . '>' . $text . '</a>';
@@ -271,7 +273,7 @@ abstract class RHtml
 	{
 		if (is_array($attribs))
 		{
-			$attribs = JArrayHelper::toString($attribs);
+			$attribs = ArrayHelper::toString($attribs);
 		}
 
 		return '<iframe src="' . $url . '" ' . $attribs . ' name="' . $name . '">' . $noFrames . '</iframe>';
@@ -591,7 +593,7 @@ abstract class RHtml
 			return $file;
 		}
 
-		return '<img src="' . $file . '" alt="' . $alt . '" ' . trim((is_array($attribs) ? JArrayHelper::toString($attribs) : $attribs) . ' /') . '>';
+		return '<img src="' . $file . '" alt="' . $alt . '" ' . trim((is_array($attribs) ? ArrayHelper::toString($attribs) : $attribs) . ' /') . '>';
 	}
 
 	/**
@@ -660,7 +662,7 @@ abstract class RHtml
 
 			foreach ($includes as $include)
 			{
-				$document->addStylesheet($include, 'text/css', null, $attribs);
+				$document->addStylesheet($include, array(), $attribs);
 			}
 		}
 	}
@@ -1139,7 +1141,7 @@ abstract class RHtml
 			}
 			else
 			{
-				$elements[] = $key . ': ' . static::getJSObject(is_object($v) ? get_object_vars($v) : $v);
+				$elements[] = $key . ': ' . json_encode(is_object($v) ? get_object_vars($v) : $v);
 			}
 		}
 
