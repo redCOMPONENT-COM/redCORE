@@ -1133,7 +1133,7 @@ class RTable extends JTable
 	 *
 	 * @return array
 	 */
-	private function updateSchema($assetName, \JDate $now)
+	public function updateSchema($assetName, \JDate $now)
 	{
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
