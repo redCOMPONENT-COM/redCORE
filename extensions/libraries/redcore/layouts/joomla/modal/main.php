@@ -9,6 +9,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 // Load bootstrap-tooltip-extended plugin for additional tooltip positions in modal
 JHtml::_('bootstrap.tooltipExtended');
 
@@ -150,7 +152,7 @@ $script[] = "});";
 
 JFactory::getDocument()->addScriptDeclaration(implode("\n", $script));
 ?>
-<div id="<?php echo $selector; ?>" <?php echo JArrayHelper::toString($modalAttributes); ?>>
+<div id="<?php echo $selector; ?>" <?php echo ArrayHelper::toString($modalAttributes); ?>>
 	<?php
 		// Header
 		if (!isset($params['closeButton']) || isset($params['title']) || $params['closeButton'])

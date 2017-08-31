@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * redCORE Dynamic Model List
  *
@@ -37,7 +39,7 @@ class RApiHalModelItem extends RModelAdmin
 		if (!empty($config["tableName"]))
 		{
 			$this->tableName = $config["tableName"];
-			$this->name = $config["tableName"];
+			$this->name      = $config["tableName"];
 		}
 
 		if (!empty($config["context"]))
@@ -64,8 +66,8 @@ class RApiHalModelItem extends RModelAdmin
 	 */
 	public function getTable($name = '', $prefix = 'Table', $options = array())
 	{
-		$db = $this->getDbo();
-		$config = $this->modelConfig;
+		$db        = $this->getDbo();
+		$config    = $this->modelConfig;
 		$tableName = str_replace('#__', '', $config['tableName']);
 
 		if (!empty($config['primaryFields']))
@@ -100,7 +102,7 @@ class RApiHalModelItem extends RModelAdmin
 	 */
 	public function getItem($pk = null)
 	{
-		$pk = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
+		$pk    = (!empty($pk)) ? $pk : (int) $this->getState($this->getName() . '.id');
 		$table = $this->getTable();
 
 		if (!empty($pk))
@@ -119,7 +121,7 @@ class RApiHalModelItem extends RModelAdmin
 
 		// Convert to the JObject before adding other data.
 		$properties = $table->getProperties(1);
-		$item = JArrayHelper::toObject($properties, 'JObject');
+		$item       = ArrayHelper::toObject($properties, 'JObject');
 
 		if (property_exists($item, 'params'))
 		{

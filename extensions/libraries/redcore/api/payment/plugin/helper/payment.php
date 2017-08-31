@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * redCORE Payment plugin base Class
  *
@@ -289,7 +291,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 */
 	public function prepareOmnipayData($payment)
 	{
-		$data = !is_array($payment) ? JArrayHelper::fromObject($payment) : $payment;
+		$data = !is_array($payment) ? ArrayHelper::fromObject($payment) : $payment;
 
 		$data['amount']     = $data['amount_total'];
 		$data['transactionId'] = $data['transaction_id'];
@@ -467,7 +469,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		{
 			// We will update payment with provided data if it is different than originally provided
 			$ownerName = !empty($orderData['owner_name']) ? $orderData['owner_name'] : $payment->owner_name;
-			$updateData = JArrayHelper::fromObject($payment);
+			$updateData = ArrayHelper::fromObject($payment);
 
 			foreach ($orderData as $key => $value)
 			{
@@ -736,7 +738,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	{
 		if (is_object($data))
 		{
-			$data = JArrayHelper::fromObject($data);
+			$data = ArrayHelper::fromObject($data);
 		}
 
 		if (empty($data['order_id']))

@@ -70,11 +70,11 @@ class RModelAdmin extends RModelAdminLegacy
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
-		$prefix = $componentName . 'Model';
+		$prefix        = $componentName . 'Model';
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isAdmin();
+			$client = (int) JFactory::getApplication()->isClient('administrator');
 		}
 
 		// Admin

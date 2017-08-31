@@ -11,7 +11,7 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-$app = JFactory::getApplication();
+$app   = JFactory::getApplication();
 $input = $app->input;
 
 /**
@@ -160,25 +160,29 @@ if ($result instanceof Exception)
 ?>
 <script type="text/javascript">
 (function ($) {
-    $(document).ready(function () {
+	$(document).ready(function () {
 
-        if ($('.message-sys').length) {
-            var messageContainer = $('#system-message-container');
+		if ($('.message-sys').length) {
+			var messageContainer = $('#system-message-container');
 
-            // No messages found. Create an empty div
-            if (!messageContainer.length) {
-                messageContainer = $("<div>", {id: "system-message-container"});
-            }
-            $('.message-sys').append(messageContainer);
-        }
+			// No messages found. Create an empty div
+			if (!messageContainer.length) {
+				messageContainer = $("<div>", {id: "system-message-container"});
+			}
+			$('.message-sys').append(messageContainer);
+		}
 
-		<?php if ($input->getBool('disable_topbar') || $input->getBool('hidemainmenu')) : ?>
+		<?php if ($input->getBool('disable_topbar') || $input->getBool('hidemainmenu'))
+		:
+	?>
 		jQuery('.topbar').addClass('opacity-70');
 		jQuery('.topbar button').prop('disabled', true);
 		jQuery('.topbar a').attr('disabled', true).attr('href', '#').addClass('disabled');
 		<?php endif; ?>
 
-		<?php if ($input->getBool('disable_sidebar') || $input->getBool('hidemainmenu')) : ?>
+		<?php if ($input->getBool('disable_sidebar') || $input->getBool('hidemainmenu'))
+		:
+	?>
 		jQuery('.sidebar').addClass('opacity-70');
 		jQuery('.sidebar button').prop('disabled', true);
 		jQuery('.sidebar a').attr('disabled', true).attr('href', '#').addClass('disabled');
@@ -186,7 +190,9 @@ if ($result instanceof Exception)
 	});
 })(jQuery);
 </script>
-<?php if ($view->getLayout() === 'modal') : ?>
+<?php if ($view->getLayout() === 'modal')
+:
+	?>
 	<div class="row redcore">
 		<section id="component">
 			<div class="row-fluid message-sys"></div>
@@ -195,7 +201,9 @@ if ($result instanceof Exception)
 			</div>
 		</section>
 	</div>
-<?php elseif ($templateComponent) : ?>
+<?php elseif ($templateComponent)
+:
+	?>
 	<div class="container-fluid redcore">
 		<div class="col-md-12 content">
 			<section id="component">
@@ -211,24 +219,36 @@ if ($result instanceof Exception)
 		</div>
 	</div>
 <?php
-else : ?>
+else
+
+:
+	?>
 	<div class="redcore">
 		<div class="container-fluid">
-			<?php if ($displayTopbar) : ?>
+			<?php if ($displayTopbar)
+			:
+	?>
 				<?php echo RLayoutHelper::render($topbarLayout, $topbarData) ?>
 			<?php endif; ?>
 			<div class="row">
-				<?php if ($displaySidebar) : ?>
+				<?php if ($displaySidebar)
+				:
+	?>
 					<div class="col-md-2 col-sm-3 sidebar">
 						<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
 					</div>
 					<div class="col-md-10 col-sm-9 content">
-				<?php else : ?>
+				<?php else
+
+	:
+	?>
 					<div class="col-md-12 content">
 				<?php endif; ?>
 						<section id="component">
 							<h1 class="sub-header"><?php echo $view->getTitle() ?></h1>
-							<?php if ($toolbar instanceof RToolbar) : ?>
+							<?php if ($toolbar instanceof RToolbar)
+							:
+	?>
 								<div class="row-fluid">
 									<?php echo $toolbar->render() ?>
 								</div>
