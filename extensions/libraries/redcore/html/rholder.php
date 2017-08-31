@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Holder.js library.
  *
@@ -47,7 +49,7 @@ abstract class JHtmlRholder
 		$path = JURI::root() . 'media/redcore/lib/holder.min.js/' . $src;
 
 		return '<img data-src="' . $path . '" alt="' . $alt . '" '
-		. trim((is_array($attribs) ? JArrayHelper::toString($attribs) : $attribs) . ' /')
+		. trim((is_array($attribs) ? ArrayHelper::toString($attribs) : $attribs) . ' /')
 		. '>';
 	}
 

@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Webservices Controller
  *
@@ -39,7 +41,7 @@ class RedcoreControllerWebservices extends RControllerAdmin
 		{
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 
 			if (count($cid) > 1 && !extension_loaded('zlib'))
 			{
@@ -47,19 +49,19 @@ class RedcoreControllerWebservices extends RControllerAdmin
 			}
 
 			$contentType = 'application/xml';
-			$content = '';
+			$content     = '';
 
 			// Download single XML file
 			if (count($cid) == 1)
 			{
 				/** @var RedcoreTableWebservice $table */
-				$table = RTable::getAdminInstance('Webservice', array(), 'com_redcore');
+				$table    = RTable::getAdminInstance('Webservice', array(), 'com_redcore');
 				$fileName = '';
 
 				if ($table && $table->load($cid[0]))
 				{
-					$path = !empty($table->path) ? '/' . $table->path : '';
-					$fileName = $table->client . '.' . $table->name . '.' . $table->version . '.xml';
+					$path           = !empty($table->path) ? '/' . $table->path : '';
+					$fileName       = $table->client . '.' . $table->name . '.' . $table->version . '.xml';
 					$webservicePath = RApiHalHelper::getWebservicesPath() . $path . '/' . $fileName;
 
 					if (is_file($webservicePath))
@@ -72,10 +74,10 @@ class RedcoreControllerWebservices extends RControllerAdmin
 			else
 			{
 				/** @var RedcoreTableWebservice $table */
-				$table = RTable::getAdminInstance('Webservice', array(), 'com_redcore');
-				$app = JFactory::getApplication();
+				$table       = RTable::getAdminInstance('Webservice', array(), 'com_redcore');
+				$app         = JFactory::getApplication();
 				$contentType = 'application/zip';
-				$fileName = 'webservices_' . (date('Y-m-d')) . '.zip';
+				$fileName    = 'webservices_' . (date('Y-m-d')) . '.zip';
 
 				$files = array();
 
@@ -85,9 +87,9 @@ class RedcoreControllerWebservices extends RControllerAdmin
 
 					if ($table->load($id))
 					{
-						$path = !empty($table->path) ? '/' . $table->path : '';
+						$path               = !empty($table->path) ? '/' . $table->path : '';
 						$webserviceFileName = $table->client . '.' . $table->name . '.' . $table->version . '.xml';
-						$webservicePath = RApiHalHelper::getWebservicesPath() . $path . '/' . $webserviceFileName;
+						$webservicePath     = RApiHalHelper::getWebservicesPath() . $path . '/' . $webserviceFileName;
 
 						if (is_file($webservicePath))
 						{
@@ -102,7 +104,7 @@ class RedcoreControllerWebservices extends RControllerAdmin
 				}
 
 				$uniqueFile = uniqid('webservice_files_');
-				$zipFile = $app->get('tmp_path') . '/' . $uniqueFile . '.zip';
+				$zipFile    = $app->get('tmp_path') . '/' . $uniqueFile . '.zip';
 
 				// Run the packager
 				jimport('joomla.filesystem.folder');
@@ -166,13 +168,13 @@ class RedcoreControllerWebservices extends RControllerAdmin
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$model = $this->getModel('webservices');
 
 		$webservice = $app->input->getString('webservice');
-		$version = $app->input->getString('version');
-		$folder = $app->input->getString('folder');
-		$client = $app->input->getString('client');
+		$version    = $app->input->getString('version');
+		$folder     = $app->input->getString('folder');
+		$client     = $app->input->getString('client');
 
 		if ($webservice == 'all')
 		{
@@ -202,9 +204,9 @@ class RedcoreControllerWebservices extends RControllerAdmin
 		$model = $this->getModel('webservices');
 
 		$webservice = $app->input->getString('webservice');
-		$version = $app->input->getString('version');
-		$folder = $app->input->getString('folder');
-		$client = $app->input->getString('client');
+		$version    = $app->input->getString('version');
+		$folder     = $app->input->getString('folder');
+		$client     = $app->input->getString('client');
 
 		if ($webservice == 'all')
 		{
@@ -228,7 +230,7 @@ class RedcoreControllerWebservices extends RControllerAdmin
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		$app   = JFactory::getApplication();
-		$files  = $app->input->files->get('redcoreWebservice', array(), 'array');
+		$files = $app->input->files->get('redcoreWebservice', array(), 'array');
 
 		if (!empty($files))
 		{
@@ -260,7 +262,7 @@ class RedcoreControllerWebservices extends RControllerAdmin
 
 		if (!empty($webservices))
 		{
-			$model = $this->getModel('webservices');
+			$model                = $this->getModel('webservices');
 			$installedWebservices = RApiHalHelper::getInstalledWebservices();
 
 			foreach ($webservices as $webserviceNames)
@@ -269,9 +271,9 @@ class RedcoreControllerWebservices extends RControllerAdmin
 				{
 					foreach ($webserviceVersions as $webservice)
 					{
-						$client = RApiHalHelper::getWebserviceClient($webservice);
-						$path = $webservice->webservicePath;
-						$name = (string) $webservice->config->name;
+						$client  = RApiHalHelper::getWebserviceClient($webservice);
+						$path    = $webservice->webservicePath;
+						$name    = (string) $webservice->config->name;
 						$version = (string) $webservice->config->version;
 
 						// If it is already install then we skip it
@@ -337,7 +339,7 @@ class RedcoreControllerWebservices extends RControllerAdmin
 			$model = $this->getModel('Webservices');
 
 			// Make sure the item ids are integers
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 
 			// Copy the items.
 			if ($model->copy($cid))

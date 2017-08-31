@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Registry\Registry;
+
 /**
  * Translation Tables View
  *
@@ -49,14 +51,14 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 	public $xmlFiles;
 
 	/**
-	 * @var  int
+	 * @var  integer
 	 */
 	public $xmlFilesAvailable;
 
 	/**
 	 * Number of available xml files for install
 	 *
-	 * @var  int
+	 * @var  integer
 	 */
 	public $languages = array();
 
@@ -71,13 +73,13 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 	{
 		$model = $this->getModel();
 
-		$this->languages = $model->languages;
-		$this->items = $model->getItems();
-		$this->state = $model->getState();
-		$this->pagination = $model->getPagination();
-		$this->activeFilters = $model->getActiveFilters();
-		$this->filterForm = $model->getForm();
-		$this->xmlFiles = $model->getXmlFiles();
+		$this->languages         = $model->languages;
+		$this->items             = $model->getItems();
+		$this->state             = $model->getState();
+		$this->pagination        = $model->getPagination();
+		$this->activeFilters     = $model->getActiveFilters();
+		$this->filterForm        = $model->getForm();
+		$this->xmlFiles          = $model->getXmlFiles();
 		$this->xmlFilesAvailable = $model->xmlFilesAvailable;
 
 		// Check if option is enabled
@@ -90,7 +92,8 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 					. JText::_('COM_REDCORE_CONFIGURE')
 					. '</a>'
 				),
-				'error');
+				'error'
+			);
 		}
 
 		if (!JPluginHelper::isEnabled('system', 'languagefilter'))
@@ -119,13 +122,13 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 	public function getToolbar()
 	{
 		$canDo = $this->getActions();
-		$user = JFactory::getUser();
+		$user  = JFactory::getUser();
 
-		$firstGroup = new RToolbarButtonGroup;
+		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
-		$group3 = new RToolbarButtonGroup;
-		$group5 = new RToolbarButtonGroup('pull-right');
-		$group4 = new RToolbarButtonGroup('pull-right');
+		$group3      = new RToolbarButtonGroup;
+		$group5      = new RToolbarButtonGroup('pull-right');
+		$group4      = new RToolbarButtonGroup('pull-right');
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
@@ -184,13 +187,13 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 	 * @param   string  $section    The section.
 	 * @param   mixed   $assetName  The asset name.
 	 *
-	 * @return  JObject
+	 * @return  Registry
 	 */
 	public function getActions($section = 'component', $assetName = 'com_redcore')
 	{
-		$user = JFactory::getUser();
-		$result	= new JObject;
-		$actions = JAccess::getActions('com_redcore', $section);
+		$user    = JFactory::getUser();
+		$result  = new Registry;
+		$actions = JAccess::getActionsFromFile('com_redcore', $section) ?: array();
 
 		foreach ($actions as $action)
 		{
