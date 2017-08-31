@@ -196,6 +196,7 @@ class RApiHalHal extends RApi
 		{
 			define('JSON_UNESCAPED_SLASHES', 64);
 		}
+
 		// OAuth2 check
 		if (RBootstrap::getConfig('webservices_authorization_check', 0) == 0)
 		{
