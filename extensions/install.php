@@ -1652,14 +1652,24 @@ class Com_RedcoreInstallerScript
 	{
 		if (is_dir($original))
 		{
-			$source      = $source . '/' . $xmlFile;
-			$sourceXml   = new SimpleXMLElement($source);
-			$original    = $original . '/' . $xmlFile;
-			$originalXml = new SimpleXMLElement($original);
-
-			if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
+			try
 			{
-				return false;
+				$source      = $source . '/' . $xmlFile;
+				$sourceXml   = new SimpleXMLElement($source);
+				$original    = $original . '/' . $xmlFile;
+				$originalXml = new SimpleXMLElement($original);
+
+				if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
+				{
+					return false;
+				}
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(
+					JText::_('COM_REDCORE_INSTALL_UNABLE_TO_CHECK_VERSION'),
+					'message'
+				);
 			}
 		}
 

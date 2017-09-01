@@ -99,6 +99,12 @@ class RApiSoapDocumentDocument extends JDocument
 		$language = explode('-', $app->input->get('lang', RTranslationHelper::getSiteLanguage()));
 		$language = $language[0];
 
+		if ($this->soap->options->get('enable_gzip_compression', 0) && RBootstrap::$config->get('webservice_enable_gzip_compression', '1') == '1')
+		{
+			$app->setHeader('Content-Encoding', 'gzip', true);
+			$content = gzencode($content, 1);
+		}
+
 		$app->setHeader('Status', $this->soap->statusCode . ' ' . $this->soap->statusText, true);
 		$app->setHeader('Server', '', true);
 		$app->setHeader('X-Runtime', $runtime, true);

@@ -195,6 +195,20 @@ $availableLanguages = implode(', ', $availableLanguages);
 						$availableLanguages
 					); ?></td>
 			</tr>
+            <tr>
+                <th>Accept-Encoding</th>
+                <td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_ACCEPT_ENCODING',
+						'<strong>gzip</strong>'
+					); ?></td>
+            </tr>
+            <tr>
+                <th>Content-Encoding</th>
+                <td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_CONTENT_ENCODING',
+						'<strong>gzip</strong>'
+					); ?></td>
+            </tr>
 			<tr>
 				<th>X-Webservice-Stateful</th>
 				<td><?php echo JText::sprintf(
