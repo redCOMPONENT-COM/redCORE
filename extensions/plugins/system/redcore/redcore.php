@@ -91,7 +91,9 @@ class PlgSystemRedcore extends JPlugin
 
 						if (empty($webserviceClient))
 						{
-							$webserviceClient = RFactory::isClientApplication('administrator') ? 'administrator' : 'site';
+							$webserviceClient = (version_compare(JVERSION, '3.7', '<') ?
+								JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator')) ?
+								'administrator' : 'site';
 						}
 
 						$options = array(
@@ -247,7 +249,8 @@ class PlgSystemRedcore extends JPlugin
 		$isRedcoreExtension = $this->isRedcoreExtension();
 
 		$doc     = JFactory::getDocument();
-		$isAdmin = RFactory::isClientApplication('administrator');
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		if (!$isAdmin || $isRedcoreExtension)
 		{
@@ -401,7 +404,8 @@ class PlgSystemRedcore extends JPlugin
 		// If the options to do so are turned on, create a button for opening a modal window to edit translations directly from a translatable form
 		if (RBootstrap::getConfig('enable_translations', 0) == 1 && RBootstrap::getConfig('show_edit_button_on_all_forms', 0) == 1)
 		{
-			$isAdmin = RFactory::isClientApplication('administrator');
+			$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+				JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 			RTranslationHelper::isTranslatableForm($isAdmin);
 		}

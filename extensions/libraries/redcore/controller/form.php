@@ -643,10 +643,14 @@ class RControllerForm extends JControllerForm
 		$this->setMessage(
 			JText::_(
 				($lang->hasKey(
-					$this->text_prefix . ($recordId == 0 && RFactory::isClientApplication('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+					$this->text_prefix
+					. ($recordId == 0 && (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? '_SUBMIT' : '')
+					. '_SAVE_SUCCESS'
 				)
 					? $this->text_prefix
-					: 'JLIB_APPLICATION') . ($recordId == 0 && RFactory::isClientApplication('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+					: 'JLIB_APPLICATION')
+				. ($recordId == 0 && (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? '_SUBMIT' : '')
+				. '_SAVE_SUCCESS'
 			)
 		);
 

@@ -578,7 +578,7 @@ class RTranslationHelper
 		$app   = JFactory::getApplication();
 		$isApi = ($app->input->get('api') != null);
 
-		return (RFactory::isClientApplication('administrator') && !$isApi);
+		return ((version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator')) && !$isApi);
 	}
 
 	/**

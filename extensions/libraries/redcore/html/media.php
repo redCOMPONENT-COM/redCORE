@@ -111,7 +111,8 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		$isAdmin = RFactory::isClientApplication('administrator');
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
@@ -145,7 +146,8 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		$isAdmin = RFactory::isClientApplication('administrator');
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{

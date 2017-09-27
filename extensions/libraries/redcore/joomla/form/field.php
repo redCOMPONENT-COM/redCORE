@@ -1142,11 +1142,14 @@ abstract class JFormField
 	 */
 	public function appendXMLFieldTag($field, DOMElement $parent, JForm $form)
 	{
-		if ($field->params->get('show_on') == 1 && RFactory::isClientApplication('administrator'))
+		$app = JFactory::getApplication();
+
+		if ($field->params->get('show_on') == 1 && (version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator')))
 		{
 			return;
 		}
-		elseif ($field->params->get('show_on') == 2 && RFactory::isClientApplication('site'))
+		elseif ($field->params->get('show_on') == 2
+			&& (version_compare(JVERSION, '3.7', '<') ? $app->isSite() :$app->isClient('site')))
 		{
 			return;
 		}
