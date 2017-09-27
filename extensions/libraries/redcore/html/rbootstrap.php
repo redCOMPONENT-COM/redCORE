@@ -43,7 +43,7 @@ abstract class JHtmlRbootstrap
 	{
 		JHtml::_('rjquery.framework');
 
-		$isAdmin = JFactory::getApplication()->isClient('administrator');
+		$isAdmin = RFactory::isClientApplication('administrator');
 
 		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
@@ -70,7 +70,7 @@ abstract class JHtmlRbootstrap
 	{
 		self::framework();
 
-		$isAdmin = JFactory::getApplication()->isClient('administrator');
+		$isAdmin = RFactory::isClientApplication('administrator');
 
 		// Load Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))

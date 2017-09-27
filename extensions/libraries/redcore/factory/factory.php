@@ -167,4 +167,18 @@ final class RFactory extends JFactory
 
 		return $mail;
 	}
+
+	/**
+	 * Check the client interface by name.
+	 *
+	 * @param   string  $identifier  String identifier for the application interface
+	 *
+	 * @return  boolean  True if this application is of the given type client interface.
+	 *
+	 * @since   3.7.0
+	 */
+	public static function isClientApplication($identifier)
+	{
+		return JFactory::getApplication()->getName() === $identifier;
+	}
 }

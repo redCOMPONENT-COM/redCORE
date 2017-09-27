@@ -223,9 +223,12 @@ class RedcoreControllerConfig extends RControllerForm
 
 		$this->setMessage(
 			JText::_(
-				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isClient('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
+				(
+					$lang->hasKey(
+						$this->text_prefix . ($recordId == 0 && RFactory::isClientApplication('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+					)
 					? $this->text_prefix
-					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isClient('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+					: 'JLIB_APPLICATION') . ($recordId == 0 && RFactory::isClientApplication('site') ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
 			)
 		);
 

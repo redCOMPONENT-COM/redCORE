@@ -192,7 +192,7 @@ abstract class JHtmlRjquery
 			return;
 		}
 
-		$isAdmin = JFactory::getApplication()->isClient('administrator');
+		$isAdmin = RFactory::isClientApplication('administrator');
 
 		// Load jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))

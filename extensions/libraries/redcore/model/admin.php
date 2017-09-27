@@ -74,7 +74,7 @@ class RModelAdmin extends RModelAdminLegacy
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isClient('administrator');
+			$client = (int) RFactory::isClientApplication('administrator');
 		}
 
 		// Admin
