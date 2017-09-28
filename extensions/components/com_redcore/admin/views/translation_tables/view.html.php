@@ -121,7 +121,6 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$canDo = $this->getActions();
 		$user  = JFactory::getUser();
 
 		$firstGroup  = new RToolbarButtonGroup;
@@ -137,38 +136,26 @@ class RedcoreViewTranslation_Tables extends RedcoreHelpersView
 			);
 			$group4->addButton($button);
 
-			// Add / edit
-			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
-			{
-				$new = RToolbarBuilder::createNewButton('translation_table.add');
-				$firstGroup->addButton($new);
+			$new = RToolbarBuilder::createNewButton('translation_table.add');
+			$firstGroup->addButton($new);
 
-				$updateFromXml = RToolbarBuilder::createStandardButton(
-					'translation_tables.updateFromXml', 'COM_REDCORE_TRANSLATION_TABLE_UPDATE_FROM_XML', 'btn-primary', 'icon-refresh'
-				);
-				$group5->addButton($updateFromXml);
+			$updateFromXml = RToolbarBuilder::createStandardButton(
+				'translation_tables.updateFromXml', 'COM_REDCORE_TRANSLATION_TABLE_UPDATE_FROM_XML', 'btn-primary', 'icon-refresh'
+			);
+			$group5->addButton($updateFromXml);
 
-				$uploadXml = new RToolbarButtonGeneric('translation.upload');
-				$group4->addButton($uploadXml);
-			}
+			$uploadXml = new RToolbarButtonGeneric('translation.upload');
+			$group4->addButton($uploadXml);
 
-			if ($canDo->get('core.edit'))
-			{
-				$edit = RToolbarBuilder::createEditButton('translation_table.edit');
-				$firstGroup->addButton($edit);
-			}
+			$edit = RToolbarBuilder::createEditButton('translation_table.edit');
+			$firstGroup->addButton($edit);
+			$delete = RToolbarBuilder::createDeleteButton('translation_tables.delete');
+			$secondGroup->addButton($delete);
 
-			// Delete / Trash
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('translation_tables.delete');
-				$secondGroup->addButton($delete);
-
-				$purge = RToolbarBuilder::createStandardButton(
-					'translation_tables.purgeTable', 'COM_REDCORE_TRANSLATION_TABLE_TRUNCATE_TRANSLATIONS', 'btn-danger', 'icon-trash'
-				);
-				$group3->addButton($purge);
-			}
+			$purge = RToolbarBuilder::createStandardButton(
+				'translation_tables.purgeTable', 'COM_REDCORE_TRANSLATION_TABLE_TRUNCATE_TRANSLATIONS', 'btn-danger', 'icon-trash'
+			);
+			$group3->addButton($purge);
 		}
 
 		$toolbar = new RToolbar;

@@ -116,7 +116,6 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$canDo       = $this->getActions();
 		$group       = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
 		$thirdGroup  = new RToolbarButtonGroup;
@@ -131,36 +130,23 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 			);
 			$group5->addButton($button);
 
-			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
-			{
-				$new = RToolbarBuilder::createNewButton('webservice.add');
-				$group->addButton($new);
-			}
+			$new = RToolbarBuilder::createNewButton('webservice.add');
+			$group->addButton($new);
 
-			if ($canDo->get('core.edit'))
-			{
-				$edit = RToolbarBuilder::createEditButton('webservice.edit');
-				$group->addButton($edit);
+			$edit = RToolbarBuilder::createEditButton('webservice.edit');
+			$group->addButton($edit);
 
-				$publish   = RToolbarBuilder::createPublishButton('webservices.publish');
-				$unPublish = RToolbarBuilder::createUnpublishButton('webservices.unpublish');
+			$publish   = RToolbarBuilder::createPublishButton('webservices.publish');
+			$unPublish = RToolbarBuilder::createUnpublishButton('webservices.unpublish');
 
-				$secondGroup->addButton($publish)
-					->addButton($unPublish);
-			}
+			$secondGroup->addButton($publish)
+				->addButton($unPublish);
 
-			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
-			{
-				$clone = RToolbarBuilder::createCopyButton('webservices.copy', 'btn-success');
-				$thirdGroup->addButton($clone);
-			}
+			$clone = RToolbarBuilder::createCopyButton('webservices.copy', 'btn-success');
+			$thirdGroup->addButton($clone);
 
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('webservices.delete');
-
-				$group4->addButton($delete);
-			}
+			$delete = RToolbarBuilder::createDeleteButton('webservices.delete');
+			$group4->addButton($delete);
 		}
 
 		$toolbar = new RToolbar;
