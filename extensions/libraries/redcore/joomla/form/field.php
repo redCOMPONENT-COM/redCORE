@@ -1149,7 +1149,7 @@ abstract class JFormField
 			return;
 		}
 		elseif ($field->params->get('show_on') == 2
-			&& (version_compare(JVERSION, '3.7', '<') ? $app->isSite() :$app->isClient('site')))
+			&& (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')))
 		{
 			return;
 		}
