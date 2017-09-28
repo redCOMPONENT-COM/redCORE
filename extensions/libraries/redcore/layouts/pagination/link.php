@@ -83,7 +83,7 @@ if ($displayData['active'])
 	$href    = trim($item->link);
 
 	// Still using javascript approach in backend
-	if ((version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator')))
+	if ((version_compare(JVERSION, '3.7', '<') ? JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator')))
 	{
 		$onClick = 'onclick="document.'
 				. $item->formName
