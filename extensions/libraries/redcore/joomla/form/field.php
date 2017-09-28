@@ -1144,11 +1144,12 @@ abstract class JFormField
 	{
 		$app = JFactory::getApplication();
 
-		if ($field->params->get('show_on') == 1 && $app->isClient('administrator'))
+		if ($field->params->get('show_on') == 1 && (version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator')))
 		{
 			return;
 		}
-		elseif ($field->params->get('show_on') == 2 && $app->isClient('site'))
+		elseif ($field->params->get('show_on') == 2
+			&& (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')))
 		{
 			return;
 		}

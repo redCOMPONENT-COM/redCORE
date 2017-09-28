@@ -120,7 +120,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 			return $title;
 		}
 
-		$languages = JLanguageHelper::getKnownLanguages();
+		$languages = version_compare(JVERSION, '3.7', '<') ? JFactory::getLanguage()->getKnownLanguages() : JLanguageHelper::getKnownLanguages();
 		$rowCount  = RedcoreHelpersTranslation::getTableRowCount($this->translationTable);
 		$title    .= ' ' . $this->translationTableName;
 		$title    .= ' <small><small>( '
