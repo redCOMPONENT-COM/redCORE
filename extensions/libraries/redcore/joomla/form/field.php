@@ -439,7 +439,7 @@ abstract class JFormField
 	 *
 	 * @return  boolean
 	 *
-	 * @since   __DEPLOY_VERSION__
+	 * @since   1.10.2
 	 */
 	public function __isset($name)
 	{
