@@ -33,6 +33,7 @@
         <folder>menu</folder>
         <folder>modal</folder>
         <folder>model</folder>
+        <folder>module</folder>
         <folder>pagination</folder>
         <folder>plugin</folder>
         <folder>route</folder>
