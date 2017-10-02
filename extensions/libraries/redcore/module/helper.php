@@ -10,7 +10,7 @@
 defined('JPATH_PLATFORM') or die;
 
 /**
- * Pagination object representing a particular item in the pagination lists.
+ * redCORE Module Helper
  *
  * @package     Redcore
  * @subpackage  Module
