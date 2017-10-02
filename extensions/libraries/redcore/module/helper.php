@@ -7,10 +7,10 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-defined('JPATH_REDCORE') or die;
+defined('JPATH_PLATFORM') or die;
 
 /**
- * redCORE Module Helper
+ * Pagination object representing a particular item in the pagination lists.
  *
  * @package     Redcore
  * @subpackage  Module
