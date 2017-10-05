@@ -24,7 +24,7 @@ class RLoader extends JLoader
 	 * @var    array
 	 * @since  11.1
 	 */
-	protected static $classes = array();
+	protected static $rClasses = array();
 
 	/**
 	 * Container for already imported library paths.
@@ -32,7 +32,7 @@ class RLoader extends JLoader
 	 * @var    array
 	 * @since  11.1
 	 */
-	protected static $imported = array();
+	protected static $rImported = array();
 
 	/**
 	 * Container for registered library class prefixes and path lookups.
@@ -40,7 +40,7 @@ class RLoader extends JLoader
 	 * @var    array
 	 * @since  12.1
 	 */
-	protected static $prefixes = array();
+	protected static $rPrefixes = array();
 
 	/**
 	 * Holds proxy classes and the class names the proxy.
@@ -48,7 +48,7 @@ class RLoader extends JLoader
 	 * @var    array
 	 * @since  3.2
 	 */
-	protected static $classAliases = array();
+	protected static $rClassAliases = array();
 
 	/**
 	 * Holds the inverse lookup for proxy classes and the class names the proxy.
@@ -56,7 +56,7 @@ class RLoader extends JLoader
 	 * @var    array
 	 * @since  3.4
 	 */
-	protected static $classAliasesInverse = array();
+	protected static $rClassAliasesInverse = array();
 
 	/**
 	 * Container for namespace => path map.
@@ -64,7 +64,7 @@ class RLoader extends JLoader
 	 * @var    array
 	 * @since  12.3
 	 */
-	protected static $namespaces = array('psr0' => array(), 'psr4' => array());
+	protected static $rNamespaces = array('psr0' => array(), 'psr4' => array());
 
 	/**
 	 * Holds a reference for all deprecated aliases (mainly for use by a logging platform).
@@ -72,7 +72,29 @@ class RLoader extends JLoader
 	 * @var    array
 	 * @since  3.6.3
 	 */
-	protected static $deprecatedAliases = array();
+	protected static $rDeprecatedAliases = array();
+
+	/**
+	 * Get static property
+	 *
+	 * @param   string  $name  Name of property
+	 *
+	 * @return mixed
+	 */
+	protected static function &getStatic($name)
+	{
+		// Try to use parent property if exists
+		if (false && property_exists(get_called_class(), $name))
+		{
+			$variable = &static::$$name;
+		}
+		else
+		{
+			$variable = &static::${'r' . ucfirst($name)};
+		}
+
+		return $variable;
+	}
 
 	/**
 	 * Method to discover classes of a given type in a given path.
@@ -114,7 +136,7 @@ class RLoader extends JLoader
 					$class = strtolower($classPrefix . preg_replace('#\.php$#', '', $fileName));
 
 					// Register the class with the autoloader if not already registered or the force flag is set.
-					if (empty(self::$classes[$class]) || $force)
+					if (empty(self::getStatic('classes')[$class]) || $force)
 					{
 						self::register($class, $file->getPath() . '/' . $fileName);
 					}
@@ -136,7 +158,7 @@ class RLoader extends JLoader
 	 */
 	public static function getClassList()
 	{
-		return self::$classes;
+		return self::getStatic('classes');
 	}
 
 	/**
@@ -148,7 +170,7 @@ class RLoader extends JLoader
 	 */
 	public static function getDeprecatedAliases()
 	{
-		return self::$deprecatedAliases;
+		return self::getStatic('deprecatedAliases');
 	}
 
 	/**
@@ -167,7 +189,7 @@ class RLoader extends JLoader
 			throw new InvalidArgumentException('Type needs to be prs0 or psr4!');
 		}
 
-		return self::$namespaces[$type];
+		return self::getStatic('namespaces')[$type];
 	}
 
 	/**
@@ -183,7 +205,7 @@ class RLoader extends JLoader
 	public static function import($key, $base = null)
 	{
 		// Only import the library if not already attempted.
-		if (!isset(self::$imported[$key]))
+		if (!isset(self::getStatic('imported')[$key]))
 		{
 			// Setup some variables.
 			$success = false;
@@ -212,7 +234,7 @@ class RLoader extends JLoader
 				// Only register the class for autoloading if the file exists.
 				if (is_file($base . '/' . $path . '.php'))
 				{
-					self::$classes[strtolower($class)] = $base . '/' . $path . '.php';
+					self::getStatic('classes')[strtolower($class)] = $base . '/' . $path . '.php';
 					$success = true;
 				}
 			}
@@ -230,10 +252,10 @@ class RLoader extends JLoader
 			}
 
 			// Add the import key to the memory cache container.
-			self::$imported[$key] = $success;
+			self::getStatic('imported')[$key] = $success;
 		}
 
-		return self::$imported[$key];
+		return self::getStatic('imported')[$key];
 	}
 
 	/**
@@ -257,9 +279,9 @@ class RLoader extends JLoader
 		}
 
 		// If the class is registered include the file.
-		if (isset(self::$classes[$class]))
+		if (isset(self::getStatic('classes')[$class]))
 		{
-			include_once self::$classes[$class];
+			include_once self::getStatic('classes')[$class];
 
 			return true;
 		}
@@ -287,9 +309,9 @@ class RLoader extends JLoader
 		if (!empty($class) && is_file($path))
 		{
 			// Register the class with the autoloader if not already registered or the force flag is set.
-			if (empty(self::$classes[$class]) || $force)
+			if (empty(self::getStatic('classes')[$class]) || $force)
 			{
-				self::$classes[$class] = $path;
+				self::getStatic('classes')[$class] = $path;
 			}
 		}
 	}
@@ -323,20 +345,20 @@ class RLoader extends JLoader
 		}
 
 		// If the prefix is not yet registered or we have an explicit reset flag then set set the path.
-		if (!isset(self::$prefixes[$prefix]) || $reset)
+		if (!isset(self::getStatic('prefixes')[$prefix]) || $reset)
 		{
-			self::$prefixes[$prefix] = array($path);
+			self::getStatic('prefixes')[$prefix] = array($path);
 		}
 		// Otherwise we want to simply add the path to the prefix.
 		else
 		{
 			if ($prepend)
 			{
-				array_unshift(self::$prefixes[$prefix], $path);
+				array_unshift(self::getStatic('prefixes')[$prefix], $path);
 			}
 			else
 			{
-				self::$prefixes[$prefix][] = $path;
+				self::getStatic('prefixes')[$prefix][] = $path;
 			}
 		}
 	}
@@ -355,9 +377,9 @@ class RLoader extends JLoader
 	 */
 	public static function registerAlias($alias, $original, $version = false)
 	{
-		if (!isset(self::$classAliases[$alias]))
+		if (!isset(self::getStatic('classAliases')[$alias]))
 		{
-			self::$classAliases[$alias] = $original;
+			self::getStatic('classAliases')[$alias] = $original;
 
 			// Remove the root backslash if present.
 			if ($original[0] == '\\')
@@ -365,19 +387,19 @@ class RLoader extends JLoader
 				$original = substr($original, 1);
 			}
 
-			if (!isset(self::$classAliasesInverse[$original]))
+			if (!isset(self::getStatic('classAliasesInverse')[$original]))
 			{
-				self::$classAliasesInverse[$original] = array($alias);
+				self::getStatic('classAliasesInverse')[$original] = array($alias);
 			}
 			else
 			{
-				self::$classAliasesInverse[$original][] = $alias;
+				self::getStatic('classAliasesInverse')[$original][] = $alias;
 			}
 
 			// If given a version, log this alias as deprecated
 			if ($version)
 			{
-				self::$deprecatedAliases[] = array('old' => $alias, 'new' => $original, 'version' => $version);
+				self::getStatic('deprecatedAliases')[] = array('old' => $alias, 'new' => $original, 'version' => $version);
 			}
 
 			return true;
@@ -418,9 +440,9 @@ class RLoader extends JLoader
 		}
 
 		// If the namespace is not yet registered or we have an explicit reset flag then set the path.
-		if (!isset(self::$namespaces[$type][$namespace]) || $reset)
+		if (!isset(self::getStatic('namespaces')[$type][$namespace]) || $reset)
 		{
-			self::$namespaces[$type][$namespace] = array($path);
+			self::getStatic('namespaces')[$type][$namespace] = array($path);
 		}
 
 		// Otherwise we want to simply add the path to the namespace.
@@ -428,11 +450,11 @@ class RLoader extends JLoader
 		{
 			if ($prepend)
 			{
-				array_unshift(self::$namespaces[$type][$namespace], $path);
+				array_unshift(self::getStatic('namespaces')[$type][$namespace], $path);
 			}
 			else
 			{
-				self::$namespaces[$type][$namespace][] = $path;
+				self::getStatic('namespaces')[$type][$namespace][] = $path;
 			}
 		}
 	}
@@ -515,7 +537,7 @@ class RLoader extends JLoader
 		$classPath .= $className . '.php';
 
 		// Loop through registered namespaces until we find a match.
-		foreach (self::$namespaces['psr4'] as $ns => $paths)
+		foreach (self::getStatic('namespaces')['psr4'] as $ns => $paths)
 		{
 			$nsPath = trim(str_replace('\\', DIRECTORY_SEPARATOR, $ns), DIRECTORY_SEPARATOR);
 
@@ -576,7 +598,7 @@ class RLoader extends JLoader
 		$classPath .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
 		// Loop through registered namespaces until we find a match.
-		foreach (self::$namespaces['psr0'] as $ns => $paths)
+		foreach (self::getStatic('namespaces')['psr0'] as $ns => $paths)
 		{
 			if (strpos($class, $ns) === 0)
 			{
@@ -614,16 +636,16 @@ class RLoader extends JLoader
 			$class = substr($class, 1);
 		}
 
-		if (isset(self::$classAliases[$class]))
+		if (isset(self::getStatic('classAliases')[$class]))
 		{
 			// Force auto-load of the regular class
-			class_exists(self::$classAliases[$class], true);
+			class_exists(self::getStatic('classAliases')[$class], true);
 
 			// Normally this shouldn't execute as the autoloader will execute applyAliasFor when the regular class is
 			// auto-loaded above.
 			if (!class_exists($class, false) && !interface_exists($class, false))
 			{
-				class_alias(self::$classAliases[$class], $class);
+				class_alias(self::getStatic('classAliases')[$class], $class);
 			}
 		}
 	}
@@ -645,9 +667,9 @@ class RLoader extends JLoader
 			$class = substr($class, 1);
 		}
 
-		if (isset(self::$classAliasesInverse[$class]))
+		if (isset(self::getStatic('classAliasesInverse')[$class]))
 		{
-			foreach (self::$classAliasesInverse[$class] as $alias)
+			foreach (self::getStatic('classAliasesInverse')[$class] as $alias)
 			{
 				class_alias($class, $alias);
 			}
@@ -665,7 +687,7 @@ class RLoader extends JLoader
 	 */
 	public static function _autoload($class)
 	{
-		foreach (self::$prefixes as $prefix => $lookup)
+		foreach (self::getStatic('prefixes') as $prefix => $lookup)
 		{
 			$chr = strlen($prefix) < strlen($class) ? $class[strlen($prefix)] : 0;
 
