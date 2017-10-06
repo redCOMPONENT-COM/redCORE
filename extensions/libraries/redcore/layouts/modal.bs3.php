@@ -42,7 +42,7 @@ if ($link = $modal->params->get('link', null))
 
 	$script[] = '	(function($) {';
 	$script[] = '		$(document).ready(function() {';
-	$script[] = '		$(\'#' . $cssId . '\').on(\'show\', function () {';
+	$script[] = '		$(\'#' . $cssId . '\').on(\'show.bs.modal\', function () {';
 	$script[] = '			$(\'#' . $cssId . ' .modal-body\').html(\'<iframe class="iframe" src="' . $link . '" width="' .
 		$modal->params->get('width', '100%') . '" scrolling="no" ' . $jsEventsString . '"></iframe>\');';
 	$script[] = '			});';
