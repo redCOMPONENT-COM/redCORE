@@ -42,6 +42,7 @@ class JFormFieldRmedia extends JFormField
 	 */
 	protected function getInput()
 	{
+		$bootstrapVersion = RHtmlMedia::getFramework();
 		$assetField  = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
 		$authorField = $this->element['created_by_field'] ? (string) $this->element['created_by_field'] : 'created_by';
 		$asset = $this->form->getValue($assetField) ? $this->form->getValue($assetField) : (string) $this->element['asset_id'];
@@ -134,8 +135,10 @@ class JFormFieldRmedia extends JFormField
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 
+		$inputClass = $bootstrapVersion == 'bootstrap2' ? 'input-prepend input-append' : 'input-group';
+
 		// The text field.
-		$html[] = '<div class="input-prepend input-append input-group">';
+		$html[] = '<div class="' . $inputClass . '">';
 
 		// The Preview.
 		$preview = (string) $this->element['preview'];
@@ -196,11 +199,22 @@ class JFormFieldRmedia extends JFormField
 			{
 				$html[] = '<div class="media-preview add-on input-group-addon">';
 				$tooltip = $previewImgEmpty . $previewImg;
+
 				$options = array(
 					'title' => JText::_('JLIB_FORM_MEDIA_PREVIEW_SELECTED_IMAGE'),
-					'text' => '<i class="icon-eye-open"></i>',
-					'class' => 'hasTipPreview'
 				);
+
+				if ($bootstrapVersion == 'bootstrap2')
+				{
+					$options['text'] = '<i class="icon-eye-open"></i>';
+					$options['class'] = 'hasTipPreview';
+				}
+				else
+				{
+					$options['text'] = '<i class="glyphicon glyphicon-eye-open"></i>';
+					$options['data-toggle'] = 'tooltip';
+				}
+
 				$html[] = RHtml::tooltip($tooltip, $options);
 				$html[] = '</div>';
 			}
@@ -213,7 +227,9 @@ class JFormFieldRmedia extends JFormField
 			}
 		}
 
-		$html[] = '	<input type="text" class="input-small input-sm" name="' . $this->name . '" id="' . $this->id . '" value="'
+		$inputClass = $bootstrapVersion == 'bootstrap2' ? 'input-small' : 'input-sm';
+
+		$html[] = '	<input type="text" class="' . $inputClass . '" name="' . $this->name . '" id="' . $this->id . '" value="'
 			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" readonly="readonly"' . $attr . ' />';
 
 		$directory = (string) $this->element['directory'];
@@ -239,13 +255,16 @@ class JFormFieldRmedia extends JFormField
 			. $this->id . '&amp;folder=' . $folder
 			. '&amp;redcore=true';
 
+		$hideModal = $bootstrapVersion == 'bootstrap2' ? 'modal hide' : 'modal';
+		$style = $bootstrapVersion == 'bootstrap2' ? 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;' : '';
+
 		// Create the modal object
 		$modal = RModal::getInstance(
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide',
-					'style' => 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;'
+					'class' => $hideModal,
+					'style' => $style
 				),
 				'params' => array(
 					'showHeader'      => true,
