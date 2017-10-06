@@ -63,31 +63,30 @@ class JFormFieldRmedia extends JFormField
 			// Build the script.
 			$script = array();
 			$script[] = '	function jInsertFieldValue(value, id) {';
-			$script[] = '		var old_value = document.id(id).value;';
+			$script[] = '		var old_value = document.getElementById(id).value;';
 			$script[] = '		if (value && old_value != value) {';
-			$script[] = '			var elem = document.id(id);';
+			$script[] = '			var elem = document.getElementById(id);';
 			$script[] = '			elem.value = value;';
-			$script[] = '			elem.fireEvent("change");';
-			$script[] = '			if (typeof(elem.onchange) === "function") {';
-			$script[] = '				elem.onchange();';
-			$script[] = '			}';
+			$script[] = '			var changeEvent = document.createEvent("HTMLEvents");';
+			$script[] = '			changeEvent.initEvent("change", true, true);';
+			$script[] = '			elem.dispatchEvent(changeEvent);';
 			$script[] = '			jMediaRefreshPreview(id);';
 			$script[] = '		};';
 			$script[] = '		jQuery("#' . $modalId . '").modal("hide");';
 			$script[] = '	}';
 
 			$script[] = '	function jMediaRefreshPreview(id) {';
-			$script[] = '		var value = document.id(id).value;';
-			$script[] = '		var img = document.id(id + "_preview");';
+			$script[] = '		var value = document.getElementById(id).value;';
+			$script[] = '		var img = document.getElementById(id + "_preview");';
 			$script[] = '		if (img) {';
 			$script[] = '			if (value) {';
 			$script[] = '				img.src = "' . JUri::root() . '" + value;';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "none");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "");';
+			$script[] = '				document.getElementById(id + "_preview_empty").setStyle("display", "none");';
+			$script[] = '				document.getElementById(id + "_preview_img").setStyle("display", "");';
 			$script[] = '			} else { ';
 			$script[] = '				img.src = ""';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "none");';
+			$script[] = '				document.getElementById(id + "_preview_empty").setStyle("display", "");';
+			$script[] = '				document.getElementById(id + "_preview_img").setStyle("display", "none");';
 			$script[] = '			} ';
 			$script[] = '		} ';
 			$script[] = '	}';
@@ -108,7 +107,7 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		if(iframe) {';
 			$script[] = '			newheight = iframe.contentWindow.document.body.scrollHeight;';
 			$script[] = '			iframe.height= (newheight) + "px";';
-			$script[] = '			iframe.setStyle("max-height", iframe.height);';
+			$script[] = '			iframe.style.maxHeight = iframe.height';
 			$script[] = '		}';
 			$script[] = '	}';
 
@@ -264,7 +263,9 @@ class JFormFieldRmedia extends JFormField
 				'attribs' => array(
 					'id'    => $modalId,
 					'class' => $hideModal,
-					'style' => $style
+					'style' => $style,
+					'tabindex' => '-1',
+					'role' => 'dialog'
 				),
 				'params' => array(
 					'showHeader'      => true,
