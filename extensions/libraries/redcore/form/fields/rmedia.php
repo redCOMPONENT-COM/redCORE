@@ -140,8 +140,8 @@ class JFormFieldRmedia extends JFormField
 		$html[] = '<div class="' . $inputClass . '">';
 
 		// The Preview.
-		$preview = (string) $this->element['preview'];
-		$showPreview = true;
+		$preview       = (string) $this->element['preview'];
+		$showPreview   = true;
 		$showAsTooltip = false;
 
 		switch ($preview)
@@ -160,8 +160,9 @@ class JFormFieldRmedia extends JFormField
 			case 'tooltip':
 			default:
 				$showAsTooltip = true;
-				$options = array(
-					'onShow' => 'jMediaRefreshPreviewTip',
+				$options       = array(
+					'onShow'  => 'jMediaRefreshPreviewTip',
+					'trigger' => 'hover, focus'
 				);
 				JHtml::_('rbootstrap.tooltip', '.hasTipPreview', $options);
 				break;
