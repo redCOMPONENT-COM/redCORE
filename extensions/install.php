@@ -141,12 +141,7 @@ class Com_RedcoreInstallerScript
 			{
 				if (!$this->checkComponentVersion($this->getRedcoreComponentFolder(), dirname(__FILE__), 'redcore.xml'))
 				{
-					JFactory::getApplication()->enqueueMessage(
-						JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'),
-						'error'
-					);
-
-					return false;
+					throw new RuntimeException(JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'));
 				}
 
 				if (!class_exists('RComponentHelper'))
@@ -188,14 +183,11 @@ class Com_RedcoreInstallerScript
 								$checked['name'] = JText::_($checked['name']);
 							}
 
-							$messageKey = $key == 'extensions' ? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS' : 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
+							$messageKey = $key == 'extensions'
+								? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS'
+								: 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
 
-							JFactory::getApplication()->enqueueMessage(
-								JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']),
-								'error'
-							);
-
-							return false;
+							throw new RuntimeException(JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']));
 						}
 					}
 				}
