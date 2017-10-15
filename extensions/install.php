@@ -98,7 +98,9 @@ class Com_RedcoreInstallerScript
 	 * @param   object             $type    type of change (install, update or discover_install)
 	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
-	 * @return bool
+	 * @throws RuntimeException
+	 *
+	 * @return boolean
 	 */
 	public function preflight($type, $parent)
 	{
