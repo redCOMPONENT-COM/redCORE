@@ -84,7 +84,7 @@ class RLoader extends JLoader
 	protected static function &getStatic($name)
 	{
 		// Try to use parent property if exists
-		if (false && property_exists(get_called_class(), $name))
+		if (property_exists(get_called_class(), $name))
 		{
 			$variable = &static::$$name;
 		}
