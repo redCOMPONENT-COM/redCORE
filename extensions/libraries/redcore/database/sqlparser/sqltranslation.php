@@ -183,6 +183,59 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 		$db = JFactory::getDbo();
 
 		$selectedLanguage = !empty($db->forceLanguageTranslation) ? $db->forceLanguageTranslation : JFactory::getLanguage()->getTag();
+		$queryArray       = explode(',', (string) $sql);
+		$hashValues       = array();
+
+		// Replace long amount of numeric values if found. They do not have any affects for translation parser
+		if (count($queryArray) > 50)
+		{
+			$index   = 0;
+			$numbers = array($index => array());
+
+			foreach ($queryArray as $key => $value)
+			{
+				if (is_numeric(trim($value)))
+				{
+					if (!array_key_exists($index, $numbers))
+					{
+						$numbers[$index] = array();
+					}
+
+					$numbers[$index][$key] = $value;
+					unset($queryArray[$key]);
+				}
+				else
+				{
+					if (!empty($numbers[$index]))
+					{
+						$index++;
+					}
+				}
+			}
+
+			foreach ($numbers as $index => $values)
+			{
+				if (count($values) < 10)
+				{
+					foreach ($values as $key => $value)
+					{
+						$queryArray[$key] = $value;
+					}
+				}
+				else
+				{
+					$firstKey               = key($values);
+					$hashValue              = $db->q(md5(json_encode($values)));
+					$queryArray[$firstKey]  = $hashValue;
+					$hashValues[$hashValue] = $values;
+				}
+			}
+
+			unset($numbers);
+			ksort($queryArray);
+			$sql = implode(',', $queryArray);
+			$sql = $db->replacePrefix((string) $sql);
+		}
 
 		if (!empty($db->parseTablesBefore))
 		{
@@ -219,7 +272,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 
 		$translationTables = RTranslationTable::getInstalledTranslationTables();
 		$translationTables = RTranslationHelper::removeFromEditForm($translationTables);
-		$sql = self::parseSelectQuery($sql, $prefix, $selectedLanguage, $translationTables);
+		$sql               = self::parseSelectQuery($sql, $prefix, $selectedLanguage, $translationTables);
 
 		if (!empty($db->parseTablesAfter))
 		{
@@ -227,6 +280,12 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			{
 				$sql = self::parseSelectQuery($sql, $prefix, $tableGroup->language, $tableGroup->translationTables);
 			}
+		}
+
+		// Turn back real long amount of numeric values
+		foreach ($hashValues as $hash => $values)
+		{
+			$sql = str_replace($hash, implode(',', $values), $sql);
 		}
 
 		return $sql;
