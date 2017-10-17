@@ -234,7 +234,6 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 			unset($numbers);
 			ksort($queryArray);
 			$sql = implode(',', $queryArray);
-			$sql = $db->replacePrefix((string) $sql);
 		}
 
 		if (!empty($db->parseTablesBefore))
