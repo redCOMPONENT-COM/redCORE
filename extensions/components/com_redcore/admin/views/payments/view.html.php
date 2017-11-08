@@ -82,8 +82,7 @@ class RedcoreViewPayments extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$canDo = $this->getActions();
-		$user  = JFactory::getUser();
+		$user = JFactory::getUser();
 
 		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup('', true, 'icon-cogs', JText::_('COM_REDCORE_PAYMENT_OPTIONS'));
@@ -91,30 +90,23 @@ class RedcoreViewPayments extends RedcoreHelpersView
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
-			if ($canDo->get('core.edit'))
-			{
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_INSPECT_PAYMENT', 'payment.edit', '', 'icon-edit');
-				$firstGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_INSPECT_PAYMENT', 'payment.edit', '', 'icon-edit');
+			$firstGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CHECK_PAYMENT', 'payment.checkPayment', '', 'icon-refresh');
-				$secondGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CHECK_PAYMENT', 'payment.checkPayment', '', 'icon-refresh');
+			$secondGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CAPTURE_PAYMENT', 'payment.capturePayment', '', 'icon-money');
-				$secondGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CAPTURE_PAYMENT', 'payment.capturePayment', '', 'icon-money');
+			$secondGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_REFUND_PAYMENT', 'payment.refundPayment', '', 'icon-money');
-				$secondGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_REFUND_PAYMENT', 'payment.refundPayment', '', 'icon-money');
+			$secondGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_DELETE_PAYMENT', 'payment.deletePayment', '', 'icon-money');
-				$secondGroup->addButton($button);
-			}
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_DELETE_PAYMENT', 'payment.deletePayment', '', 'icon-money');
+			$secondGroup->addButton($button);
 
-			// Delete / Trash
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('payments.delete');
-				$thirdGroup->addButton($delete);
-			}
+			$delete = RToolbarBuilder::createDeleteButton('payments.delete');
+			$thirdGroup->addButton($delete);
 		}
 
 		$toolbar = new RToolbar;

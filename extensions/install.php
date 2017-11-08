@@ -1655,9 +1655,9 @@ class Com_RedcoreInstallerScript
 			try
 			{
 				$source      = $source . '/' . $xmlFile;
-				$sourceXml   = new SimpleXMLElement($source);
+				$sourceXml   = new SimpleXMLElement($source, 0, true);
 				$original    = $original . '/' . $xmlFile;
-				$originalXml = new SimpleXMLElement($original);
+				$originalXml = new SimpleXMLElement($original, 0, true);
 
 				if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
 				{

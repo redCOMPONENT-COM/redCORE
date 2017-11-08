@@ -495,7 +495,8 @@ class JLayoutFile extends JLayoutBase
 				break;
 
 			default:
-				$client = (int) JFactory::getApplication()->isClient('administrator');
+				$client = (int) (version_compare(JVERSION, '3.7', '<') ?
+					JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 				break;
 		}
 

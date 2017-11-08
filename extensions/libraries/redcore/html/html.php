@@ -662,7 +662,7 @@ abstract class RHtml
 
 			foreach ($includes as $include)
 			{
-				$document->addStylesheet($include, array(), $attribs);
+				$document->addStylesheet($include, 'text/css', null, $attribs);
 			}
 		}
 	}
