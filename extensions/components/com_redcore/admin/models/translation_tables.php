@@ -67,7 +67,7 @@ class RedcoreModelTranslation_Tables extends RModelList
 			);
 		}
 
-		$this->languages = JLanguageHelper::getKnownLanguages();
+		$this->languages = version_compare(JVERSION, '3.7', '<') ? JFactory::getLanguage()->getKnownLanguages() : JLanguageHelper::getKnownLanguages();
 
 		parent::__construct($config);
 	}

@@ -338,7 +338,7 @@ class RPagination
 		$listOverride = false;
 
 		// For the backend we force our html.
-		if (JFactory::getApplication()->isClient('site'))
+		if ((version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')))
 		{
 			$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
 
@@ -584,7 +584,7 @@ class RPagination
 		$selected = $this->viewall ? 0 : $this->limit;
 
 		// Build the select list.
-		if ($app->isClient('administrator'))
+		if ((version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator')))
 		{
 			$html = JHtml::_(
 				'select.genericlist',

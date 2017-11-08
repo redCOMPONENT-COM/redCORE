@@ -96,7 +96,6 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$canDo = $this->getActions();
 		$user  = JFactory::getUser();
 
 		$firstGroup  = new RToolbarButtonGroup;
@@ -104,25 +103,14 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
-			// Add / edit
-			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
-			{
-				$new = RToolbarBuilder::createNewButton('oauth_client.add');
-				$firstGroup->addButton($new);
-			}
+			$new = RToolbarBuilder::createNewButton('oauth_client.add');
+			$firstGroup->addButton($new);
 
-			if ($canDo->get('core.edit'))
-			{
-				$edit = RToolbarBuilder::createEditButton('oauth_client.edit');
-				$firstGroup->addButton($edit);
-			}
+			$edit = RToolbarBuilder::createEditButton('oauth_client.edit');
+			$firstGroup->addButton($edit);
 
-			// Delete / Trash
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('oauth_clients.delete');
-				$secondGroup->addButton($delete);
-			}
+			$delete = RToolbarBuilder::createDeleteButton('oauth_clients.delete');
+			$secondGroup->addButton($delete);
 		}
 
 		$toolbar = new RToolbar;

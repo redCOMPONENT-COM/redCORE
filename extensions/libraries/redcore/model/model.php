@@ -82,7 +82,8 @@ abstract class RModel extends JModelLegacy
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isClient('administrator');
+			$client = (int) (version_compare(JVERSION, '3.7', '<') ?
+				JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 		}
 
 		// Admin
