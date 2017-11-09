@@ -16,7 +16,7 @@ extract($displayData);
 				<?php echo $body; ?>
 			</div>
 			<div class="modal-footer">
-				<?php echo $params['footer']; ?>
+				<?php echo key_exists('footer', $params) ? $params['footer'] : ''; ?>
 			</div>
 		</div>
 	</div>
