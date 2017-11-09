@@ -295,6 +295,19 @@ class JFormFieldRrules extends JFormField
 	 */
 	protected function getUserGroups()
 	{
+		if (class_exists('JHelperUsergroups'))
+		{
+			$options = JHelperUsergroups::getInstance()->getAll();
+
+			foreach ($options as &$option)
+			{
+				$option->value = $option->id;
+				$option->text  = $option->title;
+			}
+
+			return array_values($options);
+		}
+
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->select('a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level, a.parent_id')
