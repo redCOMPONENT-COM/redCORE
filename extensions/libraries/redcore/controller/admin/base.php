@@ -11,6 +11,8 @@ defined('JPATH_REDCORE') or die;
 
 JLoader::import('joomla.application.component.controlleradmin');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Base Controller Admin class.
  *
@@ -103,7 +105,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 
 			// Remove the items.
 			if ($model->delete($cid))
@@ -135,7 +137,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 
 		// Get items to publish from the request.
 		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
-		$value = JArrayHelper::getValue($this->states, $this->getTask(), 0, 'int');
+		$value = ArrayHelper::getValue($this->states, $this->getTask(), 0, 'int');
 
 		if (empty($cid))
 		{
@@ -147,7 +149,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			$model = $this->getModel();
 
 			// Make sure the item ids are integers
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 
 			// Publish the items.
 			try
@@ -251,8 +253,8 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		$order = $this->input->post->get('order', array(), 'array');
 
 		// Sanitize the input
-		JArrayHelper::toInteger($pks);
-		JArrayHelper::toInteger($order);
+		ArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($order);
 
 		// Get the model
 		$model = $this->getModel();
@@ -354,8 +356,8 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		$order = $this->input->post->get('order', array(), 'array');
 
 		// Sanitize the input
-		JArrayHelper::toInteger($pks);
-		JArrayHelper::toInteger($order);
+		ArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($order);
 
 		// Get the model
 		$model = $this->getModel();

@@ -9,6 +9,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Helper class for Payment calls
  *
@@ -573,7 +575,7 @@ class RApiPaymentHelper
 	{
 		if (is_object($paymentData))
 		{
-			$paymentData = JArrayHelper::fromObject($paymentData);
+			$paymentData = ArrayHelper::fromObject($paymentData);
 		}
 
 		// If there is no payment Id, we are checking if that payment data is saved under another row
@@ -660,7 +662,7 @@ class RApiPaymentHelper
 		if ($paymentLogs)
 		{
 			$paymentOriginal = self::getPaymentById($paymentId);
-			$payment = JArrayHelper::fromObject($paymentOriginal);
+			$payment = ArrayHelper::fromObject($paymentOriginal);
 			$customerNote = array();
 			$amountPaid = 0;
 			$currency = '';
@@ -1062,7 +1064,7 @@ class RApiPaymentHelper
 	{
 		if (is_object($data))
 		{
-			$data = JArrayHelper::fromObject($data);
+			$data = ArrayHelper::fromObject($data);
 		}
 
 		$paymentLog = array();

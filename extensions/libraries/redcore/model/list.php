@@ -11,6 +11,8 @@ defined('JPATH_REDCORE') or die;
 
 JLoader::import('joomla.application.component.modellist');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * redCORE Base Model List
  *
@@ -182,7 +184,7 @@ abstract class RModelList extends JModelList
 
 			if (!empty($form))
 			{
-				$form->setFieldAttribute($this->limitField, 'default', JFactory::getApplication()->getCfg('list_limit'), 'list');
+				$form->setFieldAttribute($this->limitField, 'default', JFactory::getApplication()->get('list_limit'), 'list');
 			}
 		}
 
@@ -217,10 +219,10 @@ abstract class RModelList extends JModelList
 
 		// Create the pagination object.
 		$limit = (int) $this->getState('list.limit') - (int) $this->getState('list.links');
-		$page = new RPagination($this->getTotal(), $this->getStart(), $limit, $this->paginationPrefix);
+		$page  = new RPagination($this->getTotal(), $this->getStart(), $limit, $this->paginationPrefix);
 
 		// Set the name of the HTML form associated
-		$page->set('formName', $this->htmlFormName);
+		$page->formName = $this->htmlFormName;
 
 		// Add the object to the internal cache.
 		$this->cache[$store] = $page;
@@ -259,10 +261,12 @@ abstract class RModelList extends JModelList
 		$inputFilter = JFilterInput::getInstance();
 
 		// Load the parameters for frontend.
-		$params = $app->isSite() ? $app->getParams() : null;
+		$params = (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? $app->getParams() : null;
 
 		// Receive & set filters
-		if ($filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array'))
+		$filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array');
+
+		if ($filters)
 		{
 			foreach ($filters as $name => $value)
 			{
@@ -277,7 +281,9 @@ abstract class RModelList extends JModelList
 		$limit = 0;
 
 		// Receive & set list options
-		if ($list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array'))
+		$list = $app->getUserStateFromRequest($this->context . '.list', 'list', array(), 'array');
+
+		if ($list)
 		{
 			foreach ($list as $name => $value)
 			{
@@ -378,7 +384,7 @@ abstract class RModelList extends JModelList
 		// Keep B/C for components previous to jform forms for filters
 		{
 			// Pre-fill the limits
-			$defaultLimit = $params ? $params->get('list_limit', $app->get('list_limit')) : $app->get('list_limit');
+			$defaultLimit = ($params && $params->get('list_limit') >= 0) ? $params->get('list_limit', $app->get('list_limit')) : $app->get('list_limit');
 			$limit = $app->getUserStateFromRequest('global.list.' . $this->limitField, $this->limitField, $defaultLimit, 'uint');
 			$this->setState('list.limit', $limit);
 
@@ -442,7 +448,7 @@ abstract class RModelList extends JModelList
 	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
 	{
 		// Handle the optional arguments.
-		$options['control'] = JArrayHelper::getValue($options, 'control', false);
+		$options['control'] = ArrayHelper::getValue($options, 'control', false);
 
 		// Create a signature hash.
 		$hash = md5($source . serialize($options));

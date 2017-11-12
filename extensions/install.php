@@ -1652,14 +1652,24 @@ class Com_RedcoreInstallerScript
 	{
 		if (is_dir($original))
 		{
-			$source = $source . '/' . $xmlFile;
-			$sourceXml = JFactory::getXML($source);
-			$original = $original . '/' . $xmlFile;
-			$originalXml = JFactory::getXML($original);
-
-			if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
+			try
 			{
-				return false;
+				$source      = $source . '/' . $xmlFile;
+				$sourceXml   = new SimpleXMLElement($source, 0, true);
+				$original    = $original . '/' . $xmlFile;
+				$originalXml = new SimpleXMLElement($original, 0, true);
+
+				if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
+				{
+					return false;
+				}
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(
+					JText::_('COM_REDCORE_INSTALL_UNABLE_TO_CHECK_VERSION'),
+					'message'
+				);
 			}
 		}
 
@@ -1718,7 +1728,7 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function loadManifest($parent)
 	{
-		$element = strtolower(str_replace('InstallerScript', '', get_called_class()));
+		$element      = strtolower(str_replace('InstallerScript', '', get_called_class()));
 		$elementParts = explode('_', $element);
 
 		// Type not properly detected or not a package
@@ -1729,14 +1739,14 @@ class Com_RedcoreInstallerScript
 			return;
 		}
 
-		$rootPath = $parent->getParent()->getPath('extension_root');
+		$rootPath     = $parent->getParent()->getPath('extension_root');
 		$manifestPath = dirname($rootPath);
 		$manifestFile = $manifestPath . '/' . $element . '.xml';
 
 		// Package manifest found
 		if (file_exists($manifestFile))
 		{
-			$this->manifest = JFactory::getXML($manifestFile);
+			$this->manifest = new SimpleXMLElement($manifestFile);
 
 			return;
 		}

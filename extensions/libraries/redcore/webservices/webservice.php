@@ -72,6 +72,16 @@ class RWebservicesWebservice extends RWebservicesBase
 			$headers['Authorization'] = 'Basic ' . $basic;
 		}
 
+		if ($this->getOption('enableRequestCompression', ''))
+		{
+			$headers['Content-Encoding'] = 'gzip';
+		}
+
+		if ($this->getOption('enableResponseCompression', ''))
+		{
+			$headers['Accept-Encoding'] = 'gzip';
+		}
+
 		switch ($method)
 		{
 			case 'head':

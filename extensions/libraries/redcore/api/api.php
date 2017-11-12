@@ -9,6 +9,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Interface to handle api calls
  *
@@ -158,6 +160,20 @@ class RApi extends RApiBase
 			}
 		}
 
+		// Setting option for compressed output
+		if (isset($headers['ACCEPT_ENCODING']))
+		{
+			$acceptCompression = strpos(strtolower($headers['ACCEPT_ENCODING']), 'gzip') !== false ? 1 : 0;
+			$this->options->set('enable_gzip_compression', $acceptCompression);
+		}
+
+		// Setting option for compressed output
+		if (isset($headers['CONTENT_ENCODING']))
+		{
+			$acceptCompression = strpos(strtolower($headers['CONTENT_ENCODING']), 'gzip') !== false ? 1 : 0;
+			$this->options->set('enable_gzip_input_compression', $acceptCompression);
+		}
+
 		return $this;
 	}
 
@@ -220,12 +236,27 @@ class RApi extends RApiBase
 	 */
 	public static function getPostedData()
 	{
-		$input = JFactory::getApplication()->input;
+		$headers   = self::getHeaderVariablesFromGlobals();
+		$input     = JFactory::getApplication()->input;
 		$inputData = file_get_contents("php://input");
+
+		// Is data is compressed we will fetch it through separate function
+		if (isset($headers['CONTENT_ENCODING']))
+		{
+			if (strpos(strtolower($headers['CONTENT_ENCODING']), 'gzip') !== false)
+			{
+				$decompressed = gzdecode($inputData);
+
+				if ($decompressed)
+				{
+					$inputData = $decompressed;
+				}
+			}
+		}
 
 		if (is_object($inputData))
 		{
-			$inputData = JArrayHelper::fromObject($inputData);
+			$inputData = ArrayHelper::fromObject($inputData);
 		}
 		elseif (is_string($inputData))
 		{
@@ -233,11 +264,11 @@ class RApi extends RApiBase
 			$parsedData = null;
 
 			// We try to transform it into JSON
-			if ($data_json = @json_decode($inputData, true))
+			if ($dataJson = @json_decode($inputData, true))
 			{
 				if (json_last_error() == JSON_ERROR_NONE)
 				{
-					$parsedData = (array) $data_json;
+					$parsedData = (array) $dataJson;
 				}
 			}
 

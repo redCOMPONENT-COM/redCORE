@@ -74,7 +74,7 @@ class JLayoutFile extends JLayoutBase
 		$this->setOptions($options);
 
 		// Main properties
-		$this->setLayout($layoutId);
+		$this->setLayoutId($layoutId);
 		$this->basePath = $basePath;
 
 		// Init Enviroment
@@ -467,7 +467,7 @@ class JLayoutFile extends JLayoutBase
 		$this->options->set('component', $component);
 
 		// Refresh include paths
-		$this->refreshIncludePaths();
+		$this->clearIncludePaths();
 	}
 
 	/**
@@ -495,14 +495,15 @@ class JLayoutFile extends JLayoutBase
 				break;
 
 			default:
-				$client = (int) JFactory::getApplication()->isAdmin();
+				$client = (int) (version_compare(JVERSION, '3.7', '<') ?
+					JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 				break;
 		}
 
 		$this->options->set('client', $client);
 
 		// Refresh include paths
-		$this->refreshIncludePaths();
+		$this->clearIncludePaths();
 	}
 
 	/**

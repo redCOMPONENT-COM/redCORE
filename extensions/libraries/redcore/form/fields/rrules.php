@@ -43,12 +43,12 @@ class JFormFieldRrules extends JFormField
 		JHtml::_('rbootstrap.tooltip');
 
 		// Initialise some field attributes.
-		$section = $this->element['section'] ? (string) $this->element['section'] : '';
-		$component = $this->element['component'] ? (string) $this->element['component'] : '';
+		$section    = $this->element['section'] ? (string) $this->element['section'] : '';
+		$component  = $this->element['component'] ? (string) $this->element['component'] : '';
 		$assetField = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
 
 		// Get the actions for the asset.
-		$actions = JAccess::getActions($component, $section);
+		$actions = JAccess::getActionsFromFile($component, $section) ?: array();
 
 		// Iterate over the children and add to the actions.
 		foreach ($this->element->children() as $el)
@@ -64,7 +64,7 @@ class JFormFieldRrules extends JFormField
 		if ($section == 'component')
 		{
 			// Need to find the asset id by the name of the component.
-			$db = JFactory::getDbo();
+			$db    = JFactory::getDbo();
 			$query = $db->getQuery(true)
 				->select($db->quoteName('id'))
 				->from($db->quoteName('#__assets'))
@@ -295,7 +295,20 @@ class JFormFieldRrules extends JFormField
 	 */
 	protected function getUserGroups()
 	{
-		$db = JFactory::getDbo();
+		if (class_exists('JHelperUsergroups'))
+		{
+			$options = JHelperUsergroups::getInstance()->getAll();
+
+			foreach ($options as &$option)
+			{
+				$option->value = $option->id;
+				$option->text  = $option->title;
+			}
+
+			return array_values($options);
+		}
+
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->select('a.id AS value, a.title AS text, COUNT(DISTINCT b.id) AS level, a.parent_id')
 			->from('#__usergroups AS a')

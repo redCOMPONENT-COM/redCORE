@@ -73,7 +73,7 @@ class RLayoutFile extends JLayoutFile
 	 */
 	protected function refreshIncludePaths()
 	{
-		parent::refreshIncludePaths();
+		parent::clearIncludePaths();
 
 		// If method getDefaultIncludePaths does not exists we are in old Layout system
 		if (version_compare(JVERSION, '3.0', '>') && version_compare(JVERSION, '3.5', '<'))
