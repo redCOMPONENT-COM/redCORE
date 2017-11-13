@@ -86,7 +86,22 @@ class RLoader extends JLoader
 		// Try to use parent property if exists
 		if (property_exists(get_called_class(), $name))
 		{
-			$variable = &static::$$name;
+			$variable = &static::${$name};
+
+			if ($name == 'namespaces'
+				&& (!array_key_exists('psr0', $variable) || !is_array($variable['psr0'])))
+			{
+				$variable               = &static::${'r' . ucfirst($name)};
+				static $mergeNamespaces = false;
+
+				if (!$mergeNamespaces)
+				{
+					// Merge together old and new namespaces approaches
+					static::${$name}  = array_merge(static::${$name}, $variable['psr0']);
+					$variable['psr0'] = &static::${$name};
+					$mergeNamespaces  = true;
+				}
+			}
 		}
 		else
 		{
@@ -235,7 +250,7 @@ class RLoader extends JLoader
 				if (is_file($base . '/' . $path . '.php'))
 				{
 					self::getStatic('classes')[strtolower($class)] = $base . '/' . $path . '.php';
-					$success = true;
+					$success                                       = true;
 				}
 			}
 			/*
@@ -713,7 +728,7 @@ class RLoader extends JLoader
 	private static function _load($class, $lookup)
 	{
 		// Split the class name into parts separated by camelCase.
-		$parts = preg_split('/(?<=[a-z0-9])(?=[A-Z])/x', $class);
+		$parts      = preg_split('/(?<=[a-z0-9])(?=[A-Z])/x', $class);
 		$partsCount = count($parts);
 
 		foreach ($lookup as $base)
