@@ -38,7 +38,7 @@ $isBs3 = empty($options['bs3']) ? false : true;
 				<?php echo $label ?>
 				</div>
 			<?php endif; ?>
-			<div class="col-md-9 col-sm-8">
+			<div class="col-md-12 col-sm-8">
 			<?php echo $input ?>
 			</div>
 			</div>
