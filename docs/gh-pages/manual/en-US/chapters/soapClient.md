@@ -22,10 +22,11 @@ All parameters are passed in a array. Please check webservice documentation on w
 
 Options for the class are as follows:
 
-- `soapversion` - which have value of `SOAP_1_2` or `SOAP_1_1`. It defaults to `SOAP_1_2` if it is not set.
+- `soapversion` - which should have value of `SOAP_1_2` if it is not set as default in your SOAP Client
 - `wsdlcache` - with this option you can set various settings for WDSL caching according to SOAP Client documentation. Default is `WSDL_CACHE_NONE` if it is not set.
 - `authorization[username]` - login name for SOAP authorization
 - `authorization[password]` - password value for SOAP authorization
+- `compression` - if set to `SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | 1` it will compress request and response data for the given operation and making it much faster in the process.
 - `debug` - if set to `true` it will output request and response headers for the given operation.
 
 ### Example

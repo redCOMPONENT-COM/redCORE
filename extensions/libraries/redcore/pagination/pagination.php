@@ -117,11 +117,11 @@ class RPagination
 	public function __construct($total, $limitstart, $limit, $prefix = '', JApplicationCms $app = null)
 	{
 		// Value/type checking.
-		$this->total = (int) $total;
+		$this->total      = (int) $total;
 		$this->limitstart = (int) max($limitstart, 0);
-		$this->limit = (int) max($limit, 0);
-		$this->prefix = $prefix;
-		$this->app = $app ? $app : JFactory::getApplication();
+		$this->limit      = (int) max($limit, 0);
+		$this->prefix     = $prefix;
+		$this->app        = $app ? $app : JFactory::getApplication();
 
 		if ($this->limit > $this->total)
 		{
@@ -130,7 +130,7 @@ class RPagination
 
 		if (!$this->limit)
 		{
-			$this->limit = $total;
+			$this->limit      = $total;
 			$this->limitstart = 0;
 		}
 
@@ -146,12 +146,12 @@ class RPagination
 		// Set the total pages and current page values.
 		if ($this->limit > 0)
 		{
-			$this->pagesTotal = ceil($this->total / $this->limit);
+			$this->pagesTotal   = ceil($this->total / $this->limit);
 			$this->pagesCurrent = ceil(($this->limitstart + 1) / $this->limit);
 		}
 
 		// Set the pagination iteration loop values.
-		$displayedPages = 10;
+		$displayedPages   = 10;
 		$this->pagesStart = $this->pagesCurrent - ($displayedPages / 2);
 
 		if ($this->pagesStart < 1)
@@ -289,7 +289,7 @@ class RPagination
 	 */
 	public function getResultsCounter()
 	{
-		$html = null;
+		$html       = null;
 		$fromResult = $this->limitstart + 1;
 
 		// If the limit is reached before the end of the list.
@@ -305,7 +305,7 @@ class RPagination
 		// If there are results found.
 		if ($this->total > 0)
 		{
-			$msg = JText::sprintf('JLIB_HTML_RESULTS_OF', $fromResult, $toResult, $this->total);
+			$msg   = JText::sprintf('JLIB_HTML_RESULTS_OF', $fromResult, $toResult, $this->total);
 			$html .= "\n" . $msg;
 		}
 		else
@@ -330,15 +330,15 @@ class RPagination
 		// Build the page navigation list.
 		$data = $this->_buildDataObject();
 
-		$list = array();
-		$list['prefix'] = $this->prefix;
+		$list             = array();
+		$list['prefix']   = $this->prefix;
 		$list['formName'] = $this->formName;
 
 		$itemOverride = false;
 		$listOverride = false;
 
 		// For the backend we force our html.
-		if (JFactory::getApplication()->isSite())
+		if ((version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')))
 		{
 			$chromePath = JPATH_THEMES . '/' . $app->getTemplate() . '/html/pagination.php';
 
@@ -362,34 +362,34 @@ class RPagination
 		if ($data->all->base !== null)
 		{
 			$list['all']['active'] = true;
-			$list['all']['data'] = ($itemOverride) ? pagination_item_active($data->all) : $this->_item_active($data->all);
+			$list['all']['data']   = ($itemOverride) ? pagination_item_active($data->all) : $this->_item_active($data->all);
 		}
 		else
 		{
 			$list['all']['active'] = false;
-			$list['all']['data'] = ($itemOverride) ? pagination_item_inactive($data->all) : $this->_item_inactive($data->all);
+			$list['all']['data']   = ($itemOverride) ? pagination_item_inactive($data->all) : $this->_item_inactive($data->all);
 		}
 
 		if ($data->start->base !== null)
 		{
 			$list['start']['active'] = true;
-			$list['start']['data'] = ($itemOverride) ? pagination_item_active($data->start) : $this->_item_active($data->start);
+			$list['start']['data']   = ($itemOverride) ? pagination_item_active($data->start) : $this->_item_active($data->start);
 		}
 		else
 		{
 			$list['start']['active'] = false;
-			$list['start']['data'] = ($itemOverride) ? pagination_item_inactive($data->start) : $this->_item_inactive($data->start);
+			$list['start']['data']   = ($itemOverride) ? pagination_item_inactive($data->start) : $this->_item_inactive($data->start);
 		}
 
 		if ($data->previous->base !== null)
 		{
 			$list['previous']['active'] = true;
-			$list['previous']['data'] = ($itemOverride) ? pagination_item_active($data->previous) : $this->_item_active($data->previous);
+			$list['previous']['data']   = ($itemOverride) ? pagination_item_active($data->previous) : $this->_item_active($data->previous);
 		}
 		else
 		{
 			$list['previous']['active'] = false;
-			$list['previous']['data'] = ($itemOverride) ? pagination_item_inactive($data->previous) : $this->_item_inactive($data->previous);
+			$list['previous']['data']   = ($itemOverride) ? pagination_item_inactive($data->previous) : $this->_item_inactive($data->previous);
 		}
 
 		// Make sure it exists
@@ -400,35 +400,35 @@ class RPagination
 			if ($page->base !== null)
 			{
 				$list['pages'][$i]['active'] = true;
-				$list['pages'][$i]['data'] = ($itemOverride) ? pagination_item_active($page) : $this->_item_active($page);
+				$list['pages'][$i]['data']   = ($itemOverride) ? pagination_item_active($page) : $this->_item_active($page);
 			}
 			else
 			{
 				$list['pages'][$i]['active'] = false;
-				$list['pages'][$i]['data'] = ($itemOverride) ? pagination_item_inactive($page) : $this->_item_inactive($page);
+				$list['pages'][$i]['data']   = ($itemOverride) ? pagination_item_inactive($page) : $this->_item_inactive($page);
 			}
 		}
 
 		if ($data->next->base !== null)
 		{
 			$list['next']['active'] = true;
-			$list['next']['data'] = ($itemOverride) ? pagination_item_active($data->next) : $this->_item_active($data->next);
+			$list['next']['data']   = ($itemOverride) ? pagination_item_active($data->next) : $this->_item_active($data->next);
 		}
 		else
 		{
 			$list['next']['active'] = false;
-			$list['next']['data'] = ($itemOverride) ? pagination_item_inactive($data->next) : $this->_item_inactive($data->next);
+			$list['next']['data']   = ($itemOverride) ? pagination_item_inactive($data->next) : $this->_item_inactive($data->next);
 		}
 
 		if ($data->end->base !== null)
 		{
 			$list['end']['active'] = true;
-			$list['end']['data'] = ($itemOverride) ? pagination_item_active($data->end) : $this->_item_active($data->end);
+			$list['end']['data']   = ($itemOverride) ? pagination_item_active($data->end) : $this->_item_active($data->end);
 		}
 		else
 		{
 			$list['end']['active'] = false;
-			$list['end']['data'] = ($itemOverride) ? pagination_item_inactive($data->end) : $this->_item_inactive($data->end);
+			$list['end']['data']   = ($itemOverride) ? pagination_item_inactive($data->end) : $this->_item_inactive($data->end);
 		}
 
 		if ($this->total > $this->limit)
@@ -568,7 +568,7 @@ class RPagination
 	 */
 	public function getLimitBox()
 	{
-		$app = JFactory::getApplication();
+		$app    = JFactory::getApplication();
 		$limits = array();
 
 		// Make the option list.
@@ -584,7 +584,7 @@ class RPagination
 		$selected = $this->viewall ? 0 : $this->limit;
 
 		// Build the select list.
-		if ($app->isAdmin())
+		if ((version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator')))
 		{
 			$html = JHtml::_(
 				'select.genericlist',
@@ -776,8 +776,8 @@ class RPagination
 			// Set the empty for removal from route
 			// @todo remove code: $page = $page == 0 ? '' : $page;
 
-			$data->start->base = '0';
-			$data->start->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=0');
+			$data->start->base    = '0';
+			$data->start->link    = JRoute::_($params . '&' . $this->prefix . 'limitstart=0');
 			$data->previous->base = $page;
 			$data->previous->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $page);
 		}
@@ -801,12 +801,12 @@ class RPagination
 		if ($this->pagesCurrent < $this->pagesTotal)
 		{
 			$next = $this->pagesCurrent * $this->limit;
-			$end = ($this->pagesTotal - 1) * $this->limit;
+			$end  = ($this->pagesTotal - 1) * $this->limit;
 
 			$data->next->base = $next;
 			$data->next->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $next);
-			$data->end->base = $end;
-			$data->end->link = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $end);
+			$data->end->base  = $end;
+			$data->end->link  = JRoute::_($params . '&' . $this->prefix . 'limitstart=' . $end);
 		}
 
 		if ($this->pagesCurrent < $this->pagesTotal - 9)
@@ -818,7 +818,7 @@ class RPagination
 		}
 
 		$data->pages = array();
-		$stop = $this->pagesStop;
+		$stop        = $this->pagesStop;
 
 		for ($i = $this->pagesStart; $i <= $stop; $i++)
 		{
@@ -858,8 +858,8 @@ class RPagination
 
 		if (strpos($property, '.'))
 		{
-			$prop = explode('.', $property);
-			$prop[1] = ucfirst($prop[1]);
+			$prop     = explode('.', $property);
+			$prop[1]  = ucfirst($prop[1]);
 			$property = implode($prop);
 		}
 
@@ -883,8 +883,8 @@ class RPagination
 
 		if (strpos($property, '.'))
 		{
-			$prop = explode('.', $property);
-			$prop[1] = ucfirst($prop[1]);
+			$prop     = explode('.', $property);
+			$prop[1]  = ucfirst($prop[1]);
 			$property = implode($prop);
 		}
 

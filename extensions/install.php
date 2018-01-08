@@ -98,7 +98,9 @@ class Com_RedcoreInstallerScript
 	 * @param   object             $type    type of change (install, update or discover_install)
 	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
-	 * @return bool
+	 * @throws RuntimeException
+	 *
+	 * @return boolean
 	 */
 	public function preflight($type, $parent)
 	{
@@ -141,12 +143,7 @@ class Com_RedcoreInstallerScript
 			{
 				if (!$this->checkComponentVersion($this->getRedcoreComponentFolder(), dirname(__FILE__), 'redcore.xml'))
 				{
-					JFactory::getApplication()->enqueueMessage(
-						JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'),
-						'error'
-					);
-
-					return false;
+					throw new RuntimeException(JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'));
 				}
 
 				if (!class_exists('RComponentHelper'))
@@ -188,14 +185,11 @@ class Com_RedcoreInstallerScript
 								$checked['name'] = JText::_($checked['name']);
 							}
 
-							$messageKey = $key == 'extensions' ? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS' : 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
+							$messageKey = $key == 'extensions'
+								? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS'
+								: 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
 
-							JFactory::getApplication()->enqueueMessage(
-								JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']),
-								'error'
-							);
-
-							return false;
+							throw new RuntimeException(JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']));
 						}
 					}
 				}
@@ -1652,14 +1646,24 @@ class Com_RedcoreInstallerScript
 	{
 		if (is_dir($original))
 		{
-			$source = $source . '/' . $xmlFile;
-			$sourceXml = JFactory::getXML($source);
-			$original = $original . '/' . $xmlFile;
-			$originalXml = JFactory::getXML($original);
-
-			if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
+			try
 			{
-				return false;
+				$source      = $source . '/' . $xmlFile;
+				$sourceXml   = new SimpleXMLElement($source, 0, true);
+				$original    = $original . '/' . $xmlFile;
+				$originalXml = new SimpleXMLElement($original, 0, true);
+
+				if (version_compare((string) $sourceXml->version, (string) $originalXml->version, '<'))
+				{
+					return false;
+				}
+			}
+			catch (Exception $e)
+			{
+				JFactory::getApplication()->enqueueMessage(
+					JText::_('COM_REDCORE_INSTALL_UNABLE_TO_CHECK_VERSION'),
+					'message'
+				);
 			}
 		}
 
@@ -1718,7 +1722,7 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function loadManifest($parent)
 	{
-		$element = strtolower(str_replace('InstallerScript', '', get_called_class()));
+		$element      = strtolower(str_replace('InstallerScript', '', get_called_class()));
 		$elementParts = explode('_', $element);
 
 		// Type not properly detected or not a package
@@ -1729,14 +1733,14 @@ class Com_RedcoreInstallerScript
 			return;
 		}
 
-		$rootPath = $parent->getParent()->getPath('extension_root');
+		$rootPath     = $parent->getParent()->getPath('extension_root');
 		$manifestPath = dirname($rootPath);
 		$manifestFile = $manifestPath . '/' . $element . '.xml';
 
 		// Package manifest found
 		if (file_exists($manifestFile))
 		{
-			$this->manifest = JFactory::getXML($manifestFile);
+			$this->manifest = new SimpleXMLElement($manifestFile);
 
 			return;
 		}

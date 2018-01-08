@@ -11,6 +11,8 @@ defined('JPATH_REDCORE') or die;
 
 JLoader::import('joomla.database.tablenested');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * redCORE Base Table
  *
@@ -180,7 +182,7 @@ class RTableNested extends JTableNested
 		if (empty($key) && !empty($this->_tableKey))
 		{
 			$this->_tbl_key = $this->_tableKey;
-			$key = $this->_tbl_key;
+			$key            = $this->_tbl_key;
 		}
 
 		if (empty($this->_tbl) || empty($key))
@@ -609,7 +611,7 @@ class RTableNested extends JTableNested
 			return true;
 		}
 
-		$k = $this->_tbl_key;
+		$k  = $this->_tbl_key;
 		$pk = (is_null($pk)) ? $this->$k : $pk;
 
 		// If no primary key is given, return false.
@@ -630,7 +632,7 @@ class RTableNested extends JTableNested
 		$this->_db->execute();
 
 		// Set table values in the object.
-		$this->checked_out = null;
+		$this->checked_out      = null;
 		$this->checked_out_time = '';
 
 		return true;
@@ -657,7 +659,7 @@ class RTableNested extends JTableNested
 		$k = $this->_tbl_key;
 
 		// Sanitize input.
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
 		$state  = (int) $state;
 
@@ -700,7 +702,7 @@ class RTableNested extends JTableNested
 
 		try
 		{
-			$db->query();
+			$db->execute();
 		}
 		catch (RuntimeException $e)
 		{
@@ -824,7 +826,7 @@ class RTableNested extends JTableNested
 		}
 
 		$cachedOn = new \JDate($result['cached_on']);
-		$now = new \JDate;
+		$now      = new \JDate;
 
 		if ($now->toUnix() > ($cachedOn->toUnix() + 86400))
 		{
@@ -855,7 +857,7 @@ class RTableNested extends JTableNested
 	 */
 	private function createSchema($assetName)
 	{
-		$dbo = $this->getDbo();
+		$dbo   = $this->getDbo();
 		$query = $dbo->getQuery(true);
 
 		$query->insert('#__redcore_schemas');
@@ -882,7 +884,7 @@ class RTableNested extends JTableNested
 	 */
 	private function updateSchema($assetName, \JDate $now)
 	{
-		$dbo = $this->getDbo();
+		$dbo   = $this->getDbo();
 		$query = $dbo->getQuery(true);
 
 		$query->update('#__redcore_schemas');

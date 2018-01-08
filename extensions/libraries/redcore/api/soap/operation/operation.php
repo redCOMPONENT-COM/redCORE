@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * redCORE Soap Webservice Dynamic Class
  *
@@ -52,12 +54,12 @@ class RApiSoapOperationOperation
 
 		if (is_object($dataGet))
 		{
-			$dataGet = JArrayHelper::fromObject($dataGet);
+			$dataGet = ArrayHelper::fromObject($dataGet);
 		}
 
 		$dataGet['list']['limitstart'] = (isset($data->limitStart) ? (int) $data->limitStart : 0);
-		$dataGet['list']['limit'] = (isset($data->limit) ? (int) $data->limit : 20);
-		$dataGet['filter']['search'] = (isset($data->filterSearch) ? (string) $data->filterSearch : '');
+		$dataGet['list']['limit']      = (isset($data->limit) ? (int) $data->limit : 20);
+		$dataGet['filter']['search']   = (isset($data->filterSearch) ? (string) $data->filterSearch : '');
 
 		$filters = RApiHalHelper::getFilterFields($this->webservice->configuration->operations->read->list, true);
 
@@ -66,7 +68,7 @@ class RApiSoapOperationOperation
 			$dataGet['filter'][$filter] = isset($data->filters->$filter) ? $data->filters->$filter : '';
 		}
 
-		$dataGet['list']['ordering'] = (isset($data->ordering) ? (string) $data->ordering : '');
+		$dataGet['list']['ordering']  = (isset($data->ordering) ? (string) $data->ordering : '');
 		$dataGet['list']['direction'] = (isset($data->orderingDirection) ? (string) $data->orderingDirection : '');
 
 		// Handle different language switch
@@ -89,7 +91,7 @@ class RApiSoapOperationOperation
 			$response = RApiSoapHelper::selectListResources($outputResources, $arr['_embedded']['item']);
 		}
 
-		$final = new stdClass;
+		$final       = new stdClass;
 		$final->list = $response;
 
 		return $final;
@@ -106,7 +108,7 @@ class RApiSoapOperationOperation
 	{
 		// We are setting the operation of the webservice to Read
 		$this->setOperation('read');
-		$dataGet = $this->webservice->options->get('dataGet', array());
+		$dataGet               = $this->webservice->options->get('dataGet', array());
 		$primaryKeysFromFields = RApiHalHelper::getFieldsArray($this->webservice->configuration->operations->read->item, true);
 
 		// If there are no primary keys defined we will use id field as default
@@ -135,11 +137,11 @@ class RApiSoapOperationOperation
 		$this->webservice->options->set('filterOutResourcesGroups', array('_links', '_messages'));
 		$this->webservice->execute();
 
-		$arr = $this->webservice->hal->toArray();
+		$arr             = $this->webservice->hal->toArray();
 		$outputResources = RApiSoapHelper::getOutputResources($this->webservice->configuration->operations->read->item, '', true);
-		$response = RApiSoapHelper::selectListResources($outputResources, array($arr));
+		$response        = RApiSoapHelper::selectListResources($outputResources, array($arr));
 
-		$final = new stdClass;
+		$final       = new stdClass;
 		$final->item = (empty($response) ? array() : $response[0]);
 
 		$match = true;

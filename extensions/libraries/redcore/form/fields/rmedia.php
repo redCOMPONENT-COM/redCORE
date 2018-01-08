@@ -42,6 +42,7 @@ class JFormFieldRmedia extends JFormField
 	 */
 	protected function getInput()
 	{
+		$bootstrapVersion = RHtmlMedia::getFramework();
 		$assetField  = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
 		$authorField = $this->element['created_by_field'] ? (string) $this->element['created_by_field'] : 'created_by';
 		$asset = $this->form->getValue($assetField) ? $this->form->getValue($assetField) : (string) $this->element['asset_id'];
@@ -62,31 +63,30 @@ class JFormFieldRmedia extends JFormField
 			// Build the script.
 			$script = array();
 			$script[] = '	function jInsertFieldValue(value, id) {';
-			$script[] = '		var old_value = document.id(id).value;';
+			$script[] = '		var old_value = document.getElementById(id).value;';
 			$script[] = '		if (value && old_value != value) {';
-			$script[] = '			var elem = document.id(id);';
+			$script[] = '			var elem = document.getElementById(id);';
 			$script[] = '			elem.value = value;';
-			$script[] = '			elem.fireEvent("change");';
-			$script[] = '			if (typeof(elem.onchange) === "function") {';
-			$script[] = '				elem.onchange();';
-			$script[] = '			}';
+			$script[] = '			var changeEvent = document.createEvent("HTMLEvents");';
+			$script[] = '			changeEvent.initEvent("change", true, true);';
+			$script[] = '			elem.dispatchEvent(changeEvent);';
 			$script[] = '			jMediaRefreshPreview(id);';
 			$script[] = '		};';
 			$script[] = '		jQuery("#' . $modalId . '").modal("hide");';
 			$script[] = '	}';
 
 			$script[] = '	function jMediaRefreshPreview(id) {';
-			$script[] = '		var value = document.id(id).value;';
-			$script[] = '		var img = document.id(id + "_preview");';
+			$script[] = '		var value = document.getElementById(id).value;';
+			$script[] = '		var img = document.getElementById(id + "_preview");';
 			$script[] = '		if (img) {';
 			$script[] = '			if (value) {';
 			$script[] = '				img.src = "' . JUri::root() . '" + value;';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "none");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "");';
+			$script[] = '				document.getElementById(id + "_preview_empty").setStyle("display", "none");';
+			$script[] = '				document.getElementById(id + "_preview_img").setStyle("display", "");';
 			$script[] = '			} else { ';
 			$script[] = '				img.src = ""';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "none");';
+			$script[] = '				document.getElementById(id + "_preview_empty").setStyle("display", "");';
+			$script[] = '				document.getElementById(id + "_preview_img").setStyle("display", "none");';
 			$script[] = '			} ';
 			$script[] = '		} ';
 			$script[] = '	}';
@@ -107,7 +107,7 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		if(iframe) {';
 			$script[] = '			newheight = iframe.contentWindow.document.body.scrollHeight;';
 			$script[] = '			iframe.height= (newheight) + "px";';
-			$script[] = '			iframe.setStyle("max-height", iframe.height);';
+			$script[] = '			iframe.style.maxHeight = iframe.height';
 			$script[] = '		}';
 			$script[] = '	}';
 
@@ -134,12 +134,14 @@ class JFormFieldRmedia extends JFormField
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 
+		$inputClass = $bootstrapVersion == 'bootstrap2' ? 'input-prepend input-append' : 'input-group';
+
 		// The text field.
-		$html[] = '<div class="input-prepend input-append input-group">';
+		$html[] = '<div class="' . $inputClass . '">';
 
 		// The Preview.
-		$preview = (string) $this->element['preview'];
-		$showPreview = true;
+		$preview       = (string) $this->element['preview'];
+		$showPreview   = true;
 		$showAsTooltip = false;
 
 		switch ($preview)
@@ -158,8 +160,9 @@ class JFormFieldRmedia extends JFormField
 			case 'tooltip':
 			default:
 				$showAsTooltip = true;
-				$options = array(
-					'onShow' => 'jMediaRefreshPreviewTip',
+				$options       = array(
+					'onShow'  => 'jMediaRefreshPreviewTip',
+					'trigger' => 'hover, focus'
 				);
 				JHtml::_('rbootstrap.tooltip', '.hasTipPreview', $options);
 				break;
@@ -196,11 +199,22 @@ class JFormFieldRmedia extends JFormField
 			{
 				$html[] = '<div class="media-preview add-on input-group-addon">';
 				$tooltip = $previewImgEmpty . $previewImg;
+
 				$options = array(
 					'title' => JText::_('JLIB_FORM_MEDIA_PREVIEW_SELECTED_IMAGE'),
-					'text' => '<i class="icon-eye-open"></i>',
-					'class' => 'hasTipPreview'
 				);
+
+				if ($bootstrapVersion == 'bootstrap2')
+				{
+					$options['text'] = '<i class="icon-eye-open"></i>';
+					$options['class'] = 'hasTipPreview';
+				}
+				else
+				{
+					$options['text'] = '<i class="glyphicon glyphicon-eye-open"></i>';
+					$options['data-toggle'] = 'tooltip';
+				}
+
 				$html[] = RHtml::tooltip($tooltip, $options);
 				$html[] = '</div>';
 			}
@@ -213,7 +227,9 @@ class JFormFieldRmedia extends JFormField
 			}
 		}
 
-		$html[] = '	<input type="text" class="input-small input-sm" name="' . $this->name . '" id="' . $this->id . '" value="'
+		$inputClass = $bootstrapVersion == 'bootstrap2' ? 'input-small' : 'input-sm';
+
+		$html[] = '	<input type="text" class="' . $inputClass . '" name="' . $this->name . '" id="' . $this->id . '" value="'
 			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" readonly="readonly"' . $attr . ' />';
 
 		$directory = (string) $this->element['directory'];
@@ -239,13 +255,18 @@ class JFormFieldRmedia extends JFormField
 			. $this->id . '&amp;folder=' . $folder
 			. '&amp;redcore=true';
 
+		$hideModal = $bootstrapVersion == 'bootstrap2' ? 'modal hide' : 'modal';
+		$style = $bootstrapVersion == 'bootstrap2' ? 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;' : '';
+
 		// Create the modal object
 		$modal = RModal::getInstance(
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide',
-					'style' => 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;'
+					'class' => $hideModal,
+					'style' => $style,
+					'tabindex' => '-1',
+					'role' => 'dialog'
 				),
 				'params' => array(
 					'showHeader'      => true,

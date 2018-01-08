@@ -9,6 +9,8 @@
 
 defined('_JEXEC') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Translation Tables Controller
  *
@@ -40,9 +42,9 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
+		$app = JFactory::getApplication();
 
-		$option = $app->input->getString('component');
+		$option  = $app->input->getString('component');
 		$xmlFile = $app->input->getString('contentElement');
 
 		if ($xmlFile == 'all')
@@ -93,7 +95,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 		{
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 
 			if (count($cid) > 1 && !extension_loaded('zlib'))
 			{
@@ -101,12 +103,12 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 			}
 
 			$contentType = 'application/xml';
-			$content = '';
+			$content     = '';
 
 			// Download single XML file
 			if (count($cid) == 1)
 			{
-				$table = RTranslationTable::getTranslationTableById($cid[0]);
+				$table    = RTranslationTable::getTranslationTableById($cid[0]);
 				$fileName = (str_replace('#__', '', $table->name) . '_' . $table->version) . '.xml';
 
 				if (!empty($table->xml_path) && is_file(JPATH_SITE . $table->xml_path))
@@ -117,10 +119,10 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 			// Download package of XML files in a ZIP
 			else
 			{
-				$app = JFactory::getApplication();
+				$app         = JFactory::getApplication();
 				$contentType = 'application/zip';
-				$fileName = 'translation_tables_' . (date('Y-m-d')) . '.zip';
-				$files = array();
+				$fileName    = 'translation_tables_' . (date('Y-m-d')) . '.zip';
+				$files       = array();
 
 				foreach ($cid as $id)
 				{
@@ -139,7 +141,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 				}
 
 				$uniqueFile = uniqid('translation_content_files_');
-				$zipFile = $app->get('tmp_path') . '/' . $uniqueFile . '.zip';
+				$zipFile    = $app->get('tmp_path') . '/' . $uniqueFile . '.zip';
 
 				// Run the packager
 				jimport('joomla.filesystem.folder');
@@ -215,7 +217,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 		{
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 			$success = true;
 
 			foreach ($cid as $id)
@@ -266,7 +268,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 		{
 			// Make sure the item ids are integers
 			jimport('joomla.utilities.arrayhelper');
-			JArrayHelper::toInteger($cid);
+			ArrayHelper::toInteger($cid);
 
 			// Truncate the items.
 			if (RTranslationTable::purgeTables($cid))
@@ -292,9 +294,9 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 	{
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
+		$app = JFactory::getApplication();
 
-		$option = $app->input->getString('component');
+		$option  = $app->input->getString('component');
 		$xmlFile = $app->input->getString('contentElement');
 
 		if ($xmlFile == 'all')
@@ -334,7 +336,7 @@ class RedcoreControllerTranslation_Tables extends RControllerAdmin
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 		$app   = JFactory::getApplication();
-		$files  = $app->input->files->get('redcoreContentElement', array(), 'array');
+		$files = $app->input->files->get('redcoreContentElement', array(), 'array');
 
 		if (!empty($files))
 		{

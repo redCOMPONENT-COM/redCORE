@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * redCORE Base Table
  *
@@ -652,7 +654,7 @@ class RTable extends JTable
 		$k = $this->_tbl_key;
 
 		// Sanitize input.
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
 		$state  = (int) $state;
 
@@ -695,7 +697,7 @@ class RTable extends JTable
 
 		try
 		{
-			$db->query();
+			$db->execute();
 		}
 		catch (RuntimeException $e)
 		{
@@ -770,7 +772,7 @@ class RTable extends JTable
 			if (is_array($pk))
 			{
 				// Sanitize input.
-				JArrayHelper::toInteger($pk);
+				ArrayHelper::toInteger($pk);
 				$pk = RHelperArray::quote($pk);
 				$pk = implode(',', $pk);
 				$multipleDelete = true;
@@ -848,16 +850,16 @@ class RTable extends JTable
 			if ($option == 'com_installer')
 			{
 				$installer = JInstaller::getInstance();
-				$option = $installer->manifestClass->getElement($installer);
+				$option    = $installer->manifestClass->getElement($installer);
 			}
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
-		$prefix = $componentName . 'Table';
+		$prefix        = $componentName . 'Table';
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isAdmin();
+			$client = (int) JFactory::getApplication()->isClient('administrator');
 		}
 
 		// Admin
@@ -1131,14 +1133,17 @@ class RTable extends JTable
 	 *
 	 * @return array
 	 */
-	private function updateSchema($assetName, \JDate $now)
+	public function updateSchema($assetName = null, \JDate $now = null)
 	{
+		$assetName = $assetName ?: $this->_tbl;
+		$now = $now ?: \JFactory::getDate();
+
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
 
 		$query->update('#__redcore_schemas');
 
-		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
+		$fields = json_encode($dbo->getTableColumns($assetName, false));
 		$query->set('fields = ' . $dbo->q($fields));
 		$query->set('cached_on = ' . $dbo->q($now->toSql()));
 

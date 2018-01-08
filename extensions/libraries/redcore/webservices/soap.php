@@ -43,6 +43,7 @@ class RWebservicesSoap extends RWebservicesBase
 			'cache_wsdl' => $this->getOption('wsdlcache', WSDL_CACHE_NONE),
 			'login' => $this->getOption('authorization.username'),
 			'password' => $this->getOption('authorization.password'),
+			'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | $this->getOption('compressionLevel', 1)
 		);
 
 		try

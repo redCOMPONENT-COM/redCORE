@@ -64,28 +64,28 @@ abstract class RHtmlMedia
 
 		if ($framework == 'bootstrap3')
 		{
-			self::$frameworkSuffix = 'bs3';
+			self::$frameworkSuffix  = 'bs3';
 			self::$frameworkOptions = array(
 				'disableMootools' => true,
 			);
 		}
 		elseif ($framework == 'bootstrap2')
 		{
-			self::$frameworkSuffix = 'bs2';
+			self::$frameworkSuffix  = 'bs2';
 			self::$frameworkOptions = array(
 				'disableMootools' => false,
 			);
 		}
 		elseif ($framework == 'foundation5')
 		{
-			self::$frameworkSuffix = 'fd5';
+			self::$frameworkSuffix  = 'fd5';
 			self::$frameworkOptions = array(
 				'disableMootools' => false,
 			);
 		}
 		else
 		{
-			self::$frameworkSuffix = '';
+			self::$frameworkSuffix  = '';
 			self::$frameworkOptions = array(
 				'disableMootools' => false,
 			);
@@ -111,7 +111,8 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		$isAdmin = JFactory::getApplication()->isAdmin();
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
@@ -145,7 +146,8 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		$isAdmin = JFactory::getApplication()->isAdmin();
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{

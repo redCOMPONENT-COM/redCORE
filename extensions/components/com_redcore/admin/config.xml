@@ -182,6 +182,16 @@
             <option value="0">JNO</option>
         </field>
         <field
+                name="webservice_enable_gzip_compression"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_GZIP_COMPRESSION"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_GZIP_COMPRESSION_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
                 name="enable_soap"
                 class="btn-group"
                 type="radio"

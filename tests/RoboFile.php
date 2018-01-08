@@ -17,7 +17,7 @@ require_once 'vendor/autoload.php';
 class RoboFile extends \Robo\Tasks
 {
 	// Load tasks from composer, see composer.json
-	use \redcomponent\robo\loadTasks;
+	use Joomla\Testing\Robo\Tasks\LoadTasks;
 
 	/**
 	 * File extension for executables
@@ -173,9 +173,10 @@ class RoboFile extends \Robo\Tasks
 		}
 		else
 		{
-			$this->runSelenium();
-
-			$this->taskWaitForSeleniumStandaloneServer()
+			$this->taskSeleniumStandaloneServer()
+				->setURL("http://localhost:4444")
+				->runSelenium()
+				->waitForSelenium()
 				->run()
 				->stopOnFail();
 		}
@@ -284,9 +285,10 @@ class RoboFile extends \Robo\Tasks
 
 		$this->prepareReleasePackages();
 
-		$this->runSelenium();
-
-		$this->taskWaitForSeleniumStandaloneServer()
+		$this->taskSeleniumStandaloneServer()
+			->setURL("http://localhost:4444")
+			->runSelenium()
+			->waitForSelenium()
 			->run()
 			->stopOnFail();
 
@@ -322,8 +324,10 @@ class RoboFile extends \Robo\Tasks
 
 		$this->prepareReleasePackages();
 
-		$this->runSelenium();
-		$this->taskWaitForSeleniumStandaloneServer()
+		$this->taskSeleniumStandaloneServer()
+			->setURL("http://localhost:4444")
+			->runSelenium()
+			->waitForSelenium()
 			->run()
 			->stopOnFail();
 

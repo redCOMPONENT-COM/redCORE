@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Registry\Registry;
+
 /**
  * Class for interacting with webservices.
  *
