@@ -141,7 +141,7 @@ final class RComponentHelper
 	/**
 	 * Check Component Requirements against known application versions and check for installed libraries
 	 *
-	 * @param   object  $requirements  List of requirements to check
+	 * @param   object  $requirements  List of requirements to check. Defaults to the redCORE requirements if empty.
 	 *
 	 * @return  array  List of requirements checked for the correct version
 	 */
@@ -149,74 +149,51 @@ final class RComponentHelper
 	{
 		if (empty($requirements))
 		{
-			$requirements = new stdClass;
+			$requirements = self::getComponentManifestFile()->requirements;
 		}
 
-		$checked = array();
-		$redCoreManifest = self::getComponentManifestFile();
-
-		// Checking PHP version
-		$phpRequired = !empty($requirements->php) ? $requirements->php : $redCoreManifest->requirements->php;
-		$phpRequired = !empty($phpRequired) ? (string) $phpRequired : '5.3.0';
-
-		$phpVersion = phpversion();
-		$checked['applications'][] = array(
-			'name'      => JText::_('COM_REDCORE_CONFIG_PHP_VERSION'),
-			'current'   => $phpVersion,
-			'required'  => $phpRequired,
-			'status'    => version_compare($phpRequired, $phpVersion, '<=')
-		);
-
-		// Checking MySQL requirement
-		$mySqlRequired = !empty($requirements->mysql) ? (string) $requirements->mysql : '';
-
-		if (!empty($mySqlRequired))
+		foreach ($requirements->children() as $dependency)
 		{
-			$db = JFactory::getDbo();
-			$dbVersion  = $db->getVersion();
+			$required = $dependency->attributes()->version;
 
-			if (!in_array($db->name, array('mysql', 'mysqli')))
+			switch ($dependency[0])
 			{
-				$status = false;
-			}
-			else
-			{
-				$status = version_compare($mySqlRequired, $dbVersion, '<=');
+				default:
+					$child  = 'extensions';
+					$name   = $dependency[0];
+					$status = extension_loaded($name);
+				break;
+				case 'php':
+					$child   = 'applications';
+					$name    = JText::_('COM_REDCORE_CONFIG_PHP_VERSION');
+					$version = phpversion();
+					$status  = version_compare($required, $version, '<=');
+				break;
+				case 'mysql':
+					$child   = 'applications';
+					$name    = JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION');
+					$db      = JFactory::getDbo();
+					$version = $db->getVersion();
+					$status  = !in_array($db->name, array('mysql', 'mysqli'))
+						? false
+						: version_compare($required, $version, '<=');
+				break;
+				case 'joomla':
+					$child   = 'applications';
+					$name    = JText::_('COM_REDCORE_CONFIG_JOOMLA_VERSION');
+					$version = defined('JVERSION') ? JVERSION : (new JVersion)->getShortVersion();
+					$status  = version_compare($required, $version, '<=');
+				break;
 			}
 
-			$checked['applications'][] = array(
-				'name'      => JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION'),
-				'current'   => $dbVersion,
-				'required'  => $mySqlRequired,
+			$checked[$child][] = array(
+				'name'      => $name,
+				'current'   => isset($version) ? $version : null,
+				'required'  => isset($required) ? $required->__toString() : null,
 				'status'    => $status
 			);
-		}
 
-		// Checking Joomla requirement
-		$joomlaRequired = !empty($requirements->joomla) ? (string) $requirements->joomla : '';
-
-		if (!empty($joomlaRequired))
-		{
-			$joomlaVersion = defined('JVERSION') ? JVERSION : '1.0.0';
-			$status = version_compare($joomlaRequired, $joomlaVersion, '<=');
-
-			$checked['applications'][] = array(
-				'name'      => JText::_('COM_REDCORE_CONFIG_JOOMLA_VERSION'),
-				'current'   => $joomlaVersion,
-				'required'  => $joomlaRequired,
-				'status'    => $status
-			);
-		}
-
-		if (!empty($requirements->extensions))
-		{
-			foreach ($requirements->extensions->extension as $extension)
-			{
-				$checked['extensions'][] = array(
-					'name'      => $extension,
-					'status'    => extension_loaded($extension)
-				);
-			}
+			unset($child, $name, $version, $required, $status);
 		}
 
 		return $checked;
