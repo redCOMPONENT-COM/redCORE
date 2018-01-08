@@ -18,7 +18,8 @@ $listDirn  = $this->state->get('list.direction');
 $action    = JRoute::_('index.php?option=com_redcore&view=webservices');
 ?>
 <script type="text/javascript">
-    function setWebservice(client, webservice, version, folder, task) {
+    function setWebservice(client, webservice, version, folder, task)
+    {
         document.getElementById("client").value     = client;
         document.getElementById("webservice").value = webservice;
         document.getElementById("version").value    = version;
@@ -40,7 +41,7 @@ $action    = JRoute::_('index.php?option=com_redcore&view=webservices');
     }
 
     jQuery(document).ready(function () {
-        jQuery("[data-target=\"#webservicePreview\"]").click(function (e) {
+        jQuery("[data-target='#webservicePreview']").click(function (e) {
             e.preventDefault();
             var url      = jQuery(this).attr("data-remote");
             var format   = jQuery(this).attr("data-remote-format");
@@ -82,7 +83,7 @@ $action    = JRoute::_('index.php?option=com_redcore&view=webservices');
                 } else if (/null/.test(match)) {
                     cls = "null";
                 }
-                return "<span class="" + cls + "">" + match + "</span>";
+                return "<span class='" + cls + "'>" + match + "</span>";
             });
     }
 
