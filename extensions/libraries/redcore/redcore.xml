@@ -2,13 +2,13 @@
 <extension type="library" method="upgrade" version="2.5">
     <name>redCORE - Libraries</name>
     <libraryname>redcore</libraryname>
-    <creationDate>February 2016</creationDate>
-    <author>redCOMPONENT</author>
-    <authorEmail>email@redcomponent.com</authorEmail>
-    <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.10.4</version>
+    <creationDate>January 2018</creationDate>
+    <author>redWEB.dk</author>
+    <copyright>Copyright (C) 2012 - 2018 redWEB.dk. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>email@redweb.dk</authorEmail>
+    <authorUrl>www.redweb.dk</authorUrl>
+    <version>1.10.6-beta1</version>
     <description>redCORE Libraries</description>
 
     <files>
