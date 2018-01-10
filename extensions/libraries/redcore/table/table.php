@@ -1133,14 +1133,17 @@ class RTable extends JTable
 	 *
 	 * @return array
 	 */
-	public function updateSchema($assetName, \JDate $now)
+	public function updateSchema($assetName = null, \JDate $now = null)
 	{
+		$assetName = $assetName ?: $this->_tbl;
+		$now = $now ?: \JFactory::getDate();
+
 		$dbo = $this->getDbo();
 		$query = $dbo->getQuery(true);
 
 		$query->update('#__redcore_schemas');
 
-		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
+		$fields = json_encode($dbo->getTableColumns($assetName, false));
 		$query->set('fields = ' . $dbo->q($fields));
 		$query->set('cached_on = ' . $dbo->q($now->toSql()));
 

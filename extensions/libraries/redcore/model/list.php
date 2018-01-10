@@ -259,9 +259,17 @@ abstract class RModelList extends JModelList
 
 		$app         = JFactory::getApplication();
 		$inputFilter = JFilterInput::getInstance();
+		$params      = null;
 
 		// Load the parameters for frontend.
-		$params = (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? $app->getParams() : null;
+		if (version_compare(JVERSION, '3.7', '<') && $app->isSite())
+		{
+			$params = $app->getParams();
+		}
+		elseif (method_exists($app, 'isClient') && $app->isClient('site'))
+		{
+			$params = $app->getParams();
+		}
 
 		// Receive & set filters
 		$filters = $app->getUserStateFromRequest($this->context . '.filter', 'filter', array(), 'array');
