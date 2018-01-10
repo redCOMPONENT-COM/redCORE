@@ -7,7 +7,7 @@
   <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
   <authorEmail>email@redweb.dk</authorEmail>
   <authorUrl>www.redweb.dk</authorUrl>
-  <version>1.10.6-beta1</version>
+  <version>1.10.6</version>
   <description>Currency Table Definition for the redCORE extension</description>
   <reference>
     <table name="redcore_currency">
