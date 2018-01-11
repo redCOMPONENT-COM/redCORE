@@ -86,7 +86,13 @@ class JFormFieldRlimitbox extends JFormFieldList
 			// Add an option to show all?
 			$showAll = isset($this->element['showall']) ? ($this->element['showall'] == "true") : true;
 
-			if ($showAll)
+			// The page dies on too big request, make sure it doesn't happen
+			$itemModel = \Aesir\Model\AdminModel::getAdminInstance('Items', array('ignore_request' => true), 'com_reditem');
+			$items     = $itemModel->getItems();
+			$amount    = count($items);
+			$this->value = ($this->value > end($this->defaultLimits) ? 25 : $this->value);
+
+			if ($showAll && $amount < end($this->defaultLimits))
 			{
 				$limits[] = 0;
 			}
