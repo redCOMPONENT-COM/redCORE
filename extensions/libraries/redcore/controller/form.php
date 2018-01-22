@@ -751,11 +751,9 @@ class RControllerForm extends JControllerForm
 	{
 		$returnUrl = $this->input->get('return', '', 'Base64');
 
-		if ($returnUrl)
+		if ($returnUrl && JURI::isInternal(base64_decode($returnUrl)))
 		{
-			$returnUrl = base64_decode($returnUrl);
-
-			return JRoute::_($returnUrl . $append, false);
+			return JRoute::_(base64_decode($returnUrl), false);
 		}
 		else
 		{
