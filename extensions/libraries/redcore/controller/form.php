@@ -755,6 +755,11 @@ class RControllerForm extends JControllerForm
 		{
 			$returnUrl = base64_decode($returnUrl);
 
+			if (!strstr($returnUrl, '?') && $append && $append[0] == '&')
+			{
+				$append[0] = '?';
+			}
+
 			return JRoute::_($returnUrl . $append, false);
 		}
 		else
