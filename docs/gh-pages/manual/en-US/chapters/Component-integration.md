@@ -8,7 +8,7 @@ You can start using redCORE directly in the installer script (most of the times 
  * @package     Redshopb
  * @subpackage  Install
  *
- * @copyright   Copyright (C) 2013 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2012 - 2018 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -55,10 +55,10 @@ Manifest example:
 ```
     <name>COM_REDSOURCE</name>
     <creationDate>June 2013</creationDate>
-    <author>redCOMPONENT</author>
-    <authorEmail>email@redcomponent.com</authorEmail>
-    <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2013 redCOMPONENT.com. All rights reserved.</copyright>
+    <author>redWEB.dk</author>
+    <authorEmail>email@redweb.dk</authorEmail>
+    <authorUrl>www.redweb.dk</authorUrl>
+    <copyright>Copyright (C) 2012 - 2018 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
     <version>1.0.0</version>
     <description>COM_REDSOURCE_DESC</description>

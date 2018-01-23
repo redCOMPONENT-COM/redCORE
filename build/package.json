@@ -1,6 +1,6 @@
 {
   "name": "redCORE",
-  "version": "1.10.3",
+  "version": "1.10.6",
   "description": "Rapid application development layer for Joomla!",
   "main": "gulpfile.js",
   "directories": {
@@ -41,6 +41,6 @@
     "joomla",
     "library"
   ],
-  "author": "redCOMPONENT <email@redcomponent.com>",
+  "author": "redCOMPONENT <email@redweb.dk>",
   "license": "GPL-2.0"
 }
