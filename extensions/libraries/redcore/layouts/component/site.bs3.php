@@ -110,13 +110,11 @@ if ($result instanceof Exception)
 ?>
 <div class="redcore">
 	<div class="container-fluid">
-		<div class="col-md-12">
-			<?php if ($toolbar instanceof RToolbar) : ?>
-				<div class="row">
-					<?php echo $toolbar->render() ?>
-				</div>
-			<?php endif; ?>
-			<?php echo $result; ?>
-		</div>
+		<?php if ($toolbar instanceof RToolbar) : ?>
+			<div class="row">
+				<?php echo $toolbar->render() ?>
+			</div>
+		<?php endif; ?>
+		<?php echo $result; ?>
 	</div>
 </div>
