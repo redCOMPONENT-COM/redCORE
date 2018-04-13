@@ -518,8 +518,7 @@ class RApi extends RApiBase
 		{
 			$debugTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
 			$marker     = isset($debugTrace[1]['function']) ? $debugTrace[1]['function'] : $marker;
-
-			$markName .= ' - ' . $marker;
+			$markName  .= ' - ' . $marker;
 		}
 
 		foreach (self::$executionTimers as $time => $timer)
