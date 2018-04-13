@@ -47,6 +47,14 @@ class RApi extends RApiBase
 	public $startTime;
 
 	/**
+	 * Array for keeping execution process times
+	 *
+	 * @var    array
+	 * @since  1.10
+	 */
+	public static $executionTimers = array();
+
+	/**
 	 * Method to return a RApi instance based on the given options.  There is one global option and then
 	 * the rest are specific to the Api.  The 'api' option defines which RApi class is
 	 * used for, default is 'hal'.
@@ -110,6 +118,9 @@ class RApi extends RApiBase
 	public function __construct($options = null)
 	{
 		$this->startTime = microtime(true);
+
+		// Initialize execution timers
+		self::markExecutionTime('Api process started');
 
 		// Initialise / Load options
 		$this->setOptions($options);
@@ -479,5 +490,108 @@ class RApi extends RApiBase
 		{
 			JResponse::setHeader($name, $value, $replace);
 		}
+	}
+
+	/**
+	 * Mark execution time for a specific process point
+	 *
+	 * @param   string   $markName              Mark name
+	 * @param   string   $marker                Marker
+	 * @param   bool     $openMarker            Parent Marker
+	 * @param   bool     $parentFunctionMarker  Set Parent Function name as Marker
+	 *
+	 * @return  void
+	 *
+	 * @since   1.10
+	 */
+	public static function markExecutionTime($markName, $marker = 'webserviceStart', $openMarker = true, $parentFunctionMarker = false)
+	{
+		if ((int) RBootstrap::getConfig('debug_webservices', 0) == 0)
+		{
+			return;
+		}
+
+		$fromPoint = 0;
+		$marker    = empty($marker) ? 'webserviceStart' : $marker;
+
+		if ($parentFunctionMarker)
+		{
+			$debugTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+			$marker     = isset($debugTrace[1]['function']) ? $debugTrace[1]['function'] : $marker;
+
+			$markName .= ' - ' . $marker;
+		}
+
+		foreach (self::$executionTimers as $time => $timer)
+		{
+			if ($timer['marker'] == $marker)
+			{
+				$fromPoint = $timer['time'];
+
+				if ($openMarker)
+				{
+					break;
+				}
+			}
+		}
+
+		if (!$fromPoint && count(self::$executionTimers))
+		{
+			$fromPoint = $fromPoint ? $fromPoint : reset(self::$executionTimers)['time'];
+		}
+
+		$duration = !$fromPoint ? 0 : round(microtime(true) - $fromPoint, 3);
+
+		self::$executionTimers[] = array(
+			'name'         => $markName,
+			'duration'     => $duration,
+			'marker'       => $marker,
+			'markerOpened' => $openMarker,
+			'time'         => microtime(true)
+		);
+	}
+
+	/**
+	 * Makes execution timers in format easier to read
+	 *
+	 * @param   string   $marker       Current Marker
+	 * @param   array    $usedMarkers  All used Markers
+	 *
+	 * @return  array
+	 *
+	 * @since   1.10
+	 */
+	public static function getExecutionTimersOutput($marker = 'webserviceStart', &$usedMarkers = array())
+	{
+		$result = array();
+
+		foreach (self::$executionTimers as $timer)
+		{
+			if ($marker == $timer['marker'])
+			{
+				$usedMarkers[$marker]   = true;
+				$result[$timer['name']] = $timer['duration'];
+
+				// If marker is closed then this is the end of the marker group
+				if (!$timer['markerOpened'])
+				{
+					// Remove first element since it is the same as the name of the container
+					if ($marker != 'webserviceStart' && count($result) > 1)
+					{
+						unset($result[key($result)]);
+					}
+
+					return $result;
+				}
+			}
+
+			// We use recursive method to browse through all markers and align them properly
+			if (!empty($result) && $marker != $timer['marker'] && empty($usedMarkers[$timer['marker']]))
+			{
+				$result[$timer['name']] = self::getExecutionTimersOutput($timer['marker'], $usedMarkers);
+			}
+		}
+
+		return $result;
 	}
 }
