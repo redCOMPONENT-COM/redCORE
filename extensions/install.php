@@ -107,12 +107,12 @@ class Com_RedcoreInstallerScript
 		$this->installRedcore($type, $parent);
 		$this->loadRedcoreLibrary();
 		$this->loadRedcoreLanguage();
-		$manifest = $this->getManifest($parent);
-		$extensionType = $manifest->attributes()->type;
+		$manifest               = $this->getManifest($parent);
+		$extensionType          = $manifest->attributes()->type;
 		$this->extensionElement = $this->getElement($parent, $manifest);
 
 		// Reads current (old) version from manifest
-		$db = JFactory::getDbo();
+		$db      = JFactory::getDbo();
 		$version = $db->setQuery(
 			$db->getQuery(true)
 				->select($db->qn('s.version_id'))
@@ -250,13 +250,13 @@ class Com_RedcoreInstallerScript
 	 */
 	public function preprocessUpdates($parent)
 	{
-		$manifest  = $parent->get('manifest');
+		$manifest = $parent->get('manifest');
 
 		if (isset($manifest->update))
 		{
 			if (isset($manifest->update->attributes()->folder))
 			{
-				$path = $manifest->update->attributes()->folder;
+				$path       = $manifest->update->attributes()->folder;
 				$sourcePath = $parent->getParent()->getPath('source');
 
 				if (isset($manifest->update->pre) && isset($manifest->update->pre->schemas))
@@ -275,7 +275,7 @@ class Com_RedcoreInstallerScript
 
 						$db = JFactory::getDbo();
 
-						$dbDriver = strtolower($db->name);
+						$dbDriver   = strtolower($db->name);
 						$schemapath = '';
 
 						if ($dbDriver == 'mysqli')
@@ -313,7 +313,7 @@ class Com_RedcoreInstallerScript
 								{
 									if (version_compare($file, $this->oldVersion) > 0)
 									{
-										$buffer = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
+										$buffer  = file_get_contents($sourcePath . '/' . $path . '/' . $schemapath . '/' . $file . '.sql');
 										$queries = RHelperDatabase::splitSQL($buffer);
 
 										if (count($queries))
@@ -439,7 +439,7 @@ class Com_RedcoreInstallerScript
 		}
 
 		require_once $file;
-		$class = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', $version);
+		$class      = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', str_replace('-', '_', $version));
 		$methodName = $executeAfterUpdate ? 'executeAfterUpdate' : 'execute';
 
 		if (class_exists($class))
@@ -601,7 +601,7 @@ class Com_RedcoreInstallerScript
 				// Enable the installed plugin
 				if ($result && !$disabled)
 				{
-					$db = JFactory::getDBO();
+					$db    = JFactory::getDBO();
 					$query = $db->getQuery(true);
 					$query->update($db->quoteName("#__extensions"));
 					$query->set("enabled=1");
@@ -626,7 +626,7 @@ class Com_RedcoreInstallerScript
 	protected function installTranslations($parent)
 	{
 		// Required objects
-		$manifest  = $parent->get('manifest');
+		$manifest = $parent->get('manifest');
 
 		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
@@ -634,7 +634,7 @@ class Com_RedcoreInstallerScript
 			{
 				foreach ($nodes as $node)
 				{
-					$extName   = (string) $node->attributes()->name;
+					$extName = (string) $node->attributes()->name;
 
 					try
 					{
@@ -664,12 +664,12 @@ class Com_RedcoreInstallerScript
 		// If it's installing redcore as dependency
 		if (get_called_class() != 'Com_RedcoreInstallerScript' && $type != 'discover_install')
 		{
-			$manifest  = $this->getManifest($parent);
+			$manifest = $this->getManifest($parent);
 
 			if ($manifest->redcore)
 			{
-				$installer = $this->getInstaller();
-				$redcoreFolder = dirname(__FILE__);
+				$installer              = $this->getInstaller();
+				$redcoreFolder          = dirname(__FILE__);
 				$redcoreComponentFolder = $this->getRedcoreComponentFolder();
 
 				if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
@@ -706,8 +706,8 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function postInstallRedcore($parent)
 	{
-		$manifest  = $this->getManifest($parent);
-		$type      = $manifest->attributes()->type;
+		$manifest = $this->getManifest($parent);
+		$type     = $manifest->attributes()->type;
 
 		if ($type == 'component')
 		{
@@ -719,10 +719,10 @@ class Com_RedcoreInstallerScript
 				{
 					$version = $redcoreNode->attributes()->version;
 
-					$class = get_called_class();
+					$class  = get_called_class();
 					$option = strtolower(strstr($class, 'Installer', true));
 
-					$db = JFactory::getDBO();
+					$db    = JFactory::getDBO();
 					$query = $db->getQuery(true)
 						->select('params')
 						->from($db->quoteName("#__extensions"))
@@ -860,8 +860,8 @@ class Com_RedcoreInstallerScript
 	public function installWebservices($parent)
 	{
 		$installer = $this->getInstaller();
-		$manifest = $this->getManifest($parent);
-		$src = $parent->getParent()->getPath('source');
+		$manifest  = $this->getManifest($parent);
+		$src       = $parent->getParent()->getPath('source');
 
 		if (!$manifest)
 		{
@@ -888,7 +888,7 @@ class Com_RedcoreInstallerScript
 
 		// Here we set the folder we are going to copy the files to.
 		$destination = JPath::clean(RApiHalHelper::getWebservicesPath());
-		$source = $src . '/' . $folder;
+		$source      = $src . '/' . $folder;
 
 		$copyFiles = $this->prepareFilesForCopy($element, $source, $destination);
 
@@ -925,8 +925,8 @@ class Com_RedcoreInstallerScript
 		// Process each file in the $files array (children of $tagName).
 		foreach ($element->children() as $file)
 		{
-			$path = array();
-			$path['src'] = $source . '/' . $file;
+			$path         = array();
+			$path['src']  = $source . '/' . $file;
 			$path['dest'] = $destination . '/' . $file;
 
 			// Is this path a file or folder?
@@ -977,7 +977,6 @@ class Com_RedcoreInstallerScript
 
 		if (in_array($type, array('install', 'update', 'discover_install')))
 		{
-
 			$attributes = current($manifest->attributes());
 
 			// If it's a component
@@ -988,7 +987,7 @@ class Com_RedcoreInstallerScript
 			}
 		}
 
-		if($type == 'update')
+		if ($type == 'update')
 		{
 			$db = JFactory::getDbo();
 			$db->setQuery('TRUNCATE ' . $db->qn('#__redcore_schemas'))
@@ -1024,7 +1023,7 @@ class Com_RedcoreInstallerScript
 				}
 
 				$taskName = $attributes['name'];
-				$class = get_called_class();
+				$class    = get_called_class();
 
 				// Do we have some parameters ?
 				$parameters = array();
@@ -1060,7 +1059,7 @@ class Com_RedcoreInstallerScript
 	protected function deleteMenu($type, $parent, $client = null)
 	{
 		/** @var JXMLElement $manifest */
-		$manifest = $parent->get('manifest');
+		$manifest   = $parent->get('manifest');
 		$attributes = current($manifest->attributes());
 
 		// If it's not a component
@@ -1069,7 +1068,7 @@ class Com_RedcoreInstallerScript
 			return;
 		}
 
-		$type = $attributes['type'];
+		$type          = $attributes['type'];
 		$componentName = (string) $manifest->name;
 
 		if (empty($componentName))
@@ -1077,7 +1076,7 @@ class Com_RedcoreInstallerScript
 			return;
 		}
 
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->delete('#__menu')
 			->where('type = ' . $db->q($type));
@@ -1111,7 +1110,7 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function searchExtension($element, $type, $state = null, $folder = null)
 	{
-		$db = JFactory::getDBO();
+		$db    = JFactory::getDBO();
 		$query = $db->getQuery(true)
 			->select('extension_id')
 			->from($db->quoteName("#__extensions"))
@@ -1166,7 +1165,7 @@ class Com_RedcoreInstallerScript
 		$this->loadRedcoreLibrary();
 
 		// Avoid uninstalling redcore if there is a component using it
-		$manifest = $this->getManifest($parent);
+		$manifest  = $this->getManifest($parent);
 		$isRedcore = 'COM_REDCORE' === (string) $manifest->name;
 
 		if ($isRedcore)
@@ -1223,10 +1222,10 @@ class Com_RedcoreInstallerScript
 		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
 			// Required objects
-			$manifest  = $parent->get('manifest');
-			$class = get_called_class();
-			$deleteIds = array();
-			$translationTables = RTranslationTable::getInstalledTranslationTables(true);
+			$manifest              = $parent->get('manifest');
+			$class                 = get_called_class();
+			$deleteIds             = array();
+			$translationTables     = RTranslationTable::getInstalledTranslationTables(true);
 			$translationTableModel = RModel::getAdminInstance('Translation_Table', array(), 'com_redcore');
 
 			// Delete specific extension translation tables
@@ -1340,7 +1339,7 @@ class Com_RedcoreInstallerScript
 	protected function uninstallWebservices($parent)
 	{
 		// Required objects
-		$manifest  = $this->getManifest($parent);
+		$manifest = $this->getManifest($parent);
 
 		if (!$manifest)
 		{
@@ -1359,7 +1358,7 @@ class Com_RedcoreInstallerScript
 		$returnValue = true;
 
 		// Get the array of file nodes to process
-		$files = $element->children();
+		$files  = $element->children();
 		$source = RApiHalHelper::getWebservicesPath();
 
 		// Process each file in the $files array (children of $tagName).
@@ -1398,7 +1397,7 @@ class Com_RedcoreInstallerScript
 	protected function uninstallCli($parent)
 	{
 		// Required objects
-		$manifest  = $this->getManifest($parent);
+		$manifest = $this->getManifest($parent);
 
 		if (!$manifest)
 		{
@@ -1418,7 +1417,7 @@ class Com_RedcoreInstallerScript
 
 		// Get the array of file nodes to process
 		$folders = $element->children();
-		$source = JPATH_ROOT . '/cli/';
+		$source  = JPATH_ROOT . '/cli/';
 
 		// Process each folder in the $folders array
 		foreach ($folders as $folder)
@@ -1592,7 +1591,7 @@ class Com_RedcoreInstallerScript
 		{
 			if (method_exists('RComponentHelper', 'displayComponentInfo'))
 			{
-				$manifest  = $this->getManifest($parent);
+				$manifest = $this->getManifest($parent);
 				echo RComponentHelper::displayComponentInfo((string) $manifest->name, $message);
 			}
 		}
