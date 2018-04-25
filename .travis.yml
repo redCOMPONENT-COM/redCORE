@@ -43,7 +43,7 @@ before_script:
 - echo $(phpenv version-name)
 - ls ~/.phpenv/versions/$(phpenv version-name)/etc
 - ls ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d
-- ls ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+- ls ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d
 
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf
