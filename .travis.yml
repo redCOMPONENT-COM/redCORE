@@ -11,13 +11,6 @@ php:
 
 matrix:
   fast_finish: true
-  include:
-  - php: 5.6
-    env: TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=false
-  - php: 7.0
-    env: TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=true
-  - php: 7.1
-    env: TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=true
   exclude:
   - php: 5.6
     env: TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=true
