@@ -50,7 +50,6 @@ before_script:
 
 # Build extension
 - cd build
-- sudo npm install -g gulp
 - npm install
 - mv gulp-config.json.dist gulp-config.json
 - node_modules/.bin/gulp release --skip-version
