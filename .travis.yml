@@ -7,10 +7,17 @@ php:
 - 7.0
 - 7.1
 
+matrix:
+  fast_finish: true
+  include:
+  - php: 5.6
+    env: SET_NVM=false
+
+
 install:
-  - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
+  - if [ $SET_NVM != "false" ]; then . $HOME/.nvm/nvm.sh; fi
+  - if [ $SET_NVM != "false" ]; then nvm install stable; fi
+  - if [ $SET_NVM != "false" ]; then nvm use stable; fi
 
 addons:
   chrome: stable
@@ -20,9 +27,6 @@ cache:
   directories:
     - "node_modules"
     - $HOME/.composer/cache/files
-
-matrix:
-  fast_finish: true
 
 before_script:
 - sudo apt-get update
@@ -61,9 +65,6 @@ before_script:
 
 script:
 - composer install --prefer-dist
-# - vendor/bin/robo check:for-missed-debug-code
-# - vendor/bin/robo check:for-parse-errors
-# - vendor/bin/robo check:codestyle
 - mv acceptance.suite.dist.yml acceptance.suite.yml
 - mv api.suite.dist.yml api.suite.yml
 
