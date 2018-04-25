@@ -63,7 +63,7 @@ script:
 - mv acceptance.suite.dist.yml acceptance.suite.yml
 - mv api.suite.dist.yml api.suite.yml
 
-- vendor/bin/robo run:tests
+- vendor/bin/robo run:tests 0 null false
 - vendor/bin/robo run:unit-tests
 
 #notifications:
