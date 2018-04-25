@@ -1,49 +1,72 @@
 language: php
 sudo: required
 env: TRAVIS_PUBLIC_REPOSITORY=true
-dist: precise
+dist: trusty
 php:
 - 5.6
 - 7.0
+- 7.1
+
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+
 addons:
-  firefox: "47.0.1"
+  chrome: stable
+
+cache:
+  apt: true
+  directories:
+    - "node_modules"
+    - $HOME/.composer/cache/files
+
+matrix:
+  fast_finish: true
+
 before_script:
-- sudo sed -i '1s/^/127.0.0.1 localhost\n/' /etc/hosts # forcing localhost to be the 1st alias of 127.0.0.1 in /etc/hosts (https://github.com/seleniumhq/selenium/issues/2074)
-- sudo apt-get update -qq
-- sudo apt-get install -y --force-yes apache2 libapache2-mod-fastcgi > /dev/null
-- sudo mkdir $(pwd)/.run
-- chmod a+x tests/travis-php-fpm.sh
-- sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
+- sudo apt-get update
+- sudo apt-get install apache2 libapache2-mod-fastcgi
+
+# enable php-fpm
+- sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+- sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf
 - sudo a2enmod rewrite actions fastcgi alias
 - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+- sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
+- sudo chown -R travis:travis /var/lib/apache2/fastcgi
 - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-- sudo cp -f tests/travis-ci-apache.conf /etc/apache2/sites-available/default
-- sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
-- sudo sed -e "s?%PHPVERSION%?${TRAVIS_PHP_VERSION:0:1}?g" --in-place /etc/apache2/sites-available/default
-- git submodule update --init --recursive
+
+# configure apache virtual hosts
+- sudo cp -f ./tests/travis-ci-apache.conf /etc/apache2/sites-available/000-default.conf
+- sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 - sudo service apache2 restart
-- "export DISPLAY=:99.0"
-- "sh -e /etc/init.d/xvfb start"
-- sleep 3 # give xvfb some time to start
-- sudo apt-get install fluxbox -y --force-yes
-- fluxbox &
-- sleep 3 # give fluxbox some time to start
+
+# Get ChromeDriver for headless mode
+- wget "https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip"
+- unzip "chromedriver_linux64.zip"
+- mkdir -p /usr/local/bin
+- sudo cp -a chromedriver /usr/local/bin
+- sudo chmod +x /usr/local/bin/chromedriver
+
+# Build extension
 - cd build
-- npm install gulp -g # install globally so that it's available to robo
 - npm install
 - mv gulp-config.json.dist gulp-config.json
-- gulp release --skip-version
+- node_modules/.bin/gulp release --skip-version
 - cd ../tests
+
 # Generic RoboFile init file
 - mv RoboFile.ini.dist RoboFile.ini
 
 script:
 - composer install --prefer-dist
-- vendor/bin/robo check:for-missed-debug-code
-- vendor/bin/robo check:for-parse-errors
-- vendor/bin/robo check:codestyle
+# - vendor/bin/robo check:for-missed-debug-code
+# - vendor/bin/robo check:for-parse-errors
+# - vendor/bin/robo check:codestyle
 - mv acceptance.suite.dist.yml acceptance.suite.yml
 - mv api.suite.dist.yml api.suite.yml
+
 - vendor/bin/robo run:tests
 - vendor/bin/robo run:unit-tests
 
