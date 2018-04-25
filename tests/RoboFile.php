@@ -311,10 +311,11 @@ class RoboFile extends \Robo\Tasks
 	 * @param   int     $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
 	 * @param   string  $database_host    Optional. If using Joomla Vagrant Box do: $ vendor/bin/robo 0 gulp run:tests 33.33.33.58
 	 * @param   bool    $addCertificates  Optional.  Adds the certificates to the Joomla-provided PEM file
+	 * @param   string  $driver           Chrome / Selenium
 	 *
 	 * @return void
 	 */
-	public function runTests($use_htaccess = 0, $database_host = null, $addCertificates = true)
+	public function runTests($use_htaccess = 0, $database_host = null, $addCertificates = true, $driver = 'Chrome')
 	{
 		$this->prepareSiteForSystemTests($use_htaccess, $addCertificates);
 
@@ -324,13 +325,21 @@ class RoboFile extends \Robo\Tasks
 
 		$this->prepareReleasePackages();
 
-		$this->taskSeleniumStandaloneServer()
-			->setURL("http://localhost:4444")
-			->runSelenium()
-			->waitForSelenium()
-			->run()
-			->stopOnFail();
+		switch ($driver)
+		{
+			case 'Selenium':
+				$this->taskSeleniumStandaloneServer()
+					->setURL("http://localhost:4444")
+					->runSelenium()
+					->waitForSelenium()
+					->run()
+					->stopOnFail();
+				break;
 
+			default:
+				$this->runChromeDriver();
+		}
+		
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
@@ -370,7 +379,16 @@ class RoboFile extends \Robo\Tasks
 			->run()
 			->stopOnFail();
 
-		$this->killSelenium();
+		switch ($driver)
+		{
+			case 'Selenium':
+				$this->killSelenium();
+				break;
+
+			default:
+				// Kill Chrome Driver (no idea how yet)
+		}
+
 	}
 
 	/**
@@ -417,6 +435,16 @@ class RoboFile extends \Robo\Tasks
 	public function runSelenium()
 	{
 		$this->_exec("vendor/bin/selenium-server-standalone >> selenium.log 2>&1 &");
+	}
+
+	/**
+	 * Runs Chrome Driver
+	 *
+	 * @return void
+	 */
+	public function runChromeDriver()
+	{
+		$this->_exec("chromedriver --url-base=/wd/hub &");
 	}
 
 	/**
