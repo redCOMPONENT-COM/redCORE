@@ -1,29 +1,18 @@
 language: php
 sudo: required
-env:
-  - TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=true
-  - TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=false
+env: TRAVIS_PUBLIC_REPOSITORY=true
 dist: trusty
 php:
-  - 5.6
   - 7.0
   - 7.1
 
 matrix:
   fast_finish: true
-  exclude:
-  - php: 5.6
-    env: TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=true
-  - php: 7.0
-    env: TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=false
-  - php: 7.1
-    env: TRAVIS_PUBLIC_REPOSITORY=true SET_NVM=false
-
 
 install:
-  - if [ $SET_NVM != "false" ]; then . $HOME/.nvm/nvm.sh; fi
-  - if [ $SET_NVM != "false" ]; then nvm install stable; fi
-  - if [ $SET_NVM != "false" ]; then nvm use stable; fi
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
 
 addons:
   chrome: stable
@@ -39,12 +28,6 @@ before_script:
 - sudo apt-get install apache2 libapache2-mod-fastcgi
 
 # enable php-fpm
-- ls ~/.phpenv/versions
-- echo $(phpenv version-name)
-- ls ~/.phpenv/versions/$(phpenv version-name)/etc
-- ls ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d
-- ls ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d
-
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf
 - sudo a2enmod rewrite actions fastcgi alias
