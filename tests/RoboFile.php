@@ -69,7 +69,7 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return mixed
 	 */
-	public function prepareSiteForSystemTests($use_htaccess = 0, $addCertificates = true)
+	public function prepareSiteForSystemTests($use_htaccess = 0, $addCertificates = false)
 	{
 		// Caching cloned installations locally
 		if (!is_dir('cache') || (time() - filemtime('cache') > 60 * 60 * 24))
@@ -275,7 +275,7 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return void
 	 */
-	public function runTestPreparation($use_htaccess = 0, $package_method = 'gulp', $addCertificates = true)
+	public function runTestPreparation($use_htaccess = 0, $package_method = 'gulp', $addCertificates = false)
 	{
 		$this->prepareSiteForSystemTests($use_htaccess, $addCertificates);
 
