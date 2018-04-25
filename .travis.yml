@@ -26,6 +26,7 @@ cache:
 before_script:
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
+- sudo npm install -g gulp-cli
 
 # enable php-fpm
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
@@ -52,7 +53,6 @@ before_script:
 - cd build
 - npm install
 - mv gulp-config.json.dist gulp-config.json
-- node_modules/.bin/gulp release --skip-version
 - cd ../tests
 
 # Generic RoboFile init file
