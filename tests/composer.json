@@ -17,7 +17,6 @@
 		"joomla-projects/joomla-browser": "v3.8.2",
 		"joomla-projects/joomla-testing-robo": "dev-container-test",
 		"joomla-projects/joomla-testing": "dev-container-test",
-		"joomla-projects/selenium-server-standalone": "v2.53.1",
 		"consolidation/robo": "~1",
 		"flow/jsonpath": "dev-master",
 		"cloudinary/cloudinary_php": "1.1.1",
