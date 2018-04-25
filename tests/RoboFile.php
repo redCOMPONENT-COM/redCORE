@@ -255,11 +255,10 @@ class RoboFile extends \Robo\Tasks
 	 * Preparation for running manual tests after installing Joomla/Extension and some basic configuration
 	 *
 	 * @param   int     $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
-	 * @param   string  $package_method   Optional. Availabe methods are "phing" or "gulp". "gulp" by default
 	 *
 	 * @return void
 	 */
-	public function runTestPreparation($use_htaccess = 0, $package_method = 'gulp')
+	public function runTestPreparation($use_htaccess = 0)
 	{
 		$this->prepareSiteForSystemTests($use_htaccess);
 
@@ -280,8 +279,8 @@ class RoboFile extends \Robo\Tasks
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
+			// ->arg('--steps')
+			// ->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/install/')
@@ -335,14 +334,14 @@ class RoboFile extends \Robo\Tasks
 			->run()
 			->stopOnFail();
 
-			$this->taskCodecept()
-				// ->arg('--steps')
-				// ->arg('--debug')
-				->arg('--tap')
-				->arg('--fail-fast')
-				->arg($this->testsFolder . 'acceptance/administrator/')
-				->run()
-				->stopOnFail();
+		$this->taskCodecept()
+			// ->arg('--steps')
+			// ->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/administrator/')
+			->run()
+			->stopOnFail();
 
 		$this->taskCodecept()
 			//  ->arg('--steps')

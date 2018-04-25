@@ -62,8 +62,8 @@ before_script:
 
 script:
 - composer install --prefer-dist
-- mv acceptance.suite.dist.yml acceptance.suite.yml
-- mv api.suite.dist.yml api.suite.yml
+- mv acceptance.suite.yml.dist acceptance.suite.yml
+- mv api.suite.yml.dist api.suite.yml
 
 - vendor/bin/robo run:tests 1
 - vendor/bin/robo run:unit-tests
