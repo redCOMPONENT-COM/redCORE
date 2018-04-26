@@ -634,7 +634,7 @@ class RoboFile extends \Robo\Tasks
 					->setCloudinaryApiSecret($cloudinaryApiSecret)
 					->setGithubRepo($githubRepository)
 					->setGithubPR($githubPRNo)
-					->setBuildURL($buildURL . 'display/redirect')
+					->setBuildURL($buildURL)
 					->setSlackWebhook($slackWebhook)
 					->setSlackChannel($slackChannel)
 					->setTapLog($errorLog);
