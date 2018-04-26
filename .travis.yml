@@ -33,13 +33,9 @@ before_script:
 - sudo apt-get install apache2 libapache2-mod-fastcgi
 - npm install -g gulp
 
-# Temp checks
-- sudo ls /usr/lib/cgi-bin
-- sudo ls ~/.phpenv/versions/$(phpenv version-name)/etc
-
 # Enable php-fpm
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
-- if [ -f /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.d/www.conf.default ]; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi;
+- if [ -f ~/.phpenv/versions/$phpversionname/etc/php-fpm.d/www.conf.default ]; then sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d/www.conf; fi;
 - sudo a2enmod rewrite actions fastcgi alias
 - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 - sudo sed -i -e "s,www-data,travis,g" /etc/apache2/envvars
