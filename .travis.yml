@@ -4,7 +4,6 @@ env: TRAVIS_PUBLIC_REPOSITORY=true
 dist: trusty
 php:
   - 7.0
-  - 7.1
 
 matrix:
   fast_finish: true

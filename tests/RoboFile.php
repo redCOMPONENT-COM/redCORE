@@ -592,6 +592,8 @@ class RoboFile extends \Robo\Tasks
 			$reportFile = 'tests/_output/report.tap.log';
 			$errorLog = 'Codeception tap log:' . chr(10). chr(10);
 			$errorSelenium = false;
+
+			$this->say('Selenium report found and fixed for reporting');
 		}
 
 		if (file_exists($reportFile))
@@ -599,6 +601,8 @@ class RoboFile extends \Robo\Tasks
 			if ($reportFile)
 			{
 				$errorLog .= file_get_contents($reportFile, null, null, 15);
+
+				$this->say('Codeception report log found and fixed for reporting');
 			}
 
 			if (!$errorSelenium)
@@ -616,6 +620,8 @@ class RoboFile extends \Robo\Tasks
 
 					$reportError = true;
 					$errorImage = __DIR__ . '/tests/_output/' . $errorSnapshot;
+
+					$this->say('Codeception report image found and fixed for reporting');
 				}
 			}
 
