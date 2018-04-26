@@ -4,7 +4,7 @@ owner="$1"
 phpversionname="$2"
 
 cp /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.conf.default /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.conf
-if [ -d /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.d/www.conf.default ]; then
+if [ -f /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.d/www.conf.default ]; then
 	cp /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.d/www.conf.default /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.d/www.conf;
 fi
 a2enmod rewrite actions fastcgi alias

@@ -33,11 +33,11 @@ before_script:
 - sudo apt-get install apache2 libapache2-mod-fastcgi
 - npm install -g gulp
 
-# enable php-fpm
+# Enable php-fpm
 - sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
 - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
 
-# configure apache virtual hosts
+# Configure apache virtual hosts
 - sudo cp -f ./tests/travis-ci-apache.conf /etc/apache2/sites-available/000-default.conf
 - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 - sudo service apache2 restart
@@ -63,7 +63,7 @@ script:
 - mv acceptance.suite.yml.dist acceptance.suite.yml
 - mv api.suite.yml.dist api.suite.yml
 
-# System/Acceptance tests
+# System / Acceptance tests
 - vendor/bin/robo run:chrome-driver
 - vendor/bin/robo run:tests 1
 - vendor/bin/robo kill:chrome-driver
