@@ -10,7 +10,7 @@ class InstallJoomlaCest
 {
 	public function installJoomla(\AcceptanceTester $I)
 	{
-		$I->amOnPage('/');
+		$I->amOnPage('/README.txt');
 		$I->waitForText('I will not find anything');
 		$I->wantToTest('Joomla 3 Installation');
 		$I->installJoomlaMultilingualSite();
