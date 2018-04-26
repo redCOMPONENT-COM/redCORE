@@ -34,7 +34,7 @@ before_script:
 - npm install -g gulp
 
 # enable php-fpm
-- sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
+- sudo sh -c '$HOME/tests/travis-php-fpm.sh $USER $(phpenv version-name)'
 - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
 
 # configure apache virtual hosts
