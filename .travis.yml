@@ -35,8 +35,8 @@ before_script:
 
 # Temp checks
 - sudo ls /usr/lib/cgi-bin/php*
-- sudo ls /home/$owner/.phpenv/versions/$phpversionname/etc
-- sudo ls /home/$owner/.phpenv/versions/$phpversionname/etc/php-fpm.d
+- sudo ls ~/.phpenv/versions/$(phpenv version-name)/etc
+- sudo ls ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d
 
 # enable php-fpm
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
