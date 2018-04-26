@@ -34,7 +34,7 @@ before_script:
 - npm install -g gulp
 
 # Temp checks
-- sudo ls /usr/lib/cgi-bin/php*
+- sudo ls /usr/lib/cgi-bin
 - sudo ls ~/.phpenv/versions/$(phpenv version-name)/etc
 - sudo ls ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.d
 
