@@ -5,16 +5,14 @@ dist: trusty
 php:
   - 7.0
   - 7.1
-node_js:
-  - "8"
 
 matrix:
   fast_finish: true
 
 install:
   - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
+  - nvm install 8
+  - nvm use 8
 
 addons:
   chrome: stable
@@ -28,7 +26,7 @@ cache:
 before_script:
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
-- sudo npm install -g gulp-cli
+- npm install -g gulp
 
 # enable php-fpm
 - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
