@@ -68,6 +68,10 @@ script:
 - vendor/bin/robo run:tests 1
 - vendor/bin/robo run:unit-tests
 
+# Reporting (temporary - please remove)
+- export TRAVIS_BUILD_URL = https://travis-ci.org/$TRAVIS_REPO_SLUG/builds/$TRAVIS_BUILD_ID
+- vendor/bin/robo send:build-report-error-slack jatitoam 571855843714255 hKm1CgCUTW3Kge2Lgs3qpGz1I1w $TRAVIS_REPO_SLUG $TRAVIS_PULL_REQUEST "https://hooks.slack.com/services/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" "#tito-test" "$TRAVIS_BUILD_URL"
+
 #notifications:
 #  slack:
 #    secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=
