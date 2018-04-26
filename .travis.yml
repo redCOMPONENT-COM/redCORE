@@ -3,7 +3,10 @@ sudo: required
 env: TRAVIS_PUBLIC_REPOSITORY=true
 dist: trusty
 php:
+  - 5.6
   - 7.0
+  - 7.1
+  - 7.2
 
 matrix:
   fast_finish: true
@@ -62,9 +65,12 @@ script:
 - mv acceptance.suite.yml.dist acceptance.suite.yml
 - mv api.suite.yml.dist api.suite.yml
 
+# System/Acceptance tests
 - vendor/bin/robo run:chrome-driver
 - vendor/bin/robo run:tests 1
 - vendor/bin/robo kill:chrome-driver
+
+# Unit tests
 - vendor/bin/robo run:unit-tests
 
 # Reporting (temporary - please remove)
