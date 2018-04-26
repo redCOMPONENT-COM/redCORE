@@ -583,13 +583,13 @@ class RoboFile extends \Robo\Tasks
 	{
 		$errorSelenium = true;
 		$reportError = false;
-		$reportFile = 'tests/selenium.log';
+		$reportFile = 'selenium.log';
 		$errorLog = 'Selenium log:' . chr(10). chr(10);
 
 		// Loop through Codeception snapshots
-		if (file_exists('tests/_output') && $handler = opendir('tests/_output'))
+		if (file_exists('_output') && $handler = opendir('_output'))
 		{
-			$reportFile = 'tests/_output/report.tap.log';
+			$reportFile = '_output/report.tap.log';
 			$errorLog = 'Codeception tap log:' . chr(10). chr(10);
 			$errorSelenium = false;
 
@@ -607,7 +607,7 @@ class RoboFile extends \Robo\Tasks
 
 			if (!$errorSelenium)
 			{
-				$handler = opendir('tests/_output');
+				$handler = opendir('_output');
 				$errorImage = '';
 
 				while (!$reportError && false !== ($errorSnapshot = readdir($handler)))
@@ -619,7 +619,7 @@ class RoboFile extends \Robo\Tasks
 					}
 
 					$reportError = true;
-					$errorImage = __DIR__ . '/tests/_output/' . $errorSnapshot;
+					$errorImage = __DIR__ . '/_output/' . $errorSnapshot;
 
 					$this->say('Codeception report image found and fixed for reporting');
 				}
