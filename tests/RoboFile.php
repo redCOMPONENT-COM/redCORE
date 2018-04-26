@@ -137,7 +137,7 @@ class RoboFile extends \Robo\Tasks
 	}
 
 	/**
-	 * Executes Selenium System Tests in your machine
+	 * Executes Codeception System Tests in your machine
 	 *
 	 * @param   array  $opts  Use -h to see available options
 	 *
@@ -268,13 +268,6 @@ class RoboFile extends \Robo\Tasks
 
 		$this->prepareReleasePackages();
 
-		$this->taskSeleniumStandaloneServer()
-			->setURL("http://localhost:4444")
-			->runSelenium()
-			->waitForSelenium()
-			->run()
-			->stopOnFail();
-
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
@@ -293,11 +286,10 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @param   int     $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
 	 * @param   string  $database_host    Optional. If using Joomla Vagrant Box do: $ vendor/bin/robo 0 gulp run:tests 33.33.33.58
-	 * @param   string  $driver           Chrome / Selenium
 	 *
 	 * @return void
 	 */
-	public function runTests($use_htaccess = 0, $database_host = null, $driver = 'Chrome')
+	public function runTests($use_htaccess = 0, $database_host = null)
 	{
 		$this->prepareSiteForSystemTests($use_htaccess);
 
@@ -307,27 +299,12 @@ class RoboFile extends \Robo\Tasks
 
 		$this->prepareReleasePackages();
 
-		switch ($driver)
-		{
-			case 'Selenium':
-				$this->taskSeleniumStandaloneServer()
-					->setURL("http://localhost:4444")
-					->runSelenium()
-					->waitForSelenium()
-					->run()
-					->stopOnFail();
-				break;
-
-			default:
-				$this->runChromeDriver();
-		}
-
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
+			//->arg('--steps')
+			//->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/install/')
@@ -335,8 +312,8 @@ class RoboFile extends \Robo\Tasks
 			->stopOnFail();
 
 		$this->taskCodecept()
-			// ->arg('--steps')
-			// ->arg('--debug')
+			//->arg('--steps')
+			//->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/administrator/')
@@ -344,8 +321,8 @@ class RoboFile extends \Robo\Tasks
 			->stopOnFail();
 
 		$this->taskCodecept()
-			//  ->arg('--steps')
-			//  ->arg('--debug')
+			//->arg('--steps')
+			//->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg('api')
@@ -353,24 +330,13 @@ class RoboFile extends \Robo\Tasks
 			->stopOnFail();
 
 		$this->taskCodecept()
-			//  ->arg('--steps')
-			//  ->arg('--debug')
+			//->arg('--steps')
+			//->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/uninstall/')
 			->run()
 			->stopOnFail();
-
-		switch ($driver)
-		{
-			case 'Selenium':
-				$this->killSelenium();
-				break;
-
-			default:
-				// Kill Chrome Driver (no idea how yet)
-		}
-
 	}
 
 	/**
@@ -416,7 +382,7 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function runSelenium()
 	{
-		$this->_exec("vendor/bin/selenium-server-standalone >> selenium.log 2>&1 &");
+		$this->_exec("vendor/bin/selenium-server-standalone >> driver.log 2>&1 &");
 	}
 
 	/**
@@ -426,7 +392,17 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function runChromeDriver()
 	{
-		$this->_exec("chromedriver --url-base=/wd/hub &");
+		$this->_exec("chromedriver --url-base=/wd/hub >> driver.log 2>&1 &");
+	}
+
+	/**
+	 * Stops Chrome Driver
+	 *
+	 * @return void
+	 */
+	public function killChromeDriver()
+	{
+		$this->_exec('curl http://localhost:9515/wd/hub/shutdown');
 	}
 
 	/**
@@ -581,19 +557,19 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function sendBuildReportErrorSlack($cloudinaryName, $cloudinaryApiKey, $cloudinaryApiSecret, $githubRepository, $githubPRNo, $slackWebhook, $slackChannel, $buildURL = '')
 	{
-		$errorSelenium = true;
+		$errorDriver = true;
 		$reportError = false;
-		$reportFile = 'selenium.log';
-		$errorLog = 'Selenium log:' . chr(10). chr(10);
+		$reportFile = 'driver.log';
+		$errorLog = 'Driver log:' . chr(10). chr(10);
 
 		// Loop through Codeception snapshots
 		if (file_exists('_output') && $handler = opendir('_output'))
 		{
 			$reportFile = '_output/report.tap.log';
 			$errorLog = 'Codeception tap log:' . chr(10). chr(10);
-			$errorSelenium = false;
+			$errorDriver = false;
 
-			$this->say('Selenium report found and fixed for reporting');
+			$this->say('Driver report found and fixed for reporting');
 		}
 
 		if (file_exists($reportFile))
@@ -605,7 +581,7 @@ class RoboFile extends \Robo\Tasks
 				$this->say('Codeception report log found and fixed for reporting');
 			}
 
-			if (!$errorSelenium)
+			if (!$errorDriver)
 			{
 				$handler = opendir('_output');
 				$errorImage = '';
@@ -625,7 +601,7 @@ class RoboFile extends \Robo\Tasks
 				}
 			}
 
-			if ($reportError || $errorSelenium)
+			if ($reportError || $errorDriver)
 			{
 				// Sends the error report to Slack
 				$reportingTask = $this->taskReporting()

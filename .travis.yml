@@ -62,7 +62,9 @@ script:
 - mv acceptance.suite.yml.dist acceptance.suite.yml
 - mv api.suite.yml.dist api.suite.yml
 
+- vendor/bin/robo run:chrome-driver
 - vendor/bin/robo run:tests 1
+- vendor/bin/robo kill:chrome-driver
 - vendor/bin/robo run:unit-tests
 
 # Reporting (temporary - please remove)
