@@ -528,8 +528,6 @@ class RoboFile extends \Robo\Tasks
 	 */
 	private function getExecutableExtension()
 	{
-		return '';
-
 		if ($this->isWindows())
 		{
 			// Check whether git.exe or git as command should be used, as on windows both are possible
