@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "791272255ea1b645635fdd1115e10821",
+    "content-hash": "1ca84bf8f8a3381c6a27c62606c58ada",
     "packages": [],
     "packages-dev": [
         {
@@ -815,7 +815,7 @@
                 }
             ],
             "description": "JSONPath implementation for parsing, searching and flattening arrays",
-            "time": "2018-03-04 16:41:37"
+            "time": "2018-03-04T16:41:37+00:00"
         },
         {
             "name": "fzaninotto/faker",
@@ -1388,7 +1388,7 @@
                 "task",
                 "tests"
             ],
-            "time": "2017-08-24 14:09:45"
+            "time": "2017-08-24T14:09:45+00:00"
         },
         {
             "name": "joomla-projects/joomla-testing-robo",
@@ -1439,7 +1439,56 @@
                 "task",
                 "tests"
             ],
-            "time": "2018-01-05 05:43:27"
+            "time": "2018-01-05T05:43:27+00:00"
+        },
+        {
+            "name": "joomla-projects/selenium-server-standalone",
+            "version": "v3.11.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joomla-projects/selenium-server-standalone.git",
+                "reference": "e5f77040063bf9f6b115f0ea6b92ff527aeaca5e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/joomla-projects/selenium-server-standalone/zipball/e5f77040063bf9f6b115f0ea6b92ff527aeaca5e",
+                "reference": "e5f77040063bf9f6b115f0ea6b92ff527aeaca5e",
+                "shasum": ""
+            },
+            "bin": [
+                "bin/selenium-server-standalone"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Selenium.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Sven Eisenschmidt",
+                    "email": "sven.eisenschmidt@gmail.com"
+                },
+                {
+                    "name": "Puneet Kala",
+                    "email": "puneet.kala@community.joomla.org"
+                },
+                {
+                    "name": "Javier Gómez",
+                    "email": "javier.gomez@community.joomla.org"
+                }
+            ],
+            "description": "Composer distribution of Selenium Server Standalone, the browser automation framework. Adds a executable to your composer bin directory.",
+            "homepage": "https://github.com/joomla-projects/selenium-server-standalone",
+            "keywords": [
+                "selenium",
+                "testing"
+            ],
+            "time": "2018-04-23T07:07:31+00:00"
         },
         {
             "name": "knplabs/github-api",
@@ -2777,7 +2826,7 @@
                 "performance",
                 "unit testing"
             ],
-            "time": "2018-02-19 12:58:01"
+            "time": "2018-02-19T12:58:01+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

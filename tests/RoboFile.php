@@ -19,6 +19,32 @@ class RoboFile extends \Robo\Tasks
 	// Load tasks from composer, see composer.json
 	use Joomla\Testing\Robo\Tasks\LoadTasks;
 
+	const OS_UNKNOWN = 1;
+	const OS_WIN = 2;
+	const OS_LINUX = 3;
+	const OS_OSX = 4;
+
+	/**
+	 * Identify the OS
+	 *
+	 * @return int
+	 * @since  10.1
+	 */
+	static public function getOS()
+	{
+		switch (true)
+		{
+			case stristr(PHP_OS, 'DAR'):
+				return self::OS_OSX;
+			case stristr(PHP_OS, 'WIN'):
+				return self::OS_WIN;
+			case stristr(PHP_OS, 'LINUX'):
+				return self::OS_LINUX;
+			default:
+				return self::OS_UNKNOWN;
+		}
+	}
+
 	/**
 	 * File extension for executables
 	 *
@@ -388,17 +414,36 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Runs Chrome Driver
 	 *
-	 * @return void
+	 * @return  void
+	 * @since   10.1
 	 */
 	public function runChromeDriver()
 	{
-		$this->_exec("chromedriver --url-base=/wd/hub >> driver.log 2>&1 &");
+		$prefix     = '';
+		$executable = 'linux/chromedriver';
+		$suffix     = ' >> driver.log 2>&1 &';
+
+		switch ($this->getOs())
+		{
+			case self::OS_OSX:
+				$executable = 'mac/chromedriver';
+				break;
+
+			case self::OS_WIN:
+				$prefix     = 'START /B ';
+				$executable = 'windows/chromedriver.exe';
+				$suffix     = ' > driver.log';
+				break;
+		}
+
+		$this->_exec($prefix . 'vendor/joomla-projects/selenium-server-standalone/bin/webdrivers/chrome/' .  $executable . ' --url-base=/wd/hub' . $suffix);
 	}
 
 	/**
 	 * Stops Chrome Driver
 	 *
-	 * @return void
+	 * @return  void
+	 * @since   10.1
 	 */
 	public function killChromeDriver()
 	{
@@ -479,10 +524,12 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Get the executable extension according to Operating System
 	 *
-	 * @return void
+	 * @return string
 	 */
 	private function getExecutableExtension()
 	{
+		return '';
+
 		if ($this->isWindows())
 		{
 			// Check whether git.exe or git as command should be used, as on windows both are possible

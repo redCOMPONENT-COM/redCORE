@@ -42,17 +42,10 @@ before_script:
 - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 - sudo service apache2 restart
 
-# Get ChromeDriver for headless mode
-- wget "https://chromedriver.storage.googleapis.com/2.38/chromedriver_linux64.zip"
-- unzip "chromedriver_linux64.zip"
-- mkdir -p /usr/local/bin
-- sudo cp -a chromedriver /usr/local/bin
-- sudo chmod +x /usr/local/bin/chromedriver
-
 # Build extension
 - cd build
 - npm install
-- mv gulp-config.json.dist gulp-config.json
+- cp -f gulp-config.json.dist gulp-config.json
 - cd ../tests
 
 # Generic RoboFile init file
@@ -60,8 +53,8 @@ before_script:
 
 script:
 - composer install --prefer-dist
-- mv acceptance.suite.yml.dist acceptance.suite.yml
-- mv api.suite.yml.dist api.suite.yml
+- cp -f acceptance.suite.yml.dist acceptance.suite.yml
+- cp -f api.suite.yml.dist api.suite.yml
 
 # System / Acceptance tests
 - vendor/bin/robo run:chrome-driver
