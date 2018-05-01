@@ -24,8 +24,7 @@
     "merge-stream": "^1.0.0",
     "require-dir": "^0.3.0",
     "xml2js": "^0.4.19",
-    "yargs": "^3.27.0",
-    "hoek": "^3"
+    "yargs": "^3.27.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
