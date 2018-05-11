@@ -26,6 +26,12 @@ $searchButton = $data['options']->get('searchButton', true);
 
 $filters = $data['view']->filterForm->getGroup('filter');
 ?>
+
+<script type="text/javascript">
+jQuery(document).ready(function($){
+	jQuery("input[type='text']").addClass('form-control');
+});
+</script>
 <?php if (!empty($filters[$searchField])) : ?>
 	<?php if ($searchButton) : ?>
 		<section class="form-inline">
