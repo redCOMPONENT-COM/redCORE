@@ -63,10 +63,8 @@ tests/api.suite.yml
 tests/apisoap.suite.yml
 tests/joomla-cms3*
 tests/_output
-selenium-server-standalone.jar
 codecept.phar
-selenium.log
-selenium-errors.log
+driver.log
 tests/_support/_generated/*
 tests/checkers/phpcs/*
 tests/RoboFile.ini
