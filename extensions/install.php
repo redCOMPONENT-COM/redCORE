@@ -120,7 +120,7 @@ class Com_RedcoreInstallerScript
 				->select($db->qn('s.version_id'))
 				->from($db->qn('#__schemas', 's'))
 				->join('inner', $db->qn('#__extensions', 'e') . ' ON ' . $db->qn('e.extension_id') . ' = ' . $db->qn('s.extension_id'))
-				->where('e.element = ' . $db->quote($this->extensionElement))
+				->where($db->qn('e.element') . ' = ' . $db->q($this->extensionElement))
 		)
 			->loadResult();
 
@@ -132,7 +132,7 @@ class Com_RedcoreInstallerScript
 		if ($extensionType == 'component' && in_array($type, array('install', 'update', 'discover_install')))
 		{
 			// Update SQL pre-processing
-			if ($type === 'update')
+			if ($type == 'update')
 			{
 				if (!$this->preprocessUpdates($parent))
 				{
@@ -185,11 +185,11 @@ class Com_RedcoreInstallerScript
 							// In case redCORE cannot be installed we do not have the language string
 							if (get_called_class() === 'Com_RedcoreInstallerScript')
 							{
-								$this->loadRedcoreLanguage(dirname(__FILE__));
+								$this->loadRedcoreLanguage(__DIR__);
 								$checked['name'] = JText::_($checked['name']);
 							}
 
-							$messageKey = $key === 'extensions'
+							$messageKey = $key == 'extensions'
 								? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS'
 								: 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
 
@@ -279,12 +279,8 @@ class Com_RedcoreInstallerScript
 						$db = JFactory::getDbo();
 
 						$dbDriver   = strtolower($db->name);
+						$dbDriver   = $dbDriver == 'mysqli' ? 'mysql' : $dbDriver;
 						$schemaPath = '';
-
-						if ($dbDriver === 'mysqli')
-						{
-							$dbDriver = 'mysql';
-						}
 
 						foreach ($schemaPaths as $entry)
 						{
@@ -610,8 +606,8 @@ class Com_RedcoreInstallerScript
 					$query->set("enabled=1");
 					$query->set('state = 0');
 					$query->where("type='plugin'");
-					$query->where("element=" . $db->quote($extName));
-					$query->where("folder=" . $db->quote($extGroup));
+					$query->where("element=" . $db->q($extName));
+					$query->where("folder=" . $db->q($extGroup));
 					$db->setQuery($query);
 					$db->execute();
 				}
@@ -661,6 +657,7 @@ class Com_RedcoreInstallerScript
 	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  void
+	 * @throws  Exception
 	 */
 	protected function installRedcore($type, $parent)
 	{
@@ -690,7 +687,7 @@ class Com_RedcoreInstallerScript
 		// If it is installing redCORE we want to make sure it installs redCORE library first
 		elseif (get_called_class() == 'Com_RedcoreInstallerScript' && in_array($type, array('install', 'update', 'discover_install')))
 		{
-			$install = $this->checkComponentVersion(JPATH_LIBRARIES . '/redcore', dirname(__FILE__) . '/libraries/redcore', 'redcore.xml');
+			$install = $this->checkComponentVersion(JPATH_LIBRARIES . '/redcore', __DIR__ . '/libraries/redcore', 'redcore.xml');
 
 			// Only install if installation in the package is newer version
 			if ($install)
@@ -714,9 +711,11 @@ class Com_RedcoreInstallerScript
 
 		if ($type == 'component')
 		{
-			if ($redcoreNode = $manifest->redcore)
+			$redcoreNode = $manifest->redcore;
+
+			if ($redcoreNode)
 			{
-				$redcoreFolder = dirname(__FILE__);
+				$redcoreFolder = __DIR__;
 
 				if (!empty($redcoreFolder))
 				{
@@ -727,26 +726,22 @@ class Com_RedcoreInstallerScript
 
 					$db    = JFactory::getDBO();
 					$query = $db->getQuery(true)
-						->select('params')
-						->from($db->qn("#__extensions"))
-						->where("type=" . $db->quote($type))
-						->where("element=" . $db->quote($option));
+						->select($db->qn('params'))
+						->from($db->qn('#__extensions'))
+						->where($db->qn('type') . ' = ' . $db->q($type))
+						->where($db->qn('element') . ' = ' . $db->q($option));
 
-					$db->setQuery($query);
-
-					$comParams = new JRegistry($db->loadResult());
+					$comParams = new Registry($db->setQuery($query)->loadResult());
 					$comParams->set('redcore',
-						array(
-							'version' => (string) $version)
+						array('version' => (string) $version)
 					);
 
 					$query = $db->getQuery(true);
-					$query->update($db->qn("#__extensions"));
-					$query->set('params = ' . $db->quote($comParams->toString()));
-					$query->where("type=" . $db->quote($type));
-					$query->where("element=" . $db->quote($option));
-					$db->setQuery($query);
-					$db->execute();
+					$query->update($db->qn('#__extensions'));
+					$query->set($db->qn('params') . ' = ' . $db->q($comParams->toString()));
+					$query->where($db->qn('type') . ' = ' . $db->q($type));
+					$query->where($db->qn('element') . ' = ' . $db->q($option));
+					$db->setQuery($query)->execute();
 				}
 			}
 		}
@@ -765,8 +760,9 @@ class Com_RedcoreInstallerScript
 		$installer = $this->getInstaller();
 		$manifest  = $parent->get('manifest');
 		$src       = $parent->getParent()->getPath('source');
+		$nodes     = $manifest->templates->template;
 
-		if ($nodes = $manifest->templates->template)
+		if ($nodes)
 		{
 			foreach ($nodes as $node)
 			{
@@ -781,7 +777,6 @@ class Com_RedcoreInstallerScript
 					$installer->setAdapter('template');
 					$result = $installer->install($extPath);
 				}
-
 				// Discover install
 				elseif ($extId = $this->searchExtension($extName, 'template', '-1'))
 				{
@@ -937,13 +932,13 @@ class Com_RedcoreInstallerScript
 
 			if (basename($path['dest']) != $path['dest'])
 			{
-				$newdir = dirname($path['dest']);
+				$newDir = dirname($path['dest']);
 
-				if (!JFolder::create($newdir))
+				if (!JFolder::create($newDir))
 				{
-					JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newdir), JLog::WARNING, 'jerror');
+					JLog::add(JText::sprintf('JLIB_INSTALLER_ERROR_CREATE_DIRECTORY', $newDir), JLog::WARNING, 'jerror');
 
-					return false;
+					return array();
 				}
 			}
 
@@ -964,8 +959,10 @@ class Com_RedcoreInstallerScript
 	 */
 	public function postflight($type, $parent)
 	{
+		$installer = get_called_class();
+
 		// If it's installing redcore as dependency
-		if (get_called_class() !== 'Com_RedcoreInstallerScript' && $type !== 'discover_install')
+		if ($installer !== 'Com_RedcoreInstallerScript' && $type != 'discover_install')
 		{
 			$this->postInstallRedcore($parent);
 		}
@@ -993,7 +990,7 @@ class Com_RedcoreInstallerScript
 			$this->insertSiteDomain();
 		}
 
-		if ($type === 'update')
+		if ($type == 'update')
 		{
 			$db = JFactory::getDbo();
 			$db->setQuery('TRUNCATE ' . $db->qn('#__redcore_schemas'))
@@ -1085,17 +1082,17 @@ class Com_RedcoreInstallerScript
 		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->delete('#__menu')
-			->where('type = ' . $db->quote($type));
+			->where('type = ' . $db->q($type));
 
 		if (!empty($client))
 		{
-			$query->where('client_id = ' . $db->quote($client));
+			$query->where('client_id = ' . $db->q($client));
 		}
 
 		$query->where(
 			array(
-				'title = ' . $db->quote($componentName),
-				'title = ' . $db->quote(strtolower($componentName))
+				'title = ' . $db->q($componentName),
+				'title = ' . $db->q(strtolower($componentName))
 			),
 			'OR'
 		);
@@ -1120,8 +1117,8 @@ class Com_RedcoreInstallerScript
 		$query = $db->getQuery(true)
 			->select($db->qn('extension_id'))
 			->from($db->qn("#__extensions"))
-			->where($db->qn('type') . ' = ' . $db->quote($type))
-			->where($db->qn('element') . ' = ' . $db->quote($element));
+			->where($db->qn('type') . ' = ' . $db->q($type))
+			->where($db->qn('element') . ' = ' . $db->q($element));
 
 		if (null !== $state)
 		{
@@ -1130,7 +1127,7 @@ class Com_RedcoreInstallerScript
 
 		if (null !== $folder)
 		{
-			$query->where($db->qn('folder') . ' = ' . $db->quote($folder));
+			$query->where($db->qn('folder') . ' = ' . $db->q($folder));
 		}
 
 		return $db->setQuery($query)->loadResult();
@@ -1170,19 +1167,22 @@ class Com_RedcoreInstallerScript
 
 		// Avoid uninstalling redcore if there is a component using it
 		$manifest  = $this->getManifest($parent);
-		$isRedcore = 'COM_REDCORE' === (string) $manifest->name;
+		$isRedcore = 'COM_REDCORE' == (string) $manifest->name;
 
-		if ($isRedcore && method_exists('RComponentHelper', 'getRedcoreComponents'))
+		if ($isRedcore)
 		{
-			$components = RComponentHelper::getRedcoreComponents();
-			$app        = JFactory::getApplication();
-			$message    = sprintf(
-				'Cannot uninstall redCORE because the following components are using it: <br /> [%s]',
-				implode(',<br /> ', $components)
-			);
+			if (method_exists('RComponentHelper', 'getRedcoreComponents'))
+			{
+				$components = RComponentHelper::getRedcoreComponents();
+				$app        = JFactory::getApplication();
+				$message    = sprintf(
+					'Cannot uninstall redCORE because the following components are using it: <br /> [%s]',
+					implode(',<br /> ', $components)
+				);
 
-			$app->enqueueMessage($message, 'error');
-			$app->redirect('index.php?option=com_installer&view=manage');
+				$app->enqueueMessage($message, 'error');
+				$app->redirect('index.php?option=com_installer&view=manage');
+			}
 		}
 	}
 
@@ -1245,7 +1245,7 @@ class Com_RedcoreInstallerScript
 						{
 							foreach ($translationTables as $translationTableParams)
 							{
-								if ($extensionOption === $translationTableParams->option)
+								if ($extensionOption == $translationTableParams->option)
 								{
 									$deleteIds[] = $translationTableParams->id;
 								}
@@ -1770,8 +1770,8 @@ class Com_RedcoreInstallerScript
 		$query = $db->getQuery(true)
 			->select($db->qn('extension_id'))
 			->from($db->qn('#__extensions'))
-			->where($db->qn('type') . ' = ' . $db->quote('component'))
-			->where($db->qn('element') . ' = ' . $db->quote('com_redcore'));
+			->where($db->qn('type') . ' = ' . $db->q('component'))
+			->where($db->qn('element') . ' = ' . $db->q('com_redcore'));
 
 		$extensionId = $db->setQuery($query)->loadResult();
 
@@ -1797,7 +1797,6 @@ class Com_RedcoreInstallerScript
 		}
 
 		$params->set('domain', $_SERVER['SERVER_NAME']);
-
 		$table->set('params', $params->toString());
 		$table->store();
 	}
