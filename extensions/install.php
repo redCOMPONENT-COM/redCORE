@@ -669,7 +669,7 @@ class Com_RedcoreInstallerScript
 			if ($manifest->redcore)
 			{
 				$installer              = $this->getInstaller();
-				$redcoreFolder          = dirname(__FILE__);
+				$redcoreFolder          = __DIR__;
 				$redcoreComponentFolder = $this->getRedcoreComponentFolder();
 
 				if (is_dir($redcoreFolder) && JPath::clean($redcoreFolder) != JPath::clean($redcoreComponentFolder))
@@ -695,6 +695,9 @@ class Com_RedcoreInstallerScript
 				$this->installLibraries($parent);
 			}
 		}
+
+		// Update site domain in redCORE config
+		$this->insertSiteDomain();
 	}
 
 	/**
@@ -985,9 +988,6 @@ class Com_RedcoreInstallerScript
 				$this->loadRedcoreLanguage();
 				$this->displayComponentInfo($parent);
 			}
-
-			// Update site domain in redCORE config
-			$this->insertSiteDomain();
 		}
 
 		if ($type == 'update')
