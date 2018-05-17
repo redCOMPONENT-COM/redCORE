@@ -1254,7 +1254,7 @@ class Com_RedcoreInstallerScript
 			$translationTableModel = RModel::getAdminInstance('Translation_Table', array(), 'com_redcore');
 
 			// Delete specific extension translation tables
-			if ($class !== 'Com_RedcoreInstallerScript')
+			if ($class != 'Com_RedcoreInstallerScript')
 			{
 				$nodes = $manifest->translations->translation;
 
@@ -1328,7 +1328,7 @@ class Com_RedcoreInstallerScript
 			{
 				$extName = $node->attributes()->name;
 				$result  = 0;
-				$extId   = $this->searchExtension($extName, 'library', 0);
+				$extId   = $this->searchExtension($extName, 'library');
 
 				if ($extId)
 				{
@@ -1498,23 +1498,25 @@ class Com_RedcoreInstallerScript
 		$manifest  = $this->getManifest($parent);
 		$nodes     = $manifest->modules->module;
 
-		if (!empty($nodes))
+		if (empty($nodes))
 		{
-			foreach ($nodes as $node)
+			return;
+		}
+
+		foreach ($nodes as $node)
+		{
+			$extName   = $node->attributes()->name;
+			$extClient = $node->attributes()->client;
+			$result    = 0;
+			$extId     = $this->searchExtension($extName, 'module');
+
+			if ($extId)
 			{
-				$extName   = $node->attributes()->name;
-				$extClient = $node->attributes()->client;
-				$result    = 0;
-				$extId     = $this->searchExtension($extName, 'module', 0);
-
-				if ($extId)
-				{
-					$result = $installer->uninstall('module', $extId);
-				}
-
-				// Store the result to show install summary later
-				$this->_storeStatus('modules', array('name' => $extName, 'client' => $extClient, 'result' => $result));
+				$result = $installer->uninstall('module', $extId);
 			}
+
+			// Store the result to show install summary later
+			$this->_storeStatus('modules', array('name' => $extName, 'client' => $extClient, 'result' => $result));
 		}
 	}
 
@@ -1532,23 +1534,25 @@ class Com_RedcoreInstallerScript
 		$manifest  = $this->getManifest($parent);
 		$nodes     = $manifest->plugins->plugin;
 
-		if (!empty($nodes))
+		if (empty($nodes))
 		{
-			foreach ($nodes as $node)
+			return;
+		}
+
+		foreach ($nodes as $node)
+		{
+			$extName  = $node->attributes()->name;
+			$extGroup = $node->attributes()->group;
+			$result   = 0;
+			$extId    = $this->searchExtension($extName, 'plugin', null, $extGroup);
+
+			if ($extId)
 			{
-				$extName  = $node->attributes()->name;
-				$extGroup = $node->attributes()->group;
-				$result   = 0;
-				$extId    = $this->searchExtension($extName, 'plugin', 0, $extGroup);
-
-				if ($extId)
-				{
-					$result = $installer->uninstall('plugin', $extId);
-				}
-
-				// Store the result to show install summary later
-				$this->_storeStatus('plugins', array('name' => $extName, 'group' => $extGroup, 'result' => $result));
+				$result = $installer->uninstall('plugin', $extId);
 			}
+
+			// Store the result to show install summary later
+			$this->_storeStatus('plugins', array('name' => $extName, 'group' => $extGroup, 'result' => $result));
 		}
 	}
 
@@ -1566,23 +1570,25 @@ class Com_RedcoreInstallerScript
 		$manifest  = $this->getManifest($parent);
 		$nodes     = $manifest->templates->template;
 
-		if (!empty($nodes))
+		if (empty($nodes))
 		{
-			foreach ($nodes as $node)
+			return;
+		}
+
+		foreach ($nodes as $node)
+		{
+			$extName   = $node->attributes()->name;
+			$extClient = $node->attributes()->client;
+			$result    = 0;
+			$extId     = $this->searchExtension($extName, 'template', 0);
+
+			if ($extId)
 			{
-				$extName   = $node->attributes()->name;
-				$extClient = $node->attributes()->client;
-				$result    = 0;
-				$extId     = $this->searchExtension($extName, 'template', 0);
-
-				if ($extId)
-				{
-					$result = $installer->uninstall('template', $extId);
-				}
-
-				// Store the result to show install summary later
-				$this->_storeStatus('templates', array('name' => $extName, 'client' => $extClient, 'result' => $result));
+				$result = $installer->uninstall('template', $extId);
 			}
+
+			// Store the result to show install summary later
+			$this->_storeStatus('templates', array('name' => $extName, 'client' => $extClient, 'result' => $result));
 		}
 	}
 
