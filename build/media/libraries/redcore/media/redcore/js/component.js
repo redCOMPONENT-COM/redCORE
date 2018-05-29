@@ -126,7 +126,6 @@ function rRadioGroupButtonsSet (selector) {
             } else {
                 label.addClass('active btn-success');
             }
-            input.prop('checked', true);
         }
     });
 }
