@@ -250,6 +250,32 @@ CREATE TABLE IF NOT EXISTS `#__redcore_webservices` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- -----------------------------------------------------
+-- Table `#__redcore_payment_log`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `#__redcore_webservice_log` (
+  `id`              INT(11)  UNSIGNED NOT NULL AUTO_INCREMENT,
+  `webservice_name`      VARCHAR(255)          NOT NULL DEFAULT '',
+  `webservice_version`      VARCHAR(5)            NOT NULL DEFAULT '1.0.0',
+  `created_by`        INT(11)               NULL     DEFAULT NULL,
+  `created_date`      DATETIME              NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `url`          VARCHAR(2000)     NOT NULL DEFAULT '',
+  `headers`          VARCHAR(2000)     NOT NULL DEFAULT '',
+  `authentication`        VARCHAR(32)       NOT NULL DEFAULT '',
+  `operation`     VARCHAR(20)       NOT NULL DEFAULT '',
+  `using_soap`      TINYINT(1)            NOT NULL DEFAULT '0',
+  `client`        VARCHAR(2000)     NOT NULL DEFAULT '',
+  `time`     VARCHAR(2000)     NOT NULL DEFAULT '',
+  `memory`    TEXT              NOT NULL,
+  `message_text`    TEXT              NOT NULL,
+  `status`          VARCHAR(32)       NOT NULL DEFAULT '',
+  `transaction_id`  VARCHAR(255)      NOT NULL DEFAULT '',
+  `customer_note`   VARCHAR(2000)     NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `idx_payment_id` (`payment_id`),
+  KEY `idx_transaction_id` (`transaction_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- -----------------------------------------------------
 -- Table `#__redcore_translation_tables`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `#__redcore_translation_tables` (
