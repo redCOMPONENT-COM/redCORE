@@ -250,29 +250,29 @@ CREATE TABLE IF NOT EXISTS `#__redcore_webservices` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- -----------------------------------------------------
--- Table `#__redcore_payment_log`
+-- Table `#__redcore_webservice_history_log`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `#__redcore_webservice_log` (
-  `id`              INT(11)  UNSIGNED NOT NULL AUTO_INCREMENT,
-  `webservice_name`      VARCHAR(255)          NOT NULL DEFAULT '',
-  `webservice_version`      VARCHAR(5)            NOT NULL DEFAULT '1.0.0',
-  `created_by`        INT(11)               NULL     DEFAULT NULL,
-  `created_date`      DATETIME              NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `url`          VARCHAR(2000)     NOT NULL DEFAULT '',
-  `headers`          VARCHAR(2000)     NOT NULL DEFAULT '',
-  `authentication`        VARCHAR(32)       NOT NULL DEFAULT '',
-  `operation`     VARCHAR(20)       NOT NULL DEFAULT '',
-  `using_soap`      TINYINT(1)            NOT NULL DEFAULT '0',
-  `client`        VARCHAR(2000)     NOT NULL DEFAULT '',
-  `time`     VARCHAR(2000)     NOT NULL DEFAULT '',
-  `memory`    TEXT              NOT NULL,
-  `message_text`    TEXT              NOT NULL,
-  `status`          VARCHAR(32)       NOT NULL DEFAULT '',
-  `transaction_id`  VARCHAR(255)      NOT NULL DEFAULT '',
-  `customer_note`   VARCHAR(2000)     NOT NULL DEFAULT '',
+CREATE TABLE IF NOT EXISTS `#__redcore_webservice_history_log` (
+  `id`                   INT(11)  UNSIGNED NOT NULL AUTO_INCREMENT,
+  `webservice_name`      VARCHAR(255)      NOT NULL DEFAULT '',
+  `webservice_version`   VARCHAR(5)        NOT NULL DEFAULT '1.0.0',
+  `webservice_client`    VARCHAR(15)       NOT NULL DEFAULT 'site',
+  `url`                  VARCHAR(2000)     NOT NULL DEFAULT '',
+  `authentication`       VARCHAR(50)       NOT NULL DEFAULT '',
+  `authentication_user`  VARCHAR(100)      NOT NULL DEFAULT '',
+  `operation`            VARCHAR(50)       NOT NULL DEFAULT '',
+  `method`               VARCHAR(50)       NOT NULL DEFAULT '',
+  `using_soap`           TINYINT(1)        NOT NULL DEFAULT '0',
+  `execution_time`       INT(5)            NOT NULL DEFAULT '0',
+  `execution_memory`     INT(8)            NOT NULL DEFAULT '0',
+  `messages`             TEXT              NULL,
+  `file_name`            VARCHAR(255)      NOT NULL DEFAULT '',
+  `status`               VARCHAR(255)      NOT NULL DEFAULT '',
+  `created_by`           INT(11)           NULL     DEFAULT NULL,
+  `created_date`         DATETIME          NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
-  KEY `idx_payment_id` (`payment_id`),
-  KEY `idx_transaction_id` (`transaction_id`)
+  KEY `idx_webservice_title` (`webservice_name`, `webservice_version`, `webservice_client`),
+  KEY `idx_operation` (`operation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- -----------------------------------------------------

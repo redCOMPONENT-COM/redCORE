@@ -377,7 +377,7 @@ class RApiHalHelper
 	/**
 	 * Load configuration file and set all Api parameters
 	 *
-	 * @param   array   $webserviceName  Name of the webservice file
+	 * @param   string  $webserviceName  Name of the webservice file
 	 * @param   string  $version         Suffixes for loading of webservice configuration file
 	 * @param   string  $extension       File extension name
 	 * @param   string  $path            Path to webservice files
