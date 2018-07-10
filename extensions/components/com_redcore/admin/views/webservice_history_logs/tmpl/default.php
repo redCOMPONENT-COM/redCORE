@@ -27,14 +27,7 @@ $averageMemoryUsage = memory_get_usage() + 5000000;
             var dataType = format == "json" ? "json" : "text";
 
             jQuery.get(url, null, function (data) {
-                if (format == "json") {
-                    data = syntaxHighlight(data);
-                    data = jQuery("<pre></pre>").html(data);
-                }
-                else if (format == "doc") {
-                    data = jQuery(data).contents();
-                }
-                else if (format == "text") {
+                if (format == "text") {
                     data = jQuery("<pre></pre>").html(data);
                 }
 
@@ -45,49 +38,6 @@ $averageMemoryUsage = memory_get_usage() + 5000000;
 
         });
     });
-
-    function syntaxHighlight(json) {
-        if (typeof json != "string") {
-            json = JSON.stringify(json, undefined, 4);
-        }
-        json = json.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-            function (match) {
-                var cls = "number";
-                if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                        cls = "key";
-                    } else {
-                        cls = "string";
-                    }
-                } else if (/true|false/.test(match)) {
-                    cls = "boolean";
-                } else if (/null/.test(match)) {
-                    cls = "null";
-                }
-                return "<span class='" + cls + "'>" + match + "</span>";
-            });
-    }
-
-    function submitAction(task, form) {
-        if (typeof Joomla.submitform == "function") {
-            Joomla.submitform(task, form);
-        }
-        else {
-            if (typeof(task) !== "undefined" && task !== "") {
-                document.getElementById("adminFormWebserviceHistoryLog").task.value = task;
-            }
-
-            // Submit the form.
-            if (typeof form.onsubmit == "function") {
-                form.onsubmit();
-            }
-            if (typeof form.fireEvent == "function") {
-                form.fireEvent("submit");
-            }
-            form.submit();
-        }
-    }
 
     function printDocumentation() {
         url        = jQuery("#webservicePreview").data("url") + "&print";
@@ -100,31 +50,6 @@ $averageMemoryUsage = memory_get_usage() + 5000000;
         outline: 1px solid #ccc;
         padding: 5px;
         margin: 5px;
-    }
-
-    .string {
-        color: green;
-    }
-
-    .number {
-        color: darkorange;
-    }
-
-    .boolean {
-        color: blue;
-    }
-
-    .null {
-        color: magenta;
-    }
-
-    .key {
-        color: red;
-    }
-
-    .modal.large {
-        width: 80%;
-        margin-left: -40%;
     }
     #webserviceHistoryLogList >tbody>tr>td{
         padding:1px;

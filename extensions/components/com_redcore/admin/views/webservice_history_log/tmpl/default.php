@@ -65,7 +65,7 @@ RHelperAsset::load('redcore.min.js', 'redcore');
                 </div>
                 <div>
                     <span class="label"><?php echo JText::_('COM_REDCORE_WEBSERVICE_HISTORY_LOG_EXECUTION_MEMORY_LABEL'); ?>:</span>
-                    <span class="label label-default"><?php echo $this->item->execution_memory; ?></span>
+                    <span class="label label-default"><?php echo RFilesystemFile::getReadableFileSize($this->item->execution_memory); ?></span>
                 </div>
                 <div>
                     <span class="label"><?php echo JText::_('COM_REDCORE_WEBSERVICE_HISTORY_LOG_AUTHENTICATION_LABEL'); ?>:</span>

@@ -49,16 +49,6 @@ class RedcoreViewWebservice_History_Logs extends RedcoreHelpersView
 	public $stoolsOptions = array();
 
 	/**
-	 * @var  array
-	 */
-	public $xmlFiles;
-
-	/**
-	 * @var  integer
-	 */
-	public $xmlFilesAvailable;
-
-	/**
 	 * Display method
 	 *
 	 * @param   string  $tpl  The template name

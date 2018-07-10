@@ -67,18 +67,6 @@
             <option value="documentation">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DOCUMENTATION</option>
         </field>
         <field
-                name="using_soap"
-                labelclass="control-label"
-                type="list"
-                label="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_USING_SOAP"
-                class="btn-group"
-                default=""
-        >
-            <option value="">COM_REDCORE_WEBSERVICE_HISTORY_LOGS_SELECT_SOAP</option>
-            <option value="1">JYES</option>
-            <option value="0">JNO</option>
-        </field>
-        <field
                 name="created_by_start_date"
                 type="rdatepicker"
                 label="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_START_TIME"

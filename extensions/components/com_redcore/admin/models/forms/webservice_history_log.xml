@@ -9,58 +9,5 @@
             description="COM_REDCORE_ID_DESC"
             readonly="true"
             />
-        <field
-                name="webservice_name"
-                type="text"
-                />
-		<field
-				name="webservice_version"
-				type="text"
-		/>
-		<field
-				name="webservice_client"
-				type="text"
-		/>
-		<field
-				name="operation"
-				type="text"
-		/>
-		<field
-				name="authentication"
-				type="text"
-		/>
-		<field
-				name="authentication_user"
-				type="text"
-		/>
-		<field
-				name="method"
-				type="text"
-		/>
-		<field
-			name="using_soap"
-			type="radio"
-			>
-            <option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-        <field
-                name="scope"
-                type="Webservicescopes"
-                label="COM_REDCORE_OAUTH_CLIENTS_SCOPE"
-                description="COM_REDCORE_OAUTH_CLIENTS_SCOPE_DESC"
-                multiple="true"
-                default=""
-                showCheckAll="true"
-                />
-		<field
-			name="user_id"
-			type="userbs3"
-			label="COM_REDCORE_OAUTH_CLIENTS_USER"
-			description="COM_REDCORE_OAUTH_CLIENTS_USER_DESC"
-			default=""
-			>
-			<option value="">COM_REDCORE_OAUTH_CLIENTS_SELECT_USER</option>
-		</field>
 	</fieldset>
 </form>
