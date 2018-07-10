@@ -61,6 +61,7 @@
                 name="translations_constraint_type"
                 type="list"
                 default="none"
+                class="form-control"
                 label="COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE"
                 description="COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE_DESC">
             <option value="foreign_keys">COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE_FOREIGN_KEYS</option>
@@ -164,7 +165,7 @@
         <field
                 name="webservices_authorization_check"
                 type="list"
-                class="input-xlarge"
+                class="form-control"
                 default="0"
                 label="COM_REDCORE_CONFIG_WEBSERVICES_AUTHORIZATION_CHECK"
                 description="COM_REDCORE_CONFIG_WEBSERVICES_AUTHORIZATION_CHECK_DESC">
@@ -296,6 +297,7 @@
         <field
                 name="oauth2_id_lifetime"
                 type="number"
+                class="form-control"
                 validate="integer"
                 default="3600"
                 label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ID_LIFETIME"
@@ -305,6 +307,7 @@
                 name="oauth2_access_lifetime"
                 type="number"
                 validate="integer"
+                class="form-control"
                 default="3600"
                 label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ACCESS_LIFETIME"
                 description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ACCESS_LIFETIME_DESC"
@@ -312,6 +315,7 @@
         <field
                 name="oauth2_token_param_name"
                 type="text"
+                class="form-control"
                 default="access_token"
                 label="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_PARAM_NAME"
                 description="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_PARAM_NAME_DESC"
@@ -319,6 +323,7 @@
         <field
                 name="oauth2_token_bearer_header_name"
                 type="text"
+                class="form-control"
                 default="Bearer"
                 label="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_BEARER_HEADER_NAME"
                 description="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_BEARER_HEADER_NAME_DESC"
@@ -441,6 +446,7 @@
                 name="payment_time_between_payment_check_requests"
                 type="number"
                 validate="integer"
+                class="form-control"
                 default="24"
                 label="COM_REDCORE_CONFIG_PAYMENT_TIME_BETWEEN_ORDER_CHECKS"
                 description="COM_REDCORE_CONFIG_PAYMENT_TIME_BETWEEN_ORDER_CHECKS_DESC">
@@ -449,6 +455,7 @@
                 name="payment_number_of_payment_check_retries"
                 type="number"
                 validate="integer"
+                class="form-control"
                 default="30"
                 label="COM_REDCORE_CONFIG_PAYMENT_NUMBER_OF_RETRIES"
                 description="COM_REDCORE_CONFIG_PAYMENT_NUMBER_OF_RETRIES_DESC">
@@ -469,7 +476,7 @@
                 label="LIB_REDCORE_CHART_NAME_LABEL"
                 description="LIB_REDCORE_CHART_NAME_DESC"
                 default="Line"
-                class="inputbox">
+                class="form-control">
             <option value="">LIB_REDCORE_CHART_NAME_SELECT_CHART</option>
         </field>
         <field
@@ -478,7 +485,7 @@
                 label="COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_LABEL"
                 description="COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_DESC"
                 default="payment_name"
-                class="inputbox">
+                class="form-control">
             <option value="">COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_SELECT</option>
             <option value="extension_name">COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_EXTENSION</option>
             <option value="payment_name">COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_PAYMENT</option>
@@ -494,5 +501,17 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
+    </fieldset>
+    <fieldset name="REDCORE_GENERAL"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="REDCORE_GENERAL_OPTIONS">
+        <field
+                name="domain"
+                type="text"
+                class="form-control"
+                default=""
+                label="REDCORE_GENERAL_DOMAIN_LABEL"
+                description="REDCORE_GENERAL_DOMAIN_DESC"
+        />
     </fieldset>
 </config>
