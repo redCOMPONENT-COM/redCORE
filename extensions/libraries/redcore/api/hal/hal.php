@@ -235,17 +235,30 @@ class RApiHalHal extends RApi
 	{
 		try
 		{
-			$allowedOperations = (array) RBootstrap::getConfig('webservice_history_log_allowed_operations', 'all');
-
-			if (!in_array('all', $allowedOperations) && !in_array($this->operation, $allowedOperations))
-			{
-				return;
-			}
-
 			if (RBootstrap::getConfig('enable_webservice_history_log', 1) == 1)
 			{
 				if (!$this->historyLog)
 				{
+					$allowedOperations = (array) RBootstrap::getConfig('webservice_history_log_allowed_operations', 'all');
+					$operation         = $this->operation;
+
+					// Set operation to its full name
+					if ($operation == 'read')
+					{
+						$primaryKeys = array();
+						$isReadItem  = $this->apiFillPrimaryKeys($primaryKeys);
+						$operation  .= $isReadItem ? ' Item' : ' List';
+					}
+					elseif ($operation == 'task')
+					{
+						$operation .= ' ' . $this->options->get('task', '');
+					}
+
+					if (!in_array('all', $allowedOperations) && !in_array($operation, $allowedOperations))
+					{
+						return;
+					}
+
 					$this->historyLog = RTable::getAdminInstance('Webservice_History_Log', array('ignore_request' => true), 'com_redcore');
 					$basicRequestData = null;
 					$url              = JUri::getInstance();
@@ -261,7 +274,7 @@ class RApiHalHal extends RApi
 						'webservice_version' => $this->webserviceVersion,
 						'webservice_client'  => $this->client,
 						'url'                => $url->toString(),
-						'operation'          => $this->operation,
+						'operation'          => $operation,
 						'method'             => $this->options->get('method', 'GET'),
 						'using_soap'         => (int) $this->options->get('usingSoap', 0),
 						'status'             => JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_STARTED'),
@@ -307,7 +320,29 @@ class RApiHalHal extends RApi
 
 					if (is_object($postValues))
 					{
-						$postValues = ArrayHelper::fromObject($postValues);
+						// We are dealing with soap request, simplexml_load_string has problems with namespaces so we have to workaround that
+						if ($postValues->{'<?xml_version'})
+						{
+							$xml = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", file_get_contents("php://input"));
+							$xml = simplexml_load_string($xml);
+
+							foreach ($xml as $xmlKey => $xmlBody)
+							{
+								if (strpos($xmlKey, 'Body') !== false)
+								{
+									foreach ($xmlBody as $xmlContent)
+									{
+										$json       = json_encode((array) $xmlContent);
+										$postValues = json_decode($json, true);
+										break 2;
+									}
+								}
+							}
+						}
+						else
+						{
+							$postValues = ArrayHelper::fromObject($postValues);
+						}
 					}
 
 					if (!is_array($postValues))
@@ -349,31 +384,18 @@ class RApiHalHal extends RApi
 	{
 		try
 		{
-			$allowedOperations = (array) RBootstrap::getConfig('webservice_history_log_allowed_operations', 'all');
-
-			if (!in_array('all', $allowedOperations) && !in_array($this->operation, $allowedOperations))
-			{
-				return;
-			}
-
 			if (RBootstrap::getConfig('enable_webservice_history_log', 0) == 1)
 			{
 				if ($this->historyLog)
 				{
-					$operation = $this->operation;
-					$messages  = $this->hal->getData('_messages');
+					$allowedOperations = (array) RBootstrap::getConfig('webservice_history_log_allowed_operations', 'all');
 
-					// Set operation to its full name
-					if ($operation == 'read')
+					if (!in_array('all', $allowedOperations) && !in_array($this->historyLog->operation, $allowedOperations))
 					{
-						$primaryKeys = array();
-						$isReadItem  = $this->apiFillPrimaryKeys($primaryKeys);
-						$operation  .= $isReadItem ? ' Item' : ' List';
+						return;
 					}
-					elseif ($operation == 'task')
-					{
-						$operation .= ' ' . $this->options->get('task', '');
-					}
+
+					$messages = $this->hal->getData('_messages');
 
 					if ($status == JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_SUCCESS'))
 					{
@@ -415,7 +437,6 @@ class RApiHalHal extends RApi
 						'execution_time'      => microtime(true) - $this->startTime,
 						'execution_memory'    => memory_get_peak_usage(),
 						'status'              => $status,
-						'operation'           => $operation,
 						'messages'            => json_encode($messages),
 						'authentication'      => $this->authorizationCheck,
 						'authentication_user' => JFactory::getUser()->name,

@@ -60,7 +60,8 @@
         >
             <option value="">COM_REDCORE_WEBSERVICE_HISTORY_LOG_OPERATION_SELECT</option>
             <option value="create">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_CREATE</option>
-            <option value="read">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ</option>
+            <option value="read List">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_LIST</option>
+            <option value="read Item">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_ITEM</option>
             <option value="update">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_UPDATE</option>
             <option value="delete">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DELETE</option>
             <option value="task">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_TASK</option>
