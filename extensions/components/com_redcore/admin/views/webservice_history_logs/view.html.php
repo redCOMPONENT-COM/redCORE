@@ -82,7 +82,7 @@ class RedcoreViewWebservice_History_Logs extends RedcoreHelpersView
 		}
 
 		// Check if option is enabled
-		if (RBootstrap::getConfig('enable_webservice_history_log', 1) == 0)
+		if (RBootstrap::getConfig('enable_webservice_history_log', 0) == 0)
 		{
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(

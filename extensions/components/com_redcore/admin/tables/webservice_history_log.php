@@ -162,21 +162,4 @@ class RedcoreTableWebservice_History_Log extends RTable
 
 		return true;
 	}
-
-	/**
-	 * Method to store a node in the database table.
-	 *
-	 * @param   boolean  $updateNulls  True to update null values as well.
-	 *
-	 * @return  boolean  True on success.
-	 */
-	public function store($updateNulls = false)
-	{
-		if (!parent::store($updateNulls))
-		{
-			return false;
-		}
-
-		return true;
-	}
 }

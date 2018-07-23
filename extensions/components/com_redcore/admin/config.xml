@@ -210,7 +210,7 @@
                 name="enable_webservice_history_log"
                 class="btn-group"
                 type="radio"
-                default="1"
+                default="0"
                 label="COM_REDCORE_CONFIG_SOAP_ENABLE_WEBSERVICE_HISTORY_LOG"
                 description="COM_REDCORE_CONFIG_SOAP_ENABLE_WEBSERVICE_HISTORY_LOG_DESC">
             <option value="1">JYES</option>
@@ -234,7 +234,8 @@
             <option value="">JNONE</option>
             <option value="all">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_ALL</option>
             <option value="create">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_CREATE</option>
-            <option value="read">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ</option>
+            <option value="read list">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_LIST</option>
+            <option value="read item">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_ITEM</option>
             <option value="update">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_UPDATE</option>
             <option value="delete">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DELETE</option>
             <option value="task">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_TASK</option>

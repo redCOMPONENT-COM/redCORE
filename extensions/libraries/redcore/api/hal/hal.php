@@ -235,7 +235,7 @@ class RApiHalHal extends RApi
 	{
 		try
 		{
-			if (RBootstrap::getConfig('enable_webservice_history_log', 1) == 1)
+			if (RBootstrap::getConfig('enable_webservice_history_log', 0) == 1)
 			{
 				if (!$this->historyLog)
 				{
@@ -249,14 +249,15 @@ class RApiHalHal extends RApi
 						$isReadItem  = $this->apiFillPrimaryKeys($primaryKeys);
 						$operation  .= $isReadItem ? ' Item' : ' List';
 					}
-					elseif ($operation == 'task')
-					{
-						$operation .= ' ' . $this->options->get('task', '');
-					}
 
 					if (!in_array('all', $allowedOperations) && !in_array($operation, $allowedOperations))
 					{
 						return;
+					}
+
+					if ($operation == 'task')
+					{
+						$operation .= ' ' . $this->options->get('task', '');
 					}
 
 					$this->historyLog = RTable::getAdminInstance('Webservice_History_Log', array('ignore_request' => true), 'com_redcore');

@@ -92,7 +92,7 @@ class RedcoreModelWebservice_History_Logs extends RModelList
 
 		if ($operation)
 		{
-			$query->where('whl.operation = ' . $db->quote($db->escape($operation, true)));
+			$query->where('whl.operation like ' . $db->quote('%' . $db->escape($operation, true) . '%'));
 		}
 
 		// Filter by using soap.
