@@ -136,7 +136,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
 
 		// Get items to publish from the request.
-		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
+		$cid   = JFactory::getApplication()->input->get('cid', array(), 'array');
 		$value = ArrayHelper::getValue($this->states, $this->getTask(), 0, 'int');
 
 		if (empty($cid))
@@ -179,6 +179,13 @@ abstract class RControllerAdminBase extends JControllerAdmin
 							break;
 					}
 
+					foreach ($cid as $tableId)
+					{
+						$table = $model->getTable();
+						$table->load($tableId);
+						RFactory::getDispatcher()->trigger('onAfterStoreRedshopb', array(&$table));
+					}
+
 					$this->setMessage(JText::plural($ntext, count($cid)));
 				}
 				else
@@ -192,7 +199,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			}
 		}
 
-		$extension = $this->input->get('extension');
+		$extension    = $this->input->get('extension');
 		$extensionURL = ($extension) ? '&extension=' . $extension : '';
 
 		// Set redirect
@@ -212,7 +219,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
 		$inc = ($this->getTask() == 'orderup') ? -1 : 1;
 
-		$model = $this->getModel();
+		$model  = $this->getModel();
 		$return = $model->reorder($ids, $inc);
 
 		if ($return === false)
@@ -318,8 +325,8 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
-		$model = $this->getModel();
+		$ids    = JFactory::getApplication()->input->post->get('cid', array(), 'array');
+		$model  = $this->getModel();
 		$return = $model->checkin($ids);
 
 		if ($return === false)
