@@ -916,6 +916,18 @@ class RApiPaymentHelper
 
 		if ($item = self::getPaymentById($paymentId))
 		{
+			if ((float) $item->amount_total > (float) $item->amount_original)
+			{
+				$item->amount_total = $item->amount_original;
+				// Notice message useful here
+			}
+			elseif ((float) $item->amount_total < (float) $item->amount_original)
+			{
+				// Partial capture
+			}
+
+			$item->amount_paid = $item->amount_total;
+
 			JFactory::getApplication()->triggerEvent(
 				'onRedpaymentCapturePayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isCaptured)
 			);
