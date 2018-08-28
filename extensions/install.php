@@ -446,7 +446,7 @@ class Com_RedcoreInstallerScript
 
 		require_once $file;
 
-		$extensionElement	 = $this->extensionElement;
+		$extensionElement    = $this->extensionElement;
 		$extensionElementArr = explode ('_', $extensionElement);
 
 		foreach ($extensionElementArr as $key => $item)
