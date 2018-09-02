@@ -18,14 +18,15 @@ use Joomla\Utilities\ArrayHelper;
  *
  * @package     Redcore
  * @subpackage  Controller
- * @since       1.0
+ * @since       1.0.0
  */
 abstract class RControllerAdminBase extends JControllerAdmin
 {
 	/**
 	 * The method => state map.
 	 *
-	 * @var  array
+	 * @var    array
+	 * @since  1.0.0
 	 */
 	protected $states = array(
 		'publish' => 1,
@@ -39,8 +40,8 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Constructor.
 	 *
 	 * @param   array  $config  An optional associative array of configuration settings.
-	 *
-	 * @throws  Exception
+	 * @since   1.0.0
+	 * @throws  \Exception
 	 */
 	public function __construct($config = array())
 	{
@@ -60,7 +61,8 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * @param   string  $prefix  The class prefix. Optional.
 	 * @param   array   $config  Configuration array for model. Optional.
 	 *
-	 * @return  object  The model.
+	 * @return  \RModel|false  The model.
+	 * @since   1.0.0
 	 */
 	public function getModel($name = '', $prefix = '', $config = array('ignore_request' => true))
 	{
@@ -82,11 +84,13 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	}
 
 	/**
-	 * Removes an item.
+	 * Validate request and cid parameter
 	 *
-	 * @return  void
+	 * @return   array|false
+	 * @since    __DEPLOY_VERSION__
+	 * @throws   \Exception
 	 */
-	public function delete()
+	protected function validateRequestCids()
 	{
 		// Check for request forgeries
 		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
@@ -97,29 +101,48 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		if (!is_array($cid) || count($cid) < 1)
 		{
 			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
+			return false;
+		}
+
+		return $cid;
+	}
+
+	/**
+	 * Removes an item.
+	 *
+	 * @return  void
+	 * @since   1.0.0
+	 * @throws  \Exception
+	 */
+	public function delete()
+	{
+		$cid = $this->validateRequestCids();
+
+		if (!$cid)
+		{
+			return;
+		}
+
+		// Get the model.
+		/** @var \RModelList $model */
+		$model = $this->getModel();
+
+		// Make sure the item ids are integers
+		jimport('joomla.utilities.arrayhelper');
+		ArrayHelper::toInteger($cid);
+
+		// Remove the items.
+		if ($model->delete($cid))
+		{
+			$this->setMessage(JText::plural($this->text_prefix . '_N_ITEMS_DELETED', count($cid)));
 		}
 		else
 		{
-			// Get the model.
-			$model = $this->getModel();
-
-			// Make sure the item ids are integers
-			jimport('joomla.utilities.arrayhelper');
-			ArrayHelper::toInteger($cid);
-
-			// Remove the items.
-			if ($model->delete($cid))
-			{
-				$this->setMessage(JText::plural($this->text_prefix . '_N_ITEMS_DELETED', count($cid)));
-			}
-			else
-			{
-				$this->setMessage($model->getError(), 'error');
-			}
-
-			// Invoke the postDelete method to allow for the child class to access the model.
-			$this->postDeleteHook($model, $cid);
+			$this->setMessage($model->getError(), 'error');
 		}
+
+		// Invoke the postDelete method to allow for the child class to access the model.
+		$this->postDeleteHook($model, $cid);
 
 		// Set redirect
 		$this->setRedirect($this->getRedirectToListRoute());
@@ -129,67 +152,65 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Method to publish a list of items
 	 *
 	 * @return  void
+	 * @since   1.0.0
+	 * @throws  \Exception
 	 */
 	public function publish()
 	{
-		// Check for request forgeries
-		JSession::checkToken() or die(JText::_('JINVALID_TOKEN'));
+		$cid = $this->validateRequestCids();
 
-		// Get items to publish from the request.
-		$cid = JFactory::getApplication()->input->get('cid', array(), 'array');
+		if (!$cid)
+		{
+			return;
+		}
+
 		$value = ArrayHelper::getValue($this->states, $this->getTask(), 0, 'int');
 
-		if (empty($cid))
+		// Get the model.
+		/** @var \RModelList $model */
+		$model = $this->getModel();
+
+		// Make sure the item ids are integers
+		ArrayHelper::toInteger($cid);
+
+		// Publish the items.
+		try
 		{
-			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
+			if ($model->publish($cid, $value))
+			{
+				switch ($this->getTask())
+				{
+					case 'publish':
+						$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
+						break;
+
+					case 'unpublish':
+						$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
+						break;
+
+					case 'archive':
+						$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
+						break;
+
+					case 'trash':
+						$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
+						break;
+
+					case 'report':
+						$ntext = $this->text_prefix . '_N_ITEMS_REPORTED';
+						break;
+				}
+
+				$this->setMessage(JText::plural($ntext, count($cid)));
+			}
+			else
+			{
+				$this->setMessage($model->getError(), 'error');
+			}
 		}
-		else
+		catch (Exception $e)
 		{
-			// Get the model.
-			$model = $this->getModel();
-
-			// Make sure the item ids are integers
-			ArrayHelper::toInteger($cid);
-
-			// Publish the items.
-			try
-			{
-				if ($model->publish($cid, $value))
-				{
-					switch ($this->getTask())
-					{
-						case 'publish':
-							$ntext = $this->text_prefix . '_N_ITEMS_PUBLISHED';
-							break;
-
-						case 'unpublish':
-							$ntext = $this->text_prefix . '_N_ITEMS_UNPUBLISHED';
-							break;
-
-						case 'archive':
-							$ntext = $this->text_prefix . '_N_ITEMS_ARCHIVED';
-							break;
-
-						case 'trash':
-							$ntext = $this->text_prefix . '_N_ITEMS_TRASHED';
-							break;
-
-						case 'report':
-							$ntext = $this->text_prefix . '_N_ITEMS_REPORTED';
-							break;
-					}
-
-					$this->setMessage(JText::plural($ntext, count($cid)));
-				}
-				else
-				{
-					$this->setMessage($model->getError(), 'error');
-				}
-			}
-			catch (Exception $e)
-			{
-				$this->setMessage(JText::_('JLIB_DATABASE_ERROR_ANCESTOR_NODES_LOWER_STATE'), 'error');
-			}
+			$this->setMessage(JText::_('JLIB_DATABASE_ERROR_ANCESTOR_NODES_LOWER_STATE'), 'error');
 		}
 
 		$extension = $this->input->get('extension');
@@ -203,17 +224,23 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Changes the order of one or more records.
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.0.0
+	 * @throws  \Exception
 	 */
 	public function reorder()
 	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$cid = $this->validateRequestCids();
 
-		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
+		if (!$cid)
+		{
+			return false;
+		}
+
 		$inc = ($this->getTask() == 'orderup') ? -1 : 1;
 
+		/** @var \RModelAdmin $model */
 		$model = $this->getModel();
-		$return = $model->reorder($ids, $inc);
+		$return = $model->reorder($cid, $inc);
 
 		if ($return === false)
 		{
@@ -242,25 +269,30 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Method to save the submitted ordering values for records.
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.0.0
+	 * @throws  \Exception
 	 */
 	public function saveorder()
 	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$cid = $this->validateRequestCids();
 
-		// Get the input
-		$pks = $this->input->post->get('cid', array(), 'array');
+		if (!$cid)
+		{
+			return false;
+		}
+
 		$order = $this->input->post->get('order', array(), 'array');
 
 		// Sanitize the input
-		ArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($cid);
 		ArrayHelper::toInteger($order);
 
 		// Get the model
+		/** @var \RModelAdmin $model */
 		$model = $this->getModel();
 
 		// Save the ordering
-		$return = $model->saveorder($pks, $order);
+		$return = $model->saveorder($cid, $order);
 
 		if ($return === false)
 		{
@@ -290,7 +322,8 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 *
 	 * @param   string  $append  An optional string to append to the route
 	 *
-	 * @return  JRoute  The JRoute object
+	 * @return  string
+	 * @since   1.0.0
 	 */
 	protected function getRedirectToListRoute($append = null)
 	{
@@ -312,15 +345,21 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Check in of one or more records.
 	 *
 	 * @return  boolean  True on success
+	 * @since   1.0.0
+	 * @throws  \Exception
 	 */
 	public function checkin()
 	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
+		$cid = $this->validateRequestCids();
 
-		$ids = JFactory::getApplication()->input->post->get('cid', array(), 'array');
+		if (!$cid)
+		{
+			return false;
+		}
+
+		/** @var \RModelAdmin $model */
 		$model = $this->getModel();
-		$return = $model->checkin($ids);
+		$return = $model->checkin($cid);
 
 		if ($return === false)
 		{
@@ -335,7 +374,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		else
 		{
 			// Checkin succeeded.
-			$message = JText::plural($this->text_prefix . '_N_ITEMS_CHECKED_IN', count($ids));
+			$message = JText::plural($this->text_prefix . '_N_ITEMS_CHECKED_IN', count($cid));
 
 			// Set redirect
 			$this->setRedirect($this->getRedirectToListRoute(), $message);
@@ -348,22 +387,31 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Method to save the submitted ordering values for records via AJAX.
 	 *
 	 * @return	void
+	 * @since   1.0.0
+	 * @throws  \Exception
 	 */
 	public function saveOrderAjax()
 	{
+		$cid = $this->validateRequestCids();
+
+		if (!$cid)
+		{
+			return;
+		}
+
 		// Get the input
-		$pks   = $this->input->post->get('cid', array(), 'array');
 		$order = $this->input->post->get('order', array(), 'array');
 
 		// Sanitize the input
-		ArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($cid);
 		ArrayHelper::toInteger($order);
 
 		// Get the model
+		/** @var \RModelAdmin $model */
 		$model = $this->getModel();
 
 		// Save the ordering
-		$return = $model->saveorder($pks, $order);
+		$return = $model->saveorder($cid, $order);
 
 		if ($return)
 		{
