@@ -101,6 +101,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		if (!is_array($cid) || count($cid) < 1)
 		{
 			JLog::add(JText::_($this->text_prefix . '_NO_ITEM_SELECTED'), JLog::WARNING, 'jerror');
+
 			return false;
 		}
 
@@ -213,7 +214,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 			$this->setMessage(JText::_('JLIB_DATABASE_ERROR_ANCESTOR_NODES_LOWER_STATE'), 'error');
 		}
 
-		$extension = $this->input->get('extension');
+		$extension    = $this->input->get('extension');
 		$extensionURL = ($extension) ? '&extension=' . $extension : '';
 
 		// Set redirect
@@ -239,7 +240,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		$inc = ($this->getTask() == 'orderup') ? -1 : 1;
 
 		/** @var \RModelAdmin $model */
-		$model = $this->getModel();
+		$model  = $this->getModel();
 		$return = $model->reorder($cid, $inc);
 
 		if ($return === false)
@@ -358,7 +359,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 		}
 
 		/** @var \RModelAdmin $model */
-		$model = $this->getModel();
+		$model  = $this->getModel();
 		$return = $model->checkin($cid);
 
 		if ($return === false)
