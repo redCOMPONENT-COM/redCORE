@@ -138,6 +138,12 @@ class RApiHalHal extends RApi
 	public $apiErrors = array();
 
 	/**
+	 * @var    object
+	 * @since  1.11
+	 */
+	public $historyLog = null;
+
+	/**
 	 * Method to instantiate the file-based api call.
 	 *
 	 * @param   mixed  $options  Optional custom options to load. JRegistry or array format
@@ -156,42 +162,47 @@ class RApiHalHal extends RApi
 		$this->webserviceVersion = $this->options->get('webserviceVersion', '');
 		$this->hal               = new RApiHalDocumentResource('');
 
-		if (!empty($this->webserviceName))
+		if (empty($this->webserviceName))
 		{
-			if (empty($this->webserviceVersion))
-			{
-				$this->webserviceVersion = RApiHalHelper::getNewestWebserviceVersion($this->client, $this->webserviceName);
-			}
-
-			$this->webservice = RApiHalHelper::getInstalledWebservice($this->client, $this->webserviceName, $this->webserviceVersion);
-
-			if (empty($this->webservice))
-			{
-				throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_NOT_INSTALLED', $this->webserviceName, $this->webserviceVersion));
-			}
-
-			if (empty($this->webservice['state']))
-			{
-				throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_UNPUBLISHED', $this->webserviceName, $this->webserviceVersion));
-			}
-
-			$this->webservicePath = $this->webservice['path'];
-			$this->configuration  = RApiHalHelper::loadWebserviceConfiguration(
-				$this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath, $this->client
-			);
-
-			// Set option and view name
-			$this->setOptionViewName($this->webserviceName, $this->configuration);
-
-			// Set base data
-			$this->setBaseDataValues();
+			throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_NOT_INSTALLED', $this->webserviceName, $this->webserviceVersion));
 		}
+
+		if (empty($this->webserviceVersion))
+		{
+			$this->webserviceVersion = RApiHalHelper::getNewestWebserviceVersion($this->client, $this->webserviceName);
+		}
+
+		$this->webservice = RApiHalHelper::getInstalledWebservice($this->client, $this->webserviceName, $this->webserviceVersion);
+
+		if (empty($this->webservice))
+		{
+			throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_NOT_INSTALLED', $this->webserviceName, $this->webserviceVersion));
+		}
+
+		if (empty($this->webservice['state']))
+		{
+			throw new Exception(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_UNPUBLISHED', $this->webserviceName, $this->webserviceVersion));
+		}
+
+		$this->webservicePath = $this->webservice['path'];
+		$this->configuration  = RApiHalHelper::loadWebserviceConfiguration(
+			$this->webserviceName, $this->webserviceVersion, 'xml', $this->webservicePath, $this->client
+		);
+
+		// Set option and view name
+		$this->setOptionViewName($this->webserviceName, $this->configuration);
+
+		// Set base data
+		$this->setBaseDataValues();
 
 		// Init Environment
 		$this->triggerFunction('setApiOperation');
 
 		// Set initial status code
 		$this->setStatusCode($this->statusCode);
+
+		// Start Webservice History Log
+		$this->startHistoryLog();
 
 		// Check for defined constants
 		if (!defined('JSON_UNESCAPED_SLASHES'))
@@ -211,6 +222,249 @@ class RApiHalHal extends RApi
 
 		// Setting default option for webservices translation fallback
 		RDatabaseSqlparserSqltranslation::setTranslationFallback(RBootstrap::getConfig('enable_translation_fallback_webservices', '1') == '1');
+	}
+
+	/**
+	 * Start History Log
+	 *
+	 * @return  void
+	 *
+	 * @since   1.11
+	 */
+	public function startHistoryLog()
+	{
+		try
+		{
+			if (RBootstrap::getConfig('enable_webservice_history_log', 0) == 1)
+			{
+				if (!$this->historyLog)
+				{
+					$allowedOperations = (array) RBootstrap::getConfig('webservice_history_log_allowed_operations', 'all');
+					$operation         = $this->operation;
+
+					// Set operation to its full name
+					if ($operation == 'read')
+					{
+						$primaryKeys = array();
+						$isReadItem  = $this->apiFillPrimaryKeys($primaryKeys);
+						$operation  .= $isReadItem ? ' Item' : ' List';
+					}
+
+					if (!in_array('all', $allowedOperations) && !in_array($operation, $allowedOperations))
+					{
+						return;
+					}
+
+					if ($operation == 'task')
+					{
+						$operation .= ' ' . $this->options->get('task', '');
+					}
+
+					$this->historyLog = RTable::getAdminInstance('Webservice_History_Log', array('ignore_request' => true), 'com_redcore');
+					$basicRequestData = null;
+					$url              = JUri::getInstance();
+
+					// Filter URL token data
+					if ($url->hasVar('access_token'))
+					{
+						$url->setVar('access_token', 'XX-HIDDEN-XX');
+					}
+
+					$row = array(
+						'webservice_name'    => $this->webserviceName,
+						'webservice_version' => $this->webserviceVersion,
+						'webservice_client'  => $this->client,
+						'url'                => $url->toString(),
+						'operation'          => $operation,
+						'method'             => $this->options->get('method', 'GET'),
+						'using_soap'         => (int) $this->options->get('usingSoap', 0),
+						'status'             => JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_STARTED'),
+					);
+
+					$this->historyLog->save($row);
+
+					$dir = trim(RBootstrap::getConfig('webservice_history_log_path', 'logs/com_redcore/webservice_history_log'), '/');
+
+					if (!is_dir(JPATH_ROOT . '/' . $dir))
+					{
+						JFolder::create(JPATH_ROOT . '/' . $dir);
+						$data = "<html>\n<body bgcolor=\"#FFFFFF\">\n</body>\n</html>";
+						JFile::write(JPATH_ROOT . '/' . $dir . "/index.html", $data);
+					}
+
+					$fileName = $dir
+						. '/' . $this->historyLog->id . '_' . date('Y_m_d_H_i_s', strtotime($this->historyLog->created_date))
+						. '_' . $this->webserviceName . '_' . $this->operation . '_' . RFilesystemFile::getUniqueName(microtime()) . '.php';
+
+					$data = sprintf(
+						"<?php defined('_JEXEC') or die;?>%s %s %s\r\n\r\n---- Request HTTP headers: ----\r\n",
+						$_SERVER['REQUEST_METHOD'],
+						$url->getPath() . '?' . $url->getQuery(),
+						$_SERVER['SERVER_PROTOCOL']
+					);
+
+					foreach ($_SERVER as $name => $value)
+					{
+						if (preg_match('/^HTTP_/', $name))
+						{
+							// Convert HTTP_HEADER_NAME to Header-Name
+							$name = strtr(substr($name, 5), '_', ' ');
+							$name = ucwords(strtolower($name));
+							$name = strtr($name, ' ', '-');
+
+							$data .= $name . ': ' . $value . "\r\n";
+						}
+					}
+
+					$data      .= "\r\n---- Request body: ----\r\n";
+					$postValues = $this->options->get('data', array());
+
+					if (is_object($postValues))
+					{
+						// We are dealing with soap request, simplexml_load_string has problems with namespaces so we have to workaround that
+						if ($postValues->{'<?xml_version'})
+						{
+							$xml = preg_replace("/(<\/?)(\w+):([^>]*>)/", "$1$2$3", file_get_contents("php://input"));
+							$xml = simplexml_load_string($xml);
+
+							foreach ($xml as $xmlKey => $xmlBody)
+							{
+								if (strpos($xmlKey, 'Body') !== false)
+								{
+									foreach ($xmlBody as $xmlContent)
+									{
+										$json       = json_encode((array) $xmlContent);
+										$postValues = json_decode($json, true);
+										break 2;
+									}
+								}
+							}
+						}
+						else
+						{
+							$postValues = ArrayHelper::fromObject($postValues);
+						}
+					}
+
+					if (!is_array($postValues))
+					{
+						$postValues = (array) $postValues;
+					}
+
+					if (isset($postValues['access_token']))
+					{
+						$postValues['access_token'] = 'XX-HIDDEN-XX';
+					}
+
+					file_put_contents(
+						JPATH_ROOT . '/' . $fileName,
+						$data . json_encode($postValues, JSON_PRETTY_PRINT) . "\r\n"
+					);
+
+					$row = array('file_name' => $fileName);
+					$this->historyLog->save($row);
+				}
+			}
+		}
+		catch (Exception $e)
+		{
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_ERROR', $e->getMessage()));
+		}
+	}
+
+	/**
+	 * End History Log
+	 *
+	 * @param   string   $status  Status message
+	 *
+	 * @return  void
+	 *
+	 * @since   1.11
+	 */
+	public function endHistoryLog($status)
+	{
+		try
+		{
+			if (RBootstrap::getConfig('enable_webservice_history_log', 0) == 1)
+			{
+				if ($this->historyLog)
+				{
+					$allowedOperations = (array) RBootstrap::getConfig('webservice_history_log_allowed_operations', 'all');
+
+					if (!in_array('all', $allowedOperations) && !in_array($this->historyLog->operation, $allowedOperations))
+					{
+						return;
+					}
+
+					$messages = $this->hal->getData('_messages');
+
+					if ($status == JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_SUCCESS'))
+					{
+						foreach ($messages as $key => $message)
+						{
+							if ($message['type'] == 'error')
+							{
+								$status = JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_FAILED');
+								break;
+							}
+						}
+					}
+					elseif ($status != JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_FAILED'))
+					{
+						$messageFound = false;
+
+						foreach ($messages as $key => $message)
+						{
+							if ($message['message'] == $status)
+							{
+								$messageFound = true;
+								break;
+							}
+						}
+
+						if (!$messageFound)
+						{
+							$message    = array(
+								'type'    => 'error',
+								'message' => $status
+							);
+							$messages[] = $message;
+						}
+
+						$status = JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_FAILED');
+					}
+
+					$row = array(
+						'execution_time'      => microtime(true) - $this->startTime,
+						'execution_memory'    => memory_get_peak_usage(),
+						'status'              => $status,
+						'messages'            => json_encode($messages),
+						'authentication'      => $this->authorizationCheck,
+						'authentication_user' => JFactory::getUser()->name,
+					);
+
+					$this->historyLog->save($row);
+
+					$data         = "\r\n---- Response HTTP headers: ----\r\n" . implode("\r\n", headers_list()) . "\r\n";
+					$responseData = '';
+
+					if (RBootstrap::getConfig('webservice_history_log_store_read_response', 1) == 1 || $this->operation != 'read')
+					{
+						$responseData = $this->hal->toArray();
+					}
+
+					file_put_contents(
+						JPATH_ROOT . '/' . $this->historyLog->file_name,
+						$data . "\r\n---- Response body: ----\r\n" . json_encode($responseData, JSON_PRETTY_PRINT) . "\r\n",
+						FILE_APPEND
+					);
+				}
+			}
+		}
+		catch (Exception $e)
+		{
+			JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_ERROR', $e->getMessage()));
+		}
 	}
 
 	/**
@@ -418,6 +672,7 @@ class RApiHalHal extends RApi
 
 		// We do not want some unwanted text to appear before output
 		ob_start();
+		$executionException = null;
 
 		try
 		{
@@ -465,18 +720,18 @@ class RApiHalHal extends RApi
 
 			// Set links from resources to the main document
 			$this->setDataValueToResource($this->hal, $this->resources, $this->data);
-			$messages = JFactory::getApplication()->getMessageQueue();
 
 			$executionErrors = ob_get_contents();
 			ob_end_clean();
 		}
 		catch (Exception $e)
 		{
-			$executionErrors = ob_get_contents();
+			$executionException = $e;
+			$executionErrors    = ob_get_contents();
 			ob_end_clean();
-
-			throw $e;
 		}
+
+		$messages = JFactory::getApplication()->getMessageQueue();
 
 		if (!empty($executionErrors))
 		{
@@ -513,6 +768,11 @@ class RApiHalHal extends RApi
 			$this->hal->setData('_messages', $messages);
 		}
 
+		if ($executionException)
+		{
+			throw $executionException;
+		}
+
 		return $this;
 	}
 
@@ -520,13 +780,13 @@ class RApiHalHal extends RApi
 	 * Method to clear the cache and any session state
 	 * related to API requests
 	 *
-	 * @param   string   $group      The cache group
-	 * @param   integer  $client_id  The ID of the client
+	 * @param   string   $group     The cache group
+	 * @param   integer  $clientId  The ID of the client
 	 *
 	 * @throws Exception
 	 * @return void
 	 */
-	private function cleanCache($group = null, $client_id = 0)
+	private function cleanCache($group = null, $clientId = 0)
 	{
 		if ($this->options->get('webservice_stateful', 0) == 1)
 		{
@@ -539,7 +799,7 @@ class RApiHalHal extends RApi
 
 		$options = array(
 			'defaultgroup' => ($group) ? $group : $option,
-			'cachebase' => ($client_id) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache'));
+			'cachebase' => ($clientId) ? JPATH_ADMINISTRATOR . '/cache' : $conf->get('cache_path', JPATH_SITE . '/cache'));
 
 		$cache = JCache::getInstance('callback', $options);
 		$cache->clean();
@@ -631,6 +891,7 @@ class RApiHalHal extends RApi
 			if (!empty($this->operationConfiguration['url']))
 			{
 				JFactory::getApplication()->redirect($this->operationConfiguration['url']);
+				$this->endHistoryLog(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_SUCCESS'));
 				JFactory::getApplication()->close();
 			}
 
@@ -1709,7 +1970,7 @@ class RApiHalHal extends RApi
 		// Joomla check
 		elseif ($this->authorizationCheck == 'joomla')
 		{
-			$isAuthorized = $this->isAuthorized($scope = null, $terminateIfNotAuthorized);
+			$isAuthorized = $this->isAuthorized(null, $terminateIfNotAuthorized);
 
 			// Use Joomla to authorize
 			if ($isAuthorized && $terminateIfNotAuthorized && !empty($authorizationGroups))
@@ -1782,6 +2043,9 @@ class RApiHalHal extends RApi
 				{
 					// OAuth2 Server response is in fact correct output for errors
 					$response->send($this->options->get('format', 'json'));
+					$error = json_decode($response->getResponseBody());
+					$this->hal->setData((array) $error);
+					$this->endHistoryLog($error->error . ' - ' . $error->error_description);
 
 					JFactory::getApplication()->close();
 				}

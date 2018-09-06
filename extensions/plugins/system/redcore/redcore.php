@@ -59,6 +59,7 @@ class PlgSystemRedcore extends JPlugin
 			if ($this->isApiEnabled($apiName))
 			{
 				$input = JFactory::getApplication()->input;
+				$api   = null;
 
 				if (!empty($apiName))
 				{
@@ -121,10 +122,20 @@ class PlgSystemRedcore extends JPlugin
 
 						// Display output
 						$api->render();
+
+						if (method_exists($api, 'endHistoryLog'))
+						{
+							$api->endHistoryLog(JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_HISTORY_LOG_SUCCESS'));
+						}
 					}
 					catch (Exception $e)
 					{
 						$code = $e->getCode() > 0 ? $e->getCode() : 500;
+
+						if (method_exists($api, 'endHistoryLog'))
+						{
+							$api->endHistoryLog($e->getMessage());
+						}
 
 						if (strtolower($apiName) == 'soap')
 						{
@@ -147,7 +158,9 @@ class PlgSystemRedcore extends JPlugin
 							}
 
 							// An exception has been caught, echo the message and exit.
-							echo json_encode(array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES);
+							echo json_encode(
+								array('message' => $e->getMessage(), 'code' => $e->getCode(), 'type' => get_class($e)), JSON_UNESCAPED_SLASHES
+							);
 						}
 					}
 

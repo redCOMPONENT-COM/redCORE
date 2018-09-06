@@ -89,6 +89,15 @@ $app                  = JFactory::getApplication();
 			</a>
 		</div>
 	</div>
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a href="<?php echo JRoute::_('index.php?option=com_redcore&view=webservice_history_logs') ?>" class="accordion-toggle text-error">
+                <h5>
+                    <i class="icon-dashboard"></i><?php echo JText::_('COM_REDCORE_WEBSERVICE_HISTORY_LOGS') ?>
+                </h5>
+            </a>
+        </div>
+    </div>
 	<div class="accordion-group">
 		<div class="accordion-heading">
 			<a href="<?php echo JRoute::_('index.php?option=com_redcore&view=oauth_clients') ?>" class="accordion-toggle text-error">

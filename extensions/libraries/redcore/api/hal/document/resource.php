@@ -181,8 +181,8 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 	/**
 	 * Sets data to the resource
 	 *
-	 * @param   string  $rel   Rel element
-	 * @param   mixed   $data  Data for the resource
+	 * @param   string|array  $rel   Rel element
+	 * @param   mixed         $data  Data for the resource
 	 *
 	 * @return RApiHalDocumentResource
 	 */
@@ -201,6 +201,18 @@ class RApiHalDocumentResource extends RApiHalDocumentBase
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Sets data to the resource
+	 *
+	 * @param   string  $rel  Rel element
+	 *
+	 * @return array
+	 */
+	public function getData($rel = null)
+	{
+		return $rel ? $this->_data[$rel] : $this->_data;
 	}
 
 	/**

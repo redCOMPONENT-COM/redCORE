@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter" addfieldpath="/libraries/redcore/form/fields">
+        <field
+                name="search_webservice_history_logs"
+                type="text"
+                label="COM_REDCORE_FILTER_SEARCH_DESC"
+                placeholder="JSEARCH_FILTER"
+                class="js-enter-submits"
+                />
+        <field
+                name="webservice_client"
+                type="list"
+                label="COM_REDCORE_WEBSERVICE_CLIENT_LABEL"
+                class="chosen"
+                default=""
+                onchange="this.form.submit();"
+                >
+            <option value="">COM_REDCORE_WEBSERVICE_CLIENT_SELECT</option>
+            <option value="site">JSITE</option>
+            <option value="administrator">JADMINISTRATOR</option>
+        </field>
+        <field
+                name="webservice_version"
+                type="list"
+                label="COM_REDCORE_WEBSERVICE_VERSION_LABEL"
+                class="chosen"
+                default=""
+                onchange="this.form.submit();"
+                >
+            <option value="">COM_REDCORE_WEBSERVICE_VERSION_SELECT</option>
+            <option value="1.0.0">1.0.0</option>
+            <option value="1.1.0">1.1.0</option>
+            <option value="1.2.0">1.2.0</option>
+            <option value="1.3.0">1.3.0</option>
+            <option value="1.4.0">1.4.0</option>
+            <option value="1.5.0">1.5.0</option>
+            <option value="1.6.0">1.6.0</option>
+            <option value="1.7.0">1.7.0</option>
+            <option value="1.8.0">1.8.0</option>
+            <option value="1.9.0">1.9.0</option>
+            <option value="2.0.0">2.0.0</option>
+            <option value="2.1.0">2.1.0</option>
+            <option value="2.2.0">2.2.0</option>
+            <option value="2.3.0">2.3.0</option>
+            <option value="2.4.0">2.4.0</option>
+            <option value="2.5.0">2.5.0</option>
+            <option value="2.6.0">2.6.0</option>
+            <option value="2.7.0">2.7.0</option>
+            <option value="2.8.0">2.8.0</option>
+            <option value="2.9.0">2.9.0</option>
+        </field>
+        <field
+                name="operation"
+                type="list"
+                label="COM_REDCORE_WEBSERVICE_CLIENT_LABEL"
+                class="chosen"
+                default=""
+                onchange="this.form.submit();"
+        >
+            <option value="">COM_REDCORE_WEBSERVICE_HISTORY_LOG_OPERATION_SELECT</option>
+            <option value="create">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_CREATE</option>
+            <option value="read List">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_LIST</option>
+            <option value="read Item">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_ITEM</option>
+            <option value="update">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_UPDATE</option>
+            <option value="delete">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DELETE</option>
+            <option value="task">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_TASK</option>
+            <option value="documentation">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DOCUMENTATION</option>
+        </field>
+        <field
+                name="created_by_start_date"
+                type="rdatepicker"
+                label="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_START_TIME"
+                placeholder="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_START_TIME"
+                description="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_START_TIME"
+                onchange="this.form.submit();"
+                buttonText="&lt;i class='icon-calendar'&gt;&lt;/i&gt;"
+        />
+        <field
+                name="created_by_end_date"
+                type="rdatepicker"
+                label="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_END_TIME"
+                placeholder="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_END_TIME"
+                description="COM_REDCORE_WEBSERVICE_HISTORY_LOGS_END_TIME"
+                onchange="this.form.submit();"
+                buttonText="&lt;i class='icon-calendar'&gt;&lt;/i&gt;"
+        />
+    </fields>
+    <fields name="list">
+        <field
+                name="webservice_history_logs_limit"
+                type="rlimitbox"
+                class="inputbox input-mini chzn"
+                default="50"
+                label="JGLOBAL_ORDERING_LIST_LIMIT"
+                description="JGLOBAL_ORDERING_LIST_LIMIT_DESC"
+                onchange="this.form.submit();"
+                />
+    </fields>
+</form>

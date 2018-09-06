@@ -92,6 +92,16 @@ $translationTables = RTranslationTable::getInstalledTranslationTables(false, tru
 			</h4>
 		</div>
 	</div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a href="<?php echo JRoute::_('index.php?option=com_redcore&view=webservice_history_logs') ?>">
+                    <i class="icon-globe"></i>
+					<?php echo JText::_('COM_REDCORE_WEBSERVICE_HISTORY_LOGS') ?>
+                </a>
+            </h4>
+        </div>
+    </div>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4 class="panel-title">
