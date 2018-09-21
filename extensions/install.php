@@ -444,7 +444,29 @@ class Com_RedcoreInstallerScript
 		}
 
 		require_once $file;
-		$class      = ucfirst($this->extensionElement) . 'UpdateScript_' . str_replace('.', '_', str_replace('-', '_', $version));
+
+		$extensionElement    = $this->extensionElement;
+		$extensionElementArr = explode ('_', $extensionElement);
+
+		foreach ($extensionElementArr as $key => $item)
+		{
+			$extensionElementArr[$key] = ucfirst($item);
+		}
+
+		$extensionElement = implode('_', $extensionElementArr);
+
+		$versionArr = explode('-', $version);
+
+		foreach ($versionArr as $key => $item)
+		{
+			$versionArr[$key] = ucfirst($item);
+		}
+
+		$version = implode('_', $versionArr);
+		$version = str_replace('.', '_', $version);
+
+		$class = $extensionElement . 'UpdateScript_' . $version;
+
 		$methodName = $executeAfterUpdate ? 'executeAfterUpdate' : 'execute';
 
 		if (class_exists($class))
