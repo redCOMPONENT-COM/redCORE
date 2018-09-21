@@ -101,8 +101,7 @@ class Com_RedcoreInstallerScript
 	 * @param   JInstallerAdapter  $parent  Class calling this method
 	 *
 	 * @return  boolean
-	 *
-	 * @throws  Exception
+	 * @throws  \Exception
 	 */
 	public function preflight($type, $parent)
 	{
@@ -145,7 +144,7 @@ class Com_RedcoreInstallerScript
 			{
 				if (!$this->checkComponentVersion($this->getRedcoreComponentFolder(), __DIR__, 'redcore.xml'))
 				{
-					throw new RuntimeException(JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'));
+					throw new \Exception(JText::_('COM_REDCORE_INSTALL_ERROR_OLDER_VERSION'));
 				}
 
 				if (!class_exists('RComponentHelper'))
@@ -193,7 +192,7 @@ class Com_RedcoreInstallerScript
 								? 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS_EXTENSIONS'
 								: 'COM_REDCORE_INSTALL_ERROR_REQUIREMENTS';
 
-							throw new RuntimeException(JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']));
+							throw new \Exception(JText::sprintf($messageKey, $checked['name'], $checked['required'], $checked['current']));
 						}
 					}
 				}
@@ -990,7 +989,7 @@ class Com_RedcoreInstallerScript
 	/**
 	 * Method to run after an install/update/uninstall method
 	 *
-	 * @param   object             $type    type of change (install, update or discover_install)
+	 * @param   string             $type    type of change (install, update or discover_install)
 	 * @param   JInstallerAdapter  $parent  class calling this method
 	 *
 	 * @return  boolean
