@@ -774,8 +774,9 @@ class RApiPaymentHelper
 	{
 		$plugin 		= RApiPaymentHelper::getPaymentParams($payment->payment_name, $payment->extension_name, $payment->owner_name);
 		$instantcapture = false;
+		$onlinePayments = array('epay', 'paypal', 'quickpay');
 
-		if ($plugin && strcmp($plugin->element, 'epay') === 0)
+		if ($plugin && in_array($plugin->element, $onlinePayments))
 		{
 			$instantcapture = (boolean) $plugin->params->get('instantcapture', 0);
 		}
