@@ -296,7 +296,12 @@ class RLoader extends JLoader
 		// If the class is registered include the file.
 		if (isset(self::getStatic('classes')[$class]))
 		{
-			include_once self::getStatic('classes')[$class];
+			$found = (bool) include_once self::getStatic('classes')[$class];
+
+			if ($found)
+			{
+				self::loadAliasForClass($class);
+			}
 
 			return true;
 		}
@@ -566,7 +571,14 @@ class RLoader extends JLoader
 					// We check for class_exists to handle case-sensitive file systems
 					if (file_exists($classFilePath) && !class_exists($class, false))
 					{
-						return (bool) include_once $classFilePath;
+						$found = (bool) include_once $classFilePath;
+
+						if ($found)
+						{
+							self::loadAliasForClass($class);
+						}
+
+						return $found;
 					}
 				}
 			}
@@ -625,7 +637,14 @@ class RLoader extends JLoader
 					// We check for class_exists to handle case-sensitive file systems
 					if (file_exists($classFilePath) && !class_exists($class, false))
 					{
-						return (bool) include_once $classFilePath;
+						$found = (bool) include_once $classFilePath;
+
+						if ($found)
+						{
+							self::loadAliasForClass($class);
+						}
+
+						return $found;
 					}
 				}
 			}
@@ -739,7 +758,14 @@ class RLoader extends JLoader
 			// Load the file if it exists.
 			if (file_exists($path))
 			{
-				return include $path;
+				$found = (bool) include_once $path;
+
+				if ($found)
+				{
+					self::loadAliasForClass($class);
+				}
+
+				return $found;
 			}
 
 			// Backwards compatibility patch
@@ -759,5 +785,34 @@ class RLoader extends JLoader
 		}
 
 		return false;
+	}
+
+	/**
+	 * Loads the aliases for the given class.
+	 *
+	 * @param   string  $class  The class.
+	 *
+	 * @return  void
+	 *
+	 * @since   __deploy_version__
+	 */
+	private static function loadAliasForClass($class)
+	{
+		if (empty(self::$classAliasesInverse))
+		{
+			// Not supported in this version of joomla
+			return;
+		}
+
+		if (!key_exists($class, self::$classAliasesInverse))
+		{
+			return;
+		}
+
+		foreach (self::$classAliasesInverse[$class] as $alias)
+		{
+			// Force auto-load of the alias class
+			class_exists($alias, true);
+		}
 	}
 }

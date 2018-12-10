@@ -1,50 +1,67 @@
 language: php
 sudo: required
 env: TRAVIS_PUBLIC_REPOSITORY=true
-dist: precise
+dist: trusty
 php:
-- 5.6
-- 7.0
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+  - nightly
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: nightly
+
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install 8
+  - nvm use 8
+
 addons:
-  firefox: "47.0.1"
+  chrome: stable
+
+cache:
+  apt: true
+  directories:
+    - "node_modules"
+    - $HOME/.composer/cache/files
+
 before_script:
-- sudo sed -i '1s/^/127.0.0.1 localhost\n/' /etc/hosts # forcing localhost to be the 1st alias of 127.0.0.1 in /etc/hosts (https://github.com/seleniumhq/selenium/issues/2074)
-- sudo apt-get update -qq
-- sudo apt-get install -y --force-yes apache2 libapache2-mod-fastcgi > /dev/null
-- sudo mkdir $(pwd)/.run
-- chmod a+x tests/travis-php-fpm.sh
+- sudo apt-get update
+- sudo apt-get install apache2 libapache2-mod-fastcgi
+- npm install -g gulp
+
+# Enable php-fpm
 - sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
-- sudo a2enmod rewrite actions fastcgi alias
-- echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
-- sudo cp -f tests/travis-ci-apache.conf /etc/apache2/sites-available/default
-- sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/default
-- sudo sed -e "s?%PHPVERSION%?${TRAVIS_PHP_VERSION:0:1}?g" --in-place /etc/apache2/sites-available/default
-- git submodule update --init --recursive
+
+# Configure apache virtual hosts
+- sudo cp -f ./tests/travis-ci-apache.conf /etc/apache2/sites-available/000-default.conf
+- sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 - sudo service apache2 restart
-- "export DISPLAY=:99.0"
-- "sh -e /etc/init.d/xvfb start"
-- sleep 3 # give xvfb some time to start
-- sudo apt-get install fluxbox -y --force-yes
-- fluxbox &
-- sleep 3 # give fluxbox some time to start
+
+# Build extension
 - cd build
-- npm install gulp -g # install globally so that it's available to robo
 - npm install
-- mv gulp-config.json.dist gulp-config.json
-- gulp release --skip-version
+- cp -f gulp-config.json.dist gulp-config.json
 - cd ../tests
+
 # Generic RoboFile init file
 - mv RoboFile.ini.dist RoboFile.ini
 
 script:
 - composer install --prefer-dist
-- vendor/bin/robo check:for-missed-debug-code
-- vendor/bin/robo check:for-parse-errors
-- vendor/bin/robo check:codestyle
-- mv acceptance.suite.dist.yml acceptance.suite.yml
-- mv api.suite.dist.yml api.suite.yml
-- vendor/bin/robo run:tests
+- cp -f acceptance.suite.yml.dist acceptance.suite.yml
+- cp -f api.suite.yml.dist api.suite.yml
+
+# System / Acceptance tests
+- vendor/bin/robo run:chrome-driver
+- vendor/bin/robo run:tests 1
+- vendor/bin/robo kill:chrome-driver
+
+# Unit tests
 - vendor/bin/robo run:unit-tests
 
 notifications:

@@ -62,9 +62,9 @@ vendor/bin/robo prepare:site-for-system-tests
 
 First you need to create the configuration files:
 
-- rename `tests/acceptance.suite.dist.yml` into `tests/acceptance.suite.yml`
+- rename `tests/acceptance.suite.yml.dist` into `tests/acceptance.suite.yml`
 - edit `tests/acceptance.suite.yml` with your server configuration
-- rename `tests/api.suite.dist.yml` into `tests/api.suite.yml`
+- rename `tests/api.suite.yml.dist` into `tests/api.suite.yml`
 - edit `tests/api.suite.yml` with your server configuration
 
 Tests are run from the `tests/` folder. Do:
