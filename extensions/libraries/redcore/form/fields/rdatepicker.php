@@ -34,6 +34,9 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	 */
 	public $cssId = null;
 
+	/**
+	 * @var string
+	 */
 	public $picker = 'datepicker';
 
 	/**
@@ -60,10 +63,13 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	/**
 	 * Show time addon
 	 *
-	 * @var  bool
+	 * @var  boolean
 	 */
 	protected $showTime = false;
 
+	/**
+	 * @var array
+	 */
 	protected $symbolsMatching = array(
 		// Day
 		'dd' => 'd',
@@ -115,7 +121,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 
 		if ($return)
 		{
-			$this->filter = (string) $this->element['filter'] ? (string) $this->element['filter'] : '';
+			$this->filter   = (string) $this->element['filter'] ? (string) $this->element['filter'] : '';
 			$this->showTime = (string) $this->element['showTime'] && (string) $this->element['showTime'] == 'true' ? true : false;
 		}
 
@@ -184,20 +190,20 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	 */
 	protected function getInput()
 	{
-		$id = isset($this->element['id']) ? $this->element['id'] : null;
+		$id          = isset($this->element['id']) ? $this->element['id'] : null;
 		$this->cssId = '#' . $this->getId($id, $this->element['name']);
 
 		// We will add a rdatepicker class to solve common styling issues
 		$this->element['class'] = $this->element['class'] ? 'rdatepicker ' . $this->element['class'] : 'rdatepicker';
 
 		// Get some system objects.
-		$config = JFactory::getConfig();
-		$user = JFactory::getUser();
+		$config    = JFactory::getConfig();
+		$user      = JFactory::getUser();
 		$phpFormat = $this->dateFormatJQueryUIToPHP($this->getAttribute('dateFormat'));
 
 		if ($this->showTime == true)
 		{
-			$phpFormat .= ' H:i:s';
+			$phpFormat   .= ' H:i:s';
 			$this->picker = 'datetimepicker';
 		}
 		else
@@ -240,7 +246,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 
 		if (isset($this->element['inline']) && $this->element['inline'] == 'true')
 		{
-			$class = ' class="' . (string) $this->element['class'] . '"';
+			$class           = ' class="' . (string) $this->element['class'] . '"';
 			$this->fieldHtml = '<div id="' . $this->getId($id, $this->element['name']) . '" ' . $class . '></div>';
 		}
 		else
@@ -266,8 +272,8 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	protected function dateFormatJQueryUIToPHP($jQueryFormat)
 	{
 		$phpFormat = "";
-		$escaping = false;
-		$length = strlen($jQueryFormat);
+		$escaping  = false;
+		$length    = strlen($jQueryFormat);
 
 		for ($i = 0; $i < $length; $i++)
 		{
@@ -284,7 +290,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 				{
 					$i++;
 					$phpFormat .= '\\' . $jQueryFormat[$i];
-					$escaping = true;
+					$escaping   = true;
 				}
 			}
 			else
@@ -303,7 +309,7 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 				else
 				{
 					$phpFormat .= $this->symbolsMatching[$findMatch];
-					$i += strlen($findMatch) - 1;
+					$i         += strlen($findMatch) - 1;
 				}
 			}
 		}
@@ -316,18 +322,18 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 	 *
 	 * @param   string  $string  Current string
 	 *
-	 * @return bool|string
+	 * @return boolean|string
 	 */
 	protected function findMatch($string)
 	{
-		$length = 0;
+		$length  = 0;
 		$itemKey = false;
 
 		foreach ($this->symbolsMatching as $key => $item)
 		{
 			if (strpos($string, $key) === 0 && $length < strlen($item))
 			{
-				$length = strlen($item);
+				$length  = strlen($item);
 				$itemKey = $key;
 			}
 		}
@@ -396,6 +402,12 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 			'timeFormat'             => array('type' => 'string', 'default' => 'HH:mm:ss')
 		);
 
+		if ($this->disabled || $this->readonly)
+		{
+			// Do not show a button
+			$optionsToCheck['showOn']['default'] = 'focus';
+		}
+
 		if ($optionsToCheck)
 		{
 			$options = array();
@@ -404,26 +416,26 @@ class JFormFieldRdatepicker extends JFormFieldRtext
 			{
 				if (!empty($this->element[$attribute]) || isset($params['default']))
 				{
-					$value = isset($this->element[$attribute]) ? $this->element[$attribute] : $params['default'];
+					$value  = isset($this->element[$attribute]) ? $this->element[$attribute] : $params['default'];
 					$option = '"' . $attribute . '":';
 
 					switch ((string) $params['type'])
 					{
 						case 'bool':
 						case 'boolean':
-						$option .= (boolean) $value;
+							$option .= (boolean) $value;
 							break;
 						case 'int':
 						case 'integer':
-						$option .= (integer) $value;
+							$option .= (integer) $value;
 							break;
 						case 'double':
 						case 'float':
 						case 'real':
-						$option .= (double) $value;
+							$option .= (double) $value;
 							break;
 						case 'array':
-							$value = str_replace(array('[', ']'), '', $value);
+							$value   = str_replace(array('[', ']'), '', $value);
 							$option .= json_encode(explode(',', $value));
 							break;
 

@@ -51,7 +51,7 @@ abstract class RFormBase extends JForm
 			}
 
 			// Instantiate the form.
-			$forms[$name] = new RForm($name, $options);
+			$forms[$name] = new static($name, $options);
 
 			// Load the data.
 			if (substr(trim($data), 0, 1) == '<')
