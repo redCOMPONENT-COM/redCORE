@@ -396,6 +396,8 @@ class RTable extends JTable
 	 */
 	public function delete($pk = null)
 	{
+		RApi::markExecutionTime('Executing delete method in table', null, true, true);
+
 		// Before delete
 		if (!$this->beforeDelete($pk))
 		{
@@ -413,6 +415,8 @@ class RTable extends JTable
 		{
 			return false;
 		}
+
+		RApi::markExecutionTime('Delete method in table completed', null, false, true);
 
 		return true;
 	}
@@ -568,6 +572,8 @@ class RTable extends JTable
 	 */
 	public function store($updateNulls = false)
 	{
+		RApi::markExecutionTime('Executing store method in table', null, true, true);
+
 		// Before store
 		if (!$this->beforeStore($updateNulls))
 		{
@@ -585,6 +591,8 @@ class RTable extends JTable
 		{
 			return false;
 		}
+
+		RApi::markExecutionTime('Store method in table completed', null, false, true);
 
 		return true;
 	}
