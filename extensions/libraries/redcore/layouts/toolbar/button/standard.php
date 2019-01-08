@@ -33,11 +33,11 @@ $message = addslashes($message);
 
 if ($isList)
 {
-	$cmd = "if (document.adminForm.boxchecked.value==0){alert('$message');}else{ Joomla.submitbutton('$task')}";
+	$cmd = "if (document.adminForm.boxchecked.value==0){alert('$message');}else{ Joomla.submitbutton('$task')} return false;";
 }
 else
 {
-	$cmd = "Joomla.submitbutton('$task')";
+	$cmd = "Joomla.submitbutton('$task'); return false;";
 }
 
 // Get the button class.

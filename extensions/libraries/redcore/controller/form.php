@@ -651,7 +651,8 @@ class RControllerForm extends JControllerForm
 					: 'JLIB_APPLICATION')
 				. ($recordId == 0 && (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? '_SUBMIT' : '')
 				. '_SAVE_SUCCESS'
-			)
+			),
+			'success'
 		);
 
 		// Redirect the user and adjust session state based on the chosen task.
