@@ -444,11 +444,13 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		$payment = RApiPaymentHelper::getPaymentByExtensionId($extensionName, $orderId);
 		$restrictedData = array(
 			'id', 'extension_name', 'payment_name', 'sandbox', 'created_date', 'modified_date', 'confirmed_date', 'transaction_id',
-			'amount_total', 'amount_paid', 'coupon_code', 'customer_note', 'status'
+			'amount_paid', 'coupon_code', 'customer_note', 'status'
 		);
 
 		if (!$payment)
 		{
+			array_push($restrictedData, 'amount_total');
+
 			$ownerName = !empty($orderData['owner_name']) ? $orderData['owner_name'] : '';
 			$createData = array();
 
@@ -467,6 +469,8 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		}
 		else
 		{
+			array_push($restrictedData, 'amount_original');
+
 			// We will update payment with provided data if it is different than originally provided
 			$ownerName = !empty($orderData['owner_name']) ? $orderData['owner_name'] : $payment->owner_name;
 			$updateData = ArrayHelper::fromObject($payment);

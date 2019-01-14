@@ -726,7 +726,11 @@ class RApiPaymentHelper
 
 			if ($status == RApiPaymentStatus::getStatusCompleted() && $payment['amount_paid'] != $payment['amount_total'])
 			{
-				$status = RApiPaymentStatus::getStatusPending();
+				// If not ePay partial payment capture
+				if (self::isInstantCapture((object) $payment) || $payment['amount_original'] <= $payment['amount_total'])
+				{
+					$status = RApiPaymentStatus::getStatusPending();
+				}
 			}
 
 			$payment['status'] = $status;
@@ -757,6 +761,26 @@ class RApiPaymentHelper
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check if ePay is using  instant capture
+	 *
+	 * @param   object	$payment	Payment object
+	 *
+	 * @return  boolean
+	 */
+	public static function isInstantCapture($payment)
+	{
+		$plugin 		= RApiPaymentHelper::getPaymentParams($payment->payment_name, $payment->extension_name, $payment->owner_name);
+		$instantcapture = false;
+
+		if ($plugin && strcmp($plugin->element, 'epay') === 0)
+		{
+			$instantcapture = (boolean) $plugin->params->get('instantcapture', 0);
+		}
+
+		return $instantcapture;
 	}
 
 	/**
@@ -916,6 +940,13 @@ class RApiPaymentHelper
 
 		if ($item = self::getPaymentById($paymentId))
 		{
+			if ((float) $item->amount_total > (float) $item->amount_original)
+			{
+				$item->amount_total = $item->amount_original;
+			}
+
+			$item->amount_paid = $item->amount_total;
+
 			JFactory::getApplication()->triggerEvent(
 				'onRedpaymentCapturePayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isCaptured)
 			);
