@@ -40,26 +40,36 @@ class RApiSoapHelper
 	/**
 	 * Returns generated WSDL file for the webservice
 	 *
-	 * @param   SimpleXMLElement  $webservice  Webservice configuration xml
-	 * @param   string            $wsdlPath    Path of WSDL file
+	 * @param   SimpleXMLElement  $webservice      Webservice configuration xml
+	 * @param   string            $wsdlPath        Path of WSDL file
+	 * @param   string            $webservicePath  Path to webservice file. If not specified the path from the saved webservice will be used in its place
 	 *
 	 * @return  SimpleXMLElement
 	 */
-	public static function generateWsdl($webservice, $wsdlPath = null)
+	public static function generateWsdl($webservice, $wsdlPath = null, $webservicePath = null)
 	{
 		if (empty($wsdlPath) && !empty($webservice))
 		{
 			$client = RApiHalHelper::attributeToString($webservice, 'client', 'site');
 			$version = !empty($webservice->config->version) ? (string) $webservice->config->version : '1.0.0';
 			$name = (string) $webservice->config->name;
-			$webserviceInstance = RApiHalHelper::getInstalledWebservice($client, $name, $version);
+
+			if (!$webservicePath)
+			{
+				$webserviceInstance = RApiHalHelper::getInstalledWebservice($client, $name, $version);
+				$wsPath = $webserviceInstance['path'];
+			}
+			else
+			{
+				$wsPath = $webservicePath;
+			}
 
 			$wsdlPath = self::getWebserviceFilePath(
 					$client,
 					$name,
 					$version,
 					'wsdl',
-					$webserviceInstance['path']
+					$wsPath
 			);
 		}
 
@@ -106,7 +116,6 @@ class RApiSoapHelper
 			foreach ($fields as $field)
 			{
 				$transformType = isset($field['transform']) ? $field['transform'] : 'string';
-				$complexArrayType = '';
 				$additionalFields = isset($field['fields']) ? $field['fields'] : array();
 				$fieldValidateOptional = $validateOptional;
 
@@ -361,6 +370,8 @@ class RApiSoapHelper
 				continue;
 			}
 
+			$defaultPath = JPath::clean(RApiHalHelper::getWebservicesPath());
+			$webservicePath = str_replace($defaultPath . '/', '', $path);
 			$file = $path . '/' . $entry;
 
 			if (is_dir($file))
@@ -377,7 +388,7 @@ class RApiSoapHelper
 					if (is_string($content))
 					{
 						$webserviceXml = new SimpleXMLElement($content);
-						$wsdl = self::generateWsdl($webserviceXml);
+						$wsdl = self::generateWsdl($webserviceXml, null, $webservicePath);
 						$fullWsdlPath = substr($file, 0, -4) . '.wsdl';
 
 						// Save the generated WSDL file

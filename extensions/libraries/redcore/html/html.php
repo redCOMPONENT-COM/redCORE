@@ -14,6 +14,8 @@ JLoader::import('joomla.filesystem.file');
 JLoader::import('joomla.filesystem.path');
 JLoader::import('joomla.utilities.arrayhelper');
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Utility class for all HTML drawing classes
  *
@@ -112,37 +114,33 @@ abstract class RHtml
 		{
 			$path = JPath::find(static::$includePaths, strtolower($file) . '.php');
 
-			if ($path)
-			{
-				require_once $path;
-
-				if (!class_exists($className))
-				{
-					throw new InvalidArgumentException(sprintf('%s not found.', $className), 500);
-				}
-			}
-			else
+			if (!$path)
 			{
 				throw new InvalidArgumentException(sprintf('%s %s not found.', $prefix, $file), 500);
+			}
+
+			JLoader::register($className, $path);
+
+			if (!class_exists($className))
+			{
+				throw new InvalidArgumentException(sprintf('%s not found.', $className), 500);
 			}
 		}
 
 		$toCall = array($className, $func);
 
-		if (is_callable($toCall))
-		{
-			static::register($key, $toCall);
-			$args = func_get_args();
-
-			// Remove function name from arguments
-			array_shift($args);
-
-			return static::call($toCall, $args);
-		}
-		else
+		if (!is_callable($toCall))
 		{
 			throw new InvalidArgumentException(sprintf('%s::%s not found.', $className, $func), 500);
 		}
+
+		static::register($key, $toCall);
+		$args = func_get_args();
+
+		// Remove function name from arguments
+		array_shift($args);
+
+		return static::call($toCall, $args);
 	}
 
 	/**
@@ -253,7 +251,7 @@ abstract class RHtml
 	{
 		if (is_array($attribs))
 		{
-			$attribs = JArrayHelper::toString($attribs);
+			$attribs = ArrayHelper::toString($attribs);
 		}
 
 		return '<a href="' . $url . '" ' . $attribs . '>' . $text . '</a>';
@@ -275,10 +273,35 @@ abstract class RHtml
 	{
 		if (is_array($attribs))
 		{
-			$attribs = JArrayHelper::toString($attribs);
+			$attribs = ArrayHelper::toString($attribs);
 		}
 
 		return '<iframe src="' . $url . '" ' . $attribs . ' name="' . $name . '">' . $noFrames . '</iframe>';
+	}
+
+	/**
+	 * Include version with MD5SUM file in path.
+	 *
+	 * @param   string  $path  Folder name to search into (images, css, js, ...).
+	 *
+	 * @return  string  Query string to add.
+	 *
+	 * @since   3.7.0
+	 *
+	 * @deprecated   4.0  Usage of MD5SUM files is deprecated, use version instead.
+	 */
+	protected static function getMd5Version($path)
+	{
+		$md5 = dirname($path) . '/MD5SUM';
+
+		if (file_exists($md5))
+		{
+			JLog::add('Usage of MD5SUM files is deprecated, use version instead.', JLog::WARNING, 'deprecated');
+
+			return '?' . file_get_contents($md5);
+		}
+
+		return '';
 	}
 
 	/**
@@ -347,11 +370,9 @@ abstract class RHtml
 						 * Detect if we received a file in the format name.min.ext
 						 * If so, strip the .min part out, otherwise append -uncompressed
 						 */
-						if (strrpos($strip, '.min', '-4'))
+						if (strlen($strip) > 4 && preg_match('#\.min$#', $strip))
 						{
-							$position = strrpos($strip, '.min', '-4');
-							$filename = str_replace('.min', '.', $strip, $position);
-							$files[]  = $filename . $ext;
+							$files[] = preg_replace('#\.min$#', '.', $strip) . $ext;
 						}
 						else
 						{
@@ -373,9 +394,7 @@ abstract class RHtml
 
 						if (file_exists($path))
 						{
-							$md5 = dirname($path) . '/MD5SUM';
-							$includes[] = JUri::base(true) . "/templates/$template/$folder/$file" .
-								(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+							$includes[] = JUri::base(true) . "/templates/$template/$folder/$file" . static::getMd5Version($path);
 
 							break;
 						}
@@ -398,9 +417,7 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/media/$extension/$element/$folder/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/media/$extension/$element/$folder/$file" . static::getMd5Version($path);
 
 										break;
 									}
@@ -410,9 +427,7 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/media/$extension/$folder/$element/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/media/$extension/$folder/$element/$file" . static::getMd5Version($path);
 
 										break;
 									}
@@ -422,9 +437,7 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/media/$extension/$element/$file" .
-												(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/media/$extension/$element/$file" . static::getMd5Version($path);
 
 										break;
 									}
@@ -434,9 +447,8 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$element/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$element/$file"
+											. static::getMd5Version($path);
 
 										break;
 									}
@@ -446,9 +458,7 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/media/system/$folder/$element/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/media/system/$folder/$element/$file" . static::getMd5Version($path);
 
 										break;
 									}
@@ -460,9 +470,7 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/media/$extension/$folder/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/media/$extension/$folder/$file" . static::getMd5Version($path);
 
 										break;
 									}
@@ -472,9 +480,7 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/templates/$template/$folder/system/$file" . static::getMd5Version($path);
 
 										break;
 									}
@@ -484,24 +490,20 @@ abstract class RHtml
 
 									if (file_exists($path))
 									{
-										$md5 = dirname($path) . '/MD5SUM';
-										$includes[] = JUri::root(true) . "/media/system/$folder/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+										$includes[] = JUri::root(true) . "/media/system/$folder/$file" . static::getMd5Version($path);
 
 										break;
 									}
 								}
 							}
-							else
 							// Try to deal with system files in the media folder
+							else
 							{
 								$path = JPATH_ROOT . "/media/system/$folder/$file";
 
 								if (file_exists($path))
 								{
-									$md5 = dirname($path) . '/MD5SUM';
-									$includes[] = JUri::root(true) . "/media/system/$folder/$file" .
-											(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+									$includes[] = JUri::root(true) . "/media/system/$folder/$file" . static::getMd5Version($path);
 
 									break;
 								}
@@ -510,8 +512,8 @@ abstract class RHtml
 					}
 				}
 			}
-			else
 			// If not relative and http is not present in filename
+			else
 			{
 				foreach ($potential as $strip)
 				{
@@ -524,11 +526,9 @@ abstract class RHtml
 						 * Detect if we received a file in the format name.min.ext
 						 * If so, strip the .min part out, otherwise append -uncompressed
 						 */
-						if (strrpos($strip, '.min', '-4'))
+						if (strlen($strip) > 4 && preg_match('#\.min$#', $strip))
 						{
-							$position = strrpos($strip, '.min', '-4');
-							$filename = str_replace('.min', '.', $strip, $position);
-							$files[]  = $filename . $ext;
+							$files[] = preg_replace('#\.min$#', '.', $strip) . $ext;
 						}
 						else
 						{
@@ -549,9 +549,7 @@ abstract class RHtml
 
 						if (file_exists($path))
 						{
-							$md5 = dirname($path) . '/MD5SUM';
-							$includes[] = JUri::root(true) . "/$file" .
-								(file_exists($md5) ? ('?' . file_get_contents($md5)) : '');
+							$includes[] = JUri::root(true) . "/$file" . static::getMd5Version($path);
 
 							break;
 						}
@@ -564,37 +562,38 @@ abstract class RHtml
 	}
 
 	/**
-	 * Write a <img></img> element
+	 * Write a `<img>` element
 	 *
-	 * @param   string   $file      The relative or absolute URL to use for the src attribute.
-	 * @param   string   $alt       The alt text.
-	 * @param   mixed    $attribs   String or associative array of attribute(s) to use.
-	 * @param   boolean  $relative  Path to file is relative to /media folder (and searches in template).
-	 * @param   mixed    $path_rel  Return html tag without (-1) or with file computing(false). Return computed path only (true).
+	 * @param   string        $file        The relative or absolute URL to use for the src attribute.
+	 * @param   string        $alt         The alt text.
+	 * @param   array|string  $attribs     Attributes to be added to the `<img>` element
+	 * @param   boolean       $relative    Flag if the path to the file is relative to the /media folder (and searches in template).
+	 * @param   integer       $returnPath  Defines the return value for the method:
+	 *                                     -1: Returns a `<img>` tag without looking for relative files
+	 *                                     0: Returns a `<img>` tag while searching for relative files
+	 *                                     1: Returns the file path to the image while searching for relative files
 	 *
 	 * @return  string
 	 *
-	 * @since   1.0
+	 * @since   1.5
 	 */
-	public static function image($file, $alt, $attribs = null, $relative = false, $path_rel = false)
+	public static function image($file, $alt, $attribs = null, $relative = false, $returnPath = 0)
 	{
-		if ($path_rel !== -1)
+		$returnPath = (int) $returnPath;
+
+		if ($returnPath !== -1)
 		{
 			$includes = static::includeRelativeFiles('images', $file, $relative, false, false);
 			$file = count($includes) ? $includes[0] : null;
 		}
 
 		// If only path is required
-		if ($path_rel)
+		if ($returnPath)
 		{
 			return $file;
 		}
-		else
-		{
-			return '<img src="' . $file . '" alt="' . $alt . '" '
-			. trim((is_array($attribs) ? JArrayHelper::toString($attribs) : $attribs) . ' /')
-			. '>';
-		}
+
+		return '<img src="' . $file . '" alt="' . $alt . '" ' . trim((is_array($attribs) ? ArrayHelper::toString($attribs) : $attribs) . ' /') . '>';
 	}
 
 	/**
@@ -657,7 +656,7 @@ abstract class RHtml
 			}
 		}
 		else
-		// If inclusion is required
+			// If inclusion is required
 		{
 			$document = JFactory::getDocument();
 
@@ -710,7 +709,7 @@ abstract class RHtml
 			}
 		}
 		else
-		// If inclusion is required
+			// If inclusion is required
 		{
 			$document = JFactory::getDocument();
 
@@ -771,7 +770,7 @@ abstract class RHtml
 			$date = JFactory::getDate($input, 'UTC');
 
 			// Set the correct time zone based on the user configuration.
-			$date->setTimeZone(new DateTimeZone($user->getParam('timezone', $config->get('offset'))));
+			$date->setTimezone($user->getTimezone());
 		}
 		// UTC date converted to server time zone.
 		elseif ($tz === false)
@@ -780,7 +779,7 @@ abstract class RHtml
 			$date = JFactory::getDate($input, 'UTC');
 
 			// Set the correct time zone based on the server configuration.
-			$date->setTimeZone(new DateTimeZone($config->get('offset')));
+			$date->setTimezone(new DateTimeZone($config->get('offset')));
 		}
 		// No date conversion.
 		elseif ($tz === null)
@@ -794,11 +793,11 @@ abstract class RHtml
 			$date = JFactory::getDate($input, 'UTC');
 
 			// Set the correct time zone based on the server configuration.
-			$date->setTimeZone(new DateTimeZone($tz));
+			$date->setTimezone(new DateTimeZone($tz));
 		}
 
 		// If no format is given use the default locale based format.
-		if (!$format)
+		if (!empty($format))
 		{
 			$format = JText::_('DATE_FORMAT_LC1');
 		}
@@ -812,10 +811,8 @@ abstract class RHtml
 		{
 			return $date->format($format, true);
 		}
-		else
-		{
-			return $date->calendar($format, true);
-		}
+
+		return $date->calendar($format, true);
 	}
 
 	/**
@@ -961,32 +958,65 @@ abstract class RHtml
 	 * @param   string  $id       The id of the text field
 	 * @param   string  $format   The date format
 	 * @param   mixed   $attribs  Additional HTML attributes
+	 *                            The array can have the following keys:
+	 *                            readonly      Sets the readonly parameter for the input tag
+	 *                            disabled      Sets the disabled parameter for the input tag
+	 *                            autofocus     Sets the autofocus parameter for the input tag
+	 *                            autocomplete  Sets the autocomplete parameter for the input tag
+	 *                            filter        Sets the filter for the input tag
 	 *
 	 * @return  string  HTML markup for a calendar field
 	 *
-	 * @since   1.0
+	 * @since   1.5
+	 *
 	 */
-	public static function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = null)
+	public static function calendar($value, $name, $id, $format = '%Y-%m-%d', $attribs = array())
 	{
-		static $done;
+		$tag       = JFactory::getLanguage()->getTag();
+		$calendar  = JFactory::getLanguage()->getCalendar();
+		$direction = strtolower(JFactory::getDocument()->getDirection());
 
-		if ($done === null)
+		// Get the appropriate file for the current language date helper
+		$helperPath = 'system/fields/calendar-locales/date/gregorian/date-helper.min.js';
+
+		if (!empty($calendar) && is_dir(JPATH_ROOT . '/media/system/js/fields/calendar-locales/date/' . strtolower($calendar)))
 		{
-			$done = array();
+			$helperPath = 'system/fields/calendar-locales/date/' . strtolower($calendar) . '/date-helper.min.js';
 		}
 
-		$readonly = isset($attribs['readonly']) && $attribs['readonly'] == 'readonly';
-		$disabled = isset($attribs['disabled']) && $attribs['disabled'] == 'disabled';
+		// Get the appropriate locale file for the current language
+		$localesPath = 'system/fields/calendar-locales/en.js';
 
-		if (is_array($attribs))
+		if (is_file(JPATH_ROOT . '/media/system/js/fields/calendar-locales/' . strtolower($tag) . '.js'))
 		{
-			$attribs['class'] = isset($attribs['class']) ? $attribs['class'] : 'input-medium';
-			$attribs['class'] = trim($attribs['class'] . ' hasTooltip');
-
-			$attribs = JArrayHelper::toString($attribs);
+			$localesPath = 'system/fields/calendar-locales/' . strtolower($tag) . '.js';
+		}
+		elseif (is_file(JPATH_ROOT . '/media/system/js/fields/calendar-locales/' . strtolower(substr($tag, 0, -3)) . '.js'))
+		{
+			$localesPath = 'system/fields/calendar-locales/' . strtolower(substr($tag, 0, -3)) . '.js';
 		}
 
-		static::_('rbootstrap.tooltip');
+		$readonly     = isset($attribs['readonly']) && $attribs['readonly'] == 'readonly';
+		$disabled     = isset($attribs['disabled']) && $attribs['disabled'] == 'disabled';
+		$autocomplete = isset($attribs['autocomplete']) && $attribs['autocomplete'] == '';
+		$autofocus    = isset($attribs['autofocus']) && $attribs['autofocus'] == '';
+		$required     = isset($attribs['required']) && $attribs['required'] == '';
+		$filter       = isset($attribs['filter']) && $attribs['filter'] == '';
+		$todayBtn     = isset($attribs['todayBtn']) ? $attribs['todayBtn'] : true;
+		$weekNumbers  = isset($attribs['weekNumbers']) ? $attribs['weekNumbers'] : false;
+		$showTime     = isset($attribs['showTime']) ? $attribs['showTime'] : false;
+		$fillTable    = isset($attribs['fillTable']) ? $attribs['fillTable'] : true;
+		$timeFormat   = isset($attribs['timeFormat']) ? $attribs['timeFormat'] : 24;
+		$singleHeader = isset($attribs['singleHeader']) ? $attribs['singleHeader'] : false;
+		$hint         = isset($attribs['placeholder']) ? $attribs['placeholder'] : '';
+		$class        = isset($attribs['class']) ? $attribs['class'] : '';
+		$onchange     = isset($attribs['onChange']) ? $attribs['onChange'] : '';
+
+		$showTime     = ($showTime) ? "1" : "0";
+		$todayBtn     = ($todayBtn) ? "1" : "0";
+		$weekNumbers  = ($weekNumbers) ? "1" : "0";
+		$fillTable    = ($fillTable) ? "1" : "0";
+		$singleHeader = ($singleHeader) ? "1" : "0";
 
 		// Format value when not nulldate ('0000-00-00 00:00:00'), otherwise blank it as it would result in 1970-01-01.
 		if ($value && $value != JFactory::getDbo()->getNullDate() && strtotime($value) !== false)
@@ -1001,44 +1031,33 @@ abstract class RHtml
 			$inputvalue = '';
 		}
 
-		if (!$readonly && !$disabled)
-		{
-			// Load the calendar behavior
-			static::_('behavior.calendar');
+		$data = array(
+			'id'           => $id,
+			'name'         => $name,
+			'class'        => $class,
+			'value'        => $inputvalue,
+			'format'       => $format,
+			'filter'       => $filter,
+			'required'     => $required,
+			'readonly'     => $readonly,
+			'disabled'     => $disabled,
+			'hint'         => $hint,
+			'autofocus'    => $autofocus,
+			'autocomplete' => $autocomplete,
+			'todaybutton'  => $todayBtn,
+			'weeknumbers'  => $weekNumbers,
+			'showtime'     => $showTime,
+			'filltable'    => $fillTable,
+			'timeformat'   => $timeFormat,
+			'singleheader' => $singleHeader,
+			'tag'          => $tag,
+			'helperPath'   => $helperPath,
+			'localesPath'  => $localesPath,
+			'direction'    => $direction,
+			'onchange'     => $onchange,
+		);
 
-			// Only display the triggers once for each control.
-			if (!in_array($id, $done))
-			{
-				$document = JFactory::getDocument();
-				$document
-					->addScriptDeclaration(
-				'jQuery(document).ready(function($) {Calendar.setup({
-				// Id of the input field
-				inputField: "' . $id . '",
-				// Format of the input field
-				ifFormat: "' . $format . '",
-				// Trigger for the calendar (button ID)
-				button: "' . $id . '_img",
-				// Alignment (defaults to "Bl")
-				align: "Tl",
-				singleClick: true,
-				firstDay: ' . JFactory::getLanguage()->getFirstDay() . '
-				});});'
-				);
-				$done[] = $id;
-			}
-
-			return '<div class="input-append">'
-			. '<input type="text" title="' . ($inputvalue ? static::_('date', $value, null, null) : '')
-			. '" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($inputvalue, ENT_COMPAT, 'UTF-8') . '" ' . $attribs . ' />'
-			. '<button type="button" class="btn btn-default" id="' . $id . '_img"><i class="icon-calendar"></i></button></div>';
-		}
-		else
-		{
-			return '<input type="text" class="hasTooltip" title="' . ($inputvalue ? static::_('date', $value, null, null) : '')
-				. '" value="' . ($inputvalue ? static::_('date', $value, 'Y-m-d H:i:s', null) : '') . '" ' . $attribs
-				. ' /><input type="hidden" name="' . $name . '" id="' . $id . '" value="' . htmlspecialchars($inputvalue, ENT_COMPAT, 'UTF-8') . '" />';
-		}
+		return JLayoutHelper::render('joomla.form.field.calendar', $data, null, null);
 	}
 
 	/**
@@ -1075,13 +1094,16 @@ abstract class RHtml
 	 *
 	 * @return  string  JavaScript object notation representation of the array
 	 *
-	 * @deprecated 4.0 use json_encode or JRegistry::toString('json')
-	 *
 	 * @since   3.0
+	 * @deprecated  4.0 Use `json_encode()` or `Joomla\Registry\Registry::toString('json')` instead
 	 */
 	public static function getJSObject(array $array = array())
 	{
-		JLog::add(__METHOD__ . ' is deprecated. Use json_encode instead.', JLog::WARNING, 'deprecated');
+		JLog::add(
+			__METHOD__ . " is deprecated. Use json_encode() or \\Joomla\\Registry\\Registry::toString('json') instead.",
+			JLog::WARNING,
+			'deprecated'
+		);
 
 		$elements = array();
 
@@ -1119,7 +1141,7 @@ abstract class RHtml
 			}
 			else
 			{
-				$elements[] = $key . ': ' . static::getJSObject(is_object($v) ? get_object_vars($v) : $v);
+				$elements[] = $key . ': ' . json_encode(is_object($v) ? get_object_vars($v) : $v);
 			}
 		}
 

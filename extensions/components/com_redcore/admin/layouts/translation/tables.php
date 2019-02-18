@@ -73,8 +73,8 @@ $column = 0;
 </script>
 <div class="tab-pane" id="mainComponentTranslations">
 	<h4 class="tab-description"><?php echo JText::_('COM_REDCORE_TRANSLATIONS_DESC'); ?></h4>
-	<div class="row">
-		<div class="col-md-6 well">
+	<div class="row-fluid">
+		<div class="span6 well">
 			<div class="form-group">
 				<div class="control-label">
 					<?php echo JText::_('COM_REDCORE_TRANSLATION_TABLE_CONTENT_ELEMENT_FILES_MASS_ACTIONS'); ?>
@@ -98,9 +98,7 @@ $column = 0;
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<input type="hidden" id="contentElement" name="contentElement" />
-		<input type="hidden" id="componentName" name="component" />
+	<div class="row-fluid">
 		<?php if (empty($contentElements)): ?>
 			<div class="alert alert-info">
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -112,7 +110,7 @@ $column = 0;
 		<?php foreach ($contentElements as $contentElement):
 			$disabled = empty($contentElement->table) ? ' disabled="disabled" ' : '';
 		?>
-		<div class="col-md-4 well">
+		<div class="span4 well">
 			<h4>
 				<?php echo !empty($contentElement->name) ? $contentElement->name : JText::_('JNONE'); ?>
 				<br />
@@ -180,10 +178,12 @@ $column = 0;
 			</button>
 		</div>
 		<?php if ((++$column) % 3 == 0 ) : ?>
-	</div>
-	<div class="row">
+			</div>
+			<div class="row-fluid">
 		<?php endif; ?>
 		<?php endforeach; ?>
 		<?php endif; ?>
 	</div>
+	<input type="hidden" id="contentElement" name="contentElement" />
+	<input type="hidden" id="componentName" name="component" />
 </div>

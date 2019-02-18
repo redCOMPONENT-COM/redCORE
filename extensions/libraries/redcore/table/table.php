@@ -9,6 +9,8 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * redCORE Base Table
  *
@@ -652,7 +654,7 @@ class RTable extends JTable
 		$k = $this->_tbl_key;
 
 		// Sanitize input.
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
 		$state  = (int) $state;
 
@@ -695,7 +697,7 @@ class RTable extends JTable
 
 		try
 		{
-			$db->query();
+			$db->execute();
 		}
 		catch (RuntimeException $e)
 		{
@@ -770,7 +772,7 @@ class RTable extends JTable
 			if (is_array($pk))
 			{
 				// Sanitize input.
-				JArrayHelper::toInteger($pk);
+				ArrayHelper::toInteger($pk);
 				$pk = RHelperArray::quote($pk);
 				$pk = implode(',', $pk);
 				$multipleDelete = true;
@@ -787,6 +789,9 @@ class RTable extends JTable
 		{
 			return false;
 		}
+
+		// Implement JObservableInterface: Pre-processing by observers
+		$this->_observers->update('onBeforeDelete', array($pk));
 
 		// Delete the row by primary key.
 		$query = $this->_db->getQuery(true);
@@ -815,6 +820,9 @@ class RTable extends JTable
 			return false;
 		}
 
+		// Implement JObservableInterface: Post-processing by observers
+		$this->_observers->update('onAfterDelete', array($pk));
+
 		return true;
 	}
 
@@ -842,16 +850,16 @@ class RTable extends JTable
 			if ($option == 'com_installer')
 			{
 				$installer = JInstaller::getInstance();
-				$option = $installer->manifestClass->getElement($installer);
+				$option    = $installer->manifestClass->getElement($installer);
 			}
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
-		$prefix = $componentName . 'Table';
+		$prefix        = $componentName . 'Table';
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isAdmin();
+			$client = (int) JFactory::getApplication()->isClient('administrator');
 		}
 
 		// Admin
@@ -1031,5 +1039,118 @@ class RTable extends JTable
 		{
 			$tableInstance->{$tableFieldModifiedDate} = JFactory::getDate()->format($auditDateFormat);
 		}
+	}
+
+	/**
+	 * Get the columns from database table.
+	 *
+	 * @param   bool  $reload  flag to reload cache
+	 *
+	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 *
+	 * @since   11.1
+	 * @throws  UnexpectedValueException
+	 */
+	public function getFields($reload = false)
+	{
+		static $cache = null;
+
+		if ($cache !== null && !$reload)
+		{
+			return $cache;
+		}
+
+		$dbo = $this->getDbo();
+
+		$query = $dbo->getQuery(true);
+
+		$query->select('*');
+		$query->from('#__redcore_schemas');
+
+		$assetName = $this->_tbl;
+		$query->where('asset_id = ' . $dbo->q($assetName));
+		$result = $dbo->setQuery($query)->loadAssoc();
+
+		if (is_null($result))
+		{
+			$result = $this->createSchema($assetName);
+		}
+
+		$cachedOn = new \JDate($result['cached_on']);
+		$now = new \JDate;
+
+		if ($now->toUnix() > ($cachedOn->toUnix() + 86400))
+		{
+			$this->updateSchema($assetName, $now);
+		}
+
+		// Decode the fields
+		$fields = (array) json_decode($result['fields']);
+
+		if (empty($fields))
+		{
+			$msg = JText::sprintf('REDCORE_TABLE_ERROR_NO_COLUMNS_FOUND', $this->_tbl);
+
+			throw new UnexpectedValueException($msg, 500);
+		}
+
+		$cache = $fields;
+
+		return $cache;
+	}
+
+	/**
+	 * Method to cache the table schema in the logical schemas table
+	 *
+	 * @param   string  $assetName  the asset name of this table. standard format is "#__TableName"
+	 *
+	 * @return array
+	 */
+	private function createSchema($assetName)
+	{
+		$dbo = $this->getDbo();
+		$query = $dbo->getQuery(true);
+
+		$query->insert('#__redcore_schemas');
+		$query->set('asset_id = ' . $dbo->q($assetName));
+
+		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
+		$query->set('fields = ' . $dbo->q($fields));
+
+		$now = new \JDate;
+		$query->set('cached_on = ' . $dbo->q($now->toSql()));
+
+		$dbo->setQuery($query)->execute();
+
+		return array('asset_id' => $assetName, 'fields' => $fields, 'cached_on' => $now->toSql());
+	}
+
+	/**
+	 * Method to update the table schema in the logical schemas table
+	 *
+	 * @param   string  $assetName  the asset name of this table. standard format is "#__TableName"
+	 * @param   \JDate  $now        the current time
+	 *
+	 * @return array
+	 */
+	public function updateSchema($assetName = null, \JDate $now = null)
+	{
+		$assetName = $assetName ?: $this->_tbl;
+		$now = $now ?: \JFactory::getDate();
+
+		$dbo = $this->getDbo();
+		$query = $dbo->getQuery(true);
+
+		$query->update('#__redcore_schemas');
+
+		$fields = json_encode($dbo->getTableColumns($assetName, false));
+		$query->set('fields = ' . $dbo->q($fields));
+		$query->set('cached_on = ' . $dbo->q($now->toSql()));
+
+		$query->where('asset_id = ' . $dbo->q($assetName));
+
+		$dbo->setQuery($query)->execute();
+
+		return array('asset_id' => $assetName, 'fields' => $fields, 'cached_on' => $now->toSql());
 	}
 }

@@ -55,6 +55,7 @@ class JFormFieldTablelist extends JFormFieldList
 			$db = JFactory::getDbo();
 			$tables = $db->getTableList();
 			$tablePrefix = $db->getPrefix();
+			$options = array();
 
 			if (!empty($tables))
 			{

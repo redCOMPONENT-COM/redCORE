@@ -9,6 +9,8 @@
 
 defined('JPATH_BASE') or die;
 
+use Joomla\Utilities\ArrayHelper;
+
 /**
  * Transform api output
  *
@@ -27,7 +29,7 @@ class RApiHalTransformArray extends RApiHalTransformBase
 	 */
 	public static function toExternal($definition)
 	{
-		return is_object($definition) ? JArrayHelper::fromObject($definition) : (array) $definition;
+		return is_object($definition) ? ArrayHelper::fromObject($definition) : (array) $definition;
 	}
 
 	/**

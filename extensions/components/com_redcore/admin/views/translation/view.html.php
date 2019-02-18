@@ -85,7 +85,7 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 
 		$this->item	= $this->get('Item');
 
-		$editor = JFactory::getConfig()->get('editor');
+		$editor       = JFactory::getConfig()->get('editor');
 		$this->editor = JEditor::getInstance($editor);
 
 		$this->columns = array();
@@ -120,7 +120,8 @@ class RedcoreViewTranslation extends RedcoreHelpersView
 					. JText::_('COM_REDCORE_CONFIGURE')
 					. '</a>'
 				),
-				'error');
+				'error'
+			);
 		}
 
 		parent::display($tpl);

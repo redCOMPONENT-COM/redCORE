@@ -12,7 +12,7 @@ defined('_JEXEC') or die;
 /**
  * redCORE Dynamic Table
  *
- * @package     Redshopb.Backend
+ * @package     Redcore.Backend
  * @subpackage  Tables
  * @since       1.0
  */

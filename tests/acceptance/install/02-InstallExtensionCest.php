@@ -22,12 +22,11 @@ class InstallExtensionCest
 		$I->doAdministratorLogin();
 		$I->comment('I enable basic authentication');
 		$I->amOnPage('administrator/index.php?option=com_redcore&view=config&layout=edit&component=com_redcore');
-		$I->waitForText('redCORE - component Config', 30, ['css' => 'h1']);
+		$I->waitForText('redCORE Config', 30, ['css' => 'h1']);
 		$I->click(['link' => 'Webservice options']);
 		$I->waitForElementVisible(['id' => 'REDCORE_WEBSERVICES_OPTIONS']);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
 		$I->selectOptionInRadioField('Enable webservices', 'Yes');
-		$I->executeJS("javascript:window.scrollBy(0,200);");
 		$I->selectOptionInChosen('Check user permission against', 'Joomla - Use already defined authorization checks in Joomla');
 		$I->selectOptionInRadioField('Enable SOAP Server', 'Yes');
 		$I->executeJS('window.scrollTo(0,0)');

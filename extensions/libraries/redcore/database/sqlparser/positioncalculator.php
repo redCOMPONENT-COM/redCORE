@@ -80,7 +80,6 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
     private function findPositionWithinString($sql, $value, $expr_type) {
 
         $offset = 0;
-        $ok = false;
         while (true) {
 
             $pos = strpos($sql, $value, $offset);

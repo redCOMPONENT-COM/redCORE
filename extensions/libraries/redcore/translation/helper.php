@@ -62,7 +62,7 @@ class RTranslationHelper
 	{
 		if (!isset(self::$siteLanguage))
 		{
-			$db = JFactory::getDbo();
+			$db           = JFactory::getDbo();
 			$oldTranslate = $db->translate;
 
 			// We do not want to translate this value
@@ -96,11 +96,11 @@ class RTranslationHelper
 	 */
 	public static function removeFromEditForm($translationTables)
 	{
-		$input = JFactory::getApplication()->input;
+		$input  = JFactory::getApplication()->input;
 		$option = $input->getString('option', '');
-		$view = $input->getString('view', '');
+		$view   = $input->getString('view', '');
 		$layout = $input->getString('layout', '');
-		$task = $input->getString('layout', '');
+		$task   = $input->getString('layout', '');
 
 		if ($layout == 'edit' || $task == 'edit')
 		{
@@ -183,10 +183,10 @@ class RTranslationHelper
 		}
 
 		// Handle the optional arguments.
-		$options = array();
-		$options['control'] = $controlName;
+		$options              = array();
+		$options['control']   = $controlName;
 		$options['load_data'] = true;
-		$formData = array();
+		$formData             = array();
 
 		if (!empty($data->{$column['name']}))
 		{
@@ -355,7 +355,7 @@ class RTranslationHelper
 	{
 		jimport('joomla.filesystem.path');
 
-		$lang     = JFactory::getLanguage();
+		$lang      = JFactory::getLanguage();
 		$extension = 'plg_' . $data->folder . '_' . $data->element;
 
 		$formFile = JPath::clean(JPATH_PLUGINS . '/' . $data->folder . '/' . $data->element . '/' . $data->element . '.xml');
@@ -392,8 +392,8 @@ class RTranslationHelper
 	public static function preprocessFormMenu(JForm $form, $data)
 	{
 		jimport('joomla.filesystem.path');
-		$link = $data->link;
-		$type = $data->type;
+		$link     = $data->link;
+		$type     = $data->type;
 		$formFile = false;
 
 		// Initialise form with component view params if available.
@@ -407,13 +407,13 @@ class RTranslationHelper
 
 			// Confirm that the option is defined.
 			$option = '';
-			$base = '';
+			$base   = '';
 
 			if (isset($args['option']))
 			{
 				// The option determines the base path to work with.
 				$option = $args['option'];
-				$base = JPATH_SITE . '/components/' . $option;
+				$base   = JPATH_SITE . '/components/' . $option;
 			}
 
 			// Confirm a view is defined.
@@ -440,7 +440,7 @@ class RTranslationHelper
 					$base . '/views/' . $view . '/tmpl',
 					$base . '/view/' . $view . '/tmpl'
 				);
-				$path = JPath::find($tplFolders, $layout . '.xml');
+				$path       = JPath::find($tplFolders, $layout . '.xml');
 
 				if (is_file($path))
 				{
@@ -451,7 +451,7 @@ class RTranslationHelper
 				// template folder is first part of file name -- template:folder
 				if (!$formFile && (strpos($layout, ':') > 0))
 				{
-					$temp = explode(':', $layout);
+					$temp         = explode(':', $layout);
 					$templatePath = JPATH::clean(JPATH_SITE . '/templates/' . $temp[0] . '/html/' . $option . '/' . $view . '/' . $temp[1] . '.xml');
 
 					if (is_file($templatePath))
@@ -470,7 +470,7 @@ class RTranslationHelper
 						$base . '/view/' . $view,
 						$base . '/views/' . $view
 					);
-					$metaPath = JPath::find($metadataFolders, 'metadata.xml');
+					$metaPath        = JPath::find($metadataFolders, 'metadata.xml');
 
 					if (is_file($path = JPath::clean($metaPath)))
 					{
@@ -489,7 +489,7 @@ class RTranslationHelper
 				}
 			}
 
-			$lang     = JFactory::getLanguage();
+			$lang = JFactory::getLanguage();
 			$lang->load($option, JPATH_BASE, null, false, false)
 			|| $lang->load($option, JPATH_BASE . "/components/" . $option, null, false, false)
 			|| $lang->load($option, JPATH_BASE, $lang->getDefault(), false, false)
@@ -543,10 +543,10 @@ class RTranslationHelper
 	 */
 	public static function resetPluginTranslation()
 	{
-		$user = JFactory::getUser();
+		$user   = JFactory::getUser();
 		$levels = implode(',', $user->getAuthorisedViewLevels());
 
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->select('folder AS type, element AS name, params')
 			->from('#__extensions')
@@ -560,7 +560,7 @@ class RTranslationHelper
 
 		foreach ($plugins as $plugin)
 		{
-			$joomlaPlugin = JPluginHelper::getPlugin($plugin->type, $plugin->name);
+			$joomlaPlugin         = JPluginHelper::getPlugin($plugin->type, $plugin->name);
 			$joomlaPlugin->params = $plugin->params;
 		}
 	}
@@ -575,10 +575,10 @@ class RTranslationHelper
 	 */
 	public static function isAdmin()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$isApi = ($app->input->get('api') != null);
 
-		return ($app->isAdmin() && !$isApi);
+		return ((version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator')) && !$isApi);
 	}
 
 	/**
@@ -591,14 +591,13 @@ class RTranslationHelper
 	 */
 	public static  function setLanguage($language, $loadLanguage = true)
 	{
-		$languageObject = JFactory::getLanguage();
-		$languages = JLanguageHelper::getLanguages('sef');
+		$languages    = JLanguageHelper::getLanguages('sef');
 		$languageKeys = explode('-', $language);
 
 		if (!empty($languageKeys[0]) && !empty($languages[$languageKeys[0]]->lang_code))
 		{
 			JFactory::getApplication()->input->set('lang', $language);
-			$languageObject->setLanguage($languages[$languageKeys[0]]->lang_code);
+			$languageObject = new JLanguage($languages[$languageKeys[0]]->lang_code);
 
 			if ($loadLanguage)
 			{
@@ -621,11 +620,11 @@ class RTranslationHelper
 	public static function isTranslatableForm($isAdmin)
 	{
 		// Current page values
-		$input = JFactory::getApplication()->input;
+		$input  = JFactory::getApplication()->input;
 		$option = $input->getString('option', '');
-		$view = $input->getString('view', '');
+		$view   = $input->getString('view', '');
 		$layout = $input->getString('layout', '');
-		$task = $input->getString('task', '');
+		$task   = $input->getString('task', '');
 
 		$translationTables = self::getInstalledTranslationTables();
 
@@ -639,15 +638,15 @@ class RTranslationHelper
 			foreach ($translationTable->formLinks as $formLink)
 			{
 				// Form values
-				$tableAdmin = !empty($formLink['admin']) ? $formLink['admin'] : 'false';
-				$tableOption = $formLink['option'];
-				$tableView = $formLink['view'];
-				$tableLayout = !empty($formLink['layout']) ? $formLink['layout'] : 'edit';
-				$tableID = isset($formLink['identifier']) ? $formLink['identifier'] : 'id';
-				$showButton = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
-				$htmlposition = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
-				$checkid = !empty($formLink['checkoriginalid']) ? $formLink['checkoriginalid'] : 'false';
-				$results = null;
+				$tableAdmin     = !empty($formLink['admin']) ? $formLink['admin'] : 'false';
+				$tableOption    = $formLink['option'];
+				$tableView      = $formLink['view'];
+				$tableLayout    = !empty($formLink['layout']) ? $formLink['layout'] : 'edit';
+				$tableID        = isset($formLink['identifier']) ? $formLink['identifier'] : 'id';
+				$showButton     = !empty($formLink['showbutton']) ? $formLink['showbutton'] : 'true';
+				$htmlposition   = !empty($formLink['htmlposition']) ? $formLink['htmlposition'] : '.btn-toolbar:first';
+				$checkPrimaryId = !empty($formLink['checkoriginalid']) ? $formLink['checkoriginalid'] : 'false';
+				$results        = null;
 
 				// Check if the form's frontend/backend options matches the current page
 				$tableAdmin = $tableAdmin === 'true' ? true : false;
@@ -671,23 +670,25 @@ class RTranslationHelper
 						return;
 					}
 
-					if ($checkid == 'true')
+					if ($checkPrimaryId == 'true')
 					{
 						// Check whether there's a relation between the current item and the translation element
-						$db = JFactory::getDbo();
+						$db    = JFactory::getDbo();
 						$query = $db->getQuery(true)
-						->select($db->qn($translationTable->primaryKeys[0]))
-						->from($db->qn($translationTable->table))
-						->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemID));
+							->select($db->qn($translationTable->primaryKeys[0]))
+							->from($db->qn($translationTable->table))
+							->where($db->qn($translationTable->primaryKeys[0]) . '=' . $db->q($itemID));
 
 						$db->setQuery($query);
 						$results = $db->loadObjectList();
+
+						$checkPrimaryId = !empty($results) ? 'false' : 'true';
 					}
 
 					// If there is, render a modal button & window in the toolbar
-					if ($checkid == 'false' || !empty($results))
+					if ($checkPrimaryId == 'false' && $showButton == 'true')
 					{
-						$linkname = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->title;
+						$linkname       = JText::_('LIB_REDCORE_TRANSLATION_NAME_BUTTON') . ' ' . $translationTable->title;
 						$contentelement = str_replace('#__', '', $translationTable->table);
 
 						self::renderTranslationModal($itemID, $linkname, $contentelement, $htmlposition);
@@ -698,13 +699,13 @@ class RTranslationHelper
 	}
 
 	/**
-	 * Renders a modal button & window for a translation element 
+	 * Renders a modal button & window for a translation element
 	 *
 	 * @param   string  $itemID          The id of the current item being shown
 	 * @param   array   $linkname        The text to be shown on the modal button
 	 * @param   int     $contentelement  The current translation element
 	 * @param   string  $htmlposition    The position on the page where the button should be moved to
-	 *                             
+	 *
 	 * @return  void
 	 */
 	public static function renderTranslationModal($itemID, $linkname, $contentelement, $htmlposition)
@@ -719,7 +720,8 @@ class RTranslationHelper
 									. $contentelement
 									. '&id='
 									. $itemID
-									. '&tmpl=component'),
+					. '&tmpl=component'
+				),
 				'linkClass' => 'btn btn-primary',
 				'contentElement' => $contentelement,
 				'htmlposition' => $htmlposition,
@@ -787,11 +789,11 @@ class RTranslationHelper
 	{
 		$ids = explode('###', $itemid);
 
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
-		->select('rctranslations_id')
-		->from($db->qn(RTranslationTable::getTranslationsTableName($translationTableName, '#__')))
-		->where('rctranslations_language=' . $db->q($langCode));
+			->select('rctranslations_id')
+			->from($db->qn(RTranslationTable::getTranslationsTableName($translationTableName, '#__')))
+			->where('rctranslations_language=' . $db->q($langCode));
 
 		foreach ($pk as $key => $primaryKey)
 		{
@@ -830,5 +832,41 @@ class RTranslationHelper
 		{
 			return false;
 		}
+	}
+
+	/**
+	 * Adds array to a JForm input
+	 *
+	 * @param   string  $form   Form to be modified
+	 * @param   string  $index  Index of the array
+	 *
+	 * @return  string  Modified form
+	 */
+	public static function arrayifyTranslationJForm($form, $index)
+	{
+		$pattern     = '/name="jform/';
+		$replacement = 'name="jform[' . $index . ']';
+		$form        = preg_replace($pattern, $replacement, $form);
+
+		return $form;
+	}
+
+	/**
+	 * Returns an array of all content language codes (fx. en-GB)
+	 *
+	 * @return array  All content language codes
+	 */
+	public static function getAllContentLanguageCodes()
+	{
+		$contentLanguages = JLanguageHelper::getLanguages();
+
+		$languageCodes = array();
+
+		foreach ($contentLanguages as $language)
+		{
+			$languageCodes[] = $language->lang_code;
+		}
+
+		return $languageCodes;
 	}
 }

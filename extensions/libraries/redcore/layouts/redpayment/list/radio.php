@@ -18,6 +18,8 @@ $name = !empty($data['options']['name']) ? $data['options']['name'] : 'redpaymen
 $value = !empty($data['options']['value']) ? $data['options']['value'] : '';
 $id = !empty($data['options']['id']) ? $data['options']['id'] : 'redpayment_payment';
 $attr = !empty($data['options']['attributes']) ? $data['options']['attributes'] : '';
+$selectSingleOption = !empty($data['options']['selectSingleOption']);
+$selected = $selectSingleOption && !empty($payments) && count($payments) <= 1;
 $options = array();
 
 if (!empty($payments)) :
@@ -28,7 +30,7 @@ if (!empty($payments)) :
 ?>
 		<label for="<?php echo $payment->value ?>" id="<?php echo $payment->value ?>-lbl" class="radio">
 			<input type="radio" name="<?php echo $name ?>" id="<?php echo $payment->value ?>"
-				value="<?php echo $payment->value ?>" <?php echo trim($attr) . ($value == $payment->value ? ' checked="checked"' : '') ?> />
+				value="<?php echo $payment->value ?>" <?php echo trim($attr) . ($selected || $value == $payment->value ? ' checked="checked"' : '') ?> />
 			<?php echo $payment->params->get('payment_title', $payment->text) ?>
 			<?php if ($payment->params->get('payment_logo', '') != '') : ?>
 				<br />

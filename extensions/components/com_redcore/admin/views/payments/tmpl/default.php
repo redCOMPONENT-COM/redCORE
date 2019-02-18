@@ -35,7 +35,7 @@ $listDirn = $this->state->get('list.direction');
 	);
 	?>
 	<hr/>
-	<div class="row">
+	<div class="row-fluid">
 		<table class="table table-striped table-hover" id="oauthClientsList">
 			<thead>
 			<tr>

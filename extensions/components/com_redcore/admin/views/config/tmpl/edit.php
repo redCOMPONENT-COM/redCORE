@@ -9,9 +9,9 @@
 
 defined('_JEXEC') or die;
 
-$app = JFactory::getApplication();
+$app      = JFactory::getApplication();
 $template = $app->getTemplate();
-$tab = $app->input->getString('tab');
+$tab      = $app->input->getString('tab');
 
 if (empty($tab))
 {
@@ -53,6 +53,7 @@ JFactory::getDocument()->addScriptDeclaration(
 		<?php echo $this->loadTemplate('info'); ?>
 	</div>
 	<div>
+		<input type="hidden" value="<?php echo JText::_(strtoupper($this->component->option)) ?>" id="jform_title" />
 		<input type="hidden" name="id" value="<?php echo $this->component->id; ?>" />
 		<input type="hidden" name="component" value="<?php echo $this->component->option; ?>" />
 		<input type="hidden" name="element" value="<?php echo $this->component->option; ?>" />

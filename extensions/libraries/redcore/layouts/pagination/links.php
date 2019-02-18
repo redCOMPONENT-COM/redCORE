@@ -9,10 +9,12 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\Registry\Registry;
+
 $list = $displayData['list'];
 $pages = $list['pages'];
 
-$options = new JRegistry($displayData['options']);
+$options = new Registry($displayData['options']);
 
 $showLimitBox   = $options->get('showLimitBox', true);
 $showPagesLinks = $options->get('showPagesLinks', true);
@@ -36,7 +38,7 @@ if (!empty($pages['pages']))
 
 if ($currentPage >= $step)
 {
-	if ($currentPage % $step == 0)
+	if ($currentPage % $step === 0)
 	{
 		$range = ceil($currentPage / $step) + 1;
 	}
@@ -57,12 +59,13 @@ if ($currentPage >= $step)
 		<ul class="pagination-list">
 			<?php
 				echo RLayoutHelper::render('pagination.link', $pages['start']);
+				echo RLayoutHelper::render('pagination.link', $pages['previous_10']);
 				echo RLayoutHelper::render('pagination.link', $pages['previous']); ?>
 			<?php foreach ($pages['pages'] as $k => $page) : ?>
 
 				<?php $output = RLayoutHelper::render('pagination.link', $page); ?>
 				<?php if (in_array($k, range($range * $step - ($step + 1), $range * $step))) : ?>
-					<?php if (($k % $step == 0 || $k == $range * $step - ($step + 1)) && $k != $currentPage && $k != $range * $step - $step) :?>
+					<?php if (($k % $step === 0 || $k === $range * $step - ($step + 1)) && $k !== $currentPage && $k !== $range * $step - $step) : ?>
 						<?php $output = preg_replace('#(<a.*?>).*?(</a>)#', '$1...$2', $output); ?>
 					<?php endif; ?>
 				<?php endif; ?>
@@ -71,6 +74,7 @@ if ($currentPage >= $step)
 			<?php endforeach; ?>
 			<?php
 				echo RLayoutHelper::render('pagination.link', $pages['next']);
+				echo RLayoutHelper::render('pagination.link', $pages['next_10']);
 				echo RLayoutHelper::render('pagination.link', $pages['end']); ?>
 		</ul>
 	<?php endif; ?>

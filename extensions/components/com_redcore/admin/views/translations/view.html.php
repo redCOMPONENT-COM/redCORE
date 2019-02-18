@@ -67,17 +67,17 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	 */
 	public function display($tpl = null)
 	{
-		$model = $this->getModel();
-		$this->state = $model->getState();
+		$model                      = $this->getModel();
+		$this->state                = $model->getState();
 		$this->translationTableName = $model->getState('filter.translationTableName', '');
-		$this->activeFilters = $model->getActiveFilters();
-		$this->filterForm = $model->getForm();
-		$this->pagination = $model->getPagination();
+		$this->activeFilters        = $model->getActiveFilters();
+		$this->filterForm           = $model->getForm();
+		$this->pagination           = $model->getPagination();
 
 		if (!empty($this->translationTableName))
 		{
-			$this->items = $model->getItems();
-			$this->translationTable = RTranslationTable::setTranslationTableWithColumn($this->translationTableName);
+			$this->items                             = $model->getItems();
+			$this->translationTable                  = RTranslationTable::setTranslationTableWithColumn($this->translationTableName);
 			$this->translationTable->readonlyColumns = array();
 
 			foreach ($this->translationTable->allColumns as $column)
@@ -99,7 +99,8 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 					. JText::_('COM_REDCORE_CONFIGURE')
 					. '</a>'
 				),
-				'error');
+				'error'
+			);
 		}
 
 		parent::display($tpl);
@@ -119,10 +120,10 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 			return $title;
 		}
 
-		$languages = JFactory::getLanguage()->getKnownLanguages();
-		$rowCount = RedcoreHelpersTranslation::getTableRowCount($this->translationTable);
-		$title .= ' ' . $this->translationTableName;
-		$title .= ' <small><small>( '
+		$languages = version_compare(JVERSION, '3.7', '<') ? JFactory::getLanguage()->getKnownLanguages() : JLanguageHelper::getKnownLanguages();
+		$rowCount  = RedcoreHelpersTranslation::getTableRowCount($this->translationTable);
+		$title    .= ' ' . $this->translationTableName;
+		$title    .= ' <small><small>( '
 			. JText::_('COM_REDCORE_TRANSLATION_TABLE_ORIGINAL_TABLE_ROWS')
 			. ' <span class="label label-primary">'
 			. (isset($rowCount['original_rows']) ? $rowCount['original_rows'] : 0)
@@ -146,7 +147,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$firstGroup = new RToolbarButtonGroup;
+		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
 
 		$delete = RToolbarBuilder::createDeleteButton('translations.delete');

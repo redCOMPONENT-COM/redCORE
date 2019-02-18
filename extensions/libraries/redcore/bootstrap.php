@@ -74,7 +74,7 @@ class RBootstrap
 	{
 		if (is_null(self::$config))
 		{
-			if (JComponentHelper::isInstalled('com_redcore'))
+			if (RComponentHelper::isInstalled('com_redcore'))
 			{
 				self::$config = JComponentHelper::getParams('com_redcore');
 
@@ -167,7 +167,11 @@ class RBootstrap
 			JFactory::$database = null;
 			JFactory::$database = RFactory::getDbo();
 
-			if (self::getConfig('enable_translations', 0) == 1 && !RTranslationHelper::isAdmin())
+			$isAdmin = RTranslationHelper::isAdmin();
+			$isTranslateAdmin = (bool) self::getConfig('translate_in_admin', 0);
+
+			if (self::getConfig('enable_translations', 0) == 1
+				&& (!$isAdmin || ($isAdmin && $isTranslateAdmin)))
 			{
 				// This is our object now
 				$db = JFactory::getDbo();
@@ -177,6 +181,14 @@ class RBootstrap
 
 				// Setting default option for translation fallback
 				RDatabaseSqlparserSqltranslation::setTranslationFallback(self::getConfig('enable_translation_fallback', '1') == '1');
+
+				// Setting default option for force translate default language
+				RDatabaseSqlparserSqltranslation::setForceTranslateDefaultLanguage(
+					self::getConfig('force_translate_default_site_language', '0') == '1'
+				);
+
+				// Set option for "translate in admin"
+				RDatabaseSqlparserSqltranslation::setTranslationInAdmin($isTranslateAdmin);
 
 				// Reset plugin translations params if needed
 				RTranslationHelper::resetPluginTranslation();

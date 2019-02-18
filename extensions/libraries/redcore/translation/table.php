@@ -986,15 +986,16 @@ final class RTranslationTable
 	/**
 	 * Get list of all translation tables with columns
 	 *
-	 * @param   bool  $fullLoad  Full load tables
+	 * @param   bool  $fullLoad   Full load tables
+	 * @param   bool  $isEnabled  If true is just return "Enabled" translation table.
 	 *
-	 * @return  array  Array or table with columns columns
+	 * @return  array             Array or table with columns columns
 	 */
-	public static function getInstalledTranslationTables($fullLoad = false)
+	public static function getInstalledTranslationTables($fullLoad = false, $isEnabled = false)
 	{
 		static $fullLoaded;
 
-		if ($fullLoad && !$fullLoaded)
+		if ($fullLoad && (is_null($fullLoaded) || !$fullLoaded))
 		{
 			$db = JFactory::getDbo();
 			$oldTranslate = isset($db->translate) ? $db->translate : false;
@@ -1075,6 +1076,21 @@ final class RTranslationTable
 			self::$installedTranslationTables = $tables;
 		}
 
+		if ($isEnabled && $fullLoaded)
+		{
+			$tables = self::$installedTranslationTables;
+
+			foreach ($tables as $key => $table)
+			{
+				if (!$table->state)
+				{
+					unset($tables[$key]);
+				}
+			}
+
+			return $tables;
+		}
+
 		return self::$installedTranslationTables;
 	}
 
@@ -1083,7 +1099,7 @@ final class RTranslationTable
 	 *
 	 * @param   string  $tableName  Table name
 	 *
-	 * @return  array  Array or table with columns columns
+	 * @return  array               Array or table with columns columns
 	 */
 	public static function setTranslationTableWithColumn($tableName)
 	{
@@ -1098,7 +1114,8 @@ final class RTranslationTable
 				$query = $db->getQuery(true)
 					->select('tc.*')
 					->from($db->qn('#__redcore_translation_columns', 'tc'))
-					->where($db->qn('translation_table_id') . ' = ' . $table->id);
+					->where($db->qn('translation_table_id') . ' = ' . $table->id)
+					->order($db->qn('id'));
 
 				self::$translationColumns[$table->name] = $db->setQuery($query)->loadAssocList('name');
 
@@ -1146,7 +1163,7 @@ final class RTranslationTable
 	 *
 	 * @param   string  $name  Translation table Name
 	 *
-	 * @return  array  Array or table with columns columns
+	 * @return  array          Array or table with columns columns
 	 */
 	public static function getTranslationTableByName($name)
 	{

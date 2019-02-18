@@ -33,12 +33,12 @@ class RControllerForm extends JControllerForm
 	public function __construct($config = array())
 	{
 		/** JControllerLegacy */
-		$this->methods = array();
-		$this->message = null;
+		$this->methods     = array();
+		$this->message     = null;
 		$this->messageType = 'message';
-		$this->paths = array();
-		$this->redirect = null;
-		$this->taskMap = array();
+		$this->paths       = array();
+		$this->redirect    = null;
+		$this->taskMap     = array();
 
 		if (defined('JDEBUG') && JDEBUG)
 		{
@@ -51,7 +51,7 @@ class RControllerForm extends JControllerForm
 		$xMethods = get_class_methods('JControllerLegacy');
 
 		// Get the public methods in this class using reflection.
-		$r = new ReflectionClass($this);
+		$r        = new ReflectionClass($this);
 		$rMethods = $r->getMethods(ReflectionMethod::IS_PUBLIC);
 
 		foreach ($rMethods as $rMethod)
@@ -111,7 +111,7 @@ class RControllerForm extends JControllerForm
 			}
 			else
 			{
-				$this->model_prefix = $this->name . 'Model';
+				$this->model_prefix = ucfirst($this->name) . 'Model';
 			}
 		}
 
@@ -185,6 +185,7 @@ class RControllerForm extends JControllerForm
 			$this->view_item = $this->context;
 		}
 
+		// Guess the list view as the plural of the item view.
 		if (empty($this->view_list))
 		{
 			$this->view_list = RInflector::pluralize($this->view_item);
@@ -237,12 +238,12 @@ class RControllerForm extends JControllerForm
 	{
 		/** @var RModelAdmin $model */
 		$model = $this->getModel();
-		$data = $this->input->post->get('jform', array(), 'array');
+		$data  = $this->input->post->get('jform', array(), 'array');
 
 		$form = $model->getForm($data, false);
 
 		// Filter and validate the form data.
-		$data = $form->filter($data);
+		$data   = $form->filter($data);
 		$return = $form->validate($data);
 
 		// Prepare the json array.
@@ -288,9 +289,9 @@ class RControllerForm extends JControllerForm
 	{
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$app = JFactory::getApplication();
-		$model = $this->getModel();
-		$table = $model->getTable();
+		$app     = JFactory::getApplication();
+		$model   = $this->getModel();
+		$table   = $model->getTable();
 		$checkin = property_exists($table, 'checked_out');
 		$context = "$this->option.edit.$this->context";
 
@@ -360,10 +361,12 @@ class RControllerForm extends JControllerForm
 	 */
 	public function edit($key = null, $urlVar = null)
 	{
-		$app   = JFactory::getApplication();
-		$model = $this->getModel();
-		$table = $model->getTable();
-		$cid   = $this->input->post->get('cid', array(), 'array');
+		// Do not cache the response to this, its a redirect, and mod_expires and google chrome browser bugs cache it forever!
+		JFactory::getApplication()->allowCache(false);
+		$app     = JFactory::getApplication();
+		$model   = $this->getModel();
+		$table   = $model->getTable();
+		$cid     = $this->input->post->get('cid', array(), 'array');
 		$context = "$this->option.edit.$this->context";
 
 		// Determine the name of the primary key for the data.
@@ -380,7 +383,7 @@ class RControllerForm extends JControllerForm
 
 		// Get the previous record id (if any) and the current record id.
 		$recordId = (int) (count($cid) ? $cid[0] : $this->input->getInt($urlVar));
-		$checkin = property_exists($table, 'checked_out');
+		$checkin  = property_exists($table, 'checked_out');
 
 		// Access check.
 		if (!$this->allowEdit(array($key => $recordId), $key))
@@ -432,7 +435,7 @@ class RControllerForm extends JControllerForm
 	 */
 	public function add()
 	{
-		$app = JFactory::getApplication();
+		$app     = JFactory::getApplication();
 		$context = "$this->option.edit.$this->context";
 
 		// Access check.
@@ -474,14 +477,14 @@ class RControllerForm extends JControllerForm
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$app   = JFactory::getApplication();
-		$lang  = JFactory::getLanguage();
-		$model = $this->getModel();
-		$table = $model->getTable();
-		$data  = $this->input->post->get('jform', array(), 'array');
+		$app     = JFactory::getApplication();
+		$lang    = JFactory::getLanguage();
+		$model   = $this->getModel();
+		$table   = $model->getTable();
+		$data    = $this->getSaveData();
 		$checkin = property_exists($table, 'checked_out');
 		$context = "$this->option.edit.$this->context";
-		$task = $this->getTask();
+		$task    = $this->getTask();
 
 		// Determine the name of the primary key for the data.
 		if (empty($key))
@@ -533,9 +536,9 @@ class RControllerForm extends JControllerForm
 			}
 
 			// Reset the ID, the multilingual associations and then treat the request as for Apply.
-			$data[$key] = 0;
+			$data[$key]           = 0;
 			$data['associations'] = array();
-			$task = 'apply';
+			$task                 = 'apply';
 		}
 
 		// Access check.
@@ -639,10 +642,17 @@ class RControllerForm extends JControllerForm
 
 		$this->setMessage(
 			JText::_(
-				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
+				($lang->hasKey(
+					$this->text_prefix
+					. ($recordId == 0 && (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? '_SUBMIT' : '')
+					. '_SAVE_SUCCESS'
+				)
 					? $this->text_prefix
-					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
-			)
+					: 'JLIB_APPLICATION')
+				. ($recordId == 0 && (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? '_SUBMIT' : '')
+				. '_SAVE_SUCCESS'
+			),
+			'success'
 		);
 
 		// Redirect the user and adjust session state based on the chosen task.
@@ -746,6 +756,11 @@ class RControllerForm extends JControllerForm
 		{
 			$returnUrl = base64_decode($returnUrl);
 
+			if (!strstr($returnUrl, '?') && $append && $append[0] == '&')
+			{
+				$append[0] = '?';
+			}
+
 			return JRoute::_($returnUrl . $append, false);
 		}
 		else
@@ -767,5 +782,16 @@ class RControllerForm extends JControllerForm
 			'index.php?option=' . $this->option . '&view=' . $this->view_item
 			. $append, false
 		);
+	}
+
+	/**
+	 * Get the data for form saving
+	 * Allows for subclasses to get data from multiple sources (e.g. $this->input->files)
+	 *
+	 * @return  array
+	 */
+	protected function getSaveData()
+	{
+		return $this->input->post->get('jform', array(), 'array');
 	}
 }
