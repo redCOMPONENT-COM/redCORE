@@ -22,6 +22,7 @@ class InstallJoomlaCest
 		$I->am('administrator');
 		$I->wantTo('disable the floating template toolbars');
 		$I->doAdministratorLogin();
+		$I->amOnPage('administrator/index.php');
 		$I->waitForText('Control Panel', 60, ['css' => 'h1']);
 		$I->click(['link' => 'Extensions']);
 		$I->waitForElement(['link' => 'Templates'], 60);
