@@ -9,6 +9,11 @@ php:
   - 7.2
   - nightly
 
+branches:
+  except:
+    - crowdin
+    - crowdin-work
+
 matrix:
   fast_finish: true
   allow_failures:

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="file" version="1.7.0" method="upgrade">
+    <name>redCORE da-DK</name>
+    <creationDate>March 2019</creationDate>
+    <author>redCOMPONENT</author>
+    <authorEmail>email@redcomponent.com</authorEmail>
+    <authorUrl>www.redcomponent.com</authorUrl>
+    <copyright>Copyright (C) 2008 - 2019 redCOMPONENT.com. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later, see LICENSE.</license>
+    <version>1.10.7</version>
+    <description>redCORE da-DK</description>
+
+    <fileset>
+        <files folder="admin" target="administrator/language">
+            <folder>da-DK</folder>
+        </files>
+        <files folder="site" target="language">
+            <folder>da-DK</folder>
+        </files>
+    </fileset>
+</extension>
