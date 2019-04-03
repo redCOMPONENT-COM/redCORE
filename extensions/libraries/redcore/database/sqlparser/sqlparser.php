@@ -434,7 +434,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					// We are using USE from FROM statement, not separate token category
 					if ($prev_category == 'FROM')
 					{
-						continue;
+						continue 2;
 					}
 					$token_category = $upper; /* set the category in case these get subclauses
 										  in a future version of MySQL */
@@ -1071,7 +1071,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					}
 					$parseInfo['alias']['name']      = $str;
 					$parseInfo['alias']['base_expr'] = trim($parseInfo['alias']['base_expr']);
-					continue;
+					continue 2;
 
 				case 'INDEX':
 					if (!empty($token_category) && $token_category == 'CREATE')
@@ -1087,7 +1087,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					$parseInfo['ref_type'] = $upper;
 					$parseInfo['ref_expr'] = "";
 					$parseInfo['token_count']++;
-					continue;
+					continue 2;
 
 				case 'USE':
 				case 'FORCE':
@@ -1110,19 +1110,19 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					}
 
 					$parseInfo['index_hints'] = $tableOptions;
-					continue;
+					continue 2;
 					break;
 
 				case 'CROSS':
 				case 'INNER':
 				case 'OUTER':
 					$parseInfo['token_count']++;
-					continue;
+					continue 2;
 
 				case 'FOR':
 					$parseInfo['token_count']++;
 					$skip_next = true;
-					continue;
+					continue 2;
 
 				case 'LEFT':
 				case 'RIGHT':
@@ -1147,7 +1147,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 				default:
 					if ($upper === "")
 					{
-						continue; // ends the switch statement!
+						continue 2; // ends the switch statement!
 					}
 
 					if ($parseInfo['token_count'] === 0)
