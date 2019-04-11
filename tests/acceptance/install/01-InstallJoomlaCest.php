@@ -8,14 +8,14 @@
 
 class InstallJoomlaCest
 {
-//	public function installJoomla(\AcceptanceTester $I)
-//	{
-//		$I->wantToTest('Joomla 3 Installation');
-//		$I->installJoomlaMultilingualSite();
-//		$I->doAdministratorLogin();
-//		$I->disableStatistics();
-//		$I->setErrorReportingToDevelopment();
-//	}
+	public function installJoomla(\AcceptanceTester $I)
+	{
+		$I->wantToTest('Joomla 3 Installation');
+		$I->installJoomlaMultilingualSite();
+		$I->doAdministratorLogin();
+		$I->disableStatistics();
+		$I->setErrorReportingToDevelopment();
+	}
 
 	public function disableTemplateFloatingToolbars(AcceptanceTester $I)
 	{
