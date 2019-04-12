@@ -28,6 +28,8 @@ class UninstallExtensionCest
 		$I->doAdministratorLogin();
 		$I->amOnPage('/administrator/index.php?option=com_installer&view=manage');
 		$I->click("//button[@class='btn hasTooltip js-stools-btn-filter']");
+		$I->waitForElement('//select[@id="filter_type"]', 30);
+		$I->wait(0.5);
 		$I->selectOptionInChosen('#filter_type', 'Component');
 		$I->fillField(['id' => 'filter_search'], 'redCORE');
 		$I->pressKey(['id' => 'filter_search'], WebDriverKeys::ENTER);
