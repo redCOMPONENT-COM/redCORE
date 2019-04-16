@@ -84,19 +84,22 @@ abstract class RViewCsv extends JViewLegacy
 		// Check if the preprocessing method exists
 		$preprocessExists = method_exists($this, 'preprocess');
 
-		foreach ($items as $item)
+		if ($items !== false)
 		{
-			$csvLines[$i] = array();
-
-			foreach ($columns as $name => $title)
+			foreach ($items as $item)
 			{
-				if (property_exists($item, $name))
-				{
-					$csvLines[$i][$name] = $preprocessExists ? $this->preprocess($name, $item->$name) : $item->$name;
-				}
-			}
+				$csvLines[$i] = array();
 
-			$i++;
+				foreach ($columns as $name => $title)
+				{
+					if (property_exists($item, $name))
+					{
+						$csvLines[$i][$name] = $preprocessExists ? $this->preprocess($name, $item->$name) : $item->$name;
+					}
+				}
+
+				$i++;
+			}
 		}
 
 		// Get the file name
