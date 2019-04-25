@@ -215,6 +215,7 @@ class RTranslationHelper
 		if (!empty($column['formpath']))
 		{
 			RForm::addFormPath($basepath . $column['formpath']);
+			RForm::addFormPath(JPATH_SITE . $column['formpath']);
 		}
 
 		if (!empty($column['fieldpath']))
