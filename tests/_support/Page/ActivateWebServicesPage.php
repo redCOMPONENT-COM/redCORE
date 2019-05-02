@@ -1,8 +1,8 @@
 <?php
 /**
- * @package redCORE
- * @subpacket Page
- * @copyright   Copyright (C) 2008 - 2018 redCOMPONENT.com. All rights reserved.
+ * @package     redCORE
+ * @subpacket   Page
+ * @copyright   Copyright (C) 2008 - 2019 redCOMPONENT.com. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  **/
 namespace Page;
@@ -11,8 +11,7 @@ namespace Page;
  * Class ActivateWebservices
  * @package Page
 **/
-
-class ActivateWebServicesPage
+class ActivateWebServicesPage extends AbstractPage
 {
 
 	/**
@@ -29,11 +28,6 @@ class ActivateWebServicesPage
 	 * @var string
 	 */
 	public static $buttonWebservice       = 'Webservice options';
-
-	/**
-	 * @var array
-	 */
-	public static $h1                     = ['css' => 'h1'];
 
 	/**
 	 * @var string
@@ -78,21 +72,6 @@ class ActivateWebServicesPage
 	/**
 	 * @var string
 	 */
-	public static $buttonSave             = 'Save';
-
-	/**
-	 * @var string
-	 */
-	public static $messageSaveSuccess     = 'Save success';
-
-	/**
-	 * @var array
-	 */
-	public static $messageContainer       = '#system-message-container';
-
-	/**
-	 * @var string
-	 */
 	public static $textManager            = 'Webservice Manager';
 
 	/**
@@ -128,16 +107,5 @@ class ActivateWebServicesPage
 	/**
 	 * @var string
 	 */
-	public static $pathUserWebservice      = 'site.users.1.0.0.xml';
-
-	/**
-	 * @param $value
-	 * @return string
-	 */
-	public function returnXpath($value)
-	{
-		$xpath = "//span[contains(text(),'".$value."')]";
-		return $xpath;
-	}
-
+	public static $pathUserWebservice     = 'site.users.1.0.0.xml';
 }
