@@ -29,18 +29,18 @@ class AbstractPage
 	 */
 	public static $messageContainer       = '#system-message-container';
 
-    /**
-     * @var string
-     */
-    public static $messageSaveSuccess     = 'Save success';
+	/**
+	 * @var string
+	 */
+	public static $messageSaveSuccess     = 'Save success';
 
-    /**
-     * @param $value
-     * @return string
-     */
-    public function returnXpath($value)
-    {
-        $xpath = "//span[contains(text(),'".$value."')]";
-        return $xpath;
-    }
+	/**
+	 * @param $value
+	 * @return string
+	 */
+	public function returnXpath($value)
+	{
+		$xpath = "//span[contains(text(),'".$value."')]";
+		return $xpath;
+	}
 }
