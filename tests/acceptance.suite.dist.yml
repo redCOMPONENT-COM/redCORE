@@ -19,21 +19,26 @@ modules:
     - AcceptanceHelper
   config:
     JoomlaBrowser:
-      url: 'http://localhost/Joomla_3.9.5'   # the url that points to the joomla installation at /tests/system/joomla-cms
+      url: 'http://localhost/tests/joomla-cms3'     # the url that points to the joomla installation at /tests/system/joomla-cms
       browser: 'chrome'
       window_size: 1024x768
+      port: 9515
+      capabilities:
+        chromeOptions:
+          args: ["--headless", "--disable-gpu"]
+        unexpectedAlertBehaviour: 'accept'
       username: 'admin'                      # UserName for the Administrator
       password: 'admin'                      # Password for the Administrator
       database host: 'localhost'             # place where the Application is Hosted #server Address
       database user: 'root'                  # MySQL Server user ID, usually root
       database password: ''                  # MySQL Server password, usually empty or root
-      database name: 'dbjl'                  # DB Name, at the Server
+      database name: 'test_redcore'          # DB Name, at the Server
       database type: 'mysqli'                # type in lowercase one of the options: MySQL\MySQLi\PDO
-      database prefix: 'dbjl_'               # DB Prefix for tables
+      database prefix: 'jos_'                # DB Prefix for tables
       install sample data: 'no'              # Do you want to Download the Sample Data Along with Joomla Installation, then keep it Yes
       sample data: 'Default English (GB) Sample Data'    # Default Sample Data
       admin email: 'admin@mydomain.com'      # email Id of the Admin
       language: 'English (United Kingdom)'   # Language in which you want the Application to be Installed
     AcceptanceHelper:
-      install packages url: 'http://localhost/'     # the url that points to the extension .zip package defined in your gulp-config.json file at the /build/ folder
+      install packages url: 'http://localhost/tests/releases/'     # the url that points to the extension .zip package defined in your gulp-config.json file at the /build/ folder
 error_level: "E_ALL & ~E_STRICT & ~E_DEPRECATED"
