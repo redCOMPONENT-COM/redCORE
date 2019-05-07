@@ -34,10 +34,15 @@ class AbstractPage
 	 */
 	public static $messageSaveSuccess     = 'Save success';
 
-	/**
-	 * @param $value
-	 * @return string
-	 */
+    /**
+     * @var string
+     */
+    public static $buttonInstall          = 'Install';
+
+    /**
+     * @param $value
+     * @return string
+     */
 	public function returnXpath($value)
 	{
 		$xpath = "//span[contains(text(),'".$value."')]";
