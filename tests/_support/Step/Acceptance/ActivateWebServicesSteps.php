@@ -23,7 +23,7 @@ class ActivateWebServicesSteps extends \AcceptanceTester
 		$I = $this;
 		$I->comment('I enable basic authentication');
 		$I->amOnPage(ActWebPage::$URL);
-		$I->waitForText(ActWebPage::$titleRedConf, 30, ActWebPage::$H1);
+		$I->waitForText(ActWebPage::$titleRedConf, 30, ActWebPage::$h1);
 		$I->click(ActWebPage::$buttonWebservice);
 		$I->waitForElementVisible(ActWebPage::$form);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");

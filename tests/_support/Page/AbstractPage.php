@@ -17,7 +17,7 @@ class AbstractPage
 	/**
 	 * @var array
 	 */
-	public static $H1                     = ['css' => 'h1'];
+	public static $h1                     = ['css' => 'h1'];
 
 	/**
 	 * @var string
