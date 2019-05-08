@@ -32,7 +32,7 @@ class InstallExtensionCest
 	{
 		$I->wantToTest('Active Webservices');
 		$I->doAdministratorLogin();
-		$I->doActivateWebservices();
-		$I->doWebserviceManager();
+		$I->activateWebservices();
+		$I->installWebservices();
 	}
 }

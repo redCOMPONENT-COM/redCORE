@@ -20,7 +20,7 @@ class AbstractStep extends \AcceptanceTester
 	/**
 	 * @throws \Exception
 	 */
-	public function doActivateWebservices()
+	public function activateWebservices()
 	{
 		$I = $this;
 		$I->comment('I enable basic authentication');
@@ -41,7 +41,7 @@ class AbstractStep extends \AcceptanceTester
 	/**
 	 * @throws \Exception
 	 */
-	public function doWebserviceManager(){
+	public function installWebservices(){
 		$I= $this;
 		$I->amOnPage(webPage::$URL2);
 		$I->waitForText(webPage::$textManager, 30, webPage::$h1);

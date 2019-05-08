@@ -13,31 +13,30 @@ namespace Page;
  */
 class WebserviceManagerPage extends AbstractPage
 {
+	/**
+	 * @var string
+	 */
+	public static $URL2 = 'administrator/index.php?option=com_redcore&view=webservices';
 
 	/**
 	 * @var string
 	 */
-	public static $URL2                   = 'administrator/index.php?option=com_redcore&view=webservices';
+	public static $textManager = 'Webservice Manager';
 
 	/**
 	 * @var string
 	 */
-	public static $textManager            = 'Webservice Manager';
-
-	/**
-	 * @var string
-	 */
-	public static $buttonNotInstall       = 'Not installed webservices ';
+	public static $buttonNotInstall = 'Not installed webservices ';
 
 	/**
 	 * @var array
 	 */
-	public static $installElement         = '.lc-install_all_webservices';
+	public static $installElement = '.lc-install_all_webservices';
 
 	/**
 	 * @var string
 	 */
-	public static $tableForm              = '//table[@id=\'oauthClientsList\']';
+	public static $tableForm = '//table[@id=\'oauthClientsList\']';
 
 	/**
 	 * @var string
@@ -52,5 +51,5 @@ class WebserviceManagerPage extends AbstractPage
 	/**
 	 * @var string
 	 */
-	public static $pathUserWebservice     = 'site.users.1.0.0.xml';
+	public static $pathUserWebservice = 'site.users.1.0.0.xml';
 }
