@@ -16,7 +16,6 @@ use Page\WebserviceManagerPage as webPage;
  */
 class AbstractStep extends \AcceptanceTester
 {
-
 	/**
 	 * @throws \Exception
 	 */
