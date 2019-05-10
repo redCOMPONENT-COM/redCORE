@@ -25,7 +25,7 @@ class TemplateSteps extends \AcceptanceTester
 		$I->am(disableToolbars::$amAdmin);
 		$I->wantTo('disable the floating template toolbars');
 		$I->doAdministratorLogin();
-		$I->amOnPage(disableToolbars::$urlAdmin);
+		$I->amOnPage(disableToolbars::$amAdmin);
 		$I->waitForText(disableToolbars::$cPanel, 60, disableToolbars::$h1);
 		$I->click(disableToolbars::$buttonExtensions);
 		$I->waitForElement(disableToolbars::$templatesElement, 60);

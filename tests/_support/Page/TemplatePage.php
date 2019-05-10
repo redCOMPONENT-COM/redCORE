@@ -16,11 +16,6 @@ class TemplatePage extends AbstractPage
 	/**
 	 * @var string
 	 */
-	public static $urlAdmin = 'administrator/index.php';
-
-	/**
-	 * @var string
-	 */
 	public static $cPanel = 'Control Panel';
 
 	/**
