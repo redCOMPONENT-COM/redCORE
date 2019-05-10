@@ -41,17 +41,12 @@ class AbstractPage
 	/**
 	 * @var array
 	 */
-	public static $sysMessageContainer = ['id' => 'system-message-container'];
+	public static $labelModulePosition = "label[data-original-title='Status Module Position']";
 
 	/**
 	 * @var array
 	 */
-	public static $labelModulePosition = ['css' => "label[data-original-title='Status Module Position']"];
-
-	/**
-	 * @var array
-	 */
-	public static $linkAdvanced = ['link' => 'Advanced'];
+	public static $linkAdvanced = 'Advanced';
 
 	/**
 	 * @var string
