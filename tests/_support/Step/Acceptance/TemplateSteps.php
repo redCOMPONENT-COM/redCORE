@@ -42,6 +42,6 @@ class TemplateSteps extends \AcceptanceTester
 		$I->selectOptionInRadioField(disableToolbars::$pinnedToolbar, disableToolbars::$chooseNo);
 		$I->click(disableToolbars::$buttonSaveAndClose);
 		$I->waitForText(disableToolbars::$templatesStyleSaved, 60, disableToolbars::$messageContainer);
-		$I->waitForText(disableToolbars::$templatesStyleSaved, disableToolbars::$messageContainer);
+		$I->waitForText(disableToolbars::$templatesStyleSaved, 60,disableToolbars::$messageContainer);
 	}
 }
