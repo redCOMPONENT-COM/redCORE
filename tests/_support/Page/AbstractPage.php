@@ -47,4 +47,34 @@ class AbstractPage
 		$xpath = "//span[contains(text(),'".$value."')]";
 		return $xpath;
 	}
+
+	/**
+	 * @var string
+	 */
+	public static $buttonSearch = "//button[@class='btn hasTooltip js-stools-btn-filter']";
+
+	/**
+	 * @var string
+	 */
+	public static $buttonSelectType = "#filter_type";
+
+	/**
+	 * @var string
+	 */
+	public static $fieldSearch = '#filter_search';
+
+	/**
+	 * @var string
+	 */
+	public static $buttonDelete = '#toolbar-delete';
+
+	/**
+	 * @var string
+	 */
+	public static $listManager = '#manageList';
+
+	/**
+	 * @var string
+	 */
+	public static $checkBox = '#cb0';
 }

@@ -7,8 +7,10 @@
  */
 namespace Step\Acceptance;
 
+use Page\ExtensionManagePage as ExtensionManage;
 use Page\redCOREConfigPage as configPage;
 use Page\WebserviceManagerPage as webPage;
+use WebDriverKeys;
 
 /**
  * Class AbstractStep
@@ -52,5 +54,31 @@ class AbstractStep extends \AcceptanceTester
 		$I->waitForText(webPage::$pathContactWebservice1, 30, webPage::returnXpath(webPage::$pathContactWebservice1));
 		$I->waitForText(webPage::$pathContactWebservice2, 30, webPage::returnXpath(webPage::$pathContactWebservice2));
 		$I->waitForText(webPage::$pathUserWebservice, 30, webPage::returnXpath(webPage::$pathUserWebservice));
+	}
+
+	/**
+	 * @throws \Exception
+	 */
+	public function uninstallRedCore()
+	{
+		$I = $this;
+		$I->amOnPage(ExtensionManage::$URL);
+		$I->click(ExtensionManage::$buttonSearch);
+		$I->waitForElement(ExtensionManage::$buttonSelectType, 30);
+		$I->wait(0.5);
+		$I->selectOptionInChosen(ExtensionManage::$buttonSelectType, ExtensionManage::$textType);
+		$I->fillField(ExtensionManage::$fieldSearch, ExtensionManage::$textSearch);
+		$I->pressKey(ExtensionManage::$fieldSearch, WebDriverKeys::ENTER);
+		$I->waitForElement(ExtensionManage::$listManager);
+		$I->click(ExtensionManage::$checkBox);
+		$I->click(ExtensionManage::$buttonDelete);
+		$I->acceptPopup();
+		$I->waitForText(ExtensionManage::$textSuccess, 60, ExtensionManage::$messageContainer);
+		$I->see(ExtensionManage::$textSuccess, ExtensionManage::$messageContainer);
+		$I->fillField(ExtensionManage::$fieldSearch, ExtensionManage::$textSearch);
+		$I->pressKey(ExtensionManage::$fieldSearch, WebDriverKeys::ENTER);
+		$I->waitForText(ExtensionManage::$textNoExtensions, 60, ExtensionManage::$noItems);
+		$I->see(ExtensionManage::$textNoExtensions, ExtensionManage::$noItems);
+		$I->selectOptionInChosen(ExtensionManage::$buttonSelectType, ExtensionManage::$selectType);
 	}
 }
