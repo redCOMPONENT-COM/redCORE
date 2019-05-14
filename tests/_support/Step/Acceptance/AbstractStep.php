@@ -7,10 +7,8 @@
  */
 namespace Step\Acceptance;
 
-use Page\ExtensionManagePage as ExtensionManage;
 use Page\redCOREConfigPage as configPage;
 use Page\WebserviceManagerPage as webPage;
-use WebDriverKeys;
 
 /**
  * Class AbstractStep
