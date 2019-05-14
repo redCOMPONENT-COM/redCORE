@@ -7,7 +7,7 @@
  */
 namespace Step\Acceptance;
 
-use Page\TemplatePage as disableToolbars;
+use Page\TemplatePage;
 
 /**
  * Class TemplateSteps
@@ -22,26 +22,26 @@ class TemplateSteps extends \AcceptanceTester
 	{
 		$I = $this;
 		$I->comment('I disable the template floating toolbars');
-		$I->am(disableToolbars::$amAdmin);
+		$I->am(TemplatePage::$amAdmin);
 		$I->wantTo('disable the floating template toolbars');
 		$I->doAdministratorLogin();
-		$I->amOnPage(disableToolbars::$amAdmin);
-		$I->waitForText(disableToolbars::$cPanel, 60, disableToolbars::$h1);
-		$I->click(disableToolbars::$buttonExtensions);
-		$I->waitForElement(disableToolbars::$templatesElement, 60);
-		$I->click(disableToolbars::$buttonTemplates);
-		$I->waitForText(disableToolbars::$templatesStyles, 60, disableToolbars::$h1);
-		$I->selectOptionInChosen(disableToolbars::$clientId, disableToolbars::$labelAdmin);
-		$I->waitForText(disableToolbars::$templatesStylesAdmin, 60, disableToolbars::$h1);
-		$I->click(disableToolbars::$isisDefault);
-		$I->waitForText(disableToolbars::$templatesEditStyle, 60, disableToolbars::$h1);
-		$I->click(disableToolbars::$linkAdvanced);
-		$I->waitForElement(disableToolbars::$labelModulePosition, 60);
+		$I->amOnPage(TemplatePage::$amAdmin);
+		$I->waitForText(TemplatePage::$cPanel, 60, TemplatePage::$h1);
+		$I->click(TemplatePage::$buttonExtensions);
+		$I->waitForElement(TemplatePage::$templatesElement, 60);
+		$I->click(TemplatePage::$buttonTemplates);
+		$I->waitForText(TemplatePage::$templatesStyles, 60, TemplatePage::$h1);
+		$I->selectOptionInChosen(TemplatePage::$clientId, TemplatePage::$labelAdmin);
+		$I->waitForText(TemplatePage::$templatesStylesAdmin, 60, TemplatePage::$h1);
+		$I->click(TemplatePage::$isisDefault);
+		$I->waitForText(TemplatePage::$templatesEditStyle, 60, TemplatePage::$h1);
+		$I->click(TemplatePage::$linkAdvanced);
+		$I->waitForElement(TemplatePage::$labelModulePosition, 60);
 		$I->executeJS("window.scrollTo(0, document.body.scrollHeight);");
-		$I->selectOptionInChosen(disableToolbars::$statusModulePosition, disableToolbars::$positionTop);
-		$I->selectOptionInRadioField(disableToolbars::$pinnedToolbar, disableToolbars::$chooseNo);
-		$I->click(disableToolbars::$buttonSaveAndClose);
-		$I->waitForText(disableToolbars::$templatesStyleSaved, 60, disableToolbars::$messageContainer);
-		$I->waitForText(disableToolbars::$templatesStyleSaved, 60, disableToolbars::$messageContainer);
+		$I->selectOptionInChosen(TemplatePage::$statusModulePosition, TemplatePage::$positionTop);
+		$I->selectOptionInRadioField(TemplatePage::$pinnedToolbar, TemplatePage::$chooseNo);
+		$I->click(TemplatePage::$buttonSaveAndClose);
+		$I->waitForText(TemplatePage::$templatesStyleSaved, 60, TemplatePage::$messageContainer);
+		$I->waitForText(TemplatePage::$templatesStyleSaved, 60, TemplatePage::$messageContainer);
 	}
 }
