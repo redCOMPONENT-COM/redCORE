@@ -54,17 +54,17 @@ class AbstractStep extends \AcceptanceTester
 		$I->waitForText(webPage::$pathUserWebservice, 30, webPage::returnXpath(webPage::$pathUserWebservice));
 	}
 
-    /**
-     * @throws \Exception
-     */
+	/**
+	 * @throws \Exception
+	 */
 	public function activateTheOAuth2(){
-	    $I= $this;
-        $I->amOnPage(configPage::$URL);
-        $I->waitForText(configPage::$titleRedConf, 30, configPage::$h1);
-        $I->click((configPage::$buttonOAuth2));
-        $I->waitForElementVisible(configPage::$formOAuth2);
-        $I->selectOptionInRadioField(configPage::$labelOauth2, configPage::$choose);
-        $I->click(configPage::$buttonSave);
-        $I->waitForText(configPage::$messageSaveSuccess, 30, configPage::$messageContainer);
-    }
+		$I= $this;
+		$I->amOnPage(configPage::$URL);
+		$I->waitForText(configPage::$titleRedConf, 30, configPage::$h1);
+		$I->click((configPage::$buttonOAuth2));
+		$I->waitForElementVisible(configPage::$formOAuth2);
+		$I->selectOptionInRadioField(configPage::$labelOauth2, configPage::$choose);
+		$I->click(configPage::$buttonSave);
+		$I->waitForText(configPage::$messageSaveSuccess, 30, configPage::$messageContainer);
+	}
 }
