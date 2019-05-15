@@ -12,31 +12,37 @@ use Page\OAuthClientsPage;
 
 /**
  * Class OAuthClientsCest
+ * @since 1.10.7
  */
 class OAuthClientsCest
 {
 	/**
 	 * @var Generator
+	 * @since 1.10.7
 	 */
 	protected $faker;
 
 	/**
 	 * @var string
+	 * @since 1.10.7
 	 */
 	protected $clientID;
 
 	/**
 	 * @var
+	 * @since 1.10.7
 	 */
 	protected $clientID2;
 
 	/**
 	 * @var string
+	 * @since 1.10.7
 	 */
 	protected $redirectURI;
 
 	/**
 	 * OAuthClientsCest constructor.
+	 * @since 1.10.7
 	 */
 	public function __construct()
 	{
@@ -49,6 +55,7 @@ class OAuthClientsCest
 	/**
 	 * @param AcceptanceTester $I
 	 * @throws Exception
+	 * @since 1.10.7
 	 */
 	public function _before(AcceptanceTester $I){
 		$I->doAdministratorLogin();
@@ -57,6 +64,7 @@ class OAuthClientsCest
 	/**
 	 * @param AdminTester $I
 	 * @throws Exception
+	 * @since 1.10.7
 	 */
 	public function OAuthClients(AdminTester $I){
 		$I->wantToTest("Activate The OAuth2");

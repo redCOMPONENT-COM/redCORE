@@ -11,6 +11,7 @@ use Page\OAuthClientsPage;
 /**
  * Class OAuthClientsStep
  * @package Step\Acceptance
+ * @since 1.10.7
  */
 class OAuthClientsStep extends AbstractStep
 {
@@ -18,6 +19,7 @@ class OAuthClientsStep extends AbstractStep
 	 * @param $clientID
 	 * @param $redirectURI
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function createNewOAuthClient($clientID,$redirectURI)
 	{
@@ -39,6 +41,7 @@ class OAuthClientsStep extends AbstractStep
 
 	/**
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function waitForSuccess()
 	{
@@ -49,6 +52,7 @@ class OAuthClientsStep extends AbstractStep
 
 	/**
 	 * @param $clientID
+	 * @since 1.10.7
 	 */
 	public function searchOAuthClient($clientID)
 	{
@@ -61,6 +65,7 @@ class OAuthClientsStep extends AbstractStep
 	 * @param $clientID
 	 * @param $clientID2
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function editOAuthClient($clientID,$clientID2)
 	{
@@ -78,6 +83,7 @@ class OAuthClientsStep extends AbstractStep
 	/**
 	 * @param $clientID2
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function deleteOAuthClient($clientID2)
 	{
@@ -85,6 +91,7 @@ class OAuthClientsStep extends AbstractStep
 		$I->amOnPage(OAuthClientsPage::$URL);
 		$I->waitForText(OAuthClientsPage::$titleOAuth, 30, OAuthClientsPage::$h1);
 		$I->searchOAuthClient($clientID2);
+		$I->waitForText($clientID2,30, OAuthClientsPage::$oauthClientsList);
 		$I->see($clientID2);
 		$I->click(OAuthClientsPage::$check);
 		$I->click(OAuthClientsPage::$buttonDelete);

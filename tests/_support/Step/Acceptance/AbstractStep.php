@@ -13,11 +13,13 @@ use Page\WebserviceManagerPage as webPage;
 /**
  * Class AbstractStep
  * @package Step\Acceptance
+ * @since 1.10.7
  */
 class AbstractStep extends \AcceptanceTester
 {
 	/**
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function activateWebservices()
 	{
@@ -39,6 +41,7 @@ class AbstractStep extends \AcceptanceTester
 
 	/**
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function installWebservices(){
 		$I= $this;
@@ -56,6 +59,7 @@ class AbstractStep extends \AcceptanceTester
 
 	/**
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function activateTheOAuth2(){
 		$I= $this;
