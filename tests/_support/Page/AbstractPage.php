@@ -31,12 +31,47 @@ class AbstractPage
 	/**
 	 * @var string
 	 */
+	public static $messageSuccess = 'success';
+
+	/**
+	 * @var string
+	 */
 	public static $messageSaveSuccess = 'Save success';
 
 	/**
 	 * @var string
 	 */
 	public static $buttonInstall = 'Install';
+
+	/**
+	 * @var string
+	 */
+	public static $buttonNew = 'New';
+
+	/**
+	 * @var string
+	 */
+	public static $buttonSaveClose = 'Save & Close';
+
+	/**
+	 * @var string
+	 */
+	public static $buttonClear = 'Clear';
+
+	/**
+	 * @var string
+	 */
+	public static $search = '.icon-search';
+
+	/**
+	 * @var string
+	 */
+	public static $buttonDelete = 'Delete';
+
+	/**
+	 * @var string
+	 */
+	public static $check = '#cb0';
 
 	/**
 	 * @param $value
@@ -47,4 +82,5 @@ class AbstractPage
 		$xpath = "//span[contains(text(),'".$value."')]";
 		return $xpath;
 	}
+
 }

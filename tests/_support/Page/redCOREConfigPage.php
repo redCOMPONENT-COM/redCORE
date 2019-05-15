@@ -62,4 +62,19 @@ class redCOREConfigPage extends AbstractPage
 	 * @var string
 	 */
 	public static $labelSOAP = 'Enable SOAP Server';
+
+    /**
+     * @var string
+     */
+	public static $labelOauth2 = 'Enable Oauth2 Server';
+
+    /**
+     * @var string
+     */
+    public static $buttonOAuth2 = 'OAuth2 Server options';
+
+    /**
+     * @var string
+     */
+    public static $formOAuth2 = '#REDCORE_OAUTH2_SERVER_OPTIONS';
 }
