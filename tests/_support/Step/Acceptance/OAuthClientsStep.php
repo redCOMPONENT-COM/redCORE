@@ -28,6 +28,12 @@ class OAuthClientsStep extends AbstractStep
 		$I->waitForText(OAuthClientsPage::$titleOAuthClient, 30, OAuthClientsPage::$h1);
 		$I->fillField(OAuthClientsPage::$fieldClientID, $clientID);
 		$I->fillField(OAuthClientsPage::$fieldURI, $redirectURI);
+		$I->waitForText(OAuthClientsPage::$grantTypes, 30, OAuthClientsPage::$labelGrant);
+		$I->waitForText(OAuthClientsPage::$userCredentials, 30, OAuthClientsPage::$fieldSet);
+		$I->click(OAuthClientsPage::$checkbox);
+		$I->waitForText(OAuthClientsPage::$clientScopes, 30, OAuthClientsPage::$labelScopes);
+		$I->waitForText(OAuthClientsPage::$allWebservices, 30, OAuthClientsPage::$labelAllWeb);
+		$I->click(OAuthClientsPage::$scopeCheckAll);
 		$I->click(OAuthClientsPage::$buttonSaveClose);
 	}
 
@@ -62,7 +68,8 @@ class OAuthClientsStep extends AbstractStep
 		$I->amOnPage(OAuthClientsPage::$URL);
 		$I->waitForText(OAuthClientsPage::$titleOAuth, 30, OAuthClientsPage::$h1);
 		$I->searchOAuthClient($clientID);
-		$I->see($clientID, OAuthClientsPage::$oauthClientsList);
+		$I->waitForText($clientID, 30, OAuthClientsPage::$oauthClientsList);
+		$I->see($clientID);
 		$I->click($clientID);
 		$I->fillField(OAuthClientsPage::$fieldClientID, $clientID2);
 		$I->click(OAuthClientsPage::$buttonSaveClose);
@@ -78,6 +85,7 @@ class OAuthClientsStep extends AbstractStep
 		$I->amOnPage(OAuthClientsPage::$URL);
 		$I->waitForText(OAuthClientsPage::$titleOAuth, 30, OAuthClientsPage::$h1);
 		$I->searchOAuthClient($clientID2);
+		$I->see($clientID2);
 		$I->click(OAuthClientsPage::$check);
 		$I->click(OAuthClientsPage::$buttonDelete);
 		$I->waitForText(OAuthClientsPage::$message, 30, OAuthClientsPage::$messageContainer);
