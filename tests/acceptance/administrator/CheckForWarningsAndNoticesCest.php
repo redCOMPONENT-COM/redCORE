@@ -38,5 +38,4 @@ class CheckForWarningsAndNoticesCest
 		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=payment_configurations');
 		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=payments');
 	}
-
 }
