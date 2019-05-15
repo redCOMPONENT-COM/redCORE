@@ -60,8 +60,6 @@ class AbstractStep extends \AcceptanceTester
 	public function Enabletranslations()
 	{
 		$I = $this;
-		$I->wantToTest(' that there are no Warnings or Notices in redCORE');
-		$I->wantTo('Activate redCORE system plugin features');
 		$I->amOnPage(configPage::$URL);
 		$I->waitForText('redCORE Config', 30, configPage::$h1);
 		$I->click(configPage::$tabTranslations);
