@@ -14,6 +14,7 @@ class CheckForWarningsAndNoticesCest
 	/**
 	 * @param AbstractStep $I
 	 * @throws Exception
+	 * @since 1.10.7
 	 */
 	public function CheckForWarningsAndNotices(AbstractStep $I)
 	{
