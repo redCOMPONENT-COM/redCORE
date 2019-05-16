@@ -101,11 +101,6 @@ class AbstractPage
 	/**
 	 * @var string
 	 */
-	public static $title = 'redCORE Config';
-
-	/**
-	 * @var string
-	 */
 	public static $buttonExtensions = 'Extensions';
 
 	/**
