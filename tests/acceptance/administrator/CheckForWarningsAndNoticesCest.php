@@ -6,6 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 use Step\Acceptance\AbstractStep;
+use Page\UrlPage as url ;
 
 // Load the Step Object Page
 class CheckForWarningsAndNoticesCest
@@ -18,24 +19,24 @@ class CheckForWarningsAndNoticesCest
 	{
 		$I->doAdministratorLogin();
 		$I->Enabletranslations();
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translation_tables');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=banner_clients');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=banners&return');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=categories');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=contact_details');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=content');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=languages');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=menu');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=modules');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=extensions');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=redcore_country');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=redcore_currency');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=translations&filter[translationTableName]=users');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=webservices');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=oauth_clients');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=payment_dashboard');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=payment_configurations');
-		$I->checkForPhpNoticesOrWarnings('administrator/index.php?option=com_redcore&view=payments');
+		$I->checkForPhpNoticesOrWarnings(url::$url1);
+		$I->checkForPhpNoticesOrWarnings(url::$urlTranslationTables);
+		$I->checkForPhpNoticesOrWarnings(url::$urlBannerClients);
+		$I->checkForPhpNoticesOrWarnings(url::$urlBannersReturn);
+		$I->checkForPhpNoticesOrWarnings(url::$urlCategories);
+		$I->checkForPhpNoticesOrWarnings(url::$urlContactDetails);
+		$I->checkForPhpNoticesOrWarnings(url::$urlContent);
+		$I->checkForPhpNoticesOrWarnings(url::$urlLanguages);
+		$I->checkForPhpNoticesOrWarnings(url::$urlMenu);
+		$I->checkForPhpNoticesOrWarnings(url::$urlModules);
+		$I->checkForPhpNoticesOrWarnings(url::$urlExtensions);
+		$I->checkForPhpNoticesOrWarnings(url::$urlRedcoreCountry);
+		$I->checkForPhpNoticesOrWarnings(url::$urlRedcore_Currency);
+		$I->checkForPhpNoticesOrWarnings(url::$urlUser);
+		$I->checkForPhpNoticesOrWarnings(url::$urlWebServices);
+		$I->checkForPhpNoticesOrWarnings(url::$urlOauthClients);
+		$I->checkForPhpNoticesOrWarnings(url::$urlPaymentDashboard);
+		$I->checkForPhpNoticesOrWarnings(url::$urlPaymentConfigurations);
+		$I->checkForPhpNoticesOrWarnings(url::$urlPayments);
 	}
 }

@@ -59,6 +59,11 @@ class AbstractPage
 	public static $savemess = 'iv[@id="system-message-container"]';
 
 	/**
+	 * @var string
+	 */
+	public static $title = 'redCORE Config';
+
+	/**
 	 * @param $value
 	 * @return string
 	 */
