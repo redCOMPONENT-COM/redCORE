@@ -5,7 +5,6 @@
  * Date: 5/16/2019
  * Time: 9:29 AM
  */
-
 namespace Page;
 
 /**
@@ -108,5 +107,4 @@ class UrlPage
 	 * @var string
 	 */
 	public static $urlPayments ='administrator/index.php?option=com_redcore&view=payments';
-
 }

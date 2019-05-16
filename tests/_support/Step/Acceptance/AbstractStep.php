@@ -9,7 +9,6 @@ namespace Step\Acceptance;
 
 use Page\redCOREConfigPage as configPage;
 use Page\WebserviceManagerPage as webPage;
-use Page\UrlPage as url;
 
 /**
  * Class AbstractStep
