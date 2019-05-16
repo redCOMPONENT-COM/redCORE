@@ -48,12 +48,6 @@ class redCOREConfigPage extends AbstractPage
 	 * @var string
 	 * @since 1.10.7
 	 */
-	public static $choose = 'Yes';
-
-	/**
-	 * @var string
-	 * @since 1.10.7
-	 */
 	public static $labelCheckUser = 'Check user permission against';
 
 	/**

@@ -91,7 +91,7 @@ class OAuthClientsStep extends AbstractStep
 		$I->amOnPage(OAuthClientsPage::$URL);
 		$I->waitForText(OAuthClientsPage::$titleOAuth, 30, OAuthClientsPage::$h1);
 		$I->searchOAuthClient($clientID2);
-		$I->waitForText($clientID2,30, OAuthClientsPage::$oauthClientsList);
+		$I->waitForText($clientID2, 30, OAuthClientsPage::$oauthClientsList);
 		$I->see($clientID2);
 		$I->click(OAuthClientsPage::$check);
 		$I->click(OAuthClientsPage::$buttonDelete);

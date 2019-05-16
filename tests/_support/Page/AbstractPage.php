@@ -24,13 +24,37 @@ class AbstractPage
 	 * @var string
 	 * @since 1.10.7
 	 */
+	public static $clientId = '#client_id';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
 	public static $buttonSave = 'Save';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $buttonSaveAndClose = 'Save & Close';
 
 	/**
 	 * @var array
 	 * @since 1.10.7
 	 */
 	public static $messageContainer = '#system-message-container';
+
+	/**
+	 * @var array
+	 * @since 1.10.7
+	 */
+	public static $labelModulePosition = "label[data-original-title='Status Module Position']";
+
+	/**
+	 * @var array
+	 * @since 1.10.7
+	 */
+	public static $linkAdvanced = 'Advanced';
 
 	/**
 	 * @var string
@@ -85,6 +109,54 @@ class AbstractPage
 	 * @since 1.10.7
 	 */
 	public static $check = '#cb0';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $chooseNo = 'No';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $chooseYes = 'Yes';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $amAdmin = 'administrator';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $labelAdmin = 'Administrator';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $buttonExtensions = 'Extensions';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $buttonTemplates = 'Templates';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $statusModulePosition = 'Status Module Position';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $positionTop = 'Top';
 
 	/**
 	 * @param $value

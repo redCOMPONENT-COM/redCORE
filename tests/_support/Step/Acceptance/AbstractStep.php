@@ -30,10 +30,10 @@ class AbstractStep extends \AcceptanceTester
 		$I->click(configPage::$buttonWebservice);
 		$I->waitForElementVisible(configPage::$form);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
-		$I->selectOptionInRadioField(configPage::$labelWebServices, configPage::$choose);
+		$I->selectOptionInRadioField(configPage::$labelWebServices, configPage::$chooseYes);
 		$I->selectOptionInChosen(configPage::$labelCheckUser, configPage::$optional);
 		$I->scrollTo(configPage::$selectorFormScroll);
-		$I->selectOptionInRadioField(configPage::$labelSOAP, configPage::$choose);
+		$I->selectOptionInRadioField(configPage::$labelSOAP, configPage::$chooseYes);
 		$I->executeJS('window.scrollTo(0,0)');
 		$I->click(configPage::$buttonSave);
 		$I->waitForText(configPage::$messageSaveSuccess, 30, configPage::$messageContainer);
@@ -67,7 +67,7 @@ class AbstractStep extends \AcceptanceTester
 		$I->waitForText(configPage::$titleRedConf, 30, configPage::$h1);
 		$I->click((configPage::$buttonOAuth2));
 		$I->waitForElementVisible(configPage::$formOAuth2);
-		$I->selectOptionInRadioField(configPage::$labelOauth2, configPage::$choose);
+		$I->selectOptionInRadioField(configPage::$labelOauth2, configPage::$chooseYes);
 		$I->click(configPage::$buttonSave);
 		$I->waitForText(configPage::$messageSaveSuccess, 30, configPage::$messageContainer);
 	}
