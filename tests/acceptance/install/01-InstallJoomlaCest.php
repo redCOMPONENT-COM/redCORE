@@ -6,7 +6,7 @@
  * @license     GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-use Step\Acceptance\TemplateSteps as AdminTester;
+use Step\Acceptance\TemplateSteps as Template;
 
 /**
  * Class InstallJoomlaCest
@@ -30,7 +30,7 @@ class InstallJoomlaCest
 	 * @param AdminTester $I
 	 * @throws Exception
 	 */
-	public function disableTemplateFloatingToolbars(AdminTester $I)
+	public function disableTemplateFloatingToolbars(Template $I)
 	{
 		$I->wantToTest('Disable Template Floating Toolbars');
 		$I->disableTemplateFloatingToolbars();
