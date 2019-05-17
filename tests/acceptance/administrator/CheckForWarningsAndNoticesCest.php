@@ -8,7 +8,10 @@
 use Step\Acceptance\AbstractStep;
 use Page\UrlPage as url ;
 
-// Load the Step Object Page
+/**
+ * Class CheckForWarningsAndNoticesCest
+ * @since 1.10.7
+ */
 class CheckForWarningsAndNoticesCest
 {
 	/**
