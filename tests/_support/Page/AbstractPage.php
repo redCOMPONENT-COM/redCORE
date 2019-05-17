@@ -61,27 +61,12 @@ class AbstractPage
 	/**
 	 * @var string
 	 */
-	public static $tabTranslations = '//ul[@id="configTabs"]/li[2]/a';
-
-	/**
-	 * @var string
-	 */
 	public static $chooseNo = 'No';
 
 	/**
 	 * @var string
 	 */
-	public static $tabWebServices = '//ul[@id="configTabs"]/li[3]/a';
-
-	/**
-	 * @var string
-	 */
 	public static $chooseYes = 'Yes';
-
-	/**
-	 * @var string
-	 */
-	public static $id = '//ul[@id="configTabs"]/li[2]/a';
 
 	/**
 	 * @var string

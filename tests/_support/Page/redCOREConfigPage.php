@@ -62,4 +62,19 @@ class redCOREConfigPage extends AbstractPage
 	 * @var string
 	 */
 	public static $labelSOAP = 'Enable SOAP Server';
+
+	/**
+	 * @var string
+	 */
+	public static $tabTranslations = '//ul[@id="configTabs"]/li[2]/a';
+
+	/**
+	 * @var string
+	 */
+	public static $id = '//ul[@id="configTabs"]/li[2]/a';
+
+	/**
+	 * @var string
+	 */
+	public static $tabWebServices = '//ul[@id="configTabs"]/li[3]/a';
 }
