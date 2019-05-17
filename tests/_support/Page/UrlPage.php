@@ -21,7 +21,7 @@ class UrlPage
 
 	/**
 	 * @var string
-	 * @since 110.7
+	 * @since 1.10.7
 	 */
 	public static $urlTranslationTables = 'administrator/index.php?option=com_redcore&view=translation_tables';
 
