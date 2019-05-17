@@ -21,7 +21,7 @@ class OAuthClientsStep extends AbstractStep
 	 * @throws \Exception
 	 * @since 1.10.7
 	 */
-	public function createNewOAuthClient($clientID,$redirectURI)
+	public function createNewOAuthClient($clientID, $redirectURI)
 	{
 		$I = $this;
 		$I->amOnPage(OAuthClientsPage::$URL);
@@ -67,7 +67,7 @@ class OAuthClientsStep extends AbstractStep
 	 * @throws \Exception
 	 * @since 1.10.7
 	 */
-	public function editOAuthClient($clientID,$clientID2)
+	public function editOAuthClient($clientID, $clientID2)
 	{
 		$I = $this;
 		$I->amOnPage(OAuthClientsPage::$URL);
