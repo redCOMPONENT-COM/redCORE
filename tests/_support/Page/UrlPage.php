@@ -10,6 +10,7 @@ namespace Page;
 /**
  * Class UrlPage
  * @package Page
+ * @since 1.10.7
  */
 class UrlPage
 {
