@@ -13,11 +13,13 @@ use Page\WebserviceManagerPage as webPage;
 /**
  * Class AbstractStep
  * @package Step\Acceptance
+ * @since 1.10.7
  */
 class AbstractStep extends \AcceptanceTester
 {
 	/**
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function activateWebservices()
 	{
@@ -28,10 +30,10 @@ class AbstractStep extends \AcceptanceTester
 		$I->click(configPage::$buttonWebservice);
 		$I->waitForElementVisible(configPage::$form);
 		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
-		$I->selectOptionInRadioField(configPage::$labelWebServices, configPage::$choose);
+		$I->selectOptionInRadioField(configPage::$labelWebServices, configPage::$chooseYes);
 		$I->selectOptionInChosen(configPage::$labelCheckUser, configPage::$optional);
 		$I->scrollTo(configPage::$selectorFormScroll);
-		$I->selectOptionInRadioField(configPage::$labelSOAP, configPage::$choose);
+		$I->selectOptionInRadioField(configPage::$labelSOAP, configPage::$chooseYes);
 		$I->executeJS('window.scrollTo(0,0)');
 		$I->click(configPage::$buttonSave);
 		$I->waitForText(configPage::$messageSaveSuccess, 30, configPage::$messageContainer);
@@ -39,6 +41,7 @@ class AbstractStep extends \AcceptanceTester
 
 	/**
 	 * @throws \Exception
+	 * @since 1.10.7
 	 */
 	public function installWebservices(){
 		$I= $this;
@@ -52,5 +55,20 @@ class AbstractStep extends \AcceptanceTester
 		$I->waitForText(webPage::$pathContactWebservice1, 30, webPage::returnXpath(webPage::$pathContactWebservice1));
 		$I->waitForText(webPage::$pathContactWebservice2, 30, webPage::returnXpath(webPage::$pathContactWebservice2));
 		$I->waitForText(webPage::$pathUserWebservice, 30, webPage::returnXpath(webPage::$pathUserWebservice));
+	}
+
+	/**
+	 * @throws \Exception
+	 * @since 1.10.7
+	 */
+	public function activateTheOAuth2(){
+		$I= $this;
+		$I->amOnPage(configPage::$URL);
+		$I->waitForText(configPage::$titleRedConf, 30, configPage::$h1);
+		$I->click((configPage::$buttonOAuth2));
+		$I->waitForElementVisible(configPage::$formOAuth2);
+		$I->selectOptionInRadioField(configPage::$labelOauth2, configPage::$chooseYes);
+		$I->click(configPage::$buttonSave);
+		$I->waitForText(configPage::$messageSaveSuccess, 30, configPage::$messageContainer);
 	}
 }
