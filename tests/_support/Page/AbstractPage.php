@@ -132,12 +132,6 @@ class AbstractPage
 	 * @var string
 	 * @since 1.10.7
 	 */
-	public static $savemess = 'iv[@id="system-message-container"]';
-
-	/**
-	 * @var string
-	 * @since 1.10.7
-	 */
 	public static $labelAdmin = 'Administrator';
 
 	/**
