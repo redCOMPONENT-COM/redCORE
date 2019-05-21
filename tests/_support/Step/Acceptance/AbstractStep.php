@@ -12,7 +12,6 @@ use Page\WebserviceManagerPage as webPage;
 
 /**
  * Class AbstractStep
- * @package Step\
  * @package Step\Acceptance
  * @since 1.10.7
  */
