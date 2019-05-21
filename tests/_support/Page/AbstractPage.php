@@ -159,6 +159,18 @@ class AbstractPage
 	public static $positionTop = 'Top';
 
 	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $enableTranslations = 'Enable translations';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $enableWebservices = 'Enable webservices';
+
+	/**
 	 * @param $value
 	 * @return string
 	 * @since 1.10.7

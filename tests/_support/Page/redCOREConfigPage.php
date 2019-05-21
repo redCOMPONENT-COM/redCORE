@@ -72,7 +72,19 @@ class redCOREConfigPage extends AbstractPage
 	 * @var string
 	 * @since 1.10.7
 	 */
+	public static $tabTranslations = '//ul[@id="configTabs"]/li[2]/a';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
 	public static $labelOauth2 = 'Enable Oauth2 Server';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
+	public static $id = '//ul[@id="configTabs"]/li[2]/a';
 
 	/**
 	 * @var string
@@ -84,5 +96,12 @@ class redCOREConfigPage extends AbstractPage
 	 * @var string
 	 * @since 1.10.7
 	 */
+	public static $tabWebServices = '//ul[@id="configTabs"]/li[3]/a';
+
+	/**
+	 * @var string
+	 * @since 1.10.7
+	 */
 	public static $formOAuth2 = '#REDCORE_OAUTH2_SERVER_OPTIONS';
+
 }
