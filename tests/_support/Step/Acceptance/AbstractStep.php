@@ -12,12 +12,9 @@ use Page\WebserviceManagerPage as webPage;
 
 /**
  * Class AbstractStep
-<<<<<<< HEAD
  * @package Step\
-=======
  * @package Step\Acceptance
  * @since 1.10.7
->>>>>>> fce5f896207ce93abbbde1ff4f2070992b92b7a7
  */
 class AbstractStep extends \AcceptanceTester
 {
@@ -66,30 +63,30 @@ class AbstractStep extends \AcceptanceTester
 	 * @since 1.10.7
 	 */
 	public function Enabletranslations()
-    {
-        $I = $this;
-        $I->wantToTest(' that there are no Warnings or Notices in redCORE');
-        $I->wantTo('Activate redCORE system plugin features');
-        $I->amOnPage(configPage::$URL);
-        $I->waitForText(configPage::$titleRedConf, 30, configPage::$h1);
-        $I->click(configPage::$tabTranslations);
-        $I->waitForElementVisible(configPage::$id, 3);
-        $I->executeJS("javascript:document.getElementById(\"REDCORE_TRANSLATIONS_OPTIONS\").scrollIntoView();");
-        $I->selectOptionInRadioField(configPage::$enableTranslations, configPage::$chooseYes);
-        $I->executeJS('window.scrollTo(0,0)');
-        $I->click(configPage::$tabWebServices);
-        $I->waitForElementVisible(configPage::$id);
-        $I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
-        $I->selectOptionInRadioField(configPage::$enableWebservices, configPage::$chooseYes);
-        $I->executeJS('window.scrollTo(0,0)');
-        $I->click(configPage::$buttonSave);
-        $I->waitForText(configPage::$messageSaveSuccess, 30);
-    }
+	{
+		$I = $this;
+		$I->wantToTest(' that there are no Warnings or Notices in redCORE');
+		$I->wantTo('Activate redCORE system plugin features');
+		$I->amOnPage(configPage::$URL);
+		$I->waitForText(configPage::$titleRedConf, 30, configPage::$h1);
+		$I->click(configPage::$tabTranslations);
+		$I->waitForElementVisible(configPage::$id, 3);
+		$I->executeJS("javascript:document.getElementById(\"REDCORE_TRANSLATIONS_OPTIONS\").scrollIntoView();");
+		$I->selectOptionInRadioField(configPage::$enableTranslations, configPage::$chooseYes);
+		$I->executeJS('window.scrollTo(0,0)');
+		$I->click(configPage::$tabWebServices);
+		$I->waitForElementVisible(configPage::$id);
+		$I->executeJS("javascript:document.getElementById(\"REDCORE_WEBSERVICES_OPTIONS\").scrollIntoView();");
+		$I->selectOptionInRadioField(configPage::$enableWebservices, configPage::$chooseYes);
+		$I->executeJS('window.scrollTo(0,0)');
+		$I->click(configPage::$buttonSave);
+		$I->waitForText(configPage::$messageSaveSuccess, 30);
+	}
 
-    /**
-     * @throws \Exception
-     * @since 1.10.7
-     */
+	/**
+	 * @throws \Exception
+	 * @since 1.10.7
+	 */
 	public function activateTheOAuth2(){
 		$I= $this;
 		$I->amOnPage(configPage::$URL);
