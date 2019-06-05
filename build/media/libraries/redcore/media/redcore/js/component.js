@@ -71,10 +71,10 @@
 
                 // Submit the form.
                 if (typeof form.onsubmit == 'function') {
-                    form.onsubmit();
+                    form.submit();
                 }
                 if (typeof form.fireEvent == "function") {
-                    form.fireEvent('submit');
+                    form.submit();
                 }
                 form.submit();
             };
