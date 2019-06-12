@@ -45,10 +45,11 @@ class RRoute extends JRoute
 	 * @param   integer  $ssl    Secure state for the resolved URI.
 	 *                             1: Make URI secure using global secure site URI.
 	 *                             2: Make URI unsecure using the global unsecure site URI.
+	 * @param   boolean  $absolute  Return an absolute URL
 	 *
 	 * @return  The translated humanly readible URL.
 	 */
-	public static function _($url, $xhtml = true, $ssl = null)
+	public static function _($url, $xhtml = true, $ssl = null, $absolute = false)
 	{
 		if (self::$customRouteClass)
 		{
@@ -57,6 +58,6 @@ class RRoute extends JRoute
 			return $getCustomRouteClass::_($url, $xhtml, $ssl);
 		}
 
-		return parent::_($url, $xhtml, $ssl);
+		return parent::_($url, $xhtml, $ssl, $absolute);
 	}
 }
