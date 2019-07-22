@@ -495,7 +495,7 @@ class RDatabaseSqlparserSqlcreator {
 				$sql = substr($sql, 0, -1) . ' ';
 			}
 
-			$sql .= $this->processReserved($v);
+			$sql .= (!empty($this->processReserved($v))) ? ',' . $this->processReserved($v) : $this->processReserved($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processOperator($v);
