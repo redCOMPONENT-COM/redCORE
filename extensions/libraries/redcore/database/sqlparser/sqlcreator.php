@@ -174,6 +174,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processOrderByExpression($v);
+			$sql .= $this->processOrderByBracketExpression($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('ORDER', $k, $v, 'expr_type');
@@ -537,6 +538,15 @@ class RDatabaseSqlparserSqlcreator {
 
 	protected function processOrderByExpression($parsed) {
 		if ($parsed['expr_type'] !== 'expression') {
+			return "";
+		}
+		$sql = $this->processSubTree($parsed, " ");
+
+		return $sql;
+	}
+
+	protected function processOrderByBracketExpression($parsed) {
+		if ($parsed['expr_type'] !== 'bracket_expression') {
 			return "";
 		}
 		$sql = $this->processSubTree($parsed, " ");

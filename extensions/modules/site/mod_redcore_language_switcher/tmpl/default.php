@@ -8,6 +8,8 @@
  */
 
 defined('_JEXEC') or die('Restricted access');
+
+$arrUrl = JFactory::getApplication()->input->getArray();
 ?>
 <div class="mod-languages<?php echo $moduleclass_sfx ?>">
 <?php if ($headerText) : ?>
@@ -18,6 +20,12 @@ defined('_JEXEC') or die('Restricted access');
 	<form name="lang" method="post" action="<?php echo htmlspecialchars(JUri::current()); ?>">
 	<select class="inputbox" onchange="document.location.replace(this.value);" >
 	<?php foreach ($list as $language) : ?>
+        <?php
+		unset($arrUrl['language']);
+		unset($arrUrl['index_php']);
+		$arrUrl['lang'] = $language->sef;
+		$language->link =JRoute::_(("index.php?" . http_build_query($arrUrl,"","&")));
+        ?>
 		<option
 			dir=<?php echo JLanguage::getInstance($language->lang_code)->isRTL() ? '"rtl"' : '"ltr"'?>
 			value="<?php echo $language->link;?>" <?php echo $language->active ? 'selected="selected"' : ''?>>
