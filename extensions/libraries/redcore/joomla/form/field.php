@@ -9,15 +9,25 @@
 
 defined('JPATH_PLATFORM') or die;
 
+use Joomla\CMS\Form\FormField;
 use Joomla\String\Normalise;
 use Joomla\String\StringHelper;
 
+// Remove JFormField alias from JLoader to have ability extends it via FormField
+$reflectionProperty = new ReflectionProperty('JLoader', 'classAliases');
+$reflectionProperty->setAccessible(true);
+$val = $reflectionProperty->getValue();
+unset($val['jformfield']);
+$reflectionProperty->setValue($val);
+$reflectionProperty->setAccessible(false);
+
 /**
  * Abstract Form Field class for the Joomla Platform.
+ * JFormField has to be extended by FormField to get access to the FormField protected variables
  *
  * @since  11.1
  */
-abstract class JFormField
+abstract class JFormField extends FormField
 {
 	/**
 	 * The description text for the form field. Usually used in tooltips.
