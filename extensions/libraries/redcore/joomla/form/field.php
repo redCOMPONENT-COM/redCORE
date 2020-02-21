@@ -13,13 +13,42 @@ use Joomla\CMS\Form\FormField;
 use Joomla\String\Normalise;
 use Joomla\String\StringHelper;
 
-// Remove JFormField alias from JLoader to have ability extends it via FormField
-$reflectionProperty = new ReflectionProperty('JLoader', 'classAliases');
-$reflectionProperty->setAccessible(true);
-$val = $reflectionProperty->getValue();
-unset($val['jformfield']);
-$reflectionProperty->setValue($val);
-$reflectionProperty->setAccessible(false);
+try
+{
+	// Remove JFormField alias from JLoader to have ability extends it via FormField
+	$reflectionProperty = new ReflectionProperty('JLoader', 'classAliases');
+	$reflectionProperty->setAccessible(true);
+	$val = $reflectionProperty->getValue();
+	unset($val['jformfield']);
+	$reflectionProperty->setValue($val);
+	$reflectionProperty->setAccessible(false);
+}
+catch (Throwable $e)
+{
+	// If property does not exist, then just skip it
+}
+
+// Extend via FormField if possible
+if (class_exists(FormField::class))
+{
+	/**
+	 * Class JFormMiddle
+	 * @since 1.10.7
+	 */
+	class JFormMiddle extends FormField
+	{
+	}
+}
+else
+{
+	/**
+	 * Class JFormMiddle
+	 * @since 1.10.7
+	 */
+	class JFormMiddle
+	{
+	}
+}
 
 /**
  * Abstract Form Field class for the Joomla Platform.
@@ -27,7 +56,7 @@ $reflectionProperty->setAccessible(false);
  *
  * @since  11.1
  */
-abstract class JFormField extends FormField
+abstract class JFormField extends JFormMiddle
 {
 	/**
 	 * The description text for the form field. Usually used in tooltips.
