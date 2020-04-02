@@ -22,7 +22,6 @@ if ($link = $modal->params->get('link', null))
 	iframe { border: 0 none; }
 	.modal {
 		position: absolute;
-		left: 40%;
 	}
 	.modal-body {
 		padding: 5px;
