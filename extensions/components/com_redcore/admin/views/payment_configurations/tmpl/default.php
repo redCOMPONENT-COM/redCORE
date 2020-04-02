@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('_JEXEC') or die;
@@ -35,7 +35,7 @@ $listDirn = $this->state->get('list.direction');
 	);
 	?>
 	<hr/>
-	<div class="row">
+	<div class="row-fluid">
 		<table class="table table-striped table-hover" id="oauthClientsList">
 			<thead>
 			<tr>
@@ -89,13 +89,13 @@ $listDirn = $this->state->get('list.direction');
 								</a>
 							<?php endif; ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo !$isGlobal ? $item->extension_name : JText::_('COM_REDCORE_PAYMENT_CONFIGURATION_DEFAULT_CONFIGURATION_LABEL'); ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo $item->owner_name; ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<a class="btn btn-default" href="<?php echo $action; ?>&payment_name=<?php echo $item->element; ?>&payment_id=<?php echo $item->id; ?>&task=payment_configurations.test">
 								<i class="icon-file-text"></i>
 								<?php echo JText::_('COM_REDCORE_PAYMENT_CONFIGURATION_TEST_CONFIGURATION'); ?>

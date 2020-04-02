@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -110,21 +110,11 @@ if ($result instanceof Exception)
 ?>
 <div class="redcore">
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-12">
-				<?php
-					if ($toolbar instanceof RToolbar)
-						:
-				?>
-					<div class="row">
-						<?php echo $toolbar->render() ?>
-					</div>
-				<?php
-					endif;
-				?>
-
-				<?php echo $result; ?>
+		<?php if ($toolbar instanceof RToolbar) : ?>
+			<div class="row">
+				<?php echo $toolbar->render() ?>
 			</div>
-		</div>
+		<?php endif; ?>
+		<?php echo $result; ?>
 	</div>
 </div>

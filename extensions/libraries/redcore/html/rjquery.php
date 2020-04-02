@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -71,11 +71,6 @@ abstract class JHtmlRjquery
 			$options['allow_single_deselect'] = true;
 		}
 
-		if (empty($options['width']))
-		{
-			$options['width'] = 'auto';
-		}
-
 		$options = static::options2Jregistry($options);
 
 		JFactory::getDocument()->addScriptDeclaration("
@@ -116,6 +111,38 @@ abstract class JHtmlRjquery
 		RHelperAsset::load('lib/jquery-ui/i18n/jquery.ui.datepicker-' . $mainLang . '.min.js', self::EXTENSION);
 
 		RHelperAsset::load('lib/jquery-ui/jquery.ui.datepicker.css', self::EXTENSION);
+
+		static::$loaded[__METHOD__] = true;
+
+		return;
+	}
+
+	/**
+	 * Load the datetimepicker.
+	 *
+	 * @return  void
+	 */
+	public static function datetimepicker()
+	{
+		self::datepicker();
+
+		// Only load once
+		if (!empty(static::$loaded[__METHOD__]))
+		{
+			return;
+		}
+
+		RHelperAsset::load('lib/jquery-timepicker-addon/js/jquery-ui-timepicker-addon.js', self::EXTENSION);
+
+		// Include translations
+		$langTag = JFactory::getLanguage()->getTag();
+		$langTagParts = explode('-', $langTag);
+		$mainLang = reset($langTagParts);
+
+		RHelperAsset::load('lib/jquery-timepicker-addon/i18n/jquery-ui-timepicker-' . $langTag . '.js', self::EXTENSION);
+		RHelperAsset::load('lib/jquery-timepicker-addon/i18n/jquery-ui-timepicker-' . $mainLang . '.js', self::EXTENSION);
+
+		RHelperAsset::load('lib/jquery-timepicker-addon/css/jquery-ui-timepicker-addon.css', self::EXTENSION);
 
 		static::$loaded[__METHOD__] = true;
 
@@ -165,7 +192,8 @@ abstract class JHtmlRjquery
 			return;
 		}
 
-		$isAdmin = JFactory::getApplication()->isAdmin();
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		// Load jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
 		if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))

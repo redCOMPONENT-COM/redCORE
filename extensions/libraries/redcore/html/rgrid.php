@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Utility class for creating HTML Grids
@@ -93,11 +95,12 @@ abstract class JHtmlRgrid
 	 */
 	public static function action($i, $task, $prefix = '', $text = '', $active_title = '', $inactive_title = '',
 		$tip = false, $active_class = '',$inactive_class = '',
-		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm', $buttonClass = '')
+		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm', $buttonClass = ''
+	)
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
+			$options        = $prefix;
 			$active_title   = array_key_exists('active_title', $options) ? $options['active_title'] : $active_title;
 			$inactive_title = array_key_exists('inactive_title', $options) ? $options['inactive_title'] : $inactive_title;
 			$tip            = array_key_exists('tip', $options) ? $options['tip'] : $tip;
@@ -178,24 +181,25 @@ abstract class JHtmlRgrid
 	 * @return  string       The Html code
 	 */
 	public static function state($states, $value, $i, $prefix = '',
-		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm')
+		$enabled = true, $translate = true, $checkbox = 'cb', $formId = 'adminForm'
+	)
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options   = $prefix;
+			$enabled   = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$translate = array_key_exists('translate', $options) ? $options['translate'] : $translate;
-			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$checkbox  = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
+			$prefix    = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
-		$state = JArrayHelper::getValue($states, (int) $value, $states[0]);
-		$task = array_key_exists('task', $state) ? $state['task'] : $state[0];
-		$text = array_key_exists('text', $state) ? $state['text'] : (array_key_exists(1, $state) ? $state[1] : '');
-		$active_title = array_key_exists('active_title', $state) ? $state['active_title'] : (array_key_exists(2, $state) ? $state[2] : '');
+		$state          = ArrayHelper::getValue($states, (int) $value, $states[0]);
+		$task           = array_key_exists('task', $state) ? $state['task'] : $state[0];
+		$text           = array_key_exists('text', $state) ? $state['text'] : (array_key_exists(1, $state) ? $state[1] : '');
+		$active_title   = array_key_exists('active_title', $state) ? $state['active_title'] : (array_key_exists(2, $state) ? $state[2] : '');
 		$inactive_title = array_key_exists('inactive_title', $state) ? $state['inactive_title'] : (array_key_exists(3, $state) ? $state[3] : '');
-		$tip = array_key_exists('tip', $state) ? $state['tip'] : (array_key_exists(4, $state) ? $state[4] : false);
-		$active_class = array_key_exists('active_class', $state) ? $state['active_class'] : (array_key_exists(5, $state) ? $state[5] : '');
+		$tip            = array_key_exists('tip', $state) ? $state['tip'] : (array_key_exists(4, $state) ? $state[4] : false);
+		$active_class   = array_key_exists('active_class', $state) ? $state['active_class'] : (array_key_exists(5, $state) ? $state[5] : '');
 		$inactive_class = array_key_exists('inactive_class', $state) ? $state['inactive_class'] : (array_key_exists(6, $state) ? $state[6] : '');
 
 		return self::action(
@@ -219,14 +223,15 @@ abstract class JHtmlRgrid
 	 * @return  string  The Html code
 	 */
 	public static function published($value, $i, $prefix = '', $enabled = true,
-		$checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm')
+		$checkbox = 'cb', $publish_up = null, $publish_down = null, $formId = 'adminForm'
+	)
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
 		$states = array(1 => array('unpublish', 'JPUBLISHED', 'JLIB_HTML_UNPUBLISH_ITEM', 'JPUBLISHED', false, 'ok-sign icon-green', 'ok-sign icon-green'),
@@ -238,11 +243,11 @@ abstract class JHtmlRgrid
 		if ($publish_up || $publish_down)
 		{
 			$nullDate = JFactory::getDbo()->getNullDate();
-			$nowDate = JFactory::getDate()->toUnix();
+			$nowDate  = JFactory::getDate()->toUnix();
 
 			$tz = new DateTimeZone(JFactory::getUser()->getParam('timezone', JFactory::getConfig()->get('offset')));
 
-			$publish_up = ($publish_up != $nullDate) ? JFactory::getDate($publish_up, 'UTC')->setTimeZone($tz) : false;
+			$publish_up   = ($publish_up != $nullDate) ? JFactory::getDate($publish_up, 'UTC')->setTimeZone($tz) : false;
 			$publish_down = ($publish_down != $nullDate) ? JFactory::getDate($publish_down, 'UTC')->setTimeZone($tz) : false;
 
 			// Create tip text, only we have publish up or down settings
@@ -343,16 +348,16 @@ abstract class JHtmlRgrid
 	{
 		if (is_array($prefix))
 		{
-			$options = $prefix;
-			$enabled = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
+			$options  = $prefix;
+			$enabled  = array_key_exists('enabled', $options) ? $options['enabled'] : $enabled;
 			$checkbox = array_key_exists('checkbox', $options) ? $options['checkbox'] : $checkbox;
-			$prefix = array_key_exists('prefix', $options) ? $options['prefix'] : '';
+			$prefix   = array_key_exists('prefix', $options) ? $options['prefix'] : '';
 		}
 
-		$text = addslashes(htmlspecialchars($editorName, ENT_COMPAT, 'UTF-8'));
-		$date = addslashes(htmlspecialchars(JHtml::_('date', $time, JText::_('DATE_FORMAT_LC')), ENT_COMPAT, 'UTF-8'));
-		$time = addslashes(htmlspecialchars(JHtml::_('date', $time, 'H:i'), ENT_COMPAT, 'UTF-8'));
-		$active_title = JText::_('JLIB_HTML_CHECKIN') . '::' . $text . '<br />' . $date . '<br />' . $time;
+		$text           = addslashes(htmlspecialchars($editorName, ENT_COMPAT, 'UTF-8'));
+		$date           = addslashes(htmlspecialchars(JHtml::_('date', $time, JText::_('DATE_FORMAT_LC')), ENT_COMPAT, 'UTF-8'));
+		$time           = addslashes(htmlspecialchars(JHtml::_('date', $time, 'H:i'), ENT_COMPAT, 'UTF-8'));
+		$active_title   = JText::_('JLIB_HTML_CHECKIN') . '::' . $text . '<br />' . $date . '<br />' . $time;
 		$inactive_title = JText::_('JLIB_HTML_CHECKED_OUT') . '::' . $text . '<br />' . $date . '<br />' . $time;
 
 		return self::action(
@@ -441,14 +446,15 @@ abstract class JHtmlRgrid
 	 * @return  string
 	 */
 	public static function sort($title, $order, $direction = 'asc', $selected = 0,
-		$task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm')
+		$task = null, $new_direction = 'asc', $tip = '', $icon = null, $formId = 'adminForm'
+	)
 	{
 		JHtml::_('rbootstrap.tooltip');
 		static::main();
 
-		$direction = strtolower($direction);
+		$direction  = strtolower($direction);
 		$orderIcons = array('icon-chevron-up', 'icon-chevron-down');
-		$index = (int) ($direction == 'desc');
+		$index      = (int) ($direction == 'desc');
 
 		if ($order != $selected)
 		{
@@ -497,8 +503,8 @@ abstract class JHtmlRgrid
 		static::main();
 
 		$direction = strtolower($direction);
-		$icon = array('chevron-up', 'chevron-down');
-		$index = (int) ($direction == 'desc');
+		$icon      = array('chevron-up', 'chevron-down');
+		$index     = (int) ($direction == 'desc');
 
 		if ($order != $selected)
 		{

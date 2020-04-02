@@ -3,7 +3,7 @@
  * @package     Joomla.Plugin
  * @subpackage  System.Redcore
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -38,15 +38,6 @@ class PlgSystemRedcore extends JPlugin
 		{
 			require_once $redcoreLoader;
 
-			// Sets plugin parameters for further use
-			RBootstrap::$config = $this->params;
-
-			// Sets initalization variables for frontend in Bootstrap class, according to plugin parameters
-			RBootstrap::$loadFrontendCSS = $this->params->get('frontend_css', false);
-			RBootstrap::$loadFrontendjQuery = $this->params->get('frontend_jquery', true);
-			RBootstrap::$loadFrontendjQueryMigrate = $this->params->get('frontend_jquery_migrate', true);
-			RBootstrap::$disableFrontendMootools = $this->params->get('frontend_mootools_disable', false);
-
 			if (!$this->isInstaller())
 			{
 				RBootstrap::bootstrap(false);
@@ -79,15 +70,15 @@ class PlgSystemRedcore extends JPlugin
 						JError::setErrorHandling(E_ERROR, 'message');
 						RApi::clearHeaders();
 						$webserviceClient = $input->get->getString('webserviceClient', '');
-						$optionName = $input->get->getString('option', '');
-						$optionName = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
-						$viewName = $input->getString('view', '');
-						$version = $input->getString('webserviceVersion', '');
-						$token = $input->getString(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), '');
-						$apiName = ucfirst($apiName);
-						$method = strtoupper($input->getMethod());
-						$task = RApiHalHelper::getTask();
-						$data = RApi::getPostedData();
+						$optionName       = $input->get->getString('option', '');
+						$optionName       = strpos($optionName, 'com_') === 0 ? substr($optionName, 4) : $optionName;
+						$viewName         = $input->getString('view', '');
+						$version          = $input->getString('webserviceVersion', '');
+						$token            = $input->getString(RBootstrap::getConfig('oauth2_token_param_name', 'access_token'), '');
+						$apiName          = ucfirst($apiName);
+						$method           = strtoupper($input->getMethod());
+						$task             = RApiHalHelper::getTask();
+						$data             = RApi::getPostedData();
 
 						if (version_compare(JVERSION, '3') >= 0)
 						{
@@ -100,7 +91,9 @@ class PlgSystemRedcore extends JPlugin
 
 						if (empty($webserviceClient))
 						{
-							$webserviceClient = JFactory::getApplication()->isAdmin() ? 'administrator' : 'site';
+							$webserviceClient = (version_compare(JVERSION, '3.7', '<') ?
+								JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator')) ?
+								'administrator' : 'site';
 						}
 
 						$options = array(
@@ -114,10 +107,10 @@ class PlgSystemRedcore extends JPlugin
 							'data'              => $data,
 							'dataGet'           => $dataGet,
 							'accessToken'       => $token,
-							'format'            => $input->getString('format', $this->params->get('webservices_default_format', 'json')),
+							'format'            => $input->getString('format', RBootstrap::getConfig('webservices_default_format', 'json')),
 							'id'                => $input->getString('id', ''),
 							'absoluteHrefs'     => $input->get->getBool('absoluteHrefs', true),
-							'webservice_stateful' => $this->params->get('webservice_stateful', 1)
+							'webservice_stateful' => RBootstrap::getConfig('webservice_stateful', 0)
 						);
 
 						// Create instance of Api and fill all required options
@@ -175,8 +168,14 @@ class PlgSystemRedcore extends JPlugin
 	{
 		if (defined('REDCORE_LIBRARY_LOADED'))
 		{
-			if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag())
+			$app     = JFactory::getApplication();
+			$oldLang = $app->getUserState('redcore.old_lang', null);
+
+			if (RTranslationHelper::getSiteLanguage() != JFactory::getLanguage()->getTag()
+				|| (!empty($oldLang) && JFactory::getLanguage()->getTag() != $oldLang))
 			{
+				$app->setUserState('redcore.old_lang', JFactory::getLanguage()->getTag());
+
 				// Reset menus because they are loaded before any other module
 				RMenu::resetJoomlaMenuItems();
 			}
@@ -214,6 +213,25 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
+	 * Checks if this is a redCORE supported extension
+	 *
+	 * @return boolean
+	 */
+	private function isRedcoreExtension()
+	{
+		$redcoreExtensions   = RComponentHelper::getRedcoreComponents();
+		$redcoreExtensions[] = 'com_redcore';
+		$option              = JFactory::getApplication()->input->getCmd('option');
+
+		if (!empty($option) && in_array($option, $redcoreExtensions))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * This event is triggered before the framework creates the Head section of the Document.
 	 *
 	 * @return  void
@@ -227,10 +245,17 @@ class PlgSystemRedcore extends JPlugin
 			return;
 		}
 
-		$doc = JFactory::getDocument();
-		$isAdmin = JFactory::getApplication()->isAdmin();
+		// Only set media settings for Extensions that are redCORE supported Extension in administration
+		$isRedcoreExtension = $this->isRedcoreExtension();
 
-		RHtmlMedia::loadFrameworkJs();
+		$doc     = JFactory::getDocument();
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
+
+		if (!$isAdmin || $isRedcoreExtension)
+		{
+			RHtmlMedia::loadFrameworkJs();
+		}
 
 		if ($doc->_scripts)
 		{
@@ -256,7 +281,7 @@ class PlgSystemRedcore extends JPlugin
 					unset($doc->_styleSheets[JURI::root(true) . '/media/system/css/modal.css']);
 				}
 
-				if (!$isAdmin)
+				if (!$isAdmin && version_compare(JVERSION, '3.4', '<'))
 				{
 					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core.js']);
 					unset($doc->_scripts[JURI::root(true) . '/media/system/js/core-uncompressed.js']);
@@ -264,7 +289,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove jQuery in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
+			if (($isAdmin && $isRedcoreExtension) || (!$isAdmin && RBootstrap::$loadFrontendjQuery))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery.js']);
@@ -305,7 +330,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove jQuery Migrate in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
+			if (($isAdmin && $isRedcoreExtension) || (!$isAdmin && RBootstrap::$loadFrontendjQueryMigrate))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.min.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/jquery-migrate.js']);
@@ -316,7 +341,7 @@ class PlgSystemRedcore extends JPlugin
 			}
 
 			// Remove Bootstrap in administration, or if it's frontend site and it has been asked via plugin parameters
-			if ($isAdmin || (!$isAdmin && RBootstrap::$loadFrontendCSS))
+			if (($isAdmin && $isRedcoreExtension) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 			{
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/media/jui/js/bootstrap.min.js']);
@@ -324,6 +349,31 @@ class PlgSystemRedcore extends JPlugin
 				// Template specific overrides for jQuery files (valid in Joomla 3.x)
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.js']);
 				unset($doc->_scripts[JURI::root(true) . '/templates/' . $template . '/js/jui/bootstrap.min.js']);
+			}
+
+			// Remove permission.js. Specially for Joomla 3.6 and make sure run only on redCORE's base extensions
+			if ($isAdmin && version_compare(JVERSION, '3.6.0', '>=') && $isRedcoreExtension)
+			{
+				$usePermission = false;
+
+				if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']))
+				{
+					unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions.js']);
+
+					$usePermission = true;
+				}
+
+				if (isset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']))
+				{
+					unset($doc->_scripts[JUri::root(true) . '/media/system/js/permissions-uncompressed.js']);
+
+					$usePermission = true;
+				}
+
+				if ($usePermission)
+				{
+					RHelperAsset::load('permission.min.js', 'redcore');
+				}
 			}
 		}
 	}
@@ -344,6 +394,24 @@ class PlgSystemRedcore extends JPlugin
 	}
 
 	/**
+	 * Called before a JForm is rendered. It can be used to modify the JForm object in memory before rendering.
+	 * https://docs.joomla.org/Plugin/Events/Content
+	 *
+	 * @return  void
+	 */
+	public function onContentPrepareForm()
+	{
+		// If the options to do so are turned on, create a button for opening a modal window to edit translations directly from a translatable form
+		if (RBootstrap::getConfig('enable_translations', 0) == 1 && RBootstrap::getConfig('show_edit_button_on_all_forms', 0) == 1)
+		{
+			$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+				JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
+
+			RTranslationHelper::isTranslatableForm($isAdmin);
+		}
+	}
+
+	/**
 	 * Check is is a redCORE view
 	 *
 	 * @return  boolean
@@ -360,10 +428,12 @@ class PlgSystemRedcore extends JPlugin
 	 */
 	private function isInstaller()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$app     = JFactory::getApplication();
+		$input   = $app->input;
+		$isAdmin = version_compare(JVERSION, '3.7', '<') ? $app->isAdmin() : $app->isClient('administrator');
 
-		return $app->isAdmin() && $input->getString('option') == 'com_installer' && $input->get('task') == 'install.install';
+		return $isAdmin && $input->getString('option') == 'com_installer'
+			&& $input->get('task') == 'install.install';
 	}
 
 	/**
@@ -390,15 +460,15 @@ class PlgSystemRedcore extends JPlugin
 	 *
 	 * @param   string  $apiName  Api name
 	 *
-	 * @return bool
+	 * @return boolean
 	 */
 	private function isApiEnabled($apiName)
 	{
 		$apiName = strtolower($apiName);
 
-		return ($this->params->get('enable_webservices', 0) == 1 && $apiName == 'hal')
-		|| ($this->params->get('enable_oauth2_server', 0) == 1 && $apiName == 'oauth2')
-		|| ($this->params->get('enable_soap', 0) == 1 && $apiName == 'soap')
-		|| ($this->params->get('enable_payment', 1) == 1 && $apiName == 'payment');
+		return (RBootstrap::getConfig('enable_webservices', 0) == 1 && $apiName == 'hal')
+		|| (RBootstrap::getConfig('enable_oauth2_server', 0) == 1 && $apiName == 'oauth2')
+		|| (RBootstrap::getConfig('enable_soap', 0) == 1 && $apiName == 'soap')
+		|| (RBootstrap::getConfig('enable_payment', 1) == 1 && $apiName == 'payment');
 	}
 }

@@ -1,21 +1,31 @@
 {
-    "name"       : "redCOMPONENT-COM/redCORE",
-    "description": "The Open Source PHP Framework for creating complex Joomla extensions",
-    "license"    : "GPL-2.0+",
-    "require"    : {
-        "php": ">=5.3.10"
-    },
-    "require-dev": {
-        "squizlabs/php_codesniffer": "1.*",
-        "phpmd/phpmd": "*",
-        "codeception/codeception": "~2.1",
-        "phing/phing": "2.9.*@dev",
-        "joomla-projects/joomla-browser": "v3.4.8.2",
-        "codegyre/robo": "~0.6",
-        "redcomponent/robo": "dev-master",
-        "flow/jsonpath": "dev-master",
-        "fzaninotto/faker": "^1.5",
-        "joomla-projects/selenium-server-standalone": "v2.51.0",
-        "nette/reflection": "~2"
-    }
+	"name"       : "redCOMPONENT-COM/redCORE",
+	"description": "The Open Source PHP Framework for creating complex Joomla extensions",
+	"license"    : "GPL-2.0+",
+	"config" : {
+		"platform": {
+			"php" : "5.6"
+		}
+	},
+	"require"    : {
+		"php": ">=5.6"
+	},
+	"require-dev": {
+		"squizlabs/php_codesniffer": "~2",
+		"codeception/codeception": "~2.2",
+		"phpmd/phpmd": "*",
+		"joomla-projects/joomla-browser": "v3.9.0",
+		"joomla-projects/joomla-testing-robo": "dev-container-test",
+		"joomla-projects/joomla-testing": "dev-container-test",
+		"consolidation/robo": "~1",
+		"flow/jsonpath": "dev-master",
+		"cloudinary/cloudinary_php": "1.1.1",
+		"knplabs/github-api": "1.4.12",
+		"ifsnop/mysqldump-php": "1.*",
+		"fzaninotto/faker": "^1.5",
+		"nette/reflection": "~2",
+		"facebook/webdriver": ">=1.1.2",
+		"redcomponent/teststatistics": "dev-master",
+		"joomla-projects/selenium-server-standalone": "v3.11.0.5"
+	}
 }

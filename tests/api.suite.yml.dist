@@ -1,0 +1,19 @@
+class_name: ApiTester
+modules:
+    enabled:
+      - ApiHelper
+      - Asserts
+      - REST:
+          depends: PhpBrowser
+          url: http://localhost/tests/joomla-cms3/
+      - Db:
+          dsn: 'mysql:host=localhost;dbname=test_redcore'
+          user: 'root'
+          password: ''
+          populate: false
+          cleanup: false
+          reconnect: true
+      - SOAP:
+          depends: PhpBrowser
+          endpoint: http://localhost/tests/joomla-cms3/administrator/index.php?webserviceClient=administrator&webserviceVersion=1.0.0&option=contact&api=soap
+          schema: http://localhost/tests/joomla-cms3/media/redcore/webservices/administrator.contact.1.0.0.wsdl

@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fieldset name="REDCORE_FRONTEND"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="COM_REDCORE_CONFIG_FRONTEND_TITLE">
+        <field
+                name="frontend_css"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_FRONTEND_CSS"
+                description="COM_REDCORE_CONFIG_FRONTEND_CSS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="frontend_jquery"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_FRONTEND_JQUERY"
+                description="COM_REDCORE_CONFIG_FRONTEND_JQUERY_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="frontend_jquery_migrate"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_FRONTEND_JQUERY_MIGRATE"
+                description="COM_REDCORE_CONFIG_FRONTEND_JQUERY_MIGRATE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="frontend_mootools_disable"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_FRONTEND_MOOTOOLS_DISABLE"
+                description="COM_REDCORE_CONFIG_FRONTEND_MOOTOOLS_DISABLE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
+    <fieldset name="REDCORE_TRANSLATIONS_OPTIONS"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="COM_REDCORE_CONFIG_TRANSLATIONS_OPTIONS_TITLE">
+        <field
+                name="enable_translations"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_ENABLE_TRANSLATIONS_BUTTON_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="translations_constraint_type"
+                type="list"
+                default="none"
+                class="form-control"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE_DESC">
+            <option value="foreign_keys">COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE_FOREIGN_KEYS</option>
+            <option value="triggers">COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE_TRIGGERS</option>
+            <option value="none">COM_REDCORE_CONFIG_TRANSLATIONS_CONSTRAINT_TYPE_NONE</option>
+        </field>
+        <field
+                name="enable_translation_fallback"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_BUTTON"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_BUTTON_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="enable_translation_fallback_webservices"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_WEBSERVICES_BUTTON"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_ENABLE_TRANSLATIONS_FALLBACK_WEBSERVICES_BUTTON_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="show_edit_button_on_all_forms"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_SHOW_TRANSLATION_BUTTON"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_SHOW_TRANSLATION_BUTTON_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="force_translate_default_site_language"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_FORCE_TRANSLATE_DEFAULT_SITE_LANGUAGE"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_FORCE_TRANSLATE_DEFAULT_SITE_LANGUAGE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="translate_in_admin"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_TRANSLATE_IN_ADMIN"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_TRANSLATE_IN_ADMIN_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
+    <fieldset name="REDCORE_WEBSERVICES_OPTIONS"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="COM_REDCORE_CONFIG_WEBSERVICES_OPTIONS">
+        <field
+                name="enable_webservices"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_WEBSERVICES"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_WEBSERVICES_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="webservice_stateful"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_STATEFUL_WEBSERVICE"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_STATEFUL_WEBSERVICE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="webservices_default_format"
+                class="btn-group"
+                type="radio"
+                default="json"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_DEFAULT_FORMAT"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_DEFAULT_FORMAT_DESC">
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+        </field>
+        <field
+                name="webservices_default_page_authorization"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_DEFAULT_PAGE_AUTHORIZATION"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_DEFAULT_PAGE_AUTHORIZATION_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="webservices_authorization_check"
+                type="list"
+                class="form-control"
+                default="0"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_AUTHORIZATION_CHECK"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_AUTHORIZATION_CHECK_DESC">
+            <option value="0">COM_REDCORE_CONFIG_WEBSERVICES_AUTHORIZATION_CHECK_SCOPE</option>
+            <option value="1">COM_REDCORE_CONFIG_WEBSERVICES_AUTHORIZATION_CHECK_JOOMLA</option>
+        </field>
+        <field
+                name="debug_webservices"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_DEBUG"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_DEBUG_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="webservice_enable_gzip_compression"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_GZIP_COMPRESSION"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_GZIP_COMPRESSION_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="enable_soap"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_SOAP_ENABLE_SOAP"
+                description="COM_REDCORE_CONFIG_SOAP_ENABLE_SOAP_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
+    <fieldset name="REDCORE_OAUTH2_SERVER_OPTIONS"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="COM_REDCORE_CONFIG_OAUTH2_SERVER_OPTIONS">
+        <field
+                name="enable_oauth2_server"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ENABLE"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ENABLE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_use_jwt_access_tokens"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_USE_JWT_ACCESS_TOKEN"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_USE_JWT_ACCESS_TOKEN">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_store_encrypted_token_string"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_STORE_ENCRYPTED_TOKEN_STRING"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_STORE_ENCRYPTED_TOKEN_STRING_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_use_openid_connect"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_USE_OPENID_CONNECT"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_USE_OPENID_CONNECT_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_id_lifetime"
+                type="number"
+                class="form-control"
+                validate="integer"
+                default="3600"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ID_LIFETIME"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ID_LIFETIME_DESC"
+        />
+        <field
+                name="oauth2_access_lifetime"
+                type="number"
+                validate="integer"
+                class="form-control"
+                default="3600"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ACCESS_LIFETIME"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ACCESS_LIFETIME_DESC"
+        />
+        <field
+                name="oauth2_token_param_name"
+                type="text"
+                class="form-control"
+                default="access_token"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_PARAM_NAME"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_PARAM_NAME_DESC"
+        />
+        <field
+                name="oauth2_token_bearer_header_name"
+                type="text"
+                class="form-control"
+                default="Bearer"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_BEARER_HEADER_NAME"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_TOKEN_BEARER_HEADER_NAME_DESC"
+        />
+        <field
+                name="oauth2_enforce_state"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ENFORCE_STATE"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ENFORCE_STATE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_require_exact_redirect_uri"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_REQUIRE_EXACT_REDIRECT_URI"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_REQUIRE_EXACT_REDIRECT_URI_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_allow_implicit"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALLOW_IMPLICIT"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALLOW_IMPLICIT_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_redirect_with_token"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_REDIRECT_WITH_TOKEN"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_REDIRECT_WITH_TOKEN_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_allow_credentials_in_request_body"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALLOW_CREDENTIALS_IN_REQUEST_BODY"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALLOW_CREDENTIALS_IN_REQUEST_BODY_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_allow_public_clients"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALLOW_PUBLIC_CLIENTS"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALLOW_PUBLIC_CLIENTS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_always_issue_new_refresh_token"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_ALWAYS_ISSUE_NEW_REFRESH_TOKEN_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="oauth2_unset_refresh_token_after_use"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_OAUTH2_SERVER_UNSET_REFRESH_TOKEN_AFTER_USE"
+                description="COM_REDCORE_CONFIG_OAUTH2_SERVER_UNSET_REFRESH_TOKEN_AFTER_USE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
+    <fieldset name="REDCORE_PAYMENT_API_OPTIONS"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="COM_REDCORE_CONFIG_PAYMENT_API_OPTIONS">
+        <field
+                name="enable_payment"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_PAYMENT_ENABLE"
+                description="COM_REDCORE_CONFIG_PAYMENT_ENABLE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="payment_list_payments_type"
+                type="radio"
+                class="btn-group"
+                default="radio"
+                label="COM_REDCORE_CONFIG_PAYMENT_LIST_PAYMENT_TYPE"
+                description="COM_REDCORE_CONFIG_PAYMENT_LIST_PAYMENT_TYPE_DESC">
+            <option value="radio">COM_REDCORE_CONFIG_PAYMENT_LIST_PAYMENT_TYPE_RADIO</option>
+            <option value="dropdown">COM_REDCORE_CONFIG_PAYMENT_LIST_PAYMENT_TYPE_DROPDOWN</option>
+        </field>
+        <field
+                name="payment_request_method"
+                class="btn-group"
+                type="radio"
+                default="curl"
+                label="COM_REDCORE_CONFIG_PAYMENT_REQUEST_METHOD"
+                description="COM_REDCORE_CONFIG_PAYMENT_REQUEST_METHOD_DESC">
+            <option value="curl">COM_REDCORE_CONFIG_PAYMENT_REQUEST_METHOD_CURL</option>
+            <option value="fsockopen">COM_REDCORE_CONFIG_PAYMENT_REQUEST_METHOD_FSOCKOPEN</option>
+        </field>
+        <field
+                name="payment_time_between_payment_check_requests"
+                type="number"
+                validate="integer"
+                class="form-control"
+                default="24"
+                label="COM_REDCORE_CONFIG_PAYMENT_TIME_BETWEEN_ORDER_CHECKS"
+                description="COM_REDCORE_CONFIG_PAYMENT_TIME_BETWEEN_ORDER_CHECKS_DESC">
+        </field>
+        <field
+                name="payment_number_of_payment_check_retries"
+                type="number"
+                validate="integer"
+                class="form-control"
+                default="30"
+                label="COM_REDCORE_CONFIG_PAYMENT_NUMBER_OF_RETRIES"
+                description="COM_REDCORE_CONFIG_PAYMENT_NUMBER_OF_RETRIES_DESC">
+        </field>
+        <field
+                name="payment_enable_file_logger"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_PAYMENT_ENABLE_FILE_LOGGER"
+                description="COM_REDCORE_CONFIG_PAYMENT_ENABLE_FILE_LOGGER_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="payment_chart_type"
+                type="rchart"
+                label="LIB_REDCORE_CHART_NAME_LABEL"
+                description="LIB_REDCORE_CHART_NAME_DESC"
+                default="Line"
+                class="form-control">
+            <option value="">LIB_REDCORE_CHART_NAME_SELECT_CHART</option>
+        </field>
+        <field
+                name="payment_dashboard_view_type"
+                type="rlist"
+                label="COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_LABEL"
+                description="COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_DESC"
+                default="payment_name"
+                class="form-control">
+            <option value="">COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_SELECT</option>
+            <option value="extension_name">COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_EXTENSION</option>
+            <option value="payment_name">COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_PAYMENT</option>
+            <option value="status">COM_REDCORE_CONFIG_PAYMENT_DASHBOARD_VIEW_TYPE_STATUS</option>
+        </field>
+        <field
+                name="payment_enable_chart_sandbox_payments"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_PAYMENT_ENABLE_CHART_SANDBOX_PAYMENTS"
+                description="COM_REDCORE_CONFIG_PAYMENT_ENABLE_CHART_SANDBOX_PAYMENTS_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
+    <fieldset name="REDCORE_GENERAL"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="REDCORE_GENERAL_OPTIONS">
+        <field
+                name="domain"
+                type="text"
+                class="form-control"
+                default=""
+                label="REDCORE_GENERAL_DOMAIN_LABEL"
+                description="REDCORE_GENERAL_DOMAIN_DESC"
+        />
+    </fieldset>
+</config>

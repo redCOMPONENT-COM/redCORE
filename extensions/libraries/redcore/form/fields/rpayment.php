@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Field
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -97,6 +97,7 @@ class JFormFieldRpayment extends JFormFieldList
 					'value' => $this->value,
 					'id' => $this->id,
 					'attributes' => $this->getAttributes(),
+					'selectSingleOption' => true,
 				)
 			)
 		);

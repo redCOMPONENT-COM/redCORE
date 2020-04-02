@@ -1,9 +1,9 @@
 /**
- * @copyright  Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright  Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-// Only define the redSHOPB namespace if not defined.
+// Only define the redCORE namespace if not defined.
 redCORE = window.redCORE || {};
 
 /**
@@ -130,6 +130,7 @@ redCORE.ws =
     {
         event.preventDefault();
         var targ = jQuery(redCORE.getTarget(event, true));
+        var id = targ.closest('form').find('input[name="id"]');
 
         var getData = {};
         getData.operation = targ.find('[name="addNewRowOperation"]').val();
@@ -153,7 +154,7 @@ redCORE.ws =
         }
 
         jQuery.ajax({
-            url: 'index.php?option=com_redcore&task=webservice.ajaxGet' + optionType,
+            url: 'index.php?option=com_redcore&task=webservice.ajaxGet' + optionType  + '&id=' + id.val(),
             data: getData,
             dataType: 'text',
             beforeSend: function ()
@@ -198,7 +199,7 @@ redCORE.ws =
 
         var rowValues = {};
 
-        editRow.find('.ws-row-edit :input')
+        parent.find('.ws-row-edit :input')
             .each(function()
             {
                 var input = jQuery(this);

@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -18,22 +18,10 @@ $listOrder = $this->state->get('list.ordering');
 $listDirn = $this->state->get('list.direction');
 $selectedLanguage = $this->state->get('filter.language', '');
 $input = JFactory::getApplication()->input;
-$columns = array();
-$fieldsXml = $this->contentElement->getTranslateFields();
+$columns = isset($this->translationTable) ? array_merge($this->translationTable->readonlyColumns, $this->translationTable->columns) : array();
 $doNotTranslate = array();
 
-// We are adding fields that do not require translation
-foreach ($fieldsXml as $field)
-{
-	if ((string) $field['translate'] == '0' && (string) $field['type'] == 'titletext')
-	{
-		$doNotTranslate[] = (string) $field['name'];
-	}
-}
-
 if (!empty($this->items)):
-	$columns = (array) $this->translationTable->columns;
-	$columns = array_merge($doNotTranslate, $columns);
 	$this->translationTable->primaryKeys = (array) $this->translationTable->primaryKeys;
 
 	foreach ($columns as $key => $column):
@@ -62,14 +50,7 @@ endif;
 	);
 	?>
 	<hr/>
-	<?php if (empty($selectedLanguage)) : ?>
-		<div class="alert alert-info">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			<div class="pagination-centered">
-				<h3><?php echo JText::_('COM_REDCORE_TRANSLATIONS_SELECT_LANGUAGE') ?></h3>
-			</div>
-		</div>
-	<?php elseif (empty($this->items)) : ?>
+	<?php if (empty($this->items)) : ?>
 		<div class="alert alert-info">
 			<button type="button" class="close" data-dismiss="alert">&times;</button>
 			<div class="pagination-centered">
@@ -84,18 +65,21 @@ endif;
 					<input type="checkbox" name="checkall-toggle" value=""
 					       title="<?php echo JText::_('JGLOBAL_CHECK_ALL'); ?>" onclick="Joomla.checkAll(this)"/>
 				</th>
+				<th class="nowrap center">
+					<?php echo JHtml::_('rsearchtools.sort', 'JSTATUS', 't.rctranslations_state', $listDirn, $listOrder); ?>
+				</th>
 				<th class="nowrap hidden-xs">
 					<?php echo JText::_('JSTATUS'); ?>
 				</th>
 				<th class="nowrap hidden-xs">
-					<?php echo JText::_('JGLOBAL_FIELD_MODIFIED_LABEL'); ?>
+					<?php echo JHtml::_('rsearchtools.sort', 'JGLOBAL_FIELD_MODIFIED_LABEL', 't.rctranslations_modified', $listDirn, $listOrder); ?>
 				</th>
 				<th class="nowrap hidden-xs">
 					<?php echo JHtml::_('rsearchtools.sort', 'JGRID_HEADING_LANGUAGE', 't.rctranslations_language', $listDirn, $listOrder); ?>
 				</th>
 				<?php foreach ($columns as $column) : ?>
 					<th style="width:20%" class="nowrap hidden-xs">
-						<?php echo JHtml::_('rsearchtools.sort', $column, 't.' . $column, $listDirn, $listOrder); ?>
+						<?php echo JHtml::_('rsearchtools.sort', $this->translationTable->allColumns[$column]['title'], 't.' . $column, $listDirn, $listOrder); ?>
 					</th>
 				<?php endforeach; ?>
 			</tr>
@@ -115,8 +99,8 @@ endif;
 
 					$editLink = $canEdit ? '<a href="'
 						. JRoute::_('index.php?option=com_redcore&task=translation.edit'
-							. '&contentelement=' . $this->contentElementName
-							. '&language=' . $selectedLanguage
+							. '&translationTableName=' . $this->translationTableName
+							. '&language=' . $this->escape($item->rctranslations_language)
 							. '&id=' . (implode('###', $primaryId))
 							. '&rctranslations_id=' . $item->rctranslations_id
 						) . '">' : '';
@@ -125,19 +109,33 @@ endif;
 						<td>
 							<?php echo JHtml::_('grid.id', $i, $item->rctranslations_id); ?>
 						</td>
-						<td>
-							<span class="<?php echo $item->translationStatus['badge']; ?>">
-								<?php echo JText::_($item->translationStatus['status']); ?>
-							</span>
+						<td class="center">
+							<?php echo !empty($item->rctranslations_modified) ?
+								JHtml::_('rgrid.published', $item->rctranslations_state, $i, 'translations.', $canChange = true, 'cb') : '--'; ?>
 						</td>
 						<td>
-							<?php echo !empty($item->rctranslations_modified) ? $this->escape($item->rctranslations_modified) : '--'; ?>
+							<?php echo $editLink ?>
+								<span class="<?php echo $item->translationStatus['badge']; ?>">
+									<?php echo JText::_($item->translationStatus['status']); ?>
+								</span>
+							<?php if (!empty($editLink)) : ?>
+								</a>
+							<?php endif; ?>
+						</td>
+						<td class="small hidden-phone">
+							<?php if (!empty($item->rctranslations_modified)) : ?>
+								<span class="hasTooltip" title="" data-original-title="<strong><?php echo $this->escape($item->rctranslations_modified); ?></strong>">
+									<?php echo $this->escape($item->rctranslations_modified_user); ?>
+								</span>
+							<?php else: ?>
+								--
+							<?php endif; ?>
 						</td>
 						<td>
 							<?php echo !empty($item->rctranslations_language) ? $this->escape($item->rctranslations_language) : '--'; ?>
 						</td>
 						<?php foreach ($columns as $column) : ?>
-							<td>
+							<td style="word-break:break-all; word-wrap:break-word;">
 								<?php echo $editLink ?>
 								<?php if (!empty($item->{'t_' . $column})) : ?>
 									<?php echo strip_tags(substr($item->{'t_' . $column}, 0, 150)); ?>
@@ -159,9 +157,7 @@ endif;
 	<div>
 		<input type="hidden" name="option" value="com_redcore">
 		<input type="hidden" name="task" value="">
-		<input type="hidden" name="language" value="<?php echo $selectedLanguage; ?>">
-		<input type="hidden" name="component" value="<?php echo $this->contentElement->extension; ?>">
-		<input type="hidden" name="contentelement" value="<?php echo $this->contentElementName; ?>">
+		<input type="hidden" name="translationTableName" value="<?php echo $this->translationTableName; ?>">
 		<input type="hidden" name="boxchecked" value="0">
 		<input type="hidden" name="layout" value="<?php echo JFactory::getApplication()->input->getString('layout'); ?>">
 		<?php echo JHtml::_('form.token'); ?>

@@ -3,7 +3,7 @@
  * @package     Redcore.Translation
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -20,6 +20,7 @@ $translation = !empty($displayData['translation']) ? $displayData['translation']
 $name = !empty($displayData['name']) ? $displayData['name'] : '';
 $column = !empty($displayData['column']) ? $displayData['column'] : null;
 $translationForm = !empty($displayData['translationForm']) ? $displayData['translationForm'] : null;
+$suffix = !empty($displayData['suffix']) ? '_' . $displayData['suffix'] : null;
 $formType = $translationForm == true ? 'translationForm' : 'originalForm';
 $selectedFieldSets = !empty($column['fieldsets']) ? explode(',', $column['fieldsets']) : null;
 $selectedGroup = !empty($column['fieldsname']) ? $column['fieldsname'] : $name;
@@ -30,7 +31,7 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 <div class="tab-pane params-pane<?php echo $formType;?>">
 	<?php if (!empty($form)) : ?>
 		<div class="col-md-12">
-			<ul class="nav nav-tabs params-tabs<?php echo $formType;?>">
+			<ul class="nav nav-tabs params-tabs<?php echo $formType;?><?php echo $suffix; ?>">
 				<?php foreach ($fieldSets as $name => $fieldSet) : ?>
 					<?php
 					if (!empty($selectedFieldSets) && !in_array($name, $selectedFieldSets)):
@@ -48,8 +49,8 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 						continue;
 					endif;
 					?>
-					<?php $label = empty($fieldSet->label) ?  $fieldSetNameAddition . $name . '_FIELDSET_LABEL' : $fieldSet->label; ?>
-					<li><a href="#params_<?php echo $formType;?>_<?php echo $name; ?>" data-toggle="tab"><?php echo RText::getTranslationIfExists($label, '', ''); ?></a></li>
+					<?php $label = empty($fieldSet->label) ?  JText::_(strtoupper($fieldSetNameAddition . $name) . '_FIELDSET_LABEL') : $fieldSet->label; ?>
+					<li><a href="#params_<?php echo $formType;?>_<?php echo $name; ?><?php echo $suffix; ?>" data-toggle="tab"><?php echo RText::getTranslationIfExists($label, '', ''); ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 			<div class="tab-content">
@@ -57,21 +58,25 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 					<?php if (!empty($selectedFieldSets) && !in_array($name, $selectedFieldSets)) : ?>
 						<?php continue; ?>
 					<?php endif; ?>
-					<div class="tab-pane" id="params_<?php echo $formType;?>_<?php echo $name; ?>">
+					<div class="tab-pane form-horizontal" id="params_<?php echo $formType;?>_<?php echo $name; ?><?php echo $suffix; ?>">
 						<?php if (isset($fieldSet->description) && !empty($fieldSet->description)) : ?>
 							<p class="tab-description"><?php echo RText::getTranslationIfExists($fieldSet->description, '', ''); ?></p>
 						<?php endif; ?>
 						<?php foreach ($form->getFieldset($name) as $field): ?>
 							<div class="form-group">
-								<?php if (!$field->hidden && $name != "permissions") : ?>
-									<div class="control-label">
-										<?php echo $field->label; ?>
+								<?php if ($field->type == 'spacer'): ?>
+									<div class="col-md-12">
+										<p><?php echo $field->label; ?></p>
 									</div>
-								<?php endif; ?>
-								<?php if ($name != "permissions") : ?>
-									<div class="controls">
-										<?php echo $field->input; ?>
-									</div>
+								<?php else: ?>
+									<?php if (!$field->hidden && $name != "permissions") : ?>
+										<div class="col-md-4"><?php echo $field->label; ?></div>
+									<?php endif; ?>
+									<?php if ($name != "permissions") : ?>
+										<div class="col-md-8">
+											<?php echo $field->input; ?>
+										</div>
+									<?php endif; ?>
 								<?php endif; ?>
 							</div>
 						<?php endforeach; ?>
@@ -80,7 +85,7 @@ $fieldSets = !empty($form) ? $form->getFieldsets($selectedGroup) : array();
 			</div>
 		</div>
 		<script type="text/javascript">
-			jQuery('.params-tabs<?php echo $formType;?> a:first').tab('show');
+			jQuery('.params-tabs<?php echo $formType;?><?php echo $suffix; ?> a:first').tab('show');
 			<?php if ($translationForm == false): ?>
 			jQuery('.params-pane<?php echo $formType;?> .tab-content :input').unbind().attr("disabled", true);
 			<?php endif; ?>

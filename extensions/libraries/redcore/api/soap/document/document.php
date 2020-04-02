@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -98,6 +98,12 @@ class RApiSoapDocumentDocument extends JDocument
 		$runtime = microtime(true) - $this->soap->startTime;
 		$language = explode('-', $app->input->get('lang', RTranslationHelper::getSiteLanguage()));
 		$language = $language[0];
+
+		if ($this->soap->options->get('enable_gzip_compression', 0) && RBootstrap::$config->get('webservice_enable_gzip_compression', '1') == '1')
+		{
+			$app->setHeader('Content-Encoding', 'gzip', true);
+			$content = gzencode($content, 1);
+		}
 
 		$app->setHeader('Status', $this->soap->statusCode . ' ' . $this->soap->statusText, true);
 		$app->setHeader('Server', '', true);

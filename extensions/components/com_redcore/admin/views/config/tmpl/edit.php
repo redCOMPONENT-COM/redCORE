@@ -3,15 +3,15 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('_JEXEC') or die;
 
-$app = JFactory::getApplication();
+$app      = JFactory::getApplication();
 $template = $app->getTemplate();
-$tab = $app->input->getString('tab');
+$tab      = $app->input->getString('tab');
 
 if (empty($tab))
 {
@@ -34,14 +34,14 @@ else
 
 JFactory::getDocument()->addScriptDeclaration(
 	'Joomla.submitbutton = function(task){
-		if (task === "config.cancel" || document.formvalidator.isValid(document.getElementById("adminRedCoreForm"))){
-			Joomla.submitform(task, document.getElementById("adminRedCoreForm"));
+		if (task === "config.cancel" || document.formvalidator.isValid(document.getElementById("adminForm"))){
+			Joomla.submitform(task, document.getElementById("adminForm"));
 		}
 	};'
 );
 ?>
 <form action="<?php echo JRoute::_('index.php?option=com_redcore'); ?>"
-      id="adminRedCoreForm" method="post" name="adminRedCoreForm" autocomplete="off" class="form-validate form-horizontal" enctype="multipart/form-data">
+      id="adminForm" method="post" name="adminForm" autocomplete="off" class="form-validate form-horizontal" enctype="multipart/form-data">
 	<ul class="nav nav-tabs" id="mainTabs">
 		<li><a href="#mainComponentConfiguration" data-toggle="tab"><?php echo JText::_('COM_REDCORE_CONFIG_MAIN_COMPONENT_CONFIGURATION'); ?></a></li>
 		<li><a href="#mainComponentTranslations" data-toggle="tab"><?php echo JText::_('COM_REDCORE_TRANSLATIONS'); ?></a></li>
@@ -53,11 +53,11 @@ JFactory::getDocument()->addScriptDeclaration(
 		<?php echo $this->loadTemplate('info'); ?>
 	</div>
 	<div>
+		<input type="hidden" value="<?php echo JText::_(strtoupper($this->component->option)) ?>" id="jform_title" />
 		<input type="hidden" name="id" value="<?php echo $this->component->id; ?>" />
 		<input type="hidden" name="component" value="<?php echo $this->component->option; ?>" />
 		<input type="hidden" name="element" value="<?php echo $this->component->option; ?>" />
 		<input type="hidden" name="return" value="<?php echo $this->return; ?>" />
-		<input type="hidden" name="contentElement" id="contentElement" value="" />
 		<input type="hidden" name="tab" id="currentTab" value="<?php echo $tab; ?>" />
 		<input type="hidden" name="task" value="" />
 		<?php echo JHtml::_('form.token'); ?>

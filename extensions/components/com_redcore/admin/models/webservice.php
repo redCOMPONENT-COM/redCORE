@@ -3,13 +3,17 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
+
+use Joomla\Registry\Registry;
 
 defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.folder');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Webservice Model
@@ -100,11 +104,11 @@ class RedcoreModelWebservice extends RModelAdmin
 		$model = RModelAdmin::getAdminInstance('Webservices', array('ignore_request' => true), 'com_redcore');
 
 		if ($id = $model->installWebservice(
-				$data['main']['client'],
-				$data['main']['name'],
-				$data['main']['version'],
-				$data['main']['path'],
-				$data['main']['id']
+			$data['main']['client'],
+			$data['main']['name'],
+			$data['main']['version'],
+			$data['main']['path'],
+			$data['main']['id']
 		))
 		{
 			$this->setState($this->getName() . '.id', $id);
@@ -122,7 +126,7 @@ class RedcoreModelWebservice extends RModelAdmin
 	 *
 	 * @param   array  $data  The form data.
 	 *
-	 * @return  boolean  True on success, False on error.
+	 * @return  boolean       True on success, False on error.
 	 *
 	 * @throws  RuntimeException
 	 *
@@ -130,8 +134,8 @@ class RedcoreModelWebservice extends RModelAdmin
 	 */
 	public function saveXml($data)
 	{
-		$dataRegistry = new JRegistry($data);
-		$item = null;
+		$dataRegistry = new Registry($data);
+		$item         = null;
 
 		if (empty($data['main']['name']))
 		{
@@ -145,11 +149,11 @@ class RedcoreModelWebservice extends RModelAdmin
 			$item = $this->getItem($data['main']['id']);
 		}
 
-		$client = $dataRegistry->get('main.client', 'site');
-		$name = $dataRegistry->get('main.name', '');
+		$client  = $dataRegistry->get('main.client', 'site');
+		$name    = $dataRegistry->get('main.name', '');
 		$version = $dataRegistry->get('main.version', '1.0.0');
-		$folder = $dataRegistry->get('main.path', '');
-		$folder = !empty($folder) ? JPath::clean('/' . $folder) : '';
+		$folder  = $dataRegistry->get('main.path', '');
+		$folder  = !empty($folder) ? JPath::clean('/' . $folder) : '';
 
 		if (!JFolder::exists(RApiHalHelper::getWebservicesPath() . $folder))
 		{
@@ -171,8 +175,8 @@ class RedcoreModelWebservice extends RModelAdmin
 		$configXml->addChild('authorizationAssetName', $dataRegistry->get('main.authorizationAssetName', ''));
 
 		$operationsXml = $xml->addChild('operations');
-		$readXml = null;
-		$taskXml = null;
+		$readXml       = null;
+		$taskXml       = null;
 
 		foreach ($data as $operationName => $operation)
 		{
@@ -230,9 +234,9 @@ class RedcoreModelWebservice extends RModelAdmin
 		}
 
 		// Needed for formatting
-		$dom = dom_import_simplexml($xml)->ownerDocument;
+		$dom                     = dom_import_simplexml($xml)->ownerDocument;
 		$dom->preserveWhiteSpace = false;
-		$dom->formatOutput = true;
+		$dom->formatOutput       = true;
 
 		if (!$dom->save($fullPath))
 		{
@@ -241,22 +245,31 @@ class RedcoreModelWebservice extends RModelAdmin
 
 		if (!empty($item->id))
 		{
-			$folder = !empty($item->path) ? '/' . $item->path : '';
+			$folder  = !empty($item->path) ? '/' . $item->path : '';
 			$oldPath = JPath::clean(RApiHalHelper::getWebservicesPath() . $folder . '/' . $item->xmlFile);
 
 			if ($oldPath != $fullPath)
 			{
 				if (JFile::exists($oldPath))
 				{
+					// Xml file
 					JFile::delete($oldPath);
+
+					// Wsdl file
+					$oldPathWsdl = substr($oldPath, 0, strlen($oldPath) - 4) . '.wsdl';
+
+					if (JFile::exists($oldPathWsdl))
+					{
+						JFile::delete($oldPathWsdl);
+					}
 				}
 			}
 		}
 
-		$wsdl = RApiSoapHelper::generateWsdl($xml);
+		$wsdl         = RApiSoapHelper::generateWsdl($xml, null, $data['main']['path']);
 		$fullWsdlPath = substr($fullPath, 0, -4) . '.wsdl';
 
-		return RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);
+		return (boolean) RApiSoapHelper::saveWsdlContentToPath($wsdl, $fullWsdlPath);
 	}
 
 	/**
@@ -457,7 +470,7 @@ class RedcoreModelWebservice extends RModelAdmin
 				$this->appendXML($xml, $child);
 			}
 		}
-		elseif($originalXml->getName() == 'description')
+		elseif ($originalXml->getName() == 'description')
 		{
 			$xml = $this->addChildWithCDATA($targetXml, $originalXml->getName(), (string) $originalXml);
 		}
@@ -629,11 +642,11 @@ class RedcoreModelWebservice extends RModelAdmin
 		}
 
 		$dataDb = $this->getItem();
-		$data = $this->bindXMLToForm();
+		$data   = $this->bindXMLToForm();
 
-		$dataArray = JArrayHelper::fromObject($dataDb);
+		$dataArray = ArrayHelper::fromObject($dataDb);
 		$dataEmpty = array('main' => array());
-		$data = array_merge($dataEmpty, $data);
+		$data      = array_merge($dataEmpty, $data);
 
 		$data['main'] = array_merge($dataArray, $data['main']);
 
@@ -827,14 +840,14 @@ class RedcoreModelWebservice extends RModelAdmin
 
 			if ($propertyName == 'resources')
 			{
-				$displayName = (string) $properties['displayName'];
-				$resourceSpecific = !empty($properties['resourceSpecific']) ? (string) $properties['resourceSpecific'] : 'rcwsGlobal';
+				$displayName                                                   = (string) $properties['displayName'];
+				$resourceSpecific                                              = !empty($properties['resourceSpecific']) ? (string) $properties['resourceSpecific'] : 'rcwsGlobal';
 				$this->{$propertyName}[$name][$resourceSpecific][$displayName] = $properties;
 
 				continue;
 			}
 
-			$displayName = (string) $properties['name'];
+			$displayName                                = (string) $properties['name'];
 			$this->{$propertyName}[$name][$displayName] = $properties;
 		}
 	}
@@ -964,7 +977,7 @@ class RedcoreModelWebservice extends RModelAdmin
 				continue;
 			}
 
-			$value = 'array[' . $transformTypeName . ']';
+			$value        = 'array[' . $transformTypeName . ']';
 			$transforms[] = array('value' => $value, 'text' => $value);
 		}
 

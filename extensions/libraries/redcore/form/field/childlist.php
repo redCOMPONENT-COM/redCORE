@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Field
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -57,7 +57,7 @@ class RFormFieldChildlist extends JFormFieldRlist
 		// Receive ajax URL
 		$ajaxUrl = isset($this->element['url']) ? (string) $this->element['url'] : null;
 
-		if ($ajaxUrl)
+		if (!is_null($ajaxUrl))
 		{
 			$siteUrl = JUri::root();
 			$adminUrl = $siteUrl . 'administrator';
@@ -75,7 +75,7 @@ class RFormFieldChildlist extends JFormFieldRlist
 		// Receive child field selector
 		$childSelector = isset($this->element['child_selector']) ? (string) $this->element['child_selector'] : null;
 
-		if ($childSelector)
+		if (!is_null($childSelector))
 		{
 			$this->ajaxchildOptions['childSelector'] = $childSelector;
 		}
@@ -83,7 +83,7 @@ class RFormFieldChildlist extends JFormFieldRlist
 		// Receive parent field selector
 		$parentSelector = isset($this->element['parent_selector']) ? (string) $this->element['parent_selector'] : null;
 
-		if ($parentSelector)
+		if (!is_null($parentSelector))
 		{
 			$this->ajaxchildOptions['parentSelector'] = $parentSelector;
 		}
@@ -91,7 +91,7 @@ class RFormFieldChildlist extends JFormFieldRlist
 		// Receive parent request var
 		$parentVarName = isset($this->element['parent_varname']) ? (string) $this->element['parent_varname'] : null;
 
-		if ($parentVarName)
+		if (!is_null($parentVarName))
 		{
 			$this->ajaxchildOptions['parentVarName'] = $parentVarName;
 		}

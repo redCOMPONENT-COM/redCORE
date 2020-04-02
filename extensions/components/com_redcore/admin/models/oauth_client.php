@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -39,9 +39,7 @@ class RedcoreModelOauth_Client extends RModelAdmin
 				{
 					if (empty($data['user_id']))
 					{
-						$this->setError(JText::_('COM_REDCORE_OAUTH_CLIENTS_ERROR_CLIENT_CREDENTIALS_JOOMLA_USER'));
-
-						return false;
+						JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_OAUTH_CLIENTS_ERROR_CLIENT_CREDENTIALS_JOOMLA_USER'), 'warning');
 					}
 				}
 			}

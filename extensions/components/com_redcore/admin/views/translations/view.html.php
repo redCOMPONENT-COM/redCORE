@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -56,7 +56,7 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	/**
 	 * @var  string
 	 */
-	public $contentElement;
+	public $translationTableName;
 
 	/**
 	 * Display method
@@ -67,44 +67,26 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	 */
 	public function display($tpl = null)
 	{
-		$model = $this->getModel();
-		$app = JFactory::getApplication();
-		$this->contentElementName   = RedcoreHelpersTranslation::getCurrentContentElement();
-		$this->componentName        = $app->input->get->get('component', $model->getState('filter.component', ''));
+		$model                      = $this->getModel();
+		$this->state                = $model->getState();
+		$this->translationTableName = $model->getState('filter.translationTableName', '');
+		$this->activeFilters        = $model->getActiveFilters();
+		$this->filterForm           = $model->getForm();
+		$this->pagination           = $model->getPagination();
 
-		$this->activeFilters = $model->getActiveFilters();
-		$this->state = $model->getState();
-		$this->filterForm = $model->getForm();
-		$this->pagination = $model->getPagination();
-
-		if (!empty($this->contentElementName))
+		if (!empty($this->translationTableName))
 		{
-			$this->translationTable = RedcoreHelpersTranslation::getTranslationTable();
-			$this->contentElement = RTranslationHelper::getContentElement($this->translationTable->option, $this->translationTable->xml);
-			$this->items = $model->getItems();
-			$this->filterForm->removeField('component', 'filter');
-		}
-		else
-		{
-			/** @var RedcoreModelConfig $modelConfig */
-			$modelConfig = RModelAdmin::getAdminInstance('Config', array('ignore_request' => true), 'com_redcore');
+			$this->items                             = $model->getItems();
+			$this->translationTable                  = RTranslationTable::setTranslationTableWithColumn($this->translationTableName);
+			$this->translationTable->readonlyColumns = array();
 
-			if (!empty($this->componentName))
+			foreach ($this->translationTable->allColumns as $column)
 			{
-				$this->component = $modelConfig->getComponent($this->componentName);
+				if ($column['column_type'] == RTranslationTable::COLUMN_READONLY)
+				{
+					$this->translationTable->readonlyColumns[] = $column['name'];
+				}
 			}
-
-			$this->contentElements = $modelConfig->loadContentElements($this->componentName);
-			$this->missingContentElements = $modelConfig->loadMissingContentElements($this->componentName, $this->contentElements);
-
-			$this->return = base64_encode('index.php?option=com_redcore&view=translations&contentelement=&component=' . $this->componentName);
-			$layout = 'manage';
-			$this->setLayout($layout);
-			$app->input->set('layout', $layout);
-			$this->filterForm->removeField('language', 'filter');
-			$this->filterForm->removeField('search_translations', 'filter');
-			$this->filterForm->removeField('translations_limit', 'list');
-			$this->filterForm->removeField('contentelement', 'filter');
 		}
 
 		// Check if option is enabled
@@ -112,10 +94,13 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 		{
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
-					'COM_REDCORE_CONFIG_TRANSLATIONS_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+					'COM_REDCORE_TRANSLATION_TABLE_PLUGIN_LABEL_WARNING',
+					'<a href="index.php?option=com_redcore&view=config&layout=edit&component=com_redcore">'
+					. JText::_('COM_REDCORE_CONFIGURE')
+					. '</a>'
 				),
-				'error');
+				'error'
+			);
 		}
 
 		parent::display($tpl);
@@ -128,15 +113,31 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	 */
 	public function getTitle()
 	{
-		if (!empty($this->contentElement))
+		$title = JText::_('COM_REDCORE_TRANSLATIONS');
+
+		if (empty($this->translationTableName))
 		{
-			return JText::_('COM_REDCORE_TRANSLATIONS') . ' ' . JText::_($this->contentElement->name);
+			return $title;
 		}
-		else
+
+		$languages = version_compare(JVERSION, '3.7', '<') ? JFactory::getLanguage()->getKnownLanguages() : JLanguageHelper::getKnownLanguages();
+		$rowCount  = RedcoreHelpersTranslation::getTableRowCount($this->translationTable);
+		$title    .= ' ' . $this->translationTableName;
+		$title    .= ' <small><small>( '
+			. JText::_('COM_REDCORE_TRANSLATION_TABLE_ORIGINAL_TABLE_ROWS')
+			. ' <span class="label label-primary">'
+			. (isset($rowCount['original_rows']) ? $rowCount['original_rows'] : 0)
+			. '</span>';
+
+		foreach ($languages as $languageKey => $language)
 		{
-			return JText::_('COM_REDCORE_TRANSLATIONS_MANAGE_CONTENT_ELEMENTS')
-				. (!empty($this->componentName) ? ' : ' . JText::_($this->componentName) : '');
+			$title .= ' ' . $languageKey
+				. ' <span class="label label-primary">'
+				. (isset($rowCount['translation_rows'][$languageKey]) ? $rowCount['translation_rows'][$languageKey]->translation_rows : 0)
+				. '</span>';
 		}
+
+		return $title . ')</small></small>';
 	}
 
 	/**
@@ -146,24 +147,20 @@ class RedcoreViewTranslations extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$firstGroup = new RToolbarButtonGroup;
+		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
 
-		if (!empty($this->contentElement))
-		{
-			$delete = RToolbarBuilder::createDeleteButton('translations.delete');
-			$firstGroup->addButton($delete);
+		$delete = RToolbarBuilder::createDeleteButton('translations.delete');
+		$firstGroup->addButton($delete);
 
-			// Manage
-			$manage = RToolbarBuilder::createStandardButton(
-				'translations.manageContentElement',
-				JText::_('COM_REDCORE_TRANSLATIONS_MANAGE_CONTENT_ELEMENTS'),
-				'btn btn-primary',
-				'icon-globe',
-				false
-			);
-			$secondGroup->addButton($manage);
-		}
+		// Manage
+		$manage = RToolbarBuilder::createLinkButton(
+			'index.php?option=com_redcore&view=translation_tables',
+			JText::_('COM_REDCORE_TRANSLATIONS_MANAGE_CONTENT_ELEMENTS'),
+			'icon-globe',
+			'btn btn-primary'
+		);
+		$secondGroup->addButton($manage);
 
 		$toolbar = new RToolbar;
 		$toolbar->addGroup($firstGroup)

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Field
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -55,6 +55,7 @@ class JFormFieldTablelist extends JFormFieldList
 			$db = JFactory::getDbo();
 			$tables = $db->getTableList();
 			$tablePrefix = $db->getPrefix();
+			$options = array();
 
 			if (!empty($tables))
 			{

@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -27,17 +27,17 @@ class RedcoreModelTranslation extends RModelAdmin
 	 */
 	public function getItem($pk = null)
 	{
-		$ids = JFactory::getApplication()->input->getString('id', '');
-		$id = JFactory::getApplication()->input->getString('rctranslations_id', '');
-		$table = RedcoreHelpersTranslation::getTranslationTable();
+		$app = JFactory::getApplication();
+		$ids = $app->input->getString('id', '');
+		$id = $app->input->getString('rctranslations_id', '');
+		$table = RTranslationTable::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
 
 		if (empty($table))
 		{
 			// Translation table does not exist we are redirecting to manager
-			JFactory::getApplication()->redirect('index.php?option=com_redcore&view=translations&contentelement=&layout=manage');
+			$app->redirect('index.php?option=com_redcore&view=translations');
 		}
 
-		$contentElement = RTranslationHelper::getContentElement($table->option, $table->xml);
 		$db	= $this->getDbo();
 		$query = $db->getQuery(true);
 		$item = new stdClass;
@@ -82,6 +82,7 @@ class RedcoreModelTranslation extends RModelAdmin
 
 			$item->rctranslations_state = 1;
 			$item->rctranslations_modified = '';
+			$item->rctranslations_modified_by = '';
 			$item->rctranslations_language = JFactory::getApplication()->input->getString('language', '');
 			$item->id = 0;
 		}
@@ -96,30 +97,29 @@ class RedcoreModelTranslation extends RModelAdmin
 
 			$item->original->rctranslations_state = $item->rctranslations_state = $item->translation->rctranslations_state;
 			$item->original->rctranslations_modified = $item->rctranslations_modified = $item->translation->rctranslations_modified;
+			$item->original->rctranslations_modified_by = $item->rctranslations_modified_by = $item->translation->rctranslations_modified_by;
 			$item->original->rctranslations_language = $item->rctranslations_language = $item->translation->rctranslations_language;
 			$item->original->rctranslations_originals = $item->rctranslations_originals = $item->translation->rctranslations_originals;
 			$item->id = $item->translation->rctranslations_id;
 		}
 
-		$fieldsXml = $contentElement->getTranslateFields();
-
-		foreach ($fieldsXml as $field)
+		foreach ($table->allColumns as $column)
 		{
-			if ((string) $field['translate'] == '0')
+			if ($column['column_type'] != RTranslationTable::COLUMN_TRANSLATE)
 			{
-				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+				$item->translation->{$column['name']} = $item->original->{$column['name']};
 			}
 
-			if ((string) $field['type'] == 'params'
-				&& (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			if ($column['value_type'] == 'params'
+				&& (empty($item->translation->{$column['name']}) || $item->translation->{$column['name']} == '{}'))
 			{
-				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+				$item->translation->{$column['name']} = $item->original->{$column['name']};
 			}
 
-			if ((string) $field['type'] == 'readonlytext'
-				&& (empty($item->translation->{(string) $field['name']}) || $item->translation->{(string) $field['name']} == '{}'))
+			if ($column['value_type'] == 'readonlytext'
+				&& (empty($item->translation->{$column['name']}) || $item->translation->{$column['name']} == '{}'))
 			{
-				$item->translation->{(string) $field['name']} = $item->original->{(string) $field['name']};
+				$item->translation->{$column['name']} = $item->original->{$column['name']};
 			}
 		}
 
@@ -135,172 +135,244 @@ class RedcoreModelTranslation extends RModelAdmin
 	 */
 	public function save($data)
 	{
-		$translationTable = RedcoreHelpersTranslation::getTranslationTable();
-		$contentElement = RTranslationHelper::getContentElement($translationTable->option, $translationTable->xml);
-		$translation = JFactory::getApplication()->input->get('translation', array(), 'array');
-		$original = JFactory::getApplication()->input->get('original', array(), 'array');
-		$id = !empty($data['rctranslations_id']) ? (int) $data['rctranslations_id'] : 0;
+		$app = JFactory::getApplication();
+		$dataArr = $app->input->get('jform', array(), 'array');
+		$translationTable = RTranslationTable::setTranslationTableWithColumn($app->input->get('translationTableName', ''));
+		$translation = $app->input->get('translation', array(), 'array');
 
-		$data = array_merge($data, $translation);
-
-		$fieldsXml = $contentElement->getTranslateFields();
-
-		foreach ($fieldsXml as $field)
+		if ($original = $this->getItem())
 		{
-			if ((string) $field['type'] == 'params' && (string) $field['translate'] == '1')
+			$original = (array) $original->original;
+		}
+		else
+		{
+			$original = $app->input->get('original', array(), 'array');
+		}
+
+		foreach ($translation as $translationKey => $translationData)
+		{
+			$allLanguages = RTranslationHelper::getAllContentLanguageCodes();
+
+			if (!in_array($translationKey, $allLanguages) && $translationKey != 'no-language')
 			{
-				$fieldName = (string) $field['name'];
-				$original[$fieldName] = $original['params_' . $fieldName];
-				$paramsChanged = false;
+				continue;
+			}
 
-				if (!empty($data[$fieldName]))
+			$data = array_merge($dataArr[$translationKey], $translationData);
+
+			$id = !empty($data['rctranslations_id']) ? (int) $data['rctranslations_id'] : 0;
+
+			if ($translationKey == 'no-language')
+			{
+				$data['rctranslations_language'] = $dataArr[$translationKey]['rctranslations_language'];
+			}
+			else
+			{
+				$data['rctranslations_language'] = $translationKey;
+			}
+
+			/** @var RedcoreTableTranslation $table */
+			$table = $this->getTable();
+
+			if (empty($id))
+			{
+				$db	= $this->getDbo();
+				$query = $db->getQuery(true)
+					->select('rctranslations_id')
+					->from($db->qn(RTranslationTable::getTranslationsTableName($translationTable->table, '')))
+					->where('rctranslations_language = ' . $db->q($data['rctranslations_language']));
+
+				foreach ($translationTable->primaryKeys as $primaryKey)
 				{
-					$registry = new JRegistry;
-					$registry->loadString($original[$fieldName]);
-					$originalParams = $registry->toArray();
-
-					foreach ($data[$fieldName] as $paramKey => $paramValue)
+					if (!empty($data[$primaryKey]))
 					{
-						if ((!isset($originalParams[$paramKey]) && $paramValue != '') || $originalParams[$paramKey] != $paramValue)
+						$query->where($db->qn($primaryKey) . ' = ' . $db->q($data[$primaryKey]));
+					}
+				}
+
+				$db->setQuery($query);
+				$id = $db->loadResult();
+			}
+
+			// Check if the form is completely empty, and return an error if it is.
+			$dataFilled = RTranslationHelper::validateEmptyTranslationData($translationData, $translationTable->primaryKeys);
+
+			if (!$dataFilled)
+			{
+				$this->setError(JText::_('COM_REDCORE_TRANSLATIONS_SAVE_ERROR_EMPTY'));
+
+				if (!empty($id))
+				{
+					$table->delete($id);
+				}
+
+				continue;
+			}
+
+			foreach ($translationTable->allColumns as $field)
+			{
+				if ($field['value_type'] == 'params' && $field['column_type'] == RTranslationTable::COLUMN_TRANSLATE)
+				{
+					$fieldName = $field['name'];
+					$paramsChanged = false;
+
+					if (!empty($data[$fieldName]))
+					{
+						$registry = new JRegistry;
+						$registry->loadString($original[$fieldName]);
+						$originalParams = $registry->toArray();
+
+						foreach ($data[$fieldName] as $paramKey => $paramValue)
 						{
-							$paramsChanged = true;
+							if ((!isset($originalParams[$paramKey]) && $paramValue != '') || $originalParams[$paramKey] != $paramValue)
+							{
+								$paramsChanged = true;
 
-							break;
+								break;
+							}
 						}
-					}
 
-					if ($paramsChanged)
-					{
-						$data[$fieldName] = json_encode($data[$fieldName]);
-					}
-					else
-					{
-						$data[$fieldName] = '';
+						if ($paramsChanged)
+						{
+							$data[$fieldName] = json_encode($data[$fieldName]);
+						}
+						else
+						{
+							$data[$fieldName] = '';
+						}
 					}
 				}
 			}
-		}
 
-		$dispatcher = RFactory::getDispatcher();
-		/** @var RedcoreTableTranslation $table */
-		$table = $this->getTable();
-
-		if (empty($id))
-		{
-			$db	= $this->getDbo();
-			$query = $db->getQuery(true)
-				->select('rctranslations_id')
-				->from($db->qn(RTranslationTable::getTranslationsTableName($translationTable->table, '')))
-				->where('rctranslations_language = ' . $db->q($data['rctranslations_language']));
+			$dispatcher = RFactory::getDispatcher();
 
 			foreach ($translationTable->primaryKeys as $primaryKey)
 			{
-				if (!empty($data[$primaryKey]))
-				{
-					$query->where($db->qn($primaryKey) . ' = ' . $db->q($data[$primaryKey]));
-				}
+				$original[$primaryKey] = $data[$primaryKey];
 			}
 
-			$db->setQuery($query);
-			$id = $db->loadResult();
-		}
+			$isNew = true;
 
-		foreach ($translationTable->primaryKeys as $primaryKey)
-		{
-			$original[$primaryKey] = $data[$primaryKey];
-		}
+			// Load the row if saving an existing item.
+			$table->load((int) $id);
 
-		$isNew = true;
-
-		// Load the row if saving an existing item.
-		$table->load((int) $id);
-
-		if ($table->rctranslations_modified)
-		{
-			$isNew = false;
-		}
-
-		$data['rctranslations_originals'] = RTranslationTable::createOriginalValueFromColumns($original, $translationTable->columns);
-
-		// We run posthandler methods
-		foreach ($fieldsXml as $field)
-		{
-			$postHandler = (string) $field['posthandler'];
-			$fieldName = (string) $field['name'];
-
-			if (!empty($postHandler) && (string) $field['translate'] == '1')
+			if ($table->rctranslations_modified)
 			{
-				$postHandlerFunctions = explode(',', $postHandler);
+				$isNew = false;
+			}
 
-				foreach ($postHandlerFunctions as $postHandlerFunction)
+			$data['rctranslations_originals'] = RTranslationTable::createOriginalValueFromColumns($original, $translationTable->columns);
+
+			// We run posthandler methods
+			foreach ($translationTable->allColumns as $field)
+			{
+				$postHandler = $field['posthandler'];
+				$fieldName = $field['name'];
+
+				if (!empty($postHandler) && $field['translate'] == '1')
 				{
-					$postHandlerFunctionArray = explode('::', $postHandlerFunction);
+					$postHandlerFunctions = explode(',', $postHandler);
 
-					if (empty($postHandlerFunctionArray[1]))
+					foreach ($postHandlerFunctions as $postHandlerFunction)
 					{
-						$postHandlerFunctionArray[1] = $postHandlerFunctionArray[0];
-						$postHandlerFunctionArray[0] = 'RTranslationContentHelper';
-						$postHandlerFunction = 'RTranslationContentHelper::' . $postHandlerFunction;
-					}
+						$postHandlerFunctionArray = explode('::', $postHandlerFunction);
 
-					if (method_exists($postHandlerFunctionArray[0], $postHandlerFunctionArray[1]))
-					{
-						call_user_func_array(
-							array(
-								$postHandlerFunctionArray[0],
-								$postHandlerFunctionArray[1]),
-								array($field, &$data[$fieldName], &$data, $translationTable)
-						);
+						if (empty($postHandlerFunctionArray[1]))
+						{
+							$postHandlerFunctionArray[1] = $postHandlerFunctionArray[0];
+							$postHandlerFunctionArray[0] = 'RTranslationContentHelper';
+							$postHandlerFunction = 'RTranslationContentHelper::' . $postHandlerFunction;
+						}
+
+						if (method_exists($postHandlerFunctionArray[0], $postHandlerFunctionArray[1]))
+						{
+							call_user_func_array(
+								array(
+									$postHandlerFunctionArray[0],
+									$postHandlerFunctionArray[1]),
+									array($field, &$data[$fieldName], &$data, $translationTable)
+							);
+						}
 					}
 				}
 			}
+
+			// Bind the data.
+			if (!$table->bind($data))
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Prepare the row for saving
+			$this->prepareTable($table);
+
+			// Check the data.
+			if (!$table->check())
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Trigger the onContentBeforeSave event.
+			$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, &$table, $isNew));
+
+			if (in_array(false, $result, true))
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Store the data.
+			if (!$table->store())
+			{
+				$this->setError($table->getError());
+
+				return false;
+			}
+
+			// Trigger the onContentAfterSave event.
+			$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
+
+			$this->setState($this->getName() . '.id', $table->rctranslations_id);
+
+			// Clear the cache
+			$this->cleanCache();
 		}
-
-		// Bind the data.
-		if (!$table->bind($data))
-		{
-			$this->setError($table->getError());
-
-			return false;
-		}
-
-		// Prepare the row for saving
-		$this->prepareTable($table);
-
-		// Check the data.
-		if (!$table->check())
-		{
-			$this->setError($table->getError());
-
-			return false;
-		}
-
-		// Trigger the onContentBeforeSave event.
-		$result = $dispatcher->trigger($this->event_before_save, array($this->option . '.' . $this->name, &$table, $isNew));
-
-		if (in_array(false, $result, true))
-		{
-			$this->setError($table->getError());
-
-			return false;
-		}
-
-		// Store the data.
-		if (!$table->store())
-		{
-			$this->setError($table->getError());
-
-			return false;
-		}
-
-		// Trigger the onContentAfterSave event.
-		$dispatcher->trigger($this->event_after_save, array($this->option . '.' . $this->name, &$table, $isNew));
-
-		$this->setState($this->getName() . '.id', $table->rctranslations_id);
-
-		// Clear the cache
-		$this->cleanCache();
 
 		return true;
+	}
+
+	/**
+	 * Method to get a form object.
+	 *
+	 * @param   array    $data      Data for the form.
+	 * @param   boolean  $loadData  True if the form is to load its own data (default case), false if not.
+	 *
+	 * @return  mixed  A JForm object on success, false on failure
+	 */
+	public function getForm($data = array(), $loadData = true)
+	{
+		$option = JFactory::getApplication()->input->getString('component');
+
+		JForm::addFormPath(JPATH_ADMINISTRATOR . '/components/' . $option);
+
+		// Get the form.
+		$form = $this->loadForm(
+			'com_redcore.edit.translation.translation',
+			'translation',
+			array('control' => 'jform', 'load_data' => $loadData),
+			true
+		);
+
+		if (empty($form))
+		{
+			return false;
+		}
+
+		return $form;
 	}
 }

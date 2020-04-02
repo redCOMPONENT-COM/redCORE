@@ -1,24 +1,22 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-	<name>Categories</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
-	<description>Translation definition for Joomla Categories</description>
-	<reference>
-		<table name="categories">
-			<field type="referenceid" name="id" translate="0">ID</field>
-			<field type="titletext" name="extension" translate="0">Extension</field>
-			<field type="titletext" name="title" translate="1" >Title</field>
-			<field type="text" name="alias" translate="1" posthandler="filterTitle">Alias</field>
-			<field type="htmltext" name="description" translate="1" ebuttons="readmore,pagebreak">Description</field>
-			<field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-			<field type="checked_out_date" name="checked_out_time" translate="0">Check out date</field>
-            <field type="state" name="published" stateoptions="0,1,2,-2" translate="1" alwaysFallback="true">State</field>
-            <filter>o.level > 0</filter>
-		</table>
-		<component>
-			<form>com_categories#categories#cid#task#!edit</form>
-		</component>
-	</reference>
+  <name>Categories</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Categories</description>
+  <reference>
+    <table name="categories">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="extension" type="titletext" translate="0" alwaysFallback="false" filter="RAW" description="">Extension</field>
+      <field name="title" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="">Title</field>
+      <field name="alias" type="text" translate="1" alwaysFallback="false" filter="RAW" description="" posthandler="filterTitle">Alias</field>
+      <field name="description" type="htmltext" translate="1" alwaysFallback="false" filter="RAW" description="" ebuttons="readmore,pagebreak">Description</field>
+      <field name="published" type="state" translate="1" alwaysFallback="true" filter="RAW" description="" stateoptions="0,1,2,-2">State</field>
+      <filter><![CDATA[o.level > 0]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_categories" view="category" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
+    </component>
+  </reference>
 </contentelement>

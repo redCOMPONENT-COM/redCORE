@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Controllers
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -19,28 +19,6 @@ defined('_JEXEC') or die;
 class RedcoreControllerTranslations extends RControllerAdmin
 {
 	/**
-	 * Display is not supported by this controller.
-	 *
-	 * @param   boolean  $cachable   If true, the view output will be cached
-	 * @param   array    $urlparams  An array of safe url parameters and their variable types, for valid values see {@link JFilterInput::clean()}.
-	 *
-	 * @return  JControllerLegacy  A JControllerLegacy object to support chaining.
-	 *
-	 * @since   12.2
-	 */
-	public function display($cachable = false, $urlparams = array())
-	{
-		if ($this->input->get('component', '') == '')
-		{
-			$this->manageContentElement();
-		}
-		else
-		{
-			return parent::display($cachable, $urlparams);
-		}
-	}
-
-	/**
 	 * Displays Content Elements management screen
 	 *
 	 * @return  void
@@ -55,7 +33,7 @@ class RedcoreControllerTranslations extends RControllerAdmin
 		}
 
 		$this->setRedirect(
-			$this->getRedirectToListRoute('&contentelement=&layout=manage' . $append)
+			$this->getRedirectToListRoute('&translationTableName=' . $append)
 		);
 	}
 
@@ -69,9 +47,9 @@ class RedcoreControllerTranslations extends RControllerAdmin
 	protected function getRedirectToListRoute($append = '')
 	{
 		// Setup redirect info.
-		if ($contentElement = JFactory::getApplication()->input->get('contentelement'))
+		if ($translationTableName = JFactory::getApplication()->input->get('translationTableName'))
 		{
-			$append = '&contentelement=' . $contentElement . $append;
+			$append = '&translationTableName=' . $translationTableName . $append;
 		}
 
 		return parent::getRedirectToListRoute($append);

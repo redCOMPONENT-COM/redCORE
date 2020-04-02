@@ -3,11 +3,13 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('_JEXEC') or die;
+
+use Joomla\Registry\Registry;
 
 /**
  * Webservices View
@@ -54,7 +56,7 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 	public $xmlFiles;
 
 	/**
-	 * @var  int
+	 * @var  integer
 	 */
 	public $xmlFilesAvailable;
 
@@ -70,12 +72,12 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 		$model = $this->getModel();
 
 		$this->activeFilters = $model->getActiveFilters();
-		$this->state = $model->getState();
-		$this->filterForm = $model->getForm();
-		$this->pagination = $model->getPagination();
+		$this->state         = $model->getState();
+		$this->filterForm    = $model->getForm();
+		$this->pagination    = $model->getPagination();
 
-		$this->items = $model->getItems();
-		$this->xmlFiles = $model->getXmlFiles();
+		$this->items             = $model->getItems();
+		$this->xmlFiles          = $model->getXmlFiles();
 		$this->xmlFilesAvailable = $model->xmlFilesAvailable;
 
 		$this->return = base64_encode('index.php?option=com_redcore&view=webservices');
@@ -86,9 +88,12 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
 					'COM_REDCORE_WEBSERVICES_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+					'<a href="index.php?option=com_redcore&view=config&layout=edit&component=com_redcore&return=' . $this->return . '">'
+					. JText::_('COM_REDCORE_CONFIGURE')
+					. '</a>'
 				),
-				'error');
+				'error'
+			);
 		}
 
 		parent::display($tpl);
@@ -111,44 +116,45 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$canDo = $this->getActions();
-		$group = new RToolbarButtonGroup;
+		$group       = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
-		$thirdGroup = new RToolbarButtonGroup;
-		$user = JFactory::getUser();
+		$thirdGroup  = new RToolbarButtonGroup;
+		$group4      = new RToolbarButtonGroup;
+		$group5      = new RToolbarButtonGroup('pull-right');
+		$user        = JFactory::getUser();
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
-			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
-			{
-				$new = RToolbarBuilder::createNewButton('webservice.add');
-				$group->addButton($new);
-			}
+			$button = RToolbarBuilder::createStandardButton(
+				'webservices.downloadXml', 'COM_REDCORE_TRANSLATION_TABLE_DOWNLOAD_XML', 'btn-default', 'icon-download'
+			);
+			$group5->addButton($button);
 
-			if ($canDo->get('core.edit'))
-			{
-				$edit = RToolbarBuilder::createEditButton('webservice.edit');
-				$group->addButton($edit);
+			$new = RToolbarBuilder::createNewButton('webservice.add');
+			$group->addButton($new);
 
-				$publish = RToolbarBuilder::createPublishButton('webservices.publish');
-				$unPublish = RToolbarBuilder::createUnpublishButton('webservices.unpublish');
+			$edit = RToolbarBuilder::createEditButton('webservice.edit');
+			$group->addButton($edit);
 
-				$secondGroup->addButton($publish)
-					->addButton($unPublish);
-			}
+			$publish   = RToolbarBuilder::createPublishButton('webservices.publish');
+			$unPublish = RToolbarBuilder::createUnpublishButton('webservices.unpublish');
 
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('webservices.delete');
+			$secondGroup->addButton($publish)
+				->addButton($unPublish);
 
-				$thirdGroup->addButton($delete);
-			}
+			$clone = RToolbarBuilder::createCopyButton('webservices.copy', 'btn-success');
+			$thirdGroup->addButton($clone);
+
+			$delete = RToolbarBuilder::createDeleteButton('webservices.delete');
+			$group4->addButton($delete);
 		}
 
 		$toolbar = new RToolbar;
 		$toolbar->addGroup($group)
 			->addGroup($secondGroup)
-			->addGroup($thirdGroup);
+			->addGroup($thirdGroup)
+			->addGroup($group4)
+			->addGroup($group5);
 
 		return $toolbar;
 	}
@@ -159,13 +165,13 @@ class RedcoreViewWebservices extends RedcoreHelpersView
 	 * @param   string  $section    The section.
 	 * @param   mixed   $assetName  The asset name.
 	 *
-	 * @return  JObject
+	 * @return  Registry
 	 */
 	public function getActions($section = 'component', $assetName = 'com_redcore')
 	{
-		$user = JFactory::getUser();
-		$result	= new JObject;
-		$actions = JAccess::getActions('com_redcore', $section);
+		$user    = JFactory::getUser();
+		$result  = new Registry;
+		$actions = JAccess::getActionsFromFile('com_redcore', $section) ?: array();
 
 		foreach ($actions as $action)
 		{

@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Models
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -351,57 +351,5 @@ class RedcoreModelConfig extends RModelAdmin
 		}
 
 		return $extensions;
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName  Extension name
-	 *
-	 * @return  array  List of objects
-	 */
-	public function loadContentElements($extensionName = '')
-	{
-		return RTranslationHelper::getContentElements($extensionName);
-	}
-
-	/**
-	 * Loading of related XML files
-	 *
-	 * @param   string  $extensionName    Extension name
-	 * @param   array   $contentElements  Content elements
-	 *
-	 * @return  array  List of objects
-	 */
-	public function loadMissingContentElements($extensionName, $contentElements = array())
-	{
-		$translationTables = RTranslationHelper::getInstalledTranslationTables();
-		$missingTables = array();
-
-		foreach ($translationTables as $translationTableKey => $translationTable)
-		{
-			$translationTable->table = str_replace('#__', '', $translationTable->table);
-
-			if ($translationTable->option == $extensionName)
-			{
-				$foundTable = false;
-
-				foreach ($contentElements as $contentElement)
-				{
-					if (!empty($contentElement->table) && $contentElement->table == $translationTable->table)
-					{
-						$foundTable = true;
-						break;
-					}
-				}
-
-				if (!$foundTable)
-				{
-					$missingTables[$translationTableKey] = $translationTable;
-				}
-			}
-		}
-
-		return $missingTables;
 	}
 }

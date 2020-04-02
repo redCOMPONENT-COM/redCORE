@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('JPATH_REDCORE') or die;
@@ -164,12 +164,14 @@ class RApiOauth2Oauth2 extends RApi
 		{
 			case 'token':
 				$this->apiToken();
+				$this->cleanExpiredTokens($this->operation);
 				break;
 			case 'resource':
 				$this->apiResource();
 				break;
 			case 'authorize':
 				$this->apiAuthorize();
+				$this->cleanExpiredTokens($this->operation);
 				break;
 			case 'profile':
 				$this->apiProfile();
@@ -177,6 +179,47 @@ class RApiOauth2Oauth2 extends RApi
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Method to update client scopes.
+	 *
+	 * @param   string  $operation  Operation name
+	 *
+	 * @return  boolean  True on success, False on error.
+	 */
+	public function cleanExpiredTokens($operation)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		switch ($operation)
+		{
+			// Delete Access Tokens
+			case 'token':
+				$query->delete('#__redcore_oauth_access_tokens')
+					->where($db->qn('expires') . ' < ' . $db->q(date('Y-m-d H:i:s', strtotime('-2 weeks'))));
+				$db->setQuery($query);
+				$db->execute();
+
+				$query = $db->getQuery(true)
+					->delete('#__redcore_oauth_refresh_tokens')
+					->where($db->qn('expires') . ' < ' . $db->q(date('Y-m-d H:i:s', strtotime('-2 weeks'))));
+				$db->setQuery($query);
+				$db->execute();
+				break;
+
+			// Delete Authorization codes
+			case 'authorize':
+			default:
+				$query->delete('#__redcore_oauth_authorization_codes')
+					->where($db->qn('expires') . ' < ' . $db->q(date('Y-m-d H:i:s', strtotime('-2 weeks'))));
+				$db->setQuery($query);
+				$db->execute();
+				break;
+		}
+
+		return true;
 	}
 
 	/**
@@ -248,7 +291,6 @@ class RApiOauth2Oauth2 extends RApi
 	public function apiToken()
 	{
 		$request = OAuth2\Request::createFromGlobals();
-		$user = null;
 
 		// Implicit grant type and Authorization code grant type require user to be logged in before authorising
 		if ($request->request('grant_type') == 'implicit')
@@ -266,6 +308,7 @@ class RApiOauth2Oauth2 extends RApi
 			{
 				// Add expire Time
 				$this->response->setParameter('expireTimeFormatted', date('Y-m-d H:i:s', $expires + time()));
+				$this->response->setParameter('created', date('Y-m-d H:i:s'));
 			}
 
 			$this->response->setParameter('profile', RApiOauth2Helper::getUserProfileInformation());

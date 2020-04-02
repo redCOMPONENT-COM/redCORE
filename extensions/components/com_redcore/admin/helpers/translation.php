@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Helper
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -19,92 +19,141 @@ defined('_JEXEC') or die;
 abstract class RedcoreHelpersTranslation extends JObject
 {
 	/**
-	 * Gets translation table object
+	 * Gets translation column types
 	 *
-	 * @param   string  $default  Default Content Element Name
-	 *
-	 * @return  object  Translation Table object
+	 * @return  array
 	 */
-	public static function getTranslationTable($default = '')
+	public static function getTranslationColumnTypes()
 	{
-		$contentElement = self::getCurrentContentElement();
-
-		$translationTables = RTranslationHelper::getInstalledTranslationTables();
-
-		return !empty($translationTables['#__' . $contentElement]) ? $translationTables['#__' . $contentElement] : null;
+		return array(
+			array('value' => RTranslationTable::COLUMN_PRIMARY, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_PRIMARY')),
+			array('value' => RTranslationTable::COLUMN_READONLY, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_READ_ONLY')),
+			array('value' => RTranslationTable::COLUMN_TRANSLATE, 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_TYPE_TRANSLATE')),
+		);
 	}
 
 	/**
-	 * Gets content element name from request
+	 * Gets translation column value types
 	 *
-	 * @param   string  $default  Default Content Element Name
-	 *
-	 * @return  string  Content element name
+	 * @return  array
 	 */
-	public static function getCurrentContentElement($default = '')
+	public static function getTranslationValueTypes()
 	{
-		$app = JFactory::getApplication();
-
-		$filter = $app->getUserStateFromRequest('com_redcore.translations.translations.filter', 'filter', array(), 'array');
-
-		$contentElement = $app->input->get->get('contentelement', null);
-
-		if ($contentElement === null && !empty($filter['contentelement']))
-		{
-			$contentElement = $filter['contentelement'];
-		}
-
-		if (JFactory::getApplication()->input->get('view') == 'translation' || $contentElement === null)
-		{
-			$contentElement = $app->input->getString('contentelement', $default);
-		}
-
-		return $contentElement;
+		return array(
+			array('value' => 'text', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_TEXT')),
+			array('value' => 'titletext', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_TEXT_TITLE')),
+			array('value' => 'htmltext', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_HTML_EDITOR')),
+			array('value' => 'referenceid', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_PRIMARY_KEY')),
+			array('value' => 'hiddentext', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_HIDDEN_TEXT')),
+			array('value' => 'params', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_PARAMETERS')),
+			array('value' => 'state', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_STATE')),
+			array('value' => 'textarea', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_TEXT_AREA')),
+			array('value' => 'images', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_TYPE_IMAGES')),
+			array('value' => 'readonlytext', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_VALUE_READ_ONLY')),
+		);
 	}
 
 	/**
-	 * Gets translation item status
+	 * Gets translation column filter types
 	 *
-	 * @param   object  $item     Translate item object
-	 * @param   array   $columns  List of columns used in translation
-	 *
-	 * @return  string  Translation Item status
+	 * @return  array
 	 */
-	public static function getTranslationItemStatus($item, $columns)
+	public static function getTranslationFilterTypes()
 	{
-		if (empty($item->rctranslations_language))
+		return array(
+			array('value' => 'UINT', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_UINT')),
+			array('value' => 'FLOAT', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_FLOAT')),
+			array('value' => 'BOOLEAN', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_BOOLEAN')),
+			array('value' => 'WORD', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_WORD')),
+			array('value' => 'ALNUM', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_ALNUM')),
+			array('value' => 'CMD', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_CMD')),
+			array('value' => 'BASE64', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_BASE64')),
+			array('value' => 'STRING', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_STRING')),
+			array('value' => 'HTML', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_HTML')),
+			array('value' => 'ARRAY', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_ARRAY')),
+			array('value' => 'PATH', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_PATH')),
+			array('value' => 'TRIM', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_TRIM')),
+			array('value' => 'RAW', 'text' => JText::_('COM_REDCORE_TRANSLATION_COLUMN_FILTER_TYPE_RAW')),
+		);
+	}
+
+	/**
+	 * Gets table row count
+	 *
+	 * @param   string  $table  Table object
+	 *
+	 * @return  array  Calculations
+	 */
+	public static function getTableRowCount($table)
+	{
+		$db	= JFactory::getDbo();
+		$rowCount = array(
+			'original_rows' => 0,
+			'translation_rows' => array()
+		);
+
+		if (!RTranslationTable::getTableColumns($table->name))
 		{
-			return array('badge' => 'label label-danger', 'status' => 'JNONE');
+			return $rowCount;
 		}
-		elseif ($item->rctranslations_state != 1)
+
+		try
 		{
-			return array('badge' => 'label label-danger', 'status' => 'JUNPUBLISHED');
+			$query = $db->getQuery(true);
+
+			// Original rows
+			$query->select('count(*) AS original_rows')
+				->from($db->qn($table->name, 'o'));
+
+			if (!empty($table->filter_query))
+			{
+				$query->where((string) $table->filter_query);
+			}
+
+			$rowCount['original_rows'] = $db->setQuery($query)->loadResult();
 		}
-		else
+		catch (RuntimeException $e)
 		{
-			$originalValues = new JRegistry;
+			JLog::add(JText::_('COM_REDCORE_TRANSLATION_TABLE_DONT_EXIST') . ' ' . $table->name, JLog::ERROR, 'jerror');
+		}
 
-			if (is_array($item->rctranslations_originals))
-			{
-				$originalValues->loadArray($item->rctranslations_originals);
-			}
-			else
-			{
-				$originalValues->loadString((string) $item->rctranslations_originals);
-			}
+		try
+		{
+			$query = $db->getQuery(true);
 
-			$translationStatus = array('badge' => 'label label-success', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_TRANSLATED');
+			// Original rows
+			$query->select('count(*) AS translation_rows, t.rctranslations_language')
+				->from($db->qn(RTranslationTable::getTranslationsTableName($table->name), 't'))
+				->group('t.rctranslations_language');
 
-			foreach ($columns as $column)
+			$leftJoinOn = array();
+
+			$primaryKeys = explode(',', $table->primary_columns);
+
+			if ($primaryKeys)
 			{
-				if (md5($item->$column) != $originalValues->get($column))
+				foreach ($primaryKeys as $primaryKey)
 				{
-					$translationStatus = array('badge' => 'label label-warning', 'status' => 'COM_REDCORE_TRANSLATIONS_STATUS_CHANGED');
-					break;
+					$leftJoinOn[] = 'o.' . $primaryKey . ' = t.' . $primaryKey;
+					$query->where($db->qn('o.' . $primaryKey) . ' IS NOT NULL');
 				}
+
+				$leftJoinOn = implode(' AND ', $leftJoinOn);
+
+				$query->leftJoin(
+					$db->qn($table->name, 'o') . (!empty($leftJoinOn) ? ' ON ' . $leftJoinOn . '' : '')
+				);
 			}
 
-			return $translationStatus;
+			$rowCount['translation_rows'] = $db->setQuery($query)->loadObjectList('rctranslations_language');
 		}
+		catch (RuntimeException $e)
+		{
+			JLog::add(
+				JText::_('COM_REDCORE_TRANSLATION_TABLE_DONT_EXIST') . ' ' . RTranslationTable::getTranslationsTableName($table->name), JLog::ERROR, 'jerror'
+			);
+		}
+
+		return $rowCount;
 	}
 }

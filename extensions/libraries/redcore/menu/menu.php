@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Menu
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Registry\Registry;
 
 /**
  * Represents a menu.
@@ -86,7 +88,7 @@ class RMenu
 			$item = $menu->getItem($item->id);
 
 			// Decode the item params
-			$result = new JRegistry;
+			$result = new Registry;
 			$result->loadString($item->params);
 			$item->params = $result;
 		}

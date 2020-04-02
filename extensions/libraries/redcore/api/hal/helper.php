@@ -3,13 +3,15 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
 
 jimport('joomla.filesystem.folder');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Interface to handle api calls
@@ -167,7 +169,7 @@ class RApiHalHelper
 	 */
 	public static function getTask()
 	{
-		$command  = JFactory::getApplication()->input->get('task', '');
+		$command = JFactory::getApplication()->input->get('task', '');
 
 		// Check for array format.
 		$filter = JFilterInput::getInstance();
@@ -257,7 +259,7 @@ class RApiHalHelper
 	{
 		if (empty($webserviceName))
 		{
-			$folders = JFolder::folders(self::getWebservicesPath(), '.', true);
+			$folders             = JFolder::folders(self::getWebservicesPath(), '.', true);
 			$webserviceXmls[' '] = JFolder::files(self::getWebservicesPath(), '.xml');
 
 			foreach ($folders as $folder)
@@ -276,9 +278,9 @@ class RApiHalHelper
 
 						if (!empty($xml))
 						{
-							$client = self::getWebserviceClient($xml);
-							$version = !empty($xml->config->version) ? (string) $xml->config->version : $version;
-							$xml->webservicePath = trim($webserviceXmlPath);
+							$client                                                            = self::getWebserviceClient($xml);
+							$version                                                           = !empty($xml->config->version) ? (string) $xml->config->version : $version;
+							$xml->webservicePath                                               = trim($webserviceXmlPath);
 							self::$webservices[$client][(string) $xml->config->name][$version] = $xml;
 						}
 					}
@@ -304,9 +306,9 @@ class RApiHalHelper
 
 				if (!empty($xml))
 				{
-					$client = self::getWebserviceClient($xml);
-					$version = !empty($xml->config->version) ? (string) $xml->config->version : $version;
-					$xml->webservicePath = trim($path);
+					$client                                                            = self::getWebserviceClient($xml);
+					$version                                                           = !empty($xml->config->version) ? (string) $xml->config->version : $version;
+					$xml->webservicePath                                               = trim($path);
 					self::$webservices[$client][(string) $xml->config->name][$version] = $xml;
 				}
 			}
@@ -343,7 +345,7 @@ class RApiHalHelper
 
 		if (!empty($webserviceName))
 		{
-			$version = !empty($version) ? array(JPath::clean($version)) : array('1.0.0');
+			$version        = !empty($version) ? array(JPath::clean($version)) : array('1.0.0');
 			$webservicePath = !empty($path) ? self::getWebservicesPath() . '/' . $path : self::getWebservicesPath();
 
 			// Search for suffixed versions. Example: content.1.0.0.xml
@@ -427,7 +429,7 @@ class RApiHalHelper
 
 			try
 			{
-				$content = file_get_contents($objectFile->tmp_name);
+				$content     = file_get_contents($objectFile->tmp_name);
 				$fileContent = null;
 
 				if (is_string($content))
@@ -435,7 +437,7 @@ class RApiHalHelper
 					$fileContent = new SimpleXMLElement($content);
 				}
 
-				$name = (string) $fileContent->config->name;
+				$name    = (string) $fileContent->config->name;
 				$version = !empty($fileContent->config->version) ? (string) $fileContent->config->version : '1.0.0';
 
 				$client = self::getWebserviceClient($fileContent);
@@ -507,7 +509,7 @@ class RApiHalHelper
 		if (!isset(self::$installedWebservices))
 		{
 			self::$installedWebservices = array();
-			$db = JFactory::getDbo();
+			$db                         = JFactory::getDbo();
 
 			$query = $db->getQuery(true)
 				->select('*')
@@ -521,7 +523,7 @@ class RApiHalHelper
 			{
 				foreach ($webservices as $webservice)
 				{
-					self::$installedWebservices[$webservice->client][$webservice->name][$webservice->version] = JArrayHelper::fromObject($webservice);
+					self::$installedWebservices[$webservice->client][$webservice->name][$webservice->version] = ArrayHelper::fromObject($webservice);
 				}
 			}
 		}
@@ -624,7 +626,7 @@ class RApiHalHelper
 	 */
 	public static function getWebserviceScopes($filterScopes = array())
 	{
-		$options = array();
+		$options              = array();
 		$installedWebservices = self::getInstalledWebservices();
 
 		if (empty($filterScopes))
@@ -727,13 +729,13 @@ class RApiHalHelper
 		}
 
 		$transformElementsFiles = JFolder::files(JPATH_LIBRARIES . '/redcore/api/hal/transform', '.php');
-		$transformElements = array();
+		$transformElements      = array();
 
 		foreach ($transformElementsFiles as $transformElement)
 		{
 			if (!in_array($transformElement, array('interface.php', 'base.php')))
 			{
-				$name = str_replace('.php', '', $transformElement);
+				$name                = str_replace('.php', '', $transformElement);
 				$transformElements[] = array(
 					'value' => $name,
 					'text' => $name,
@@ -845,7 +847,7 @@ class RApiHalHelper
 	public static function getCredentialsFromGlobals()
 	{
 		$credentials = array();
-		$headers = RApi::getHeaderVariablesFromGlobals();
+		$headers     = RApi::getHeaderVariablesFromGlobals();
 
 		if (isset($headers['PHP_AUTH_USER']) && isset($headers['PHP_AUTH_PW']))
 		{

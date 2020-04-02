@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Model
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -73,29 +73,30 @@ abstract class RModel extends JModelLegacy
 			if ($option == 'com_installer')
 			{
 				$installer = JInstaller::getInstance();
-				$option = $installer->manifestClass->getElement($installer);
+				$option    = $installer->manifestClass->getElement($installer);
 			}
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
-		$prefix = $componentName . 'Model';
+		$prefix        = $componentName . 'Model';
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isAdmin();
+			$client = (int) (version_compare(JVERSION, '3.7', '<') ?
+				JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 		}
 
 		// Admin
 		if ($client === 1)
 		{
-			self::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/models');
+			self::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/models', $prefix);
 			JTable::addIncludePath(JPATH_ADMINISTRATOR . '/components/' . $option . '/tables');
 		}
 
 		// Site
 		elseif ($client === 0)
 		{
-			self::addIncludePath(JPATH_SITE . '/components/' . $option . '/models');
+			self::addIncludePath(JPATH_SITE . '/components/' . $option . '/models', $prefix);
 			JTable::addIncludePath(JPATH_SITE . '/components/' . $option . '/tables');
 		}
 

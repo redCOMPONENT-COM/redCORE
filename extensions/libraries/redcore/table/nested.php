@@ -3,13 +3,15 @@
  * @package     Redcore
  * @subpackage  Base
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
 
 JLoader::import('joomla.database.tablenested');
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * redCORE Base Table
@@ -180,7 +182,7 @@ class RTableNested extends JTableNested
 		if (empty($key) && !empty($this->_tableKey))
 		{
 			$this->_tbl_key = $this->_tableKey;
-			$key = $this->_tbl_key;
+			$key            = $this->_tbl_key;
 		}
 
 		if (empty($this->_tbl) || empty($key))
@@ -609,7 +611,7 @@ class RTableNested extends JTableNested
 			return true;
 		}
 
-		$k = $this->_tbl_key;
+		$k  = $this->_tbl_key;
 		$pk = (is_null($pk)) ? $this->$k : $pk;
 
 		// If no primary key is given, return false.
@@ -630,7 +632,7 @@ class RTableNested extends JTableNested
 		$this->_db->execute();
 
 		// Set table values in the object.
-		$this->checked_out = null;
+		$this->checked_out      = null;
 		$this->checked_out_time = '';
 
 		return true;
@@ -657,7 +659,7 @@ class RTableNested extends JTableNested
 		$k = $this->_tbl_key;
 
 		// Sanitize input.
-		JArrayHelper::toInteger($pks);
+		ArrayHelper::toInteger($pks);
 		$userId = (int) $userId;
 		$state  = (int) $state;
 
@@ -700,7 +702,7 @@ class RTableNested extends JTableNested
 
 		try
 		{
-			$db->query();
+			$db->execute();
 		}
 		catch (RuntimeException $e)
 		{
@@ -786,5 +788,115 @@ class RTableNested extends JTableNested
 		}
 
 		return true;
+	}
+
+	/**
+	 * Get the columns from database table.
+	 *
+	 * @param   bool  $reload  flag to reload cache
+	 *
+	 * @return  mixed  An array of the field names, or false if an error occurs.
+	 *
+	 * @since   11.1
+	 * @throws  UnexpectedValueException
+	 */
+	public function getFields($reload = false)
+	{
+		static $cache = null;
+
+		if ($cache !== null && !$reload)
+		{
+			return $cache;
+		}
+
+		$dbo = $this->getDbo();
+
+		$query = $dbo->getQuery(true);
+
+		$query->select('*');
+		$query->from('#__redcore_schemas');
+
+		$assetName = $this->_tbl;
+		$query->where('asset_id = ' . $dbo->q($assetName));
+		$result = $dbo->setQuery($query)->loadAssoc();
+
+		if (is_null($result))
+		{
+			$result = $this->createSchema($assetName);
+		}
+
+		$cachedOn = new \JDate($result['cached_on']);
+		$now      = new \JDate;
+
+		if ($now->toUnix() > ($cachedOn->toUnix() + 86400))
+		{
+			$this->updateSchema($assetName, $now);
+		}
+
+		// Decode the fields
+		$fields = (array) json_decode($result['fields']);
+
+		if (empty($fields))
+		{
+			$msg = JText::sprintf('REDCORE_TABLE_ERROR_NO_COLUMNS_FOUND', $this->_tbl);
+
+			throw new UnexpectedValueException($msg, 500);
+		}
+
+		$cache = $fields;
+
+		return $cache;
+	}
+
+	/**
+	 * Method to cache the table schema in the logical schemas table
+	 *
+	 * @param   string  $assetName  the asset name of this table. standard format is "com_componentName.TableName"
+	 *
+	 * @return array
+	 */
+	private function createSchema($assetName)
+	{
+		$dbo   = $this->getDbo();
+		$query = $dbo->getQuery(true);
+
+		$query->insert('#__redcore_schemas');
+		$query->set('asset_id = ' . $dbo->q($assetName));
+
+		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
+		$query->set('fields = ' . $dbo->q($fields));
+
+		$now = new \JDate;
+		$query->set('cached_on = ' . $dbo->q($now->toSql()));
+
+		$dbo->setQuery($query)->execute();
+
+		return array('asset_id' => $assetName, 'fields' => $fields, 'cached_on' => $now->toSql());
+	}
+
+	/**
+	 * Method to update the table schema in the logical schemas table
+	 *
+	 * @param   string  $assetName  the asset name of this table. standard format is "com_componentName.TableName"
+	 * @param   \JDate  $now        the current time
+	 *
+	 * @return array
+	 */
+	private function updateSchema($assetName, \JDate $now)
+	{
+		$dbo   = $this->getDbo();
+		$query = $dbo->getQuery(true);
+
+		$query->update('#__redcore_schemas');
+
+		$fields = json_encode($dbo->getTableColumns($this->_tbl, false));
+		$query->set('fields = ' . $dbo->q($fields));
+		$query->set('cached_on = ' . $dbo->q($now->toSql()));
+
+		$query->where('asset_id = ' . $dbo->q($assetName));
+
+		$dbo->setQuery($query)->execute();
+
+		return array('asset_id' => $assetName, 'fields' => $fields, 'cached_on' => $now->toSql());
 	}
 }

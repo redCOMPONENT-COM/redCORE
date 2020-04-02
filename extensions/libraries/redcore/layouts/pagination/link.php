@@ -3,12 +3,13 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
 
+/** @var JPaginationObject $item */
 $item = $displayData['data'];
 
 $display = $item->text;
@@ -17,23 +18,33 @@ switch ((string) $item->text)
 {
 	// Check for "Start" item
 	case JText::_('JLIB_HTML_START') :
-		$icon = "icon-backward";
+		$icon = 'icon-fast-backward icon-first';
 		break;
 
 	// Check for "Prev" item
-	case $item->text == JText::_('JPREV') :
+	case $item->text === JText::_('JPREV') :
 		$item->text = JText::_('JPREVIOUS');
-		$icon = "icon-step-backward";
+		$icon = 'icon-step-backward icon-previous';
+		break;
+
+	// Check for "Prev" item
+	case $item->text == JText::_('LIB_REDCORE_PREVIOUS_10') :
+		$icon = "icon-backward";
 		break;
 
 	// Check for "Next" item
 	case JText::_('JNEXT') :
-		$icon = "icon-step-forward";
+		$icon = 'icon-step-forward icon-next';
+		break;
+
+	// Check for "Next" item
+	case JText::_('LIB_REDCORE_NEXT_10') :
+		$icon = "icon-forward";
 		break;
 
 	// Check for "End" item
 	case JText::_('JLIB_HTML_END') :
-		$icon = "icon-forward";
+		$icon = 'icon-fast-forward icon-last';
 		break;
 
 	default:
@@ -46,7 +57,7 @@ if ($icon !== null)
 	$display = '<i class="' . $icon . '"></i>';
 }
 
-if($displayData['active'])
+if ($displayData['active'])
 {
 	if ($item->base > 0)
 	{
@@ -72,7 +83,7 @@ if($displayData['active'])
 	$href    = trim($item->link);
 
 	// Still using javascript approach in backend
-	if (JFactory::getApplication()->isAdmin())
+	if ((version_compare(JVERSION, '3.7', '<') ? JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator')))
 	{
 		$onClick = 'onclick="document.'
 				. $item->formName

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Field
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -65,6 +65,7 @@ class JFormFieldComponentlist extends JFormFieldList
 
 			// Return the result
 			$components = $db->loadObjectList();
+			$tables = RTranslationTable::getInstalledTranslationTables();
 
 			if (!empty($components))
 			{
@@ -78,11 +79,19 @@ class JFormFieldComponentlist extends JFormFieldList
 
 					if ($this->getAttribute('loadContentElements', 'false') == 'true')
 					{
-						$contentElementsArray = RTranslationHelper::getContentElements($value->name);
+						$contentElementsCount = 0;
 
-						if (!empty($contentElementsArray))
+						foreach ($tables as $table)
 						{
-							$contentElements = ' (' . count($contentElementsArray) . ')';
+							if ($table->extension_name == $value->element)
+							{
+								$contentElementsCount++;
+							}
+						}
+
+						if (!empty($contentElementsCount))
+						{
+							$contentElements = ' (' . $contentElementsCount . ')';
 						}
 					}
 

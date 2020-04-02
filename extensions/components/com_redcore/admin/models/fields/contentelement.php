@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Field
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -52,24 +52,17 @@ class JFormFieldContentelement extends JFormFieldList
 		{
 			static::$cache[$hash] = parent::getOptions();
 			$options = array();
-			$translationTables = RTranslationHelper::getInstalledTranslationTables();
+			$translationTables = RTranslationTable::getInstalledTranslationTables();
 
 			if (!empty($translationTables))
 			{
 				foreach ($translationTables as $value)
 				{
-					$options[] = JHtml::_('select.option', str_replace('#__', '', $value->table), $value->name);
+					$options[] = JHtml::_('select.option', str_replace('#__', '', $value->name), $value->title);
 				}
 
 				static::$cache[$hash] = array_merge(static::$cache[$hash], $options);
 			}
-		}
-
-		$contentElement = RedcoreHelpersTranslation::getCurrentContentElement();
-
-		if (!empty($contentElement))
-		{
-			$this->value = $contentElement;
 		}
 
 		return static::$cache[$hash];

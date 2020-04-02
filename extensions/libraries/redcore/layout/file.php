@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -73,7 +73,7 @@ class RLayoutFile extends JLayoutFile
 	 */
 	protected function refreshIncludePaths()
 	{
-		parent::refreshIncludePaths();
+		parent::clearIncludePaths();
 
 		// If method getDefaultIncludePaths does not exists we are in old Layout system
 		if (version_compare(JVERSION, '3.0', '>') && version_compare(JVERSION, '3.5', '<'))

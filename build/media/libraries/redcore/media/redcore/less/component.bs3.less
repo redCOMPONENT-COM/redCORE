@@ -1,11 +1,11 @@
 /*!
  * redCORE v1.8.x
  *
- * Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved
+ * Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved
  * Licensed under the GNU General Public License version 2 or later.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Based on Twitter Bootstrap v.3.3.0
+ * Based on Twitter Bootstrap v.3.3.6
  * http://getbootstrap.com/
  */
 
@@ -221,7 +221,12 @@
   }
   /* Fixing chosen bug when form is inline */
   .form-inline .input-group .chzn-container{
-    width: 100% !important;
+
+  }
+
+  .input-group-addon .chzn-drop {
+    white-space: normal;
+    word-wrap: break-word;
   }
 
   /* Chart.js */
@@ -249,5 +254,11 @@
   }
   .redcore .modal-body {
     overflow: auto;
+  }
+  .translation-status {
+  padding-bottom:15px;
+  }
+  .translation-divider {
+    border-top: 1px solid #ddd;
   }
 }

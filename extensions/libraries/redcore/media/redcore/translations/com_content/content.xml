@@ -1,32 +1,29 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Contents</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
-    <description>Translation definition for Joomla Content component</description>
-    <reference type="content">
-        <table name="content">
-            <field type="referenceid" name="id" translate="0">ID</field>
-            <field type="titletext" name="title"  length="50" maxlength="250" translate="1">Title</field>
-            <field type="text" name="alias"  length="50" maxlength="250" translate="0">Title Alias</field>
-            <field type="hiddentext" name="catid"  scope="com_content" translate="0">Category</field>
-            <field type="htmltext" name="introtext" translate="1" ebuttons="ignore">Article Text</field>
-            <field type="htmltext" name="fulltext" translate="1" ebuttons="readmore">Fulltext</field>
-            <field type="text" name="metakey" length="50" maxlength="250" translate="1">Metakey</field>
-            <field type="textarea" name="metadesc" rows="5" columns="80" translate="1">Metadesc</field>
-            <field type="state" name="state" stateoptions="0,1,2,-2" translate="1" alwaysFallback="true">State</field>
-            <field type="text" name="publish_up" translate="1" alwaysFallback="true">Start Publishing</field>
-            <field type="text" name="publish_down" translate="1" alwaysFallback="true">Finish Publishing</field>
-            <field type="created_date" name="created" translate="0">Created</field>
-            <field type="modified_date" name="modified" translate="0">Modified</field>
-            <field type="checked_out_by" name="checked_out" translate="0">Check out by</field>
-            <field type="checked_out_date" name="checked_out_time" translate="0" xpath="fields[@name=attribs]">Check out date</field>
-            <field type="params" name="attribs" formname="article" fieldsname="attribs" fieldsets="basic,editorConfig" translate="1" alwaysFallback="true">Attributes</field>
-        </table>
-        <component>
-            <form>com_content#content#cid#task#!edit</form>
-            <form>com_frontpage#content#cid#task#!edit</form>
-        </component>
-    </reference>
+  <name>Contents</name>
+  <author>redCOMPONENT</author>
+  <copyright>Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Content component</description>
+  <reference>
+    <table name="content">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="title" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="" length="50" maxlength="250">Title</field>
+      <field name="alias" type="text" translate="0" alwaysFallback="false" filter="RAW" description="" length="50" maxlength="250">Title Alias</field>
+      <field name="catid" type="hiddentext" translate="0" alwaysFallback="false" filter="RAW" description="" scope="com_content">Category</field>
+      <field name="introtext" type="htmltext" translate="1" alwaysFallback="false" filter="RAW" description="" ebuttons="ignore">Article Text</field>
+      <field name="fulltext" type="htmltext" translate="1" alwaysFallback="false" filter="RAW" description="" ebuttons="readmore">Fulltext</field>
+      <field name="metakey" type="text" translate="1" alwaysFallback="false" filter="RAW" description="" length="50" maxlength="250">Metakey</field>
+      <field name="metadesc" type="textarea" translate="1" alwaysFallback="false" filter="RAW" description="" rows="5" columns="80">Metadesc</field>
+      <field name="state" type="state" translate="1" alwaysFallback="true" filter="RAW" description="" stateoptions="0,1,2,-2">State</field>
+      <field name="publish_up" type="text" translate="1" alwaysFallback="true" filter="RAW" description="">Start Publishing</field>
+      <field name="publish_down" type="text" translate="1" alwaysFallback="true" filter="RAW" description="">Finish Publishing</field>
+      <field name="attribs" type="params" translate="1" alwaysFallback="true" filter="RAW" description="" formname="article" fieldsname="attribs" fieldsets="basic,editorConfig">Attributes</field>
+      <filter><![CDATA[]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_content" view="article" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
+      <editForm admin="false" option="com_content" view="form" layout="edit" identifier="a_id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
+    </component>
+  </reference>
 </contentelement>

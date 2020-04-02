@@ -1,11 +1,11 @@
 /*!
  * redCORE v1.8.x
  *
- * Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved
+ * Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved
  * Licensed under the GNU General Public License version 2 or later.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * Based on Twitter Bootstrap v.3.3.0
+ * Based on Twitter Bootstrap v.3.3.6
  * http://getbootstrap.com/
  */
 .redcore {
@@ -14,8 +14,8 @@
   font-size: 14px;
   line-height: 1.42857143;
   color: #333333;
-  background-color: #fff;
-  /*!
+  background-color: inherit;
+  /*
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
@@ -9737,8 +9737,9 @@
 .redcore .input-group-addon .chzn-results {
   text-align: left;
 }
-.redcore .form-inline .input-group .chzn-container {
-  width: 100% !important;
+.redcore .input-group-addon .chzn-drop {
+  white-space: normal;
+  word-wrap: break-word;
 }
 .redcore ul.chart-legend {
   list-style-type: none;
@@ -9762,6 +9763,12 @@
 .redcore .chart-box {
   padding: 0;
 }
-.redcore .redcore .modal-body {
+.redcore .modal-body {
   overflow: auto;
+}
+.redcore .translation-status {
+  padding-bottom: 15px;
+}
+.redcore .translation-divider {
+  border-top: 1px solid #ddd;
 }

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Database
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -48,7 +48,7 @@ class RDatabaseMysqli extends JDatabaseMySQLi
 			}
 		}
 
-		return RHelperDatabase::replacePrefix($parsedSql, $this->tablePrefix, $prefix, $insideQuotes);
+		return RHelperDatabase::replacePrefix($sql, $this->tablePrefix, $prefix, $insideQuotes);
 	}
 
 	/**

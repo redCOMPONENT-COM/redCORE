@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -13,7 +13,7 @@ echo RLayoutHelper::render(
 	'dashboard.extensions',
 	array(
 		'view' => $this,
-		'return' => base64_encode('index.php?option=com_redcore&view=dashboard'),
+		'return' => '',
 		'components' => $this->components,
 		'configurationLink' => true,
 		'translationLink' => true,

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -11,7 +11,7 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
-$app = JFactory::getApplication();
+$app   = JFactory::getApplication();
 $input = $app->input;
 
 /**
@@ -159,39 +159,58 @@ if ($result instanceof Exception)
 }
 ?>
 <script type="text/javascript">
-	jQuery(document).ready(function () {
-		jQuery('.message-sys').append(jQuery('#system-message-container'));
+(function ($) {
+	$(document).ready(function () {
 
-		<?php if ($input->getBool('disable_topbar') || $input->getBool('hidemainmenu')) : ?>
+		if ($('.message-sys').length) {
+			var messageContainer = $('#system-message-container');
+
+			// No messages found. Create an empty div
+			if (!messageContainer.length) {
+				messageContainer = $("<div>", {id: "system-message-container"});
+			}
+			$('.message-sys').append(messageContainer);
+		}
+
+		<?php if ($input->getBool('disable_topbar') || $input->getBool('hidemainmenu'))
+		:
+	?>
 		jQuery('.topbar').addClass('opacity-70');
 		jQuery('.topbar button').prop('disabled', true);
 		jQuery('.topbar a').attr('disabled', true).attr('href', '#').addClass('disabled');
 		<?php endif; ?>
 
-		<?php if ($input->getBool('disable_sidebar') || $input->getBool('hidemainmenu')) : ?>
+		<?php if ($input->getBool('disable_sidebar') || $input->getBool('hidemainmenu'))
+		:
+	?>
 		jQuery('.sidebar').addClass('opacity-70');
 		jQuery('.sidebar button').prop('disabled', true);
 		jQuery('.sidebar a').attr('disabled', true).attr('href', '#').addClass('disabled');
 		<?php endif; ?>
 	});
+})(jQuery);
 </script>
-<?php if ($view->getLayout() === 'modal') : ?>
+<?php if ($view->getLayout() === 'modal')
+:
+	?>
 	<div class="row redcore">
 		<section id="component">
-			<div class="row message-sys"></div>
+			<div class="row-fluid message-sys"></div>
 			<div class="container-fluid">
 				<?php echo $result ?>
 			</div>
 		</section>
 	</div>
-<?php elseif ($templateComponent) : ?>
+<?php elseif ($templateComponent)
+:
+	?>
 	<div class="container-fluid redcore">
 		<div class="col-md-12 content">
 			<section id="component">
 				<div class="row">
 					<h1><?php echo $view->getTitle() ?></h1>
 				</div>
-				<div class="row message-sys"></div>
+				<div class="row-fluid message-sys"></div>
 				<hr/>
 				<div class="container-fluid">
 					<?php echo $result ?>
@@ -200,32 +219,43 @@ if ($result instanceof Exception)
 		</div>
 	</div>
 <?php
-else : ?>
+else
+
+:
+	?>
 	<div class="redcore">
 		<div class="container-fluid">
-			<?php if ($displayTopbar) : ?>
+			<?php if ($displayTopbar)
+			:
+	?>
 				<?php echo RLayoutHelper::render($topbarLayout, $topbarData) ?>
 			<?php endif; ?>
-			<div class="container-fluid">
-				<?php if ($displaySidebar) : ?>
-					<div class="col-md-2 sidebar">
+			<div class="row">
+				<?php if ($displaySidebar)
+				:
+	?>
+					<div class="col-md-2 col-sm-3 sidebar">
 						<?php echo RLayoutHelper::render($sidebarLayout, $sidebarData) ?>
 					</div>
-					<div class="col-md-10 content">
-				<?php else : ?>
+					<div class="col-md-10 col-sm-9 content">
+				<?php else
+
+	:
+	?>
 					<div class="col-md-12 content">
 				<?php endif; ?>
 						<section id="component">
-							<div class="row">
-								<h1><?php echo $view->getTitle() ?></h1>
-							</div>
-							<?php if ($toolbar instanceof RToolbar) : ?>
-								<div class="row">
+							<h1 class="sub-header"><?php echo $view->getTitle() ?></h1>
+							<?php if ($toolbar instanceof RToolbar)
+							:
+	?>
+								<div class="row-fluid">
 									<?php echo $toolbar->render() ?>
 								</div>
+								<p></p>
 							<?php endif; ?>
-							<div class="row message-sys"></div>
-							<div class="container-fluid">
+							<div class="row-fluid message-sys"></div>
+							<div class="row-fluid">
 								<?php echo $result ?>
 							</div>
 						</section>

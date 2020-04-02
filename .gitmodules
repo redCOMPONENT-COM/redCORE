@@ -1,3 +1,4 @@
 [submodule "extensions/plugins/system/mvcoverride"]
 	path = extensions/plugins/system/mvcoverride
 	url = https://github.com/redCOMPONENT-COM/mvcOverride.git
+	branch = develop

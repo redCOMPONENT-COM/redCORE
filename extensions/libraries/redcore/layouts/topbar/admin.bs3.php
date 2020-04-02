@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -136,7 +136,7 @@ else
 				<span class="divider-vertical pull-left"></span>
 			<?php endif; ?>
 			<a class="navbar-brand" href="<?php echo $componentUri ?>"><?php echo $componentTitle ?></a>
-			<div class="navbar-right navbar-collapse hidden-xs hidden-sm">
+			<div class="navbar-left navbar-collapse hidden-xs hidden-sm">
 				<?php if ($displayJoomlaMenu) : ?>
 					<?php foreach ($modules as $module): ?>
 						<?php echo JModuleHelper::renderModule($module, array('style' => 'standard')); ?>

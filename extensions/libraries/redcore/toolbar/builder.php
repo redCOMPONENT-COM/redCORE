@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -244,16 +244,17 @@ final class RToolbarBuilder
 	/**
 	 * Create a link button.
 	 *
-	 * @param   string  $url        The button task.
-	 * @param   string  $text       The button text.
-	 * @param   string  $iconClass  The icon class.
-	 * @param   string  $class      The button class.
+	 * @param   string  $url              The button task.
+	 * @param   string  $text             The button text.
+	 * @param   string  $iconClass        The icon class.
+	 * @param   string  $class            The button class.
+	 * @param   string  $extraProperties  Extra properties added to the button html tag
 	 *
 	 * @return  RToolbarButtonLink  The button.
 	 */
-	public static function createLinkButton($url, $text, $iconClass = '', $class = '')
+	public static function createLinkButton($url, $text, $iconClass = '', $class = '', $extraProperties = '')
 	{
-		return new RToolbarButtonLink($text, $url, $class, $iconClass);
+		return new RToolbarButtonLink($text, $url, $class, $iconClass, $extraProperties);
 	}
 
 	/**

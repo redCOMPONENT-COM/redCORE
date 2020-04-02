@@ -42,6 +42,7 @@ tests/unit/phpunit.xml
 # composer
 composer.phar
 tests/vendor/*
+build/vendor/*
 
 # Robo
 robo.phar
@@ -59,14 +60,15 @@ tests/acceptance.suite.yml
 tests/functional.suite.yml
 tests/unit.suite.yml
 tests/api.suite.yml
+tests/apisoap.suite.yml
 tests/joomla-cms3*
 tests/_output
-selenium-server-standalone.jar
 codecept.phar
-selenium.log
-selenium-errors.log
+driver.log
 tests/_support/_generated/*
 tests/checkers/phpcs/*
+tests/RoboFile.ini
+tests/cache
 
 # Never ignore
 !.gitignore

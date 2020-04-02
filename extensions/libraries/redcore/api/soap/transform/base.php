@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -76,7 +76,8 @@ class RApiSoapTransformBase implements RApiSoapTransformInterface
 		{
 			$this->element->addAttribute(
 				'minOccurs',
-				(($validateOptional && RApiHalHelper::isAttributeTrue($field, 'isRequiredField') || !$validateOptional) ? '1' : '0')
+				(($validateOptional && RApiHalHelper::isAttributeTrue($field, 'isRequiredField') || !$validateOptional)
+				&& !RApiHalHelper::isAttributeTrue($field, 'optionalSoapField') ? '1' : '0')
 			);
 		}
 

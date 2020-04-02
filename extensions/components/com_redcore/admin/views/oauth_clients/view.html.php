@@ -3,11 +3,13 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('_JEXEC') or die;
+
+use Joomla\Registry\Registry;
 
 /**
  * OAuth Clients View
@@ -54,11 +56,11 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 	{
 		$model = $this->getModel();
 
-		$this->items = $model->getItems();
-		$this->state = $model->getState();
-		$this->pagination = $model->getPagination();
+		$this->items         = $model->getItems();
+		$this->state         = $model->getState();
+		$this->pagination    = $model->getPagination();
 		$this->activeFilters = $model->getActiveFilters();
-		$this->filterForm = $model->getForm();
+		$this->filterForm    = $model->getForm();
 
 		// Check if option is enabled
 		if (RBootstrap::getConfig('enable_oauth2_server', 0) == 0)
@@ -66,9 +68,12 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
 					'COM_REDCORE_OAUTH_CLIENTS_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+					'<a href="index.php?option=com_redcore&view=config&layout=edit&component=com_redcore">'
+					. JText::_('COM_REDCORE_CONFIGURE')
+					. '</a>'
 				),
-				'error');
+				'error'
+			);
 		}
 
 		parent::display($tpl);
@@ -91,33 +96,21 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$canDo = $this->getActions();
-		$user = JFactory::getUser();
+		$user  = JFactory::getUser();
 
-		$firstGroup = new RToolbarButtonGroup;
+		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
-			// Add / edit
-			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
-			{
-				$new = RToolbarBuilder::createNewButton('oauth_client.add');
-				$firstGroup->addButton($new);
-			}
+			$new = RToolbarBuilder::createNewButton('oauth_client.add');
+			$firstGroup->addButton($new);
 
-			if ($canDo->get('core.edit'))
-			{
-				$edit = RToolbarBuilder::createEditButton('oauth_client.edit');
-				$firstGroup->addButton($edit);
-			}
+			$edit = RToolbarBuilder::createEditButton('oauth_client.edit');
+			$firstGroup->addButton($edit);
 
-			// Delete / Trash
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('oauth_clients.delete');
-				$secondGroup->addButton($delete);
-			}
+			$delete = RToolbarBuilder::createDeleteButton('oauth_clients.delete');
+			$secondGroup->addButton($delete);
 		}
 
 		$toolbar = new RToolbar;
@@ -133,13 +126,13 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 	 * @param   string  $section    The section.
 	 * @param   mixed   $assetName  The asset name.
 	 *
-	 * @return  JObject
+	 * @return  Registry
 	 */
 	public function getActions($section = 'component', $assetName = 'com_redcore')
 	{
-		$user = JFactory::getUser();
-		$result	= new JObject;
-		$actions = JAccess::getActions('com_redcore', $section);
+		$user    = JFactory::getUser();
+		$result  = new Registry;
+		$actions = JAccess::getActionsFromFile('com_redcore', $section) ?: array();
 
 		foreach ($actions as $action)
 		{

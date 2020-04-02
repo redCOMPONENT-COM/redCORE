@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -50,35 +50,41 @@ $column = 0;
 <?php endif; ?>
 
 <div class="form-group <?php echo $class; ?>">
-	<div class="row">
-		<?php foreach ($options as $webServiceName => $scopes) :?>
-			<?php $webServiceId = JFilterOutput::stringURLSafe($webServiceName); ?>
-			<div class="col-md-4 well group-scopes" id="<?php echo $webServiceId ?>">
-				<h4>
-					<?php echo $webServiceName; ?>
-				</h4>
-				<?php if ($showCheckAll): ?>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" data-id="<?php echo $webServiceId ?>" class="scopes-check-all" />
-							<?php echo JText::_('JALL') ?>
-						</label>
+	<div class="col-md-12">
+		<div class="row">
+			<?php foreach ($options as $webServiceName => $scopes) : ?>
+				<?php $webServiceId = JFilterOutput::stringURLSafe($webServiceName); ?>
+				<div class="col-md-4 group-scopes" id="<?php echo $webServiceId ?>">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<?php echo $webServiceName; ?>
+						</div>
+						<div class="panel-body">
+							<?php if ($showCheckAll): ?>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" data-id="<?php echo $webServiceId ?>" class="scopes-check-all" />
+										<?php echo JText::_('JALL') ?>
+									</label>
+								</div>
+							<?php endif; ?>
+							<?php foreach ($scopes as $scope) :?>
+								<?php $isChecked = in_array($scope['scope'], $value) ? ' checked="checked" ' : ''; ?>
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="<?php echo $name; ?>" <?php echo $isChecked; ?> value="<?php echo $scope['scope']; ?>" />
+										<?php echo $scope['scopeDisplayName']; ?>
+									</label>
+								</div>
+							<?php endforeach;?>
+						</div>
 					</div>
-				<?php endif; ?>
-				<?php foreach ($scopes as $scope) :?>
-					<?php $isChecked = in_array($scope['scope'], $value) ? ' checked="checked" ' : ''; ?>
-					<div class="checkbox">
-						<label>
-							<input type="checkbox" name="<?php echo $name; ?>" <?php echo $isChecked; ?> value="<?php echo $scope['scope']; ?>" />
-							<?php echo $scope['scopeDisplayName']; ?>
-						</label>
-					</div>
-				<?php endforeach;?>
-			</div>
-			<?php if ((++$column) % 3 == 0 ) : ?>
 				</div>
-				<div class="row">
-			<?php endif; ?>
-		<?php endforeach;?>
+				<?php if ((++$column) % 3 == 0): ?>
+					</div>
+					<div class="row">
+				<?php endif; ?>
+			<?php endforeach;?>
+		</div>
 	</div>
 </div>

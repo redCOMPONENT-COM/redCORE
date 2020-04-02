@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('_JEXEC') or die;
@@ -20,48 +20,48 @@ JHtml::_('rjquery.chosen', 'select');
 	<div class="container-fluid">
 		<div id="main-params">
 			<div class="form-group">
-				<div class="control-label">
+				<div class="col-md-2 col-sm-3">
 					<?php echo $this->form->getLabel('client_id'); ?>
 				</div>
-				<div class="controls">
+				<div class="col-md-10 col-sm-9">
 					<?php echo $this->form->getInput('client_id'); ?>
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="control-label">
+				<div class="col-md-2 col-sm-3">
 					<?php echo $this->form->getLabel('redirect_uri'); ?>
 				</div>
-				<div class="controls">
+				<div class="col-md-10 col-sm-9">
 					<?php echo $this->form->getInput('redirect_uri'); ?>
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="control-label">
+				<div class="col-md-2 col-sm-3">
 					<?php echo $this->form->getLabel('user_id'); ?>
 				</div>
-				<div class="controls">
+				<div class="col-md-10 col-sm-9">
 					<?php echo $this->form->getInput('user_id'); ?>
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="control-label">
+				<div class="col-md-2 col-sm-3">
 					<?php echo $this->form->getLabel('grant_types'); ?>
 				</div>
-				<div class="controls">
+				<div class="col-md-10 col-sm-9">
 					<?php echo $this->form->getInput('grant_types'); ?>
 				</div>
 			</div>
 			<div class="form-group">
-				<div class="control-label">
+				<div class="col-md-2 col-sm-3">
 					<?php echo $this->form->getLabel('scope'); ?>
 				</div>
-				<div class="controls">
+				<div class="col-md-10 col-sm-9">
 					<?php echo $this->form->getInput('scope'); ?>
 				</div>
 			</div>
 		</div>
 		<?php if ($this->item->client_id) : ?>
-			<div class="well" style="word-wrap:break-word;">
+			<div class="well" style="word-break:break-all; word-wrap:break-word;">
 				<span class="label label-default"><?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET'); ?>: </span>
 				<div>
 					<?php echo $this->item->client_secret; ?>
