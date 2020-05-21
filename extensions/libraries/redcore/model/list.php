@@ -231,6 +231,28 @@ abstract class RModelList extends JModelList
 	}
 
 	/**
+	 * Method to get model state variables
+	 *
+	 * @param   string  $property  Optional parameter name
+	 * @param   mixed   $default   Optional default value
+	 *
+	 * @return  mixed  The property where specified, the state object where omitted
+	 *
+	 * @since   3.0
+	 * @throws Exception
+	 */
+	public function getState($property = null, $default = null)
+	{
+		if ($this->__state_set !== true)
+		{
+			\Joomla\CMS\Factory::getApplication()
+				->triggerEvent('onRegisterModelContext', [$this->context]);
+		}
+
+		return parent::getState($property, $default);
+	}
+
+	/**
 	 * Method to auto-populate the model state.
 	 *
 	 * This method should only be called once per instantiation and is designed
