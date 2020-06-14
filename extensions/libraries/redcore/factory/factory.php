@@ -98,7 +98,10 @@ final class RFactory extends JFactory
 			jexit('Database Error: ' . $e->getMessage());
 		}
 
-		$db->setDebug($debug);
+		if (version_compare(JVERSION, '4.0', 'lt'))
+		{
+			$db->setDebug($debug);
+		}
 
 		return $db;
 	}

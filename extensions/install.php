@@ -253,7 +253,7 @@ class Com_RedcoreInstallerScript
 	 */
 	public function preprocessUpdates($parent)
 	{
-		$manifest = $parent->get('manifest');
+		$manifest = $parent->manifest;
 
 		if (isset($manifest->update))
 		{
@@ -357,7 +357,7 @@ class Com_RedcoreInstallerScript
 	 */
 	public function phpUpdates($parent, $executeAfterUpdate)
 	{
-		$manifest = $parent->get('manifest');
+		$manifest = $parent->manifest;
 
 		if (isset($manifest->update))
 		{
@@ -557,7 +557,7 @@ class Com_RedcoreInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $parent->manifest;
 		$src       = $parent->getParent()->getPath('source');
 		$nodes     = $manifest->modules->module;
 
@@ -600,7 +600,7 @@ class Com_RedcoreInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $parent->manifest;
 		$src       = $parent->getParent()->getPath('source');
 		$nodes     = $manifest->plugins->plugin;
 
@@ -658,7 +658,7 @@ class Com_RedcoreInstallerScript
 	protected function installTranslations($parent)
 	{
 		// Required objects
-		$manifest = $parent->get('manifest');
+		$manifest = $parent->manifest;
 
 		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
@@ -795,7 +795,7 @@ class Com_RedcoreInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $parent->manifest;
 		$src       = $parent->getParent()->getPath('source');
 		$nodes     = $manifest->templates->template;
 
@@ -836,7 +836,7 @@ class Com_RedcoreInstallerScript
 	{
 		// Required objects
 		$installer = $this->getInstaller();
-		$manifest  = $parent->get('manifest');
+		$manifest  = $parent->manifest;
 		$src       = $parent->getParent()->getPath('source');
 
 		if (!$manifest)
@@ -1010,7 +1010,7 @@ class Com_RedcoreInstallerScript
 		$this->installTranslations($parent);
 
 		/** @var JXMLElement $manifest */
-		$manifest = $parent->get('manifest');
+		$manifest = $parent->manifest;
 
 		if (in_array($type, array('install', 'update', 'discover_install')))
 		{
@@ -1050,7 +1050,7 @@ class Com_RedcoreInstallerScript
 	 */
 	protected function postFlightFromManifest($type, $parent)
 	{
-		$manifest = $parent->get('manifest');
+		$manifest = $parent->manifest;
 
 		if ($tasks = $manifest->postflight->task)
 		{
@@ -1102,7 +1102,7 @@ class Com_RedcoreInstallerScript
 	protected function deleteMenu($type, $parent, $client = null)
 	{
 		/** @var JXMLElement $manifest */
-		$manifest   = $parent->get('manifest');
+		$manifest   = $parent->manifest;
 		$attributes = current($manifest->attributes());
 
 		// If it's not a component
@@ -1268,7 +1268,7 @@ class Com_RedcoreInstallerScript
 		if (method_exists('RTranslationTable', 'batchContentElements'))
 		{
 			// Required objects
-			$manifest              = $parent->get('manifest');
+			$manifest              = $parent->manifest;
 			$class                 = get_called_class();
 			$deleteIds             = array();
 			$translationTables     = RTranslationTable::getInstalledTranslationTables(true);
@@ -1748,7 +1748,7 @@ class Com_RedcoreInstallerScript
 
 		if (null === $manifest)
 		{
-			$manifest = $parent->get('manifest');
+			$manifest = $parent->manifest;
 		}
 
 		if (isset($manifest->element))
@@ -1789,7 +1789,7 @@ class Com_RedcoreInstallerScript
 		// Type not properly detected or not a package
 		if (count($elementParts) !== 2 || strtolower($elementParts[0]) !== 'pkg')
 		{
-			$this->manifest = $parent->get('manifest');
+			$this->manifest = $parent->manifest;
 
 			return;
 		}
@@ -1806,7 +1806,7 @@ class Com_RedcoreInstallerScript
 			return;
 		}
 
-		$this->manifest = $parent->get('manifest');
+		$this->manifest = $parent->manifest;
 	}
 
 	/**
