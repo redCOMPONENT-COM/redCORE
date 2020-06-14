@@ -56,7 +56,11 @@ else
 if ($isList)
 {
 	// Get the button command.
-	JHtml::_('behavior.framework');
+	if (version_compare(JVERSION, '4.0.0', 'lt'))
+	{
+		JHtml::_('behavior.framework');
+	}
+
 	$message = JText::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST');
 	$message = addslashes($message);
 	$cmd = "if (document.adminForm.boxchecked.value == 0) {alert('" . $message . "');jQuery('#" . $dataTarget . "').modal('hide');}
