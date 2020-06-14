@@ -9,6 +9,7 @@
 
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\Factory;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -431,14 +432,7 @@ class RApi extends RApiBase
 	 */
 	public static function clearHeaders()
 	{
-		if (version_compare(JVERSION, '3') >= 0)
-		{
-			JFactory::getApplication()->clearHeaders();
-		}
-		else
-		{
-			JResponse::clearHeaders();
-		}
+		Factory::getApplication()->clearHeaders();
 	}
 
 	/**
@@ -448,14 +442,7 @@ class RApi extends RApiBase
 	 */
 	public static function sendHeaders()
 	{
-		if (version_compare(JVERSION, '3') >= 0)
-		{
-			JFactory::getApplication()->sendHeaders();
-		}
-		else
-		{
-			JResponse::sendHeaders();
-		}
+		Factory::getApplication()->sendHeaders();
 	}
 
 	/**
@@ -471,13 +458,6 @@ class RApi extends RApiBase
 	 */
 	public static function setHeader($name, $value, $replace = false)
 	{
-		if (version_compare(JVERSION, '3') >= 0)
-		{
-			JFactory::getApplication()->setHeader($name, $value, $replace);
-		}
-		else
-		{
-			JResponse::setHeader($name, $value, $replace);
-		}
+		Factory::getApplication()->setHeader($name, $value, $replace);
 	}
 }
