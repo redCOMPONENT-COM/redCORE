@@ -869,4 +869,52 @@ class RTranslationHelper
 
 		return $languageCodes;
 	}
+
+	/**
+	 * Add alternate link to the <head>
+	 *
+	 * @return void
+	 */
+	public static function addAlternateLinks()
+	{
+		$languages = JLanguageHelper::getLanguages();
+
+		// If there are at least 2 of them, add the rel="alternate" links to the <head>
+		if (count($languages) <= 1)
+		{
+			return;
+		}
+
+		$app = JFactory::getApplication();
+		$doc = JFactory::getDocument();
+		$Itemid = $app->input->getInt('Itemid', 0);
+		$uri = new JURI(Juri::current());
+		$uri->delVar('lang');
+		$uri->delVar('Itemid');
+		$location = htmlspecialchars($uri->getQuery());
+		$server = JUri::getInstance()->toString(array('scheme', 'host', 'port'));
+
+		if (!empty($location))
+		{
+			$location .= '&';
+		}
+
+		if (!$Itemid)
+		{
+			$active = $app->getMenu()->getActive();
+
+			if ($active)
+			{
+				$Itemid = $active->id;
+			}
+		}
+
+		// For every language we load menu items language specific alias and params
+		foreach ($languages as $i => $language)
+		{
+			$link = RRoute::_('index.php?' . $location . 'lang=' . $language->sef . ($Itemid > 0 ? '&Itemid=' . $Itemid : ''));
+			$doc->addHeadLink($server . $link, 'alternate', 'rel', array('hreflang' => $language->lang_code));
+		}
+	}
+
 }
