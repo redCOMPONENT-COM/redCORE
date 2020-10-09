@@ -27,6 +27,12 @@ gulp.task('release:redcore', function (cb) {
 	fs.readFile( '../extensions/redcore.xml', function(err, data) {
 		parser.parseString(data, function (err, result) {
 			var version = result.extension.version[0];
+
+			if (result.extension.releaseName[0])
+			{
+				version = version + '-' + result.extension.releaseName[0].toLowerCase();
+			}
+
 			var fileName = config.skipVersion ? extension.name + '.zip' : extension.name + '-v' + version + '.zip';
 
 			// We will output where release package is going so it is easier to find
