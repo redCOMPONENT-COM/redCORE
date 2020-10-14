@@ -588,7 +588,7 @@ abstract class JFormField
 	 *
 	 * @since   11.1
 	 */
-	public function setForm(JForm $form)
+	public function setForm($form)
 	{
 		$this->form = $form;
 		$this->formControl = $form->getFormControl();
