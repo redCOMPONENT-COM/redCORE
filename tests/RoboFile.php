@@ -419,7 +419,11 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function runChromeDriver()
 	{
-		$this->_exec('./chromedriver --url-base=/wd/hub');
+		$prefix     = '../';
+		$executable = 'chromedriver';
+		$suffix     = ' >> driver.log 2>&1 &';
+
+		$this->_exec($prefix . $executable . ' --url-base=/wd/hub' . $suffix);
 	}
 
 	/**
