@@ -4,17 +4,17 @@
 	"license"    : "GPL-2.0+",
 	"config" : {
 		"platform": {
-			"php" : "5.6"
+			"php" : "7.0"
 		}
 	},
 	"require"    : {
-		"php": ">=5.6"
+		"php": ">=7.0"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "~2",
 		"codeception/codeception": "~2.2",
 		"phpmd/phpmd": "*",
-		"joomla-projects/joomla-browser": "v3.9.0",
+		"joomla-projects/joomla-browser": "dev-develop",
 		"joomla-projects/joomla-testing-robo": "dev-container-test",
 		"joomla-projects/joomla-testing": "dev-container-test",
 		"consolidation/robo": "~1",
@@ -24,8 +24,7 @@
 		"ifsnop/mysqldump-php": "1.*",
 		"fzaninotto/faker": "^1.5",
 		"nette/reflection": "~2",
-		"facebook/webdriver": ">=1.1.2",
-		"redcomponent/teststatistics": "dev-master",
-		"joomla-projects/selenium-server-standalone": "v3.11.0.5"
+		"php-webdriver/webdriver": "^1",
+		"redcomponent/teststatistics": "dev-master"
 	}
 }
