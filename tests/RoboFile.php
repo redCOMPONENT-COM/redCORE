@@ -419,7 +419,7 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function runChromeDriver()
 	{
-		$this->_exec('chromedriver --no-sandbox --url-base=/wd/hub');
+		$this->_exec('chrome --no-sandbox --url-base=/wd/hub');
 	}
 
 	/**
