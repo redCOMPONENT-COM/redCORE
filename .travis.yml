@@ -2,7 +2,7 @@ language: php
 sudo: required
 env:
   TRAVIS_PUBLIC_REPOSITORY=true
-dist: xenial
+dist: trusty
 php:
   - 7.0
   - 7.1
@@ -33,9 +33,6 @@ cache:
     - $HOME/.composer/cache/files
 
 before_script:
-- php -m
-- php -i
-
 # APT
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
