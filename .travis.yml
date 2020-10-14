@@ -41,8 +41,7 @@ before_script:
 # Chromedriver
 - wget https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_linux64.zip
 - unzip chromedriver_linux64.zip
-- mv chromedriver /usr/local/bin/chromedriver
-- chmod +x /usr/local/bin/chromedriver
+- chmod +x chromedriver
 
 # Enable php-fpm
 - sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
