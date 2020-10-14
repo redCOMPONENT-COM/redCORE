@@ -33,7 +33,7 @@ modules:
             database user: 'root'                  # MySQL Server user ID, usually root
             database password: ''                  # MySQL Server password, usually empty or root
             database name: 'test_redcore'          # DB Name, at the Server
-            database type: 'MySQL (PDO)'           # type in lowercase one of the options: MySQL\MySQLi\PDO
+            database type: 'mysqli'                # type in lowercase one of the options: MySQL\MySQLi\PDO
             database prefix: 'jos_'                # DB Prefix for tables
             install sample data: 'no'              # Do you want to Download the Sample Data Along with Joomla Installation, then keep it Yes
             sample data: 'Default English (GB) Sample Data'    # Default Sample Data

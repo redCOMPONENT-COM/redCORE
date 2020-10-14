@@ -33,6 +33,9 @@ cache:
     - $HOME/.composer/cache/files
 
 before_script:
+- php -m
+- php -i
+
 # APT
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
