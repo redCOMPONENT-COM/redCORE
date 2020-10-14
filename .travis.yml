@@ -1,6 +1,9 @@
 language: php
 sudo: required
-env: TRAVIS_PUBLIC_REPOSITORY=true
+env:
+  global:
+    - TRAVIS_PUBLIC_REPOSITORY=true
+    - MOZ_HEADLESS=1
 dist: xenial
 php:
   - 7.0
@@ -23,7 +26,7 @@ install:
   - nvm use 8
 
 addons:
-  chrome: stable
+  firefox: latest
 
 cache:
   apt: true
