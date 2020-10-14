@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "be7f3db3468a17cc1ee33387a602899b",
+    "content-hash": "f9e7c40bbfd6e1079279d37ecf37eda0",
     "packages": [],
     "packages-dev": [
         {
@@ -1614,16 +1614,16 @@
         },
         {
             "name": "joomla-projects/joomla-browser",
-            "version": "v3.9.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/joomla-projects/joomla-browser.git",
-                "reference": "b3099f181ce79b0dedd92dc14cf03388bb6c6c67"
+                "reference": "c11790c4594e56f4a0adac13509d89172a865fe5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/b3099f181ce79b0dedd92dc14cf03388bb6c6c67",
-                "reference": "b3099f181ce79b0dedd92dc14cf03388bb6c6c67",
+                "url": "https://api.github.com/repos/joomla-projects/joomla-browser/zipball/c11790c4594e56f4a0adac13509d89172a865fe5",
+                "reference": "c11790c4594e56f4a0adac13509d89172a865fe5",
                 "shasum": ""
             },
             "require": {
@@ -1647,7 +1647,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
@@ -1667,7 +1667,7 @@
                 "acceptance testing",
                 "joomla"
             ],
-            "time": "2018-11-01T13:11:06+00:00"
+            "time": "2020-02-02T09:15:24+00:00"
         },
         {
             "name": "joomla-projects/joomla-testing",
@@ -5273,6 +5273,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "joomla-projects/joomla-browser": 20,
         "joomla-projects/joomla-testing-robo": 20,
         "joomla-projects/joomla-testing": 20,
         "flow/jsonpath": 20,
