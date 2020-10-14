@@ -1,7 +1,7 @@
 language: php
 sudo: required
 env: TRAVIS_PUBLIC_REPOSITORY=true
-dist: trusty
+dist: focal
 php:
   - 7.0
   - 7.1
