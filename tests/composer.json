@@ -25,7 +25,6 @@
 		"fzaninotto/faker": "^1.5",
 		"nette/reflection": "~2",
 		"php-webdriver/webdriver": "^1",
-		"redcomponent/teststatistics": "dev-master",
-		"joomla-projects/selenium-server-standalone": "v3.141.59"
+		"redcomponent/teststatistics": "dev-master"
 	}
 }

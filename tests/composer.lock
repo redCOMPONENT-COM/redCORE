@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bdd540729dcc66fcd1d4bd6494edeb9f",
+    "content-hash": "be7f3db3468a17cc1ee33387a602899b",
     "packages": [],
     "packages-dev": [
         {
@@ -1770,55 +1770,6 @@
                 "tests"
             ],
             "time": "2018-01-05T05:43:27+00:00"
-        },
-        {
-            "name": "joomla-projects/selenium-server-standalone",
-            "version": "3.141.59",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/joomla-projects/selenium-server-standalone.git",
-                "reference": "2a2310b540344169d52e3d517d3f1d1b4d0b9f4f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/joomla-projects/selenium-server-standalone/zipball/2a2310b540344169d52e3d517d3f1d1b4d0b9f4f",
-                "reference": "2a2310b540344169d52e3d517d3f1d1b4d0b9f4f",
-                "shasum": ""
-            },
-            "bin": [
-                "bin/selenium-server-standalone"
-            ],
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "Selenium.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Puneet Kala",
-                    "email": "puneet.kala@community.joomla.org"
-                },
-                {
-                    "name": "Sven Eisenschmidt",
-                    "email": "sven.eisenschmidt@gmail.com"
-                },
-                {
-                    "name": "Javier Gómez",
-                    "email": "javier.gomez@community.joomla.org"
-                }
-            ],
-            "description": "Composer distribution of Selenium Server Standalone, the browser automation framework. Adds a executable to your composer bin directory.",
-            "homepage": "https://github.com/joomla-projects/selenium-server-standalone",
-            "keywords": [
-                "selenium",
-                "testing"
-            ],
-            "time": "2019-07-31T05:15:24+00:00"
         },
         {
             "name": "knplabs/github-api",

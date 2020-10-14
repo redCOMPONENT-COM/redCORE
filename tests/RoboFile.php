@@ -419,24 +419,7 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function runChromeDriver()
 	{
-		$prefix     = '';
-		$executable = 'linux/chromedriver';
-		$suffix     = ' >> driver.log 2>&1 &';
-
-		switch ($this->getOs())
-		{
-			case self::OS_OSX:
-				$executable = 'mac/chromedriver';
-				break;
-
-			case self::OS_WIN:
-				$prefix     = 'START /B ';
-				$executable = 'windows/chromedriver.exe';
-				$suffix     = ' > driver.log';
-				break;
-		}
-
-		$this->_exec($prefix . 'vendor/joomla-projects/selenium-server-standalone/bin/webdrivers/chrome/' .  $executable . ' --url-base=/wd/hub' . $suffix);
+		$this->_exec('chromedriver --no-sandbox --url-base=/wd/hub');
 	}
 
 	/**
