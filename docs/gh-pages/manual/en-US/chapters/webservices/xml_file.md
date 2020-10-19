@@ -24,7 +24,7 @@ Default value is `site` so you do not need to add this attribute it if your webs
 ```
 ...
 	<name>Name of your webservice</name>
-    <author>redCOMPONENT</author>
+    <author>redWEB</author>
     <copyright>Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.</copyright>
     <description>HAL configuration for my custom Webservice in Administration</description>
 ...

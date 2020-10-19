@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <contentelement type="contentelement">
   <name>Plugins</name>
-  <author>redCOMPONENT</author>
+  <author>redWEB</author>
   <copyright>Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.</copyright>
   <version>1.8.3</version>
   <description>Translation definition for Joomla Plugin Management</description>

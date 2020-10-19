@@ -87,7 +87,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Validate request and cid parameter
 	 *
 	 * @return   array|false
-	 * @since    __DEPLOY_VERSION__
+	 * @since    2.1.0
 	 * @throws   \Exception
 	 */
 	protected function validateRequestCids()

@@ -794,7 +794,7 @@ class RLoader extends JLoader
 	 *
 	 * @return  void
 	 *
-	 * @since   __deploy_version__
+	 * @since   2.1.0
 	 */
 	private static function loadAliasForClass($class)
 	{

@@ -14,7 +14,7 @@ defined('JPATH_REDCORE') or die;
  *
  * @package     Redcore
  * @subpackage  Database
- * @since       __DEPLOY_VERSION__
+ * @since       2.1.0
  */
 class RDatabaseDriverPdomysql extends JDatabaseDriverPdomysql
 {
