@@ -1,7 +1,7 @@
 redCORE
 ======
 
-[![Download latest](https://img.shields.io/badge/Download-stable-brightgreen.svg)](https://github.com/redCOMPONENT-COM/redCORE/releases/latest) [![Travis Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=develop)](https://travis-ci.org/redCOMPONENT-COM/redCORE) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/?branch=develop)
+[![Download latest](https://img.shields.io/badge/Download-stable-brightgreen.svg)](https://github.com/redCOMPONENT-COM/redCORE/releases/latest) [![Travis Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=master)](https://travis-ci.org/redCOMPONENT-COM/redCORE) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/?branch=master)
 
 # Overview
 
