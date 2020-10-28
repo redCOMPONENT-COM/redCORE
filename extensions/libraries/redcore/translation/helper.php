@@ -7,6 +7,11 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
+use Joomla\CMS\Document\HtmlDocument;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Router\Router;
+use Joomla\CMS\Uri\Uri;
+
 defined('_JEXEC') or die;
 
 jimport('joomla.filesystem.folder');
@@ -868,5 +873,59 @@ class RTranslationHelper
 		}
 
 		return $languageCodes;
+	}
+
+	/**
+	 * Add alternate link to the <head>
+	 *
+	 * @return void
+	 */
+	public static function addAlternateLinks()
+	{
+		/** @var HtmlDocument $doc */
+		$doc       = Factory::getDocument();
+		$languages = JLanguageHelper::getLanguages();
+		$app       = Factory::getApplication();
+
+		if (!RBootstrap::getConfig('enable_translations', 0)
+			|| !RBootstrap::getConfig('translations_alternate_meta', 0)
+			|| $app->isClient('administrator')
+			|| $doc->getType() !== 'html'
+			|| count($languages) < 2)
+		{
+			return;
+		}
+
+		$uri = new Uri(Uri::getInstance()->toString());
+
+		if (Factory::getConfig()->get('sef'))
+		{
+			$router = clone Router::getInstance('site');
+			$router->setVars([], false);
+			$uri->setQuery(
+				array_merge(
+					$router->parse($uri),
+					$uri->getQuery(true)
+				)
+			);
+		}
+
+		$uri->delVar('Itemid');
+
+		foreach ($languages as $language)
+		{
+			$uri->setVar('lang', $language->lang_code);
+			$route = RRoute::_(
+				'index.php' . $uri->toString(['path', 'query', 'fragment']),
+				true, null, true
+			);
+
+			// Use a custom tag because addHeadLink is limited to one URI per tag
+			$doc->addCustomTag(
+				'<link href="' . $route . '" rel="alternate" hreflang="' . $language->sef . '" />'
+			)->addCustomTag(
+				'<link href="' . $route . '" rel="alternate" hreflang="' . $language->lang_code . '" />'
+			);
+		}
 	}
 }
