@@ -890,6 +890,7 @@ class RTranslationHelper
 		if (!RBootstrap::getConfig('enable_translations', 0)
 			|| !RBootstrap::getConfig('translations_alternate_meta', 0)
 			|| $app->isClient('administrator')
+			|| php_sapi_name() === 'cli'
 			|| $doc->getType() !== 'html'
 			|| count($languages) < 2)
 		{
