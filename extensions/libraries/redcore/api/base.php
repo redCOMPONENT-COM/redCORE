@@ -249,7 +249,7 @@ abstract class RApiBase implements RApiInterface
 	 */
 	public function renderDebugMessages()
 	{
-		return implode($this->debugMessages, "\n");
+		return implode("\n", $this->debugMessages);
 	}
 
 	/**

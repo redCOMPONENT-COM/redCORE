@@ -4,11 +4,11 @@
 	"license"    : "GPL-2.0+",
 	"config" : {
 		"platform": {
-			"php" : "7.0"
+			"php" : "7.4"
 		}
 	},
 	"require"    : {
-		"php": ">=7.0"
+		"php": ">=7.4"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "~2",
