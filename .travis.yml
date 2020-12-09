@@ -4,11 +4,11 @@ env:
   TRAVIS_PUBLIC_REPOSITORY=true
 dist: xenial
 php:
-  - 7.0
-  - 7.1
-  - 7.2
+#  - 7.0
+#  - 7.1
+#  - 7.2
   - 7.3
-  - 7.4
+  - 7.4.13
 
 branches:
   except:
@@ -36,6 +36,8 @@ before_script:
 # APT
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
+# Status check
+- sudo systemctl status apache2
 - npm install -g gulp
 
 # Chromedriver
@@ -51,6 +53,7 @@ before_script:
 - sudo cp -f ./tests/travis-ci-apache.conf /etc/apache2/sites-available/000-default.conf
 - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 - sudo service apache2 restart
+- sudo systemctl status apache2
 
 # Build extension
 - cd build
