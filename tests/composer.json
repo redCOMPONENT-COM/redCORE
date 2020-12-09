@@ -1,5 +1,5 @@
 {
-	"name"       : "redCOMPONENT-COM/redCORE",
+	"name"       : "redcomponent-com/redcore",
 	"description": "The Open Source PHP Framework for creating complex Joomla extensions",
 	"license"    : "GPL-2.0+",
 	"config" : {
