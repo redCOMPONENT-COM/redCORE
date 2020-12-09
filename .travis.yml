@@ -2,7 +2,7 @@ language: php
 sudo: required
 env:
   TRAVIS_PUBLIC_REPOSITORY=true
-dist: xenial
+dist: trusty
 php:
 #  - 7.0
 #  - 7.1
