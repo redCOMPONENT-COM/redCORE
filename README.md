@@ -1,7 +1,6 @@
-redCORE
-======
+# redCORE
 
-[![Download latest](https://img.shields.io/badge/Download-stable-brightgreen.svg)](https://github.com/redCOMPONENT-COM/redCORE/releases/latest) [![Travis Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=develop)](https://travis-ci.org/redCOMPONENT-COM/redCORE) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/?branch=develop)
+[![Download latest](https://img.shields.io/badge/Download-stable-brightgreen.svg)](https://github.com/redCOMPONENT-COM/redCORE/releases/latest) [![Travis Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=master)](https://travis-ci.org/redCOMPONENT-COM/redCORE) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/?branch=master)
 
 # Overview
 
@@ -30,12 +29,15 @@ Director and Founder of redCOMPONENT.com
 CEO, redWEB ApS
 
 ## Contributing
+
 See: [Contributing to redCORE](http://redcomponent-com.github.io/redCORE/?chapters/Contributing.md)
 
 ## Documentation
+
 See: [redCORE Documentation](http://redcomponent-com.github.io/redCORE/)
 
 ## Testing
+
 See: [testing redCORE](./tests/README.md)
 
 ## Repository structure
@@ -48,4 +50,3 @@ Structure is based on maximum simplicity for developers and for end users:
 - tests - Folder that is used for automated testing of the redCORE
 
 See more information in: [redCORE Folder Structure](http://redcomponent-com.github.io/redCORE/?chapters/folder-structure.md)
-
