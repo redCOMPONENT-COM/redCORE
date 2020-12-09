@@ -45,7 +45,7 @@ class AdministratorContact100StructureCest
 			]
 		);
 
-		$I->seeResponseCodeIs(201);
+		$I->seeSoapResponseCodeIs(201);
 		$I->seeResponseIsJson();
 		$contactIDs = $I->grabDataFromResponseByJsonPath('$.id');
 		$this->id = $contactIDs[0];
@@ -65,7 +65,7 @@ class AdministratorContact100StructureCest
 				. "&id=$this->id"
 		);
 
-		$I->seeResponseCodeIs(200);
+		$I->seeSoapResponseCodeIs(200);
 		$I->seeResponseIsJson();
 
 		$baseUrl = $I->getWebserviceBaseUrl();
@@ -168,6 +168,6 @@ class AdministratorContact100StructureCest
 			. '&webserviceVersion=1.0.0'
 			. "&id=$this->id"
 		);
-		$I->seeResponseCodeIs(200);
+		$I->seeSoapResponseCodeIs(200);
 	}
 }
