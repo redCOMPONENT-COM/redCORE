@@ -36,8 +36,6 @@ before_script:
 # APT
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
-# Status check
-- sudo systemctl status apache2
 - npm install -g gulp
 
 # Chromedriver
@@ -53,7 +51,6 @@ before_script:
 - sudo cp -f ./tests/travis-ci-apache.conf /etc/apache2/sites-available/000-default.conf
 - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 - sudo service apache2 restart
-- sudo systemctl status apache2
 
 # Build extension
 - cd build
