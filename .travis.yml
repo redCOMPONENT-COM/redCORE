@@ -49,7 +49,7 @@ before_script:
 
   # Install dependencies.
 - sudo apt-get update
-- sudo apt-get install -y apache2 libapache2-mod-fastcgi unzip openjdk-8-jre-headless xvfb libxi6 libgconf-2-4
+- sudo apt-get install -y apache2 libapache2-mod-fastcgi unzip openjdk-8-jre-headless xvfb libxi6 libgconf-2-4 curl
 - npm install -g gulp
 
   # Install Chrome.
