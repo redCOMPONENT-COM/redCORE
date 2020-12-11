@@ -34,46 +34,18 @@ cache:
 
 before_script:
 # APT
-
-  # Versions
-- CHROME_DRIVER_VERSION=`curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE`
-- SELENIUM_STANDALONE_VERSION=3.9.1
-- SELENIUM_SUBDIR=$(echo "$SELENIUM_STANDALONE_VERSION" | cut -d"." -f-2)
-
-  # Remove existing downloads and binaries so we can start from scratch.
-- sudo apt-get remove google-chrome-stable
-#- rm ~/selenium-server-standalone-*.jar
-#- rm ~/chromedriver_linux64.zip
-#- sudo rm /usr/local/bin/chromedriver
-#- sudo rm /usr/local/bin/selenium-server-standalone.jar
-
-  # Install dependencies.
 - sudo apt-get update
-- sudo apt-get install -y apache2 libapache2-mod-fastcgi unzip openjdk-8-jre-headless xvfb libxi6 libgconf-2-4 curl
+- sudo apt-get install apache2 libapache2-mod-fastcgi
+- sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+- sudo apt-get install default-jdk
 - npm install -g gulp
-
-  # Install Chrome.
-- sudo curl -sS -o - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
-- sudo echo "deb https://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-- sudo apt-get -y update
-- sudo apt-get -y install google-chrome-stable
-
-  # Install ChromeDriver.
-- wget -N https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip -P ~/
-- unzip ~/chromedriver_linux64.zip -d ~/
-- rm ~/chromedriver_linux64.zip
-- sudo mv -f ~/chromedriver /usr/local/bin/chromedriver
-- sudo chown root:root /usr/local/bin/chromedriver
-- sudo chmod 0755 /usr/local/bin/chromedriver
-
-  # Install Selenium.
-- wget -N https://selenium-release.storage.googleapis.com/$SELENIUM_SUBDIR/selenium-server-standalone-$SELENIUM_STANDALONE_VERSION.jar -P ~/
-- sudo mv -f ~/selenium-server-standalone-$SELENIUM_STANDALONE_VERSION.jar /usr/local/bin/selenium-server-standalone.jar
-- sudo chown root:root /usr/local/bin/selenium-server-standalone.jar
-- sudo chmod 0755 /usr/local/bin/selenium-server-standalone.jar
-
 - sudo systemctl status apache2
 - sudo systemctl is-enabled apache2
+
+# Chromedriver
+- wget https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_linux64.zip
+- unzip chromedriver_linux64.zip
+- chmod +x chromedriver
 
 # Enable php-fpm
 - sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
@@ -83,8 +55,6 @@ before_script:
 - sudo cp -f ./tests/travis-ci-apache.conf /etc/apache2/sites-available/000-default.conf
 - sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
 - sudo service apache2 restart
-- sudo systemctl status apache2
-- sudo systemctl is-enabled apache2
 
 # Build extension
 - cd build
@@ -101,10 +71,9 @@ script:
 - cp -f api.suite.yml.dist api.suite.yml
 
 # System / Acceptance tests
-#- vendor/bin/robo run:chrome-driver
-- chromedriver --url-base=/wd/hub
+- vendor/bin/robo run:chrome-driver
 - vendor/bin/robo run:tests 1
-#- vendor/bin/robo kill:chrome-driver
+- vendor/bin/robo kill:chrome-driver
 
 notifications:
   slack:
