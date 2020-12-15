@@ -582,7 +582,7 @@ class RoboFile extends \Robo\Tasks
 
 		if (!$slackToken)
 		{
-			$this->output()->writeln('Token not found');
+			$this->output()->writeln('Token not found!');
 		}
 
 		if (empty($images)
