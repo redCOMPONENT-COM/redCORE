@@ -577,28 +577,25 @@ class RoboFile extends \Robo\Tasks
 		$slackToken = getenv('REDCORE_SLACK_UPLOAD_SCREEN_TOKEN');
 
 		if (empty($images)
-			&& !empty($slackToken))
+			|| !$slackToken
+			|| empty($slackToken))
 		{
 			return;
 		}
 
-		$header = ['Content-Type: multipart/form-data'];
-
 		foreach($images as $image)
 		{
-			$postitems = [
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form-data']);
+			curl_setopt($curl, CURLOPT_URL, "https://slack.com/api/files.upload");
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, [
 				'token' => $slackToken,
 				'channels' => "C0299E54Y",
 				'file' => new CurlFile($image, 'image/png'),
 				'filename' => $image
-			];
-
-			$curl = curl_init();
-			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
-			curl_setopt($curl, CURLOPT_URL, "https://slack.com/api/files.upload");
-			curl_setopt($curl, CURLOPT_POST, 1);
-			curl_setopt($curl, CURLOPT_POSTFIELDS, $postitems);
+			]);
 			curl_exec($curl);
 			curl_close($curl);
 		}
