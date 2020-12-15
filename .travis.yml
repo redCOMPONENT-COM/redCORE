@@ -73,6 +73,7 @@ script:
 # System / Acceptance tests
 - vendor/bin/robo run:chrome-driver
 - vendor/bin/robo run:tests 1
+- vendor/bin/robo send:slack-images
 - vendor/bin/robo kill:chrome-driver
 
 notifications:
