@@ -573,8 +573,17 @@ class RoboFile extends \Robo\Tasks
 
 	public function sendSlackImages()
 	{
-		$images = glob(__DIR__ . "/_output/*.[png]");
+		$images = glob(__DIR__ . "/_output/*.png");
 		$slackToken = getenv('REDCORE_SLACK_UPLOAD_SCREEN_TOKEN');
+
+		$this->output()->writeln('Found images:');
+
+		var_dump($images);
+
+		if (!$slackToken)
+		{
+			$this->output()->writeln('Token not found');
+		}
 
 		if (empty($images)
 			|| !$slackToken
