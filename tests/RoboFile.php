@@ -265,8 +265,8 @@ class RoboFile extends \Robo\Tasks
 
 		$this->taskCodecept()
 			->test($pathToTestFile)
-			->arg('--steps')
-			->arg('--debug')
+			// ->arg('--steps')
+			// ->arg('--debug')
 			->arg('--fail-fast')
 			->run()
 			->stopOnFail();
@@ -298,8 +298,8 @@ class RoboFile extends \Robo\Tasks
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-			 ->arg('--steps')
-			 ->arg('--debug')
+			// ->arg('--steps')
+			// ->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/install/')
@@ -329,8 +329,8 @@ class RoboFile extends \Robo\Tasks
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
+			// ->arg('--steps')
+			// ->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/install/')
@@ -338,8 +338,8 @@ class RoboFile extends \Robo\Tasks
 			->stopOnFail();
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
+			// ->arg('--steps')
+			// ->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/administrator/')
@@ -347,8 +347,8 @@ class RoboFile extends \Robo\Tasks
 			->stopOnFail();
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
+			// ->arg('--steps')
+			// ->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'api/')
@@ -356,8 +356,8 @@ class RoboFile extends \Robo\Tasks
 			->stopOnFail();
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
+			// ->arg('--steps')
+			// ->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/uninstall/')
@@ -419,7 +419,7 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function runChromeDriver()
 	{
-		$prefix     = '../';
+		$prefix     = '../../';
 		$executable = 'chromedriver';
 		$suffix     = ' >> driver.log 2>&1 &';
 
@@ -576,13 +576,9 @@ class RoboFile extends \Robo\Tasks
 		$images = glob(__DIR__ . "/_output/*.png");
 		$slackToken = getenv('REDCORE_SLACK_UPLOAD_SCREEN_TOKEN');
 
-		$this->output()->writeln('Found images:');
-
-		var_dump($images);
-
 		if (!$slackToken)
 		{
-			$this->output()->writeln('Token not found!');
+			$this->output()->writeln('Slack token not found! Found images will not be uploaded to slack!');
 		}
 
 		if (empty($images)

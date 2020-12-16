@@ -39,8 +39,6 @@ before_script:
 - sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
 - sudo apt-get install default-jdk
 - npm install -g gulp
-- sudo systemctl status apache2
-- sudo systemctl is-enabled apache2
 
 # Chromedriver
 - wget https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_linux64.zip
