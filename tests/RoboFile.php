@@ -351,7 +351,7 @@ class RoboFile extends \Robo\Tasks
 			->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
-			->arg('api')
+			->arg($this->testsFolder . 'api/')
 			->run()
 			->stopOnFail();
 

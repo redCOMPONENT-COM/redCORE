@@ -54,7 +54,7 @@ class AbstractPage
 	 * @var array
 	 * @since 1.10.7
 	 */
-	public static $linkAdvanced = 'Advanced';
+	public static $linkAdvanced = ['link' => 'Advanced'];
 
 	/**
 	 * @var string
