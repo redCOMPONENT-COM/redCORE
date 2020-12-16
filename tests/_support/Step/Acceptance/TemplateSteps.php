@@ -34,9 +34,9 @@ class TemplateSteps extends \AcceptanceTester
 		$I->selectOptionInChosen(Template::$clientId, Template::$labelAdmin);
 		$I->waitForText(Template::$templatesStylesAdmin, 60, Template::$h1);
 		$I->click(Template::$isisDefault);
-		$I->waitForText(Template::$templatesEditStyle, 60, Template::$h1);
+		$I->waitForText(Template::$templatesEditStyle, 90, Template::$h1);
 		$I->click(Template::$linkAdvanced);
-		$I->waitForElement(Template::$labelModulePosition, 60);
+		$I->waitForElement(Template::$labelModulePosition, 90);
 		$I->executeJS("window.scrollTo(0, document.body.scrollHeight);");
 		$I->selectOptionInChosen(Template::$statusModulePosition, Template::$positionTop);
 		$I->selectOptionInRadioField(Template::$pinnedToolbar, Template::$chooseNo);
