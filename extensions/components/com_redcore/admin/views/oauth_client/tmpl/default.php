@@ -45,6 +45,14 @@ JHtml::_('rjquery.chosen', 'select');
 			</div>
 			<div class="form-group">
 				<div class="col-md-2 col-sm-3">
+					<?php echo $this->form->getLabel('client_type'); ?>
+				</div>
+				<div class="col-md-10 col-sm-9">
+					<?php echo $this->form->getInput('client_type'); ?>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-2 col-sm-3">
 					<?php echo $this->form->getLabel('grant_types'); ?>
 				</div>
 				<div class="col-md-10 col-sm-9">
@@ -62,10 +70,12 @@ JHtml::_('rjquery.chosen', 'select');
 		</div>
 		<?php if ($this->item->client_id) : ?>
 			<div class="well" style="word-break:break-all; word-wrap:break-word;">
+				<?php if ($this->item->client_type === 'confidential'): ?>
 				<span class="label label-default"><?php echo JText::_('COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET'); ?>: </span>
 				<div>
 					<?php echo $this->item->client_secret; ?>
 				</div>
+				<?php endif ?>
 				<span class="label label-default"><?php echo JText::_('COM_REDCORE_OAUTH_CLIENT_FORM_ACCESS_TOKEN'); ?>: </span>
 				<div>
 					<?php if (!empty($this->item->access_token)) : ?>

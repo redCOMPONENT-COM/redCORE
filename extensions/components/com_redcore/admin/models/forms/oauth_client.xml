@@ -23,6 +23,15 @@
                 description="COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET_DESC"
                 readonly="true"
                 />
+		<field name="client_type"
+			   type="radio"
+			   label="COM_REDCORE_OAUTH_CLIENTS_CLIENT_TYPE"
+			   description="COM_REDCORE_OAUTH_CLIENTS_CLIENT_TYPE_DESC"
+			   class="btn-group"
+			   default="confidential">
+			<option value="confidential">confidential</option>
+			<option value="public">public</option>
+		</field>
         <field
                 name="redirect_uri"
                 type="text"

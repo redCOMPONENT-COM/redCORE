@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_clients` (
   `grant_types` varchar(80),
   `scope` TEXT,
   `user_id` varchar(80),
+  `client_type` ENUM ('confidential','public') NOT NULL DEFAULT 'confidential',
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_client_id` (`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
