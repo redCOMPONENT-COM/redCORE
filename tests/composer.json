@@ -1,14 +1,14 @@
 {
-	"name"       : "redCOMPONENT-COM/redCORE",
+	"name"       : "redcomponent/redcore",
 	"description": "The Open Source PHP Framework for creating complex Joomla extensions",
 	"license"    : "GPL-2.0+",
 	"config" : {
 		"platform": {
-			"php" : "7.0"
+			"php" : "7.3"
 		}
 	},
 	"require"    : {
-		"php": ">=7.0"
+		"php": ">=7.3"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "~2",
