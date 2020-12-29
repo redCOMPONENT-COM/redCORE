@@ -75,4 +75,19 @@ class Pdoredcore extends Pdo
 			"scope"     => $scopes,
 		);
 	}
+
+	/**
+	 * @param   string  $clientId  Client id
+	 *
+	 * @return boolean
+	 */
+	public function isPublicClient($clientId)
+	{
+		$stmt = $this->db->prepare(sprintf('SELECT * from %s where client_id = :clientId', $this->config['client_table']));
+		$stmt->execute(compact('clientId'));
+		$result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+		return !empty($result['client_type'])
+			&& $result['client_type'] === 'public';
+	}
 }

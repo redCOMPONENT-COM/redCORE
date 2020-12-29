@@ -36,6 +36,11 @@ class RedcoreTableOauth_Client extends RTable
 	/**
 	 * @var  string
 	 */
+	public $client_type = 'confidential';
+
+	/**
+	 * @var  string
+	 */
 	public $redirect_uri;
 
 	/**

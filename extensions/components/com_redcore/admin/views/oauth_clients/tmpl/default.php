@@ -6,6 +6,9 @@
  * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
+
+use Joomla\CMS\Language\Text;
+
 defined('_JEXEC') or die;
 
 JHtml::_('behavior.keepalive');
@@ -47,7 +50,7 @@ $listDirn = $this->state->get('list.direction');
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_CLIENT_ID', 'oc.client_id', $listDirn, $listOrder); ?>
 				</th>
 				<th>
-					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET', 'oc.client_secret', $listDirn, $listOrder); ?>
+					<?php echo Text::_('COM_REDCORE_OAUTH_CLIENTS_CLIENT_SECRET') ?>
 				</th>
 				<th>
 					<?php echo JHtml::_('rgrid.sort', 'COM_REDCORE_OAUTH_CLIENTS_REDIRECT_URI', 'oc.redirect_uri', $listDirn, $listOrder); ?>
@@ -83,7 +86,7 @@ $listDirn = $this->state->get('list.direction');
 							</a>
 						</td>
 						<td style="word-break:break-all; word-wrap:break-word;">
-							<?php echo $item->client_secret; ?>
+							<?php echo $item->client_type === 'confidential' ? $item->client_secret : ''; ?>
 						</td>
 						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo $item->redirect_uri; ?>
