@@ -10,13 +10,13 @@
 defined('JPATH_REDCORE') or die;
 
 /**
- * MySQL database driver
+ * MySQL database driver supporting PDO based connections
  *
  * @package     Redcore
  * @subpackage  Database
- * @since       1.0
+ * @since       2.1.0
  */
-class RDatabaseDriverMysql extends JDatabaseDriverMysql
+class RDatabaseDriverPdomysql extends JDatabaseDriverPdomysql
 {
 	/**
 	 * We can choose not to translate query with this variable

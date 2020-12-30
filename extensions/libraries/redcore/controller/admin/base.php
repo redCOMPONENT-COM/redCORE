@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Controller
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -87,7 +87,7 @@ abstract class RControllerAdminBase extends JControllerAdmin
 	 * Validate request and cid parameter
 	 *
 	 * @return   array|false
-	 * @since    __DEPLOY_VERSION__
+	 * @since    2.1.0
 	 * @throws   \Exception
 	 */
 	protected function validateRequestCids()

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension type="file" version="1.7.0" method="upgrade">
+<extension type="file" version="3.9" method="upgrade">
     <name>redCORE da-DK</name>
-    <creationDate>March 2019</creationDate>
-    <author>redCOMPONENT</author>
-    <authorEmail>email@redcomponent.com</authorEmail>
-    <authorUrl>www.redcomponent.com</authorUrl>
-    <copyright>Copyright (C) 2008 - 2019 redCOMPONENT.com. All rights reserved.</copyright>
+    <creationDate>April 2020</creationDate>
+    <author>redWEB</author>
+    <authorEmail>email@redweb.dk</authorEmail>
+    <authorUrl>redweb.dk</authorUrl>
+    <copyright>Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>1.10.7</version>
+    <version>2.0.0</version>
     <description>redCORE da-DK</description>
 
     <fileset>
