@@ -186,6 +186,15 @@ class RDatabaseSqlparserSqlcreator {
 		return "ORDER BY " . $sql;
 	}
 
+	protected function processOrderByBracketExpression($parsed) {
+		if ($parsed['expr_type'] !== 'bracket_expression') {
+			return "";
+		}
+		$sql = $this->processSubTree($parsed, " ");
+
+		return $sql;
+	}
+
 	protected function processLIMIT($parsed) {
 		$sql = (!empty($parsed['offset']) ? $parsed['offset'] . ", " : "");
 		$sql .= (!empty($parsed['rowcount']) ? $parsed['rowcount'] : "");
@@ -545,15 +554,6 @@ class RDatabaseSqlparserSqlcreator {
 		return $sql;
 	}
 
-	protected function processOrderByBracketExpression($parsed) {
-		if ($parsed['expr_type'] !== 'bracket_expression') {
-			return "";
-		}
-		$sql = $this->processSubTree($parsed, " ");
-
-		return $sql;
-	}
-
 	protected function processSelectBracketExpression($parsed)
 	{
 		if (empty($parsed['expr_type']) || $parsed['expr_type'] !== 'bracket_expression')
@@ -591,6 +591,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processOperator($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processUserVariable($v);
+			$sql .= $this->processSign($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
 			$sql .= $this->processSubQuery($v);
@@ -608,6 +609,12 @@ class RDatabaseSqlparserSqlcreator {
 		$sql = substr($sql, 0, -1);
 
 		return $sql;
+	}
+
+	protected function processSign($parsed) {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] === 'sign') {
+			return $parsed['base_expr'];
+		}
 	}
 
 	protected function processRefClause($parsed) {
