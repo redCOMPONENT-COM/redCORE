@@ -108,7 +108,7 @@ $predefinedOptions = array(
 												type="text"
 												name="translation[<?php echo $languageCode; ?>][<?php echo $columnKey;?>]"
 												size="<?php echo $length;?>"
-												value="<?php echo $item->translation->{$columnKey}; ?>"
+												value="<?php echo htmlspecialchars($item->translation->{$columnKey}); ?>"
 												<?php echo $maxLength;?> />
 											<!-- State of field -->
 										<?php elseif ($column['value_type'] == 'state'): ?>
