@@ -7,8 +7,8 @@
     <authorUrl>redweb.dk</authorUrl>
     <copyright>Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>2.1.1</version>
-    <releaseName>beta1</releaseName>
+    <version>2.1.2</version>
+    <releaseName>beta2</releaseName>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
     <redcore version="2.0.0" defaultFramework="bootstrap3" />
