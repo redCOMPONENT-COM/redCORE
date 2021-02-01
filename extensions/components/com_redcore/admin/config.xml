@@ -143,6 +143,15 @@
             <option value="0">JNO</option>
         </field>
         <field
+                name="webservice_put_sends_changes_only"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_WEBSERVICE_PUT_SENDS_CHANGES_ONLY">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
                 name="webservices_default_format"
                 class="btn-group"
                 type="radio"
