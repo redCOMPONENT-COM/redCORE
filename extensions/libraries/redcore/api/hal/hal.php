@@ -2000,6 +2000,18 @@ class RApiHalHal extends RApi
 			return $this->getDynamicModelObject($configuration);
 		}
 
+		$attributes = [];
+
+		if (!empty($configuration['modelConstructorArgs']))
+		{
+			$attributes = array_filter(
+				array_map(
+					'trim',
+					explode(',', $configuration['modelConstructorArgs'])
+				)
+			);
+		}
+
 		if (!empty($configuration['modelClassName']))
 		{
 			$modelClass = (string) $configuration['modelClassName'];
@@ -2007,8 +2019,15 @@ class RApiHalHal extends RApi
 			if (!empty($configuration['modelClassPath']))
 			{
 				require_once JPATH_SITE . '/' . $configuration['modelClassPath'];
+			}
 
-				if (class_exists($modelClass))
+			if (class_exists($modelClass))
+			{
+				if (!empty($attributes))
+				{
+					return new $modelClass($attributes);
+				}
+				else
 				{
 					return new $modelClass;
 				}
@@ -2018,7 +2037,7 @@ class RApiHalHal extends RApi
 				$componentName = ucfirst(strtolower(substr($this->optionName, 4)));
 				$prefix        = $componentName . 'Model';
 
-				$model = RModel::getInstance($modelClass, $prefix);
+				$model = RModel::getInstance($modelClass, $prefix, $attributes);
 
 				if ($model)
 				{
@@ -2034,10 +2053,10 @@ class RApiHalHal extends RApi
 
 		if ($isAdmin)
 		{
-			return RModel::getAdminInstance($elementName, array(), $this->optionName);
+			return RModel::getAdminInstance($elementName, $attributes, $this->optionName);
 		}
 
-		return RModel::getFrontInstance($elementName, array(), $this->optionName);
+		return RModel::getFrontInstance($elementName, $attributes, $this->optionName);
 	}
 
 	/**
