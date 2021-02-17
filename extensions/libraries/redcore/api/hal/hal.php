@@ -2050,11 +2050,15 @@ class RApiHalHal extends RApi
 			return $this->getDynamicModelObject($configuration);
 		}
 
-		$attributes = [];
+		$attributes = [
+			'webservice_attributes' => [
+				'filterFields' => RApiHalHelper::getFilterFields($configuration)
+			]
+		];
 
 		if (!empty($configuration['modelConstructorArgs']))
 		{
-			$attributes = array_filter(
+			$attributes['webservice_attributes']['constructorArgs'] = array_filter(
 				array_map(
 					'trim',
 					explode(',', $configuration['modelConstructorArgs'])
@@ -2073,14 +2077,7 @@ class RApiHalHal extends RApi
 
 			if (class_exists($modelClass))
 			{
-				if (!empty($attributes))
-				{
-					return new $modelClass($attributes);
-				}
-				else
-				{
-					return new $modelClass;
-				}
+				return new $modelClass($attributes);
 			}
 			else
 			{
