@@ -74,7 +74,7 @@ class Com_RedcoreUpdateScript_1_5_5
 			{
 				$query = trim($query);
 
-				if ($query != '' && $query{0} != '#')
+				if ($query != '' && $query[0] != '#')
 				{
 					$db->setQuery($query);
 

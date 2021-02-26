@@ -2,7 +2,7 @@ language: php
 sudo: required
 env:
   TRAVIS_PUBLIC_REPOSITORY=true
-dist: trusty
+dist: xenial
 php:
   - 7.0
   - 7.1
@@ -36,10 +36,12 @@ before_script:
 # APT
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
+- sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+- sudo apt-get install default-jdk
 - npm install -g gulp
 
 # Chromedriver
-- wget https://chromedriver.storage.googleapis.com/2.33/chromedriver_linux64.zip
+- wget https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_linux64.zip
 - unzip chromedriver_linux64.zip
 - chmod +x chromedriver
 
@@ -69,7 +71,11 @@ script:
 # System / Acceptance tests
 - vendor/bin/robo run:chrome-driver
 - vendor/bin/robo run:tests 1
+- vendor/bin/robo send:slack-images
 - vendor/bin/robo kill:chrome-driver
+
+services:
+  - mysql
 
 notifications:
   slack:
