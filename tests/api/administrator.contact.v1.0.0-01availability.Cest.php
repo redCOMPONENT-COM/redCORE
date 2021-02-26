@@ -21,7 +21,7 @@ class AdministratorContacts100AvailabilityCest
 		);
 
 		// Checking for 204 code since there are no contacts before inserting them
-		$I->seeResponseCodeIs(204);
+		$I->seeSoapResponseCodeIs(204);
 		$I->seeHttpHeader('X-Webservice-name', 'contact');
 		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
 	}

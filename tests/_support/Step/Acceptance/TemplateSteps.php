@@ -35,6 +35,7 @@ class TemplateSteps extends \AcceptanceTester
 		$I->waitForText(Template::$templatesStylesAdmin, 60, Template::$h1);
 		$I->click(Template::$isisDefault);
 		$I->waitForText(Template::$templatesEditStyle, 60, Template::$h1);
+		$I->wait(5);
 		$I->click(Template::$linkAdvanced);
 		$I->waitForElement(Template::$labelModulePosition, 60);
 		$I->executeJS("window.scrollTo(0, document.body.scrollHeight);");

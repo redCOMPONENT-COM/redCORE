@@ -318,7 +318,7 @@ class Com_RedcoreInstallerScript
 										{
 											foreach ($queries as $query)
 											{
-												if ($query != '' && $query{0} != '#')
+												if ($query != '' && $query[0] != '#')
 												{
 													$db->setQuery($query);
 
