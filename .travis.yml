@@ -26,6 +26,7 @@ install:
 
 addons:
   chrome: stable
+  mariadb: '10.5'
 
 cache:
   apt: true
@@ -76,7 +77,7 @@ script:
 - vendor/bin/robo kill:chrome-driver
 
 services:
-  - mysql
+  - mariadb
 
 notifications:
   slack:
