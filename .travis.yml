@@ -25,6 +25,7 @@ install:
 
 addons:
   chrome: stable
+  mariadb: '10.5'
 
 cache:
   apt: true
@@ -33,6 +34,9 @@ cache:
     - $HOME/.composer/cache/files
 
 before_script:
+# MariaDB
+- sudo mysql -e "SET Password=PASSWORD('travis')"
+
 # APT
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
@@ -73,9 +77,6 @@ script:
 - vendor/bin/robo run:tests 1
 - vendor/bin/robo send:slack-images
 - vendor/bin/robo kill:chrome-driver
-
-services:
-  - mysql
 
 notifications:
   slack:

@@ -9,7 +9,7 @@ modules:
       - Db:
           dsn: 'mysql:host=localhost;dbname=test_redcore'
           user: 'root'
-          password: ''
+          password: 'travis'
           populate: false
           cleanup: false
           reconnect: true
