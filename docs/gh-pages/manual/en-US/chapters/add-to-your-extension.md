@@ -82,7 +82,7 @@ Manifest example:
     <author>redWEB</author>
     <authorEmail>email@redweb.dk</authorEmail>
     <authorUrl>redweb.dk</authorUrl>
-    <copyright>Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.</copyright>
+    <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
     <version>1.0.0</version>
     <description>COM_REDSOURCE_DESC</description>
