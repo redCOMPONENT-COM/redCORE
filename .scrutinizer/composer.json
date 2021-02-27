@@ -1,0 +1,36 @@
+{
+	"description": "For Scrutinizer PHPCS check",
+	"require": {
+		"squizlabs/php_codesniffer": "2.9.2",
+		"joomla/coding-standards": "v1.4.1"
+	},
+	"require-dev":{
+		"joomla/joomla-cms": "3.9.24"
+	},
+	"repositories": [
+		{
+			"type": "package",
+			"package": {
+				"name": "joomla/coding-standards",
+				"version": "v1.4.1",
+				"source": {
+					"url": "https://github.com/redCOMPONENT-COM/coding-standards.git",
+					"type": "git",
+					"reference": "v1.4.1"
+				}
+			}
+		},
+		{
+			"type": "package",
+			"package": {
+				"name": "joomla/joomla-cms",
+				"version": "3.9.24",
+				"source": {
+					"url": "https://github.com/joomla/joomla-cms.git",
+					"type": "git",
+					"reference": "3.9.24"
+			}
+		  }
+		}
+	]
+}
