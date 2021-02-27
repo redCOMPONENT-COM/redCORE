@@ -43,6 +43,7 @@ tests/unit/phpunit.xml
 composer.phar
 tests/vendor/*
 build/vendor/*
+.scrutinizer/vendor/*
 
 # Robo
 robo.phar
