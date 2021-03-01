@@ -376,6 +376,8 @@ class PlgSystemRedcore extends JPlugin
 				}
 			}
 		}
+
+		RTranslationHelper::addAlternateLinks();
 	}
 
 	/**
