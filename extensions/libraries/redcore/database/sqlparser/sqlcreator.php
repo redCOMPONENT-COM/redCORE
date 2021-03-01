@@ -174,6 +174,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processOrderByExpression($v);
+			$sql .= $this->processOrderByBracketExpression($v);
 
 			if ($len == strlen($sql)) {
 				throw new RDatabaseSqlparserExceptioncreatesql('ORDER', $k, $v, 'expr_type');
@@ -183,6 +184,15 @@ class RDatabaseSqlparserSqlcreator {
 		}
 		$sql = substr($sql, 0, -1);
 		return "ORDER BY " . $sql;
+	}
+
+	protected function processOrderByBracketExpression($parsed) {
+		if ($parsed['expr_type'] !== 'bracket_expression') {
+			return "";
+		}
+		$sql = $this->processSubTree($parsed, " ");
+
+		return $sql;
 	}
 
 	protected function processLIMIT($parsed) {
@@ -581,6 +591,7 @@ class RDatabaseSqlparserSqlcreator {
 			$sql .= $this->processOperator($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processUserVariable($v);
+			$sql .= $this->processSign($v);
 			$sql .= $this->processSelectBracketExpression($v);
 			$sql .= $this->processSelectExpression($v);
 			$sql .= $this->processSubQuery($v);
@@ -598,6 +609,12 @@ class RDatabaseSqlparserSqlcreator {
 		$sql = substr($sql, 0, -1);
 
 		return $sql;
+	}
+
+	protected function processSign($parsed) {
+		if (empty($parsed['expr_type']) || $parsed['expr_type'] === 'sign') {
+			return $parsed['base_expr'];
+		}
 	}
 
 	protected function processRefClause($parsed) {
