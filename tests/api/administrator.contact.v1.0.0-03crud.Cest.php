@@ -3,7 +3,7 @@
  * @package     Joomla.Administrator
  * @subpackage  com_weblinks
  *
- * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -30,7 +30,7 @@ class AdministratorContacts100CrudCest
 			. '&catid=4'
 		);
 
-		$I->seeResponseCodeIs(201);
+		$I->seeSoapResponseCodeIs(201);
 		$I->seeResponseIsJson();
 		$contactIDs = $I->grabDataFromResponseByJsonPath('$.id');
 		$this->id = $contactIDs[0];
@@ -51,7 +51,7 @@ class AdministratorContacts100CrudCest
 			. '&webserviceVersion=1.0.0'
 		);
 
-		$I->seeResponseCodeIs(200);
+		$I->seeSoapResponseCodeIs(200);
 		$I->seeResponseIsJson();
 		$I->seeHttpHeader('X-Webservice-name', 'contact');
 		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
@@ -74,7 +74,7 @@ class AdministratorContacts100CrudCest
 			. "&id=$this->id"
 		);
 
-		$I->seeResponseCodeIs(200);
+		$I->seeSoapResponseCodeIs(200);
 		$I->seeResponseIsJson();
 		$I->seeResponseContainsJson(['name' => $this->name]);
 	}
@@ -97,7 +97,7 @@ class AdministratorContacts100CrudCest
 			. "&name=$this->name"
 		);
 
-		$I->seeResponseCodeIs(200);
+		$I->seeSoapResponseCodeIs(200);
 
 		$I->sendGET('index.php'
 			. '?option=contact'
@@ -107,7 +107,7 @@ class AdministratorContacts100CrudCest
 			. "&id=$this->id"
 		);
 
-		$I->seeResponseCodeIs(200);
+		$I->seeSoapResponseCodeIs(200);
 		$I->seeResponseIsJson();
 		$I->seeResponseContainsJson(['name' => $this->name]);
 		$I->comment("The contact name has been modified to: $this->name");
@@ -129,7 +129,7 @@ class AdministratorContacts100CrudCest
 			. "&id=$this->id"
 		);
 
-		$I->seeResponseCodeIs(200);
+		$I->seeSoapResponseCodeIs(200);
 
 		$I->sendGET('index.php'
 			. '?option=contact'
@@ -139,7 +139,7 @@ class AdministratorContacts100CrudCest
 			. "&id=$this->id"
 		);
 
-		$I->seeResponseCodeIs(404);
+		$I->seeSoapResponseCodeIs(404);
 		$I->seeResponseIsJson();
 		$I->seeResponseContains('"message":"Item not found with given key.","code":404,"type":"Exception"');
 	}

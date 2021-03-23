@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -249,7 +249,7 @@ abstract class RApiBase implements RApiInterface
 	 */
 	public function renderDebugMessages()
 	{
-		return implode($this->debugMessages, "\n");
+		return implode("\n", $this->debugMessages);
 	}
 
 	/**

@@ -2,7 +2,7 @@
 /**
  * @package     redCORE
  * @subpackage  Step
- * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @licence     GNU General Public License version 2 or later; see LICENSE.TXT
  */
 namespace Step\Acceptance;
@@ -35,6 +35,7 @@ class TemplateSteps extends \AcceptanceTester
 		$I->waitForText(Template::$templatesStylesAdmin, 60, Template::$h1);
 		$I->click(Template::$isisDefault);
 		$I->waitForText(Template::$templatesEditStyle, 60, Template::$h1);
+		$I->wait(5);
 		$I->click(Template::$linkAdvanced);
 		$I->waitForElement(Template::$labelModulePosition, 60);
 		$I->executeJS("window.scrollTo(0, document.body.scrollHeight);");

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Helper
  *
- * @copyright   Copyright (C) 2008 - 2020 redWEB.dk. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -53,7 +53,7 @@ final class RHelperQuery
 			{
 				$query = trim($query);
 
-				if ($query != '' && $query{0} != '#')
+				if ($query != '' && $query[0] != '#')
 				{
 					$db->setQuery($query);
 
