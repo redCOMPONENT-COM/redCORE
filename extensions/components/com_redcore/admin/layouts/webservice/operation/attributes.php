@@ -70,6 +70,12 @@ $form = !empty($displayData['options']['form']) ? $displayData['options']['form'
 				</div>
 			</div>
 			<div class="form-group">
+				<?php echo $form->getLabel('modelConstructorArgs', $operation); ?>
+				<div class="col-sm-10">
+					<?php echo $form->getInput('modelConstructorArgs', $operation); ?>
+				</div>
+			</div>
+			<div class="form-group">
 				<?php echo $form->getLabel('modelClassPath', $operation); ?>
 				<div class="col-sm-10">
 					<?php echo $form->getInput('modelClassPath', $operation); ?>

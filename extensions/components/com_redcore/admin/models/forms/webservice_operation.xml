@@ -94,6 +94,14 @@
                     class="form-control"
                     />
             <field
+                    name="modelConstructorArgs"
+                    labelclass="col-sm-2 control-label"
+                    type="text"
+                    label="COM_REDCORE_WEBSERVICE_MODEL_CONSTRUCTOR_ARGS_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_MODEL_CONSTRUCTOR_ARGS_DESCRIPTION"
+                    class="form-control"
+            />
+            <field
                     name="modelClassPath"
                     labelclass="col-sm-2 control-label"
                     type="text"
