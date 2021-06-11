@@ -216,6 +216,14 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
+        <field name="public_key"
+               type="text"
+               label="COM_REDCORE_CONFIG_OAUTH2_PUBLIC_KEY"
+               default="/path/to/pubkey.pem"/>
+        <field name="private_key"
+               type="text"
+               default="/path/to/privkey.pem"
+               label="COM_REDCORE_CONFIG_OAUTH2_PRIVATE_KEY"/>
         <field
                 name="oauth2_use_jwt_access_tokens"
                 class="btn-group"

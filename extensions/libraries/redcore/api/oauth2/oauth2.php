@@ -6,6 +6,9 @@
  * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
+
+use Joomla\CMS\Filesystem\File;
+
 defined('JPATH_REDCORE') or die;
 
 /**
@@ -74,6 +77,7 @@ class RApiOauth2Oauth2 extends RApi
 			'allow_public_clients'     => (boolean) RBootstrap::getConfig('oauth2_allow_public_clients', true),
 			'always_issue_new_refresh_token' => (boolean) RBootstrap::getConfig('oauth2_always_issue_new_refresh_token', false),
 			'unset_refresh_token_after_use' => (boolean) RBootstrap::getConfig('oauth2_unset_refresh_token_after_use', true),
+			'issuer' => $_SERVER['HTTP_HOST'],
 		);
 
 		// Set database names to Redcore DB tables
@@ -92,12 +96,31 @@ class RApiOauth2Oauth2 extends RApi
 
 		$conf = JFactory::getConfig();
 
-		$dsn      = 'mysql:dbname=' . $conf->get('db') . ';host=' . $conf->get('host');
-		$username = $conf->get('user');
-		$password = $conf->get('password');
-
-		$storage = new OAuth2\Storage\Pdoredcore(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
+		$storage = new OAuth2\Storage\Pdoredcore([
+				'dsn' => 'mysql:dbname=' . $conf->get('db') . ';host=' . $conf->get('host'),
+				'username' => $conf->get('user'),
+				'password' => $conf->get('password')
+			],
+			$databaseConfig
+		);
 		$this->server = new OAuth2\Server($storage, $this->serverConfig);
+
+		if (RBootstrap::getConfig('public_key')
+			&& File::exists(RBootstrap::getConfig('public_key'))
+			&& RBootstrap::getConfig('private_key')
+			&& File::exists(RBootstrap::getConfig('private_key')))
+		{
+			$this->server->addStorage(
+				new OAuth2\Storage\Memory([
+						'keys' => [
+							'public_key'  => file_get_contents(RBootstrap::getConfig('public_key')),
+							'private_key' => file_get_contents(RBootstrap::getConfig('private_key')),
+						]
+					]
+				),
+				'public_key'
+			);
+		}
 
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
 		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $this->serverConfig));
@@ -253,7 +276,10 @@ class RApiOauth2Oauth2 extends RApi
 		// Add user Profile info
 		$token['profile'] = RApiOauth2Helper::getUserProfileInformation();
 
-		$this->response = json_encode($token);
+		$this->response = RLayoutHelper::render(
+			'redcore.api.oauth2.profile',
+			compact('token')
+		);
 
 		return $this;
 	}
@@ -310,8 +336,6 @@ class RApiOauth2Oauth2 extends RApi
 				$this->response->setParameter('expireTimeFormatted', date('Y-m-d H:i:s', $expires + time()));
 				$this->response->setParameter('created', date('Y-m-d H:i:s'));
 			}
-
-			$this->response->setParameter('profile', RApiOauth2Helper::getUserProfileInformation());
 		}
 
 		return $this;
@@ -516,7 +540,7 @@ class RApiOauth2Oauth2 extends RApi
 			$loginLink = RRoute::_(JUri::root() . 'index.php?option=com_users&view=login');
 
 			$loginPage = new JUri($loginLink);
-			$loginPage->setVar('return', base64_encode(htmlspecialchars($returnUrl)));
+			$loginPage->setVar('return', base64_encode($returnUrl));
 
 			JFactory::getApplication()->redirect($loginPage);
 			JFactory::getApplication()->close();
