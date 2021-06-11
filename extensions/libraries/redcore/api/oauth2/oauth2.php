@@ -7,8 +7,6 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
-use Joomla\CMS\Filesystem\File;
-
 defined('JPATH_REDCORE') or die;
 
 /**
@@ -106,9 +104,9 @@ class RApiOauth2Oauth2 extends RApi
 		$this->server = new OAuth2\Server($storage, $this->serverConfig);
 
 		if (RBootstrap::getConfig('public_key')
-			&& File::exists(RBootstrap::getConfig('public_key'))
+			&& JFile::exists(RBootstrap::getConfig('public_key'))
 			&& RBootstrap::getConfig('private_key')
-			&& File::exists(RBootstrap::getConfig('private_key')))
+			&& JFile::exists(RBootstrap::getConfig('private_key')))
 		{
 			$this->server->addStorage(
 				new OAuth2\Storage\Memory([
