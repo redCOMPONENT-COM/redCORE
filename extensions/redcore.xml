@@ -7,11 +7,11 @@
     <authorUrl>redweb.dk</authorUrl>
     <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>2.2.1</version>
-    <releaseName />
+    <version>2.2.2</version>
+    <releaseName>beta1</releaseName>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
-    <redcore version="2.2.1" defaultFramework="bootstrap3" />
+    <redcore version="2.2.2" defaultFramework="bootstrap3" />
 
     <install folder="components/com_redcore/admin">
         <sql>
