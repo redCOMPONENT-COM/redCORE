@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS `#__redcore_oauth_authorization_codes` (
   `redirect_uri` varchar(2000),
   `expires` TIMESTAMP NOT NULL,
   `scope` TEXT,
+  `id_token` VARCHAR(1000) DEFAULT NULL,
   PRIMARY KEY (`authorization_code`),
   KEY `idx_client_id` (`client_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
