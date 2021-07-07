@@ -8,6 +8,10 @@
  * Based on Twitter Bootstrap v.3.3.6
  * http://getbootstrap.com/
  */
+
+div.flexslider div.flex-viewport{
+  overflow: scroll !important;
+}
 .redcore {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
