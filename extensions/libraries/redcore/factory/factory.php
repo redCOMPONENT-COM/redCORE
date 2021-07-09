@@ -98,7 +98,7 @@ final class RFactory extends JFactory
 			jexit('Database Error: ' . $e->getMessage());
 		}
 
-		$db->setDebug($debug);
+//		$db->setDebug($debug);
 
 		return $db;
 	}

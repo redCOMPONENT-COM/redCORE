@@ -359,9 +359,14 @@ class RLoader extends JLoader
 		// Verify the library path exists.
 		if (!file_exists($path))
 		{
-			$path = (str_replace(JPATH_ROOT, '', $path) == $path) ? basename($path) : str_replace(JPATH_ROOT, '', $path);
+			$path = JPATH_LIBRARIES . '/src';
 
-			throw new RuntimeException('Library path ' . $path . ' cannot be found.', 500);
+			if (!file_exists($path))
+			{
+				$path = (str_replace(JPATH_ROOT, '', $path) == $path) ? basename($path) : str_replace(JPATH_ROOT, '', $path);
+
+				throw new RuntimeException('Library path ' . $path . ' cannot be found.', 500);
+			}
 		}
 
 		// If the prefix is not yet registered or we have an explicit reset flag then set set the path.
