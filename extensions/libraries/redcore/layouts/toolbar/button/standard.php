@@ -27,7 +27,7 @@ $isList = $button->isList();
 $class = $button->getClass();
 
 // Get the button command.
-JHtml::_('behavior.framework');
+JHtml::script('behavior.framework');
 $message = JText::_('JLIB_HTML_PLEASE_MAKE_A_SELECTION_FROM_THE_LIST');
 $message = addslashes($message);
 
