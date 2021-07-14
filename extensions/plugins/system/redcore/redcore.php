@@ -7,6 +7,8 @@
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
+use Joomla\CMS\Factory;
+
 defined('JPATH_BASE') or die;
 
 /**
@@ -197,7 +199,7 @@ class PlgSystemRedcore extends JPlugin
 		}
 
 		// Get the generated content
-		$body = JResponse::getBody();
+		$body = \Joomla\CMS\Factory::getApplication()->getBody();
 
 		// Remove JCaption JS calls
 		$pattern     = "/(new JCaption\()(.*)(\);)/isU";
@@ -207,7 +209,7 @@ class PlgSystemRedcore extends JPlugin
 		// Null window.addEvent( calls
 		$pattern = "/(window.addEvent\()(.*)(,)/isU";
 		$body    = preg_replace($pattern, 'do_nothing(', $body);
-		JResponse::setBody($body);
+		Factory::getApplication()->setBody($body);
 
 		return true;
 	}
