@@ -196,8 +196,10 @@ class PlgSystemRedcore extends JPlugin
 			return true;
 		}
 
+		$app = \Joomla\CMS\Factory::getApplication();
+
 		// Get the generated content
-		$body = JResponse::getBody();
+		$body = $app->getBody();
 
 		// Remove JCaption JS calls
 		$pattern     = "/(new JCaption\()(.*)(\);)/isU";
@@ -207,7 +209,8 @@ class PlgSystemRedcore extends JPlugin
 		// Null window.addEvent( calls
 		$pattern = "/(window.addEvent\()(.*)(,)/isU";
 		$body    = preg_replace($pattern, 'do_nothing(', $body);
-		JResponse::setBody($body);
+
+		$app->setBody($body);
 
 		return true;
 	}
