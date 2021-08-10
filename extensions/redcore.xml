@@ -7,7 +7,7 @@
     <authorUrl>redweb.dk</authorUrl>
     <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>2.2.2</version>
+    <version>2.2.3</version>
     <releaseName>beta1</releaseName>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
