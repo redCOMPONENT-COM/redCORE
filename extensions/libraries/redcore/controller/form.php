@@ -9,6 +9,7 @@
 
 defined('JPATH_REDCORE') or die;
 
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
 JLoader::import('joomla.application.component.controllerform');
 
 /**
@@ -30,8 +31,9 @@ class RControllerForm extends JControllerForm
 	 *
 	 * @throws  Exception
 	 */
-	public function __construct($config = array())
+	public function __construct($config = [], MVCFactoryInterface $factory = null)
 	{
+		parent::__construct($config, $factory);
 		/** JControllerLegacy */
 		$this->methods     = array();
 		$this->message     = null;
