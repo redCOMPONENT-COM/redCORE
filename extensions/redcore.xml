@@ -97,7 +97,6 @@
     <plugins>
         <!-- System plugins -->
         <plugin name="redcore" group="system"/>
-        <plugin name="mvcoverride" group="system" disabled="1" />
         <plugin name="paypal" group="redpayment" disabled="1" />
     </plugins>
 

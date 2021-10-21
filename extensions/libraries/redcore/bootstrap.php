@@ -151,12 +151,6 @@ class RBootstrap
 			$lang = JFactory::getLanguage();
 			$lang->load('lib_redcore', JPATH_REDCORE);
 
-			// For Joomla! 2.5 compatibility we add some core functions
-			if (version_compare(JVERSION, '3.0', '<'))
-			{
-				RLoader::registerPrefix('J',  JPATH_LIBRARIES . '/redcore/joomla', false, true);
-			}
-
 			// Make available the fields
 			JFormHelper::addFieldPath(JPATH_LIBRARIES . '/redcore/form/fields');
 
