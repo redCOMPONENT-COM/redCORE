@@ -69,10 +69,7 @@ class Com_RedcoreInstallerScript
 	 */
 	public function getInstaller()
 	{
-		if (null === $this->installer)
-		{
-			$this->installer = new JInstaller;
-		}
+		$this->installer = new JInstaller;
 
 		return $this->installer;
 	}
@@ -501,6 +498,7 @@ class Com_RedcoreInstallerScript
 		$installer = $this->getInstaller();
 		$manifest  = $this->getManifest($parent);
 		$src       = $parent->getParent()->getPath('source');
+		$installer->setAdapter('library');
 
 		if ($nodes = $manifest->libraries->library)
 		{
