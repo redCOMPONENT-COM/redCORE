@@ -265,7 +265,7 @@ class JFormFieldRmedia extends JFormField
 			. $this->id . '&amp;folder=' . $folder
 			. '&amp;redcore=true';
 
-		$hideModal = $bootstrapVersion == 'bootstrap2' ? 'modal hide' : 'modal';
+		$hideModal = $bootstrapVersion == 'bootstrap2' ? 'modal hide fade' : 'modal fade';
 		$style     = $bootstrapVersion == 'bootstrap2' ? 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;' : '';
 
 		// Create the modal object
