@@ -133,6 +133,15 @@ class RBootstrap
 			// Register the classes for autoload.
 			JLoader::registerPrefix('R', JPATH_REDCORE);
 
+			if (version_compare(JVERSION, '4.0', '>='))
+			{
+				JLoader::registerPrefix('J', JPATH_REDCORE . '/legacy/j4');
+				JLoader::registerNamespace(
+					'Joomla',
+					JPATH_REDCORE . '/legacy/j4/src'
+				);
+			}
+
 			// Setup the RLoader.
 			RLoader::setup();
 
