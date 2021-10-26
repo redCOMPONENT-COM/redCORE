@@ -23,7 +23,7 @@ gulp.task('release',
 );
 
 // Override of the release script
-gulp.task('release:redcore', function (cb) {
+gulp.task('release:redcore', ['libraries:media.redcore'], function () {
 	fs.readFile( '../extensions/redcore.xml', function(err, data) {
 		parser.parseString(data, function (err, result) {
 			var version = result.extension.version[0];
@@ -42,8 +42,7 @@ gulp.task('release:redcore', function (cb) {
                 '../extensions/**/.gitkeep'
             ])
 			.pipe(zip(fileName))
-			.pipe(gulp.dest(config.release_dir))
-            .on('end', cb);
+			.pipe(gulp.dest(config.release_dir));
 		});
 	});
 });
