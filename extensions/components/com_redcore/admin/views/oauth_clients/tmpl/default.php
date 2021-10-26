@@ -75,7 +75,7 @@ $listDirn = $this->state->get('list.direction');
 					?>
 					<tr>
 						<td>
-							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+							<?php echo JHtml::_('rgrid.id', $i, $item->id); ?>
 						</td>
 						<td>
 							<a href="<?php echo JRoute::_('index.php?option=com_redcore&task=oauth_client.edit&id=' . $item->id); ?>">

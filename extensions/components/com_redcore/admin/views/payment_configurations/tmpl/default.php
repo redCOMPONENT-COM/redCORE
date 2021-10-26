@@ -74,7 +74,7 @@ $listDirn = $this->state->get('list.direction');
 					?>
 					<tr>
 						<td>
-							<?php echo !$isGlobal ? JHtml::_('grid.id', $i, $item->id) : ''; ?>
+							<?php echo !$isGlobal ? JHtml::_('rgrid.id', $i, $item->id) : ''; ?>
 						</td>
 						<td>
 							<?php echo !$isGlobal ? JHtml::_('rgrid.published', $item->state, $i, 'payment_configurations.', $canChange, 'cb') :

@@ -107,7 +107,7 @@ endif;
 					?>
 					<tr>
 						<td>
-							<?php echo JHtml::_('grid.id', $i, $item->rctranslations_id); ?>
+							<?php echo JHtml::_('rgrid.id', $i, $item->rctranslations_id); ?>
 						</td>
 						<td class="center">
 							<?php echo !empty($item->rctranslations_modified) ?
