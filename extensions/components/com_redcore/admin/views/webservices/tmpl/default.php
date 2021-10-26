@@ -13,6 +13,7 @@ JHtml::_('behavior.keepalive');
 JHtml::_('rdropdown.init');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
+JHtml::_('behavior.formvalidator');
 $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
 $action    = JRoute::_('index.php?option=com_redcore&view=webservices');

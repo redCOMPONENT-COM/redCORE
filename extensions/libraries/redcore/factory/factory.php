@@ -77,6 +77,12 @@ final class RFactory extends JFactory
 
 		$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 
+		if (JDEBUG
+			&& version_compare(JVERSION, '4.0', '>='))
+		{
+			$options['monitor'] = new \Joomla\Database\Monitor\DebugMonitor;
+		}
+
 		try
 		{
 			RDatabaseDriver::deleteInstances();

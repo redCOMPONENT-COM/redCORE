@@ -22,15 +22,7 @@ if (empty($tab))
 JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
-
-if (version_compare(JVERSION, '3.4') >= 0)
-{
-	JHtml::_('behavior.formvalidator');
-}
-else
-{
-	JHTML::_('behavior.formvalidation');
-}
+JHtml::_('behavior.formvalidator');
 
 JFactory::getDocument()->addScriptDeclaration(
 	'Joomla.submitbutton = function(task){
