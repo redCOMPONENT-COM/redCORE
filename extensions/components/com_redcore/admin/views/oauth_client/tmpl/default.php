@@ -14,6 +14,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=oauth_client');
 JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
+JHtml::_('behavior.formvalidator');
 ?>
 <form action="<?php echo $action; ?>" method="post" name="adminForm" id="adminForm"
       class="form-validate form-horizontal">

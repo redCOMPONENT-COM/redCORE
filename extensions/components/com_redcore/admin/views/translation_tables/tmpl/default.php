@@ -102,7 +102,7 @@ $db = JFactory::getDbo();
 							?>
 							<tr>
 								<td>
-									<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+									<?php echo JHtml::_('rgrid.id', $i, $item->id); ?>
 								</td>
 								<td class="center">
 									<?php echo JHtml::_('rgrid.published', $item->state, $i, 'translation_tables.', $canChange = true, 'cb'); ?>

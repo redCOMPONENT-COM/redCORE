@@ -132,7 +132,10 @@ class RedcoreViewOauth_Clients extends RedcoreHelpersView
 	{
 		$user    = JFactory::getUser();
 		$result  = new Registry;
-		$actions = JAccess::getActionsFromFile('com_redcore', $section) ?: array();
+		$actions = JAccess::getActionsFromFile(
+			JPATH_ADMINISTRATOR . '/components/com_redcore/access.xml',
+			"/access/section[@name='" . $section . "']/"
+		);
 
 		foreach ($actions as $action)
 		{

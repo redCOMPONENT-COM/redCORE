@@ -28,17 +28,11 @@ final class RFactory extends JFactory
 	/**
 	 * Get the event dispatcher
 	 *
-	 * @return  JEventDispatcher
+	 * @return  RHelperDispatcher
 	 */
 	public static function getDispatcher()
 	{
-		if (!self::$dispatcher)
-		{
-			self::$dispatcher = version_compare(JVERSION, '3.0', 'lt') ?
-				JDispatcher::getInstance() : JEventDispatcher::getInstance();
-		}
-
-		return self::$dispatcher;
+		return RHelperDispatcher::getInstance();
 	}
 
 	/**
@@ -83,6 +77,12 @@ final class RFactory extends JFactory
 
 		$options = array('driver' => $driver, 'host' => $host, 'user' => $user, 'password' => $password, 'database' => $database, 'prefix' => $prefix);
 
+		if (JDEBUG
+			&& version_compare(JVERSION, '4.0', '>='))
+		{
+			$options['monitor'] = new \Joomla\Database\Monitor\DebugMonitor;
+		}
+
 		try
 		{
 			RDatabaseDriver::deleteInstances();
@@ -98,7 +98,10 @@ final class RFactory extends JFactory
 			jexit('Database Error: ' . $e->getMessage());
 		}
 
-		$db->setDebug($debug);
+		if (version_compare(JVERSION, '4.0', 'lt'))
+		{
+			$db->setDebug($debug);
+		}
 
 		return $db;
 	}

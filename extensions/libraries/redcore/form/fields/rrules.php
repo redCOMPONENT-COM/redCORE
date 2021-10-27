@@ -48,7 +48,10 @@ class JFormFieldRrules extends JFormField
 		$assetField = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
 
 		// Get the actions for the asset.
-		$actions = JAccess::getActionsFromFile($component, $section) ?: array();
+		$actions = JAccess::getActionsFromFile(
+			JPATH_ADMINISTRATOR . '/components/com_redcore/access.xml',
+			"/access/section[@name='" . $section . "']/"
+		);
 
 		// Iterate over the children and add to the actions.
 		foreach ($this->element->children() as $el)

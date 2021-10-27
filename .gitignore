@@ -70,6 +70,11 @@ tests/checkers/phpcs/*
 tests/RoboFile.ini
 tests/cache
 
+/build/media/libraries/redcore/media/redcore/css/component.css
+/build/media/libraries/redcore/media/redcore/css/component.bs3.css
+/extensions/libraries/redcore/media/redcore/css/component.min.css
+/extensions/libraries/redcore/media/redcore/css/component.bs3.min.css
+
 # Never ignore
 !.gitignore
 !index.html

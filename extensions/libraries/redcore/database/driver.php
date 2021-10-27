@@ -244,7 +244,7 @@ else
 				if (!class_exists($class))
 				{
 					// Only display error in admin
-					if (JFactory::getApplication()->isAdmin())
+					if (JFactory::getApplication()->isClient('administrator'))
 					{
 						JFactory::getApplication()->enqueueMessage(JText::sprintf('LIB_REDCORE_TRANSLATIONS_DRIVER_ERROR', $options['driver']), 'error');
 					}

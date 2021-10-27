@@ -478,7 +478,7 @@ abstract class JHtmlRgrid
 		$data->icon      = $icon;
 		$data->form      = $formId;
 
-		return RLayoutHelper::render('grid.sort', $data);
+		return RLayoutHelper::render('rgrid.sort', $data);
 	}
 
 	/**

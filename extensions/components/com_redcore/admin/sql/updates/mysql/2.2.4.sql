@@ -1,0 +1,11 @@
+ALTER TABLE `#__redcore_payments` CHANGE `params` `params` TEXT;
+ALTER TABLE `#__redcore_payment_log` CHANGE `message_post` `message_post` TEXT;
+ALTER TABLE `#__redcore_payment_log` CHANGE `message_text` `message_text` TEXT;
+ALTER TABLE `#__redcore_payment_configuration` CHANGE `params` `params` TEXT;
+ALTER TABLE `#__redcore_webservices` CHANGE `operations` `operations` TEXT;
+ALTER TABLE `#__redcore_webservices` CHANGE `scopes` `scopes` TEXT;
+ALTER TABLE `#__redcore_translation_tables` CHANGE `form_links` `form_links` TEXT;
+ALTER TABLE `#__redcore_translation_tables` CHANGE `params` `params` TEXT;
+ALTER TABLE `#__redcore_translation_columns` CHANGE `description` `description` TEXT;
+ALTER TABLE `#__redcore_translation_columns` CHANGE `params` `params` TEXT;
+ALTER TABLE `#__redcore_schemas` CHANGE `fields` `fields` TEXT;

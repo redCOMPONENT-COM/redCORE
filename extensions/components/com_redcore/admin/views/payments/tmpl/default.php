@@ -74,7 +74,7 @@ $listDirn = $this->state->get('list.direction');
 				<?php foreach ($this->items as $i => $item): ?>
 					<tr class="<?php echo RApiPaymentStatus::getStatusLabelClass($item->status); ?>">
 						<td>
-							<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+							<?php echo JHtml::_('rgrid.id', $i, $item->id); ?>
 						</td>
 						<td>
 							<a href="<?php echo JRoute::_('index.php?option=com_redcore&task=payment.edit&id=' . $item->id); ?>">

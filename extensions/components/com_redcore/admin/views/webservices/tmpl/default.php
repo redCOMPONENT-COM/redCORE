@@ -13,6 +13,7 @@ JHtml::_('behavior.keepalive');
 JHtml::_('rdropdown.init');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
+JHtml::_('behavior.formvalidator');
 $listOrder = $this->state->get('list.ordering');
 $listDirn  = $this->state->get('list.direction');
 $action    = JRoute::_('index.php?option=com_redcore&view=webservices');
@@ -234,7 +235,7 @@ $action    = JRoute::_('index.php?option=com_redcore&view=webservices');
 						<?php foreach ($this->items as $i => $item): ?>
                             <tr>
                                 <td>
-									<?php echo JHtml::_('grid.id', $i, $item->id); ?>
+									<?php echo JHtml::_('rgrid.id', $i, $item->id); ?>
                                 </td>
                                 <td>
 									<?php echo JHtml::_('rgrid.published', $item->state, $i, 'webservices.', $canChange = true, 'cb'); ?>

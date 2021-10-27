@@ -662,7 +662,7 @@ abstract class RHtml
 
 			foreach ($includes as $include)
 			{
-				$document->addStylesheet($include, 'text/css', null, $attribs);
+				$document->addStylesheet($include);
 			}
 		}
 	}
@@ -684,8 +684,7 @@ abstract class RHtml
 	 */
 	public static function script($file, $framework = false, $relative = false, $path_only = false, $detect_browser = true, $detect_debug = true)
 	{
-		// Include MooTools framework
-		if ($framework)
+		if ($framework && version_compare(JVERSION, '4.0.0', 'lt'))
 		{
 			static::_('behavior.framework');
 		}

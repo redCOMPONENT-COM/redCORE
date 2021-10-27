@@ -74,7 +74,7 @@ gulp.task('scripts:' + baseTask, function () {
 });
 
 // Styles
-gulp.task('styles:' + baseTask, function () {
+gulp.task('styles:' + baseTask, ['less:' + baseTask], function () {
 	return gulp.src(excludedMediaStypeFolders.concat([
 			buildPath + '/media/**/*.css'
 		]))
@@ -86,7 +86,7 @@ gulp.task('styles:' + baseTask, function () {
 });
 
 // Library files (fonts, images, ...)
-gulp.task('libraries:' + baseTask, function () {
+gulp.task('libraries:' + baseTask, ['scripts:' + baseTask, 'styles:' + baseTask], function () {
 	return gulp.src([buildPath + '/media/**/lib/**',
 				'!' + buildPath + '/media/**/lib/**/*.css',
 				'!' + buildPath + '/media/**/lib/**/*.js',

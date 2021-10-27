@@ -14,6 +14,7 @@ $action = JRoute::_('index.php?option=com_redcore&view=payment_configuration');
 JHtml::_('behavior.keepalive');
 JHtml::_('rbootstrap.tooltip');
 JHtml::_('rjquery.chosen', 'select');
+JHtml::_('behavior.formvalidator');
 ?>
 <script type="text/javascript">
 jQuery(document).ready(function () {
