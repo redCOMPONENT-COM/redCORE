@@ -37,11 +37,11 @@ JFactory::getDocument()->addScriptDeclaration($script);
 ?>
 <div class="input-append bootstrap-timepicker-component">
 	<?php if ($required) : ?>
-		<input class="required' . <?php echo $class ?> . '" name="' . <?php echo $name ?> . '" type="text"
-		       id="' . <?php echo $id ?> . '" required="required" value="' . <?php echo $value ?> . '" />';
+		<input class="required <?php echo $class ?>" name="<?php echo $name ?>" type="text"
+			   id="<?php echo $id ?>" required="required" value="<?php echo $value ?>" />;
 	<?php else : ?>
-		'<input class="' . <?php echo $class ?> . '" name="' . <?php echo $name ?> . '" type="text"
-		        id="' .  <?php echo $id ?> . '" value="' . <?php echo $value ?> . '" />';
+		<input class="<?php echo $class ?>" name=" <?php echo $name ?>" type="text"
+			   id="<?php echo $id ?>" value="<?php echo $value ?>" />
 	<?php endif; ?>
 	<span class="add-on">
 		<i class="icon-clock"></i>
