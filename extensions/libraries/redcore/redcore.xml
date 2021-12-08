@@ -2,13 +2,13 @@
 <extension type="library" method="upgrade" version="3.9">
     <name>redCORE - Libraries</name>
     <libraryname>redcore</libraryname>
-    <creationDate>June 2021</creationDate>
+    <creationDate>December 2021</creationDate>
     <author>redWEB</author>
     <authorEmail>email@redweb.dk</authorEmail>
     <authorUrl>redweb.dk</authorUrl>
     <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
-    <version>2.2.1</version>
+    <version>2.3.0</version>
     <description>redCORE Libraries</description>
 
     <files>
