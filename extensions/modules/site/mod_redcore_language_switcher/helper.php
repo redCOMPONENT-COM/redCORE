@@ -30,7 +30,7 @@ class ModRedCORELanguageSwitcherHelper
 		$db = JFactory::getDbo();
 
 		$Itemid = $app->input->getInt('Itemid', 0);
-		$uri = new JURI(Juri::current());
+		$uri = JUri::getInstance();
 		$uri->delVar('lang');
 		$uri->delVar('Itemid');
 		$location = htmlspecialchars($uri->getQuery());
