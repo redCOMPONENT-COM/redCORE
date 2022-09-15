@@ -203,6 +203,55 @@
             <option value="0">JNO</option>
         </field>
     </fieldset>
+    <fieldset name="REDCORE_WEBSERVICES_HISTORY_LOG_OPTIONS"
+              addfieldpath="/libraries/redcore/form/fields"
+              label="COM_REDCORE_CONFIG_WEBSERVICES_HISTORY_LOG_OPTIONS">
+        <field
+                name="enable_webservice_history_log"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_SOAP_ENABLE_WEBSERVICE_HISTORY_LOG"
+                description="COM_REDCORE_CONFIG_SOAP_ENABLE_WEBSERVICE_HISTORY_LOG_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+        <field
+                name="webservice_history_log_path"
+                type="text"
+                default="logs/com_redcore/webservice_history_log"
+                label="COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_PATH"
+                description="COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_PATH_DESC"
+        />
+        <field
+                name="webservice_history_log_allowed_operations"
+                class="btn-group"
+                type="list"
+                multiple="true"
+                default="all"
+                label="COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION"
+                description="COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DESC">
+            <option value="">JNONE</option>
+            <option value="all">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_ALL</option>
+            <option value="create">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_CREATE</option>
+            <option value="read list">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_LIST</option>
+            <option value="read item">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_READ_ITEM</option>
+            <option value="update">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_UPDATE</option>
+            <option value="delete">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DELETE</option>
+            <option value="task">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_TASK</option>
+            <option value="documentation">COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_OPERATION_DOCUMENTATION</option>
+        </field>
+        <field
+                name="webservice_history_log_store_read_response"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_STORE_READ_RESPONSE"
+                description="COM_REDCORE_CONFIG_SOAP_WEBSERVICE_HISTORY_LOG_STORE_READ_RESPONSE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
+    </fieldset>
     <fieldset name="REDCORE_OAUTH2_SERVER_OPTIONS"
               addfieldpath="/libraries/redcore/form/fields"
               label="COM_REDCORE_CONFIG_OAUTH2_SERVER_OPTIONS">

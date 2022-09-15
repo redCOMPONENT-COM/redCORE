@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS `#__redcore_oauth_jwt`;
 DROP TABLE IF EXISTS `#__redcore_oauth_jti`;
 DROP TABLE IF EXISTS `#__redcore_oauth_public_keys`;
 DROP TABLE IF EXISTS `#__redcore_webservices`;
+DROP TABLE IF EXISTS `#__redcore_webservice_history_log`;
 DROP TABLE IF EXISTS `#__redcore_currency`;
 DROP TABLE IF EXISTS `#__redcore_country`;
 DROP TABLE IF EXISTS `#__redcore_payment_configuration`;

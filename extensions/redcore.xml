@@ -8,7 +8,7 @@
     <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
     <version>2.3.1</version>
-    <releaseName>beta1</releaseName>
+    <releaseName>beta2</releaseName>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
     <redcore version="2.3.0" defaultFramework="bootstrap3" />
@@ -61,6 +61,7 @@
             <menu link="option=com_redcore&amp;view=config&amp;layout=edit&amp;component=com_redcore" view="configs">COM_REDCORE_CONFIGURATION</menu>
             <menu link="option=com_redcore&amp;view=translation_tables" view="translation_tables">COM_REDCORE_TRANSLATIONS</menu>
             <menu link="option=com_redcore&amp;view=webservices" view="webservices">COM_REDCORE_WEBSERVICES</menu>
+            <menu link="option=com_redcore&amp;view=webservice_history_logs" view="webservice_history_logs">COM_REDCORE_WEBSERVICE_HISTORY_LOGS</menu>
             <menu link="option=com_redcore&amp;view=oauth_clients" view="oauth_clients">COM_REDCORE_OAUTH_CLIENTS</menu>
             <menu link="option=com_redcore&amp;view=payment_dashboard" view="payment_dashboard">COM_REDCORE_PAYMENTS</menu>
         </submenu>

@@ -254,4 +254,19 @@ abstract class RFilesystemFile extends JFile
 
 		return $type[0];
 	}
+
+	/**
+	 * Get Mime type
+	 *
+	 * @param   float  $size  File size information.
+	 *
+	 * @return  string
+	 */
+	public static function getReadableFileSize($size)
+	{
+		$sizeName = array(" Bytes", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB");
+		$i        = floor(log($size, 1024));
+
+		return $size ? round($size / pow(1024, $i), 2) . $sizeName[(int) $i] : '0 Bytes';
+	}
 }

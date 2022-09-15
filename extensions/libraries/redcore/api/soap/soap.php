@@ -61,7 +61,8 @@ class RApiSoapSoap extends RApi
 
 		JPluginHelper::importPlugin('redcore');
 
-		$this->webservice = new RApiHalHal($options);
+		$options['usingSoap']                 = true;
+		$this->webservice                     = new RApiHalHal($options);
 		$this->webservice->authorizationCheck = 'joomla';
 
 		// Init Environment
@@ -378,5 +379,19 @@ class RApiSoapSoap extends RApi
 	public function prepareBody($message)
 	{
 		return $message;
+	}
+
+	/**
+	 * End History Log
+	 *
+	 * @param   string   $status  Status message
+	 *
+	 * @return  void
+	 *
+	 * @since   1.11
+	 */
+	public function endHistoryLog($status)
+	{
+		$this->webservice->endHistoryLog($status);
 	}
 }
