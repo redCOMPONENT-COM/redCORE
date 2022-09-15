@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Exception
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -495,7 +495,7 @@ class RDatabaseSqlparserSqlcreator {
 				$sql = substr($sql, 0, -1) . ' ';
 			}
 
-			$sql .= $this->processReserved($v);
+			$sql .= (!empty($this->processReserved($v))) ? ',' . $this->processReserved($v) : $this->processReserved($v);
 			$sql .= $this->processFunction($v);
 			$sql .= $this->processConstant($v);
 			$sql .= $this->processOperator($v);

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Database
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -934,7 +934,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 							&& !empty($tableAlias)
 							&& !in_array(self::cleanEscaping($tableAlias), $fieldFromList->tableAliasesToParse))
 						{
-							continue;
+							continue 2;
 						}
 
 						return $fieldFromListQuotes;
@@ -949,7 +949,7 @@ class RDatabaseSqlparserSqltranslation extends RTranslationHelper
 						// If this is different table we do not check columns
 						if (!empty($alias) && $alias != self::cleanEscaping($fieldFromList['table']['alias']['originalName']))
 						{
-							continue;
+							continue 2;
 						}
 
 						return $fieldFromList;

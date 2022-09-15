@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <apiservice client="site">
   <name>User Webservice</name>
-  <author>redCOMPONENT</author>
-  <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
+  <author>redWEB</author>
+  <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
   <description>Api HAL configuration for com_users.</description>
   <config>
     <name>users</name>

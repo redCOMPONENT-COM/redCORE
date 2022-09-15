@@ -298,8 +298,8 @@ class RoboFile extends \Robo\Tasks
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-			// ->arg('--steps')
-			// ->arg('--debug')
+			//->arg('--steps')
+			//->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/install/')
@@ -351,7 +351,7 @@ class RoboFile extends \Robo\Tasks
 			//->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
-			->arg('api')
+			->arg($this->testsFolder . 'api/')
 			->run()
 			->stopOnFail();
 
@@ -419,24 +419,11 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function runChromeDriver()
 	{
-		$prefix     = '';
-		$executable = 'linux/chromedriver';
+		$prefix     = '../';
+		$executable = 'chromedriver';
 		$suffix     = ' >> driver.log 2>&1 &';
 
-		switch ($this->getOs())
-		{
-			case self::OS_OSX:
-				$executable = 'mac/chromedriver';
-				break;
-
-			case self::OS_WIN:
-				$prefix     = 'START /B ';
-				$executable = 'windows/chromedriver.exe';
-				$suffix     = ' > driver.log';
-				break;
-		}
-
-		$this->_exec($prefix . 'vendor/joomla-projects/selenium-server-standalone/bin/webdrivers/chrome/' .  $executable . ' --url-base=/wd/hub' . $suffix);
+		$this->_exec($prefix . $executable . ' --url-base=/wd/hub' . $suffix);
 	}
 
 	/**
@@ -582,6 +569,41 @@ class RoboFile extends \Robo\Tasks
 		$branch = empty($this->configuration->branch) ? 'staging' : $this->configuration->branch;
 
 		return "git" . $this->executableExtension . " clone -b $branch --single-branch --depth 1 https://github.com/joomla/joomla-cms.git cache";
+	}
+
+	public function sendSlackImages()
+	{
+		$images = glob(__DIR__ . "/_output/*.png");
+		$slackToken = getenv('REDCORE_SLACK_UPLOAD_SCREEN_TOKEN');
+
+		if (!$slackToken)
+		{
+			$this->output()->writeln('Slack token not found! Found images will not be uploaded to slack!');
+		}
+
+		if (empty($images)
+			|| !$slackToken
+			|| empty($slackToken))
+		{
+			return;
+		}
+
+		foreach($images as $image)
+		{
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form-data']);
+			curl_setopt($curl, CURLOPT_URL, "https://slack.com/api/files.upload");
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, [
+				'token' => $slackToken,
+				'channels' => "C0299E54Y",
+				'file' => new CurlFile($image, 'image/png'),
+				'filename' => $image
+			]);
+			curl_exec($curl);
+			curl_close($curl);
+		}
 	}
 
 	/**

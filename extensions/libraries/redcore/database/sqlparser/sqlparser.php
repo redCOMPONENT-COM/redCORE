@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Exception
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -434,7 +434,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					// We are using USE from FROM statement, not separate token category
 					if ($prev_category == 'FROM')
 					{
-						continue;
+						break;
 					}
 					$token_category = $upper; /* set the category in case these get subclauses
 										  in a future version of MySQL */
@@ -1071,7 +1071,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					}
 					$parseInfo['alias']['name']      = $str;
 					$parseInfo['alias']['base_expr'] = trim($parseInfo['alias']['base_expr']);
-					continue;
+					break;
 
 				case 'INDEX':
 					if (!empty($token_category) && $token_category == 'CREATE')
@@ -1087,7 +1087,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					$parseInfo['ref_type'] = $upper;
 					$parseInfo['ref_expr'] = "";
 					$parseInfo['token_count']++;
-					continue;
+					break;
 
 				case 'USE':
 				case 'FORCE':
@@ -1110,19 +1110,18 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 					}
 
 					$parseInfo['index_hints'] = $tableOptions;
-					continue;
 					break;
 
 				case 'CROSS':
 				case 'INNER':
 				case 'OUTER':
 					$parseInfo['token_count']++;
-					continue;
+					break;
 
 				case 'FOR':
 					$parseInfo['token_count']++;
 					$skip_next = true;
-					continue;
+					break;
 
 				case 'LEFT':
 				case 'RIGHT':
@@ -1147,7 +1146,7 @@ class RDatabaseSqlparserSqlparser extends RDatabaseSqlparserSqlparserutils
 				default:
 					if ($upper === "")
 					{
-						continue; // ends the switch statement!
+						break; // ends the switch statement!
 					}
 
 					if ($parseInfo['token_count'] === 0)

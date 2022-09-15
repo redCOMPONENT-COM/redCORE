@@ -2,8 +2,8 @@
 <!-- Default value for client attribute is site. If client is set to "administrator" then it will only be triggered through administrator call  -->
 <apiservice client="site">
     <name>Contact Webservice</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+    <author>redWEB</author>
+    <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <description>Api HAL configuration for Joomla Contact component</description>
     <config>
         <!-- This will be used for automatic model and table instance in CRUD methods and for Api helper class -->

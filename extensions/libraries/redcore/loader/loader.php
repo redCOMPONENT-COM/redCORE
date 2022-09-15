@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Loader
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -794,7 +794,7 @@ class RLoader extends JLoader
 	 *
 	 * @return  void
 	 *
-	 * @since   __deploy_version__
+	 * @since   2.1.0
 	 */
 	private static function loadAliasForClass($class)
 	{

@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <contentelement type="contentelement">
   <name>Menus</name>
-  <author>redCOMPONENT</author>
-  <copyright>Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.</copyright>
+  <author>redWEB</author>
+  <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
   <version>1.8.3</version>
   <description>Translation definition for Joomla Menu Manager</description>
   <reference>

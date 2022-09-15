@@ -1,18 +1,22 @@
 language: php
 sudo: required
-env: TRAVIS_PUBLIC_REPOSITORY=true
-dist: trusty
+env:
+  TRAVIS_PUBLIC_REPOSITORY=true
+dist: xenial
 php:
-  - 5.6
   - 7.0
   - 7.1
   - 7.2
-  - nightly
+  - 7.3
+  - 7.4
+
+branches:
+  except:
+    - crowdin
+    - crowdin-work
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - php: nightly
 
 install:
   - . $HOME/.nvm/nvm.sh
@@ -21,6 +25,7 @@ install:
 
 addons:
   chrome: stable
+  mariadb: '10.5'
 
 cache:
   apt: true
@@ -29,9 +34,20 @@ cache:
     - $HOME/.composer/cache/files
 
 before_script:
+# MariaDB
+- sudo mysql -e "SET Password=PASSWORD('travis')"
+
+# APT
 - sudo apt-get update
 - sudo apt-get install apache2 libapache2-mod-fastcgi
+- sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+- sudo apt-get install default-jdk
 - npm install -g gulp
+
+# Chromedriver
+- wget https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_linux64.zip
+- unzip chromedriver_linux64.zip
+- chmod +x chromedriver
 
 # Enable php-fpm
 - sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
@@ -59,10 +75,8 @@ script:
 # System / Acceptance tests
 - vendor/bin/robo run:chrome-driver
 - vendor/bin/robo run:tests 1
+- vendor/bin/robo send:slack-images
 - vendor/bin/robo kill:chrome-driver
-
-# Unit tests
-- vendor/bin/robo run:unit-tests
 
 notifications:
   slack:

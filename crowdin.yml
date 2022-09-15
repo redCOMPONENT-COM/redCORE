@@ -1,0 +1,20 @@
+preserve_hierarchy: true
+files:
+  - source: /extensions/components/com_redcore/admin/language/en-GB/en-GB.com_redcore.ini
+    translation: /extensions/languages/%locale%/admin/%locale%/%locale%.com_redcore.ini
+  - source: /extensions/components/com_redcore/admin/language/en-GB/en-GB.com_redcore.sys.ini
+    translation: /extensions/languages/%locale%/admin/%locale%/%locale%.com_redcore.sys.ini
+  - source: /extensions/libraries/redcore/language/en-GB/en-GB.lib_redcore.ini
+    translation: /extensions/languages/%locale%/site/%locale%/%locale%.lib_redcore.ini
+  - source: /extensions/module/site/mod_redcore_language_switcher/language/en-GB/en-GB.mod_redcore_language_switcher.ini
+    translation: /extensions/languages/%locale%/site/%locale%/%locale%.mod_redcore_language_switcher.ini
+  - source: /extensions/module/site/mod_redcore_language_switcher/language/en-GB/en-GB.mod_redcore_language_switcher.sys.ini
+    translation: /extensions/languages/%locale%/site/%locale%/%locale%.mod_redcore_language_switcher.sys.ini
+  - source: /extensions/plugins/redpayment/paypal/language/en-GB/en-GB.plg_redpayment_paypal.ini
+    translation: /extensions/languages/%locale%/admin/%locale%/%locale%.plg_redpayment_paypal.ini
+  - source: /extensions/plugins/redpayment/paypal/language/en-GB/en-GB.plg_redpayment_paypal.sys.ini
+    translation: /extensions/languages/%locale%/admin/%locale%/%locale%.plg_redpayment_paypal.sys.ini
+  - source: /extensions/plugins/system/redcore/language/en-GB/en-GB.plg_system_redcore.ini
+    translation: /extensions/languages/%locale%/admin/%locale%/%locale%.plg_system_redcore.ini
+  - source: /extensions/plugins/system/redcore/language/en-GB/en-GB.plg_system_redcore.sys.ini
+    translation: /extensions/languages/%locale%/admin/%locale%/%locale%.plg_system_redcore.sys.ini

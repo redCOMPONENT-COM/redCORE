@@ -3,7 +3,7 @@
  * @package     Joomla.Administrator
  * @subpackage  com_weblinks
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -21,7 +21,7 @@ class AdministratorContacts100AvailabilityCest
 		);
 
 		// Checking for 204 code since there are no contacts before inserting them
-		$I->seeResponseCodeIs(204);
+		$I->seeSoapResponseCodeIs(204);
 		$I->seeHttpHeader('X-Webservice-name', 'contact');
 		$I->seeHttpHeader('X-Webservice-version', '1.0.0');
 	}

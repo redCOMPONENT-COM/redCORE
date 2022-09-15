@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Upgrade
  *
- * @copyright   Copyright (C) 2008 - 2016 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -74,7 +74,7 @@ class Com_RedcoreUpdateScript_1_5_5
 			{
 				$query = trim($query);
 
-				if ($query != '' && $query{0} != '#')
+				if ($query != '' && $query[0] != '#')
 				{
 					$db->setQuery($query);
 
