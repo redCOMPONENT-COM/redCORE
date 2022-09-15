@@ -19,9 +19,9 @@ defined('_JEXEC') or die;
  *
  * @package     Redcore
  * @subpackage  Upgrade
- * @since       2.2.3
+ * @since       2.3.2
  */
-class Com_RedcoreUpdateScript_2_2_3
+class Com_RedcoreUpdateScript_2_3_2
 {
 	/**
 	 * Performs the upgrade after initial Joomla update for this version
