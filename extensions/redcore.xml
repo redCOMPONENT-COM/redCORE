@@ -8,7 +8,7 @@
     <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <license>GNU General Public License version 2 or later, see LICENSE.</license>
     <version>2.3.1</version>
-    <releaseName>beta1</releaseName>
+    <releaseName>beta2</releaseName>
     <description>COM_REDCORE_DESC</description>
     <scriptfile>install.php</scriptfile>
     <redcore version="2.3.0" defaultFramework="bootstrap3" />
