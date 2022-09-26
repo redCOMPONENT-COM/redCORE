@@ -258,7 +258,7 @@ class RApi extends RApiBase
 		{
 			$inputData = ArrayHelper::fromObject($inputData);
 		}
-		elseif (is_string($inputData))
+		elseif (is_string($inputData) && !empty($inputData))
 		{
 			$inputData = trim($inputData);
 			$parsedData = null;
@@ -290,6 +290,14 @@ class RApi extends RApiBase
 		else
 		{
 			$inputData = $input->post->getArray();
+		}
+
+		if ($input->files->count())
+		{
+			foreach ($input->files->getArray() as $field => $file)
+			{
+				$inputData[$field] = $file;
+			}
 		}
 
 		$filter = JFilterInput::getInstance(array(), array(), 1, 1);
