@@ -34,7 +34,6 @@ class RApiHalHelperSiteContent
 		$data = (object) $data;
 		$article = JTable::getInstance('content');
 		$article->title            = $data->title;
-//		$article->alias            = JFilterOutput::stringURLSafe(time());
 		$article->alias            = JFilterOutput::stringURLSafe($data->title);
 		$article->introtext        = '<p>'.$data->description.'</p>';
 		$article->created          = JFactory::getDate()->toSQL();;
@@ -43,7 +42,6 @@ class RApiHalHelperSiteContent
 		$article->access           = 1;
 		$article->metadata         = '{"page_title":"'.$data->title.'","author":"'.$data->user.'","robots":""}';
 		$article->language         = '*';
-//		$article->catid            = 1;
 		
 		if (!$article->check()) {
 			throw new Exception($article->getError());
