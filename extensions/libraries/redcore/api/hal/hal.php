@@ -8,6 +8,7 @@
  */
 defined('JPATH_BASE') or die;
 
+use Joomla\CMS\MVC\Model\AdminModel;
 use Joomla\Utilities\ArrayHelper;
 
 /**
@@ -816,7 +817,7 @@ class RApiHalHal extends RApi
 			$this->setStatusCode(400, $customError);
 		}
 
-		if (method_exists($model, 'getState'))
+		if ($model instanceof AdminModel)
 		{
 			$this->setData('id', $model->getState($model->getName() . '.id'));
 		}
@@ -979,9 +980,12 @@ class RApiHalHal extends RApi
 			$this->setStatusCode(400, $customError);
 		}
 
-		if (method_exists($model, 'getState'))
+		if ($model instanceof AdminModel)
 		{
-			$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
+			$this->setData(
+				'id',
+				$model->getState($model->getName() . '.id')
+			);
 		}
 
 		if (method_exists($model, 'getErrors'))
@@ -1074,9 +1078,9 @@ class RApiHalHal extends RApi
 				}
 			}
 
-			if (method_exists($model, 'getState'))
+			if ($model instanceof AdminModel)
 			{
-				$this->setData('id', $model->getState(strtolower($this->elementName) . '.id'));
+				$this->setData('id', $model->getState($model->getName() . '.id'));
 			}
 		}
 
@@ -1463,10 +1467,13 @@ class RApiHalHal extends RApi
 					&& !RApiHalHelper::isAttributeTrue($fieldAttributes, 'isPrimaryField') ? $fieldAttributes['defaultValue'] : '';
 
 				// If field is not sent through Request
-				if (!isset($data[$fieldAttributes['name']]))
+				if (!array_key_exists($fieldAttributes['name'], $data))
 				{
-					// We will populate missing fields with null value
-					$data[$fieldAttributes['name']] = null;
+					if (RBootstrap::getConfig('webservice_put_sends_changes_only', 1) != 1)
+					{
+						// We will populate missing fields with null value
+						$data[$fieldAttributes['name']] = null;
+					}
 
 					// We will populate value with default value if the field is not set for create operation
 					if ($this->operation == 'create')
@@ -1475,12 +1482,16 @@ class RApiHalHal extends RApi
 					}
 				}
 
-				if (!is_null($data[$fieldAttributes['name']]))
+				if (isset($data[$fieldAttributes['name']]))
 				{
 					$data[$fieldAttributes['name']] = $this->transformField($fieldAttributes['transform'], $data[$fieldAttributes['name']], false);
 				}
 
-				$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
+				if (RBootstrap::getConfig('webservice_put_sends_changes_only', 1) == 1
+					? array_key_exists($fieldAttributes['name'], $data) : true)
+				{
+					$dataFields[$fieldAttributes['name']] = $data[$fieldAttributes['name']];
+				}
 			}
 
 			if (RApiHalHelper::isAttributeTrue($configuration, 'strictFields'))
@@ -1489,9 +1500,12 @@ class RApiHalHal extends RApi
 			}
 		}
 
-		// Common functions are not checking this field so we will
-		$data['params']       = isset($data['params']) ? $data['params'] : null;
-		$data['associations'] = isset($data['associations']) ? $data['associations'] : array();
+		if (RBootstrap::getConfig('webservice_put_sends_changes_only', 1) != 1)
+		{
+			// Common functions are not checking this field so we will
+			$data['params']       = isset($data['params']) ? $data['params'] : null;
+			$data['associations'] = isset($data['associations']) ? $data['associations'] : [];
+		}
 
 		return $data;
 	}
@@ -1538,8 +1552,44 @@ class RApiHalHal extends RApi
 					return $data;
 				}
 
+				$fieldNames = array_keys($data);
+
+				if (RBootstrap::getConfig('webservice_put_sends_changes_only', 1) == 1
+					&& $model instanceof AdminModel)
+				{
+					$primaryKeys = [];
+
+					foreach ($model->getTable()->get('_tbl_keys') as $key)
+					{
+						$primaryKeys[$key] = $data[$key] ?? null;
+					}
+
+					$key  = count($primaryKeys) > 1 ? $primaryKeys : reset($primaryKeys);
+					$data = array_merge(
+						ArrayHelper::fromObject($model->getItem($key)),
+						$data
+					);
+				}
+
 				// Test whether the data is valid.
 				$validData = $model->validate($form, $data);
+
+				if (!is_array($validData))
+				{
+					return $validData;
+				}
+
+				if (RBootstrap::getConfig('webservice_put_sends_changes_only', 1) == 1)
+				{
+					$returnData = [];
+
+					foreach ($fieldNames as $fieldName)
+					{
+						$returnData[$fieldName] = $validData[$fieldName];
+					}
+
+					return $returnData;
+				}
 
 				// Common functions are not checking this field so we will
 				$validData['params']       = isset($validData['params']) ? $validData['params'] : null;
@@ -2000,6 +2050,22 @@ class RApiHalHal extends RApi
 			return $this->getDynamicModelObject($configuration);
 		}
 
+		$attributes = [
+			'webservice_attributes' => [
+				'filterFields' => RApiHalHelper::getFilterFields($configuration)
+			]
+		];
+
+		if (!empty($configuration['modelConstructorArgs']))
+		{
+			$attributes['webservice_attributes']['constructorArgs'] = array_filter(
+				array_map(
+					'trim',
+					explode(',', $configuration['modelConstructorArgs'])
+				)
+			);
+		}
+
 		if (!empty($configuration['modelClassName']))
 		{
 			$modelClass = (string) $configuration['modelClassName'];
@@ -2007,18 +2073,18 @@ class RApiHalHal extends RApi
 			if (!empty($configuration['modelClassPath']))
 			{
 				require_once JPATH_SITE . '/' . $configuration['modelClassPath'];
+			}
 
-				if (class_exists($modelClass))
-				{
-					return new $modelClass;
-				}
+			if (class_exists($modelClass))
+			{
+				return new $modelClass($attributes);
 			}
 			else
 			{
 				$componentName = ucfirst(strtolower(substr($this->optionName, 4)));
 				$prefix        = $componentName . 'Model';
 
-				$model = RModel::getInstance($modelClass, $prefix);
+				$model = RModel::getInstance($modelClass, $prefix, $attributes);
 
 				if ($model)
 				{
@@ -2034,10 +2100,10 @@ class RApiHalHal extends RApi
 
 		if ($isAdmin)
 		{
-			return RModel::getAdminInstance($elementName, array(), $this->optionName);
+			return RModel::getAdminInstance($elementName, $attributes, $this->optionName);
 		}
 
-		return RModel::getFrontInstance($elementName, array(), $this->optionName);
+		return RModel::getFrontInstance($elementName, $attributes, $this->optionName);
 	}
 
 	/**
