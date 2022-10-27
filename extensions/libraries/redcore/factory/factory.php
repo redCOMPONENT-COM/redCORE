@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Factory
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -101,5 +101,70 @@ final class RFactory extends JFactory
 		$db->setDebug($debug);
 
 		return $db;
+	}
+
+	/**
+	 * Create a mailer object
+	 *
+	 * @return  JMail object
+	 *
+	 * @see     JMail
+	 * @since   11.1
+	 */
+	protected static function createMailer()
+	{
+		$conf = self::getConfig();
+
+		$smtpauth = ($conf->get('smtpauth') == 0) ? null : 1;
+		$smtpuser = $conf->get('smtpuser');
+		$smtppass = $conf->get('smtppass');
+		$smtphost = $conf->get('smtphost');
+		$smtpsecure = $conf->get('smtpsecure');
+		$smtpport = $conf->get('smtpport');
+		$mailfrom = $conf->get('mailfrom');
+		$fromname = $conf->get('fromname');
+		$mailer = $conf->get('mailer');
+
+		// Create a JMail object
+		$mail = RMail::getInstance();
+
+		// Clean the email address
+		$mailfrom = JMailHelper::cleanLine($mailfrom);
+
+		// Set default sender without Reply-to if the mailfrom is a valid address
+		if (JMailHelper::isEmailAddress($mailfrom))
+		{
+			// Wrap in try/catch to catch phpmailerExceptions if it is throwing them
+			try
+			{
+				// Check for a false return value if exception throwing is disabled
+				if ($mail->setFrom($mailfrom, JMailHelper::cleanLine($fromname), false) === false)
+				{
+					JLog::add(__METHOD__ . '() could not set the sender data.', JLog::WARNING, 'mail');
+				}
+			}
+			catch (phpmailerException $e)
+			{
+				JLog::add(__METHOD__ . '() could not set the sender data.', JLog::WARNING, 'mail');
+			}
+		}
+
+		// Default mailer is to use PHP's mail function
+		switch ($mailer)
+		{
+			case 'smtp':
+				$mail->useSmtp($smtpauth, $smtphost, $smtpuser, $smtppass, $smtpsecure, $smtpport);
+				break;
+
+			case 'sendmail':
+				$mail->isSendmail();
+				break;
+
+			default:
+				$mail->isMail();
+				break;
+		}
+
+		return $mail;
 	}
 }

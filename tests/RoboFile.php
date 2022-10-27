@@ -12,74 +12,130 @@ require_once 'vendor/autoload.php';
 /**
  * Class RoboFile
  *
- * @since  1.5
+ * @since  1.6.14
  */
 class RoboFile extends \Robo\Tasks
 {
 	// Load tasks from composer, see composer.json
-	use \redcomponent\robo\loadTasks;
+	use Joomla\Testing\Robo\Tasks\LoadTasks;
+
+	const OS_UNKNOWN = 1;
+	const OS_WIN = 2;
+	const OS_LINUX = 3;
+	const OS_OSX = 4;
 
 	/**
-	 * Current RoboFile version
-	 */
-	private $version = '1.4';
-
-	/**
-	 * Current root folder
-	 */
-	private $testsFolder = './';
-
-	/**
-	 * Hello World example task.
+	 * Identify the OS
 	 *
-	 * @see  https://github.com/redCOMPONENT-COM/robo/blob/master/src/HelloWorld.php
-	 * @link https://packagist.org/packages/redcomponent/robo
-	 *
-	 * @return object Result
+	 * @return int
+	 * @since  10.1
 	 */
-	public function sayHelloWorld()
+	static public function getOS()
 	{
-		$result = $this->taskHelloWorld()->run();
-
-		return $result;
+		switch (true)
+		{
+			case stristr(PHP_OS, 'DAR'):
+				return self::OS_OSX;
+			case stristr(PHP_OS, 'WIN'):
+				return self::OS_WIN;
+			case stristr(PHP_OS, 'LINUX'):
+				return self::OS_LINUX;
+			default:
+				return self::OS_UNKNOWN;
+		}
 	}
 
 	/**
-	 * Sends Codeception errors to Slack
+	 * File extension for executables
 	 *
-	 * @param   string  $slackChannel             The Slack Channel ID
-	 * @param   string  $slackToken               Your Slack authentication token.
-	 * @param   string  $codeceptionOutputFolder  Optional. By default tests/_output
+	 * @var string
+	 */
+	private $executableExtension = '';
+
+	/**
+	 * Local configuration parameters
+	 *
+	 * @var array
+	 */
+	private $configuration = array();
+
+	/**
+	 * Path to the local CMS root
+	 *
+	 * @var string
+	 */
+	private $cmsPath = '';
+
+	/**
+	 * Current root folder
+	 * File extension for executables
+	 *
+	 * @var string
+	 */
+	 private $testsFolder = './';
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->configuration = $this->getConfiguration();
+		$this->cmsPath = $this->getCmsPath();
+		$this->executableExtension = $this->getExecutableExtension();
+
+		// Set default timezone (so no warnings are generated if it is not set)
+		date_default_timezone_set('UTC');
+	}
+
+	/**
+	 * Downloads and prepares a Joomla CMS site for testing
+	 *
+	 * @param   int   $use_htaccess  (1/0) Rename and enable embedded Joomla .htaccess file
 	 *
 	 * @return mixed
 	 */
-	public function sendCodeceptionOutputToSlack($slackChannel, $slackToken = null, $codeceptionOutputFolder = null)
+	public function prepareSiteForSystemTests($use_htaccess = 0)
 	{
-		if (is_null($slackToken))
+		// Caching cloned installations locally
+		if (!is_dir('cache') || (time() - filemtime('cache') > 60 * 60 * 24))
 		{
-			$this->say('we are in Travis environment, getting token from ENV');
+			if (file_exists('cache'))
+			{
+				$this->taskDeleteDir('cache')->run();
+			}
 
-			// Remind to set the token in repo Travis settings,
-			// see: http://docs.travis-ci.com/user/environment-variables/#Using-Settings
-			$slackToken = getenv('SLACK_ENCRYPTED_TOKEN');
+			$this->_exec($this->buildGitCloneCommand());
 		}
 
-		if (is_null($codeceptionOutputFolder))
+		// Get Joomla Clean Testing sites
+		if (is_dir($this->cmsPath))
 		{
-			$this->codeceptionOutputFolder = '_output';
+			try
+			{
+				$this->taskDeleteDir($this->cmsPath)->run();
+			}
+			catch (Exception $e)
+			{
+				// Sorry, we tried :(
+				$this->say('Sorry, you will have to delete ' . $this->cmsPath . ' manually. ');
+				exit(1);
+			}
 		}
 
-		$this->say($codeceptionOutputFolder);
+		$this->_copyDir('cache', $this->cmsPath);
 
-		$result = $this
-			->taskSendCodeceptionOutputToSlack(
-				$slackChannel,
-				$slackToken,
-				$codeceptionOutputFolder
-			)
-			->run();
+		// Optionally change owner to fix permissions issues
+		if (!empty($this->configuration->localUser) && !$this->isWindows())
+		{
+			$this->_exec('chown -R ' . $this->configuration->localUser . ' ' . $this->cmsPath);
+		}
 
-		return $result;
+		// Optionally uses Joomla default htaccess file
+		if ($use_htaccess == 1)
+		{
+			$this->_copy($this->cmsPath . '/htaccess.txt', $this->cmsPath . '/.htaccess');
+			$this->_exec('sed -e "s,# RewriteBase /,RewriteBase /' . $this->cmsPath . '/,g" --in-place ' . $this->cmsPath . '/.htaccess');
+		}
 	}
 
 	/**
@@ -87,67 +143,69 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return mixed
 	 */
-	public function prepareSiteForSystemTests()
+	public function prepareSiteForUnitTests()
 	{
-		// Get Joomla Clean Testing sites
-		if (is_dir('joomla-cms3'))
+		// Make sure we have joomla
+		if (!is_dir('joomla-cms3'))
 		{
-			$this->taskDeleteDir('joomla-cms3')->run();
+			$this->cloneJoomla();
 		}
 
-		$version = 'staging';
+		if (!is_dir('joomla-cms3/libraries/vendor/phpunit'))
+		{
+			$this->getComposer();
+			$this->taskComposerInstall('../composer.phar')->dir('joomla-cms3')->run();
+		}
 
-		/*
-		 * When joomla Staging branch has a bug you can uncomment the following line as a tmp fix for the tests layer.
-		 * Use as $version value the latest tagged stable version at: https://github.com/joomla/joomla-cms/releases
-		 */
-		$version = '3.4.5';
-
-		$this->_exec("git clone -b $version --single-branch --depth 1 https://github.com/joomla/joomla-cms.git joomla-cms3");
-
-		$this->say("Joomla CMS ($version) site created at joomla-cms3/");
+		// Copy extension. No need to install, as we don't use mysql db for unit tests
+		$joomlaPath = __DIR__ . '/joomla-cms3';
+		$this->_exec("gulp copy --wwwDir=$joomlaPath --gulpfile ../build/gulpfile.js");
 	}
 
 	/**
-	 * Executes Selenium System Tests in your machine
+	 * Executes Codeception System Tests in your machine
 	 *
-	 * @param   array  $options  Use -h to see available options
+	 * @param   array  $opts  Use -h to see available options
 	 *
 	 * @return mixed
 	 */
-	public function runTest($options = [
-		'test'         => null,
-		'suite'         => 'acceptance',
-		'selenium_path' => null
-	])
+	public function runTest($opts = [
+		'test|t'	    => null,
+		'suite|s'	    => 'acceptance'])
 	{
-		if (!$options['selenium_path'])
-		{
-			$this->getSelenium();
-		}
-
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
 
-		$this->runSelenium($options['selenium_path']);
-
-		$this->taskWaitForSeleniumStandaloneServer()
-		     ->run()
-		     ->stopOnFail();
+		if (isset($opts['suite'])
+			&& ('api' === $opts['suite'] || 'apisoap' === $opts['suite']))
+		{
+			// Do not launch selenium when running API tests
+		}
+		else
+		{
+			$this->taskSeleniumStandaloneServer()
+				->setURL("http://localhost:4444")
+				->runSelenium()
+				->waitForSelenium()
+				->run()
+				->stopOnFail();
+		}
 
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
-		if (!$options['test'])
+		if (!$opts['test'])
 		{
 			$this->say('Available tests in the system:');
 
 			$iterator = new RecursiveIteratorIterator(
 				new RecursiveDirectoryIterator(
-						$this->testsFolder . $options['suite'],
-					RecursiveDirectoryIterator::SKIP_DOTS),
-				RecursiveIteratorIterator::SELF_FIRST);
+						$this->testsFolder . $opts['suite'],
+					RecursiveDirectoryIterator::SKIP_DOTS
+				),
+				RecursiveIteratorIterator::SELF_FIRST
+			);
 
 			$tests = array();
 
@@ -157,7 +215,8 @@ class RoboFile extends \Robo\Tasks
 			while ($iterator->valid())
 			{
 				if (strripos($iterator->getSubPathName(), 'cept.php')
-					|| strripos($iterator->getSubPathName(), 'cest.php'))
+					|| strripos($iterator->getSubPathName(), 'cest.php')
+					|| strripos($iterator->getSubPathName(), '.feature'))
 				{
 					$this->say('[' . $i . '] ' . $iterator->getSubPathName());
 					$tests[$i] = $iterator->getSubPathName();
@@ -168,49 +227,79 @@ class RoboFile extends \Robo\Tasks
 			}
 
 			$this->say('');
-			$testNumber     = $this->ask('Type the number of the test  in the list that you want to run...');
-			$options['test'] = $tests[$testNumber];
+			$testNumber	= $this->ask('Type the number of the test  in the list that you want to run...');
+			$opts['test'] = $tests[$testNumber];
 		}
 
-		$pathToTestFile = $this->testsFolder . $options['suite'] . '/' . $options['test'];
+		$pathToTestFile = './' . $opts['suite'] . '/' . $opts['test'];
+
+		// If test is Cest, give the option to execute individual methods
+		if (strripos($opts['test'], 'cest'))
+		{
+			// Loading the class to display the methods in the class
+			require './' . $opts['suite'] . '/' . $opts['test'];
+
+			$classes = Nette\Reflection\AnnotationsParser::parsePhp(file_get_contents($pathToTestFile));
+			$className = array_keys($classes)[0];
+
+			if (strripos($className, 'cest'))
+			{
+				$testFile = new Nette\Reflection\ClassType($className);
+				$testMethods = $testFile->getMethods(ReflectionMethod::IS_PUBLIC);
+
+				foreach ($testMethods as $key => $method)
+				{
+					$this->say('[' . $key . '] ' . $method->name);
+				}
+
+				$this->say('');
+				$methodNumber = $this->askDefault('Choose the method in the test to run (hit ENTER for All)', 'All');
+
+				if ($methodNumber != 'All')
+				{
+					$method = $testMethods[$methodNumber]->name;
+					$pathToTestFile = $pathToTestFile . ':' . $method;
+				}
+			}
+		}
 
 		$this->taskCodecept()
-		     ->test($pathToTestFile)
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->run()
-		     ->stopOnFail();
+			->test($pathToTestFile)
+			->arg('--steps')
+			->arg('--debug')
+			->arg('--fail-fast')
+			->run()
+			->stopOnFail();
 
-		$this->killSelenium();
+		if (!('api' == $opts['suite'] || 'apisoap' == $opts['suite']))
+		{
+			$this->killSelenium();
+		}
 	}
 
 	/**
 	 * Preparation for running manual tests after installing Joomla/Extension and some basic configuration
 	 *
+	 * @param   int     $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
+	 *
 	 * @return void
 	 */
-	public function runTestPreparation()
+	public function runTestPreparation($use_htaccess = 0)
 	{
-		$this->prepareSiteForSystemTests();
-
-		$this->getSelenium();
+		$this->prepareSiteForSystemTests($use_htaccess);
 
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
 
-		$this->runSelenium();
-
-		$this->taskWaitForSeleniumStandaloneServer()
-			->run()
-			->stopOnFail();
+		$this->prepareReleasePackages();
 
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-			->arg('--steps')
-			->arg('--debug')
+			//->arg('--steps')
+			//->arg('--debug')
 			->arg('--tap')
 			->arg('--fail-fast')
 			->arg($this->testsFolder . 'acceptance/install/')
@@ -221,98 +310,71 @@ class RoboFile extends \Robo\Tasks
 	/**
 	 * Function to Run tests in a Group
 	 *
-	 * @param   array  $options  Array of options
+	 * @param   int     $use_htaccess     (1/0) Rename and enable embedded Joomla .htaccess file
+	 * @param   string  $database_host    Optional. If using Joomla Vagrant Box do: $ vendor/bin/robo 0 gulp run:tests 33.33.33.58
 	 *
 	 * @return void
 	 */
-	public function runTests($options = ['selenium_path' => null])
+	public function runTests($use_htaccess = 0, $database_host = null)
 	{
-		$this->prepareSiteForSystemTests();
-
-		if (!$options['selenium_path'])
-		{
-			$this->getSelenium();
-		}
-
-		//$this->prepareReleasePackages();
+		$this->prepareSiteForSystemTests($use_htaccess);
 
 		$this->getComposer();
 
 		$this->taskComposerInstall()->run();
 
-		$this->runSelenium($options['selenium_path']);
-
-		$this->taskWaitForSeleniumStandaloneServer()
-			->run()
-			->stopOnFail();
+		$this->prepareReleasePackages();
 
 		// Make sure to Run the Build Command to Generate AcceptanceTester
 		$this->_exec("vendor/bin/codecept build");
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/install/')
-		     ->run()
-		     ->stopOnFail();
+			//->arg('--steps')
+			//->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/install/')
+			->run()
+			->stopOnFail();
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/administrator/')
-		     ->run()
-		     ->stopOnFail();
+			//->arg('--steps')
+			//->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/administrator/')
+			->run()
+			->stopOnFail();
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg('api')
-		     ->run()
-		     ->stopOnFail();
+			//->arg('--steps')
+			//->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'api/')
+			->run()
+			->stopOnFail();
 
 		$this->taskCodecept()
-		     ->arg('--steps')
-		     ->arg('--debug')
-		     ->arg('--fail-fast')
-		     ->arg($this->testsFolder . 'acceptance/uninstall/')
-		     ->run()
-		     ->stopOnFail();
-
-		$this->killSelenium();
+			//->arg('--steps')
+			//->arg('--debug')
+			->arg('--tap')
+			->arg('--fail-fast')
+			->arg($this->testsFolder . 'acceptance/uninstall/')
+			->run()
+			->stopOnFail();
 	}
 
 	/**
-	 * This function ensures that you have the latest version of RoboFile in your project.
-	 * All redCOMPONENT RoboFiles are clones. All special needs for a project are stored in a robofile.yml file
+	 * Function to run unit tests
 	 *
 	 * @return void
 	 */
-	public function checkRoboFileVersion()
+	public function runUnitTests()
 	{
-		$this->taskCheckRoboFileVersion($this->version)
-		     ->run()
-		     ->stopOnFail();
-	}
-
-	/**
-	 * Downloads Selenium Standalone Server
-	 *
-	 * @return void
-	 */
-	private function getSelenium()
-	{
-		if (!file_exists('selenium-server-standalone.jar'))
-		{
-			$this->say('Downloading Selenium Server, this may take a while.');
-			$this->_exec('curl'
-			             . ' -sS'
-			             . ' --retry 3 --retry-delay 5'
-			             . ' http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar'
-			             . ' > selenium-server-standalone.jar');
-		}
+		$this->prepareSiteForUnitTests();
+		$this->_exec("joomla-cms3/libraries/vendor/phpunit/phpunit/phpunit")
+			->stopOnFail();
 	}
 
 	/**
@@ -320,7 +382,7 @@ class RoboFile extends \Robo\Tasks
 	 *
 	 * @return void
 	 */
-	private function killSelenium()
+	public function killSelenium()
 	{
 		$this->_exec('curl http://localhost:4444/selenium-server/driver/?cmd=shutDownSeleniumServer');
 	}
@@ -340,21 +402,39 @@ class RoboFile extends \Robo\Tasks
 	}
 
 	/**
-	 * Runs Selenium Standalone Server
-	 *
-	 * @param   string  $path  Optional path to selenium standalone server
+	 * Runs Selenium Standalone Server.
 	 *
 	 * @return void
 	 */
-	private function runSelenium($path = null)
+	public function runSelenium()
 	{
-		if (!$path)
-		{
-			$path = 'selenium-server-standalone.jar';
-		}
+		$this->_exec("vendor/bin/selenium-server-standalone >> driver.log 2>&1 &");
+	}
 
-		// Running Selenium server
-		$this->_exec("java -jar $path >> selenium.log 2>&1 &");
+	/**
+	 * Runs Chrome Driver
+	 *
+	 * @return  void
+	 * @since   10.1
+	 */
+	public function runChromeDriver()
+	{
+		$prefix     = '../';
+		$executable = 'chromedriver';
+		$suffix     = ' >> driver.log 2>&1 &';
+
+		$this->_exec($prefix . $executable . ' --url-base=/wd/hub' . $suffix);
+	}
+
+	/**
+	 * Stops Chrome Driver
+	 *
+	 * @return  void
+	 * @since   10.1
+	 */
+	public function killChromeDriver()
+	{
+		$this->_exec('curl http://localhost:9515/wd/hub/shutdown');
 	}
 
 	/**
@@ -395,5 +475,223 @@ class RoboFile extends \Robo\Tasks
 		$this->taskExec('php checkers/phpcs.php')
 				->printed(true)
 				->run();
+	}
+	/**
+	 * Check if local OS is Windows
+	 *
+	 * @return bool
+	 */
+	private function isWindows()
+	{
+		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+	}
+
+	/**
+	 * Get the correct CMS root path
+	 *
+	 * @return string
+	 */
+	private function getCmsPath()
+	{
+		if (empty($this->configuration->cmsPath))
+		{
+			return 'joomla-cms3';
+		}
+
+		if (!file_exists(dirname($this->configuration->cmsPath)))
+		{
+			$this->say("Cms path written in local configuration does not exists or is not readable");
+
+			return 'joomla-cms3';
+		}
+
+		return $this->configuration->cmsPath;
+	}
+
+	/**
+	 * Get the executable extension according to Operating System
+	 *
+	 * @return string
+	 */
+	private function getExecutableExtension()
+	{
+		if ($this->isWindows())
+		{
+			// Check whether git.exe or git as command should be used, as on windows both are possible
+			if (!$this->_exec('git.exe --version')->getMessage())
+			{
+				return '';
+			}
+			else
+			{
+				return '.exe';
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * Get (optional) configuration from an external file
+	 *
+	 * @return \stdClass|null
+	 */
+	public function getConfiguration()
+	{
+		$configurationFile = __DIR__ . '/RoboFile.ini';
+
+		if (!file_exists($configurationFile))
+		{
+			$this->say("No local configuration file");
+
+			return null;
+		}
+
+		$configuration = parse_ini_file($configurationFile);
+
+		if ($configuration === false)
+		{
+			$this->say('Local configuration file is empty or wrong (check is it in correct .ini format');
+
+			return null;
+		}
+
+		return json_decode(json_encode($configuration));
+	}
+
+	/**
+	 * Build correct git clone command according to local configuration and OS
+	 *
+	 * @return string
+	 */
+	private function buildGitCloneCommand()
+	{
+		$branch = empty($this->configuration->branch) ? 'staging' : $this->configuration->branch;
+
+		return "git" . $this->executableExtension . " clone -b $branch --single-branch --depth 1 https://github.com/joomla/joomla-cms.git cache";
+	}
+
+	public function sendSlackImages()
+	{
+		$images = glob(__DIR__ . "/_output/*.png");
+		$slackToken = getenv('REDCORE_SLACK_UPLOAD_SCREEN_TOKEN');
+
+		if (!$slackToken)
+		{
+			$this->output()->writeln('Slack token not found! Found images will not be uploaded to slack!');
+		}
+
+		if (empty($images)
+			|| !$slackToken
+			|| empty($slackToken))
+		{
+			return;
+		}
+
+		foreach($images as $image)
+		{
+			$curl = curl_init();
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form-data']);
+			curl_setopt($curl, CURLOPT_URL, "https://slack.com/api/files.upload");
+			curl_setopt($curl, CURLOPT_POST, 1);
+			curl_setopt($curl, CURLOPT_POSTFIELDS, [
+				'token' => $slackToken,
+				'channels' => "C0299E54Y",
+				'file' => new CurlFile($image, 'image/png'),
+				'filename' => $image
+			]);
+			curl_exec($curl);
+			curl_close($curl);
+		}
+	}
+
+	/**
+	 * Sends the build report error back to Slack
+	 *
+	 * @param   string  $cloudinaryName       Cloudinary cloud name
+	 * @param   string  $cloudinaryApiKey     Cloudinary API key
+	 * @param   string  $cloudinaryApiSecret  Cloudinary API secret
+	 * @param   string  $githubRepository     GitHub repository (owner/repo)
+	 * @param   string  $githubPRNo           GitHub PR #
+	 * @param   string  $slackWebhook         Slack Webhook URL
+	 * @param   string  $slackChannel         Slack channel
+	 * @param   string  $buildURL             Build URL
+	 *
+	 * @return  void
+	 *
+	 * @since   1.10
+	 */
+	public function sendBuildReportErrorSlack($cloudinaryName, $cloudinaryApiKey, $cloudinaryApiSecret, $githubRepository, $githubPRNo, $slackWebhook, $slackChannel, $buildURL = '')
+	{
+		$errorDriver = true;
+		$reportError = false;
+		$reportFile = 'driver.log';
+		$errorLog = 'Driver log:' . chr(10). chr(10);
+
+		// Loop through Codeception snapshots
+		if (file_exists('_output') && $handler = opendir('_output'))
+		{
+			$reportFile = '_output/report.tap.log';
+			$errorLog = 'Codeception tap log:' . chr(10). chr(10);
+			$errorDriver = false;
+
+			$this->say('Driver report found and fixed for reporting');
+		}
+
+		if (file_exists($reportFile))
+		{
+			if ($reportFile)
+			{
+				$errorLog .= file_get_contents($reportFile, null, null, 15);
+
+				$this->say('Codeception report log found and fixed for reporting');
+			}
+
+			if (!$errorDriver)
+			{
+				$handler = opendir('_output');
+				$errorImage = '';
+
+				while (!$reportError && false !== ($errorSnapshot = readdir($handler)))
+				{
+					// Avoid sending system files or html files
+					if (!('png' === pathinfo($errorSnapshot, PATHINFO_EXTENSION)))
+					{
+						continue;
+					}
+
+					$reportError = true;
+					$errorImage = __DIR__ . '/_output/' . $errorSnapshot;
+
+					$this->say('Codeception report image found and fixed for reporting');
+				}
+			}
+
+			if ($reportError || $errorDriver)
+			{
+				// Sends the error report to Slack
+				$reportingTask = $this->taskReporting()
+					->setCloudinaryCloudName($cloudinaryName)
+					->setCloudinaryApiKey($cloudinaryApiKey)
+					->setCloudinaryApiSecret($cloudinaryApiSecret)
+					->setGithubRepo($githubRepository)
+					->setGithubPR($githubPRNo)
+					->setBuildURL($buildURL)
+					->setSlackWebhook($slackWebhook)
+					->setSlackChannel($slackChannel)
+					->setTapLog($errorLog);
+
+				if (!empty($errorImage))
+				{
+					$reportingTask->setImagesToUpload($errorImage)
+						->publishCloudinaryImages();
+				}
+
+				$reportingTask->publishBuildReportToSlack()
+					->run()
+					->stopOnFail();
+			}
+		}
 	}
 }

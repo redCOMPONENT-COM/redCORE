@@ -1,18 +1,22 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Banners - Clients</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
-    <description>Translation definition for Joomla Banner component</description>
-    <reference>
-        <table name="banner_clients">
-            <field type="referenceid" name="id" translate="0">ID</field>
-            <field type="titletext" name="name" translate="1">Client Name</field>
-            <field type="text" name="contact" translate="1">Contact Name</field>
-            <field type="text" name="email" translate="1">Contact Email</field>
-            <field type="textarea" name="extrainfo" translate="1">Extra Info</field>
-            <field type="state" name="state" translate="1" alwaysFallback="true">State</field>
-        </table>
-    </reference>
+  <name>Banners - Clients</name>
+  <author>redWEB</author>
+  <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Banner component</description>
+  <reference>
+    <table name="banner_clients">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="name" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="">Client Name</field>
+      <field name="contact" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Contact Name</field>
+      <field name="email" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Contact Email</field>
+      <field name="extrainfo" type="textarea" translate="1" alwaysFallback="false" filter="RAW" description="">Extra Info</field>
+      <field name="state" type="state" translate="1" alwaysFallback="true" filter="RAW" description="">State</field>
+      <filter><![CDATA[]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_banners" view="client" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
+    </component>
+  </reference>
 </contentelement>

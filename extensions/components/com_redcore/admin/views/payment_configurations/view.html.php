@@ -3,11 +3,13 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('_JEXEC') or die;
+
+use Joomla\Registry\Registry;
 
 /**
  * Payment Configurations View
@@ -54,11 +56,11 @@ class RedcoreViewPayment_Configurations extends RedcoreHelpersView
 	{
 		$model = $this->getModel();
 
-		$this->items = $model->getItems();
-		$this->state = $model->getState();
-		$this->pagination = $model->getPagination();
+		$this->items         = $model->getItems();
+		$this->state         = $model->getState();
+		$this->pagination    = $model->getPagination();
 		$this->activeFilters = $model->getActiveFilters();
-		$this->filterForm = $model->getForm();
+		$this->filterForm    = $model->getForm();
 
 		parent::display($tpl);
 	}
@@ -90,41 +92,29 @@ class RedcoreViewPayment_Configurations extends RedcoreHelpersView
 			return null;
 		}
 
-		$canDo = $this->getActions();
-		$user = JFactory::getUser();
+		$user  = JFactory::getUser();
 
-		$firstGroup = new RToolbarButtonGroup;
+		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup;
-		$thirdGroup = new RToolbarButtonGroup;
+		$thirdGroup  = new RToolbarButtonGroup;
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
-			// Edit
-			if ($canDo->get('core.create') || (count($user->getAuthorisedCategories('com_redcore', 'core.create'))) > 0)
-			{
-				$new = new RToolbarButtonStandard(
-					'COM_REDCORE_PAYMENT_CONFIGURATION_NEW_CONFIGURATION', 'payment_configuration.add', 'btn-success', 'icon-file-text', '', false
-				);
-				$firstGroup->addButton($new);
-			}
+			$new = new RToolbarButtonStandard(
+				'COM_REDCORE_PAYMENT_CONFIGURATION_NEW_CONFIGURATION', 'payment_configuration.add', 'btn-success', 'icon-file-text', false
+			);
+			$firstGroup->addButton($new);
 
-			if ($canDo->get('core.edit'))
-			{
-				$edit = RToolbarBuilder::createEditButton('payment_configuration.edit');
-				$firstGroup->addButton($edit);
-			}
+			$edit = RToolbarBuilder::createEditButton('payment_configuration.edit');
+			$firstGroup->addButton($edit);
 
 			$new = new RToolbarButtonStandard(
-				'COM_REDCORE_PAYMENT_CONFIGURATION_TEST_CONFIGURATION', 'payment_configurations.test', '', 'icon-file-text', '', false
+				'COM_REDCORE_PAYMENT_CONFIGURATION_TEST_CONFIGURATION', 'payment_configurations.test', '', 'icon-file-text', false
 			);
 			$secondGroup->addButton($new);
 
-			// Delete / Trash
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('payment_configurations.delete');
-				$thirdGroup->addButton($delete);
-			}
+			$delete = RToolbarBuilder::createDeleteButton('payment_configurations.delete');
+			$thirdGroup->addButton($delete);
 		}
 
 		$toolbar = new RToolbar;
@@ -141,13 +131,13 @@ class RedcoreViewPayment_Configurations extends RedcoreHelpersView
 	 * @param   string  $section    The section.
 	 * @param   mixed   $assetName  The asset name.
 	 *
-	 * @return  JObject
+	 * @return  Registry
 	 */
 	public function getActions($section = 'component', $assetName = 'com_redcore')
 	{
-		$user = JFactory::getUser();
-		$result	= new JObject;
-		$actions = JAccess::getActions('com_redcore', $section);
+		$user    = JFactory::getUser();
+		$result	 = new Registry;
+		$actions = JAccess::getActionsFromFile('com_redcore', $section) ?: array();
 
 		foreach ($actions as $action)
 		{

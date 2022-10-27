@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -62,7 +62,7 @@ if ($comOption = $input->get('option', null))
 if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
 {
 	// Require the message renderer as it doesn't respect the naming convention.
-	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/message.php';
+	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/html/message.php';
 
 	if (file_exists($messageRendererPath))
 	{
@@ -159,8 +159,18 @@ if ($result instanceof Exception)
 }
 ?>
 <script type="text/javascript">
-	jQuery(document).ready(function () {
-		jQuery('.message-sys').append(jQuery('#system-message-container'));
+(function ($) {
+    $(document).ready(function () {
+
+        if ($('.message-sys').length) {
+            var messageContainer = $('#system-message-container');
+
+            // No messages found. Create an empty div
+            if (!messageContainer.length) {
+                messageContainer = $("<div>", {id: "system-message-container"});
+            }
+            $('.message-sys').append(messageContainer);
+        }
 
 		<?php if ($input->getBool('disable_topbar') || $input->getBool('hidemainmenu')) : ?>
 		jQuery('.topbar').addClass('opacity-70');
@@ -174,6 +184,7 @@ if ($result instanceof Exception)
 		jQuery('.sidebar a').attr('disabled', true).attr('href', '#').addClass('disabled');
 		<?php endif; ?>
 	});
+})(jQuery);
 </script>
 <?php if ($view->getLayout() === 'modal') : ?>
 	<div class="row-fluid redcore">
@@ -233,7 +244,7 @@ else : ?>
 			</div>
 		</div>
 		<footer class="footer pagination-centered navbar navbar-fixed-bottom hidden-phone">
-			Copyright 2015 redcomponent.com. All rights reserved.
+			Copyright <?php echo date('Y') ?> redcomponent.com. All rights reserved.
 		</footer>
 	</div>
 <?php endif;

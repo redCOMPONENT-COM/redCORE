@@ -3,10 +3,12 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('JPATH_BASE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Class to represent a Payment standard object.
@@ -81,12 +83,12 @@ class RApiPaymentPayment extends RApi
 		// Init Environment
 		$this->triggerFunction('setApiOperation');
 
-		$dataGet = $this->options->get('dataGet', array());
-		$this->paymentName = isset($dataGet->payment_name) ? $dataGet->payment_name : null;
+		$dataGet             = $this->options->get('dataGet', array());
+		$this->paymentName   = isset($dataGet->payment_name) ? $dataGet->payment_name : null;
 		$this->extensionName = isset($dataGet->extension_name) ? $dataGet->extension_name : null;
-		$this->ownerName = isset($dataGet->owner_name) ? $dataGet->owner_name : null;
-		$this->orderId = isset($dataGet->order_id) ? $dataGet->order_id : null;
-		$this->paymentId = isset($dataGet->payment_id) ? (int) $dataGet->payment_id : 0;
+		$this->ownerName     = isset($dataGet->owner_name) ? $dataGet->owner_name : null;
+		$this->orderId       = isset($dataGet->order_id) ? $dataGet->order_id : null;
+		$this->paymentId     = isset($dataGet->payment_id) ? (int) $dataGet->payment_id : 0;
 
 		// Set initial status code
 		$this->setStatusCode($this->statusCode);
@@ -95,7 +97,7 @@ class RApiPaymentPayment extends RApi
 
 		if (is_object($this->requestData))
 		{
-			$this->requestData = JArrayHelper::fromObject($this->requestData);
+			$this->requestData = ArrayHelper::fromObject($this->requestData);
 		}
 	}
 
@@ -207,7 +209,7 @@ class RApiPaymentPayment extends RApi
 	 */
 	public function apiAccept()
 	{
-		$app = JFactory::getApplication();
+		$app     = JFactory::getApplication();
 		$payment = $this->getPayment();
 
 		$logData = RApiPaymentHelper::generatePaymentLog(
@@ -236,7 +238,7 @@ class RApiPaymentPayment extends RApi
 	 */
 	public function apiCancel()
 	{
-		$app = JFactory::getApplication();
+		$app     = JFactory::getApplication();
 		$payment = $this->getPayment();
 
 		$logData = RApiPaymentHelper::generatePaymentLog(
@@ -267,7 +269,7 @@ class RApiPaymentPayment extends RApi
 	{
 		$app = JFactory::getApplication();
 		$this->getPayment();
-		$logData = array();
+		$logData           = array();
 		$logData['status'] = RApiPaymentStatus::getStatusUndefined();
 
 		// This method can process data from payment request more if needed
@@ -286,10 +288,10 @@ class RApiPaymentPayment extends RApi
 	 */
 	public function apiProcess()
 	{
-		$app = JFactory::getApplication();
-		$payment = $this->getPayment();
+		$app        = JFactory::getApplication();
+		$payment    = $this->getPayment();
 		$isAccepted = null;
-		$logData = null;
+		$logData    = null;
 
 		// This method can process data from payment request
 		$app->triggerEvent(
@@ -346,9 +348,9 @@ class RApiPaymentPayment extends RApi
 			}
 
 			$this->extensionName = $this->paymentObject->extension_name;
-			$this->ownerName = $this->paymentObject->owner_name;
-			$this->orderId = $this->paymentObject->order_id;
-			$this->paymentId = $this->paymentObject->id;
+			$this->ownerName     = $this->paymentObject->owner_name;
+			$this->orderId       = $this->paymentObject->order_id;
+			$this->paymentId     = $this->paymentObject->id;
 		}
 
 		return $this->paymentObject;
@@ -369,9 +371,9 @@ class RApiPaymentPayment extends RApi
 			'documentFormat' => 'json',
 		);
 
-		$body = $this->getBody();
+		$body               = $this->getBody();
 		JFactory::$document = new RApiPaymentDocumentDocument($documentOptions);
-		$body = $this->triggerFunction('prepareBody', $body);
+		$body               = $this->triggerFunction('prepareBody', $body);
 
 		// Push results into the document.
 		JFactory::$document
@@ -417,7 +419,7 @@ class RApiPaymentPayment extends RApi
 	public function triggerFunction($functionName)
 	{
 		$apiHelperClass = RApiPaymentHelper::getExtensionHelperObject($this->extensionName);
-		$args = func_get_args();
+		$args           = func_get_args();
 
 		// Remove function name from arguments
 		array_shift($args);

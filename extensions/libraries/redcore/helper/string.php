@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Helper
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * String helper class.
@@ -83,7 +85,7 @@ final class RHelperString
 		switch ($filter)
 		{
 			case 'integer':
-				JArrayHelper::toInteger($values);
+				ArrayHelper::toInteger($values);
 				break;
 			default:
 				$values = array_map(array($db, 'quote'), $values);

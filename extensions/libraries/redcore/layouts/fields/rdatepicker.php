@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -11,15 +11,17 @@ defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
 
+$data->picker = isset($data->picker) ? $data->picker : 'datepicker';
+
 // Add jquery UI js.
-JHtml::_('rjquery.datepicker');
+JHtml::_('rjquery.' . $data->picker);
 
 $doc = JFactory::getDocument();
 
 $script = "
 (function($){
 	$(document).ready(function () {
-		$('" . $data->cssId . "').datepicker(" . $data->datepickerOptions . ");
+		$('" . $data->cssId . "')." . $data->picker . "(" . $data->datepickerOptions . ");
 	});
 })(jQuery);
 ";

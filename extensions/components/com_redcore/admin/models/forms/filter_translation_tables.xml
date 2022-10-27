@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+    <fields name="filter" addfieldpath="/libraries/redcore/form/fields">
+        <field
+                name="search_translation_tables"
+                type="text"
+                label="COM_REDCORE_FILTER_SEARCH_DESC"
+                placeholder="JSEARCH_FILTER"
+                class="js-enter-submits"
+                />
+        <field
+                name="extension_name"
+                type="componentlist"
+                loadContentElements="true"
+                showFullName="true"
+                label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
+                description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
+                onchange="this.form.submit();"
+                default=""
+                class="inputbox">
+            <option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
+            <option value="upload">COM_REDCORE_TRANSLATION_TABLE_FOLDER_UPLOAD</option>
+        </field>
+    </fields>
+    <fields name="list">
+        <field
+                name="translation_tables_limit"
+                type="rlimitbox"
+                class="inputbox input-mini chzn"
+                default="100"
+                label="JGLOBAL_ORDERING_LIST_LIMIT"
+                description="JGLOBAL_ORDERING_LIST_LIMIT_DESC"
+                onchange="this.form.submit();"
+                />
+    </fields>
+</form>

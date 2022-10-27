@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Base
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * redCORE Payment plugin base Class
@@ -23,6 +25,8 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 * @var string
 	 */
 	public $paymentName = '';
+
+	public $offlinePayment = false;
 
 	/**
 	 * Plugin parameters
@@ -287,7 +291,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 */
 	public function prepareOmnipayData($payment)
 	{
-		$data = !is_array($payment) ? JArrayHelper::fromObject($payment) : $payment;
+		$data = !is_array($payment) ? ArrayHelper::fromObject($payment) : $payment;
 
 		$data['amount']     = $data['amount_total'];
 		$data['transactionId'] = $data['transaction_id'];
@@ -396,17 +400,32 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		}
 
 		$data['id'] = $paymentId;
+		$updateMainPaymentStatus = true;
 
 		if (empty($data['payment_log']))
 		{
+			$paymentStatus = RApiPaymentStatus::getStatusCreated();
+
+			if (!$isNew)
+			{
+				// If the payment not new and any other log not found, then current event must inherit the last payment status
+				$prevLog = RApiPaymentHelper::getLastPaymentLog($paymentId);
+
+				if ($prevLog)
+				{
+					$paymentStatus = $prevLog->status;
+					$updateMainPaymentStatus = false;
+				}
+			}
+
 			$data['payment_log'] = RApiPaymentHelper::generatePaymentLog(
-				RApiPaymentStatus::getStatusCreated(),
+				$paymentStatus,
 				$data,
 				JText::sprintf('LIB_REDCORE_PAYMENT_LOG_' . ($isNew ? 'CREATE' : 'UPDATE') . '_MESSAGE', $data['extension_name'], $this->paymentName)
 			);
 		}
 
-		RApiPaymentHelper::saveNewPaymentLog($data['payment_log']);
+		RApiPaymentHelper::saveNewPaymentLog($data['payment_log'], $updateMainPaymentStatus);
 
 		return $paymentId;
 	}
@@ -425,11 +444,13 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		$payment = RApiPaymentHelper::getPaymentByExtensionId($extensionName, $orderId);
 		$restrictedData = array(
 			'id', 'extension_name', 'payment_name', 'sandbox', 'created_date', 'modified_date', 'confirmed_date', 'transaction_id',
-			'amount_total', 'amount_paid', 'coupon_code', 'customer_note', 'status'
+			'amount_paid', 'coupon_code', 'customer_note', 'status'
 		);
 
 		if (!$payment)
 		{
+			array_push($restrictedData, 'amount_total');
+
 			$ownerName = !empty($orderData['owner_name']) ? $orderData['owner_name'] : '';
 			$createData = array();
 
@@ -448,9 +469,11 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 		}
 		else
 		{
+			array_push($restrictedData, 'amount_original');
+
 			// We will update payment with provided data if it is different than originally provided
 			$ownerName = !empty($orderData['owner_name']) ? $orderData['owner_name'] : $payment->owner_name;
-			$updateData = JArrayHelper::fromObject($payment);
+			$updateData = ArrayHelper::fromObject($payment);
 
 			foreach ($orderData as $key => $value)
 			{
@@ -588,7 +611,6 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	 */
 	public function getRequestFromGateway($data = '')
 	{
-		$response = null;
 
 		if ($this->getRequestMethod() == 'fsockopen')
 		{
@@ -720,7 +742,7 @@ abstract class RApiPaymentPluginHelperPayment extends JObject implements RApiPay
 	{
 		if (is_object($data))
 		{
-			$data = JArrayHelper::fromObject($data);
+			$data = ArrayHelper::fromObject($data);
 		}
 
 		if (empty($data['order_id']))

@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Tables
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -12,12 +12,19 @@ defined('_JEXEC') or die;
 /**
  * Translation table.
  *
- * @package     Redshopb.Backend
+ * @package     Redcore.Backend
  * @subpackage  Tables
  * @since       1.0
  */
 class RedcoreTableTranslation extends RTable
 {
+	/**
+	 * Field name to publish/unpublish/trash table registers. Ex: state
+	 *
+	 * @var  string
+	 */
+	protected $_tableFieldState = 'rctranslations_state';
+
 	/**
 	 * Constructor
 	 *
@@ -29,10 +36,10 @@ class RedcoreTableTranslation extends RTable
 	{
 		$this->_tableName = 'extension';
 		$this->_tbl_key = 'rctranslations_id';
+		$app = JFactory::getApplication();
+		$table = RTranslationTable::getTranslationTableByName($app->input->get('translationTableName', ''));
 
-		$table = RedcoreHelpersTranslation::getTranslationTable();
-
-		$this->_tbl = RTranslationTable::getTranslationsTableName($table->table, '');
+		$this->_tbl = RTranslationTable::getTranslationsTableName($table->name, '');
 		$this->_tableName = str_replace('#__', '', $this->_tbl);
 
 		if (empty($this->_tbl) || (empty($this->_tbl_key) && empty($this->_tbl_keys)))
@@ -64,6 +71,7 @@ class RedcoreTableTranslation extends RTable
 		}
 
 		$this->rctranslations_modified = JFactory::getDate()->toSql();
+		$this->rctranslations_modified_by = JFactory::getUser()->get('id');
 
 		return true;
 	}

@@ -1,45 +1,83 @@
 language: php
-env: TRAVIS_PUBLIC_REPOSITORY=true
+sudo: required
+env:
+  TRAVIS_PUBLIC_REPOSITORY=true
+dist: xenial
 php:
-- 5.5
-- 5.6
-- 7.0
+  - 7.0
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4
+
+branches:
+  except:
+    - crowdin
+    - crowdin-work
+
 matrix:
-  allow_failures:
-    - php: 5.6
-    - php: 7.0
+  fast_finish: true
+
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install 8
+  - nvm use 8
+
+addons:
+  chrome: stable
+  mariadb: '10.5'
+
+cache:
+  apt: true
+  directories:
+    - "node_modules"
+    - $HOME/.composer/cache/files
+
 before_script:
-- sudo apt-get update -qq
-- sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-curl php5-mysql php5-intl php5-gd > /dev/null
-- sudo /etc/init.d/apache2 stop
-- sudo sed -i -e "s,APACHE_RUN_USER=www-data,APACHE_RUN_USER=$USER,g" /etc/apache2/envvars
-- sudo sed -i -e "s,APACHE_RUN_GROUP=www-data,APACHE_RUN_GROUP=$USER,g" /etc/apache2/envvars
-- sudo chown -R $USER /var/lock/apache2
-- sudo chown -R $USER:$USER /var/www
-- ln -s $TRAVIS_BUILD_DIR/tests/ /var/www/tests
-- sudo sed -i -e "s,AllowOverride[ ]None,AllowOverride All,g" /etc/apache2/sites-available/default
-- sudo /etc/init.d/apache2 start
-- "export DISPLAY=:99.0"
-- "sh -e /etc/init.d/xvfb start"
-- sleep 3 # give xvfb some time to start
-- sudo apt-get install fluxbox -y --force-yes
-- fluxbox &
-- sleep 3 # give fluxbox some time to start
+# MariaDB
+- sudo mysql -e "SET Password=PASSWORD('travis')"
+
+# APT
+- sudo apt-get update
+- sudo apt-get install apache2 libapache2-mod-fastcgi
+- sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+- sudo apt-get install default-jdk
+- npm install -g gulp
+
+# Chromedriver
+- wget https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_linux64.zip
+- unzip chromedriver_linux64.zip
+- chmod +x chromedriver
+
+# Enable php-fpm
+- sudo ./tests/travis-php-fpm.sh $USER $(phpenv version-name)
+- ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+
+# Configure apache virtual hosts
+- sudo cp -f ./tests/travis-ci-apache.conf /etc/apache2/sites-available/000-default.conf
+- sudo sed -e "s?%TRAVIS_BUILD_DIR%?$(pwd)?g" --in-place /etc/apache2/sites-available/000-default.conf
+- sudo service apache2 restart
+
+# Build extension
 - cd build
 - npm install
-- mv gulp-config.json.dist gulp-config.json
-- gulp release --skip-version
+- cp -f gulp-config.json.dist gulp-config.json
 - cd ../tests
+
+# Generic RoboFile init file
+- mv RoboFile.ini.dist RoboFile.ini
 
 script:
 - composer install --prefer-dist
-- vendor/bin/robo check:for-missed-debug-code
-- vendor/bin/robo check:for-parse-errors
-- vendor/bin/robo check:codestyle
-- mv acceptance.suite.dist.yml acceptance.suite.yml
-- mv api.suite.dist.yml api.suite.yml
-- vendor/bin/robo run:tests
-- if [ $TRAVIS_PHP_VERSION == 5.5 ]; then vendor/bin/robo send:codeception-output-to-slack C02L0SE5E xoxp-2309442657-4789197868-4789233706-68cec7; fi
+- cp -f acceptance.suite.yml.dist acceptance.suite.yml
+- cp -f api.suite.yml.dist api.suite.yml
+
+# System / Acceptance tests
+- vendor/bin/robo run:chrome-driver
+- vendor/bin/robo run:tests 1
+- vendor/bin/robo send:slack-images
+- vendor/bin/robo kill:chrome-driver
+
 notifications:
   slack:
     secure: AeKLAsle7sQ3lGpXeNk0ePovlnf0QTggiKhHuvEH78TD5aN8OjYEqbLBhFWWcejn4hHWHOeR9pUv0wqClEGirMioWI5noQvE6D6bV9oBrAhx2FKLVxCA3YN23i+ehNpk3+FpVhkmagigiEnPZqqFcqFw5x276GVZTC8etNmzs/w=

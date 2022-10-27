@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Base
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -113,7 +113,14 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 	 */
 	public function handleCallback($extensionName, $ownerName, $data, &$logData)
 	{
-		$post = JFactory::getApplication()->input->post->getArray();
+		if (version_compare(JVERSION, 3) >= 0)
+		{
+			$post = JFactory::getApplication()->input->post->getArray();
+		}
+		else
+		{
+			$post = JRequest::get('post');
+		}
 
 		$postData = array();
 
@@ -122,7 +129,7 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 
 		foreach ($post as $key => $value)
 		{
-			$value = urlencode(stripslashes($value));
+			$value      = urlencode(stripslashes($value));
 			$postData[] = "$key=$value";
 		}
 
@@ -132,7 +139,8 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 
 		if (strcmp($response, "VERIFIED") == 0)
 		{
-			/* Check the payment_status is Completed
+			/*
+			 Check the payment_status is Completed
 			   check that txn_id has not been previously processed
 			   check that receiver_email is your Primary PayPal email
 			   check that payment_amount/payment_currency are correct */
@@ -144,7 +152,7 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 
 			if ($post['mc_gross'] != $payment->amount_total)
 			{
-				$statusText = JText::sprintf(
+				$statusText  = JText::sprintf(
 					'LIB_REDCORE_PAYMENT_ERROR_PRICE_MISMATCH', $extensionName, $this->paymentName, $payment->amount_total, $post['mc_gross']
 				);
 				RApiPaymentHelper::logToFile(
@@ -155,14 +163,14 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 					$statusText
 				);
 
-				$logData['status'] = RApiPaymentStatus::getStatusCreated();
+				$logData['status']       = RApiPaymentStatus::getStatusCreated();
 				$logData['message_text'] = $statusText;
 
 				return false;
 			}
 			elseif ($post['mc_currency'] != $payment->currency)
 			{
-				$statusText = JText::sprintf(
+				$statusText  = JText::sprintf(
 					'LIB_REDCORE_PAYMENT_ERROR_CURRENCY_MISMATCH', $extensionName, $this->paymentName, $payment->currency, $post['mc_currency']
 				);
 				RApiPaymentHelper::logToFile(
@@ -173,7 +181,7 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 					$statusText
 				);
 
-				$logData['status'] = RApiPaymentStatus::getStatusCreated();
+				$logData['status']       = RApiPaymentStatus::getStatusCreated();
 				$logData['message_text'] = $statusText;
 
 				return false;
@@ -205,7 +213,7 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 		}
 		elseif (strcmp($response, "INVALID") == 0)
 		{
-			$statusText = JText::sprintf('LIB_REDCORE_PAYMENT_ERROR_IN_PAYMENT_GATEWAY', $extensionName, $this->paymentName, 'INVALID IPN');
+			$statusText  = JText::sprintf('LIB_REDCORE_PAYMENT_ERROR_IN_PAYMENT_GATEWAY', $extensionName, $this->paymentName, 'INVALID IPN');
 			RApiPaymentHelper::logToFile(
 				$this->paymentName,
 				$extensionName,
@@ -214,14 +222,14 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 				$statusText
 			);
 
-			$logData['status'] = RApiPaymentStatus::getStatusCreated();
+			$logData['status']       = RApiPaymentStatus::getStatusCreated();
 			$logData['message_text'] = $statusText;
 
 			return false;
 		}
 		else
 		{
-			$statusText = JText::sprintf('LIB_REDCORE_PAYMENT_ERROR_IN_PAYMENT_GATEWAY', $extensionName, $this->paymentName, 'HTTP ERROR');
+			$statusText  = JText::sprintf('LIB_REDCORE_PAYMENT_ERROR_IN_PAYMENT_GATEWAY', $extensionName, $this->paymentName, 'HTTP ERROR');
 			RApiPaymentHelper::logToFile(
 				$this->paymentName,
 				$extensionName,
@@ -230,15 +238,15 @@ class PaymentHelperPaypal extends RApiPaymentPluginHelperPayment
 				$statusText
 			);
 
-			$logData['status'] = RApiPaymentStatus::getStatusCreated();
+			$logData['status']       = RApiPaymentStatus::getStatusCreated();
 			$logData['message_text'] = $statusText;
 
 			return false;
 		}
 
-		$logData['message_text'] = $statusText;
-		$logData['currency'] = $payment->currency;
-		$logData['amount'] = $payment->amount_total;
+		$logData['message_text']   = $statusText;
+		$logData['currency']       = $payment->currency;
+		$logData['amount']         = $payment->amount_total;
 		$logData['transaction_id'] = $data['txn_id'];
 
 		return true;

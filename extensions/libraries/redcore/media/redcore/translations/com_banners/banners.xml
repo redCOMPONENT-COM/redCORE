@@ -1,20 +1,21 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
-    <name>Banners</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-    <version>1.7.2</version>
-    <description>Translation definition for Joomla Banner component</description>
-    <reference>
-        <table name="banners">
-            <field type="referenceid" name="id" translate="0">ID</field>
-            <field type="titletext" name="name" translate="1">Banner Name</field>
-            <field type="text" name="clickurl" translate="1">Click URL</field>
-            <field type="textarea" name="custombannercode" translate="1">Custom banner code</field>
-            <field type="state" name="state" translate="1" alwaysFallback="true">State</field>
-        </table>
-        <component>
-            <form>com_banners#banners#id#task#!edit</form>
-        </component>
-    </reference>
+  <name>Banners</name>
+  <author>redWEB</author>
+  <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
+  <version>1.8.3</version>
+  <description>Translation definition for Joomla Banner component</description>
+  <reference>
+    <table name="banners">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="name" type="titletext" translate="1" alwaysFallback="false" filter="RAW" description="">Banner Name</field>
+      <field name="clickurl" type="text" translate="1" alwaysFallback="false" filter="RAW" description="">Click URL</field>
+      <field name="custombannercode" type="textarea" translate="1" alwaysFallback="false" filter="RAW" description="">Custom banner code</field>
+      <field name="state" type="state" translate="1" alwaysFallback="true" filter="RAW" description="">State</field>
+      <filter><![CDATA[]]></filter>
+    </table>
+    <component>
+      <editForm admin="true" option="com_banners" view="banner" layout="edit" identifier="id" showbutton="true" htmlposition=".btn-toolbar:first" checkoriginalid="false"/>
+    </component>
+  </reference>
 </contentelement>

@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -143,5 +143,46 @@ class RApiOauth2Helper
 		$clientScopes = $db->loadResult();
 
 		return $clientScopes;
+	}
+
+	/**
+	 * Returns user profile information
+	 *
+	 * @return  array
+	 */
+	public static function getUserProfileInformation()
+	{
+		$user = JFactory::getUser();
+
+		return array(
+			'id' => $user->get('id'),
+			'name' => $user->get('name'),
+			'username' => $user->get('username'),
+			'email' => $user->get('email'),
+			'registerDate' => $user->get('registerDate'),
+			'lastVisitDate' => $user->get('lastvisitDate'),
+			'authorisedGroups' => self::getUserDisplayedGroups($user->get('id')),
+		);
+	}
+
+	/**
+	 * SQL server change
+	 *
+	 * @param   integer  $userId  User identifier
+	 *
+	 * @return  string   Groups titles imploded :$
+	 */
+	public static function getUserDisplayedGroups($userId)
+	{
+		$db = JFactory::getDBO();
+		$query = $db->getQuery(true)
+			->select('ug.title')
+			->from($db->qn('#__usergroups', 'ug'))
+			->leftJoin($db->qn('#__user_usergroup_map', 'ugm') . ' ON ug.id = ugm.group_id')
+			->where('ugm.user_id = ' . (int) $userId);
+
+		$db->setQuery($query);
+
+		return $db->loadColumn();
 	}
 }

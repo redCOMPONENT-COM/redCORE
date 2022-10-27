@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  HTML
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -58,27 +58,34 @@ abstract class RHtmlMedia
 	 *
 	 * @since   1.4
 	 */
-	public static function setFramework($framework = 'bootstrap2', $options = array())
+	public static function setFramework($framework = 'bootstrap3', $options = array())
 	{
 		self::$framework = $framework;
 
 		if ($framework == 'bootstrap3')
 		{
-			self::$frameworkSuffix = 'bs3';
+			self::$frameworkSuffix  = 'bs3';
 			self::$frameworkOptions = array(
 				'disableMootools' => true,
 			);
 		}
+		elseif ($framework == 'bootstrap2')
+		{
+			self::$frameworkSuffix  = 'bs2';
+			self::$frameworkOptions = array(
+				'disableMootools' => false,
+			);
+		}
 		elseif ($framework == 'foundation5')
 		{
-			self::$frameworkSuffix = 'fd5';
+			self::$frameworkSuffix  = 'fd5';
 			self::$frameworkOptions = array(
 				'disableMootools' => false,
 			);
 		}
 		else
 		{
-			self::$frameworkSuffix = '';
+			self::$frameworkSuffix  = '';
 			self::$frameworkOptions = array(
 				'disableMootools' => false,
 			);
@@ -104,7 +111,8 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		$isAdmin = JFactory::getApplication()->isAdmin();
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{
@@ -138,7 +146,8 @@ abstract class RHtmlMedia
 			self::setFramework($defaultFramework);
 		}
 
-		$isAdmin = JFactory::getApplication()->isAdmin();
+		$isAdmin = (version_compare(JVERSION, '3.7', '<') ?
+			JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 
 		if (($isAdmin && defined('REDCORE_BOOTSTRAPPED')) || (!$isAdmin && RBootstrap::$loadFrontendCSS))
 		{

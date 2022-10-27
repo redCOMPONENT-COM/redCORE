@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -60,7 +60,7 @@ if ($comOption = $input->get('option', null))
 if (version_compare(JVERSION, '3.0', '<') && JFactory::getApplication()->isAdmin())
 {
 	// Require the message renderer as it doesn't respect the naming convention.
-	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/message.php';
+	$messageRendererPath = JPATH_LIBRARIES . '/redcore/joomla/document/renderer/html/message.php';
 
 	if (file_exists($messageRendererPath))
 	{
@@ -110,21 +110,11 @@ if ($result instanceof Exception)
 ?>
 <div class="redcore">
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-12">
-				<?php
-					if ($toolbar instanceof RToolbar)
-						:
-				?>
-					<div class="row">
-						<?php echo $toolbar->render() ?>
-					</div>
-				<?php
-					endif;
-				?>
-
-				<?php echo $result; ?>
+		<?php if ($toolbar instanceof RToolbar) : ?>
+			<div class="row">
+				<?php echo $toolbar->render() ?>
 			</div>
-		</div>
+		<?php endif; ?>
+		<?php echo $result; ?>
 	</div>
 </div>

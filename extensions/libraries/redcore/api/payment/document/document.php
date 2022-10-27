@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -96,20 +96,21 @@ class RApiPaymentDocumentDocument extends JDocument
 
 		// Get the payment string from the buffer.
 		$content = $this->getBuffer();
+		$jsonEncodedContent = json_encode($content, JSON_UNESCAPED_SLASHES);
 
-		$app->setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
-		$app->setHeader('Server', '', true);
-		$app->setHeader('X-Runtime', $runtime, true);
-		$app->setHeader('Access-Control-Allow-Origin', '*', true);
-		$app->setHeader('Pragma', 'public', true);
-		$app->setHeader('Expires', '0', true);
-		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
-		$app->setHeader('Cache-Control', 'private', false);
-		$app->setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
-		$app->setHeader('Content-length', strlen($content), true);
-		$app->setHeader('Content-Language', $language, true);
+		RApi::setHeader('Status', $this->payment->statusCode . ' ' . $this->payment->statusText, true);
+		RApi::setHeader('Server', '', true);
+		RApi::setHeader('X-Runtime', $runtime, true);
+		RApi::setHeader('Access-Control-Allow-Origin', '*', true);
+		RApi::setHeader('Pragma', 'public', true);
+		RApi::setHeader('Expires', '0', true);
+		RApi::setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);
+		RApi::setHeader('Cache-Control', 'private', false);
+		RApi::setHeader('Content-type', $this->_mime . '; charset=UTF-8', true);
+		RApi::setHeader('Content-length', strlen($jsonEncodedContent), true);
+		RApi::setHeader('Content-Language', $language, true);
 
-		$app->sendHeaders();
+		RApi::sendHeaders();
 
 		// Check for defined constants
 		if (!defined('JSON_UNESCAPED_SLASHES'))

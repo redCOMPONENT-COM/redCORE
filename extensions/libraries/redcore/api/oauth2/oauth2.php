@@ -3,9 +3,10 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
+
 defined('JPATH_REDCORE') or die;
 
 /**
@@ -73,6 +74,8 @@ class RApiOauth2Oauth2 extends RApi
 			'allow_credentials_in_request_body' => (boolean) RBootstrap::getConfig('oauth2_allow_credentials_in_request_body', true),
 			'allow_public_clients'     => (boolean) RBootstrap::getConfig('oauth2_allow_public_clients', true),
 			'always_issue_new_refresh_token' => (boolean) RBootstrap::getConfig('oauth2_always_issue_new_refresh_token', false),
+			'unset_refresh_token_after_use' => (boolean) RBootstrap::getConfig('oauth2_unset_refresh_token_after_use', true),
+			'issuer' => $_SERVER['HTTP_HOST'],
 		);
 
 		// Set database names to Redcore DB tables
@@ -91,12 +94,31 @@ class RApiOauth2Oauth2 extends RApi
 
 		$conf = JFactory::getConfig();
 
-		$dsn      = 'mysql:dbname=' . $conf->get('db') . ';host=' . $conf->get('host');
-		$username = $conf->get('user');
-		$password = $conf->get('password');
-
-		$storage = new OAuth2\Storage\Pdoredcore(array('dsn' => $dsn, 'username' => $username, 'password' => $password), $databaseConfig);
+		$storage = new OAuth2\Storage\Pdoredcore([
+				'dsn' => 'mysql:dbname=' . $conf->get('db') . ';host=' . $conf->get('host'),
+				'username' => $conf->get('user'),
+				'password' => $conf->get('password')
+			],
+			$databaseConfig
+		);
 		$this->server = new OAuth2\Server($storage, $this->serverConfig);
+
+		if (RBootstrap::getConfig('public_key')
+			&& JFile::exists(RBootstrap::getConfig('public_key'))
+			&& RBootstrap::getConfig('private_key')
+			&& JFile::exists(RBootstrap::getConfig('private_key')))
+		{
+			$this->server->addStorage(
+				new OAuth2\Storage\Memory([
+						'keys' => [
+							'public_key'  => file_get_contents(RBootstrap::getConfig('public_key')),
+							'private_key' => file_get_contents(RBootstrap::getConfig('private_key')),
+						]
+					]
+				),
+				'public_key'
+			);
+		}
 
 		// Add the "Authorization Code" grant type (this is where the oauth magic happens)
 		$this->server->addGrantType(new OAuth2\GrantType\AuthorizationCode($storage, $this->serverConfig));
@@ -163,13 +185,121 @@ class RApiOauth2Oauth2 extends RApi
 		{
 			case 'token':
 				$this->apiToken();
+				$this->cleanExpiredTokens($this->operation);
 				break;
 			case 'resource':
 				$this->apiResource();
 				break;
 			case 'authorize':
 				$this->apiAuthorize();
+				$this->cleanExpiredTokens($this->operation);
 				break;
+			case 'profile':
+				$this->apiProfile();
+				break;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Method to update client scopes.
+	 *
+	 * @param   string  $operation  Operation name
+	 *
+	 * @return  boolean  True on success, False on error.
+	 */
+	public function cleanExpiredTokens($operation)
+	{
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+
+		switch ($operation)
+		{
+			// Delete Access Tokens
+			case 'token':
+				$query->delete('#__redcore_oauth_access_tokens')
+					->where($db->qn('expires') . ' < ' . $db->q(date('Y-m-d H:i:s', strtotime('-2 weeks'))));
+				$db->setQuery($query);
+				$db->execute();
+
+				$query = $db->getQuery(true)
+					->delete('#__redcore_oauth_refresh_tokens')
+					->where($db->qn('expires') . ' < ' . $db->q(date('Y-m-d H:i:s', strtotime('-2 weeks'))));
+				$db->setQuery($query);
+				$db->execute();
+				break;
+
+			// Delete Authorization codes
+			case 'authorize':
+			default:
+				$query->delete('#__redcore_oauth_authorization_codes')
+					->where($db->qn('expires') . ' < ' . $db->q(date('Y-m-d H:i:s', strtotime('-2 weeks'))));
+				$db->setQuery($query);
+				$db->execute();
+				break;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Execute the Api Profile operation.
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.7
+	 */
+	public function apiProfile()
+	{
+		// Handle a request for an OAuth2.0 Access Token and send the response to the client if the token has expired
+		if (!$this->server->verifyResourceRequest(OAuth2\Request::createFromGlobals(), null, $scopeToCheck = ''))
+		{
+			$this->response = $this->server->getResponse();
+
+			return $this;
+		}
+
+		// We can take token and add more data to it
+		$token = $this->server->getResourceController()->getToken();
+
+		if (!empty($token['user_id']))
+		{
+			$this->loadUserIdentity($token['user_id']);
+		}
+
+		// Add expire Time
+		$token['expireTimeFormatted'] = date('Y-m-d H:i:s', $token['expires']);
+
+		// Add user Profile info
+		$token['profile'] = RApiOauth2Helper::getUserProfileInformation();
+
+		$this->response = RLayoutHelper::render(
+			'redcore.api.oauth2.profile',
+			compact('token')
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Loads up user identity when requested
+	 *
+	 * @param   int  $userId  User ID
+	 *
+	 * @return  mixed  RApi object with information on success, boolean false on failure.
+	 *
+	 * @since   1.8
+	 */
+	public function loadUserIdentity($userId)
+	{
+		if (!empty($userId))
+		{
+			$user = JFactory::getUser($userId);
+
+			// Load the JUser class on application for this client
+			JFactory::getApplication()->loadIdentity($user);
+			JFactory::getSession()->set('user', $user);
 		}
 
 		return $this;
@@ -185,7 +315,6 @@ class RApiOauth2Oauth2 extends RApi
 	public function apiToken()
 	{
 		$request = OAuth2\Request::createFromGlobals();
-		$user = null;
 
 		// Implicit grant type and Authorization code grant type require user to be logged in before authorising
 		if ($request->request('grant_type') == 'implicit')
@@ -194,6 +323,18 @@ class RApiOauth2Oauth2 extends RApi
 		}
 
 		$this->response = $this->server->handleTokenRequest($request);
+
+		if ($this->response instanceof OAuth2\Response)
+		{
+			$expires = $this->response->getParameter('expires_in');
+
+			if ($expires)
+			{
+				// Add expire Time
+				$this->response->setParameter('expireTimeFormatted', date('Y-m-d H:i:s', $expires + time()));
+				$this->response->setParameter('created', date('Y-m-d H:i:s'));
+			}
+		}
 
 		return $this;
 	}
@@ -320,12 +461,42 @@ class RApiOauth2Oauth2 extends RApi
 		}
 
 		// Print the authorization code if the user has authorized your client
-		$is_authorized = $request->request('authorized', '') === JText::_('LIB_REDCORE_API_OAUTH2_SERVER_AUTHORIZE_CLIENT_YES');
+		$is_authorized = $request->request('authorized', '') === JText::_('LIB_REDCORE_API_OAUTH2_SERVER_AUTHORIZE_CLIENT_YES')
+			|| $request->request('authorized', '') == '1';
 
 		// We are setting client scope instead of requesting scope from user request
 		$request->request['scope'] = $scopes;
-
 		$this->server->handleAuthorizeRequest($request, $response, $is_authorized, $user->id);
+
+		// We add access_token directly to the URI of the redirect string (default is after the # character)
+		if (RBootstrap::getConfig('oauth2_redirect_with_token', 0))
+		{
+			if ($response->isRedirection())
+			{
+				$location = $response->getHttpHeader('Location');
+				$location = explode('#', $location);
+
+				// Get access token
+				if (isset($location[1]))
+				{
+					$location[1] = str_replace('&amp;', '&', $location[1]);
+					$uris = explode('&', $location[1]);
+
+					// We search for access_token parameter
+					foreach ($uris as $uri)
+					{
+						if (strpos($uri, RBootstrap::getConfig('oauth2_token_param_name', 'access_token')) === 0)
+						{
+							$location[0] .= '&' . $uri;
+							break;
+						}
+					}
+
+					$location = implode('#', $location);
+					$response->setHttpHeader('Location', $location);
+				}
+			}
+		}
 
 		$this->response = $response;
 
@@ -367,7 +538,7 @@ class RApiOauth2Oauth2 extends RApi
 			$loginLink = RRoute::_(JUri::root() . 'index.php?option=com_users&view=login');
 
 			$loginPage = new JUri($loginLink);
-			$loginPage->setVar('return', base64_encode(htmlspecialchars($returnUrl)));
+			$loginPage->setVar('return', base64_encode($returnUrl));
 
 			JFactory::getApplication()->redirect($loginPage);
 			JFactory::getApplication()->close();
@@ -392,20 +563,23 @@ class RApiOauth2Oauth2 extends RApi
 		}
 		else
 		{
+			$app = JFactory::getApplication();
+
 			$body = $this->response;
 
 			// Check if the request is CORS ( Cross-origin resource sharing ) and change the body if true
 			$body = $this->prepareBody($body);
 
-			if ($body_json = json_decode($body))
+			json_decode((string) $body);
+
+			if (json_last_error() == JSON_ERROR_NONE)
 			{
-				if (json_last_error() == JSON_ERROR_NONE)
-				{
-					$body = json_encode($body);
-				}
+				$app->setHeader('Content-length', strlen($body), true);
+				$app->setHeader('Content-type', 'application/json; charset=UTF-8', true);
+				$app->sendHeaders();
 			}
 
-			echo $body;
+			echo (string) $body;
 		}
 	}
 

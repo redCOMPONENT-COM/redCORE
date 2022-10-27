@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -22,7 +22,7 @@ $authorizationNotNeeded = (isset($operationXml['authorizationNeeded']) && strtol
 ?>
 <div class="container-fluid">
 	<div class="page-header">
-		<h3>
+		<h3 id="<?php echo JFilterOutput::stringURLSafe($operationName); ?>">
 			<span class="label label-info"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_OPERATION') ?></span>
 			<?php if (!$authorizationNotNeeded) : ?>
 				<span class="label label-warning"><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_AUTHORIZATION_NEEDED') ?></span>

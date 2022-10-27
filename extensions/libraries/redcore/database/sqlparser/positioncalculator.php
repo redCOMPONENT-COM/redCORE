@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Exception
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
@@ -80,7 +80,6 @@ class RDatabaseSqlparserPositioncalculator extends RDatabaseSqlparserSqlparserut
     private function findPositionWithinString($sql, $value, $expr_type) {
 
         $offset = 0;
-        $ok = false;
         while (true) {
 
             $pos = strpos($sql, $value, $offset);

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Component
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -37,9 +37,11 @@ final class RComponentHelper
 	/**
 	 * Get the element name of the components using redcore.
 	 *
+	 * @param   bool  $includeRedcore  Include redcore as extension
+	 *
 	 * @return  array  An array of component names (com_redshopb...)
 	 */
-	public static function getRedcoreComponents()
+	public static function getRedcoreComponents($includeRedcore = false)
 	{
 		if (empty(self::$redcoreExtensions))
 		{
@@ -86,6 +88,18 @@ final class RComponentHelper
 			}
 		}
 
+		if ($includeRedcore)
+		{
+			if (!isset(self::$redcoreExtensionManifests['com_redcore']))
+			{
+				$content = @file_get_contents(JPATH_ADMINISTRATOR . '/components/com_redcore/redcore.xml');
+				$element = new SimpleXMLElement($content);
+				self::$redcoreExtensionManifests['com_redcore'] = $element;
+			}
+
+			return array_merge(self::$redcoreExtensions, array('com_redcore'));
+		}
+
 		return self::$redcoreExtensions;
 	}
 
@@ -127,7 +141,7 @@ final class RComponentHelper
 	/**
 	 * Check Component Requirements against known application versions and check for installed libraries
 	 *
-	 * @param   object  $requirements  List of requirements to check
+	 * @param   object  $requirements  List of requirements to check. Defaults to the redCORE requirements if empty.
 	 *
 	 * @return  array  List of requirements checked for the correct version
 	 */
@@ -135,56 +149,51 @@ final class RComponentHelper
 	{
 		if (empty($requirements))
 		{
-			$requirements = new stdClass;
+			$requirements = self::getComponentManifestFile()->requirements;
 		}
 
-		$checked = array();
-		$redCoreManifest = self::getComponentManifestFile();
-
-		$phpRequired = !empty($requirements->php) ? $requirements->php : $redCoreManifest->requirements->php;
-		$phpRequired = !empty($phpRequired) ? (string) $phpRequired : '5.3.0';
-
-		$phpVersion = phpversion();
-		$checked['applications'][] = array(
-			'name'      => JText::_('COM_REDCORE_CONFIG_PHP_VERSION'),
-			'current'   => $phpVersion,
-			'required'  => $phpRequired,
-			'status'    => version_compare($phpRequired, $phpVersion, '<=')
-		);
-
-		$mySqlRequired = !empty($requirements->mysql) ? (string) $requirements->mysql : '';
-
-		if (!empty($mySqlRequired))
+		foreach ($requirements->children() as $dependency)
 		{
-			$db = JFactory::getDbo();
-			$dbVersion  = $db->getVersion();
+			$required = $dependency->attributes()->version;
 
-			if (!in_array($db->name, array('mysql', 'mysqli')))
+			switch ($dependency[0])
 			{
-				$status = false;
-			}
-			else
-			{
-				$status = version_compare($mySqlRequired, $dbVersion, '<=');
+				default:
+					$child  = 'extensions';
+					$name   = $dependency[0];
+					$status = extension_loaded($name);
+				break;
+				case 'php':
+					$child   = 'applications';
+					$name    = JText::_('COM_REDCORE_CONFIG_PHP_VERSION');
+					$version = phpversion();
+					$status  = version_compare($required, $version, '<=');
+				break;
+				case 'mysql':
+					$child   = 'applications';
+					$name    = JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION');
+					$db      = JFactory::getDbo();
+					$version = $db->getVersion();
+					$status  = !in_array($db->name, array('mysql', 'mysqli'))
+						? false
+						: version_compare($required, $version, '<=');
+				break;
+				case 'joomla':
+					$child   = 'applications';
+					$name    = JText::_('COM_REDCORE_CONFIG_JOOMLA_VERSION');
+					$version = defined('JVERSION') ? JVERSION : (new JVersion)->getShortVersion();
+					$status  = version_compare($required, $version, '<=');
+				break;
 			}
 
-			$checked['applications'][] = array(
-				'name'      => JText::_('COM_REDCORE_CONFIG_MYSQL_VERSION'),
-				'current'   => $dbVersion,
-				'required'  => $mySqlRequired,
+			$checked[$child][] = array(
+				'name'      => $name,
+				'current'   => isset($version) ? $version : null,
+				'required'  => isset($required) ? $required->__toString() : null,
 				'status'    => $status
 			);
-		}
 
-		if (!empty($requirements->extensions))
-		{
-			foreach ($requirements->extensions->extension as $extension)
-			{
-				$checked['extensions'][] = array(
-					'name'      => $extension,
-					'status'    => extension_loaded($extension)
-				);
-			}
+			unset($child, $name, $version, $required, $status);
 		}
 
 		return $checked;
@@ -246,5 +255,27 @@ final class RComponentHelper
 				'message' => $message,
 			)
 		);
+	}
+
+	/**
+	 * Checks if a component is installed
+	 *
+	 * @param   string  $option  The component option.
+	 *
+	 * @return  integer
+	 *
+	 * @since   3.4
+	 */
+	public static function isInstalled($option)
+	{
+		$db = JFactory::getDbo();
+
+		return (int) $db->setQuery(
+			$db->getQuery(true)
+				->select('COUNT(extension_id)')
+				->from('#__extensions')
+				->where('element = ' . $db->quote($option))
+				->where('type = ' . $db->quote('component'))
+		)->loadResult();
 	}
 }

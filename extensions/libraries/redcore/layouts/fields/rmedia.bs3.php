@@ -3,16 +3,35 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
+
+use Joomla\CMS\Factory;
 
 defined('JPATH_REDCORE') or die;
 
 $data = $displayData;
-?>
+$doc = JFactory::getDocument();
+$script   = array();
 
-<?php echo RLayoutHelper::render('modal', $data['modal']); ?>
+$script[] = '	(function($) {';
+$script[] = '		$(document).ready(function() {';
+$script[] = '			jModalClose = function() {';
+$script[] = '				$(\'.modal.in\').modal(\'hide\');';
+$script[] = '			}';
+$script[] = '		});';
+$script[] = '	})( jQuery );';
+$doc->addScriptDeclaration(implode("\n", $script));
+
+$modal = RLayoutHelper::render('modal', $data['modal']);
+$app   = Factory::getApplication();
+
+// Move modal at the end of the document
+$app->registerEvent('onAfterRender', function () use ($modal, $app) {
+	$app->setBody($app->getBody() . $modal);
+});
+?>
 <a
 	class="btn btn-default modalAjax"
 	data-toggle="modal"

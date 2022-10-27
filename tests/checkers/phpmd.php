@@ -5,8 +5,8 @@
  * This CLI is used instead normal travis.yml execution to avoid error in travis build when
  * PHPMD exits with 2.
  *
- * @copyright  Copyright (C) 2008 - 2015 redCOMPONENT,com. All rights reserved.
- * @license    GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright  Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license    GNU General Public License version 2 or later, see LICENSE.
  */
 
 // Only run on the CLI SAPI

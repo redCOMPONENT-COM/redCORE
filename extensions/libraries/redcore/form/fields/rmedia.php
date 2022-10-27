@@ -3,9 +3,11 @@
  * @package     Redcore
  * @subpackage  Fields
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
+
+use Joomla\Utilities\ArrayHelper;
 
 defined('JPATH_REDCORE') or die;
 
@@ -42,9 +44,10 @@ class JFormFieldRmedia extends JFormField
 	 */
 	protected function getInput()
 	{
-		$assetField  = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
-		$authorField = $this->element['created_by_field'] ? (string) $this->element['created_by_field'] : 'created_by';
-		$asset = $this->form->getValue($assetField) ? $this->form->getValue($assetField) : (string) $this->element['asset_id'];
+		$bootstrapVersion = RHtmlMedia::getFramework();
+		$assetField       = $this->element['asset_field'] ? (string) $this->element['asset_field'] : 'asset_id';
+		$authorField      = $this->element['created_by_field'] ? (string) $this->element['created_by_field'] : 'created_by';
+		$asset            = $this->form->getValue($assetField) ? $this->form->getValue($assetField) : (string) $this->element['asset_id'];
 
 		if ($asset == '')
 		{
@@ -60,46 +63,34 @@ class JFormFieldRmedia extends JFormField
 		if (!self::$initialised)
 		{
 			// Build the script.
-			$script = array();
+			$script   = array();
 			$script[] = '	function jInsertFieldValue(value, id) {';
-			$script[] = '		var old_value = document.id(id).value;';
-			$script[] = '		if (old_value != value) {';
-			$script[] = '			var elem = document.id(id);';
+			$script[] = '		var old_value = document.getElementById(id).value;';
+			$script[] = '		if (value && old_value != value) {';
+			$script[] = '			var elem = document.getElementById(id);';
 			$script[] = '			elem.value = value;';
-			$script[] = '			elem.fireEvent("change");';
-			$script[] = '			if (typeof(elem.onchange) === "function") {';
-			$script[] = '				elem.onchange();';
-			$script[] = '			}';
+			$script[] = '			var changeEvent = document.createEvent("HTMLEvents");';
+			$script[] = '			changeEvent.initEvent("change", true, true);';
+			$script[] = '			elem.dispatchEvent(changeEvent);';
 			$script[] = '			jMediaRefreshPreview(id);';
 			$script[] = '		};';
 			$script[] = '		jQuery("#' . $modalId . '").modal("hide");';
 			$script[] = '	}';
 
 			$script[] = '	function jMediaRefreshPreview(id) {';
-			$script[] = '		var value = document.id(id).value;';
-			$script[] = '		var img = document.id(id + "_preview");';
+			$script[] = '		var value = document.getElementById(id).value;';
+			$script[] = '		var img = document.getElementById(id + "_preview");';
 			$script[] = '		if (img) {';
 			$script[] = '			if (value) {';
 			$script[] = '				img.src = "' . JUri::root() . '" + value;';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "none");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "");';
+			$script[] = '				document.getElementById(id + "_preview_empty").style.display = "none";';
+			$script[] = '				document.getElementById(id + "_preview_img").style.display = "";';
 			$script[] = '			} else { ';
 			$script[] = '				img.src = ""';
-			$script[] = '				document.id(id + "_preview_empty").setStyle("display", "");';
-			$script[] = '				document.id(id + "_preview_img").setStyle("display", "none");';
+			$script[] = '				document.getElementById(id + "_preview_empty").style.display = "";';
+			$script[] = '				document.getElementById(id + "_preview_img").style.display = "none";';
 			$script[] = '			} ';
-			$script[] = '		} ';
-			$script[] = '	}';
-
-			$script[] = '	function jMediaRefreshPreviewTip(tip)';
-			$script[] = '	{';
-			$script[] = '		var img = tip.getElement("img.media-preview");';
-			$script[] = '		tip.getElement("div.tip").setStyle("max-width", "none");';
-			$script[] = '		var id = img.getProperty("id");';
-			$script[] = '		id = id.substring(0, id.length - "_preview".length);';
-			$script[] = '		jMediaRefreshPreview(id);';
-			$script[] = '		tip.setStyle("display", "block");';
-			$script[] = '	}';
+			$script[] = '}}';
 
 			$script[] = '	function jSetIframeHeight(iframe)';
 			$script[] = '	{';
@@ -107,7 +98,7 @@ class JFormFieldRmedia extends JFormField
 			$script[] = '		if(iframe) {';
 			$script[] = '			newheight = iframe.contentWindow.document.body.scrollHeight;';
 			$script[] = '			iframe.height= (newheight) + "px";';
-			$script[] = '			iframe.setStyle("max-height", iframe.height);';
+			$script[] = '			iframe.style.maxHeight = iframe.height';
 			$script[] = '		}';
 			$script[] = '	}';
 
@@ -134,12 +125,14 @@ class JFormFieldRmedia extends JFormField
 		// Initialize JavaScript field attributes.
 		$attr .= $this->element['onchange'] ? ' onchange="' . (string) $this->element['onchange'] . '"' : '';
 
+		$inputClass = $bootstrapVersion == 'bootstrap2' ? 'input-prepend input-append' : 'input-group';
+
 		// The text field.
-		$html[] = '<div class="input-prepend input-append input-group">';
+		$html[] = '<div class="' . $inputClass . '">';
 
 		// The Preview.
-		$preview = (string) $this->element['preview'];
-		$showPreview = true;
+		$preview       = (string) $this->element['preview'];
+		$showPreview   = true;
 		$showAsTooltip = false;
 
 		switch ($preview)
@@ -158,10 +151,27 @@ class JFormFieldRmedia extends JFormField
 			case 'tooltip':
 			default:
 				$showAsTooltip = true;
-				$options = array(
-					'onShow' => 'jMediaRefreshPreviewTip',
-				);
-				JHtml::_('rbootstrap.tooltip', '.hasTipPreview', $options);
+				JHtml::_('rbootstrap.framework');
+
+				$script = '
+				jQuery(document).ready(function() {
+				jQuery("#popover_' . $this->id . '").popover({
+					content: function(){
+						var id = jQuery(this).data("id");
+						return jQuery("#"+id+\'_hidden_content\').html();
+					},
+					html: true,
+					placement: "bottom",
+					trigger: "hover focus",
+					toggle: "popover",
+					container: "body"
+				});
+			});
+				';
+
+			JFactory::getDocument()
+				->addScriptDeclaration($script);
+
 				break;
 		}
 
@@ -176,33 +186,47 @@ class JFormFieldRmedia extends JFormField
 				$src = '';
 			}
 
-			$width = isset($this->element['preview_width']) ? (int) $this->element['preview_width'] : 300;
+			$width  = isset($this->element['preview_width']) ? (int) $this->element['preview_width'] : 300;
 			$height = isset($this->element['preview_height']) ? (int) $this->element['preview_height'] : 200;
-			$style = '';
+
+			if ($showAsTooltip)
+			{
+				$width = $width > 245 ? 245 : $width;
+			}
+
+			$style  = '';
 			$style .= ($width > 0) ? 'max-width:' . $width . 'px;' : '';
 			$style .= ($height > 0) ? 'max-height:' . $height . 'px;' : '';
 
-			$imgattr = array(
+			$imgattr         = array(
 				'id' => $this->id . '_preview',
 				'class' => 'media-preview',
 				'style' => $style,
 			);
-			$img = JHtml::image($src, JText::_('JLIB_FORM_MEDIA_PREVIEW_ALT'), $imgattr);
-			$previewImg = '<div id="' . $this->id . '_preview_img"' . ($src ? '' : ' style="display:none"') . '>' . $img . '</div>';
+			$img             = JHtml::image($src, JText::_('JLIB_FORM_MEDIA_PREVIEW_ALT'), $imgattr);
+			$previewImg      = '<div id="' . $this->id . '_preview_img"' . ($src ? '' : ' style="display:none"') . '>' . $img . '</div>';
 			$previewImgEmpty = '<div id="' . $this->id . '_preview_empty"' . ($src ? ' style="display:none"' : '') . '>'
 				. JText::_('JLIB_FORM_MEDIA_PREVIEW_EMPTY') . '</div>';
 
 			if ($showAsTooltip)
 			{
-				$html[] = '<div class="media-preview add-on input-group-addon">';
-				$tooltip = $previewImgEmpty . $previewImg;
-				$options = array(
-					'title' => JText::_('JLIB_FORM_MEDIA_PREVIEW_SELECTED_IMAGE'),
-					'text' => '<i class="icon-eye-open"></i>',
-					'class' => 'hasTipPreview'
-				);
-				$html[] = RHtml::tooltip($tooltip, $options);
-				$html[] = '</div>';
+				$options = [
+					'class' => 'hasPopoverPreview media-preview add-on input-group-addon',
+					'id' => 'popover_' . $this->id,
+					'data-id' => $this->id
+				];
+
+				if ($bootstrapVersion == 'bootstrap2')
+				{
+					$text = '<i class="icon-eye-open"></i>';
+				}
+				else
+				{
+					$text = '<i class="glyphicon glyphicon-eye-open"></i>';
+				}
+
+				$html[] = '<div ' . ArrayHelper::toString($options) . '>' . $text . '</div>';
+				$html[] = '<div id="' . $this->id . '_hidden_content" class="rMediaHiddenContent" style="display:none">' . $previewImgEmpty . $previewImg . '</div>';
 			}
 			else
 			{
@@ -213,7 +237,9 @@ class JFormFieldRmedia extends JFormField
 			}
 		}
 
-		$html[] = '	<input type="text" class="input-small input-sm" name="' . $this->name . '" id="' . $this->id . '" value="'
+		$inputClass = $bootstrapVersion == 'bootstrap2' ? 'input-small' : 'input-sm';
+
+		$html[] = '	<input type="text" class="' . $inputClass . '" name="' . $this->name . '" id="' . $this->id . '" value="'
 			. htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8') . '" readonly="readonly"' . $attr . ' />';
 
 		$directory = (string) $this->element['directory'];
@@ -239,13 +265,18 @@ class JFormFieldRmedia extends JFormField
 			. $this->id . '&amp;folder=' . $folder
 			. '&amp;redcore=true';
 
+		$hideModal = $bootstrapVersion == 'bootstrap2' ? 'modal hide' : 'modal';
+		$style     = $bootstrapVersion == 'bootstrap2' ? 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;' : '';
+
 		// Create the modal object
 		$modal = RModal::getInstance(
 			array(
 				'attribs' => array(
 					'id'    => $modalId,
-					'class' => 'modal hide',
-					'style' => 'width: 820px; height: 500px; margin-left: -410px; top: 50%; margin-top: -250px;'
+					'class' => $hideModal,
+					'style' => $style,
+					'tabindex' => '-1',
+					'role' => 'dialog'
 				),
 				'params' => array(
 					'showHeader'      => true,

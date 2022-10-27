@@ -1,18 +1,17 @@
-﻿<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <contentelement type="contentelement">
   <name>Redcore Country</name>
-  <author>redCOMPONENT</author>
-  <copyright>Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.</copyright>
-  <version>1.7.2</version>
+  <author>redWEB</author>
+  <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
+  <version>1.8.3</version>
   <description>Country Table Definition for the redCORE extension</description>
   <reference>
-  	<table name="redcore_country">
-		<field type="referenceid" name="id" translate="0">ID</field>
-		<field type="text" name="name" translate="1" alwaysFallback="true">Country Name</field>
-		<field type="text" disabled="true" translate="0" name="alpha2">Alpha 2</field>
-  	</table>
-    <component>
-        <form>com_redcore#country#cid#task#!edit</form>
-    </component>
-   </reference>
+    <table name="redcore_country">
+      <field name="id" type="referenceid" translate="0" alwaysFallback="false" filter="RAW" description="">ID</field>
+      <field name="name" type="text" translate="1" alwaysFallback="true" filter="RAW" description="">Country Name</field>
+      <field name="alpha2" type="text" translate="0" alwaysFallback="false" filter="RAW" description="" disabled="true">Alpha 2</field>
+      <filter><![CDATA[]]></filter>
+    </table>
+    <component/>
+  </reference>
 </contentelement>

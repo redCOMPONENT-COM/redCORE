@@ -24,8 +24,8 @@ Default value is `site` so you do not need to add this attribute it if your webs
 ```
 ...
 	<name>Name of your webservice</name>
-    <author>redCOMPONENT</author>
-    <copyright>Copyright (C) 2008 - 2014 redCOMPONENT.com. All rights reserved.</copyright>
+    <author>redWEB</author>
+    <copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
     <description>HAL configuration for my custom Webservice in Administration</description>
 ...
 ```
@@ -169,7 +169,7 @@ This operation will output HAL document with data specified within your resource
 ```
 ...
 	<read>
-		<list dataMode="" optionName="com_contact" modelClassName="contacts" modelClassPath="" isAdminClass="true" functionName="">
+		<list dataMode="" optionName="com_contact" modelClassName="contacts" modelClassPath="" isAdminClass="true" functionName="" paginationFunction="getPagination" totalFunction="getTotal">
 			<fields>
 				...
 			</fields>
@@ -183,7 +183,11 @@ This operation will output HAL document with data specified within your resource
 ...
 ```
 
-`functionName` in Create Operation is `getItems` by default. 
+`functionName` in Read - List Operation is `getItems` by default.
+
+`paginationFunction` in Read - List Operation is `getPagination` by default.
+
+`totalFunction` in Read - List Operation is `getTotal` by default.
 
 `Read -> List` is default landing page for webservice if no `item Id` is provided. In List items HAL document you can embed items with some specific fields. 
 If you specify resource with attribute `resourceSpecific="listItem"` you can put that resource into the embedded resources. Ex:

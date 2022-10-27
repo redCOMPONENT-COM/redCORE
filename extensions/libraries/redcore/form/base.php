@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Form
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -21,15 +21,16 @@ abstract class RFormBase extends JForm
 	/**
 	 * Method to get an instance of a form.
 	 *
-	 * @param   string  $name     The name of the form.
-	 * @param   string  $data     The name of an XML file or string to load as the form definition.
-	 * @param   array   $options  An array of form options.
-	 * @param   mixed   $replace  Flag to toggle whether form fields should be replaced if a field
-	 *                            already exists with the same group/name.
-	 * @param   mixed   $xpath    An optional xpath to search for the fields.
+	 * @param   string          $name     The name of the form.
+	 * @param   string          $data     The name of an XML file or string to load as the form definition.
+	 * @param   array           $options  An array of form options.
+	 * @param   boolean         $replace  Flag to toggle whether form fields should be replaced if a field
+	 *                                    already exists with the same group/name.
+	 * @param   string|boolean  $xpath    An optional xpath to search for the fields.
 	 *
-	 * @return  object  JForm instance.
+	 * @return  JForm  JForm instance.
 	 *
+	 * @since   11.1
 	 * @throws  InvalidArgumentException if no data provided.
 	 * @throws  RuntimeException if the form could not be loaded.
 	 */
@@ -50,7 +51,7 @@ abstract class RFormBase extends JForm
 			}
 
 			// Instantiate the form.
-			$forms[$name] = new RForm($name, $options);
+			$forms[$name] = new static($name, $options);
 
 			// Load the data.
 			if (substr(trim($data), 0, 1) == '<')
@@ -106,7 +107,6 @@ abstract class RFormBase extends JForm
 		/** @var $field SimpleXMLElement */
 		foreach ($fields as $field)
 		{
-			$value = null;
 			$name = (string) $field['name'];
 
 			// Get the group names as strings for ancestor fields elements.
@@ -156,7 +156,7 @@ abstract class RFormBase extends JForm
 	 */
 	public function getError($name, $group = null)
 	{
-		if ($group)
+		if (!empty($group))
 		{
 			$name = $group . '.' . $name;
 		}
@@ -172,29 +172,40 @@ abstract class RFormBase extends JForm
 	/**
 	 * Returns the value of an attribute of the form itself
 	 *
-	 * @param   string  $attribute  The name of the attribute
-	 * @param   mixed   $default    Optional default value to return
+	 * @param   string  $name     Name of the attribute to get
+	 * @param   mixed   $default  Optional value to return if attribute not found
 	 *
-	 * @return  mixed  The attribute value.
+	 * @return  mixed             Value of the attribute / default
+	 *
+	 * @since   3.2
 	 */
-	public function getAttribute($attribute, $default = null)
+	public function getAttribute($name, $default = null)
 	{
-		$value = $this->xml->attributes()->$attribute;
+		if ($this->xml instanceof SimpleXMLElement)
+		{
+			$attributes = $this->xml->attributes();
 
-		if (is_null($value))
-		{
-			return $default;
+			// Ensure that the attribute exists
+			if (property_exists($attributes, $name))
+			{
+				$value = $attributes->$name;
+
+				if ($value !== null)
+				{
+					return (string) $value;
+				}
+			}
 		}
-		else
-		{
-			return (string) $value;
-		}
+
+		return $default;
 	}
 
 	/**
 	 * Method to get the XML form object
 	 *
-	 * @return  SimpleXMLElement  The form XML file
+	 * @return  SimpleXMLElement  The form XML object
+	 *
+	 * @since   3.2
 	 */
 	public function getXml()
 	{

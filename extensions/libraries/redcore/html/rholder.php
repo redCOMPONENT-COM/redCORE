@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Holder.js library.
@@ -47,7 +49,7 @@ abstract class JHtmlRholder
 		$path = JURI::root() . 'media/redcore/lib/holder.min.js/' . $src;
 
 		return '<img data-src="' . $path . '" alt="' . $alt . '" '
-		. trim((is_array($attribs) ? JArrayHelper::toString($attribs) : $attribs) . ' /')
+		. trim((is_array($attribs) ? ArrayHelper::toString($attribs) : $attribs) . ' /')
 		. '>';
 	}
 

@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -24,7 +24,7 @@ JHtml::_('rbootstrap.tooltip');
 	}
 </style>
 <div class="row">
-	<div class="col-md-12">
+	<div class="col-md-6">
 		<h3>
 			<strong><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></strong>: <?php echo RText::getTranslationIfExists($xml->name, '', ''); ?>
 		</h3>
@@ -41,13 +41,12 @@ JHtml::_('rbootstrap.tooltip');
 		<?php endif; ?>
 		<table class="table table-striped">
 			<thead>
-			<tr>
-				<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
-				<th><?php echo JText::_('JOPTION_REQUIRED'); ?></th>
-				<th><?php echo JText::_('JCURRENT'); ?></th>
-			</tr>
+				<tr>
+					<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
+					<th><?php echo JText::_('JOPTION_REQUIRED'); ?></th>
+					<th><?php echo JText::_('JCURRENT'); ?></th>
+				</tr>
 			</thead>
-
 			<tbody>
 			<?php foreach ($requirements['applications'] as $requirement): ?>
 				<tr>
@@ -122,115 +121,121 @@ JHtml::_('rbootstrap.tooltip');
 
 <div class="row" style="margin-top:20px;">
 	<div class="col-md-6">
-		<h4>
-			<?php echo RText::getTranslationIfExists($xml->name, '', ''); ?> <?php echo JText::_('COM_REDCORE_CONFIG_MODULES'); ?>
-		</h4>
-		<table class="table table-striped adminlist">
-			<thead>
-				<tr>
-					<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
-					<th><?php echo JText::_('COM_REDCORE_INSTALL_WITH_COMPONENT'); ?></th>
-					<th><?php echo JText::_('JENABLED'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php if (!empty($modules)): ?>
-				<?php foreach ($modules as $module):
-					$fromExtension = false;
-					if (!empty($xml->modules)):
-						foreach ($xml->modules->module as $xmlModule):
-							if ($module->element == (string) $xmlModule['name']):
-								$fromExtension = true;
-								break;
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h4><?php echo RText::getTranslationIfExists($xml->name, '', ''); ?> <?php echo JText::_('COM_REDCORE_CONFIG_MODULES'); ?></h4>
+			</div>
+			<div class="panel-body">
+				<table class="table table-striped adminlist">
+					<thead>
+						<tr>
+							<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
+							<th><?php echo JText::_('COM_REDCORE_INSTALL_WITH_COMPONENT'); ?></th>
+							<th><?php echo JText::_('JENABLED'); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php if (!empty($modules)): ?>
+						<?php foreach ($modules as $module):
+							$fromExtension = false;
+							if (!empty($xml->modules)):
+								foreach ($xml->modules->module as $xmlModule):
+									if ($module->element == (string) $xmlModule['name']):
+										$fromExtension = true;
+										break;
+									endif;
+								endforeach;
 							endif;
-						endforeach;
-					endif;
-					?>
-					<tr>
-						<td>
-							<strong><?php echo JText::_($module->name); ?></strong>
-						</td>
-						<td>
-							<?php if ($fromExtension) : ?>
-							<span class="label label-success"><?php echo JText::_('JYES'); ?>
-								<?php else : ?>
-								<span class="label label-warning"><?php echo JText::_('JNO'); ?>
+							?>
+							<tr>
+								<td>
+									<strong><?php echo JText::_($module->name); ?></strong>
+								</td>
+								<td>
+									<?php if ($fromExtension) : ?>
+										<span class="label label-success"><i class="icon icon-check"></i>&nbsp;<?php echo JText::_('JYES'); ?></span>
+									<?php else : ?>
+										<span class="label label-warning"><i class="icon icon-remove"></i>&nbsp;<?php echo JText::_('JNO'); ?></span>
 									<?php endif; ?>
-							</span>
-						</td>
-						<td>
-							<?php if ($module->enabled == 1) : ?>
-								<span class="label label-success"><?php echo JText::_('JENABLED'); ?></span>
-							<?php else : ?>
-								<span class="label label-danger"><?php echo JText::_('JDISABLED'); ?></span>
-							<?php endif; ?>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			<?php else: ?>
-				<tr>
-					<td colspan="3">
-						<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
-					</td>
-				</tr>
-			<?php endif; ?>
-			</tbody>
-		</table>
+								</td>
+								<td>
+									<?php if ($module->enabled == 1) : ?>
+										<span class="label label-success"><i class="icon icon-check"></i>&nbsp;<?php echo JText::_('JENABLED'); ?></span>
+									<?php else : ?>
+										<span class="label label-danger"><i class="icon icon-remove"></i>&nbsp;<?php echo JText::_('JDISABLED'); ?></span>
+									<?php endif; ?>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php else: ?>
+						<tr>
+							<td colspan="3">
+								<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+							</td>
+						</tr>
+					<?php endif; ?>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
-
 	<div class="col-md-6">
-		<h4>
-			<?php echo RText::getTranslationIfExists($xml->name, '', ''); ?> <?php echo JText::_('COM_REDCORE_CONFIG_PLUGINS'); ?>
-		</h4>
-		<table class="table table-striped adminlist">
-			<thead>
-				<tr>
-					<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
-					<th><?php echo JText::_('COM_REDCORE_INSTALL_WITH_COMPONENT'); ?></th>
-					<th><?php echo JText::_('JENABLED'); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-			<?php if (!empty($plugins)): ?>
-				<?php foreach ($plugins as $plugin):
-					$fromExtension = false;
-					foreach ($xml->plugins->plugin as $xmlPlugin):
-						if ($plugin->element == (string) $xmlPlugin['name']):
-							$fromExtension = true;
-							break;
-						endif;
-					endforeach;
-					?>
-					<tr>
-						<td>
-							<strong><?php echo JText::_($plugin->name); ?></strong>
-						</td>
-						<td>
-							<?php if ($fromExtension) : ?>
-							<span class="label label-success"><?php echo JText::_('JYES'); ?>
-								<?php else : ?>
-								<span class="label label-warning"><?php echo JText::_('JNO'); ?>
-									<?php endif; ?>
-							</span>
-						</td>
-						<td>
-							<?php if ($plugin->enabled == 1) : ?>
-								<span class="label label-success"><?php echo JText::_('JENABLED'); ?></span>
-							<?php else : ?>
-								<span class="label label-danger"><?php echo JText::_('JDISABLED'); ?></span>
-							<?php endif; ?>
-						</td>
-					</tr>
-				<?php endforeach; ?>
-			<?php else: ?>
-				<tr>
-					<td colspan="3">
-						<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
-					</td>
-				</tr>
-			<?php endif; ?>
-			</tbody>
-		</table>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h4><?php echo RText::getTranslationIfExists($xml->name, '', ''); ?> <?php echo JText::_('COM_REDCORE_CONFIG_PLUGINS'); ?></h4>
+			</div>
+			<div class="panel-body">
+				<table class="table table-striped adminlist">
+					<thead>
+						<tr>
+							<th><?php echo JText::_('COM_REDCORE_CONFIG_NAME'); ?></th>
+							<th><?php echo JText::_('COM_REDCORE_INSTALL_WITH_COMPONENT'); ?></th>
+							<th><?php echo JText::_('JENABLED'); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if (!empty($plugins)): ?>
+							<?php foreach ($plugins as $plugin): ?>
+								<?php
+								$fromExtension = false;
+								foreach ($xml->plugins->plugin as $xmlPlugin):
+									if ($plugin->element == (string) $xmlPlugin['name']):
+										$fromExtension = true;
+										break;
+									endif;
+								endforeach;
+								?>
+								<tr>
+									<td>
+										<strong><?php echo JText::_($plugin->name) ?></strong>
+									</td>
+									<td>
+										<?php if ($fromExtension) : ?>
+											<span class="label label-success"><i class="icon icon-check"></i>&nbsp;<?php echo JText::_('JYES'); ?></span>
+										<?php else : ?>
+											<span class="label label-warning"><i class="icon icon-remove"></i>&nbsp;<?php echo JText::_('JNO') ?></span>
+										<?php endif; ?>
+									</td>
+									<td>
+										<?php if ($plugin->enabled == 1) : ?>
+											<span class="label label-success"><i class="icon icon-check"></i>&nbsp;<?php echo JText::_('JENABLED'); ?></span>
+										<?php else : ?>
+											<span class="label label-danger"><i class="icon icon-remove"></i>&nbsp;<?php echo JText::_('JDISABLED'); ?></span>
+										<?php endif; ?>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						<?php else: ?>
+							<tr>
+								<td colspan="3">
+									<?php echo JText::_('JGLOBAL_NO_MATCHING_RESULTS'); ?>
+								</td>
+							</tr>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</div>
 </div>
 <br />

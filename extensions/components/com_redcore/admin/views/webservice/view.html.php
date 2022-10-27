@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -65,7 +65,9 @@ class RedcoreViewWebservice extends RedcoreHelpersView
 			JFactory::getApplication()->enqueueMessage(
 				JText::sprintf(
 					'COM_REDCORE_WEBSERVICES_PLUGIN_LABEL_WARNING',
-					'<a href="index.php?option=com_plugins&view=plugins&filter_search=redcore">' . JText::_('COM_REDCORE_CONFIGURE') . '</a>'
+					'<a href="index.php?option=com_redcore&view=config&layout=edit&component=com_redcore">'
+					. JText::_('COM_REDCORE_CONFIGURE')
+					. '</a>'
 				),
 				'error');
 		}

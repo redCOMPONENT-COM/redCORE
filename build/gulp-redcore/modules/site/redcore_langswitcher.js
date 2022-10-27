@@ -1,18 +1,12 @@
 var gulp = require('gulp');
 var fs   = require('fs');
 
-// Third part extension using redCORE / redCORE build folder
-try {
-	var config = require(process.cwd() + '/gulp-config.json');
-}
-// redCORE repo relative
-catch(err) {
-	var config = require('../../../../build/gulp-config.json');
-}
+var config = require('../../config.js');
 
 // Dependencies
 var browserSync = require('browser-sync');
 var del         = require('del');
+var merge       = require('merge-stream');
 
 var baseTask  = 'modules.frontend.redcore_langswitcher';
 
@@ -46,16 +40,18 @@ gulp.task('copy:' + baseTask, ['clean:' + baseTask, 'copy:' + baseTask + ':media
 
 // Copy: media
 gulp.task('copy:' + baseTask + ':media', ['clean:' + baseTask + ':media'], function() {
-    return gulp.src([
+	var media = gulp.src([
 	        mediaPath + '/**'
     	])
-		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher'))
+		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher'));
+
 		// Copy original uncompressed files to the testing site too
-		&&
-		gulp.src([
+	var buildMedia = gulp.src([
 					buildPathMedia + '/**'
 		])
 		.pipe(gulp.dest(config.wwwDir + '/media/mod_redcore_language_switcher'));
+
+	return merge(media, buildMedia);
 });
 
 // Watch

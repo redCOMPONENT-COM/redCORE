@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Controllers
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -54,9 +54,9 @@ class RedcoreControllerTranslation extends RControllerForm
 	 */
 	protected function getCommonRedirectAppend($append = '')
 	{
-		if ($contentelement = $this->input->get('contentelement'))
+		if ($translationTableName = $this->input->get('translationTableName'))
 		{
-			$append .= '&contentelement=' . $contentelement;
+			$append .= '&translationTableName=' . $translationTableName;
 		}
 
 		if ($component = $this->input->get('component'))

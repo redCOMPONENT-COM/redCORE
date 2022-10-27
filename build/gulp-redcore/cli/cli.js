@@ -1,15 +1,6 @@
 var gulp = require('gulp');
 
-// Third part extension using redCORE / redCORE build folder
-try {
-	var config = require(process.cwd() + '/gulp-config.json');
-	var extensions = require(process.cwd() + '/gulp-extensions.json');
-}
-// redCORE repo relative
-catch(err) {
-	var config = require('../../build/gulp-config.json');
-	var extensions = require('../../build/gulp-extensions.json');
-}
+var config = require('../config.js');
 
 /**
  * Get the list of the cli from paths
@@ -19,8 +10,8 @@ catch(err) {
 function getCli() {
 	var results = [];
 
-	if (extensions && extensions.hasOwnProperty('cli')) {
-		var sourceArray = extensions.cli;
+	if (config.extensions.hasOwnProperty('cli')) {
+		var sourceArray = config.extensions.cli;
 
 		for (index = 0; index < sourceArray.length; ++index) {
 		    results.push(sourceArray[index]);

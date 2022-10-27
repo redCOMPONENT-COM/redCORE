@@ -82,7 +82,7 @@
                     label="COM_REDCORE_WEBSERVICE_OPTION_NAME_LABEL"
                     description="COM_REDCORE_WEBSERVICE_OPTION_NAME_DESCRIPTION"
                     default=""
-                    class="form-control">
+                    class="">
                 <option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
             </field>
             <field
@@ -93,6 +93,14 @@
                     description="COM_REDCORE_WEBSERVICE_MODEL_CLASS_NAME_DESCRIPTION"
                     class="form-control"
                     />
+            <field
+                    name="modelConstructorArgs"
+                    labelclass="col-sm-2 control-label"
+                    type="text"
+                    label="COM_REDCORE_WEBSERVICE_MODEL_CONSTRUCTOR_ARGS_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_MODEL_CONSTRUCTOR_ARGS_DESCRIPTION"
+                    class="form-control"
+            />
             <field
                     name="modelClassPath"
                     labelclass="col-sm-2 control-label"
@@ -122,6 +130,24 @@
                     class="form-control"
                     default=""
                     />
+            <field
+                    name="paginationFunction"
+                    labelclass="col-sm-2 control-label"
+                    type="text"
+                    label="COM_REDCORE_WEBSERVICE_PAGINATION_FUNCTION_NAME_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_PAGINATION_FUNCTION_NAME_DESCRIPTION"
+                    class="form-control"
+                    default="getPagination"
+            />
+            <field
+                    name="totalFunction"
+                    labelclass="col-sm-2 control-label"
+                    type="text"
+                    label="COM_REDCORE_WEBSERVICE_TOTAL_FUNCTION_NAME_LABEL"
+                    description="COM_REDCORE_WEBSERVICE_TOTAL_FUNCTION_NAME_DESCRIPTION"
+                    class="form-control"
+                    default="getTotal"
+            />
             <field
                     name="functionArgs"
                     labelclass="col-sm-2 control-label"
@@ -160,7 +186,7 @@
                     label="COM_REDCORE_WEBSERVICE_TABLE_NAME_LABEL"
                     description="COM_REDCORE_WEBSERVICE_TABLE_NAME_DESCRIPTION"
                     default=""
-                    class="form-control">
+                    class="">
                 <option value="">COM_REDCORE_WEBSERVICE_SELECT_TABLE</option>
             </field>
             <field

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="module" version="2.5" client="site" method="upgrade">
+<extension type="module" version="3.9" client="site" method="upgrade">
 	<name>MOD_REDCORE_LANGUAGE_SWITCHER</name>
-	<version>1.7.0</version>
-	<creationDate>April 2015</creationDate>
-	<author>redCOMPONENT.com</author>
-	<authorEmail>email@redcomponent.com</authorEmail>
-	<copyright>redCOMPONENT</copyright>
-	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<creationDate>October 2020</creationDate>
+	<author>redWEB</author>
+	<authorEmail>email@redweb.dk</authorEmail>
+	<authorUrl>redweb.dk</authorUrl>
+	<copyright>Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later, see LICENSE.</license>
+	<version>2.1.0</version>
 	<description>MOD_REDCORE_LANGUAGE_SWITCHER_XML_DESCRIPTION</description>
 	<files>
 		<folder>language</folder>

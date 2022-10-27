@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -158,6 +158,20 @@ class RApi extends RApiBase
 					}
 				}
 			}
+		}
+
+		// Setting option for compressed output
+		if (isset($headers['ACCEPT_ENCODING']))
+		{
+			$acceptCompression = strpos(strtolower($headers['ACCEPT_ENCODING']), 'gzip') !== false ? 1 : 0;
+			$this->options->set('enable_gzip_compression', $acceptCompression);
+		}
+
+		// Setting option for compressed output
+		if (isset($headers['CONTENT_ENCODING']))
+		{
+			$acceptCompression = strpos(strtolower($headers['CONTENT_ENCODING']), 'gzip') !== false ? 1 : 0;
+			$this->options->set('enable_gzip_input_compression', $acceptCompression);
 		}
 
 		return $this;
@@ -567,5 +581,62 @@ class RApi extends RApiBase
 		}
 
 		return $headers;
+	}
+
+	/**
+	 * Method to clear any set response headers.
+	 *
+	 * @return  void
+	 */
+	public static function clearHeaders()
+	{
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			JFactory::getApplication()->clearHeaders();
+		}
+		else
+		{
+			JResponse::clearHeaders();
+		}
+	}
+
+	/**
+	 * Send the response headers.
+	 *
+	 * @return  void
+	 */
+	public static function sendHeaders()
+	{
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			JFactory::getApplication()->sendHeaders();
+		}
+		else
+		{
+			JResponse::sendHeaders();
+		}
+	}
+
+	/**
+	 * Method to set a response header.  If the replace flag is set then all headers
+	 * with the given name will be replaced by the new one.  The headers are stored
+	 * in an internal array to be sent when the site is sent to the browser.
+	 *
+	 * @param   string   $name     The name of the header to set.
+	 * @param   string   $value    The value of the header to set.
+	 * @param   boolean  $replace  True to replace any headers with the same name.
+	 *
+	 * @return  void
+	 */
+	public static function setHeader($name, $value, $replace = false)
+	{
+		if (version_compare(JVERSION, '3') >= 0)
+		{
+			JFactory::getApplication()->setHeader($name, $value, $replace);
+		}
+		else
+		{
+			JResponse::setHeader($name, $value, $replace);
+		}
 	}
 }

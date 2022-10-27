@@ -4,7 +4,7 @@
  * Including this file into your application and executing RBootstrap::bootstrap() will make redCORE available to use.
  *
  * @package    Redcore
- * @copyright  Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright  Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license    GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -74,21 +74,21 @@ class RBootstrap
 	{
 		if (is_null(self::$config))
 		{
-			$plugin = JPluginHelper::getPlugin('system', 'redcore');
-
-			if ($plugin)
+			if (RComponentHelper::isInstalled('com_redcore'))
 			{
-				if (is_string($plugin->params))
-				{
-					self::$config = new JRegistry($plugin->params);
-				}
-				elseif (is_object($plugin->params))
-				{
-					self::$config = $plugin->params;
-				}
-			}
+				self::$config = JComponentHelper::getParams('com_redcore');
 
-			return null;
+				// Sets initialization variables for frontend in Bootstrap class, according to plugin parameters
+				self::$loadFrontendCSS = self::$config->get('frontend_css', false);
+				self::$loadFrontendjQuery = self::$config->get('frontend_jquery', true);
+				self::$loadFrontendjQueryMigrate = self::$config->get('frontend_jquery_migrate', true);
+				self::$disableFrontendMootools = self::$config->get('frontend_mootools_disable', false);
+			}
+		}
+
+		if (!self::$config)
+		{
+			return $default;
 		}
 
 		return self::$config->get($key, $default);
@@ -112,6 +112,12 @@ class RBootstrap
 		{
 			// Sets bootstrapped variable, to avoid bootstrapping redCORE twice
 			define('REDCORE_LIBRARY_LOADED', 1);
+
+			// We are still in Joomla 2.5 or another version so we use alias to prevent errors
+			if (!class_exists('Joomla\Registry\Registry'))
+			{
+				class_alias('JRegistry', 'Joomla\Registry\Registry');
+			}
 
 			// Use our own base field
 			if (!class_exists('JFormField', false))
@@ -161,7 +167,11 @@ class RBootstrap
 			JFactory::$database = null;
 			JFactory::$database = RFactory::getDbo();
 
-			if (self::getConfig('enable_translations', 0) == 1 && !RTranslationHelper::isAdmin())
+			$isAdmin = RTranslationHelper::isAdmin();
+			$isTranslateAdmin = (bool) self::getConfig('translate_in_admin', 0);
+
+			if (self::getConfig('enable_translations', 0) == 1
+				&& (!$isAdmin || ($isAdmin && $isTranslateAdmin)))
 			{
 				// This is our object now
 				$db = JFactory::getDbo();
@@ -172,8 +182,22 @@ class RBootstrap
 				// Setting default option for translation fallback
 				RDatabaseSqlparserSqltranslation::setTranslationFallback(self::getConfig('enable_translation_fallback', '1') == '1');
 
+				// Setting default option for force translate default language
+				RDatabaseSqlparserSqltranslation::setForceTranslateDefaultLanguage(
+					self::getConfig('force_translate_default_site_language', '0') == '1'
+				);
+
+				// Set option for "translate in admin"
+				RDatabaseSqlparserSqltranslation::setTranslationInAdmin($isTranslateAdmin);
+
 				// Reset plugin translations params if needed
 				RTranslationHelper::resetPluginTranslation();
+			}
+			else
+			{
+				// We still need to set translate property to avoid notices as we check it from other functions
+				$db = JFactory::getDbo();
+				$db->translate = 0;
 			}
 		}
 	}

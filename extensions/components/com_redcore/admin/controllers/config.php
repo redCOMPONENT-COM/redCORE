@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Controllers
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -23,32 +23,6 @@ class RedcoreControllerConfig extends RControllerForm
 	 *
 	 * @return  boolean  True if successful, false otherwise.
 	 */
-	public function installContentElement()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
-
-		$option = $app->input->getString('component');
-		$xmlFile = $app->input->getString('contentElement');
-
-		if ($xmlFile == 'all')
-		{
-			RTranslationTable::batchContentElements($option, 'install');
-		}
-		else
-		{
-			RTranslationTable::installContentElement($option, $xmlFile);
-		}
-
-		$this->redirectAfterAction();
-	}
-
-	/**
-	 * Method to install Content Element.
-	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 */
 	public function redirectAfterAction()
 	{
 		if ($this->input->get('layout', '') == 'manage' && $returnUrl = $this->input->get('return', '', 'Base64'))
@@ -59,114 +33,6 @@ class RedcoreControllerConfig extends RControllerForm
 		{
 			parent::edit();
 		}
-	}
-
-	/**
-	 * Method to uninstall Content Element.
-	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 */
-	public function uninstallContentElement()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
-
-		$option = $app->input->getString('component');
-		$xmlFile = $app->input->getString('contentElement');
-
-		if ($xmlFile == 'all')
-		{
-			RTranslationTable::batchContentElements($option, 'uninstall');
-		}
-		else
-		{
-			RTranslationTable::uninstallContentElement($option, $xmlFile);
-		}
-
-		$this->redirectAfterAction();
-	}
-
-	/**
-	 * Method to purge Content Element Table.
-	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 */
-	public function purgeContentElement()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
-
-		$option = $app->input->getString('component');
-		$xmlFile = $app->input->getString('contentElement');
-
-		if ($xmlFile == 'all')
-		{
-			RTranslationTable::batchContentElements($option, 'purge');
-		}
-		else
-		{
-			RTranslationTable::purgeContentElement($option, $xmlFile);
-		}
-
-		$this->redirectAfterAction();
-	}
-
-	/**
-	 * Method to delete Content Element file.
-	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 */
-	public function deleteContentElement()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
-
-		$option = $app->input->getString('component');
-		$xmlFile = $app->input->getString('contentElement');
-
-		if ($xmlFile == 'all')
-		{
-			RTranslationTable::batchContentElements($option, 'delete');
-		}
-		else
-		{
-			RTranslationTable::deleteContentElement($option, $xmlFile);
-		}
-
-		$this->redirectAfterAction();
-	}
-
-	/**
-	 * Method to upload Content Element file.
-	 *
-	 * @return  boolean  True if successful, false otherwise.
-	 */
-	public function uploadContentElement()
-	{
-		// Check for request forgeries.
-		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
-		$app   = JFactory::getApplication();
-		$option = $app->input->getString('component');
-		$files  = $app->input->files->get('redcoreContentElement', array(), 'array');
-
-		if (!empty($files))
-		{
-			$uploadedFiles = RTranslationTable::uploadContentElement($option, $files);
-
-			if (!empty($uploadedFiles))
-			{
-				$app->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_UPLOAD_SUCCESS'));
-			}
-		}
-		else
-		{
-			JFactory::getApplication()->enqueueMessage(JText::_('COM_REDCORE_CONFIG_TRANSLATIONS_UPLOAD_FILE_NOT_FOUND'), 'warning');
-		}
-
-		$this->redirectAfterAction();
 	}
 
 	/**
@@ -182,15 +48,15 @@ class RedcoreControllerConfig extends RControllerForm
 		// Check for request forgeries.
 		JSession::checkToken() or jexit(JText::_('JINVALID_TOKEN'));
 
-		$app   = JFactory::getApplication();
-		$lang  = JFactory::getLanguage();
-		$model = $this->getModel();
-		$table = $model->getTable();
-		$data  = $this->input->post->get('jform', array(), 'array');
+		$app     = JFactory::getApplication();
+		$lang    = JFactory::getLanguage();
+		$model   = $this->getModel();
+		$table   = $model->getTable();
+		$data    = $this->input->post->get('jform', array(), 'array');
 		$checkin = property_exists($table, 'checked_out');
 		$context = "$this->option.edit.$this->context";
-		$task = $this->getTask();
-		$id = $this->input->getInt('id');
+		$task    = $this->getTask();
+		$id      = $this->input->getInt('id');
 
 		// Loading language files from other components if necessary
 		$externalExtension = $this->input->getString('component');
@@ -248,7 +114,7 @@ class RedcoreControllerConfig extends RControllerForm
 
 			// Reset the ID and then treat the request as for Apply.
 			$data[$key] = 0;
-			$task = 'apply';
+			$task       = 'apply';
 		}
 
 		// Access check.
@@ -357,9 +223,16 @@ class RedcoreControllerConfig extends RControllerForm
 
 		$this->setMessage(
 			JText::_(
-				($lang->hasKey($this->text_prefix . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS')
+				(
+					$lang->hasKey(
+						$this->text_prefix
+						. ($recordId == 0 && (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? '_SUBMIT' : '')
+						. '_SAVE_SUCCESS'
+					)
 					? $this->text_prefix
-					: 'JLIB_APPLICATION') . ($recordId == 0 && $app->isSite() ? '_SUBMIT' : '') . '_SAVE_SUCCESS'
+					: 'JLIB_APPLICATION')
+				. ($recordId == 0 && (version_compare(JVERSION, '3.7', '<') ? $app->isSite() : $app->isClient('site')) ? '_SUBMIT' : '')
+				. '_SAVE_SUCCESS'
 			)
 		);
 
@@ -421,7 +294,7 @@ class RedcoreControllerConfig extends RControllerForm
 		$append = parent::getRedirectToItemAppend($recordId, $urlVar);
 
 		$component = $this->input->get('component');
-		$tab = $this->input->get('tab');
+		$tab       = $this->input->get('tab');
 
 		if ($component)
 		{
@@ -443,7 +316,7 @@ class RedcoreControllerConfig extends RControllerForm
 	 */
 	protected function getRedirectToListAppend()
 	{
-		$tmpl = JFactory::getApplication()->input->get('tmpl');
+		$tmpl   = JFactory::getApplication()->input->get('tmpl');
 		$append = '';
 
 		// Setup redirect info.

@@ -19,19 +19,7 @@
             <option value="">COM_REDCORE_TRANSLATIONS_SELECT_LANGUAGE</option>
         </field>
         <field
-                name="component"
-                type="componentlist"
-                loadContentElements="true"
-                showFullName="true"
-                label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
-                description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
-                onchange="this.form.submit();"
-                default=""
-                class="inputbox">
-            <option value="">COM_REDCORE_TRANSLATIONS_SELECT_COMPONENT</option>
-        </field>
-        <field
-                name="contentelement"
+                name="translationTableName"
                 type="contentelement"
                 label="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_TITLE"
                 description="COM_REDCORE_TRANSLATIONS_COMPONENT_LIST_DESC"
@@ -39,6 +27,26 @@
                 default=""
                 class="inputbox">
             <option value="">COM_REDCORE_TRANSLATIONS_SELECT_CONTENT_ELEMENT</option>
+        </field>
+        <field
+                name="author_id"
+                type="author"
+                label="COM_REDCORE_TRANSLATIONS_EDITOR_LIST"
+                description="COM_REDCORE_TRANSLATIONS_EDITOR_LISTDESC"
+                onchange="this.form.submit();"
+        >
+            <option value="">COM_REDCORE_TRANSLATIONS_SELECT_EDITOR</option>
+        </field>
+        <field
+                name="state"
+                type="rpublished"
+                label="JOPTION_SELECT_PUBLISHED"
+                description="JOPTION_SELECT_PUBLISHED_DESC"
+                filter="0,1"
+                class="chosen"
+                onchange="this.form.submit();"
+        >
+            <option value="">JOPTION_SELECT_PUBLISHED</option>
         </field>
     </fields>
     <fields name="list">

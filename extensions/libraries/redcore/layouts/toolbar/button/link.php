@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -24,6 +24,7 @@ $class = $button->getClass();
 $iconClass = $button->getIconClass();
 $url = $button->getUrl();
 $text = $button->getText();
+$extraProperties = $button->getExtraProperties();
 
 // Get the button class.
 $btnClass = $isOption ? '' : 'btn btn-default';
@@ -35,9 +36,9 @@ if (!empty($class))
 
 ?>
 
-<?php if ($isOption) :?>
+<?php if ($isOption) : ?>
 	<li>
-		<a class="<?php echo $btnClass ?>" href="<?php echo $url ?>">
+		<a class="<?php echo $btnClass ?>" href="<?php echo $url ?>"<?php if ($extraProperties != '') : echo ' ' . $extraProperties; endif; ?>>
 			<?php if (!empty($iconClass)) : ?>
 				<i class="<?php echo $iconClass ?>"></i>
 			<?php endif; ?>
@@ -45,7 +46,7 @@ if (!empty($class))
 		</a>
 	</li>
 <?php else:?>
-	<button class="<?php echo $btnClass ?>" onclick="location.href='<?php echo $url ?>';">
+	<button class="<?php echo $btnClass ?>" onclick="location.href='<?php echo $url ?>';"<?php if ($extraProperties != '') : echo ' ' . $extraProperties; endif; ?>>
 		<?php if (!empty($iconClass)) : ?>
 			<i class="<?php echo $iconClass ?>"></i>
 		<?php endif; ?>

@@ -55,6 +55,8 @@ While sending the operation request there are several options that can be set us
 `Accept` - (Optional) Output format option can be changed through this server setting. Default Output format is application/hal+json. Allowed formats are: application/hal+json, application/hal+xml, application/hal+doc
 `Accept-Language` - (Optional) Set the language for your request result (ex. en). Default language is da-DK. Allowed languages are: da (Danish (da-DK)), en (English (UK))
 `X-Webservice-Translation-Fallback` - (Optional) Set Translation fallback option to override default API behavior. Default Translation fallback is Disabled. Allowed options are: true, false
+`Accept-Encoding` - (Optional) Set the compression for your request result (ex. gzip). Default response is without any compression but if you request gzip compression the server will return compressed result while adding `Content-Encoding: gzip` in the response headers. It is very recommended to use compressed values as it drastically reduces size and speed of the requests.
+`Content-Encoding` - (Optional) Set the compression for your request data (ex. gzip). In this case you need to compress the data before sending it to the webservice. Default request is without any compression but if you send gzip compressed data the server will decompress it and use the data as json/xml. It is very recommended to use compressed values as it drastically reduces size and speed of the requests.
 
 ### Different Versions of the same webservice
 

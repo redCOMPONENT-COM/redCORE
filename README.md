@@ -1,7 +1,6 @@
-redCORE
-======
+# redCORE
 
-[![Download latest](https://img.shields.io/badge/Download-stable-brightgreen.svg)](https://github.com/redCOMPONENT-COM/redCORE/releases/latest) [![Travis Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=develop)](https://travis-ci.org/redCOMPONENT-COM/redCORE) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/?branch=develop)
+[![Download latest](https://img.shields.io/badge/Download-stable-brightgreen.svg)](https://github.com/redCOMPONENT-COM/redCORE/releases/latest) [![Travis Build Status](https://travis-ci.org/redCOMPONENT-COM/redCORE.svg?branch=master)](https://travis-ci.org/redCOMPONENT-COM/redCORE) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/redCOMPONENT-COM/redCORE/?branch=master)
 
 # Overview
 
@@ -17,7 +16,7 @@ redCORE is a quicker and more uniform way of creating extensions while adding so
 
 redCORE is not a rapid application development tool based on conventions to automatically create output.
 
-redCORE based extensions works for Joomla 2.5 and 3.x.
+redCORE based extensions works for Joomla 3.9.
 
 It is our hope that redCORE will be interesting for other Joomla developers or even the Joomla Core.
 
@@ -30,12 +29,15 @@ Director and Founder of redCOMPONENT.com
 CEO, redWEB ApS
 
 ## Contributing
+
 See: [Contributing to redCORE](http://redcomponent-com.github.io/redCORE/?chapters/Contributing.md)
 
 ## Documentation
+
 See: [redCORE Documentation](http://redcomponent-com.github.io/redCORE/)
 
 ## Testing
+
 See: [testing redCORE](./tests/README.md)
 
 ## Repository structure

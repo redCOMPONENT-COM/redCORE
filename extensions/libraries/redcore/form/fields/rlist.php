@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Field
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -55,7 +55,7 @@ class JFormFieldRlist extends JFormFieldList
 		$layout = !empty($this->element['layout']) ? $this->element['layout'] : $this->layout;
 
 		return RLayoutHelper::render(
-			$layout,
+			trim($layout),
 			array(
 				'id'       => $this->id,
 				'element'  => $this->element,

@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('_JEXEC') or die;
@@ -78,6 +78,7 @@ jQuery(document).ready(function () {
 			<?php
 			$element = new RTranslationContentElement('com_plugins', '');
 			$element->name = 'plugins';
+			$element->extension_name = 'com_plugins';
 			$column = array('name' => 'params', 'formname' => 'plugin');
 			echo RLayoutHelper::render(
 				'translation.params',

@@ -3,7 +3,7 @@
  * @package     Redcore.Webservice
  * @subpackage  Layouts
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -20,6 +20,7 @@ $docsLink = RApiHalHelper::buildWebserviceFullUrl($view->client, $view->webservi
 $translationFallback = RBootstrap::getConfig('enable_translation_fallback_webservices', '1') == '1' ? JText::_('JENABLED') : JText::_('JDISABLED');
 $defaultLanguage = RTranslationHelper::getSiteLanguage();
 $defaultFormat = RBootstrap::getConfig('webservices_default_format', 'json');
+$defaultStatefulness = RBootstrap::getConfig('webservices_stateful', '1') == '1' ? JText::_('JENABLED') : JText::_('JDISABLED');
 $languages = JLanguageHelper::getLanguages();
 $availableLanguages = array();
 
@@ -36,23 +37,20 @@ $availableLanguages = implode(', ', $availableLanguages);
 	<meta charset="utf-8" />
 	<link type="text/css" href="<?php echo JUri::root(true) . '/media/redcore/css/component.bs3.min.css' ?>" rel="stylesheet" />
 	<link type="text/javascript" href="<?php echo JUri::root(true) . '/media/redcore/js/lib/bootstrap3/js/bootstrap.min.js' ?>" />
-	<style type="text/css">
-		.table-nonfluid {
-			width: auto !important;
-		}
-	</style>
-<?php
-	if ($print) :
-?>
-	<script type="text/javascript">
-		function printWindow() {
-			window.print();
-			window.close();
-		};
-	</script>
-<?php
-	endif;
-?>
+	<?php if ($print) :?>
+		<style type="text/css">
+			.table-nonfluid {
+				width: auto !important;
+			}
+		</style>
+
+		<script type="text/javascript">
+			function printWindow()
+			{
+				window.print();
+			}
+		</script>
+	<?php endif; ?>
 </head>
 <body<?php if ($print) : ?> onload="printWindow()"<?php endif; ?> class="redcore">
 <div class="container-fluid">
@@ -137,6 +135,42 @@ $availableLanguages = implode(', ', $availableLanguages);
 		<h2><?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ALLOWED_OPERATIONS'); ?></h2>
 		<p>
 			<?php echo JText::_('LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_ALLOWED_OPERATIONS_DESC'); ?>
+			<div class="before">
+				<nav role='navigation' class='table-of-contents'>
+					<ul>
+						<?php foreach ($xml->operations as $operations) : ?>
+							<?php foreach ($operations as $operationName => $operation) : ?>
+								<?php if ($operationName == 'documentation') :
+									continue;
+								elseif ($operationName == 'read') :
+									if (isset($xml->operations->read->list)) : ?>
+										<li>
+											<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName . ' list')); ?>"><?php echo ucfirst($operationName . ' list'); ?></a>
+										</li>
+									<?php endif;
+
+									if (isset($xml->operations->read->item)) : ?>
+										<li>
+											<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName . ' item')); ?>"><?php echo ucfirst($operationName . ' item'); ?></a>
+										</li>
+									<?php endif;
+								elseif ($operationName == 'task') :
+									foreach ($operation as $taskName => $task) : ?>
+										<li>
+											<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName . ' ' . $taskName)); ?>"><?php echo ucfirst($operationName . ' ' . $taskName); ?></a>
+										</li>
+									<?php endforeach;
+								else : ?>
+									<li>
+										<a href="#<?php echo JFilterOutput::stringURLSafe(strtolower($operationName)); ?>"><?php echo ucfirst($operationName); ?></a>
+									</li>
+								<?php endif; ?>
+								
+							<?php endforeach; ?>
+						<?php endforeach; ?>
+					</ul>
+				</nav>
+			</div>
 		</p>
 
 		<br />
@@ -159,6 +193,27 @@ $availableLanguages = implode(', ', $availableLanguages);
 						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_ACCEPT_LANGUAGE',
 						'<strong>' . $defaultLanguage . '</strong>',
 						$availableLanguages
+					); ?></td>
+			</tr>
+            <tr>
+                <th>Accept-Encoding</th>
+                <td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_ACCEPT_ENCODING',
+						'<strong>gzip</strong>'
+					); ?></td>
+            </tr>
+            <tr>
+                <th>Content-Encoding</th>
+                <td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_CONTENT_ENCODING',
+						'<strong>gzip</strong>'
+					); ?></td>
+            </tr>
+			<tr>
+				<th>X-Webservice-Stateful</th>
+				<td><?php echo JText::sprintf(
+						'LIB_REDCORE_API_HAL_WEBSERVICE_DOCUMENTATION_REQUEST_HEADER_OPTIONS_STATEFUL',
+						'<strong>' . $defaultStatefulness . '</strong>'
 					); ?></td>
 			</tr>
 			<tr>

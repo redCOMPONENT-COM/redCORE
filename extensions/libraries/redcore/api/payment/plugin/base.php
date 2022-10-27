@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Base
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -38,6 +38,8 @@ abstract class RApiPaymentPluginBase extends JPlugin
 	 */
 	protected $autoloadLanguage = true;
 
+	protected $offlinePayment = false;
+
 	/**
 	 * Constructor
 	 *
@@ -55,6 +57,8 @@ abstract class RApiPaymentPluginBase extends JPlugin
 		// Load default helper file or use the plugin helper file
 		$this->loadRedpaymentHelper();
 
+		$this->offlinePayment = $this->params->get('offline_payment', 0);
+		$this->paymentHelper->offlinePayment = $this->offlinePayment;
 		$this->paymentHelper->paymentName = $this->paymentName;
 	}
 
@@ -77,10 +81,10 @@ abstract class RApiPaymentPluginBase extends JPlugin
 			return null;
 		}
 
-		$payments[] = (object) array(
+		$payments[$this->paymentName . $extensionName . $ownerName] = (object) array(
 			'value' => $this->paymentName,
-			'text' => $this->params->get('payment_title', $this->paymentName),
-			'logo' => $this->params->get('payment_logo', ''),
+			'text' => $this->paymentHelper->params->get('payment_title', $this->params->get('payment_title', $this->paymentName)),
+			'logo' => $this->paymentHelper->params->get('payment_logo', $this->params->get('payment_logo', '')),
 			'params' => $this->paymentHelper->params,
 			'helper' => $this->paymentHelper
 		);

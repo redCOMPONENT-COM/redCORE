@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -85,16 +85,18 @@ abstract class RedcoreHelpersView extends RViewAdmin
 	/**
 	 * Method to get all extensions that are using redCORE
 	 *
+	 * @param   bool  $includeRedcore  Include redcore as extension
+	 *
 	 * @return  array  Array of extensions
 	 */
-	public static function getExtensionsRedcore()
+	public static function getExtensionsRedcore($includeRedcore = false)
 	{
-		if (empty($loadedRedcoreExtensions))
+		if (empty(self::$loadedRedcoreExtensions))
 		{
 			/** @var RedcoreModelConfig $model */
 			$model = RModelAdmin::getAdminInstance('Config', array(), 'com_redcore');
 
-			self::$loadedRedcoreExtensions = RComponentHelper::getRedcoreComponents();
+			self::$loadedRedcoreExtensions = RComponentHelper::getRedcoreComponents($includeRedcore);
 
 			foreach (self::$loadedRedcoreExtensions as $componentKey => $componentName)
 			{

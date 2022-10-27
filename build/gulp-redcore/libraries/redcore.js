@@ -1,18 +1,12 @@
 var gulp = require('gulp');
 var fs   = require('fs');
 
-// Third part extension using redCORE / redCORE build folder
-try {
-	var config = require(process.cwd() + '/gulp-config.json');
-}
-// redCORE repo relative
-catch(err) {
-	var config = require('../../build/gulp-config.json');
-}
+var config = require('../config.js');
 
 // Dependencies
 var browserSync = require('browser-sync');
 var del         = require('del');
+var merge       = require('merge-stream');
 
 var baseTask  = 'libraries.redcore';
 
@@ -74,14 +68,30 @@ gulp.task('copy:' + baseTask + ':manifest', ['clean:' + baseTask + ':manifest'],
 
 // Copy: media
 gulp.task('copy:' + baseTask + ':media', function() {
-	del.sync([config.wwwDir + '/media/redcore'], {force: true});
+	// Delete all except for webservices folder
+	del.sync([
+		config.wwwDir + '/media/redcore/css',
+		config.wwwDir + '/media/redcore/fonts',
+		config.wwwDir + '/media/redcore/images',
+		config.wwwDir + '/media/redcore/js',
+		config.wwwDir + '/media/redcore/lib',
+		config.wwwDir + '/media/redcore/translations',
+		config.wwwDir + '/media/redcore/webservices/joomla'
+	], {force: true});
 
-	return gulp.src([mediaPath + '/**'])
-		.pipe(gulp.dest(config.wwwDir + '/media/redcore'))
-		// Copy original uncompressed files to the testing site too
-		&&
-		gulp.src([buildPathMedia + '/**'])
+	var media = gulp.src([mediaPath + '/**'])
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+
+	var uncompressed = gulp.src([
+				buildPathMedia + '/**',
+				'!' + buildPathMedia + '/less',
+				'!' + buildPathMedia + '/less/**',
+				'!' + buildPathMedia + '/sass',
+				'!' + buildPathMedia + '/sass/**'
+			])
+			.pipe(gulp.dest(config.wwwDir + '/media/redcore'));
+
+	return merge(media, uncompressed);
 });
 
 // Watch

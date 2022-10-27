@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Toolbar
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -26,18 +26,27 @@ class RToolbarButtonLink extends RToolbarButton
 	protected $url;
 
 	/**
+	 * Extra properties added to the button html tag
+	 *
+	 * @var  string
+	 */
+	protected $extraProperties;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param   string  $text       The button text.
-	 * @param   string  $url        The button task.
-	 * @param   string  $class      The button class.
-	 * @param   string  $iconClass  The icon class.
+	 * @param   string  $text             The button text.
+	 * @param   string  $url              The button task.
+	 * @param   string  $class            The button class.
+	 * @param   string  $iconClass        The icon class.
+	 * @param   string  $extraProperties  Extra properties added to the button html tag
 	 */
-	public function __construct($text = '', $url = '', $class = '', $iconClass = '')
+	public function __construct($text = '', $url = '', $class = '', $iconClass = '', $extraProperties = '')
 	{
 		parent::__construct($text, $iconClass, $class);
 
 		$this->url = $url;
+		$this->extraProperties = $extraProperties;
 	}
 
 	/**
@@ -48,6 +57,16 @@ class RToolbarButtonLink extends RToolbarButton
 	public function getUrl()
 	{
 		return $this->url;
+	}
+
+	/**
+	 * Get the button extra properties.
+	 *
+	 * @return  string  Extra properties added to the button html tag
+	 */
+	public function getExtraProperties()
+	{
+		return $this->extraProperties;
 	}
 
 	/**

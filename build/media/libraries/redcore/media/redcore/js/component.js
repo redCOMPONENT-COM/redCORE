@@ -31,6 +31,25 @@
             }
         });
 
+        // Old Joomla tooltip
+        $('*[rel=tooltip]').each(function () {
+            if ($(this).tooltip){
+                $(this).tooltip({
+                    "animation":true,
+                    "html":true
+                });
+            }
+        });
+
+        $('.hasTooltip').each(function () {
+            if ($(this).tooltip){
+                $(this).tooltip({
+                    "animation":true,
+                    "html":true
+                });
+            }
+        });
+
         rRadioGroupButtonsSet();
         rRadioGroupButtonsEvent();
 
@@ -60,7 +79,16 @@
                 form.submit();
             };
         }
-	});
+
+        // Quick temporary fix for 3.6.4
+        var dataApiDropdownEventHandler = $._data(document, 'events').click.filter(function (el) {
+            return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined
+        });
+
+        if (dataApiDropdownEventHandler[0] != null) {
+            dataApiDropdownEventHandler[0].namespace = 'data-api.dropdown';
+        }
+    });
 
     // add color classes to chosen field based on value
     $('select[class^="chzn-color"], select[class*=" chzn-color"]').on('liszt:ready', function(){
@@ -98,7 +126,6 @@ function rRadioGroupButtonsSet (selector) {
             } else {
                 label.addClass('active btn-success');
             }
-            input.prop('checked', true);
         }
     });
 }

@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Html
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Chart HTML class.
@@ -134,7 +136,7 @@ abstract class RHtmlRchart
 
 		if (is_object($data))
 		{
-			$data = JArrayHelper::fromObject($data);
+			$data = ArrayHelper::fromObject($data);
 		}
 
 		if (is_array($data) || empty($data))

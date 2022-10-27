@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Document
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -87,7 +87,7 @@ class RApiHalDocumentDocument extends JDocument
 	public function render($cache = false, $params = array())
 	{
 		// Get the HAL object from the buffer.
-		/* @var $hal RApiHalDocumentResource */
+		/** @var $hal RApiHalDocumentResource */
 		$hal = $this->getBuffer();
 
 		// If required, change relative links to absolute.
@@ -110,6 +110,12 @@ class RApiHalDocumentDocument extends JDocument
 		$app = JFactory::getApplication();
 		$language = explode('-', $app->input->get('lang', RTranslationHelper::getSiteLanguage()));
 		$language = $language[0];
+
+		if ($this->hal->options->get('enable_gzip_compression', 0) && RBootstrap::$config->get('webservice_enable_gzip_compression', '1') == '1')
+		{
+			$app->setHeader('Content-Encoding', 'gzip', true);
+			$content = gzencode($content, 1);
+		}
 
 		$app->setHeader('Status', $this->hal->statusCode . ' ' . $this->hal->statusText, true);
 		$app->setHeader('Server', '', true);

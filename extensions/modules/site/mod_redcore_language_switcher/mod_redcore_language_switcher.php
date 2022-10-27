@@ -3,7 +3,7 @@
  * @package     Redcore.Module.LanguageSwitcher
  * @subpackage  mod_redcore_language_switcher
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -13,7 +13,7 @@ $redcoreLoader = JPATH_LIBRARIES . '/redcore/bootstrap.php';
 
 if (!file_exists($redcoreLoader) || !JPluginHelper::isEnabled('system', 'redcore'))
 {
-	throw new Exception(JText::_('COM_REDSHOPB_REDCORE_INIT_FAILED'), 404);
+	throw new Exception(JText::_('MOD_REDCORE_LANGUAGE_REDCORE_INIT_FAILED'), 404);
 }
 
 $app = JFactory::getApplication();

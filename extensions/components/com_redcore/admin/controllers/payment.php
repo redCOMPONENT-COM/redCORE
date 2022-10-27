@@ -3,7 +3,7 @@
  * @package     Redcore.Backend
  * @subpackage  Controllers
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -25,22 +25,22 @@ class RedcoreControllerPayment extends RControllerForm
 	 */
 	public function ajaxlogs()
 	{
-		$app = JFactory::getApplication();
-		$input = $app->input;
+		$app       = JFactory::getApplication();
+		$input     = $app->input;
 		$paymentId = $input->getInt('id');
 
 		if ($paymentId)
 		{
 			/** @var RedcoreModelPayment_Logs $logsModel */
 			$logsModel = RModelAdmin::getAdminInstance('Payment_Logs', array(), 'com_redcore');
-			$state = $logsModel->getState();
+			$state     = $logsModel->getState();
 
 			$logsModel->setState('filter.payment_id', $paymentId);
 			$app->setUserState('log.payment_id', $paymentId);
 
-			$formName = 'logsForm';
-			$pagination = $logsModel->getPagination();
-			$pagination->set('formName', $formName);
+			$formName             = 'logsForm';
+			$pagination           = $logsModel->getPagination();
+			$pagination->formName = $formName;
 
 			echo RLayoutHelper::render('payment.logs', array(
 					'state' => $state,
@@ -52,7 +52,8 @@ class RedcoreControllerPayment extends RControllerForm
 					'showToolbar' => true,
 					'action' => RRoute::_('index.php?option=com_redcore&view=payment&model=payment_logs'),
 					'return' => base64_encode('index.php?option=com_redcore&view=payment&layout=edit&id='
-						. $paymentId . '&tab=logs&from_payment=1')
+						. $paymentId . '&tab=logs&from_payment=1'
+					)
 				)
 			);
 		}
@@ -67,20 +68,11 @@ class RedcoreControllerPayment extends RControllerForm
 	 */
 	public function saveModelState()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		$returnUrl = $input->get('return', '', 'Base64');
 		$returnUrl = $returnUrl ? base64_decode($returnUrl) : 'index.php';
-
-		if ($model = $input->get('model', null))
-		{
-			$context = $input->getCmd('context', '');
-
-			$model = RModel::getAdminInstance(ucfirst($model), array('context' => $context));
-
-			$state = $model->getState();
-		}
 
 		$app->redirect($returnUrl);
 	}
@@ -92,7 +84,7 @@ class RedcoreControllerPayment extends RControllerForm
 	 */
 	public function checkPayment()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		$ids = $input->get('cid', array(), 'array');
@@ -120,7 +112,7 @@ class RedcoreControllerPayment extends RControllerForm
 	 */
 	public function capturePayment()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		$ids = $input->get('cid', array(), 'array');
@@ -153,7 +145,7 @@ class RedcoreControllerPayment extends RControllerForm
 	 */
 	public function refundPayment()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		$ids = $input->get('cid', array(), 'array');
@@ -186,7 +178,7 @@ class RedcoreControllerPayment extends RControllerForm
 	 */
 	public function deletePayment()
 	{
-		$app = JFactory::getApplication();
+		$app   = JFactory::getApplication();
 		$input = $app->input;
 
 		$ids = $input->get('cid', array(), 'array');

@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -13,6 +13,6 @@ echo RLayoutHelper::render(
 	'translation.tables',
 	array(
 		'contentElements' => $this->contentElements,
-		'missingContentElements' => $this->missingContentElements,
+		'componentName' => $this->componentName,
 	)
 );

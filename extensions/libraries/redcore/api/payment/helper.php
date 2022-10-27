@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Helper class for Payment calls
@@ -68,12 +70,14 @@ class RApiPaymentHelper
 			->select('COALESCE(pc2.extension_name, COALESCE(pc1.extension_name, ' . $db->q('') . ')) as extension_name')
 			->select('COALESCE(pc2.owner_name, COALESCE(pc1.owner_name, ' . $db->q('') . ')) as owner_name')
 			->select('COALESCE(pc2.state, COALESCE(pc1.state, p.enabled)) as state')
+			->select('p.params AS original_params')
 			->from($db->qn('#__extensions', 'p'))
 			->where($db->qn('p.type') . '= ' . $db->q('plugin'))
 			->where($db->qn('p.folder') . '= ' . $db->q('redpayment'))
 			->where($db->qn('p.element') . ' = ' . $db->q($paymentName))
 			->leftJoin(
 				$db->qn('#__redcore_payment_configuration', 'pc1') . ' ON pc1.payment_name = p.element AND pc1.extension_name = ' . $db->q($extensionName)
+				. ' AND pc1.owner_name = ' . $db->q('')
 			)
 			->leftJoin(
 				$db->qn('#__redcore_payment_configuration', 'pc2') . ' ON pc2.payment_name = p.element AND pc2.extension_name = ' . $db->q($extensionName)
@@ -83,9 +87,15 @@ class RApiPaymentHelper
 		$db->setQuery($query);
 		$item = $db->loadObject();
 
-		$registry = new JRegistry;
+		$registry = new Joomla\Registry\Registry;
+		$registry->loadString($item->original_params);
+		$item->original_params = $registry;
+		$originalParams = clone $registry;
+
+		$registry = new Joomla\Registry\Registry;
 		$registry->loadString($item->params);
-		$item->params = $registry;
+		$originalParams->merge($registry);
+		$item->params = $originalParams;
 
 		self::$pluginParams[$paymentName][$extensionName][$ownerName] = $item;
 
@@ -565,7 +575,7 @@ class RApiPaymentHelper
 	{
 		if (is_object($paymentData))
 		{
-			$paymentData = JArrayHelper::fromObject($paymentData);
+			$paymentData = ArrayHelper::fromObject($paymentData);
 		}
 
 		// If there is no payment Id, we are checking if that payment data is saved under another row
@@ -652,7 +662,7 @@ class RApiPaymentHelper
 		if ($paymentLogs)
 		{
 			$paymentOriginal = self::getPaymentById($paymentId);
-			$payment = JArrayHelper::fromObject($paymentOriginal);
+			$payment = ArrayHelper::fromObject($paymentOriginal);
 			$customerNote = array();
 			$amountPaid = 0;
 			$currency = '';
@@ -716,7 +726,11 @@ class RApiPaymentHelper
 
 			if ($status == RApiPaymentStatus::getStatusCompleted() && $payment['amount_paid'] != $payment['amount_total'])
 			{
-				$status = RApiPaymentStatus::getStatusPending();
+				// If not ePay partial payment capture
+				if (self::isInstantCapture((object) $payment) || $payment['amount_original'] <= $payment['amount_total'])
+				{
+					$status = RApiPaymentStatus::getStatusPending();
+				}
 			}
 
 			$payment['status'] = $status;
@@ -747,6 +761,26 @@ class RApiPaymentHelper
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check if ePay is using  instant capture
+	 *
+	 * @param   object	$payment	Payment object
+	 *
+	 * @return  boolean
+	 */
+	public static function isInstantCapture($payment)
+	{
+		$plugin 		= RApiPaymentHelper::getPaymentParams($payment->payment_name, $payment->extension_name, $payment->owner_name);
+		$instantcapture = false;
+
+		if ($plugin && strcmp($plugin->element, 'epay') === 0)
+		{
+			$instantcapture = (boolean) $plugin->params->get('instantcapture', 0);
+		}
+
+		return $instantcapture;
 	}
 
 	/**
@@ -838,6 +872,7 @@ class RApiPaymentHelper
 					'value' => $value,
 					'id' => $id,
 					'attributes' => $attributes,
+					'selectSingleOption' => true,
 				)
 			)
 		);
@@ -905,6 +940,13 @@ class RApiPaymentHelper
 
 		if ($item = self::getPaymentById($paymentId))
 		{
+			if ((float) $item->amount_total > (float) $item->amount_original)
+			{
+				$item->amount_total = $item->amount_original;
+			}
+
+			$item->amount_paid = $item->amount_total;
+
 			JFactory::getApplication()->triggerEvent(
 				'onRedpaymentCapturePayment', array($item->payment_name, $item->extension_name, $item->owner_name, $item, &$isCaptured)
 			);
@@ -1053,7 +1095,7 @@ class RApiPaymentHelper
 	{
 		if (is_object($data))
 		{
-			$data = JArrayHelper::fromObject($data);
+			$data = ArrayHelper::fromObject($data);
 		}
 
 		$paymentLog = array();
@@ -1098,6 +1140,9 @@ class RApiPaymentHelper
 
 		/** @var RedcoreModelPayment_Log $logModel */
 		$logModel = RModelAdmin::getAdminInstance('Payment_Log', array(), 'com_redcore');
+
+		// Avoid ghost id from URL
+		$paymentLog['id'] = 0;
 
 		if ($logModel->save($paymentLog))
 		{

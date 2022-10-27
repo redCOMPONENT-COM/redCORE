@@ -3,7 +3,7 @@
  * @package     Redcore.Admin
  * @subpackage  Templates
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 defined('_JEXEC') or die;
@@ -35,7 +35,7 @@ $listDirn = $this->state->get('list.direction');
 	);
 	?>
 	<hr/>
-	<div class="row">
+	<div class="row-fluid">
 		<table class="table table-striped table-hover" id="oauthClientsList">
 			<thead>
 			<tr>
@@ -82,10 +82,10 @@ $listDirn = $this->state->get('list.direction');
 							<?php echo $item->client_id; ?>
 							</a>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo $item->client_secret; ?>
 						</td>
-						<td style="word-wrap:break-word;">
+						<td style="word-break:break-all; word-wrap:break-word;">
 							<?php echo $item->redirect_uri; ?>
 						</td>
 						<td>

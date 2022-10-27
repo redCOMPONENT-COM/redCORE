@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Layout
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -33,11 +33,11 @@ $message = addslashes($message);
 
 if ($isList)
 {
-	$cmd = "if (document.adminForm.boxchecked.value==0){alert('$message');}else{ Joomla.submitbutton('$task')}";
+	$cmd = "if (document.adminForm.boxchecked.value==0){alert('$message');}else{ Joomla.submitbutton('$task')} return false;";
 }
 else
 {
-	$cmd = "Joomla.submitbutton('$task')";
+	$cmd = "Joomla.submitbutton('$task'); return false;";
 }
 
 // Get the button class.

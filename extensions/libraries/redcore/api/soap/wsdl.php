@@ -3,8 +3,8 @@
  * @package     Redcore
  * @subpackage  Api
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
- * @license     GNU General Public License version 2 or later; see LICENSE.txt
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
+ * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_BASE') or die;
@@ -387,7 +387,7 @@ class RApiSoapWsdl
 		// Add read item messages
 		$inputFields = array_merge(
 			RApiHalHelper::getFieldsArray($this->webserviceXml->operations->read->item, true),
-			array(array('name' => 'language', 'transform' => 'string'))
+			array(array('name' => 'language', 'transform' => 'string', 'optionalSoapField' => 'true'))
 		);
 
 		// Add read item response messages

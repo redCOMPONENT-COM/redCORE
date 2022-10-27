@@ -3,11 +3,13 @@
  * @package     Redcore
  * @subpackage  Model
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('JPATH_REDCORE') or die;
+
+use Joomla\Utilities\ArrayHelper;
 
 JLoader::import('joomla.application.component.modeladmin');
 
@@ -145,7 +147,7 @@ class RModelAdminBase extends JModelAdmin
 	protected function loadForm($name, $source = null, $options = array(), $clear = false, $xpath = false)
 	{
 		// Handle the optional arguments.
-		$options['control'] = JArrayHelper::getValue($options, 'control', false);
+		$options['control'] = ArrayHelper::getValue($options, 'control', false);
 
 		// Create a signature hash.
 		$hash = md5($source . serialize($options));
@@ -220,7 +222,7 @@ class RModelAdminBase extends JModelAdmin
 	public function validate($form, $data, $group = null)
 	{
 		// Filter and validate the form data.
-		$data = $form->filter($data);
+		$data   = $form->filter($data);
 		$return = $form->validate($data, $group);
 
 		// Check for an error.
@@ -277,7 +279,7 @@ class RModelAdminBase extends JModelAdmin
 
 		// Check if we have an error in session.
 		$session = JFactory::getSession();
-		$error = $session->get($this->context . '.error.' . $name);
+		$error   = $session->get($this->context . '.error.' . $name);
 
 		// If we have an error.
 		if (!is_null($error))

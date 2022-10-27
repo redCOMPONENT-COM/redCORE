@@ -3,11 +3,13 @@
  * @package     Redcore.Admin
  * @subpackage  Views
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
 defined('_JEXEC') or die;
+
+use Joomla\Registry\Registry;
 
 /**
  * Payments View
@@ -54,11 +56,11 @@ class RedcoreViewPayments extends RedcoreHelpersView
 	{
 		$model = $this->getModel();
 
-		$this->items = $model->getItems();
-		$this->state = $model->getState();
-		$this->pagination = $model->getPagination();
+		$this->items         = $model->getItems();
+		$this->state         = $model->getState();
+		$this->pagination    = $model->getPagination();
 		$this->activeFilters = $model->getActiveFilters();
-		$this->filterForm = $model->getForm();
+		$this->filterForm    = $model->getForm();
 
 		parent::display($tpl);
 	}
@@ -80,39 +82,31 @@ class RedcoreViewPayments extends RedcoreHelpersView
 	 */
 	public function getToolbar()
 	{
-		$canDo = $this->getActions();
 		$user = JFactory::getUser();
 
-		$firstGroup = new RToolbarButtonGroup;
+		$firstGroup  = new RToolbarButtonGroup;
 		$secondGroup = new RToolbarButtonGroup('', true, 'icon-cogs', JText::_('COM_REDCORE_PAYMENT_OPTIONS'));
-		$thirdGroup = new RToolbarButtonGroup;
+		$thirdGroup  = new RToolbarButtonGroup;
 
 		if ($user->authorise('core.admin', 'com_redcore'))
 		{
-			if ($canDo->get('core.edit'))
-			{
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_INSPECT_PAYMENT', 'payment.edit', '', 'icon-edit');
-				$firstGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_INSPECT_PAYMENT', 'payment.edit', '', 'icon-edit');
+			$firstGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CHECK_PAYMENT', 'payment.checkPayment', '', 'icon-refresh');
-				$secondGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CHECK_PAYMENT', 'payment.checkPayment', '', 'icon-refresh');
+			$secondGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CAPTURE_PAYMENT', 'payment.capturePayment', '', 'icon-money');
-				$secondGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_CAPTURE_PAYMENT', 'payment.capturePayment', '', 'icon-money');
+			$secondGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_REFUND_PAYMENT', 'payment.refundPayment', '', 'icon-money');
-				$secondGroup->addButton($button);
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_REFUND_PAYMENT', 'payment.refundPayment', '', 'icon-money');
+			$secondGroup->addButton($button);
 
-				$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_DELETE_PAYMENT', 'payment.deletePayment', '', 'icon-money');
-				$secondGroup->addButton($button);
-			}
+			$button = new RToolbarButtonStandard('COM_REDCORE_PAYMENT_DELETE_PAYMENT', 'payment.deletePayment', '', 'icon-money');
+			$secondGroup->addButton($button);
 
-			// Delete / Trash
-			if ($canDo->get('core.delete'))
-			{
-				$delete = RToolbarBuilder::createDeleteButton('payments.delete');
-				$thirdGroup->addButton($delete);
-			}
+			$delete = RToolbarBuilder::createDeleteButton('payments.delete');
+			$thirdGroup->addButton($delete);
 		}
 
 		$toolbar = new RToolbar;
@@ -129,13 +123,13 @@ class RedcoreViewPayments extends RedcoreHelpersView
 	 * @param   string  $section    The section.
 	 * @param   mixed   $assetName  The asset name.
 	 *
-	 * @return  JObject
+	 * @return  Registry
 	 */
 	public function getActions($section = 'component', $assetName = 'com_redcore')
 	{
-		$user = JFactory::getUser();
-		$result	= new JObject;
-		$actions = JAccess::getActions('com_redcore', $section);
+		$user    = JFactory::getUser();
+		$result  = new Registry;
+		$actions = JAccess::getActionsFromFile('com_redcore', $section) ?: array();
 
 		foreach ($actions as $action)
 		{

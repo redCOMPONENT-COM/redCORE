@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Helper
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -70,12 +70,11 @@ final class RHelperCurrency
 			if ($item)
 			{
 				$item->precision = $item->decimals;
+				self::$currencies[$currency] = $item;
 			}
-
-			self::$currencies[$currency] = $item;
 		}
 
-		return self::$currencies[$currency];
+		return isset(self::$currencies[$currency]) ? self::$currencies[$currency] : null;
 	}
 
 	/**

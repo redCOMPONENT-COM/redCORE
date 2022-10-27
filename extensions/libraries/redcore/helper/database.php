@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Helper
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -35,7 +35,6 @@ final class RHelperDatabase
 		$end = strlen($sql);
 		$queries = array();
 		$delimiter = ';';
-		$line = '';
 		$latest = '';
 
 		for ($i = 0; $i < $end; $i++)
@@ -75,9 +74,9 @@ final class RHelperDatabase
 				}
 			}
 
-			$fileend = ($i == $end - 1);
+			$fileEnd = ($i == $end - 1);
 
-			if (!$open || $fileend)
+			if (!$open || $fileEnd)
 			{
 				$delimiterChange = false;
 
@@ -94,7 +93,7 @@ final class RHelperDatabase
 					}
 				}
 
-				if ((!$delimiterChange && $latest == $delimiter) || $fileend)
+				if ((!$delimiterChange && $latest == $delimiter) || $fileEnd)
 				{
 					$queries[] = substr($sql, $start, ($i - $start + 1) - strlen($delimiter));
 					$start = $i + 1;
@@ -183,7 +182,7 @@ final class RHelperDatabase
 
 				$l = $k - 1;
 
-				while ($l >= 0 && $sql{$l} == '\\')
+				while ($l >= 0 && $sql[$l] == '\\')
 				{
 					$l--;
 					$escaped = !$escaped;

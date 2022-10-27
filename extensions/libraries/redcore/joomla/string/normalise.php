@@ -1,20 +1,17 @@
 <?php
 /**
- * @package     Joomla.Platform
- * @subpackage  String
+ * Part of the Joomla Framework String Package
  *
- * @copyright   Copyright (C) 2005 - 2015 Open Source Matters, Inc. All rights reserved.
+ * @copyright   Copyright (C) 2005 - 2017 Open Source Matters, Inc. All rights reserved.
  * @license     GNU General Public License version 2 or later; see LICENSE
  */
 
 defined('JPATH_PLATFORM') or die;
 
 /**
- * Joomla Platform String Normalise Class
+ * Joomla Framework String Normalise Class
  *
- * @package     Joomla.Platform
- * @subpackage  String
- * @since       11.3
+ * @since  1.0
  */
 abstract class JStringNormalise
 {
@@ -36,9 +33,9 @@ abstract class JStringNormalise
 	 * @param   string   $input    The string input (ASCII only).
 	 * @param   boolean  $grouped  Optionally allows splitting on groups of uppercase characters.
 	 *
-	 * @return  mixed  The space separated string or an array of substrings if grouped is true.
+	 * @return  string  The space separated string.
 	 *
-	 * @since   12.1
+	 * @since   1.0
 	 */
 	public static function fromCamelCase($input, $grouped = false)
 	{
@@ -54,7 +51,7 @@ abstract class JStringNormalise
 	 *
 	 * @return  string  The camel case string.
 	 *
-	 * @since   11.3
+	 * @since   1.0
 	 */
 	public static function toCamelCase($input)
 	{
@@ -73,7 +70,7 @@ abstract class JStringNormalise
 	 *
 	 * @return  string  The dash separated string.
 	 *
-	 * @since   11.3
+	 * @since   1.0
 	 */
 	public static function toDashSeparated($input)
 	{
@@ -90,7 +87,7 @@ abstract class JStringNormalise
 	 *
 	 * @return  string  The space separated string.
 	 *
-	 * @since   11.3
+	 * @since   1.0
 	 */
 	public static function toSpaceSeparated($input)
 	{
@@ -107,7 +104,7 @@ abstract class JStringNormalise
 	 *
 	 * @return  string  The underscore separated string.
 	 *
-	 * @since   11.3
+	 * @since   1.0
 	 */
 	public static function toUnderscoreSeparated($input)
 	{
@@ -124,7 +121,7 @@ abstract class JStringNormalise
 	 *
 	 * @return  string  The variable string.
 	 *
-	 * @since   11.3
+	 * @since   1.0
 	 */
 	public static function toVariable($input)
 	{
@@ -133,7 +130,7 @@ abstract class JStringNormalise
 		$input = self::toCamelCase($input);
 
 		// Remove leading digits.
-		$input = preg_replace('#^[0-9]+.*$#', '', $input);
+		$input = preg_replace('#^[0-9]+#', '', $input);
 
 		// Lowercase the first character.
 		$first = substr($input, 0, 1);
@@ -152,7 +149,7 @@ abstract class JStringNormalise
 	 *
 	 * @return  string  The key string.
 	 *
-	 * @since   11.3
+	 * @since   1.0
 	 */
 	public static function toKey($input)
 	{

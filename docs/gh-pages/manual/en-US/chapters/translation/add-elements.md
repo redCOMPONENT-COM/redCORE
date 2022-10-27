@@ -8,7 +8,7 @@ Go to `redCORE Translations`:
 <img src="./assets/img/translation/01.png" class="example" />
 
 ### Step 2
-Go to `Manage Content Elements`:
+Go to `Manage Translation tables`:
 
 <img src="./assets/img/translation/25.png" class="example" />
 

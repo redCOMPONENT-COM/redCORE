@@ -3,7 +3,7 @@
  * @package     Redcore
  * @subpackage  Model
  *
- * @copyright   Copyright (C) 2008 - 2015 redCOMPONENT.com. All rights reserved.
+ * @copyright   Copyright (C) 2008 - 2021 redWEB.dk. All rights reserved.
  * @license     GNU General Public License version 2 or later, see LICENSE.
  */
 
@@ -70,11 +70,12 @@ class RModelAdmin extends RModelAdminLegacy
 		}
 
 		$componentName = ucfirst(strtolower(substr($option, 4)));
-		$prefix = $componentName . 'Model';
+		$prefix        = $componentName . 'Model';
 
 		if (is_null($client))
 		{
-			$client = (int) JFactory::getApplication()->isAdmin();
+			$client = (int) (version_compare(JVERSION, '3.7', '<') ?
+				JFactory::getApplication()->isAdmin() : JFactory::getApplication()->isClient('administrator'));
 		}
 
 		// Admin
