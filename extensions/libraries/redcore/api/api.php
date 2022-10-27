@@ -228,6 +228,151 @@ class RApi extends RApiBase
 	}
 
 	/**
+	 * @return array
+	 * @since  __DEPLOY_VERSION__
+	 */
+	private static function parsePut(): array
+	{
+		$rawData = file_get_contents("php://input");
+
+		// Fetch content and determine boundary
+		$boundary = substr($rawData, 0, strpos($rawData, "\r\n"));
+
+		if (empty($boundary))
+		{
+			parse_str($rawData, $data);
+
+			return $data;
+		}
+
+		// Fetch each part
+		$parts = array_slice(explode($boundary, $rawData), 1);
+		$str   = [];
+		$files = [];
+
+		foreach ($parts as $part)
+		{
+			// If this is the last part, break
+			if ($part == "--\r\n")
+			{
+				break;
+			}
+
+			// Separate content from headers
+			$part = ltrim($part, "\r\n");
+			list($rawHeaders, $body) = explode("\r\n\r\n", $part, 2);
+
+			// Parse the headers list
+			$rawHeaders = explode("\r\n", $rawHeaders);
+			$headers     = [];
+
+			foreach ($rawHeaders as $header)
+			{
+				list($name, $value) = explode(':', $header);
+				$headers[strtolower($name)] = ltrim($value, ' ');
+			}
+
+			// Parse the Content-Disposition to get the field name, etc.
+			if (isset($headers['content-disposition']))
+			{
+				$filename = null;
+				preg_match(
+					'/^(.+); *name="([^"]+)"(; *filename="([^"]+)")?/',
+					$headers['content-disposition'],
+					$matches
+				);
+				list(, , $name) = $matches;
+
+				// Parse File
+				if (isset($matches[4]))
+				{
+					// Get filename
+					$filename = $matches[4];
+
+					// Get tmp name
+					$tmpName = tempnam(ini_get('upload_tmp_dir'), rand());
+					$values  = [
+						'error'    => 0,
+						'name'     => $filename,
+						'tmp_name' => $tmpName,
+						'size'     => strlen($body),
+						'type'     => trim($value),
+					];
+
+					$exploded = explode('[', $name);
+
+					$first = array_shift($exploded);
+
+					if (!empty($exploded))
+					{
+						$last = '[' . implode('[', $exploded);
+					}
+					else
+					{
+						$last = '';
+					}
+
+					foreach ($values as $key => $val)
+					{
+						$files[] = $first . '[' . $key . ']' . $last . '=' . $val;
+					}
+
+					// Place in temporary directory
+					file_put_contents($tmpName, $body);
+
+					// Register a shutdown function to cleanup the temporary file
+					register_shutdown_function(
+						function () use ($tmpName)
+						{
+							unlink($tmpName);
+						}
+					);
+				}
+
+				// Parse Field
+				else
+				{
+					$str[] = $name . '=' . substr($body, 0, strlen($body) - 2);
+				}
+			}
+		}
+
+		parse_str(implode('&', $str), $data);
+		parse_str(implode('&', $files), $list);
+		$_FILES = array_replace($_FILES, $list);
+
+		return $data;
+	}
+
+	/**
+	 * @param   string        $group   Group
+	 * @param   array|string  $values  Values
+	 *
+	 * @return array
+	 * @since  __DEPLOY_VERSION__
+	 */
+	private static function rearrangeFiles(string $group, $values): array
+	{
+		if (is_array($values))
+		{
+			$return = [];
+
+			foreach ($values as $k => $v)
+			{
+				$return[$k] = static::rearrangeFiles($group, $v);
+			}
+
+			return $return;
+		}
+		else
+		{
+			return [
+				$group => $values,
+			];
+		}
+	}
+
+	/**
 	 * Returns posted data in array format
 	 *
 	 * @return  array
@@ -258,9 +403,9 @@ class RApi extends RApiBase
 		{
 			$inputData = ArrayHelper::fromObject($inputData);
 		}
-		elseif (is_string($inputData))
+		elseif (is_string($inputData) && !empty($inputData))
 		{
-			$inputData = trim($inputData);
+			$inputData  = trim($inputData);
 			$parsedData = null;
 
 			// We try to transform it into JSON
@@ -275,14 +420,14 @@ class RApi extends RApiBase
 			// We try to transform it into XML
 			if (is_null($parsedData) && $xml = @simplexml_load_string($inputData))
 			{
-				$json = json_encode((array) $xml);
+				$json       = json_encode((array) $xml);
 				$parsedData = json_decode($json, true);
 			}
 
 			// We try to transform it into Array
-			if (is_null($parsedData) && !empty($inputData) && !is_array($inputData))
+			if (is_null($parsedData))
 			{
-				parse_str($inputData, $parsedData);
+				$parsedData = static::parsePut();
 			}
 
 			$inputData = $parsedData;
@@ -291,6 +436,20 @@ class RApi extends RApiBase
 		{
 			$inputData = $input->post->getArray();
 		}
+
+		$files = [];
+
+		foreach ($_FILES as $fieldName => $keys)
+		{
+			$files[$fieldName] = [];
+
+			foreach ($keys as $key => $list)
+			{
+				$files[$fieldName] = array_replace_recursive($files[$fieldName], static::rearrangeFiles($key, $list));
+			}
+		}
+
+		$inputData = array_replace_recursive($inputData, $files);
 
 		$filter = JFilterInput::getInstance(array(), array(), 1, 1);
 
