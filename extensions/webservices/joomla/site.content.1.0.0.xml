@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <apiservice client="site">
-  <name>content</name>
+  <name>Aesir - Content Webservice</name>
   <author/>
   <copyright/>
   <description/>
@@ -12,15 +12,8 @@
   <operations>
     <documentation authorizationNeeded="false" source="auto" url=""/>
     <create authorizationNeeded="false" strictFields="false" authorization="" dataMode="helper" optionName="" modelClassName="" modelClassPath="" isAdminClass="false" functionName="save" functionArgs="" validateData="none" validateDataFunction="validate" tableName="">
-      <fields>
-        <field name="data" transform="string" defaultValue="" isRequiredField="false" isPrimaryField="false"/>
-      </fields>
       <resources>
-        <resource displayGroup="_links" displayName="documentation" fieldFormat="{webserviceUrlPath}&amp;format=doc#{rel}" linkTitle="Documentation" linkName="{webserviceName}" hrefLang="" linkTemplated="true" linkRel="curies"/>
-        <resource displayGroup="_links" displayName="base" fieldFormat="/" linkTitle="Default page"/>
-        <resource displayGroup="_links" displayName="{webserviceName}:list" fieldFormat="{webserviceUrlPath}"/>
-        <resource displayGroup="_links" displayName="{webserviceName}:self" fieldFormat="{webserviceUrlPath}&amp;id={id}"/>
-        <resource displayName="result" fieldFormat="{result}" transform="boolean"/>
+        <resource displayName="result" fieldFormat="{result}" transform="string"/>
       </resources>
     </create>
   </operations>
