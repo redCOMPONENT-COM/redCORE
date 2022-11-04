@@ -298,4 +298,40 @@ class RModelAdminBase extends JModelAdmin
 
 		return '';
 	}
+
+	/**
+	 * Method to delete one or more records.
+	 *
+	 * @param   array  $pks  An array of record primary keys.
+	 *
+	 * @return  boolean  True if successful, false if an error occurs.
+	 *
+	 * @since   11.1
+	 */
+	public function delete(&$pks)
+	{
+		RApi::markExecutionTime('Executing delete method in model', null, true, true);
+		$return = parent::delete($pks);
+		RApi::markExecutionTime('Delete method in model completed', null, false, true);
+
+		return $return;
+	}
+
+	/**
+	 * Method to save the form data.
+	 *
+	 * @param   array  $data  The form data.
+	 *
+	 * @return  boolean  True on success, False on error.
+	 *
+	 * @since   11.1
+	 */
+	public function save($data)
+	{
+		RApi::markExecutionTime('Executing save method in model', null, true, true);
+		$return = parent::save($data);
+		RApi::markExecutionTime('Save method in model completed', null, false, true);
+
+		return $return;
+	}
 }

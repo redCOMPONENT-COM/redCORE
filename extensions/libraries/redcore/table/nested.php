@@ -401,6 +401,8 @@ class RTableNested extends JTableNested
 	 */
 	public function delete($pk = null, $children = true)
 	{
+		RApi::markExecutionTime('Executing delete method in table', null, true, true);
+
 		// Before delete
 		if (!$this->beforeDelete($pk, $children))
 		{
@@ -418,6 +420,8 @@ class RTableNested extends JTableNested
 		{
 			return false;
 		}
+
+		RApi::markExecutionTime('Delete method in table completed', null, false, true);
 
 		return true;
 	}
@@ -573,6 +577,8 @@ class RTableNested extends JTableNested
 	 */
 	public function store($updateNulls = false)
 	{
+		RApi::markExecutionTime('Executing store method in table', null, true, true);
+
 		// Before store
 		if (!$this->beforeStore($updateNulls))
 		{
@@ -590,6 +596,8 @@ class RTableNested extends JTableNested
 		{
 			return false;
 		}
+
+		RApi::markExecutionTime('Store method in table completed', null, false, true);
 
 		return true;
 	}

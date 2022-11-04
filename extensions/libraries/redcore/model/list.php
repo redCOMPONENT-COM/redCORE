@@ -614,4 +614,20 @@ abstract class RModelList extends JModelList
 
 		return $data;
 	}
+
+	/**
+	 * Method to get an array of data items.
+	 *
+	 * @return  mixed  An array of data items on success, false on failure.
+	 *
+	 * @since   11.1
+	 */
+	public function getItems()
+	{
+		RApi::markExecutionTime('Executing get Items method in model', null, true, true);
+		$return = parent::getItems();
+		RApi::markExecutionTime('Get Items method in model completed', null, false, true);
+
+		return $return;
+	}
 }

@@ -212,6 +212,7 @@ class RApiHalHal extends RApi
 
 		// Setting default option for webservices translation fallback
 		RDatabaseSqlparserSqltranslation::setTranslationFallback(RBootstrap::getConfig('enable_translation_fallback_webservices', '1') == '1');
+		RApi::markExecutionTime('Constructor initialization complete');
 	}
 
 	/**
@@ -514,6 +515,14 @@ class RApiHalHal extends RApi
 			$this->hal->setData('_messages', $messages);
 		}
 
+		RApi::markExecutionTime('Operation Finished. Webservice process time from the start', null, false);
+
+		if (RBootstrap::getConfig('debug_webservices', 0) == '1')
+		{
+			$this->hal->setData('_debugExecutionTimers', RApi::getExecutionTimersOutput());
+			$this->hal->setData('_debugOptions', $this->options->toArray());
+		}
+
 		return $this;
 	}
 
@@ -684,7 +693,9 @@ class RApiHalHal extends RApi
 			$paginationFunction = RApiHalHelper::attributeToString($currentConfiguration, 'paginationFunction', 'getPagination');
 			$totalFunction      = RApiHalHelper::attributeToString($currentConfiguration, 'totalFunction', 'getTotal');
 
+			RApi::markExecutionTime('Executing method ' . $functionName, $functionName);
 			$items = method_exists($model, $functionName) ? $model->{$functionName}() : array();
+			RApi::markExecutionTime('Method ' . $functionName . ' completed', $functionName, false);
 
 			if (!empty($paginationFunction) && method_exists($model, $paginationFunction))
 			{
@@ -706,10 +717,12 @@ class RApiHalHal extends RApi
 				$paginationPages = $pagination->getPaginationPages();
 
 				$this->setData(
-					'pagination.previous', isset($paginationPages['previous']['data']->base) ? $paginationPages['previous']['data']->base : $pagination->limitstart
+					'pagination.previous',
+					isset($paginationPages['previous']['data']->base) ? $paginationPages['previous']['data']->base : $pagination->limitstart
 				);
 				$this->setData(
-					'pagination.next', isset($paginationPages['next']['data']->base) ? $paginationPages['next']['data']->base : $pagination->limitstart
+					'pagination.next',
+					isset($paginationPages['next']['data']->base) ? $paginationPages['next']['data']->base : $pagination->limitstart
 				);
 				$this->setData('pagination.limit', $pagination->limit);
 				$this->setData('pagination.limitstart', $pagination->limitstart);
@@ -729,8 +742,11 @@ class RApiHalHal extends RApi
 		// Getting single item
 		$functionName   = RApiHalHelper::attributeToString($currentConfiguration, 'functionName', 'getItem');
 		$messagesBefore = JFactory::getApplication()->getMessageQueue();
-		$itemObject     = method_exists($model, $functionName) ? call_user_func_array(array(&$model, $functionName), $primaryKeys) : array();
-		$messagesAfter  = JFactory::getApplication()->getMessageQueue();
+
+		RApi::markExecutionTime('Executing method ' . $functionName, $functionName);
+		$itemObject = method_exists($model, $functionName) ? call_user_func_array(array(&$model, $functionName), $primaryKeys) : array();
+		RApi::markExecutionTime('Method ' . $functionName . ' completed', $functionName, false);
+		$messagesAfter = JFactory::getApplication()->getMessageQueue();
 
 		// Check to see if we have the item or not since it might return default properties
 		if (count($messagesBefore) != count($messagesAfter))
@@ -2464,6 +2480,7 @@ class RApiHalHal extends RApi
 	 */
 	public function triggerFunction($functionName)
 	{
+		RApi::markExecutionTime('Executing function ' . $functionName, $functionName);
 		$apiHelperClass = $this->getHelperObject();
 		$args           = func_get_args();
 
@@ -2486,6 +2503,8 @@ class RApiHalHal extends RApi
 
 		if ($result)
 		{
+			RApi::markExecutionTime('Function ' . $functionName . ' completed', $functionName, false);
+
 			if ($return !== null)
 			{
 				return $return;
@@ -2507,6 +2526,7 @@ class RApiHalHal extends RApi
 		}
 
 		JFactory::getApplication()->triggerEvent('RApiHal' . $functionName, $temp);
+		RApi::markExecutionTime('Function ' . $functionName . ' completed', $functionName, false);
 
 		return $result;
 	}
@@ -2522,23 +2542,36 @@ class RApiHalHal extends RApi
 	 */
 	public function triggerCallFunction($object, $functionName, $args)
 	{
+		RApi::markExecutionTime('Executing method ' . $functionName, $functionName);
+		$result = null;
+
 		switch (count($args))
 		{
 			case 0:
-				return $object->{$functionName}();
+				$result = $object->{$functionName}();
+				break;
 			case 1:
-				return $object->{$functionName}($args[0]);
+				$result = $object->{$functionName}($args[0]);
+				break;
 			case 2:
-				return $object->{$functionName}($args[0], $args[1]);
+				$result = $object->{$functionName}($args[0], $args[1]);
+				break;
 			case 3:
-				return $object->{$functionName}($args[0], $args[1], $args[2]);
+				$result = $object->{$functionName}($args[0], $args[1], $args[2]);
+				break;
 			case 4:
-				return $object->{$functionName}($args[0], $args[1], $args[2], $args[3]);
+				$result = $object->{$functionName}($args[0], $args[1], $args[2], $args[3]);
+				break;
 			case 5:
-				return $object->{$functionName}($args[0], $args[1], $args[2], $args[3], $args[4]);
+				$result = $object->{$functionName}($args[0], $args[1], $args[2], $args[3], $args[4]);
+				break;
 			default:
-				return call_user_func_array(array($object, $functionName), $args);
+				$result = call_user_func_array(array($object, $functionName), $args);
 		}
+
+		RApi::markExecutionTime('Method ' . $functionName . ' completed', $functionName, false);
+
+		return $result;
 	}
 
 	/**
