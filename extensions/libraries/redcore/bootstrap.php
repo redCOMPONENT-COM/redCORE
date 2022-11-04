@@ -167,11 +167,13 @@ class RBootstrap
 			JFactory::$database = null;
 			JFactory::$database = RFactory::getDbo();
 
-			$isAdmin = RTranslationHelper::isAdmin();
+			$isAdmin          = RTranslationHelper::isAdmin();
 			$isTranslateAdmin = (bool) self::getConfig('translate_in_admin', 0);
+			$isSingleLanguage = count(JLanguageHelper::getLanguages()) === 1;
 
 			if (self::getConfig('enable_translations', 0) == 1
-				&& (!$isAdmin || ($isAdmin && $isTranslateAdmin)))
+				&& (!$isAdmin || ($isAdmin && $isTranslateAdmin))
+				&& $isSingleLanguage)
 			{
 				// This is our object now
 				$db = JFactory::getDbo();
