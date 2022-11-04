@@ -47,7 +47,7 @@ class RRoute extends JRoute
 	 *                             2: Make URI unsecure using the global unsecure site URI.
 	 * @param   boolean  $absolute  Return an absolute URL
 	 *
-	 * @return  The translated humanly readible URL.
+	 * @return  string The translated humanly readible URL.
 	 */
 	public static function _($url, $xhtml = true, $ssl = null, $absolute = false)
 	{
