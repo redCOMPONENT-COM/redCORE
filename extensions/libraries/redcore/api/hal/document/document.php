@@ -119,7 +119,10 @@ class RApiHalDocumentDocument extends JDocument
 
 		$app->setHeader('Status', $this->hal->statusCode . ' ' . $this->hal->statusText, true);
 		$app->setHeader('Server', '', true);
-		$app->setHeader('Access-Control-Allow-Origin', '*', true);
+        if (RBootstrap::$config->get('enable_access_control_header', '1') == '1')
+        {
+            $app->setHeader('Access-Control-Allow-Origin', '*', true);
+        }
 		$app->setHeader('Pragma', 'public', true);
 		$app->setHeader('Expires', '0', true);
 		$app->setHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0', true);

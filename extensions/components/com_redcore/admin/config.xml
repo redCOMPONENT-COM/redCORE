@@ -211,6 +211,16 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
+        <field
+                name="enable_access_control_header"
+                class="btn-group"
+                type="radio"
+                default="1"
+                label="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_ACCESS_CONTROL_HEADER"
+                description="COM_REDCORE_CONFIG_WEBSERVICES_ENABLE_ACCESS_CONTROL_HEADER_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
     </fieldset>
     <fieldset name="REDCORE_OAUTH2_SERVER_OPTIONS"
               addfieldpath="/libraries/redcore/form/fields"
