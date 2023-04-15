@@ -9,7 +9,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "browser-sync": "^2.23.7",
+    "browser-sync": "^2.29.1",
     "del": "^2.0.2",
     "fs": "0.0.2",
     "gulp": "^3.9.1",
