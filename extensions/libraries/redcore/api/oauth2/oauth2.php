@@ -500,6 +500,11 @@ class RApiOauth2Oauth2 extends RApi
 
 		$this->response = $response;
 
+		if (RBootstrap::getConfig('oauth2_joomla_logout_right_after_authorize', false))
+		{
+			JFactory::getApplication()->logout($user->id);
+		}
+
 		return $this;
 	}
 

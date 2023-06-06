@@ -377,6 +377,16 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
+        <field
+                name="oauth2_joomla_logout_right_after_authorize"
+                class="btn-group"
+                type="radio"
+                default="0"
+                label="COM_REDCORE_CONFIG_OAUTH2_JOOMLA_LOGOUT_RIGHT_AFTER_AUTHORIZE"
+                description="COM_REDCORE_CONFIG_OAUTH2_JOOMLA_LOGOUT_RIGHT_AFTER_AUTHORIZE_DESC">
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
     </fieldset>
     <fieldset name="REDCORE_PAYMENT_API_OPTIONS"
               addfieldpath="/libraries/redcore/form/fields"
