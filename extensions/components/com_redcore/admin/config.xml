@@ -118,6 +118,18 @@
             <option value="1">JYES</option>
             <option value="0">JNO</option>
         </field>
+        <field
+                name="translations_alternate_meta"
+                type="radio"
+                label="COM_REDCORE_CONFIG_TRANSLATIONS_TRANSLATE_ALTERNATE_META_LABEL"
+                description="COM_REDCORE_CONFIG_TRANSLATIONS_TRANSLATE_ALTERNATE_META_DESC"
+                default="0"
+                filter="integer"
+                class="btn-group"
+        >
+            <option value="1">JYES</option>
+            <option value="0">JNO</option>
+        </field>
     </fieldset>
     <fieldset name="REDCORE_WEBSERVICES_OPTIONS"
               addfieldpath="/libraries/redcore/form/fields"
