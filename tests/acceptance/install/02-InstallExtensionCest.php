@@ -18,7 +18,7 @@ class InstallExtensionCest
 	 */
 	public function install(\AcceptanceTester $I)
 	{
-		$I->wantToTest('redCORE installation in Joomla 3');
+		$I->wantToTest('redCORE installation in Joomla 6');
 		$I->doAdministratorLogin();
 		$path = $I->getConfiguration('install packages url');
 		$I->installExtensionFromUrl($path . 'redCORE.zip');

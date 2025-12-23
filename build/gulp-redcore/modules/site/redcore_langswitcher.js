@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var fs   = require('fs');
 
 var config = require('../../config.js');
+var task = require('../../task-helper')(gulp);
 
 // Dependencies
 var browserSync = require('browser-sync');
@@ -19,17 +20,17 @@ var mediaPath = extPath + '/' + mediaSubPath;
 var buildPathMedia = baseFolder + '/build/media/' + extSubPath + '/' + mediaSubPath;
 
 // Clean
-gulp.task('clean:' + baseTask, ['clean:' + baseTask + ':media'], function() {
+task('clean:' + baseTask, ['clean:' + baseTask + ':media'], function() {
     return del(config.wwwDir + '/modules/mod_redcore_language_switcher', {force: true});
 });
 
 // Clean: Media
-gulp.task('clean:' + baseTask + ':media', function() {
+task('clean:' + baseTask + ':media', function() {
     return del(config.wwwDir + '/media/mod_redcore_language_switcher', {force: true});
 });
 
 // Copy
-gulp.task('copy:' + baseTask, ['clean:' + baseTask, 'copy:' + baseTask + ':media'], function() {
+task('copy:' + baseTask, ['clean:' + baseTask, 'copy:' + baseTask + ':media'], function() {
     return gulp.src([
 	        extPath + '/**',
 	        '!' + extPath + '/media',
@@ -39,7 +40,7 @@ gulp.task('copy:' + baseTask, ['clean:' + baseTask, 'copy:' + baseTask + ':media
 });
 
 // Copy: media
-gulp.task('copy:' + baseTask + ':media', ['clean:' + baseTask + ':media'], function() {
+task('copy:' + baseTask + ':media', ['clean:' + baseTask + ':media'], function() {
 	var media = gulp.src([
 	        mediaPath + '/**'
     	])
@@ -55,7 +56,7 @@ gulp.task('copy:' + baseTask + ':media', ['clean:' + baseTask + ':media'], funct
 });
 
 // Watch
-gulp.task('watch:' + baseTask,
+task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':module',
 		'watch:' + baseTask + ':media'
@@ -64,21 +65,21 @@ gulp.task('watch:' + baseTask,
 });
 
 // Watch: Module
-gulp.task('watch:' + baseTask + ':module', function() {
+task('watch:' + baseTask + ':module', function() {
     gulp.watch([
     	extPath + '/**/*',
     	'!' + mediaPath + '/css',
     	'!' + mediaPath + '/css/**'
 		],
 		{ interval: config.watchInterval },
-		['copy:' + baseTask, browserSync.reload]);
+		gulp.series('copy:' + baseTask, browserSync.reload));
 });
 
 // Watch: media
-gulp.task('watch:' +  baseTask + ':media', function() {
+task('watch:' +  baseTask + ':media', function() {
 	gulp.watch([
 		mediaPath + '/**'
 	],
 	{ interval: config.watchInterval },
-	['copy:' + baseTask + ':media', browserSync.reload]);
+	gulp.series('copy:' + baseTask + ':media', browserSync.reload));
 });

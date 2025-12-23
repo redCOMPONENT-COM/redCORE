@@ -4,11 +4,11 @@ skipClone = false
 
 ; If you want to setup your test website in a different folder (under tests), you can do that here.
 ; You can also set an absolute path, i.e. /path/to/my/cms/folder
-cmsPath = joomla-cms3
+cmsPath = joomla-cms6
 
 ; If you want to clone a different branch, you can set it here
 ;branch = staging
-branch = 3.9.24
+branch = 6.0-dev
 
 ; (Linux / Mac only) If you want to set a different owner for the CMS root folder, you can set it here.
 ; localUser = www-data

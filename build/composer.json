@@ -5,18 +5,18 @@
     "joomla/coding-standards": "v1.1"
   },
   "require-dev": {
-    "joomla/joomla-cms": "3.7.5"
+    "joomla/joomla-cms": "dev-6.0-dev"
   },
   "repositories": [
     {
       "type": "package",
       "package": {
         "name": "joomla/joomla-cms",
-        "version": "3.7.5",
+        "version": "dev-6.0-dev",
         "source": {
           "url": "https://github.com/joomla/joomla-cms.git",
           "type": "git",
-          "reference": "3.7.5"
+          "reference": "6.0-dev"
         }
       }
     },

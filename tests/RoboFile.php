@@ -146,19 +146,19 @@ class RoboFile extends \Robo\Tasks
 	public function prepareSiteForUnitTests()
 	{
 		// Make sure we have joomla
-		if (!is_dir('joomla-cms3'))
+		if (!is_dir('joomla-cms6'))
 		{
 			$this->cloneJoomla();
 		}
 
-		if (!is_dir('joomla-cms3/libraries/vendor/phpunit'))
+		if (!is_dir('joomla-cms6/libraries/vendor/phpunit'))
 		{
 			$this->getComposer();
-			$this->taskComposerInstall('../composer.phar')->dir('joomla-cms3')->run();
+			$this->taskComposerInstall('../composer.phar')->dir('joomla-cms6')->run();
 		}
 
 		// Copy extension. No need to install, as we don't use mysql db for unit tests
-		$joomlaPath = __DIR__ . '/joomla-cms3';
+		$joomlaPath = __DIR__ . '/joomla-cms6';
 		$this->_exec("gulp copy --wwwDir=$joomlaPath --gulpfile ../build/gulpfile.js");
 	}
 
@@ -373,7 +373,7 @@ class RoboFile extends \Robo\Tasks
 	public function runUnitTests()
 	{
 		$this->prepareSiteForUnitTests();
-		$this->_exec("joomla-cms3/libraries/vendor/phpunit/phpunit/phpunit")
+		$this->_exec("joomla-cms6/libraries/vendor/phpunit/phpunit/phpunit")
 			->stopOnFail();
 	}
 
@@ -495,14 +495,14 @@ class RoboFile extends \Robo\Tasks
 	{
 		if (empty($this->configuration->cmsPath))
 		{
-			return 'joomla-cms3';
+			return 'joomla-cms6';
 		}
 
 		if (!file_exists(dirname($this->configuration->cmsPath)))
 		{
 			$this->say("Cms path written in local configuration does not exists or is not readable");
 
-			return 'joomla-cms3';
+			return 'joomla-cms6';
 		}
 
 		return $this->configuration->cmsPath;

@@ -1,12 +1,13 @@
 var gulp = require('gulp');
 
 var config = require('./config.js');
+var task = require('./task-helper')(gulp);
 
 // Check if config has defaultTasks defined
 var defaultTasks = config.hasOwnProperty('defaultTasks') ? config.defaultTasks : ["copy", "watch", "copyRedcore", "watchRedcore", "browser-sync"];
 
 // Clean redcore addons
-gulp.task('cleanRedcore', [
+task('cleanRedcore', [
 	'clean:cli',
 	'clean:webservices'
 ], function() {
@@ -14,7 +15,7 @@ gulp.task('cleanRedcore', [
 });
 
 // Copy redcore addons
-gulp.task('copyRedcore', [
+task('copyRedcore', [
 	'copy:cli',
 	'copy:webservices'
 ], function() {
@@ -22,7 +23,7 @@ gulp.task('copyRedcore', [
 });
 
 // Watch redcore addons
-gulp.task('watchRedcore', [
+task('watchRedcore', [
 	'watch:cli',
 	'watch:webservices'
 ], function() {
@@ -30,5 +31,5 @@ gulp.task('watchRedcore', [
 });
 
 // Default task
-gulp.task('default', defaultTasks, function() {
+task('default', defaultTasks, function() {
 });

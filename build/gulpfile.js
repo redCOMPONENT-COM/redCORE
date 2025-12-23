@@ -1,30 +1,32 @@
-var gulp       	= require('gulp');
+var gulp       = require('gulp');
 
-var extension  	= require('./package.json');
-var config      = require('./gulp-redcore/config.js');
+var extension  = require('./package.json');
+var config     = require('./gulp-redcore/config.js');
 
-var requireDir 	= require('require-dir');
-var zip        	= require('gulp-zip');
-var xml2js     	= require('xml2js');
-var fs         	= require('fs');
-var path       	= require('path');
-var ghPages     = require('gulp-gh-pages');
+var requireDir = require('require-dir');
+var zip        = require('gulp-zip');
+var xml2js     = require('xml2js');
+var fs         = require('fs');
+var path       = require('path');
+var ghPages    = require('gh-pages');
+var taskHelper = require('./gulp-redcore/task-helper');
+var task       = taskHelper(gulp);
 
-var parser      = new xml2js.Parser();
-var jgulp   	= requireDir('./node_modules/joomla-gulp', {recurse: true});
+var parser     = new xml2js.Parser();
+var jgulp      = requireDir('./node_modules/joomla-gulp', {recurse: true});
 
 // We will use local redcore gulp repository instead of node_modules
-var redcore     = requireDir('gulp-redcore', {recurse: true});
+var redcore    = requireDir('gulp-redcore', {recurse: true});
 
-gulp.task('release',
+task('release',
 	[
 		'release:redcore'
 	]
 );
 
 // Override of the release script
-gulp.task('release:redcore', function (cb) {
-	fs.readFile( '../extensions/redcore.xml', function(err, data) {
+task('release:redcore', function (cb) {
+	fs.readFile('../extensions/redcore.xml', function(err, data) {
 		parser.parseString(data, function (err, result) {
 			var version = result.extension.version[0];
 
@@ -48,14 +50,13 @@ gulp.task('release:redcore', function (cb) {
 	});
 });
 
-gulp.task('documentation', function() {
+task('documentation', function(cb) {
 	// Needed because it requested a username and password for github on Windows
 	process.chdir('../');
 
-	return gulp.src('docs/gh-pages/**/*')
-		.pipe(ghPages({
-			remoteUrl: 'git@github.com:redCOMPONENT-COM/redCORE.git',
-			branch: 'gh-pages',
-			cacheDir: 'docs/.gh-pages/'
-		}));
+	ghPages.publish('docs/gh-pages', {
+		repo: 'git@github.com:redCOMPONENT-COM/redCORE.git',
+		branch: 'gh-pages',
+		cache: 'docs/.gh-pages'
+	}, cb);
 });
