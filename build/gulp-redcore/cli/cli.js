@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 
 var config = require('../config.js');
+var task = require('../task-helper')(gulp);
 
 /**
  * Get the list of the cli from paths
@@ -40,21 +41,21 @@ function getCliTasks(baseTask) {
 }
 
 // Clean
-gulp.task('clean:cli',
+task('clean:cli',
 		getCliTasks('clean:cli'),
 	function() {
 		return true
 });
 
 // Copy
-gulp.task('copy:cli',
+task('copy:cli',
 		getCliTasks('copy:cli'),
 	function() {
 		return true;
 });
 
 // Watch
-gulp.task('watch:cli',
+task('watch:cli',
 		getCliTasks('watch:cli'),
 	function() {
 		return true;

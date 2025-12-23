@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var fs   = require('fs');
 
 var config = require('../config.js');
+var task = require('../task-helper')(gulp);
 
 // Dependencies
 var browserSync = require('browser-sync');
@@ -15,7 +16,7 @@ var directPath       = '../extensions/cli';
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
 // Clean
-gulp.task('clean:' + baseTask,
+task('clean:' + baseTask,
 	[
 		'clean:' + baseTask + ':cli'
 	],
@@ -24,12 +25,12 @@ gulp.task('clean:' + baseTask,
 });
 
 // Clean cli
-gulp.task('clean:' + baseTask + ':cli', function() {
+task('clean:' + baseTask + ':cli', function() {
 	return del(config.wwwDir + '/cli/com_redcore', {force : true});
 });
 
 // Copy
-gulp.task('copy:' + baseTask,
+task('copy:' + baseTask,
 	[
 		'copy:' + baseTask + ':cli'
 	],
@@ -38,13 +39,13 @@ gulp.task('copy:' + baseTask,
 });
 
 // Copy cli
-gulp.task('copy:' + baseTask + ':cli', ['clean:' + baseTask + ':cli'], function(cb) {
+task('copy:' + baseTask + ':cli', ['clean:' + baseTask + ':cli'], function(cb) {
 	return gulp.src(extPath + '/**')
 		.pipe(gulp.dest(config.wwwDir + '/cli'));
 });
 
 // Watch
-gulp.task('watch:' + baseTask,
+task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':cli'
 	],
@@ -53,8 +54,10 @@ gulp.task('watch:' + baseTask,
 });
 
 // Watch cli
-gulp.task('watch:' + baseTask + ':cli', function() {
-	gulp.watch(extPath + '/**/*',
-	{ interval: config.watchInterval },
-	['copy:' + baseTask + ':cli', browserSync.reload]);
+task('watch:' + baseTask + ':cli', function() {
+	gulp.watch(
+		extPath + '/**/*',
+		{ interval: config.watchInterval },
+		gulp.series('copy:' + baseTask + ':cli', browserSync.reload)
+	);
 });

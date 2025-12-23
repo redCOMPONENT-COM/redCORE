@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 
 var config = require('../config.js');
+var task = require('../task-helper')(gulp);
 
 /**
  * Get the list of the webservices from paths
@@ -40,21 +41,21 @@ function getWebservicesTasks(baseTask) {
 }
 
 // Clean
-gulp.task('clean:webservices',
+task('clean:webservices',
 		getWebservicesTasks('clean:webservices'),
 	function() {
 		return true
 });
 
 // Copy
-gulp.task('copy:webservices',
+task('copy:webservices',
 		getWebservicesTasks('copy:webservices'),
 	function() {
 		return true;
 });
 
 // Watch
-gulp.task('watch:webservices',
+task('watch:webservices',
 		getWebservicesTasks('watch:webservices'),
 	function() {
 		return true;

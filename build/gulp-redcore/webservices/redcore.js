@@ -2,6 +2,7 @@ var gulp = require('gulp');
 var fs   = require('fs');
 
 var config = require('../config.js');
+var task = require('../task-helper')(gulp);
 
 // Dependencies
 var browserSync = require('browser-sync');
@@ -15,7 +16,7 @@ var directPath       = '../extensions/webservices';
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
 // Clean
-gulp.task('clean:' + baseTask,
+task('clean:' + baseTask,
 	[
 		'clean:' + baseTask + ':webservices'
 	],
@@ -24,12 +25,12 @@ gulp.task('clean:' + baseTask,
 });
 
 // Clean webservices
-gulp.task('clean:' + baseTask + ':webservices', ['copy:media.redcore'], function() {
+task('clean:' + baseTask + ':webservices', ['copy:media.redcore'], function() {
 	return del(config.wwwDir + '/media/redcore/webservices/joomla', {force : true});
 });
 
 // Copy
-gulp.task('copy:' + baseTask,
+task('copy:' + baseTask,
 	[
 		'copy:' + baseTask + ':webservices'
 	],
@@ -38,13 +39,13 @@ gulp.task('copy:' + baseTask,
 });
 
 // Copy webservices
-gulp.task('copy:' + baseTask + ':webservices', ['copy:libraries.redcore', 'clean:' + baseTask + ':webservices'], function(cb) {
+task('copy:' + baseTask + ':webservices', ['copy:libraries.redcore', 'clean:' + baseTask + ':webservices'], function(cb) {
 	return gulp.src(extPath + '/**')
 		.pipe(gulp.dest(config.wwwDir + '/media/redcore/webservices'));
 });
 
 // Watch
-gulp.task('watch:' + baseTask,
+task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':webservices'
 	],
@@ -53,8 +54,8 @@ gulp.task('watch:' + baseTask,
 });
 
 // Watch webservices
-gulp.task('watch:' + baseTask + ':webservices', function() {
+task('watch:' + baseTask + ':webservices', function() {
 	gulp.watch(extPath + '/**/*',
 	{ interval: config.watchInterval },
-	['copy:' + baseTask + ':webservices', browserSync.reload]);
+	gulp.series('copy:' + baseTask + ':webservices', browserSync.reload));
 });

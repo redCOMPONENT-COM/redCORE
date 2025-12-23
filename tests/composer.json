@@ -4,27 +4,29 @@
 	"license"    : "GPL-2.0+",
 	"config" : {
 		"platform": {
-			"php" : "7.0"
+			"php" : "8.2"
+		},
+		"allow-plugins": {
+			"php-http/discovery": true
 		}
 	},
 	"require"    : {
-		"php": ">=7.0"
+		"php": ">=8.2"
 	},
 	"require-dev": {
-		"squizlabs/php_codesniffer": "~2",
-		"codeception/codeception": "~2.2",
-		"phpmd/phpmd": "*",
-		"joomla-projects/joomla-browser": "dev-develop",
-		"joomla-projects/joomla-testing-robo": "dev-container-test",
-		"joomla-projects/joomla-testing": "dev-container-test",
-		"consolidation/robo": "~1",
-		"flow/jsonpath": "dev-master",
-		"cloudinary/cloudinary_php": "1.1.1",
-		"knplabs/github-api": "1.4.12",
-		"ifsnop/mysqldump-php": "1.*",
-		"fzaninotto/faker": "^1.5",
-		"nette/reflection": "~2",
-		"php-webdriver/webdriver": "^1",
-		"redcomponent/teststatistics": "dev-master"
+		"squizlabs/php_codesniffer": "^3.10",
+		"codeception/codeception": "^5.1",
+		"codeception/module-asserts": "^3.0",
+		"codeception/module-filesystem": "^3.0",
+		"codeception/module-phpbrowser": "^3.0.2",
+		"codeception/module-webdriver": "^4.0",
+		"phpmd/phpmd": "^2.15",
+		"consolidation/robo": "^4.0",
+		"flow/jsonpath": "^0.5.0",
+		"cloudinary/cloudinary_php": "^2.14",
+		"knplabs/github-api": "^3.14",
+		"ifsnop/mysqldump-php": "^2.12",
+		"fakerphp/faker": "^1.23",
+		"php-webdriver/webdriver": "^1.15"
 	}
 }

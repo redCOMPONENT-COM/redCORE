@@ -1,6 +1,7 @@
 var gulp = require('gulp');
 
 var config = require('../config.js');
+var task = require('../task-helper')(gulp);
 
 // Dependencies
 var browserSync = require('browser-sync');
@@ -16,7 +17,7 @@ var directPath       = '../extensions/components/com_redcore';
 var extPath   = fs.existsSync(subextensionPath) ? subextensionPath : directPath;
 
 // Clean
-gulp.task('clean:' + baseTask,
+task('clean:' + baseTask,
 	[
 		'clean:' + baseTask + ':backend'
 	],
@@ -25,17 +26,17 @@ gulp.task('clean:' + baseTask,
 });
 
 // Clean backend
-gulp.task('clean:' + baseTask + ':backend', function() {
+task('clean:' + baseTask + ':backend', function() {
 	return del(config.wwwDir + '/administrator/components/com_redcore', {force : true});
 });
 
 // Clean frontend
-gulp.task('clean:' + baseTask + ':frontend', function() {
+task('clean:' + baseTask + ':frontend', function() {
 	return del(config.wwwDir + '/components/com_redcore', {force : true});
 });
 
 // Copy
-gulp.task('copy:' + baseTask,
+task('copy:' + baseTask,
 	[
 		'copy:' + baseTask + ':backend'
 	],
@@ -44,7 +45,7 @@ gulp.task('copy:' + baseTask,
 });
 
 // Copy backend
-gulp.task('copy:' + baseTask + ':backend', ['clean:' + baseTask + ':backend'], function(cb) {
+task('copy:' + baseTask + ':backend', ['clean:' + baseTask + ':backend'], function(cb) {
 	var admin = gulp.src(extPath + '/admin/**')
 		.pipe(gulp.dest(config.wwwDir + '/administrator/components/com_redcore'));
 
@@ -55,7 +56,7 @@ gulp.task('copy:' + baseTask + ':backend', ['clean:' + baseTask + ':backend'], f
 });
 
 // Copy frontend
-gulp.task('copy:' + baseTask + ':frontend', ['clean:' + baseTask + ':frontend'], function(cb) {
+task('copy:' + baseTask + ':frontend', ['clean:' + baseTask + ':frontend'], function(cb) {
 	return (
 		gulp.src(extPath + '/site/**')
 		.pipe(gulp.dest(config.wwwDir + '/components/com_redcore'))
@@ -63,7 +64,7 @@ gulp.task('copy:' + baseTask + ':frontend', ['clean:' + baseTask + ':frontend'],
 });
 
 // Watch
-gulp.task('watch:' + baseTask,
+task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':backend',
 		'watch:' + baseTask + ':frontend'
@@ -73,21 +74,21 @@ gulp.task('watch:' + baseTask,
 });
 
 // Watch backend
-gulp.task('watch:' + baseTask + ':backend', function() {
+task('watch:' + baseTask + ':backend', function() {
 	gulp.watch([
 		extPath + '/admin/**/*',
 		extPath + '/../redcore.xml',
 		extPath + '/../install.php'
 	],
 	{ interval: config.watchInterval },
-	['copy:' + baseTask + ':backend', browserSync.reload]);
+	gulp.series('copy:' + baseTask + ':backend', browserSync.reload));
 });
 
 // Watch frontend
-gulp.task('watch:' + baseTask + ':frontend', function() {
+task('watch:' + baseTask + ':frontend', function() {
 	gulp.watch([
 		extPath + '/site/**/*'
 	],
 	{ interval: config.watchInterval },
-	['copy:' + baseTask + ':frontend', browserSync.reload]);
+	gulp.series('copy:' + baseTask + ':frontend', browserSync.reload));
 });

@@ -2,12 +2,13 @@ var gulp = require('gulp');
 var fs   = require('fs');
 
 var config = require('../config.js');
+var task = require('../task-helper')(gulp);
 
 // Dependencies
 var browserSync = require('browser-sync');
 var del         = require('del');
 var less        = require('gulp-less');
-var minifyCSS   = require('gulp-minify-css');
+var cleanCSS    = require('gulp-clean-css');
 var rename      = require('gulp-rename');
 var uglify      = require('gulp-uglify');
 
@@ -28,18 +29,18 @@ var excludedMediaStypeFolders = [
 ];
 
 // Clean
-gulp.task('clean:' + baseTask, function() {
+task('clean:' + baseTask, function() {
 	return true;
 });
 
 // Copy
-gulp.task('copy:' + baseTask, ['clean:' + baseTask],
+task('copy:' + baseTask, ['clean:' + baseTask],
 	function() {
 		return true;
 });
 
 // LESS
-gulp.task('less:' + baseTask,
+task('less:' + baseTask,
 	[
 		'less:' + baseTask + ':component',
 		'less:' + baseTask + ':component.bs3'
@@ -48,21 +49,21 @@ gulp.task('less:' + baseTask,
 });
 
 // LESS: Component
-gulp.task('less:' + baseTask + ':component', function () {
+task('less:' + baseTask + ':component', function () {
 	return gulp.src(buildPath + '/media/libraries/redcore/media/redcore/less/component.less')
 		.pipe(less({paths: [buildPath + '/media/libraries/redcore/media/redcore/less']}))
 		.pipe(gulp.dest(buildPath + '/media/libraries/redcore/media/redcore/css'));
 });
 
 // LESS: Component Bootstrap3
-gulp.task('less:' + baseTask + ':component.bs3', function () {
+task('less:' + baseTask + ':component.bs3', function () {
 	return gulp.src(buildPath + '/media/libraries/redcore/media/redcore/less/component.bs3.less')
 		.pipe(less({paths: [buildPath + '/media/libraries/redcore/media/redcore/less']}))
 		.pipe(gulp.dest(buildPath + '/media/libraries/redcore/media/redcore/css'));
 });
 
 // Scripts
-gulp.task('scripts:' + baseTask, function () {
+task('scripts:' + baseTask, function () {
 	return gulp.src(excludedMediaScriptFolders.concat([
 			buildPath + '/media/**/*.js'
 		]))
@@ -74,11 +75,11 @@ gulp.task('scripts:' + baseTask, function () {
 });
 
 // Styles
-gulp.task('styles:' + baseTask, function () {
+task('styles:' + baseTask, function () {
 	return gulp.src(excludedMediaStypeFolders.concat([
 			buildPath + '/media/**/*.css'
 		]))
-		.pipe(minifyCSS())
+		.pipe(cleanCSS())
 		.pipe(rename(function (path) {
 				path.basename += '.min';
 		}))
@@ -86,7 +87,7 @@ gulp.task('styles:' + baseTask, function () {
 });
 
 // Library files (fonts, images, ...)
-gulp.task('libraries:' + baseTask, function () {
+task('libraries:' + baseTask, function () {
 	return gulp.src([buildPath + '/media/**/lib/**',
 				'!' + buildPath + '/media/**/lib/**/*.css',
 				'!' + buildPath + '/media/**/lib/**/*.js',
@@ -96,7 +97,7 @@ gulp.task('libraries:' + baseTask, function () {
 });
 
 // Watch
-gulp.task('watch:' + baseTask,
+task('watch:' + baseTask,
 	[
 		'watch:' + baseTask + ':less',
 		'watch:' + baseTask + ':scripts',
@@ -107,37 +108,37 @@ gulp.task('watch:' + baseTask,
 });
 
 // Watch: LESS
-gulp.task('watch:' + baseTask + ':less',
+task('watch:' + baseTask + ':less',
 	function() {
 		gulp.watch(
 			[buildPath + '/media/**/less/**/*.less'],
 			{ interval: config.watchInterval },
-			['less:' + baseTask, browserSync.reload]
+			gulp.series('less:' + baseTask, browserSync.reload)
 		);
 });
 
 // Watch: Scripts
-gulp.task('watch:' + baseTask + ':scripts',
+task('watch:' + baseTask + ':scripts',
 	function() {
 		gulp.watch(excludedMediaScriptFolders.concat([
 			buildPath + '/media/**/*.js'
 		]),
 		{ interval: config.watchInterval },
-		['scripts:' + baseTask, browserSync.reload]);
+		gulp.series('scripts:' + baseTask, browserSync.reload));
 });
 
 // Watch: Styles
-gulp.task('watch:' + baseTask + ':styles',
+task('watch:' + baseTask + ':styles',
 	function() {
 		gulp.watch(excludedMediaStypeFolders.concat([
 			buildPath + '/media/**/*.css'
 		]),
 		{ interval: config.watchInterval },
-		['styles:' + baseTask, browserSync.reload]);
+		gulp.series('styles:' + baseTask, browserSync.reload));
 });
 
 // Watch: Library files (fonts, images, ...)
-gulp.task('watch:' + baseTask + ':libraries',
+task('watch:' + baseTask + ':libraries',
 	function() {
 		gulp.watch([
 			buildPath + '/media/lib/**',
@@ -146,5 +147,5 @@ gulp.task('watch:' + baseTask + ':libraries',
 			'!' + buildPath + '/media/**/lib/**/*.md'
 		],
 		{ interval: config.watchInterval },
-		['libraries:' + baseTask, browserSync.reload]);
+		gulp.series('libraries:' + baseTask, browserSync.reload));
 });
